@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import React, { useMemo, useState, useRef } from 'react';
+import {format} from 'date-fns';
 import { Autocomplete, Pagination } from '@material-ui/lab';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
@@ -26,7 +27,6 @@ import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 import DeskFilter from './DeskFilter/DeskFilter';
-import useStyles from './InvestigationTableStyles';
 import TableFilter from './TableFilter/TableFilter';
 import SettingsActions from './SettingsActions/SettingsActions';
 import ClickableTooltip from './clickableTooltip/clickableTooltip';
@@ -37,6 +37,8 @@ import InvestigationStatusColumn from './InvestigationStatusColumn/Investigation
 import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorAllocationDialog';
 import InvestigationIndicatorsColumn from './InvestigationIndicatorsColumn/InvestigationIndicatorsColumn';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
+import InfoItem from '../../InvestigationForm/InvestigationInfo/InfoItem';
+import useStyles, {useTooltipStyles} from './InvestigationTableStyles';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -53,6 +55,41 @@ const unassignedToDesk = 'לא שוייך לדסק';
 const showInvestigationGroupText = 'הצג חקירות קשורות';
 const hideInvestigationGroupText = 'הסתר חקירות קשורות';
 const emptyGroupText = 'שים לב, בסבירות גבוהה לחקירה זו קובצו חקירות ישנות שכבר לא קיימות במערכת'
+const noDataMessage = 'אין מידע אודות תאריכים לחקירה זו';
+
+interface RowTooltipProps {
+    creationDate: InvestigationTableRow['creationDate'];
+    startTime: InvestigationTableRow['startTime'];
+    children: React.ReactElement;
+}
+
+const tooltipEnterDelay = 800;
+const RowTooltip = (props: RowTooltipProps) => {
+    const {creationDate, startTime} = props;
+    const tooltipClasses = useTooltipStyles();
+
+    const formatDate = (date: Date): string => date ? format(new Date(date), 'dd/MM/yyyy') : 'אין מידע';
+    const creationDateLabel = useMemo(() => formatDate(creationDate), [creationDate]);
+    const startTimeLabel = useMemo(() => formatDate(startTime), [startTime]);
+
+    const title = (creationDate || startTime)
+        ? <>
+            {<InfoItem size='small' name='תאריך הגעת החקירה' value={creationDateLabel}/>}
+            {<InfoItem size='small' name='תאריך תחילת החקירה' value={startTimeLabel}/>}
+        </>
+        : noDataMessage;
+
+    return <Tooltip title={title} enterDelay={tooltipEnterDelay} enterNextDelay={tooltipEnterDelay}
+                    classes={{tooltip: tooltipClasses.content}}
+                    PopperProps={{
+                        placement: 'right',
+                        modifiers: {
+                            inner: { enabled: true },
+                        },
+                    }}>
+        {props.children}
+    </Tooltip>
+};
 
 const InvestigationTable: React.FC = (): JSX.Element => {
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
@@ -507,51 +544,59 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
                                 return (
                                     <>
-                                        <TableRow selected={isRowSelected(indexedRow.epidemiologyNumber)}
-                                            key={indexedRow.epidemiologyNumber} classes={{ selected: classes.checkedRow }}
-                                            className={[classes.investigationRow, isRowClickable && classes.clickableInvestigationRow].join(' ')}
-                                            onClick={() => isRowClickable && onInvestigationRowClick(indexedRow)}
-                                        >
-                                            {
-                                                Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
-                                                    <TableCell
-                                                        classes={{ root: classes.tableCellRoot }}
-                                                        className={getRegularCellStyle(index, key, isGroupShown).join(' ')}
-                                                        padding='none'
-                                                        onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
-                                                    >
-                                                        {
-                                                            getTableCell(key, indexedRow, index)
-                                                        }
-                                                    </TableCell>
-                                                ))
-                                            }
-                                        </TableRow>
+                                        <RowTooltip creationDate={row.creationDate} startTime={row.startTime}>
+                                            <TableRow selected={isRowSelected(indexedRow.epidemiologyNumber)}
+                                                      key={indexedRow.epidemiologyNumber}
+                                                      classes={{selected: classes.checkedRow}}
+                                                      className={[classes.investigationRow, isRowClickable && classes.clickableInvestigationRow].join(' ')}
+                                                      onClick={() => isRowClickable && onInvestigationRowClick(indexedRow)}
+                                            >
+                                                {
+                                                    Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
+                                                        <TableCell
+                                                            classes={{root: classes.tableCellRoot}}
+                                                            className={getRegularCellStyle(index, key, isGroupShown).join(' ')}
+                                                            padding='none'
+                                                            onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
+                                                        >
+                                                            {
+                                                                getTableCell(key, indexedRow, index)
+                                                            }
+                                                        </TableCell>
+                                                    ))
+                                                }
+                                            </TableRow>
+                                        </RowTooltip>
                                         {checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber) &&
                                             allGroupedInvestigations.get(indexedRow.groupId)?.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber).map((row: InvestigationTableRow, index: number) => {
                                                 const currentGroupedInvestigationsLength = allGroupedInvestigations.get(indexedRow.groupId)?.length! - 1; // not including row head
                                                 const indexedGroupedInvestigationRow = convertToIndexedRow(row);
                                                 const isGroupedRowClickable = isInvestigationRowClickable(row.mainStatus);
                                                 return (
-                                                    <TableRow selected={isRowSelected(indexedGroupedInvestigationRow.epidemiologyNumber)}
-                                                        key={indexedGroupedInvestigationRow.epidemiologyNumber} classes={{ selected: classes.checkedRow }}
-                                                        className={[classes.investigationRow, isGroupedRowClickable && classes.clickableInvestigationRow].join(' ')}
-                                                        onClick={() => isGroupedRowClickable && onInvestigationRowClick(indexedGroupedInvestigationRow)}
-                                                    >
-                                                        {
-                                                            Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
-                                                                <TableCell
-                                                                    classes={{ root: classes.tableCellRoot }}
-                                                                    className={getNestedCellStyle(key, index + 1 === currentGroupedInvestigationsLength).join(' ')}
-                                                                    onClick={(event: any) => handleCellClick(event, key, indexedGroupedInvestigationRow.epidemiologyNumber)}
-                                                                >
-                                                                    {
-                                                                        getTableCell(key, indexedGroupedInvestigationRow, index)
-                                                                    }
-                                                                </TableCell>
-                                                            ))
-                                                        }
-                                                    </TableRow>
+                                                    <RowTooltip creationDate={row.creationDate}
+                                                                startTime={row.startTime}>
+                                                        <TableRow
+                                                            selected={isRowSelected(indexedGroupedInvestigationRow.epidemiologyNumber)}
+                                                            key={indexedGroupedInvestigationRow.epidemiologyNumber}
+                                                            classes={{selected: classes.checkedRow}}
+                                                            className={[classes.investigationRow, isGroupedRowClickable && classes.clickableInvestigationRow].join(' ')}
+                                                            onClick={() => isGroupedRowClickable && onInvestigationRowClick(indexedGroupedInvestigationRow)}
+                                                        >
+                                                            {
+                                                                Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
+                                                                    <TableCell
+                                                                        classes={{root: classes.tableCellRoot}}
+                                                                        className={getNestedCellStyle(key, index + 1 === currentGroupedInvestigationsLength).join(' ')}
+                                                                        onClick={(event: any) => handleCellClick(event, key, indexedGroupedInvestigationRow.epidemiologyNumber)}
+                                                                    >
+                                                                        {
+                                                                            getTableCell(key, indexedGroupedInvestigationRow, index)
+                                                                        }
+                                                                    </TableCell>
+                                                                ))
+                                                            }
+                                                        </TableRow>
+                                                    </RowTooltip>
                                                 )
                                             })
                                         }

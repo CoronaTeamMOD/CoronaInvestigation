@@ -3,6 +3,15 @@ import { makeStyles } from '@material-ui/styles';
 
 const tableWidth = '96vw';
 
+export const useTooltipStyles = makeStyles( ({
+    content: {
+        display: 'flex',
+        flexDirection: 'column',
+        marginRight: 110,
+        flip: false
+    },
+}));
+
 const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     content: {
         height: '80vh',
@@ -155,7 +164,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     popover: {
         width: 250,
         padding: theme.spacing(1)
-    }
+    },
 }))();
 
 export default useStyles;
