@@ -382,7 +382,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const counterDescription: string = useMemo(() => {
         const adminMessage = `, ${unassignedInvestigationsCount} לא מוקצות`;
-        return `ישנן ${totalCount}  חקירות בסך הכל ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
+        return `${totalCount} חקירות סה"כ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
 
     }, [tableRows, unassignedInvestigationsCount]);
 
