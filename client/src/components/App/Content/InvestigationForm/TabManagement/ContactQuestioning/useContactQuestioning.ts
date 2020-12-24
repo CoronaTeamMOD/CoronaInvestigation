@@ -85,16 +85,16 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         }
     };
 
-    const saveContactQuestioning = (formState: InteractedContact[]) => {
+    const saveContactQuestioning = (formData: InteractedContact[]) => {
         if (
             !checkDuplicateIds(
-                formState.map(
+                formData.map(
                     (contact: InteractedContact) => contact.identificationNumber
                 )
             )
         ) {
             const contactsSavingVariable = {
-                unSavedContacts: {contacts: formState}
+                unSavedContacts: {contacts: formData}
             }
             const contactLogger = logger.setup('Saving all contacts');
             contactLogger.info(`launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`, Severity.LOW);
@@ -108,7 +108,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 contactLogger.error(`got the following error from the server: ${err}`, Severity.HIGH);
             })
             .finally(() => {
-                ContactQuestioningSchema.isValid(formState).then(valid => {
+                ContactQuestioningSchema.isValid(formData).then(valid => {
                     setFormState(epidemiologyNumber, id, valid);
                 })
             })
