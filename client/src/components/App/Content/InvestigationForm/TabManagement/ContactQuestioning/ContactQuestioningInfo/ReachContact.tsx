@@ -39,10 +39,6 @@ const ReachContact = (props: Props) => {
         (contactStatus: ContactStatus) =>
             contactStatus.id === currentContactStatus
     );
-
-    console.log(currentContactStatus , currentValue);
-
-
     const { isFieldDisabled } = useContactFields(formValues.contactStatus);
 
     const { changeContactStatus } = useReachContact({
