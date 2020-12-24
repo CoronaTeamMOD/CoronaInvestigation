@@ -90,7 +90,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                             onClick={() => { setNextTab(tab.id) }}
                             key={tab.id}
                             label={tab.name}
-                            icon={isTabValid(tab.id) ? <ErrorOutlineIcon className={classes.icon}/> : undefined}
+                            icon={isTabValid(tab.id) ? <ErrorOutlineIcon className={classes.icon} fontSize={'small'}/> : undefined}
                             className={isTabValid(tab.id) ? classes.errorIcon : undefined}
                         />
                     )

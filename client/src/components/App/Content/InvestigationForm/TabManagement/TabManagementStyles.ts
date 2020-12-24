@@ -12,7 +12,6 @@ const useStyles = makeStyles({
         color: '#ffcc00'
     },
     icon:{
-        height: '3.5vh',
         marginTop: '0.8vh'
     }
 });
