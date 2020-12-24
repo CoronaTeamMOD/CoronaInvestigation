@@ -100,7 +100,7 @@ const UsersManagement: React.FC = () => {
                         className={classes.sourceOrganization}
                         label={sourceOrganizationLabel}
                         value={row[cellName]}
-                        onChange={(event: any) => setUserSourceOrganization(event.target.value, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
+                        onChange={(event: React.ChangeEvent<any>) => setUserSourceOrganization(event.target.value as string, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
                     >
                         {
                             sourcesOrganization.map(sourceOrganization => (
