@@ -100,6 +100,9 @@ const TransferInvestigationCounty = (props: Props) => {
                         }
                     />
                 </div>
+                <div>
+                     <Typography variant='body2'> שים לב, הפעולה תתבצע רק על חקירות השייכות לנפתך </Typography>
+                </div>
                 <DialogActions className={classes.dialogActions}>
                     <Button className={classes.button} variant='contained' onClick={onClose} color='default'>
                         ביטול
