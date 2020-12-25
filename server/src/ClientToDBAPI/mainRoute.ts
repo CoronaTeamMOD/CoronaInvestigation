@@ -3,7 +3,7 @@ import { Router } from 'express';
 import addressRoute from './Address/mainRoute';
 import usersRoute from './UsersRoute/mainRoute';
 import desksRoute from './DesksRoute/mainRoute';
-import educationRoute from './Education/mainRoute';
+import educationRoute from './EducationRoute/mainRoute';
 import exposureRoute from './ExposureRoute/mainRoute';
 import countiesRoute from './CountiesRoute/mainRoute';
 import authMiddleware from '../middlewares/Authentication';

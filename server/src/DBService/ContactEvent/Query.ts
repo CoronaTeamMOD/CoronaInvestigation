@@ -47,7 +47,9 @@ isContactedPerson
 cityByIsolationCity {
   city: displayName
 }
-educationGrade
+educationGradeByEducationGrade {
+  educationGrade: displayName
+}
 educationClassNumber
 subOccupationByInstitutionName {
   institutionName: displayName

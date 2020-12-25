@@ -140,7 +140,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     const fetchEducationGrades = () => {
         const educationGradesLogger = logger.setup('Fetching education grades');
         educationGradesLogger.info('launching education grades request', Severity.LOW);
-        axios.get('/education/educationGrades')
+        axios.get('/education/grades')
         .then((result: any) => {
             if (result?.data && result.headers['content-type'].includes('application/json')) {
                 educationGradesLogger.info('educationGrades request was successful', Severity.LOW);
