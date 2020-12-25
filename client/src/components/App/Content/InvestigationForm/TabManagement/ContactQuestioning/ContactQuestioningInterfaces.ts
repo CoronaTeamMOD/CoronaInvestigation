@@ -21,7 +21,7 @@ export interface useContactQuestioningParameters {
 export interface useContactQuestioningOutcome {
     saveContact: (interactedContact: InteractedContact) => boolean;
     loadInteractedContacts: () => void;
-    saveContactQuestioning: (formState: InteractedContact[]) => void;
+    saveContactQuestioning: (parsedFormState: InteractedContact[] , originalFormState : FormInputs) => void;
     loadFamilyRelationships: () => void;
     loadContactStatuses: () => void;
     checkForSpecificDuplicateIds: (
