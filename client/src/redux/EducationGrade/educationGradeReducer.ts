@@ -1,13 +1,13 @@
 import EducationGrade from 'models/EducationGrade';
 
-import * as Actions from './educationGradesActionTypes';
+import * as Actions from './educationGradeActionTypes';
 
-const initialState: Map<number, EducationGrade> = new Map();
+const initialState: EducationGrade[] = [];
 
-const formReducer = (state = initialState, action: Actions.educationGradesAction): Map<number, EducationGrade> => {
+const formReducer = (state = initialState, action: Actions.educationGradesAction): EducationGrade[] => {
     switch (action.type) {
         case Actions.SET_EDUCATION_GRADES: {
-            return action.payload.educationGrade
+            return action.payload.educationGrades
         }
         default:  return state;
     }

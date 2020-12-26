@@ -13,7 +13,7 @@ export interface PersonalInfoDbData {
     institutionName: string | null;
     otherOccupationExtraInfo: string | null;
     role: number | null;
-    educationGrade: EducationGrade | null;
+    educationGrade: number | null;
     educationClassNumber: number | null;
 };
 
@@ -32,6 +32,6 @@ export interface PersonalInfoFormData {
     institutionName: string;
     otherOccupationExtraInfo: string;
     role: number;
-    educationGrade: string | null;
+    educationGrade: number;
     educationClassNumber: number;
 };

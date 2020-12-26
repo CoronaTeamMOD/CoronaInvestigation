@@ -13,6 +13,6 @@ export const initialPersonalInfo: PersonalInfoFormData = {
     otherOccupationExtraInfo: '',
     contactInfo: '',
     role: -1,
-    educationGrade: null,
+    educationGrade: -1,
     educationClassNumber: -1,
 };

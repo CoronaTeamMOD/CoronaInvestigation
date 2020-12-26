@@ -22,5 +22,5 @@ export default interface StoreStateType {
     statuses: InvestigationMainStatus[];
     formsValidations: { [key: number]: (boolean | null)[] };
     address: DBAddress;
-    educationGrades: Map<number, EducationGrade>;
+    educationGrades: EducationGrade[];
 };

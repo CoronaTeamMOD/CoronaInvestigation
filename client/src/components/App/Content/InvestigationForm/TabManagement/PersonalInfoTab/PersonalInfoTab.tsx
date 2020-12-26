@@ -26,6 +26,8 @@ import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/Person
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
 import personalInfoValidationSchema from './PersonalInfoValidationSchema';
+import { number } from 'yup';
+import EducationGrade from 'models/EducationGrade';
 
 export const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
 export const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
@@ -46,7 +48,6 @@ const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה*';
 const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
 const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 const NO_INSURANCE = 'אף אחד מהנ"ל';
-const grades = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'יא', 'יב'];
 const defaultInvestigationId = -1;
 const defaultRole = { id: -1, displayName: '' };
 
@@ -71,6 +72,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const educationGrades = useSelector<StoreStateType, EducationGrade[]>((state) => state.educationGrades);
 
     const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity, savePersonalData } = usePersonalInfoTab({
         setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName,
@@ -622,11 +624,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                                     onChange={(event) => props.onChange(event.target.value)}
                                                                 >
                                                                     {
-                                                                        grades.map((grade: string) => (
+                                                                        educationGrades.map && educationGrades.map((grade: EducationGrade) => (
                                                                             <MenuItem
-                                                                                key={grade}
-                                                                                value={grade}>
-                                                                                {grade}
+                                                                                key={grade.id}
+                                                                                value={grade.id}>
+                                                                                {grade.displayName}
                                                                             </MenuItem>
                                                                         ))
                                                                     }

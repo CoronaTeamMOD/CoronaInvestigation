@@ -83,7 +83,7 @@ personalDetailsRoute.get('/investigatedPatientPersonalInfoFields', (request: Req
     investigatedPatientPersonalInfoFieldsLogger.info('launching DB request', Severity.LOW);
     graphqlRequest(GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIOLOGY_NUMBER, response.locals, {id: +request.query.epidemioligyNumber})
     .then((result: GetInvestigatedPatientDetails) => {
-        console.log(result);
+        console.log('------------', result?.data?.investigationByEpidemiologyNumber?.investigatedPatientByInvestigatedPatientId);
         if (result?.data?.investigationByEpidemiologyNumber?.investigatedPatientByInvestigatedPatientId) {
             investigatedPatientPersonalInfoFieldsLogger.info('got respond from DB', Severity.LOW);
             const investigatedPatientDetails = result.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;

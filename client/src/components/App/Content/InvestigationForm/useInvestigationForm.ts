@@ -9,7 +9,6 @@ import Country from 'models/Country';
 import { Severity } from 'models/Logger';
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
-import EducationGrade from 'models/EducationGrade';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setCities } from 'redux/City/cityActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
@@ -27,7 +26,6 @@ import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexit
 
 import { defaultUser } from './InvestigationInfo/InvestigationInfoBar';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
-
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
@@ -144,9 +142,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         .then((result: any) => {
             if (result?.data && result.headers['content-type'].includes('application/json')) {
                 educationGradesLogger.info('educationGrades request was successful', Severity.LOW);
-                const educationGrades: Map<number, EducationGrade> = new Map();
-                result.data.forEach((grade: EducationGrade) => educationGrades.set(grade.id, grade));
-                setEducationGrade(educationGrades);
+                setEducationGrade(result?.data);
             } else {
                 educationGradesLogger.error('educationGrades request was successful but data isnt as expected', Severity.LOW);
             }
