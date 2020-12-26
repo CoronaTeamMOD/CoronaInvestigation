@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { yupResolver } from '@hookform/resolvers';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import React, { useEffect, useState } from 'react';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Controller, useForm, FormProvider } from 'react-hook-form';
 import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, FormControl, Collapse, Select, MenuItem, InputLabel } from '@material-ui/core';
 
@@ -10,6 +10,7 @@ import City from 'models/City';
 import Street from 'models/Street';
 import DBAddress from 'models/DBAddress';
 import Occupations from 'models/enums/Occupations';
+import EducationGrade from 'models/EducationGrade';
 import { setAddress } from 'redux/Address/AddressActionCreators';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import investigatedPatientRole from 'models/investigatedPatientRole';
@@ -26,8 +27,6 @@ import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/Person
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
 import personalInfoValidationSchema from './PersonalInfoValidationSchema';
-import { number } from 'yup';
-import EducationGrade from 'models/EducationGrade';
 
 export const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
 export const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
