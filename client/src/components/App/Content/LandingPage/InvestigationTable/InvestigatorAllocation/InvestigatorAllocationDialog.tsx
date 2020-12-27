@@ -26,7 +26,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
         investigators.then((investigators) => {
             setAllInvestigators(investigators)
         })
-    }, [])
+    }, [investigators])
 
     const shouldButtonDisabled: boolean = useMemo(() => {
        return investigatorToAllocateIndex === unSelectedRow;
