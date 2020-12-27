@@ -2,8 +2,8 @@ import React from 'react';
 import {Typography} from '@material-ui/core';
 
 import FormInput from 'commons/FormInput/FormInput';
-import  {getOptionsByPlaceAndSubplaceType} from 'Utils/placeTypesCodesHierarchy';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import  {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 
 import AddressGrid from '../AddressGrid/AddressGrid';
 import BusinessContactGrid from '../BusinessContactGrid/BusinessContactGrid';

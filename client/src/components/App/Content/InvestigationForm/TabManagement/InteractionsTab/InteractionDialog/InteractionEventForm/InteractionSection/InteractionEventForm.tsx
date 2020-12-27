@@ -8,16 +8,18 @@ import useFormStyles from 'styles/formStyles';
 import TimePick from 'commons/DatePick/TimePick';
 import FormInput from 'commons/FormInput/FormInput';
 import {get} from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
-import {getOptionsByPlaceAndSubplaceType} from 'Utils/placeTypesCodesHierarchy';
+import placeTypesCodesHierarchy from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import PlacesTypesAndSubTypes, {PlacesTypesAndSubTypesProps} from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
+import PatientAddress from './PatientAddress';
 import AddressForm from './AddressForm/AddressForm';
 import useStyles from './InteractionEventFormStyles';
 import PlaceNameForm from './PlaceNameForm/PlaceNameForm';
 import BusinessContactForm from './BusinessContactForm/BusinessContactForm';
+import useContactEvent from 'Utils/ContactEvent/useContactEvent';
 
 const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     { onPlaceSubTypeChange, isVisible, interactionData, isNewInteraction }: InteractionEventFormProps): JSX.Element => {
@@ -35,7 +37,10 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     const [startTime, setStartTime] = useState<Date | null>(isNewInteraction ? null : interactionStartTime);
     const [endTime, setEndTime] = useState<Date | null>(isNewInteraction ? null : interactionEndTime);
 
+    const { isPatientHouse } = useContactEvent();
+
     const formConfig = useMemo(() => getOptionsByPlaceAndSubplaceType(placeType, placeSubType), [placeType, placeSubType]);
+    const isSubTypePatientHouse = useMemo(() => isPatientHouse(placeSubType), [placeSubType]);
 
     const classes = useStyles();
     const formClasses = useFormStyles();
@@ -166,8 +171,11 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                     />
                 </FormInput>
             </Grid>
-            <Collapse in={hasAddress}>
+            <Collapse in={hasAddress && !isSubTypePatientHouse}>
                 <AddressForm/>
+            </Collapse>
+            <Collapse in={isSubTypePatientHouse}>
+                <PatientAddress/>
             </Collapse>
             <Collapse in={isNamedLocation}>
                 <PlaceNameForm nameFieldLabel={nameFieldLabel} />

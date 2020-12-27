@@ -3,6 +3,7 @@ interface DBAddress {
     street: string;
     floor: string;
     houseNum: string;
+    streetName?: string;
 }
 
 export const initDBAddress: DBAddress  = {
