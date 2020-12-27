@@ -24,9 +24,12 @@ const Content: React.FC<Props> = ({ isSignUpOpen, handleSaveUser, handleCloseSig
                 <Route path={adminLandingPageRoute} component={adminLandingPage} />
                 <Route path={usersManagementRoute} component={UsersManagement} />
                 {
-                    (userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN) ?
-                        <Redirect from={indexRoute} to={adminLandingPageRoute} /> :
-                        <Redirect from={indexRoute} to={landingPageRoute} />
+                    (userType === UserType.INVESTIGATOR) &&
+                    <Redirect from={indexRoute} to={landingPageRoute} />
+                }
+                {
+                    (userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN) &&
+                    <Redirect from={indexRoute} to={adminLandingPageRoute} />
                 }
             </Switch>
             <SignUp open={isSignUpOpen} handleSaveUser={handleSaveUser} handleCloseSignUp={handleCloseSignUp} />
