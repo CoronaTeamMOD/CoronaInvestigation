@@ -79,7 +79,7 @@ const SettingsActions = (props: Props) => {
                     settingsAction.map((action: settingsAction, index: number) => {
                         return (
                             <Tooltip title={action.disabledMessage} placement='top-end'>
-                                <span>                                
+                                <div onClick={(event) => action.disabled ? event.stopPropagation() : ''}>                                
                                     <MenuItem
                                         key={action.key}
                                         disabled={action.disabled}
@@ -88,7 +88,7 @@ const SettingsActions = (props: Props) => {
                                         {React.createElement(action.icon)}
                                         <Typography>{action.displayTitle}</Typography>
                                     </MenuItem>
-                                </span>
+                                </div>
                             </Tooltip>
                         )
                     })
