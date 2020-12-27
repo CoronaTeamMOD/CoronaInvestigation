@@ -1,7 +1,6 @@
-import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles({
     desksCard: {
         width: '15vw',
         height: '35vh',
@@ -13,11 +12,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     cardTitle: {
         fontSize: '0.9vw',
     },
-    updateButton: {
-        width: '4vw',
-        color: 'white',
-        backgroundColor: theme.palette.primary.dark
-    }
-}));
+});
 
 export default useStyles;
