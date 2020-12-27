@@ -49,10 +49,10 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
         const saveExposureAndFlightDataLogger = logger.setup('Saving Exposures And Flights');
 
         if (!wereFlights && !wereConfirmedExposures) {
-            exposuresToDelete = formattedExposure.map((exposure : any) => exposure.id).filter((id : any) => id);
+            exposuresToDelete = formattedExposure.map((exposure : any) => exposure.id).filter((id : number) => id);
         } else {
             const filterCondition = exposureDeleteCondition(wereFlights, wereConfirmedExposures);
-            formattedExposure.forEach((exposure : any) => {
+            formattedExposure.forEach((exposure : Exposure) => {
                 if (filterCondition(exposure)) {
                     exposure.id && exposuresToDelete.push(exposure.id);
                 } else {
@@ -71,7 +71,7 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
     }
 
     const formatExposures = (exposures : Exposure[] , ids : (number|null)[] ) : Exposure[] => {
-        return exposures.map((exposure : any , i : number) => {return {...exposure , id : ids[i]}} )
+        return exposures.map((exposure : Exposure , i : number) => {return {...exposure , id : ids[i]}} )
     }
 
     const extractExposureData =  (exposuresAndFlightsData : Exposure) => {
