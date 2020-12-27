@@ -60,53 +60,56 @@ const FlightsForm = (props: any) => {
 			</FormRowWithInput>
 
 			<FormRowWithInput fieldName='תאריך טיסה:'>
-				<div className={classes.inputRow}>
-					<Typography variant='caption'>מתאריך</Typography>
-					<Controller
-						control={control}
-						name={`exposures[${index}].${fieldsNames.flightStartDate}`}
-						defaultValue={exposureAndFlightsData[fieldsNames.flightStartDate]}
-						render={(props) => {
-							return (
-								<DatePick
-									{...props}
-									maxDateMessage={''}
-									invalidDateMessage={''}
-									maxDate={new Date()}
-									testId='flightFromDate'
-									labelText={getDateLabel(startDateError)}
-									error={Boolean(startDateError)}
-									onChange={(newDate: Date) => {
-										props.onChange(newDate);
-									}}
-								/>
-							);
-						}}
-					/>
-
+				<Grid className={classes.inputRow} item container xs={9}  justify='flex-start' alignItems="center" spacing={1}>
+					<Grid item xs={5} lg={3}>
+						<Typography variant='caption'>מתאריך</Typography>
+						<Controller
+							control={control}
+							name={`exposures[${index}].${fieldsNames.flightStartDate}`}
+							defaultValue={exposureAndFlightsData[fieldsNames.flightStartDate]}
+							render={(props) => {
+								return (
+									<DatePick
+										{...props}
+										maxDateMessage={''}
+										invalidDateMessage={''}
+										maxDate={new Date()}
+										testId='flightFromDate'
+										labelText={getDateLabel(startDateError)}
+										error={Boolean(startDateError)}
+										onChange={(newDate: Date) => {
+											props.onChange(newDate);
+										}}
+									/>
+								);
+							}}
+						/>
+					</Grid>
+					<Grid item xs={5} lg={3}>
 					<Typography variant='caption'>עד תאריך</Typography>
-					<Controller
-						control={control}
-						name={`exposures[${index}].${fieldsNames.flightEndDate}`}
-						defaultValue={exposureAndFlightsData[fieldsNames.flightEndDate]}
-						render={(props) => {
-							return (
-								<DatePick
-									{...props}
-									maxDateMessage={''}
-									invalidDateMessage={''}
-									maxDate={new Date()}
-									testId='flightToDate'
-									labelText={getDateLabel(endDateError)}
-									error={Boolean(endDateError)}
-									onChange={(newDate: Date) => {
-										props.onChange(newDate);
-									}}
-								/>
-							);
-						}}
-					/>
-				</div>
+						<Controller
+							control={control}
+							name={`exposures[${index}].${fieldsNames.flightEndDate}`}
+							defaultValue={exposureAndFlightsData[fieldsNames.flightEndDate]}
+							render={(props) => {
+								return (
+									<DatePick
+										{...props}
+										maxDateMessage={''}
+										invalidDateMessage={''}
+										maxDate={new Date()}
+										testId='flightToDate'
+										labelText={getDateLabel(endDateError)}
+										error={Boolean(endDateError)}
+										onChange={(newDate: Date) => {
+											props.onChange(newDate);
+										}}
+									/>
+								);
+							}}
+						/>
+					</Grid>
+				</Grid>
 			</FormRowWithInput>
 
 			<FormRowWithInput fieldName='חברת תעופה:'>
