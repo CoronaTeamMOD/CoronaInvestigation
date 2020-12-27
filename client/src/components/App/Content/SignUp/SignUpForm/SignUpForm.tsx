@@ -287,7 +287,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                     options={desks}
                                     disabled={shouldDisableFields}
                                     value={props.value}
-                                    getOptionLabel={(option) => option ? option.name : option}
+                                    getOptionLabel={(option) => option ? (mode === FormMode.READ ? option.name.deskName: option.name) : option}
                                     onChange={(event, selectedDesk) => {
                                         props.onChange(selectedDesk ? selectedDesk.id : null)
                                     }}
