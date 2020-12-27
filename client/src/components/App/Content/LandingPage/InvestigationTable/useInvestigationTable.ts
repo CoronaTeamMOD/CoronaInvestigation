@@ -68,6 +68,7 @@ export const createRowData = (
     reasonId: number,
     subOccupation: string,
     parentOccupation: string,
+    isInInstitute: boolean,
     creationDate: Date,
     startTime: Date,
 ): InvestigationTableRow => ({
@@ -96,6 +97,7 @@ export const createRowData = (
     reasonId,
     subOccupation,
     parentOccupation,
+    isInInstitute,
     creationDate,
     startTime,
 });
@@ -393,6 +395,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     '';
                                 const subOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.displayName;
                                 const parentOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.parentOccupation;
+                                const isInInstitute  =  investigation.investigatedPatientByInvestigatedPatientId?.investigatedPatientRoleByRole?.displayName === 'שוהה במוסד'
                                 return createRowData(
                                     investigation.epidemiologyNumber,
                                     investigation.coronaTestDate,
@@ -418,8 +421,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     reasonId,
                                     subOccupation,
                                     parentOccupation,
+                                    isInInstitute,
                                     investigation.creationDate,
-                                    investigation.startTime,
+                                    investigation.startTime
                                 )
                             });
                         investigationRows
@@ -766,9 +770,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                             investigation.investigationSubStatusByInvestigationSubStatus.displayName :
                             '';
-                        const subOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.displayName;
-                        const parentOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.parentOccupation;
-
+                        const subOccupation = investigation.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.displayName;
+                        const parentOccupation = investigation.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.parentOccupation;
+                        const isInInstitute  =  investigation.investigatedPatientByInvestigatedPatientId?.investigatedPatientRoleByRole?.displayName === 'שוהה במוסד'
                         return createRowData(
                             investigation.epidemiologyNumber,
                             investigation.coronaTestDate,
@@ -794,8 +798,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             reasonId,
                             subOccupation,
                             parentOccupation,
+                            isInInstitute,
                             investigation.creationDate,
-                            investigation.startTime,
+                            investigation.startTime
                         )
                     });
                 setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))

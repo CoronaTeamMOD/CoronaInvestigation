@@ -19,6 +19,10 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         deskName
       }
       investigatedPatientByInvestigatedPatientId {
+        investigatedPatientRoleByRole{
+          id,
+          displayName
+        }
         subOccupationBySubOccupation{
           displayName
           parentOccupation
@@ -78,6 +82,10 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         deskName
       }
       investigatedPatientByInvestigatedPatientId {
+        investigatedPatientRoleByRole{
+          id,
+          displayName
+        }
         subOccupationBySubOccupation{
           displayName
           parentOccupation

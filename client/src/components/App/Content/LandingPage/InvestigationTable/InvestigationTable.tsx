@@ -262,7 +262,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     return deskValue ? deskValue : unassignedToDesk
                 }
             case TableHeadersNames.subOccupation:
-                const subOccupation = indexedRow[cellName as keyof typeof TableHeadersNames];
+                const subOccupation =  tableRows[index].isInInstitute && indexedRow[cellName as keyof typeof TableHeadersNames];
                 const parentOccupation = Boolean(subOccupation) ? tableRows[index].parentOccupation : '';
                 return <Tooltip title={parentOccupation} placement='top'>
                     <div>{subOccupation || '-'}</div>
