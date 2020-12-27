@@ -81,7 +81,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
           </Typography>
           {countyDisplayName &&
             <Typography>
-              הינך מחובר/ת ללשכת <b>{countyDisplayName}</b>
+              הינך מחובר/ת לנפת <b>{countyDisplayName}</b>
             </Typography>
           }
         </div>
