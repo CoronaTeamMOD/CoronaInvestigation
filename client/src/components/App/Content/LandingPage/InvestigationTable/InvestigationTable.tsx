@@ -67,7 +67,7 @@ interface RowTooltipProps {
 
 const tooltipEnterDelay = 800;
 const RowTooltip = (props: RowTooltipProps) => {
-    const {creationDate, startTime} = props;
+    const { creationDate, startTime } = props;
     const tooltipClasses = useTooltipStyles();
 
     const formatDate = (date: Date): string => date ? format(new Date(date), 'dd/MM/yyyy') : 'אין מידע';
@@ -76,19 +76,19 @@ const RowTooltip = (props: RowTooltipProps) => {
 
     const title = (creationDate || startTime)
         ? <>
-            {<InfoItem size='small' name='תאריך הגעת החקירה' value={creationDateLabel}/>}
-            {<InfoItem size='small' name='תאריך תחילת החקירה' value={startTimeLabel}/>}
+            {<InfoItem size='small' name='תאריך הגעת החקירה' value={creationDateLabel} />}
+            {<InfoItem size='small' name='תאריך תחילת החקירה' value={startTimeLabel} />}
         </>
         : noDataMessage;
 
     return <Tooltip title={title} enterDelay={tooltipEnterDelay} enterNextDelay={tooltipEnterDelay}
-                    classes={{tooltip: tooltipClasses.content}}
-                    PopperProps={{
-                        placement: 'right',
-                        modifiers: {
-                            inner: { enabled: true },
-                        },
-                    }}>
+        classes={{ tooltip: tooltipClasses.content }}
+        PopperProps={{
+            placement: 'right',
+            modifiers: {
+                inner: { enabled: true },
+            },
+        }}>
         {props.children}
     </Tooltip>
 };
@@ -168,7 +168,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 break;
             }
         }
-        setSelectedRow({ epidemiologyNumber, groupId});
+        setSelectedRow({ epidemiologyNumber, groupId });
         setCheckedIndexedRows([]);
     }
 
@@ -188,8 +188,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const allocateInvestigationToInvestigator = async (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => {
         if (groupIds.length && groupIds[0]) {
-            await changeGroupsInvestigator(groupIds, investigatorToAllocate) 
-        } 
+            await changeGroupsInvestigator(groupIds, investigatorToAllocate)
+        }
         if (epidemiologyNumbers) {
             await changeInvestigationsInvestigator(epidemiologyNumbers, investigatorToAllocate);
         }
@@ -217,12 +217,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     />
                 );
             case TableHeadersNames.investigatorName:
-                    return (
-                        <InvestigatorAllocationCell
-                            investigatorName={indexedRow[cellName as keyof typeof TableHeadersNames]}
-                            isInvestigatorActive={tableRows[index].investigator?.isActive}
-                            />  
-                    )
+                return (
+                    <InvestigatorAllocationCell
+                        investigatorName={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                        isInvestigatorActive={tableRows[index].investigator?.isActive}
+                    />
+                )
             case TableHeadersNames.investigationDesk:
                 if (selectedRow.epidemiologyNumber === indexedRow.epidemiologyNumber && deskAutoCompleteClicked &&
                     (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) && !wasInvestigationFetchedByGroup) {
@@ -550,15 +550,15 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     <>
                                         <RowTooltip creationDate={row.creationDate} startTime={row.startTime}>
                                             <TableRow selected={isRowSelected(indexedRow.epidemiologyNumber)}
-                                                      key={indexedRow.epidemiologyNumber}
-                                                      classes={{selected: classes.checkedRow}}
-                                                      className={[classes.investigationRow, isRowClickable && classes.clickableInvestigationRow].join(' ')}
-                                                      onClick={() => isRowClickable && onInvestigationRowClick(indexedRow)}
+                                                key={indexedRow.epidemiologyNumber}
+                                                classes={{ selected: classes.checkedRow }}
+                                                className={[classes.investigationRow, isRowClickable && classes.clickableInvestigationRow].join(' ')}
+                                                onClick={() => isRowClickable && onInvestigationRowClick(indexedRow)}
                                             >
                                                 {
                                                     Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
                                                         <TableCell
-                                                            classes={{root: classes.tableCellRoot}}
+                                                            classes={{ root: classes.tableCellRoot }}
                                                             className={getRegularCellStyle(index, key, isGroupShown).join(' ')}
                                                             padding='none'
                                                             onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber, indexedRow.groupId)}
@@ -577,19 +577,20 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                 const indexedGroupedInvestigationRow = convertToIndexedRow(row);
                                                 const isGroupedRowClickable = isInvestigationRowClickable(row.mainStatus);
                                                 return (
-                                                    <RowTooltip creationDate={row.creationDate}
-                                                                startTime={row.startTime}>
+                                                    <RowTooltip
+                                                        creationDate={row.creationDate}
+                                                        startTime={row.startTime}>
                                                         <TableRow
                                                             selected={isRowSelected(indexedGroupedInvestigationRow.epidemiologyNumber)}
                                                             key={indexedGroupedInvestigationRow.epidemiologyNumber}
-                                                            classes={{selected: classes.checkedRow}}
+                                                            classes={{ selected: classes.checkedRow }}
                                                             className={[classes.investigationRow, isGroupedRowClickable && classes.clickableInvestigationRow].join(' ')}
                                                             onClick={() => isGroupedRowClickable && onInvestigationRowClick(indexedGroupedInvestigationRow)}
                                                         >
                                                             {
                                                                 Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
                                                                     <TableCell
-                                                                        classes={{root: classes.tableCellRoot}}
+                                                                        classes={{ root: classes.tableCellRoot }}
                                                                         className={getNestedCellStyle(key, index + 1 === currentGroupedInvestigationsLength).join(' ')}
                                                                         onClick={(event: any) => handleCellClick(event, key, indexedGroupedInvestigationRow.epidemiologyNumber, indexedGroupedInvestigationRow.groupId)}
                                                                     >
