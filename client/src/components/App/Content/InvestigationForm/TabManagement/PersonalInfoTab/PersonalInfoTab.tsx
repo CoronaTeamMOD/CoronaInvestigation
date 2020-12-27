@@ -87,6 +87,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
         const newOccupation = event.target.value;
         setOccupation(newOccupation);
         setSubOccupationName('');
+        setRoleObj(defaultRole);
         methods.setValue(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, newOccupation);
         methods.setValue(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, '');
         methods.setValue(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, '');
