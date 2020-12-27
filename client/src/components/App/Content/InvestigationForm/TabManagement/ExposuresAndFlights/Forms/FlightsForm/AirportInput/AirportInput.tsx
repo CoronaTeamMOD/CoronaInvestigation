@@ -78,6 +78,7 @@ const AirportInput = (props: any) => {
 								}}
 								getOptionLabel={(option) => getLabel(option)}
 								filterOptions={filterOptions}
+								error={Boolean(countryFieldError)}
 								label={getCountryLabel(countryFieldError)}
 								placeholder='מדינה'
 							/>
