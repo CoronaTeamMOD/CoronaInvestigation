@@ -20,11 +20,15 @@ const calculateOffset = (pageNumber: number, pageSize: number) => ((pageNumber -
 landingPageRoute.post('/investigations', (request: Request, response: Response) => {
     const { orderBy, size, currentPage, filterRules } = request.body;
     const filterBy = {
-        creator: {
-            equalTo: response.locals.user.id
+        ...filterRules,
+        userByCreator: {
+            ...filterRules.userByCreator,
+            id: {
+                equalTo: response.locals.user.id
+            }
         },
-        ...filterRules
     };
+
     const getInvestigationsParameters = {
         filter: filterBy,
         orderBy,
