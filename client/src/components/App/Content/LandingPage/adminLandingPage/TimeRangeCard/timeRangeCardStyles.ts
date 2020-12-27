@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     cardTitle: {
         fontSize: '0.9vw',
     },
-    TimeRangeCardContent: {
+    timeRangeCardContent: {
         height: '52%',
     },
     updateButton: {

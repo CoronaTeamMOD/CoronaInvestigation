@@ -10,8 +10,8 @@ const TimeRangeCard: React.FC = (): JSX.Element => {
 
     return (
         <Card className={classes.timeRangeCard}>
-            <CardContent className={classes.TimeRangeCardContent}>
-                <Typography variant='h6' className={classes.cardTitle}>
+            <CardContent className={classes.timeRangeCardContent}>
+                <Typography className={classes.cardTitle}>
                     <b>טווח זמנים</b>
                 </Typography>
                 <DatePick
@@ -25,7 +25,7 @@ const TimeRangeCard: React.FC = (): JSX.Element => {
                     variant='contained'
                     size='small'>
                     עדכון
-                    </Button>
+                </Button>
             </CardActions>
         </Card>
     )
