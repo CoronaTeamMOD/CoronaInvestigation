@@ -10,7 +10,7 @@ import TransferInvestigationCounty from './TransferInvestigationCounty';
 const StyledTab = withStyles((theme) =>
     createStyles({
         root: {
-            fontWeight: theme.typography.fontWeightRegular,
+            fontWeight: theme.typography.fontWeightMedium,
         },
         wrapper: {
             flexDirection: 'row-reverse',
