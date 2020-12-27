@@ -11,6 +11,8 @@ import { setFormState } from 'redux/Form/formActionCreators';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import useDuplicateContactId from 'Utils/Contacts/useDuplicateContactId';
 
+import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
+
 import {
     FormInputs,
     useContactQuestioningOutcome,
@@ -24,7 +26,14 @@ import {
 } from 'Utils/DateUtils/useDateUtils';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
-    const {id, setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses} = parameters;
+    const {
+        id,
+        setAllContactedInteractions,
+        allContactedInteractions,
+        setFamilyRelationships,
+        setContactStatuses,
+        getValues,
+    } = parameters;
     
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const { convertDate } = useDateUtils();
@@ -76,16 +85,16 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         }
     };
 
-    const saveContactQuestioning = (formState: InteractedContact[]) => {
+    const saveContactQuestioning = (parsedFormData: InteractedContact[] , originalFormData: FormInputs) => {
         if (
             !checkDuplicateIds(
-                formState.map(
+                parsedFormData.map(
                     (contact: InteractedContact) => contact.identificationNumber
                 )
             )
         ) {
             const contactsSavingVariable = {
-                unSavedContacts: {contacts: formState}
+                unSavedContacts: {contacts: parsedFormData}
             }
             const contactLogger = logger.setup('Saving all contacts');
             contactLogger.info(`launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`, Severity.LOW);
@@ -98,7 +107,11 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             .catch(err => {
                 contactLogger.error(`got the following error from the server: ${err}`, Severity.HIGH);
             })
-            .finally(() => setFormState(epidemiologyNumber, id, true))
+            .finally(() => {
+                ContactQuestioningSchema.isValid(originalFormData).then(valid => {
+                    setFormState(epidemiologyNumber, id, valid);
+                })
+            })
         }        
     };
 
@@ -345,9 +358,11 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         );
     };
 
-    const onSubmit = (data: FormInputs) => {
-        const parsedFormData = parseFormBeforeSending(data);
-        saveContactQuestioning(parsedFormData);
+    const onSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const data = getValues();
+        const parsedFormData = parseFormBeforeSending(data as FormInputs);
+        saveContactQuestioning(parsedFormData , data);
     };
 
     const parseFormBeforeSending = (data: FormInputs) => {

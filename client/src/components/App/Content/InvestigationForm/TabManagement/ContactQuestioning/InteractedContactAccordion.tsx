@@ -23,6 +23,7 @@ import ContactQuestioningClinical from './ContactQuestioningClinical';
 const InteractedContactAccordion = (props: Props) => {
     const methods = useFormContext();
     const classes = useStyles();
+    const {errors} = methods;
 
     const {
         interactedContact,
@@ -35,10 +36,25 @@ const InteractedContactAccordion = (props: Props) => {
         shouldDisable,
     } = props;
 
+    const getAccordionClasses = () : string => {
+        let classesList : string[] = [];
+        classesList.push(classes.accordion);
+
+        const formErrors = errors.form ? (errors.form[index] ? errors.form[index] : {}) : {};
+        const formHasErrors = Object.entries(formErrors)
+            .some(([key, value]) => value !== undefined);
+    
+        if(formHasErrors) {
+            classesList.push(classes.errorAccordion)
+        }
+        return classesList.join(" ")
+    }
+
+
     return (
-        <div key={interactedContact.id} className={classes.form}>
+        <div key={interactedContact.id}>
             <Accordion
-                className={classes.accordion}
+                className={getAccordionClasses()}
                 style={{ borderRadius: '3vw' }}
             >
                 <AccordionSummary
@@ -89,7 +105,6 @@ const InteractedContactAccordion = (props: Props) => {
                 <PrimaryButton
                     disabled={shouldDisable(interactedContact.contactStatus)}
                     test-id='saveContact'
-                    style={{ marginRight: '1.5vw' }}
                     onClick={() => {
                         const currentParsedPerson = parsePerson(
                             methods.getValues().form[index],

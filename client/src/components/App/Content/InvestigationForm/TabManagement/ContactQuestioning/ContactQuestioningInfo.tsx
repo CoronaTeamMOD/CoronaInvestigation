@@ -36,7 +36,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                 alignItems='center'
                 justify='space-evenly'
             >
-                <ContactDetails interactedContact={interactedContact} />
+                <ContactDetails index={index} interactedContact={interactedContact} />
             </Grid>
         </>
     );

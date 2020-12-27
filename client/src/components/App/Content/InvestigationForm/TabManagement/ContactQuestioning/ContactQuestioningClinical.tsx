@@ -34,7 +34,7 @@ const emptyFamilyRelationship: FamilyRelationship = {
 };
 
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
-    const {control , getValues} = useFormContext();
+    const {control , getValues , watch , errors} = useFormContext();
 
     const classes = useStyles();
     
@@ -56,11 +56,33 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const isolationEndDate = addDays(new Date(interactedContact.contactDate), daysToIsolate);
     const formattedIsolationEndDate = format(new Date(isolationEndDate), 'dd/MM/yyyy');
 
+    const formatContactToValidate = () => {
+        return {
+            ...formValues,
+            firstName: interactedContact.firstName,
+            lastName:  interactedContact.lastName,
+            contactType: interactedContact.contactType,
+        }
+    }
+
+    const isIdAndPhoneNumValid = () : boolean => {
+        const formErrors = errors.form;
+        if(formErrors) {
+            const currentFormErrors = formErrors[index];
+            if(currentFormErrors) {
+                return Boolean(formErrors[index].id) || Boolean(formErrors[index].phoneNumber)
+            }
+        }
+        return true;
+    }
+
     const handleIsolation = (value: boolean , onChange : (...event: any[]) => void) => {
-        const contactWithIsolationRequirement = {...interactedContact, doesNeedIsolation: value};
+        const contactWithIsolationRequirement = {...formatContactToValidate(), doesNeedIsolation: value};
         const contactValidation = validateContact(contactWithIsolationRequirement, ValidationReason.HANDLE_ISOLATION);
         if(!contactValidation.valid) {
             alertError(contactValidation.error)
+        } else if(!isIdAndPhoneNumValid()) {
+            alertError('שים לב, ישנם שדות לא ולידים ולכן לא ניתן להקים דיווח בידוד');
         } else {
             value ?
             alertWarning('האם אתה בטוח שתרצה להקים דיווח בידוד?', {
@@ -79,7 +101,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         }
     };
 
-    const currentCity = formValues.contactedPersonCity;
+    const currentCity = getValues().form ? watch(`form[${index}].${InteractedContactFields.CONTACTED_PERSON_CITY}`) : interactedContact.contactedPersonCity;
     const contactedCity = useMemo(() => cities.get(
         currentCity?.id ? currentCity.id : currentCity
     ) , currentCity);
@@ -167,7 +189,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                 render={(props) => { 
                                 return (
                                     <Autocomplete
-                                        defaultValue={contactedCityField}
+                                        value={contactedCityField}
                                         disabled={isFieldDisabled}
                                         options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                         getOptionLabel={(option) => option?.value ? option.value.displayName : ''}

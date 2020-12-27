@@ -63,22 +63,24 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
         });
 
     useEffect(() => {
-        const mappedInteractionsArray = new Map<number, Interaction[]>();
-        interactions.forEach(interaction => {
-            const interactionStartTime : Date | undefined = interaction.startTime;
-            
-            if (interactionStartTime) {
-                const interactionDate = startOfDay(interactionStartTime).getTime();
-                if (mappedInteractionsArray.get(interactionDate) === undefined) {
-                    mappedInteractionsArray.set(interactionDate, [interaction]);
-                } else {
-                    (mappedInteractionsArray.get(interactionDate) as Interaction[]).push(interaction);
+        if(Boolean(interactions[0])) {
+            const mappedInteractionsArray = new Map<number, Interaction[]>();
+            interactions.forEach(interaction => {
+                const interactionStartTime : Date | undefined = interaction.startTime;
+                
+                if (interactionStartTime) {
+                    const interactionDate = startOfDay(interactionStartTime).getTime();
+                    if (mappedInteractionsArray.get(interactionDate) === undefined) {
+                        mappedInteractionsArray.set(interactionDate, [interaction]);
+                    } else {
+                        (mappedInteractionsArray.get(interactionDate) as Interaction[]).push(interaction);
+                    }
                 }
-            }
-        });
+            });
 
-        setInteractionsMap(mappedInteractionsArray);
-        setAreThereContacts(!(interactions.findIndex((interaction) => interaction.contacts.length > 0) === -1));
+            setInteractionsMap(mappedInteractionsArray);
+            setAreThereContacts(!(interactions.findIndex((interaction) => interaction.contacts.length > 0) === -1));
+        }
     }, [interactions]);
 
     const submitTab = (event : React.FormEvent<HTMLFormElement>) => {
@@ -117,7 +119,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     }
 
     const closeDialog = () => setShowEducationMembers(false);
-    
+
     return (
         <>
             {
