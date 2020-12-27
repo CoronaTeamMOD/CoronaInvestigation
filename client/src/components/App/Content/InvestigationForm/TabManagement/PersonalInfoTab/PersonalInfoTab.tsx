@@ -623,7 +623,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                                     onChange={(event) => props.onChange(event.target.value)}
                                                                 >
                                                                     {
-                                                                        educationGrades.map && educationGrades.map((grade: EducationGrade) => (
+                                                                        Array.isArray(educationGrades) && educationGrades.map((grade: EducationGrade) => (
                                                                             <MenuItem
                                                                                 key={grade.id}
                                                                                 value={grade.id}>
