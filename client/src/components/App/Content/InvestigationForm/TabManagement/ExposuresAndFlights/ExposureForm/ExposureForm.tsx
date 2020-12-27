@@ -15,12 +15,11 @@ import ExposureFields from 'models/enums/ExposureFields';
 import CovidPatientFields from 'models/CovidPatientFields';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import ExposureSearchTextField from 'commons/AlphabetTextField/ExposureSearchTextField';
+import ExposureSearchTextField from 'components/App/Content/InvestigationForm/TabManagement/ExposuresAndFlights/ExposureForm/ExposureSearchTextField/ExposureSearchTextField';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
 import useStyles from './ExposureFormStyles';
 
-const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
 const MAX_DATE_ERROR_MESSAGE =  'לא ניתן להזין תאריך מאוחר מתאריך תחילת המחלה';
 const INVALID_DATE_ERROR_MESSAGE =  'תאריך לא חוקי';
 
@@ -82,7 +81,7 @@ const ExposureForm = (props: any) => {
     </>
   }
 
-  useEffect(() => {
+  const searchForExposures = () => {
     if (exposureAndFlightsData.exposureSource || exposureSourceSearch.length < minSourceSearchLengthToSearch) setOptionalCovidPatients([]);
     else {
       const confirmedExposuresLogger = logger.setup('Fetching list of confirmed exposures');
@@ -108,11 +107,14 @@ const ExposureForm = (props: any) => {
         })
         .finally(() => setIsLoading(false));
     }
-  }, [exposureSourceSearch]);
+  }
 
   useEffect(() => {
-    exposureAndFlightsData.exposureSource &&
+    if (exposureAndFlightsData.exposureSource) {
       setExposureSourceSearch(selectedExposureSourceDisplay(exposureAndFlightsData.exposureSource));
+    } else {
+      setOptionalCovidPatients([]);
+    }
   }, [exposureAndFlightsData.exposureSource]);
 
   return (
@@ -127,8 +129,7 @@ const ExposureForm = (props: any) => {
               (!event || !event.includes(':')) && handleChangeExposureDataAndFlightsField(fieldsNames.exposureSource, null);
             }}
             value={exposureSourceSearch}
-            test-id='exposureSource'
-            placeholder={INSERT_EXPOSURE_SOURCE_SEARCH}
+            onSearchClick={searchForExposures}
           />
         </>
       </FormRowWithInput>
