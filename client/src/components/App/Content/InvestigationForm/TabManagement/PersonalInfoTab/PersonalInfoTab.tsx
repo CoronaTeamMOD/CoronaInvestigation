@@ -171,10 +171,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
     useEffect(() => {
         const address: DBAddress = {
-            city: data.city !== '' ? data.city : null,
-            street: data.street !== '' ? data.street : null,
-            floor: data.floor !== '' ? data.floor : null,
-            houseNum: data.houseNum !== '' ? data.houseNum : null
+            city: data.city || null,
+            street: data.street || null,
+            floor: data.floor || null,
+            houseNum: data.houseNum || null,
+            streetName
         }
 
         setAddress(address);

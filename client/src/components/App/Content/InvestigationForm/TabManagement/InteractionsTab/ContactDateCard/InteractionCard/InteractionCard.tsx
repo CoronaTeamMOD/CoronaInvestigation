@@ -6,10 +6,11 @@ import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material
 import Contact from 'models/Contact';
 import useFormStyles from 'styles/formStyles';
 import { timeFormat } from 'Utils/displayUtils';
+import FormInput from 'commons/FormInput/FormInput';
 import useContactFields from 'Utils/Contacts/useContactFields';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
-import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import placeTypesCodesHierarchy from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
 import useStyles from './InteractionCardStyles';
@@ -102,23 +103,16 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                         interaction.placeType === otherPublicPlaces.code &&
                         <OtherPublicLocationGrid interaction={interaction} />
                     }
-                    <Grid container justify='flex-start'>
-                        <Grid item xs={2}>
-                            <Typography variant='caption'>
-                                <b>שעה: </b>
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={10}>
-                            <Typography>
-                                {
-                                    interaction.unknownTime ? 
-                                        unknownTimeMessage
-                                    : 
-                                    `${format(interaction.endTime, timeFormat)} - ${format(interaction.startTime, timeFormat)}`
-                                }
-                            </Typography>
-                        </Grid>
-                    </Grid>
+                    <FormInput xs={6} fieldName='שעה'>
+                        <Typography variant='caption'>
+                            {
+                                interaction.unknownTime ? 
+                                    unknownTimeMessage
+                                : 
+                                `${format(interaction.endTime, timeFormat)} - ${format(interaction.startTime, timeFormat)}`
+                            }
+                        </Typography>
+                    </FormInput>
                     <Divider className={classes.divider} />
                     <Grid container>
                         <Grid item xs={12}>
