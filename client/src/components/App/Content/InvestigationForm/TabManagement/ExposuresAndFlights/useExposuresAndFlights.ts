@@ -155,6 +155,7 @@ export const useExposuresAndFlights = (props : Props) => {
         alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
         })
         .finally(() => {
+            fetchExposuresAndFlights();
             ExposureSchema(validationDate).isValid(data).then(valid => {
                 setFormState(investigationId, id, valid)
             })
