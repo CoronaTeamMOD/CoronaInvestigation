@@ -13,8 +13,6 @@ const InvestigationBarChart: React.FC = (): JSX.Element => {
             enableGridY={false}
             enableLabel={false}
             isInteractive={false}
-
-
             colors={investigationChart => investigationChart.data.color}
         />
     )

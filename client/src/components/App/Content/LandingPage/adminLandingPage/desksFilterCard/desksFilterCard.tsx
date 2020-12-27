@@ -1,9 +1,10 @@
 import React from 'react';
-import { Button, Card, CardActions, CardContent, Typography } from '@material-ui/core';
+import { Card, CardActions, CardContent, Typography } from '@material-ui/core';
 
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 
 import useStyles from './desksFilterCardStyles';
+import UpdateButton from '../UpdateButton/UpdateButton';
 
 const DesksFilterCard: React.FC = (): JSX.Element => {
     const classes = useStyles();
@@ -29,12 +30,7 @@ const DesksFilterCard: React.FC = (): JSX.Element => {
                 }
             </CardContent>
             <CardActions style={{ direction: 'ltr', paddingLeft: '1vw' }}>
-                <Button
-                    className={classes.updateButton}
-                    variant='contained'
-                    size='small'>
-                    עדכון
-                </Button>
+                <UpdateButton/>
             </CardActions>
         </Card>
     )
