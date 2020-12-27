@@ -67,4 +67,5 @@ export interface useInvestigationTableOutcome {
     inactiveUserFilter: boolean;
     changeGroupsCounty: (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => void;
     changeInvestigationCounty: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => void;
+    fetchAllCountyUsers: () => Promise<Map<string, User>>;
 };
