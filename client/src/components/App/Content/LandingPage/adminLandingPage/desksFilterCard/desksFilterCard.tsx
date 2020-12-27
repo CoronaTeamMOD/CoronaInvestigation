@@ -8,7 +8,7 @@ import useStyles from './desksFilterCardStyles';
 const DesksFilterCard: React.FC = (): JSX.Element => {
     const classes = useStyles();
 
-    const allDesks = ['desk a', 'desk b', 'desk c'];
+    const allDesks = ['דסק א', 'דסק ב', 'דסק ג'];
 
     return (
         <Card className={classes.desksCard}>

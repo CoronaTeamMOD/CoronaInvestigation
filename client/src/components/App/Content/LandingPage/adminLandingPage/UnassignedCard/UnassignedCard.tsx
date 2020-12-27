@@ -3,8 +3,6 @@ import { useHistory } from 'react-router-dom';
 import { Card, Tooltip, Typography } from '@material-ui/core';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
-import { landingPageRoute } from 'Utils/Routes/Routes';
-
 import useStyles from './UnassignedCardStyles';
 
 const unnasignedInvestigationsText = 'חקירות לא משויכות/ משויכות לחוקרים לא פעילים';
@@ -16,7 +14,7 @@ const UnassignedCard: React.FC = (): JSX.Element => {
 
     return (
         <Tooltip title={unnasignedInvestigationsText}>
-            <Card className={classes.unassignedCard} onClick={() => history.push(landingPageRoute)}>
+            <Card className={classes.unassignedCard} onClick={() => {}}>
                 <div className={classes.investigationAmount}>
                     <Typography className={classes.investigationNumberText}><b>13</b></Typography>
                     <Typography className={classes.investigationAmountText}><b>חקירות</b></Typography>
