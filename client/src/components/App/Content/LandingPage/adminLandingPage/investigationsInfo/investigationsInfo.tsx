@@ -7,8 +7,8 @@ import { landingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationChart from 'models/InvestigationChart';
 
 import useStyles from './investigationsInfoStyles';
-import InvestigationPieChart from './InvestigationPieChart/InvestigationPieChart';
-import InvestigationChartData from './InvestigationPieChart/InvestigationChartData';
+import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart';
+import InvestigationChartData from './InvestigationBarChart/InvestigationChartData';
 import InvestigationInfoButton from './investigationInfoButton/investigationInfoButton';
 
 const InvestigationsInfo: React.FC = (): JSX.Element => {
@@ -21,8 +21,8 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
             <CardActions>
                 <Grid container>
                     <Grid item xs={3}>
-                        <div style={{ height: '14vh' }}>
-                            <InvestigationPieChart />
+                        <div style={{ height: '15vh', width: '14vw' }}>
+                            <InvestigationBarChart />
                         </div>
                     </Grid>
                     {
