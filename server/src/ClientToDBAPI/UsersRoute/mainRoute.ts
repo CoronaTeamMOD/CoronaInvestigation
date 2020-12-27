@@ -9,7 +9,8 @@ import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizatio
 import { adminMiddleWare, superAdminMiddleWare } from '../../middlewares/Authentication';
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import { graphqlRequest, multipleInvestigationsBulkErrorMessage, areAllResultsValid } from '../../GraphqlHTTPRequest';
-import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, UPDATE_INVESTIGATOR_BY_GROUP_ID, UPDATE_SOURCE_ORGANIZATION } from '../../DBService/Users/Mutation';
+import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, UPDATE_INVESTIGATOR_BY_GROUP_ID,
+         UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK } from '../../DBService/Users/Mutation';
 import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
     GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_USERS_BY_DISTRICT_ID, GET_ALL_USER_TYPES, GET_USERS_BY_COUNTY_ID
@@ -55,7 +56,7 @@ usersRoute.post('/updateSourceOrganizationById', adminMiddleWare, (request: Requ
     graphqlRequest(UPDATE_SOURCE_ORGANIZATION, response.locals, updateSourceOrganizationVariables)
         .then((result: any) => {
             if (result.data.updateUserById && !result.errors) {
-                updateSourceOrganizationLogger.info('got response from the DB', Severity.LOW);
+                updateSourceOrganizationLogger.info('user source organization was updated successfully', Severity.LOW);
                 response.send(result.data.updateUserById.user);
             }
             else {
@@ -64,8 +65,35 @@ usersRoute.post('/updateSourceOrganizationById', adminMiddleWare, (request: Requ
             }
         })
         .catch(error => {
-            updateSourceOrganizationLogger.error(`failed to get response from the graphql API due to: ${error}`, Severity.HIGH);
+            updateSourceOrganizationLogger.error(`failed to update due to: ${error}`, Severity.HIGH);
             response.status(RESPONSE_ERROR_CODE).send('Error while trying to change user source organization')
+        })
+})
+
+usersRoute.post('/updateDesk', adminMiddleWare, (request: Request, response: Response) => {
+    const updateDeskVariables = {
+        id: request.body.userId,
+        desk: request.body.desk
+    };
+    const updateDeskLogger = logger.setup({
+        workflow: 'Updating user desk',
+        user: response.locals.user.id,
+    });
+    updateDeskLogger.info(`make the graphql API request with parameters ${JSON.stringify(updateDeskVariables)}`, Severity.LOW);
+    graphqlRequest(UPDATE_DESK, response.locals, updateDeskVariables)
+        .then((result: any) => {
+            if (result.data.updateUserById && !result.errors) {
+                updateDeskLogger.info('user desk was updated successfully', Severity.LOW);
+                response.send(result.data.updateUserById.user);
+            }
+            else {
+                updateDeskLogger.error(`user desk was failed to update due to  ${result.errors[0]?.message}`, Severity.HIGH);
+                response.status(badRequestStatusCode).send(`Couldn't find the user nor update desk`);
+            }
+        })
+        .catch(error => {
+            updateDeskLogger.error(`failed to update due to: ${error}`, Severity.HIGH);
+            response.status(RESPONSE_ERROR_CODE).send('Error while trying to change user desk')
         })
 })
 
@@ -438,7 +466,7 @@ const toUser = (user: any) => ({
     isActive: user.isActive,
     languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
     userType: user.userTypeByUserType.displayName,
-    desk: user.deskByDeskId?.deskName,
+    desk: { id: user.deskByDeskId?.id, deskName: user.deskByDeskId?.deskName},
     investigationGroup: user.countyByInvestigationGroup?.displayName,
     sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
 });

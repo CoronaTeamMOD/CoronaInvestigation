@@ -22,6 +22,17 @@ export const UPDATE_SOURCE_ORGANIZATION = gql`
     }
 `;
 
+export const UPDATE_DESK = gql`
+mutation updateDesk($id: String!, $desk: Int!) {
+  updateUserById(input: {userPatch: {deskId: $desk}, id: $id}) {
+    user {
+      id
+      deskId
+    }
+  }
+}
+`;
+
 export const UPDATE_INVESTIGATOR = gql`
 mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!, $transferReason: String) {
     updateInvestigationByEpidemiologyNumber(
