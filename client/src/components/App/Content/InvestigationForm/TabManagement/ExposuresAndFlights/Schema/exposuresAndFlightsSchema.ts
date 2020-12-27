@@ -16,7 +16,7 @@ const flightsAndExposures = (validationDate : Date) => {
             if (hasExposureSource(exposure)) {
                 return exposureValidation(validationDate);
             } else {
-                return flightValidation;
+                return flightValidation(validationDate);
             }
         }
     );
@@ -28,7 +28,7 @@ const flights = (validationDate : Date) => {
             if(hasExposureSource(exposure)) {
                 return yup.object();
             } else {
-                return flightValidation;
+                return flightValidation(validationDate);
             }
         }
     );

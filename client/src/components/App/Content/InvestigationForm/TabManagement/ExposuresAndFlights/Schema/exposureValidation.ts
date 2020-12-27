@@ -4,6 +4,7 @@ import { fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 
 const endDateBeforeValidationDateText = 'תאריך לא יכול להיות יותר גדול מתאריך תחילת מחלה';
 const twoWeeksBeforeValidationDateText = 'תאריך לא יכול להיות יותר קטן משבועיים מתאריך תחילת מחלה';
+
 const exposureValidation = (validationDate : Date) : yup.Schema<any, object>  => {
     return (yup.object().shape({
         [fieldsNames.exposureSource] : yup.object().nullable().required('שדה חובה'),

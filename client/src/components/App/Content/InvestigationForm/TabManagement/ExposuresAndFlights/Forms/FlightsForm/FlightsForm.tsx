@@ -13,9 +13,23 @@ import AirportInput from './AirportInput/AirportInput';
 const FlightsForm = (props: any) => {
   const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index } = props;
 
-  const {control} = useFormContext();
+  const {control , errors} = useFormContext();
 
   const classes = useFormStyles();
+
+  const getDateLabel = (dateError : {message? : string , type? : string}) => {
+		if(dateError) {
+			if(dateError.type === "typeError") {
+				return 'תאריך לא ולידי'
+			}
+			return dateError.message;
+		}
+		return 'תאריך'
+	}
+
+  const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
+  const startDateError = currentErrors ? currentErrors.flightStartDate : undefined;
+  const endDateError = currentErrors ? currentErrors.flightEndDate : undefined;
 
   return (
 		<Grid className={classes.form} container justify='flex-start'>
@@ -56,9 +70,12 @@ const FlightsForm = (props: any) => {
 							return (
 								<DatePick
 									{...props}
+									maxDateMessage={''}
+									invalidDateMessage={''}
 									maxDate={new Date()}
 									testId='flightFromDate'
-									labelText='מתאריך'
+									labelText={getDateLabel(startDateError)}
+									error={Boolean(startDateError)}
 									onChange={(newDate: Date) => {
 										props.onChange(newDate);
 									}}
@@ -76,9 +93,12 @@ const FlightsForm = (props: any) => {
 							return (
 								<DatePick
 									{...props}
+									maxDateMessage={''}
+									invalidDateMessage={''}
 									maxDate={new Date()}
 									testId='flightToDate'
-									labelText='עד'
+									labelText={getDateLabel(endDateError)}
+									error={Boolean(endDateError)}
 									onChange={(newDate: Date) => {
 										props.onChange(newDate);
 									}}

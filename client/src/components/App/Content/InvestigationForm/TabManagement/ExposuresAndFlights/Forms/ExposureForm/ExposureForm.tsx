@@ -64,7 +64,7 @@ const ExposureForm = (props: any) => {
     } , []);
 
 	const getDateLabel = (dateError : {message? : string , type? : string}) => {
-		if(dateError.message) {
+		if(dateError) {
 			if(dateError.type === "typeError") {
 				return 'תאריך לא ולידי'
 			}
@@ -74,7 +74,7 @@ const ExposureForm = (props: any) => {
 	}
 
 	const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
-	const dateError = currentErrors.exposureDate ? currentErrors.exposureDate : {};
+	const dateError = currentErrors ? currentErrors.exposureDate : undefined;
 
 	return (
 		<Grid className={formClasses.form} container justify='flex-start'>
@@ -163,7 +163,7 @@ const ExposureForm = (props: any) => {
 								maxDate={new Date(validationDate)}
 								testId='exposureDate'
 								labelText={getDateLabel(dateError)}
-								error={Boolean(dateError.message)}
+								error={Boolean(dateError)}
 								value={exposureAndFlightsData[fieldsNames.date]}
                                 onChange={(newDate: Date) => {
                                     props.onChange(newDate);

@@ -34,12 +34,9 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
       exposures,
       wereFlights,
       wereConfirmedExposures
-    })
+    });
+    methods.trigger();
   }, [exposureAndFlightsData])
-
-  useEffect(() => {
-    console.log(methods.errors);
-  }, [methods.errors])
 
   const {
     saveExposure,
@@ -50,13 +47,16 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     disableFlightAddition
   } = useExposuresAndFlights({exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights , id});
 
-  const onSubmit = (data : FormData) => {
+  const onSubmit = (e : React.FormEvent) => {
+    e.preventDefault();
+    methods.trigger();
+    const data = methods.getValues();
     saveExposure(data , ids);
   }
 
   return (
       <FormProvider {...methods}>
-        <form id={`form-${id}`} onSubmit={methods.handleSubmit(onSubmit)}>
+        <form id={`form-${id}`} onSubmit={(e) => (onSubmit(e))}>
           <PossibleExposure
             wereConfirmedExposures={wereConfirmedExposures}
             onExposuresStatusChange={onExposuresStatusChange}

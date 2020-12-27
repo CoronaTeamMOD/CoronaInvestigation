@@ -9,6 +9,7 @@ import ResortData from 'models/ResortData';
 import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import ExposureSchema from './Schema/exposuresAndFlightsSchema';
 import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
 import {ExposureAndFlightsDetails} from 'commons/Contexts/ExposuresAndFlights'
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
@@ -32,6 +33,7 @@ export const useExposuresAndFlights = (props : Props) => {
     const { parseAddress } = useGoogleApiAutocomplete();
     const { alertError } = useCustomSwal();
 
+    const validationDate : Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>((state) => state.investigation.investigatedPatient.investigatedPatientId);
 
@@ -150,7 +152,11 @@ export const useExposuresAndFlights = (props : Props) => {
         saveExposureLogger.error(`got error from server: ${error}`, Severity.HIGH);
         alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
         })
-        .finally(() => setFormState(investigationId, id, true))
+        .finally(() => {
+            ExposureSchema(validationDate).isValid(data).then(valid => {
+                setFormState(investigationId, id, valid)
+            })
+        })
     }
 
     return {

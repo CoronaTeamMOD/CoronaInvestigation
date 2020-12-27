@@ -24,7 +24,7 @@ const AirportInput = (props: any) => {
 		index,
 	} = props;
 
-    const {control} = useFormContext();
+    const {control , errors} = useFormContext();
 
     const classes = useStyles();
     const formStyles = useFormStyles();
@@ -47,7 +47,17 @@ const AirportInput = (props: any) => {
 
     const handleCountryChange = (selectedCountry: Country | null) => {
         handleChangeExposureDataAndFlightsField(countryFieldName, selectedCountry ? selectedCountry.id : null);
-    };
+	};
+	
+	const getCountryLabel = (countryError : {message? : string , type? : string}) => {
+		if(countryError) {
+			return countryError.message;
+		}
+		return 'מדינה'
+	}
+
+	const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
+	const countryFieldError = currentErrors ? currentErrors[countryFieldName] : undefined;
 
     return (
 		<div className={formStyles.inputRow}>
@@ -68,7 +78,7 @@ const AirportInput = (props: any) => {
 								}}
 								getOptionLabel={(option) => getLabel(option)}
 								filterOptions={filterOptions}
-								label='מדינה'
+								label={getCountryLabel(countryFieldError)}
 								placeholder='מדינה'
 							/>
 						);
