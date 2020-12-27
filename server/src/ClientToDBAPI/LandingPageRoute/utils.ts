@@ -19,6 +19,10 @@ interface UserInvestigations {
                 deskName: string;
             } | null;
             investigatedPatientByInvestigatedPatientId: {
+                investigatedPatientRoleByRole: {
+                    id: number;
+                    displayName: string;
+                  }
                 subOccupationBySubOccupation: {
                     displayName: string;
                     parentOccupation: string;
@@ -69,6 +73,10 @@ interface GroupIvestigations {
                 deskName: string;
             } | null;
             investigatedPatientByInvestigatedPatientId: {
+                investigatedPatientRoleByRole: {
+                    id: number;
+                    displayName: string;
+                  }
                 subOccupationBySubOccupation: {
                     displayName: string;
                     parentOccupation: string;
