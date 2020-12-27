@@ -25,7 +25,7 @@ const InvestigatorAllocationCell: React.FC<Props> = (props: Props) => {
             onMouseOver={() => setIsCellHovered(true)}
             onMouseLeave={() => setIsCellHovered(false)}
         >
-            {isUnassigned && isCellHovered && <UnassignedWarning />}
+            {isUnassigned && !isCellHovered && <UnassignedWarning />}
             {investigatorName}
             {isCellHovered && <Edit fontSize='small' className={classes.editIcon} />}
             
