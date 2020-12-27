@@ -15,6 +15,8 @@ import {ExposureAndFlightsDetails} from 'commons/Contexts/ExposuresAndFlights'
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 import { Exposure, initialExposureOrFlight, isConfirmedExposureInvalid, isFlightInvalid} from 'commons/Contexts/ExposuresAndFlights';
 
+import { FormData } from './ExposuresAndFlightsInterfaces';
+
 const defaultDestinationCountryCode = '900';
 
 interface Props {
@@ -139,7 +141,7 @@ export const useExposuresAndFlights = (props : Props) => {
         });
     }
 
-    const saveExposure = (data : any , ids : (number | null)[]) => {
+    const saveExposure = (data : FormData , ids : (number | null)[]) => {
         const saveExposureLogger = logger.setup('Saving Exposures And Flights tab');
         saveExposureLogger.info('launching the server request', Severity.LOW);
         

@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import React, { useState, useEffect } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 import { CircularProgress, Grid, MenuItem } from '@material-ui/core';
 
 import Map from 'commons/Map/Map';
@@ -16,7 +17,8 @@ import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesT
 import useStyles from './ExposureFormStyles';
 import useExposureForm from './useExposureForm';
 import ExposureSourceOption from './ExposureSourceOption';
-import { Controller, useFormContext } from 'react-hook-form';
+import { FormData } from '../../ExposuresAndFlightsInterfaces';
+import { Exposure } from 'commons/Contexts/ExposuresAndFlights';
 
 const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
 const MAX_DATE_ERROR_MESSAGE = 'לא ניתן להזין תאריך מאוחר מתאריך תחילת המחלה';
@@ -24,7 +26,18 @@ const INVALID_DATE_ERROR_MESSAGE = 'תאריך לא חוקי';
 
 export const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
 
-const ExposureForm = (props: any) => {
+interface Props {
+	exposureAndFlightsData: any; 
+	fieldsNames: any; 
+	handleChangeExposureDataAndFlightsField: (
+        index: number,
+        fieldName: string,
+        value: any
+    ) => void;
+	index : number; 
+}
+
+const ExposureForm = (props: Props) => {
 	const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index } = props;
 
 	const classes = useStyles();
