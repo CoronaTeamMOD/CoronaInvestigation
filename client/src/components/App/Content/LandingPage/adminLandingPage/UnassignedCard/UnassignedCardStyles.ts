@@ -29,7 +29,7 @@ const useStyles = makeStyles({
         fontSize: '1.3vw',
     },
     navigateIcon: {
-        backgroundColor: 'lightGrey',
+        backgroundColor: 'WhiteSmoke',
         borderRadius: '2vw',
     }
 });

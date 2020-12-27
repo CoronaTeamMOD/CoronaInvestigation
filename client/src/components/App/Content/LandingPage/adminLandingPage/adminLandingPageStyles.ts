@@ -1,9 +1,8 @@
-import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
 import { primaryBackgroundColor } from 'styles/theme';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles({
     content: {
         display: 'flex',
         flexDirection: 'column',
@@ -17,6 +16,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     gridContainer: {
         paddingTop: '3vh',
     }
-}));
+});
 
 export default useStyles;

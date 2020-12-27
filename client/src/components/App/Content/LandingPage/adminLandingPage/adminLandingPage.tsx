@@ -21,10 +21,10 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
             </Typography>
             <Grid container spacing={5} className={classes.gridContainer}>
                 <Grid item xs={3}>
-                    <DesksFilterCard/>
+                    <DesksFilterCard />
                 </Grid>
                 <Grid item xs={9}>
-                    <InvestigationsInfo/>
+                    <InvestigationsInfo />
                 </Grid>
                 <Grid item xs={3}>
                     <TimeRangeCard />

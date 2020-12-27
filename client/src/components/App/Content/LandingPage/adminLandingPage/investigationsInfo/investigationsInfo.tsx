@@ -1,10 +1,10 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import InvestigationChart from 'models/InvestigationChart';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import { Card, CardActions, Grid, IconButton, Typography } from '@material-ui/core';
 
 import { landingPageRoute } from 'Utils/Routes/Routes';
+import InvestigationChart from 'models/InvestigationChart';
 
 import useStyles from './investigationsInfoStyles';
 import InvestigationPieChart from './InvestigationPieChart/InvestigationPieChart';
@@ -21,7 +21,7 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
             <CardActions>
                 <Grid container>
                     <Grid item xs={3}>
-                        <div style={{ height: '12vh' }}>
+                        <div style={{ height: '14vh' }}>
                             <InvestigationPieChart />
                         </div>
                     </Grid>

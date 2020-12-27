@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles({    
+const useStyles = makeStyles({
     filtersCard: {
         width: '67vw',
         height: '35vh',
@@ -27,7 +27,7 @@ const useStyles = makeStyles({
         paddingTop: '0.6vh',
     },
     navigateIcon: {
-        backgroundColor: 'lightGrey',
+        backgroundColor: 'WhiteSmoke',
         borderRadius: '2vw',
     }
 });
