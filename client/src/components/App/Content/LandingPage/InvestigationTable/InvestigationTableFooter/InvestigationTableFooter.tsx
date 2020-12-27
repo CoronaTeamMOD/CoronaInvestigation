@@ -39,7 +39,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
 
     const { checkedIndexedRows, allDesks, allCounties, allInvestigators, isInvestigatorAllocationDialogOpen,
             onDialogClose, tableRows, allGroupedInvestigations, onDeskChange,
-            onDeskGroupChange, onCountyChange, onCountyGroupChange,
+            onDeskGroupChange, onCountyChange, onCountyGroupChange, 
             fetchTableData, fetchInvestigationsByGroupId, setIsInvestigatorAllocationDialogOpen, allocateInvestigationToInvestigator } = props;
 
     const { alertSuccess } = useCustomSwal();
@@ -194,7 +194,7 @@ interface Props {
     checkedIndexedRows: IndexedInvestigation[];
     allDesks: Desk[];
     allCounties: County[];
-    allInvestigators: InvestigatorOption[];
+    allInvestigators: Promise<InvestigatorOption[]>;
     tableRows: InvestigationTableRow[];
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     isInvestigatorAllocationDialogOpen: boolean;
