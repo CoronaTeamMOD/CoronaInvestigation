@@ -11,7 +11,7 @@ import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
 import ExposureFields from 'models/enums/ExposureFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import ExposureSearchTextField from 'commons/AlphabetTextField/ExposureSearchTextField';
+import ExposureSearchTextField from './ExposureSearchTextField/ExposureSearchTextField';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
 import useStyles from './ExposureFormStyles';
@@ -57,11 +57,13 @@ const ExposureForm = (props: Props) => {
 		exposureAndFlightsData,
 		exposureSourceSearchString,
 	});
+
+	const setOptionalCovidPatientsAsync = async () => {
+		const optionalCovidPatients = await fetchOptionalCovidPatients({ setIsLoading });
+		setOptionalCovidPatients(optionalCovidPatients);
+	};
+
 	useEffect(() => {
-		const setOptionalCovidPatientsAsync = async () => {
-			const optionalCovidPatients = await fetchOptionalCovidPatients({ setIsLoading });
-			setOptionalCovidPatients(optionalCovidPatients);
-		};
 		setOptionalCovidPatientsAsync();
 	}, [exposureSourceSearchString]);
 
@@ -69,12 +71,12 @@ const ExposureForm = (props: Props) => {
 		if (Boolean(exposureAndFlightsData.exposureSource)) {
 			setExposureSourceSearchString(selectedExposureSourceDisplay(exposureAndFlightsData.exposureSource));
 		}
-    }, [exposureAndFlightsData.exposureSource]);
+	}, [exposureAndFlightsData.exposureSource]);
 
     useEffect(() => {
         setValue(`exposures[${index}].${fieldsNames.placeType}`, exposureAndFlightsData[fieldsNames.placeType] )
 		setValue(`exposures[${index}].${fieldsNames.placeSubType}`, exposureAndFlightsData[fieldsNames.placeSubType] )
-    } , []);
+	} , []);
 
 	const getDateLabel = (dateError : {message? : string , type? : string}) => {
 		if(dateError) {
@@ -113,6 +115,7 @@ const ExposureForm = (props: Props) => {
 								value={exposureSourceSearchString}
 								test-id='exposureSource'
 								placeholder={INSERT_EXPOSURE_SOURCE_SEARCH}
+								onSearchClick={setOptionalCovidPatientsAsync}
 							/>
 						);
 					}}
