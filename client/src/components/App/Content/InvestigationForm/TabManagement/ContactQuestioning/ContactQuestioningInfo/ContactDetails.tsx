@@ -16,13 +16,10 @@ const ContactDetails = (props: Props) => {
     const { errors } = useFormContext();
     const { index , interactedContact } = props;
 
-    const formErrors = errors.form ? errors.form[index] : {};
-    let formHasErrors = false;
-    for(let key in formErrors) {
-        if(formErrors[key] !== undefined) {
-            formHasErrors = true;
-        }
-    }
+    const formErrors = errors.form ? (errors.form[index] ? errors.form[index] : {}) : {};
+    const formHasErrors = Object.entries(formErrors)
+        .map(([key, value]) => value)
+        .some((value) => value !== undefined);
 
     const { isInvolvedThroughFamily } = useInvolvedContact();
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(
