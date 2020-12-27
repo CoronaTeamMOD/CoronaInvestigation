@@ -74,6 +74,16 @@ const theme = createMuiTheme({
                 textAlign: 'center',
                 fontWeight: 500
             }
+        },
+        MuiTypography: {
+            body1: {
+                fontWeight: 500
+            }
+        },
+        MuiTab: {
+            wrapper: {
+                fontWeight: 500
+            }
         }
     },
     props: {
