@@ -18,8 +18,7 @@ const ContactDetails = (props: Props) => {
 
     const formErrors = errors.form ? (errors.form[index] ? errors.form[index] : {}) : {};
     const formHasErrors = Object.entries(formErrors)
-        .map(([key, value]) => value)
-        .some((value) => value !== undefined);
+        .some(([key, value]) => value !== undefined);
 
     const { isInvolvedThroughFamily } = useInvolvedContact();
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(
