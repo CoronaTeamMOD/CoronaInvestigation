@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { yupResolver } from '@hookform/resolvers';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import React, { useEffect, useState } from 'react';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Controller, useForm, FormProvider } from 'react-hook-form';
 import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, FormControl, Collapse, Select, MenuItem, InputLabel } from '@material-ui/core';
 
@@ -10,6 +10,7 @@ import City from 'models/City';
 import Street from 'models/Street';
 import DBAddress from 'models/DBAddress';
 import Occupations from 'models/enums/Occupations';
+import EducationGrade from 'models/EducationGrade';
 import { setAddress } from 'redux/Address/AddressActionCreators';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import investigatedPatientRole from 'models/investigatedPatientRole';
@@ -46,7 +47,6 @@ const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה*';
 const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
 const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 const NO_INSURANCE = 'אף אחד מהנ"ל';
-const grades = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'יא', 'יב'];
 const defaultInvestigationId = -1;
 const defaultRole = { id: -1, displayName: '' };
 
@@ -71,6 +71,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const educationGrades = useSelector<StoreStateType, EducationGrade[]>((state) => state.educationGrades);
 
     const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity, savePersonalData } = usePersonalInfoTab({
         setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName,
@@ -147,23 +148,23 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const convertToDBData = (): PersonalInfoDbData => {
         const data = methods.getValues();
         return {
-            phoneNumber: data.phoneNumber !== '' ? data.phoneNumber : null,
-            additionalPhoneNumber: data.additionalPhoneNumber !== '' ? data.additionalPhoneNumber : null,
-            contactPhoneNumber: data.contactPhoneNumber !== '' ? data.contactPhoneNumber : null,
-            contactInfo: data.contactInfo !== '' ? data.contactInfo : null,
-            insuranceCompany: data.insuranceCompany !== '' ? data.insuranceCompany : null,
+            phoneNumber: data.phoneNumber || null,
+            additionalPhoneNumber: data.additionalPhoneNumber || null,
+            contactPhoneNumber: data.contactPhoneNumber || null,
+            contactInfo: data.contactInfo || null,
+            insuranceCompany: data.insuranceCompany || null,
             address: {
-                city: data.city ? data.city : null,
-                street: data.street ? data.street : null,
-                floor: data.floor ? data.floor : null,
-                houseNum: data.houseNum ? data.houseNum : null
+                city: data.city || null,
+                street: data.street || null,
+                floor: data.floor || null,
+                houseNum: data.houseNum || null
             },
-            relevantOccupation: data.relevantOccupation !== undefined ? data.relevantOccupation : null,
-            educationOccupationCity: data.educationOccupationCity ? data.educationOccupationCity : null,
-            institutionName: data.institutionName ? data.institutionName : null,
-            otherOccupationExtraInfo: data.otherOccupationExtraInfo ? data.otherOccupationExtraInfo : null,
-            role: data.role ? data.role : null,
-            educationGrade: data.educationGrade ? data.educationGrade : null,
+            relevantOccupation: data.relevantOccupation || null,
+            educationOccupationCity: data.educationOccupationCity || null,
+            institutionName: data.institutionName || null,
+            otherOccupationExtraInfo: data.otherOccupationExtraInfo || null,
+            role: data.role || null,
+            educationGrade: data.educationGrade || null,
             educationClassNumber: data.educationClassNumber ? +data.educationClassNumber : null,
         }
     }
@@ -623,11 +624,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                                     onChange={(event) => props.onChange(event.target.value)}
                                                                 >
                                                                     {
-                                                                        grades.map((grade: string) => (
+                                                                        Array.isArray(educationGrades) && educationGrades.map((grade: EducationGrade) => (
                                                                             <MenuItem
-                                                                                key={grade}
-                                                                                value={grade}>
-                                                                                {grade}
+                                                                                key={grade.id}
+                                                                                value={grade.id}>
+                                                                                {grade.displayName}
                                                                             </MenuItem>
                                                                         ))
                                                                     }

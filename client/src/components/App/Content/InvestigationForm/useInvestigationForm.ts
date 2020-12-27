@@ -21,11 +21,11 @@ import  BroadcastMessage, { BC_TABS_NAME }  from 'models/BroadcastMessage';
 import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import { setEducationGrade } from 'redux/EducationGrade/educationGradeActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 
 import { defaultUser } from './InvestigationInfo/InvestigationInfoBar';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
-
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
@@ -135,6 +135,23 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             })
     };
 
+    const fetchEducationGrades = () => {
+        const educationGradesLogger = logger.setup('Fetching education grades');
+        educationGradesLogger.info('launching education grades request', Severity.LOW);
+        axios.get('/education/grades')
+        .then((result: any) => {
+            if (result?.data && result.headers['content-type'].includes('application/json')) {
+                educationGradesLogger.info('educationGrades request was successful', Severity.LOW);
+                setEducationGrade(result?.data);
+            } else {
+                educationGradesLogger.error('educationGrades request was successful but data isnt as expected', Severity.LOW);
+            }
+        })
+        .catch(error => {
+            educationGradesLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+        });
+    };
+
     useEffect(() => {
         if (epidemiologyNumber !== defaultEpidemiologyNumber && userId !== defaultUser.id) {
             fetchCities();
@@ -143,6 +160,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             fetchStatuses();
             initializeTabShow();
             investigationStatus.mainStatus && fetchSubStatusesByStatus(investigationStatus.mainStatus);
+            fetchEducationGrades();
         }
     }, [epidemiologyNumber, userId]);
 

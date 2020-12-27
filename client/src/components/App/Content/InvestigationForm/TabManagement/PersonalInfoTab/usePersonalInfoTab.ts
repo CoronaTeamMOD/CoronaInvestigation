@@ -60,7 +60,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
         personalDetailsLogger.info('launching personal data request', Severity.LOW);
         setIsLoading(true);
         axios.get('/personalDetails/investigatedPatientPersonalInfoFields?epidemioligyNumber=' + epidemiologyNumber).then((res: any) => {
-            if (res && res.data && res.data) {
+            if (res?.data) {
                 personalDetailsLogger.info('got results back from the server', Severity.LOW);
                 const investigatedPatient = res.data;
                 setInvestigatedPatientId(investigatedPatient.id);
