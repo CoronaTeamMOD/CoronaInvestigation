@@ -8,6 +8,7 @@ import { PersonPin } from '@material-ui/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
+import Desk from 'models/Desk';
 import SortOrder from 'models/enums/SortOrder';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
@@ -38,10 +39,10 @@ const UsersManagement: React.FC = () => {
     const [cellNameSort, setCellNameSort] = useState<CellNameSort>({ name: '', direction: undefined });
     const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
 
-    const { users, counties, sourcesOrganization, userTypes, languages,
-        totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange, setUserActivityStatus,
-        setUserSourceOrganization } =
-        useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
+    const { users, counties, desks, sourcesOrganization, userTypes, languages,
+            totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange, setUserActivityStatus,
+            setUserSourceOrganization, setUserDesk } =
+            useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
 
@@ -80,7 +81,36 @@ const UsersManagement: React.FC = () => {
                 )
             }
             case UsersManagementTableHeadersNames.DESK: {
-                return row[cellName] ? row[cellName] : noDeskAssignment
+                return (
+                    <Select
+                        MenuProps={{
+                            anchorOrigin: {
+                                vertical: 'bottom',
+                                horizontal: 'left'
+                            },
+                            transformOrigin: {
+                                vertical: 'top',
+                                horizontal: 'left'
+                            },
+                            getContentAnchorEl: null
+                        }}
+                        value={row[cellName]?.id}
+                        onChange={(event: React.ChangeEvent<any>) => setUserDesk(event.target.value as number, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
+                        className={classes.desks}
+                        variant='outlined'
+                    >
+                        {
+                            desks.map((desk: Desk) => (
+                                <MenuItem
+                                    key={desk.id}
+                                    value={desk.id}>
+                                    {desk.deskName}
+                                </MenuItem>
+                            ))
+                        }
+                    </Select>
+                )
+                
             }
             case UsersManagementTableHeadersNames.SOURCE_ORGANIZATION : {
                 return (

@@ -48,7 +48,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginBottom: '2vh'
     },
     sourceOrganization: {
-        width: '7vw',
+        width: '8vw',
+        height: '2vw'
+    },
+    desks: {
+        width: '9vw',
         height: '2vw'
     }
 }));

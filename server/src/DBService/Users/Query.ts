@@ -124,6 +124,7 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter:
         displayName
       }
       deskByDeskId {
+        id,
         deskName
       }
     }
@@ -167,6 +168,7 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter:
         displayName
       }
       deskByDeskId {
+        id,
         deskName
       }
     }
