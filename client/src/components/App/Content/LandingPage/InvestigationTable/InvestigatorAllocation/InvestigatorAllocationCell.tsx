@@ -28,7 +28,6 @@ const InvestigatorAllocationCell: React.FC<Props> = (props: Props) => {
             {isUnassigned && !isCellHovered && <UnassignedWarning />}
             {investigatorName}
             {isCellHovered && <Edit fontSize='small' className={classes.editIcon} />}
-
         </div>
     )
 };
