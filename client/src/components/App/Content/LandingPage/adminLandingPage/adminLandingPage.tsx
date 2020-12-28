@@ -1,7 +1,11 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 
 import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
+
+import InvestigationChart from 'models/InvestigationChart';
+import InvestigationStatistics from 'models/InvestigationStatistics';
 
 import useStyles from './adminLandingPageStyles';
 import TimeRangeCard from './TimeRangeCard/timeRangeCard';
@@ -12,7 +16,24 @@ import InvestigationsInfo from './investigationsInfo/investigationsInfo';
 const AdminLandingPage: React.FC = (): JSX.Element => {
     const classes = useStyles();
 
+    const [allInvestigationsCount, setAllInvestigationsCount] = useState<number>(0);
+    const [investigationsStatistics, setInvestigationsStatistics] = useState<InvestigationStatistics>({
+        inProcessInvestigations: 0,
+        inactiveInvestigations: 0,
+        newInvestigations: 0,
+        unassignedInvestigations: 0
+    })
+
     const { countyDisplayName } = useAppToolbar();
+
+    useEffect(() => {
+        axios.post<InvestigationStatistics & {allInvestigations: number}>('/landingPage/investigationStatistics')
+        .then((response) => {
+            const { data: {allInvestigations, ...statistics} } = response;
+            setAllInvestigationsCount(allInvestigations);
+            setInvestigationsStatistics(statistics);
+        });
+    }, [])
 
     return (
         <div className={classes.content}>
@@ -24,7 +45,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                     <DesksFilterCard />
                 </Grid>
                 <Grid item xs={9}>
-                    <InvestigationsInfo />
+                    <InvestigationsInfo investigationsStatistics={investigationsStatistics} investigationsCount={allInvestigationsCount} />
                 </Grid>
                 <Grid item xs={3}>
                     <TimeRangeCard />
