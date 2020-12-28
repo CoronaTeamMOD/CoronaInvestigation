@@ -21,6 +21,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     clickableInvestigationRow: {
         cursor: 'pointer'
     },
+    disabled: {
+        opacity: theme.palette.action.disabledOpacity
+    }
 }));
 
 export default useStyles;
