@@ -26,8 +26,8 @@ interface Props {
     exposureAndFlightsData: ExposureAndFlightsDetails;
     setExposureDataAndFlights: React.Dispatch<React.SetStateAction<ExposureAndFlightsDetails>>;
     id: number;
-    reset: any;
-    trigger: any;
+    reset: (values : FormData) => void;
+    trigger: () => void;
 }
 
 export const useExposuresAndFlights = (props : Props) => {
