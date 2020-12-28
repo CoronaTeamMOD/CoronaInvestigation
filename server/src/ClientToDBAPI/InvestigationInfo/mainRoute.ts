@@ -14,6 +14,7 @@ import {
     UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA,
     CLOSE_ISOLATED_CONTACT
 } from '../../DBService/InvestigationInfo/Mutation';
+import { handleInvestigationRequest } from '../../middlewares/IsAuthorizedInvestigation';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
 import InvestigationMainStatusCodes from '../../Models/InvestigationStatus/InvestigationMainStatusCodes';
 
@@ -47,7 +48,7 @@ const convertInvestigationInfoFromDB = (investigationInfo: any) => {
     return convertedInvestigation;
 }
 
-investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
+investigationInfo.get('/staticInfo', handleInvestigationRequest ,(request: Request, response: Response) => {
     const staticInfoLogger = logger.setup({
         workflow: 'query investigation staticInfo',
         user: response.locals.user.id,
