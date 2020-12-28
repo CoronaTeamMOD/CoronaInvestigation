@@ -1,4 +1,5 @@
 import React from 'react';
+import { SweetAlertResult } from 'sweetalert2';
 import { Tab, Tabs, Box, withStyles, createStyles } from '@material-ui/core';
 
 import Desk from 'models/Desk';
@@ -39,7 +40,7 @@ const TabPanel = (props: TabPanelProps) => {
 
 const TransferInvestigationTabs = (props: Props) => {
 
-    const { allDesks, allCounties, onClose, onDeskTransfer, onCountyTransfer } = props;
+    const { allDesks, allCounties, onClose, onDeskTransfer, onCountyTransfer, onSuccess } = props;
 
     const [value, setValue] = React.useState(0);
 
@@ -66,6 +67,7 @@ const TransferInvestigationTabs = (props: Props) => {
                     onConfirm={onCountyTransfer}
                     onClose={onClose}
                     allCounties={allCounties}
+                    onSuccess={onSuccess}
                 />
             </TabPanel>
             <TabPanel value={value} index={1}>
@@ -73,6 +75,7 @@ const TransferInvestigationTabs = (props: Props) => {
                     onConfirm={onDeskTransfer}
                     onClose={onClose}
                     allDesks={allDesks}
+                    onSuccess={onSuccess}
                 />
             </TabPanel>
         </div>
@@ -92,6 +95,7 @@ interface Props {
     onClose: () => void;
     onDeskTransfer: (updatedDesk: Desk, transferReason: string) => void;
     onCountyTransfer: (updatedCounty: County, transferReason: string) => void;
+    onSuccess: () => Promise<SweetAlertResult<any>>
 }
 
 export default TransferInvestigationTabs;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { SweetAlertResult } from 'sweetalert2';
 import { Dialog, DialogContent, DialogTitle } from '@material-ui/core';
 
 import Desk from 'models/Desk';
@@ -11,7 +12,7 @@ const TITLE = 'העברת חקירות';
 
 const TransferInvestigationDialog = (props: Props) => {
 
-    const { allDesks, allCounties, open, onClose, onDeskTransfer, onCountyTransfer } = props;
+    const { allDesks, allCounties, open, onClose, onDeskTransfer, onCountyTransfer, onSuccess } = props;
 
     const classes = useStyles();
 
@@ -30,6 +31,7 @@ const TransferInvestigationDialog = (props: Props) => {
                     onDeskTransfer={onDeskTransfer}
                     onCountyTransfer={onCountyTransfer}
                     onClose={onClose}
+                    onSuccess={onSuccess}
                 />
             </DialogContent>
         </Dialog>
@@ -43,6 +45,8 @@ interface Props {
     onCountyTransfer: (updatedCounty: County, transferReason: string) => void;
     allDesks: Desk[];
     allCounties: County[];
+    onSuccess: () => Promise<SweetAlertResult<any>>
+
 }
 
 export default TransferInvestigationDialog;

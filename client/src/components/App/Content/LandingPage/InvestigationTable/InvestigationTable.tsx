@@ -93,7 +93,9 @@ const RowTooltip = (props: RowTooltipProps) => {
 const InvestigationTable: React.FC = (): JSX.Element => {
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const classes = useStyles(isScreenWide);
-    const { alertWarning } = useCustomSwal();
+    const { alertWarning, alertSuccess } = useCustomSwal();
+    const onAllocationSuccess = () => alertSuccess('החוקר הוקצה בהצלחה');
+
     const theme = useTheme();
 
     const [checkedIndexedRows, setCheckedIndexedRows] = useState<IndexedInvestigation[]>([]);
@@ -608,6 +610,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
                 groupIds={[selectedRow.groupId]}
                 epidemiologyNumbers={[selectedRow.epidemiologyNumber]}
+                onSuccess={onAllocationSuccess}
             /> 
             <Slide direction='up' in={checkedIndexedRows.length > 0} mountOnEnter unmountOnExit>
                 <InvestigationTableFooter

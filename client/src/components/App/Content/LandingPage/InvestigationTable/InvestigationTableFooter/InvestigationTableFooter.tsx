@@ -5,6 +5,7 @@ import { SvgIconComponent, Close, Send, PersonPin, CollectionsBookmark, CallSpli
 import Desk from 'models/Desk';
 import County from 'models/County';
 import InvestigatorOption from 'models/InvestigatorOption';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 
 import FooterAction from './FooterAction/FooterAction';
@@ -40,6 +41,10 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
             onDialogClose, tableRows, allGroupedInvestigations, onDeskChange,
             onDeskGroupChange, onCountyChange, onCountyGroupChange,
             fetchTableData, fetchInvestigationsByGroupId, setIsInvestigatorAllocationDialogOpen, allocateInvestigationToInvestigator } = props;
+
+    const { alertSuccess } = useCustomSwal();
+    const onTransferSuccess = () => alertSuccess('החקירות הועברו בהצלחה');
+    const onAllocationSuccess = () => alertSuccess('החוקר הוקצה בהצלחה');
 
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
@@ -159,6 +164,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                 onClose={handleCloseDesksDialog}
                 allDesks={allDesks}
                 allCounties={allCounties}
+                onSuccess={onTransferSuccess}
             />
             <InvestigatorAllocationDialog
                 isOpen={isInvestigatorAllocationDialogOpen}
@@ -167,6 +173,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                 allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
                 groupIds={trimmedGroup.uniqueGroupIds}
                 epidemiologyNumbers={trimmedGroup.epidemiologyNumbers}
+                onSuccess={onAllocationSuccess}
             />
             <GroupedInvestigations
                 open={openGroupedInvestigations}
