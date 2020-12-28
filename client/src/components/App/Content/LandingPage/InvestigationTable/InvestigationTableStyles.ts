@@ -24,13 +24,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     tableCell: {
         padding: '7px 0'
     },
-    tableCellRoot: {
-        padding: '0'
-    },
-    groupColor: {
-        height: '4.2rem',
-        width: '1rem'
-    },
     title: {
         margin: 'auto',
         paddingTop: theme.spacing(1),
@@ -49,12 +42,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     errorAlertTitle: {
         fontFamily: 'Assistant'
-    },
-    investigationRow: {
-        textDecoration: 'none'
-    },
-    clickableInvestigationRow: {
-        cursor: 'pointer'
     },
     columnBorder: {
         borderLeft: '3px solid rgb(222, 218, 218)'
@@ -140,9 +127,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     counterLabel: {
         fontWeight: 600
     },
-    checkedRow: {
-        backgroundColor: 'rgb(202, 222, 234)!important'
-    },
     pagination: {
         marginTop: '0'
     },
@@ -157,9 +141,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     horizontalSticky: {
         left: 'unset'
-    },
-    padCheckboxWithoutGroup: {
-        marginRight: theme.spacing(6.5)
     },
     popover: {
         width: 250,

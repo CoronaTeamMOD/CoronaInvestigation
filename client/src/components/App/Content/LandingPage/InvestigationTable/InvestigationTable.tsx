@@ -2,16 +2,16 @@ import {format} from 'date-fns';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import React, { useMemo, useState, useRef } from 'react';
-import { Autocomplete, Pagination } from '@material-ui/lab';
+import { Pagination } from '@material-ui/lab';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button,
-    useMediaQuery, Tooltip, Collapse, IconButton, Badge, Grid, Checkbox,
-    Slide, Box, InputAdornment, useTheme, Popover
+    useMediaQuery, Collapse, IconButton, Badge, Grid,
+    Slide, Box, InputAdornment, useTheme, Popover, Tooltip
 } from '@material-ui/core';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Refresh, Close, KeyboardArrowDown, KeyboardArrowLeft, Search, Comment, Call, ArrowForward } from '@material-ui/icons';
+import { Refresh, Close, Search, ArrowForward } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
@@ -22,24 +22,19 @@ import StoreStateType from 'redux/storeStateType';
 import InvestigatorOption from 'models/InvestigatorOption';
 import { adminLandingPageRoute } from 'Utils/Routes/Routes';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import InvestigationTableRow from 'models/InvestigationTableRow';
+import InvestigationTableRowType from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 import DeskFilter from './DeskFilter/DeskFilter';
 import TableFilter from './TableFilter/TableFilter';
-import SettingsActions from './SettingsActions/SettingsActions';
-import ClickableTooltip from './clickableTooltip/clickableTooltip';
-import useStyles, {useTooltipStyles} from './InvestigationTableStyles';
-import InfoItem from '../../InvestigationForm/InvestigationInfo/InfoItem';
-import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
-import InvestigatorAllocationCell from './InvestigatorAllocation/InvestigatorAllocationCell';
-import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
-import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorAllocationDialog';
 import useInvestigationTable, { SelectedRow, DEFAULT_SELECTED_ROW } from './useInvestigationTable';
-import InvestigationIndicatorsColumn from './InvestigationIndicatorsColumn/InvestigationIndicatorsColumn';
+import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
+import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorAllocationDialog';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
+import useStyles from './InvestigationTableStyles';
+import InvestigationTableRow from './InvestigationTableRow/InvestigationTableRow';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -53,45 +48,7 @@ const returnToAdminLandingPage = 'חזרה לדף הנחיתה';
 export const rowsPerPage = 100;
 
 const refreshPromptMessage = 'שים לב, ייתכן כי התווספו חקירות חדשות';
-const unassignedToDesk = 'לא שוייך לדסק';
-const showInvestigationGroupText = 'הצג חקירות קשורות';
-const hideInvestigationGroupText = 'הסתר חקירות קשורות';
 const emptyGroupText = 'שים לב, בסבירות גבוהה לחקירה זו קובצו חקירות ישנות שכבר לא קיימות במערכת'
-const noDataMessage = 'אין מידע אודות תאריכים לחקירה זו';
-
-interface RowTooltipProps {
-    creationDate: InvestigationTableRow['creationDate'];
-    startTime: InvestigationTableRow['startTime'];
-    children: React.ReactElement;
-}
-
-const tooltipEnterDelay = 800;
-const RowTooltip = (props: RowTooltipProps) => {
-    const {creationDate, startTime} = props;
-    const tooltipClasses = useTooltipStyles();
-
-    const formatDate = (date: Date): string => date ? format(new Date(date), 'dd/MM/yyyy') : 'אין מידע';
-    const creationDateLabel = useMemo(() => formatDate(creationDate), [creationDate]);
-    const startTimeLabel = useMemo(() => formatDate(startTime), [startTime]);
-
-    const title = (creationDate || startTime)
-        ? <>
-            {<InfoItem size='small' name='תאריך הגעת החקירה' value={creationDateLabel}/>}
-            {<InfoItem size='small' name='תאריך תחילת החקירה' value={startTimeLabel}/>}
-        </>
-        : noDataMessage;
-
-    return <Tooltip title={title} enterDelay={tooltipEnterDelay} enterNextDelay={tooltipEnterDelay}
-                    classes={{tooltip: tooltipClasses.content}}
-                    PopperProps={{
-                        placement: 'right',
-                        modifiers: {
-                            inner: { enabled: true },
-                        },
-                    }}>
-        {props.children}
-    </Tooltip>
-};
 
 const InvestigationTable: React.FC = (): JSX.Element => {
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
@@ -114,7 +71,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [allDesks, setAllDesks] = useState<Desk[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(defaultPage);
     const [checkGroupedInvestigationOpen, setCheckGroupedInvestigationOpen] = useState<number[]>([])
-    const [allGroupedInvestigations, setAllGroupedInvestigations] = useState<Map<string, InvestigationTableRow[]>>(new Map());
+    const [allGroupedInvestigations, setAllGroupedInvestigations] = useState<Map<string, InvestigationTableRowType[]>>(new Map());
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [shouldOpenPopover, setShouldOpenPopover] = useState<boolean>(false);
     const [isInvestigatorAllocationDialogOpen, setIsInvestigatorAllocationDialogOpen] = useState<boolean>(false);
@@ -168,7 +125,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 break;
             }
         }
-        setSelectedRow({ epidemiologyNumber, groupId});
+        setSelectedRow({ epidemiologyNumber, groupId });
         setCheckedIndexedRows([]);
     }
 
@@ -188,154 +145,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const allocateInvestigationToInvestigator = async (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => {
         if (groupIds.length && groupIds[0]) {
-            await changeGroupsInvestigator(groupIds, investigatorToAllocate) 
-        } 
+            await changeGroupsInvestigator(groupIds, investigatorToAllocate)
+        }
         if (epidemiologyNumbers) {
             await changeInvestigationsInvestigator(epidemiologyNumbers, investigatorToAllocate);
         }
         groupIds[0] && groupIds.forEach((groupId: string) => fetchInvestigationsByGroupId(groupId));
         fetchTableData();
-    }
-
-    const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }, index: number) => {
-        const wasInvestigationFetchedByGroup = indexedRow.groupId && !indexedRow.canFetchGroup;
-        switch (cellName) {
-            case TableHeadersNames.color:
-                return (
-                    Boolean(indexedRow.groupId) ?
-                        <Tooltip arrow placement='top' title={indexedRow.otherReason !== '' ? indexedRow.otherReason : indexedRow.groupReason}>
-                            <div className={classes.groupColor}
-                                style={{ backgroundColor: investigationColor.current.get(indexedRow.groupId) }}
-                            />
-                        </Tooltip> : null
-                )
-            case TableHeadersNames.rowIndicators:
-                return (
-                    <InvestigationIndicatorsColumn isComplex={indexedRow.isComplex}
-                        wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
-                        transferReason={indexedRow.transferReason}
-                    />
-                );
-            case TableHeadersNames.investigatorName:
-                    return (
-                        <InvestigatorAllocationCell
-                            investigatorName={indexedRow[cellName as keyof typeof TableHeadersNames]}
-                            isInvestigatorActive={tableRows[index].investigator?.isActive}
-                            />  
-                    )
-            case TableHeadersNames.investigationDesk:
-                if (selectedRow.epidemiologyNumber === indexedRow.epidemiologyNumber && deskAutoCompleteClicked &&
-                    (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) && !wasInvestigationFetchedByGroup) {
-                    return (
-                        <Autocomplete
-                            options={allDesks}
-                            getOptionLabel={(option) => option.deskName}
-                            onChange={async (event, newSelectedDesk) => {
-                                const switchDeskTitle = `<p>האם אתה בטוח שאתה רוצה להחליף את דסק <b>${indexedRow.investigationDesk}</b> בדסק <b>${newSelectedDesk?.deskName}</b>?</p>`;
-                                const enterDeskTitle = `<p>האם אתה בטוח שאתה רוצה לבחור את דסק <b>${newSelectedDesk?.deskName}</b>?</p>`;
-                                if (newSelectedDesk?.deskName !== indexedRow.investigationDesk) {
-                                    const result = await alertWarning(indexedRow.investigationDesk ? switchDeskTitle : enterDeskTitle, {
-                                        showCancelButton: true,
-                                        cancelButtonText: 'לא',
-                                        cancelButtonColor: theme.palette.error.main,
-                                        confirmButtonColor: theme.palette.primary.main,
-                                        confirmButtonText: 'כן, המשך',
-                                    });
-                                    if (result.isConfirmed) {
-                                        indexedRow.groupId ?
-                                            await changeGroupsDesk([indexedRow.groupId], newSelectedDesk) :
-                                            await changeInvestigationsDesk([indexedRow.epidemiologyNumber], newSelectedDesk);
-                                        fetchTableData();
-                                    }
-
-                                    setSelectedRow(DEFAULT_SELECTED_ROW);
-                                }
-                            }}
-                            renderInput={(params) =>
-                                <TextField
-                                    {...params}
-                                    placeholder='דסק'
-                                />
-                            }
-                            renderTags={(tags) => {
-                                const additionalTagsAmount = tags.length - 1;
-                                const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
-                                return tags[0] + additionalDisplay;
-                            }}
-                        />
-                    )
-                }
-                else {
-                    const deskValue = indexedRow[cellName as keyof typeof TableHeadersNames];
-                    return deskValue ? deskValue : unassignedToDesk
-                }
-            case TableHeadersNames.subOccupation:
-                const subOccupation =  tableRows[index].isInInstitute && indexedRow[cellName as keyof typeof TableHeadersNames];
-                const parentOccupation = Boolean(subOccupation) ? tableRows[index].parentOccupation : '';
-                return <Tooltip title={parentOccupation} placement='top'>
-                    <div>{subOccupation || '-'}</div>
-                </Tooltip>
-            case TableHeadersNames.comment:
-                return <ClickableTooltip value={indexedRow[cellName as keyof typeof TableHeadersNames]}
-                    defaultValue='אין הערה' scrollableRef={tableContainerRef.current} InputIcon={Comment} />
-
-            case TableHeadersNames.phoneNumber:
-                return <ClickableTooltip value={indexedRow[cellName as keyof typeof TableHeadersNames]}
-                    defaultValue='' scrollableRef={tableContainerRef.current} InputIcon={Call} />
-            case TableHeadersNames.investigationStatus:
-                const investigationStatus = indexedRow[cellName as keyof typeof TableHeadersNames];
-                return investigationStatus && <InvestigationStatusColumn
-                    investigationStatus={investigationStatus}
-                    investigationSubStatus={indexedRow.investigationSubStatus}
-                    statusReason={indexedRow.statusReason}
-                />;
-            case TableHeadersNames.multipleCheck:
-                const isGroupShown = checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber);
-                return (
-                    <>
-                        {(!wasInvestigationFetchedByGroup) &&
-                            <Checkbox onClick={(event) => {
-                                event.stopPropagation();
-                                markRow(indexedRow);
-                            }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)} size='small'
-                                className={indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup} />}
-                        {indexedRow.canFetchGroup &&
-                            <Tooltip title={isGroupShown ? hideInvestigationGroupText : showInvestigationGroupText} placement='top' arrow>
-                                <IconButton onClick={async (event) => {
-                                    setShouldOpenPopover(false);
-                                    handleOpenGroupClick(event);
-                                    let groupToOpen = allGroupedInvestigations.get(indexedRow.groupId);
-                                    event.stopPropagation();
-                                    if (!allGroupedInvestigations.get(indexedRow.groupId)) {
-                                        groupToOpen = await fetchInvestigationsByGroupId(indexedRow.groupId)
-                                    }
-                                    if (groupToOpen !== undefined && groupToOpen?.length > 1) {
-                                        openGroupedInvestigation(indexedRow.epidemiologyNumber, indexedRow.groupId)
-                                    }
-                                    setShouldOpenPopover(groupToOpen?.length === 1)
-                                }}>
-                                    {isGroupShown ?
-                                        <KeyboardArrowDown /> :
-                                        <KeyboardArrowLeft />}
-                                </IconButton>
-                            </Tooltip>
-                        }
-                    </>
-                )
-            case TableHeadersNames.settings:
-                return <SettingsActions
-                    epidemiologyNumber={indexedRow.epidemiologyNumber}
-                    investigationStatus={indexedRow.investigationStatus}
-                    groupId={indexedRow.groupId}
-                    allGroupedInvestigations={allGroupedInvestigations}
-                    checkGroupedInvestigationOpen={checkGroupedInvestigationOpen}
-                    fetchTableData={fetchTableData}
-                    fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
-                    moveToTheInvestigationForm={moveToTheInvestigationForm}
-                />
-            default:
-                return indexedRow[cellName as keyof typeof TableHeadersNames]
-        }
     }
 
     const handleRequestSort = (event: any, property: React.SetStateAction<string>) => {
@@ -417,6 +233,29 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         return `${totalCount} חקירות סה"כ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
 
     }, [tableRows, unassignedInvestigationsCount]);
+
+    const alertInvestigationDeskChange = (indexedRow: { [T in keyof typeof TableHeadersNames]: any }) =>
+        async (event: React.ChangeEvent<{}>, newSelectedDesk: Desk | null) => {
+            const switchDeskTitle = `<p>האם אתה בטוח שאתה רוצה להחליף את דסק <b>${indexedRow.investigationDesk}</b> בדסק <b>${newSelectedDesk?.deskName}</b>?</p>`;
+            const enterDeskTitle = `<p>האם אתה בטוח שאתה רוצה לבחור את דסק <b>${newSelectedDesk?.deskName}</b>?</p>`;
+            if (newSelectedDesk?.deskName !== indexedRow.investigationDesk) {
+                const result = await alertWarning(indexedRow.investigationDesk ? switchDeskTitle : enterDeskTitle, {
+                    showCancelButton: true,
+                    cancelButtonText: 'לא',
+                    cancelButtonColor: theme.palette.error.main,
+                    confirmButtonColor: theme.palette.primary.main,
+                    confirmButtonText: 'כן, המשך',
+                });
+                if (result.isConfirmed) {
+                    indexedRow.groupId ?
+                        await changeGroupsDesk([indexedRow.groupId], newSelectedDesk) :
+                        await changeInvestigationsDesk([indexedRow.epidemiologyNumber], newSelectedDesk);
+                    fetchTableData();
+                }
+
+                setSelectedRow(DEFAULT_SELECTED_ROW);
+            }
+        }
 
     return (
         <div tabIndex={0}
@@ -541,66 +380,82 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {tableRows.map((row: InvestigationTableRow, index: number) => {
+                            {tableRows.map((row: InvestigationTableRowType, index: number) => {
                                 const indexedRow = convertToIndexedRow(row);
                                 const isRowClickable = isInvestigationRowClickable(row.mainStatus);
                                 const isGroupShown = checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber);
 
                                 return (
                                     <>
-                                        <RowTooltip creationDate={row.creationDate} startTime={row.startTime}>
-                                            <TableRow selected={isRowSelected(indexedRow.epidemiologyNumber)}
-                                                      key={indexedRow.epidemiologyNumber}
-                                                      classes={{selected: classes.checkedRow}}
-                                                      className={[classes.investigationRow, isRowClickable && classes.clickableInvestigationRow].join(' ')}
-                                                      onClick={() => isRowClickable && onInvestigationRowClick(indexedRow)}
-                                            >
-                                                {
-                                                    Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
-                                                        <TableCell
-                                                            classes={{root: classes.tableCellRoot}}
-                                                            className={getRegularCellStyle(index, key, isGroupShown).join(' ')}
-                                                            padding='none'
-                                                            onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber, indexedRow.groupId)}
-                                                        >
-                                                            {
-                                                                getTableCell(key, indexedRow, index)
-                                                            }
-                                                        </TableCell>
-                                                    ))
+                                        <InvestigationTableRow
+                                            columns={(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols}
+                                            groupColor={investigationColor.current.get(indexedRow.groupId)}
+                                            selected={selectedRow.epidemiologyNumber === indexedRow.epidemiologyNumber}
+                                            deskAutoCompleteClicked={deskAutoCompleteClicked}
+                                            desks={allDesks}
+                                            indexedRow={indexedRow}
+                                            row={row}
+                                            isGroupShown={isGroupShown}
+                                            checked={isRowSelected(indexedRow.epidemiologyNumber)}
+                                            clickable={isRowClickable}
+                                            index={index}
+                                            tableContainerRef={tableContainerRef}
+                                            allGroupedInvestigations={allGroupedInvestigations}
+                                            checkGroupedInvestigationOpen={checkGroupedInvestigationOpen}
+                                            tableCellStyleFunction={getRegularCellStyle(index, isGroupShown)}
+                                            onInvestigationDeskChange={alertInvestigationDeskChange(indexedRow)}
+                                            onInvestigationRowClick={onInvestigationRowClick}
+                                            onCellClick={handleCellClick}
+                                            fetchTableData={fetchTableData}
+                                            fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
+                                            moveToTheInvestigationForm={moveToTheInvestigationForm}
+                                            onMultiCheckClick={(event) => {
+                                                event.stopPropagation();
+                                                markRow(indexedRow);
+                                            }}
+                                            onGroupExpandClick={async (event) => {
+                                                setShouldOpenPopover(false);
+                                                handleOpenGroupClick(event);
+                                                let groupToOpen = allGroupedInvestigations.get(indexedRow.groupId);
+                                                event.stopPropagation();
+                                                if (!allGroupedInvestigations.get(indexedRow.groupId)) {
+                                                    groupToOpen = await fetchInvestigationsByGroupId(indexedRow.groupId)
                                                 }
-                                            </TableRow>
-                                        </RowTooltip>
+                                                if (groupToOpen !== undefined && groupToOpen?.length > 1) {
+                                                    openGroupedInvestigation(indexedRow.epidemiologyNumber, indexedRow.groupId)
+                                                }
+                                                setShouldOpenPopover(groupToOpen?.length === 1)
+                                            }}
+                                        />
                                         {checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber) &&
-                                            allGroupedInvestigations.get(indexedRow.groupId)?.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber).map((row: InvestigationTableRow, index: number) => {
+                                            allGroupedInvestigations.get(indexedRow.groupId)?.filter((row: InvestigationTableRowType) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber).map((row: InvestigationTableRowType, index: number) => {
                                                 const currentGroupedInvestigationsLength = allGroupedInvestigations.get(indexedRow.groupId)?.length! - 1; // not including row head
                                                 const indexedGroupedInvestigationRow = convertToIndexedRow(row);
                                                 const isGroupedRowClickable = isInvestigationRowClickable(row.mainStatus);
                                                 return (
-                                                    <RowTooltip creationDate={row.creationDate}
-                                                                startTime={row.startTime}>
-                                                        <TableRow
-                                                            selected={isRowSelected(indexedGroupedInvestigationRow.epidemiologyNumber)}
-                                                            key={indexedGroupedInvestigationRow.epidemiologyNumber}
-                                                            classes={{selected: classes.checkedRow}}
-                                                            className={[classes.investigationRow, isGroupedRowClickable && classes.clickableInvestigationRow].join(' ')}
-                                                            onClick={() => isGroupedRowClickable && onInvestigationRowClick(indexedGroupedInvestigationRow)}
-                                                        >
-                                                            {
-                                                                Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
-                                                                    <TableCell
-                                                                        classes={{root: classes.tableCellRoot}}
-                                                                        className={getNestedCellStyle(key, index + 1 === currentGroupedInvestigationsLength).join(' ')}
-                                                                        onClick={(event: any) => handleCellClick(event, key, indexedGroupedInvestigationRow.epidemiologyNumber, indexedGroupedInvestigationRow.groupId)}
-                                                                    >
-                                                                        {
-                                                                            getTableCell(key, indexedGroupedInvestigationRow, index)
-                                                                        }
-                                                                    </TableCell>
-                                                                ))
-                                                            }
-                                                        </TableRow>
-                                                    </RowTooltip>
+                                                    <InvestigationTableRow
+                                                        columns={(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols}
+                                                        groupColor={investigationColor.current.get(indexedRow.groupId)}
+                                                        selected={selectedRow.epidemiologyNumber === indexedRow.epidemiologyNumber}
+                                                        deskAutoCompleteClicked={deskAutoCompleteClicked}
+                                                        desks={allDesks}
+                                                        indexedRow={indexedGroupedInvestigationRow}
+                                                        row={row}
+                                                        isGroupShown={isGroupShown}
+                                                        checked={isRowSelected(indexedRow.epidemiologyNumber)}
+                                                        clickable={isGroupedRowClickable}
+                                                        index={index}
+                                                        tableContainerRef={tableContainerRef}
+                                                        allGroupedInvestigations={allGroupedInvestigations}
+                                                        checkGroupedInvestigationOpen={checkGroupedInvestigationOpen}
+                                                        fetchTableData={fetchTableData}
+                                                        fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
+                                                        moveToTheInvestigationForm={moveToTheInvestigationForm}
+                                                        tableCellStyleFunction={getNestedCellStyle(index + 1 === currentGroupedInvestigationsLength)}
+                                                        onInvestigationDeskChange={alertInvestigationDeskChange(indexedRow)}
+                                                        onInvestigationRowClick={onInvestigationRowClick}
+                                                        onCellClick={handleCellClick}
+                                                    />
                                                 )
                                             })
                                         }
