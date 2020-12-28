@@ -297,7 +297,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const fetchAllCountyUsers = async () => {
         const countyUsersLogger = logger.setup('Getting group users');
         countyUsersLogger.info('requesting the server the connected admin group users', Severity.LOW);
-        let countyUsers: Map<string, User> = new Map();
+        const countyUsers: Map<string, User> = new Map();
         try {
             const result = await axios.get('/users/group');
             if (result && result.data) {
@@ -308,8 +308,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         activeInvestigationsCount: user.activeInvestigationsCount.totalCount,
                         pauseInvestigationsCount: user.pauseInvestigationsCount.totalCount
                     })
-                    countyUsers = new Map(Array.from(countyUsers.entries())
-                        .sort((fisrtUser, secondUser) => sortUsersByAvailability(fisrtUser[1], secondUser[1])));
                 });
                 countyUsersLogger.info('fetched all the users successfully', Severity.LOW);
             } else {
@@ -319,7 +317,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             countyUsersLogger.error(err, Severity.HIGH);
             alertError('לא ניתן היה לשלוף חוקרים');
         };
-        return countyUsers;
+        const sortedCountyUsers = new Map(Array.from(countyUsers.entries())
+        .sort((fisrtUser, secondUser) => sortUsersByAvailability(fisrtUser[1], secondUser[1])));
+        return sortedCountyUsers;
     }
     
     const fetchAllCounties = () => {
