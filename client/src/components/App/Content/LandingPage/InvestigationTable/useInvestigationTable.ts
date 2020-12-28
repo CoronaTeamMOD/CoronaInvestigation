@@ -691,7 +691,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return classNames;
     }
 
-    const getNestedCellStyle = (cellKey: string, isLast: boolean) => {
+    const getNestedCellStyle = (isLast: boolean) => (cellKey: string) => {
         let classNames = getDefaultCellStyles(cellKey);
 
         if (isLast) {
@@ -703,7 +703,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return classNames;
     }
 
-    const getRegularCellStyle = (rowIndex: number, cellKey: string, isGroupShown: boolean) => {
+    const getRegularCellStyle = (rowIndex: number, isGroupShown: boolean) => (cellKey: string) => {
         let classNames = getDefaultCellStyles(cellKey);
 
         if (cellNeedsABorder(rowIndex)) {
