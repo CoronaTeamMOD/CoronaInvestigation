@@ -443,6 +443,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                         isGroupShown={isGroupShown}
                                                         checked={isRowSelected(indexedRow.epidemiologyNumber)}
                                                         clickable={isGroupedRowClickable}
+                                                        disabled={user.countyByInvestigationGroup.districtId !== row.county.id}
                                                         tableContainerRef={tableContainerRef}
                                                         allGroupedInvestigations={allGroupedInvestigations}
                                                         checkGroupedInvestigationOpen={checkGroupedInvestigationOpen}
