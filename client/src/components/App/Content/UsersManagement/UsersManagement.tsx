@@ -12,13 +12,14 @@ import Desk from 'models/Desk';
 import SortOrder from 'models/enums/SortOrder';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-import { noDeskAssignment } from 'Utils/consts';
 
 import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
 import useStyles from './UsersManagementStyles';
+import SearchBar from './UsersFilter/SearchBar';
 import useUsersManagementTable from './useUsersManagement';
 import UserInfoDialog from './UserInfoDialog/UserInfoDialog';
 import UsersFilter from './UsersFilter/UsersFilter';
+import filterCreators from './UsersFilter/FilterCreators';
 
 const rowsPerPage: number = 100;
 export const defaultPage: number = 1;
@@ -157,6 +158,9 @@ const UsersManagement: React.FC = () => {
                 </Typography>
             </Grid>
             <Grid container className={classes.filters}>
+                <SearchBar 
+                    onClick={(value: string) => handleFilterChange(get(filterCreators, 'USER_NAME_OR_ID').create(value))}
+                />
                 <Tooltip title='סינון'>
                     <IconButton onClick={() => setIsFilterOpen(true)}>
                         <Badge
