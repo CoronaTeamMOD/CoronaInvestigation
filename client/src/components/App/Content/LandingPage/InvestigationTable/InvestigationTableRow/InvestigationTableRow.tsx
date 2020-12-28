@@ -228,7 +228,7 @@ const InvestigationTableRow = ({
         <RowTooltip
             creationDate={row.creationDate}
             startTime={row.startTime}
-            titleOverride={disabled ? 'בלה בלה' : ''}
+            titleOverride={disabled ? `חקירה של נפת ${row.county.displayName}` : ''}
         >
             <TableRow
                 selected={checked}
