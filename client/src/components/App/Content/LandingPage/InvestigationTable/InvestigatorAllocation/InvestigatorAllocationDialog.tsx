@@ -15,7 +15,7 @@ const unSelectedRow = -1;
 
 const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
 
-    const { isOpen, handleCloseDialog, investigators, allocateInvestigationToInvestigator, groupIds, epidemiologyNumbers, onSuccess } = props;
+    const { isOpen, handleCloseDialog, fetchInvestigators, allocateInvestigationToInvestigator, groupIds, epidemiologyNumbers, onSuccess } = props;
 
     const [investigatorToAllocateIndex, setInvestigatorToAllocateIndex] = useState<number>(unSelectedRow);
     const [allInvestigators, setAllInvestigators] = useState<InvestigatorOption[]>([]);
@@ -23,10 +23,10 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
     const { alertWarning } = useCustomSwal();
 
     useEffect(() => {
-        investigators.then((investigators) => {
+        fetchInvestigators.then((investigators) => {
             setAllInvestigators(investigators)
         })
-    }, [investigators])
+    }, [fetchInvestigators])
 
     const shouldButtonDisabled: boolean = useMemo(() => {
        return investigatorToAllocateIndex === unSelectedRow;
@@ -113,7 +113,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
 interface Props {
     isOpen: boolean;
     handleCloseDialog: () => void;
-    investigators: Promise<InvestigatorOption[]>;
+    fetchInvestigators: Promise<InvestigatorOption[]>;
     allocateInvestigationToInvestigator: (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => void;
     groupIds: string[];
     epidemiologyNumbers: number[];

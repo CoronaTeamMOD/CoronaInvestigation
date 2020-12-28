@@ -171,7 +171,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const getFilteredUsersOfCurrentCounty = async () : Promise<InvestigatorOption[]> => { 
         const allCountyUsers = await fetchAllCountyUsers();
         const allUsersOfCountyArray: InvestigatorOption[] = Array.from(allCountyUsers, ([id, value]) => ({ id, value }));
-        if (deskFilter.length !== 0) {
+        if (deskFilter.length > 0) {
             allUsersOfCountyArray.filter(({ value }) => {
                 if (!value.deskByDeskId) {
                     return false;
@@ -608,7 +608,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             <InvestigatorAllocationDialog
                 isOpen={isInvestigatorAllocationDialogOpen}
                 handleCloseDialog={() => setIsInvestigatorAllocationDialogOpen(false)}
-                investigators={getFilteredUsersOfCurrentCounty()}
+                fetchInvestigators={getFilteredUsersOfCurrentCounty()}
                 allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
                 groupIds={[selectedRow.groupId]}
                 epidemiologyNumbers={[selectedRow.epidemiologyNumber]}
@@ -630,7 +630,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
                     isInvestigatorAllocationDialogOpen={isInvestigatorAllocationDialogOpen}
                     setIsInvestigatorAllocationDialogOpen={setIsInvestigatorAllocationDialogOpen}
-                    allInvestigators={getFilteredUsersOfCurrentCounty()}
+                    fetchInvestigators={getFilteredUsersOfCurrentCounty()}
                     allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
                 />
             </Slide>
