@@ -67,7 +67,6 @@ interface Props {
     indexedRow: { [T in keyof typeof TableHeadersNames]: any };
     row: InvestigationTableRowType;
     isGroupShown: boolean;
-    index: number;
     tableContainerRef: MutableRefObject<HTMLElement | undefined>;
     allGroupedInvestigations: Map<string, InvestigationTableRowType[]>;
     checkGroupedInvestigationOpen: number[];
@@ -97,7 +96,6 @@ const InvestigationTableRow = ({
     isGroupShown,
     checked,
     clickable,
-    index,
     tableContainerRef,
     allGroupedInvestigations,
     checkGroupedInvestigationOpen,
