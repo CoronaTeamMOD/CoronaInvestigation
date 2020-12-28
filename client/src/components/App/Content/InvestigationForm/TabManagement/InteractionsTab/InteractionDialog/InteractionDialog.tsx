@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Tooltip } from '@material-ui/core';
 import { FormProvider, useForm, UseFormMethods } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers';
 
@@ -180,15 +180,19 @@ const InteractionDialog = (props: Props) => {
                 </DialogContent>
                 <DialogActions className={`${classes.dialogFooter}`}   >
                     {
-                        <Button disabled={!isContinueToContactsEnable()} variant='text' className={classes.changeEventSubFormButton}
-                            onClick={async () => {
-                                await methods.trigger();
-                                isContinueToContactsEnable() && setIsAddingContacts(!isAddingContacts)
-                            }
-                            }>
-                            <ChevronRight />
-                            {isAddingContacts ? `חזרה ל${hebrewActionName} מקום` : `המשך ל${hebrewActionName} מגעים`}
-                        </Button>
+                        <Tooltip title={isContinueToContactsEnable() ? '' : 'לא ניתן לעבור ליצירת מגעים מבלי להזין "סוג אתר/תת סוג'}>
+                            <div>
+                                <Button disabled={!isContinueToContactsEnable()} variant='text' className={classes.changeEventSubFormButton}
+                                    onClick={async () => {
+                                        await methods.trigger()
+                                        isContinueToContactsEnable() && setIsAddingContacts(!isAddingContacts)
+                                    }}>
+                                    <ChevronRight />
+                                    {isAddingContacts ? `חזרה ל${hebrewActionName} מקום` : `המשך ל${hebrewActionName} מגעים`}
+                                </Button>
+                            </div>
+                        </Tooltip>
+
                     }
                     <div>
                         <Button
