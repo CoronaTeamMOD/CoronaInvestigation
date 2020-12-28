@@ -21,7 +21,7 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
             <CardContent>
                 <Grid container>
                     <Grid item xs={12} className={classes.investigationInfoButtonWrapper}>
-                        <div style={{ height: '14vh', width: '11vw' }}>
+                        <div className={classes.investigationsGraphContainer}>
                             <InvestigationBarChart />
                         </div>
                         {

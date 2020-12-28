@@ -32,6 +32,10 @@ const useStyles = makeStyles({
     navigateIcon: {
         backgroundColor: 'WhiteSmoke',
         borderRadius: '2vw',
+    },
+    investigationsGraphContainer: {
+        height: '14vh', 
+        width: '11vw' 
     }
 });
 
