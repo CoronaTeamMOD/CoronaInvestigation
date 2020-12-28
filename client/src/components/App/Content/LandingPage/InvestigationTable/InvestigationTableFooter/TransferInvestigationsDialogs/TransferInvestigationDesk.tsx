@@ -1,4 +1,5 @@
 import React from 'react';
+import { SweetAlertResult } from 'sweetalert2';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
 import { FormProvider, Controller, useForm } from 'react-hook-form';
@@ -22,11 +23,11 @@ const tranferDeskFormName = 'transferDesk';
 
 const TransferInvestigationDesk = (props: Props) => {
 
-    const { alertWarning, alertSuccess } = useCustomSwal();
+    const { alertWarning } = useCustomSwal();
 
     const theme = useTheme();
 
-    const { allDesks, onClose, onConfirm } = props;
+    const { allDesks, onClose, onConfirm, onSuccess } = props;
 
     const methods = useForm({
         mode: 'all',
@@ -46,7 +47,7 @@ const TransferInvestigationDesk = (props: Props) => {
             }).then((result) => {
                 if (result.value) {
                     onConfirm(data[TransferInvestigationInputsNames.DESK], data[TransferInvestigationInputsNames.REASON] || '');
-                    alertSuccess('החקירות הועברו בהצלחה');
+                    onSuccess();
                     onClose();
                 }
             })
@@ -129,6 +130,7 @@ interface Props {
     allDesks: Desk[];
     onClose: () => void;
     onConfirm: (updatedDesk: Desk, transferReason: string) => void;
+    onSuccess: () => Promise<SweetAlertResult<any>>
 }
 
 export default TransferInvestigationDesk;

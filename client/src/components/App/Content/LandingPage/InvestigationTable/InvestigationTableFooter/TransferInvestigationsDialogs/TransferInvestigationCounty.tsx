@@ -1,4 +1,5 @@
 import React from 'react';
+import { SweetAlertResult } from 'sweetalert2';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
 import { FormProvider, Controller, useForm } from 'react-hook-form';
@@ -21,11 +22,11 @@ const tranferCountyFormName = 'transferCounty';
 
 const TransferInvestigationCounty = (props: Props) => {
 
-    const { alertWarning, alertSuccess } = useCustomSwal();
+    const { alertWarning } = useCustomSwal();
 
     const theme = useTheme();
 
-    const { allCounties, onClose, onConfirm } = props;
+    const { allCounties, onClose, onConfirm, onSuccess } = props;
 
     const methods = useForm({
         mode: 'all',
@@ -45,7 +46,7 @@ const TransferInvestigationCounty = (props: Props) => {
             }).then((result) => {
                 if (result.value) {
                     onConfirm(data[TransferInvestigationInputsNames.COUNTY], data[TransferInvestigationInputsNames.REASON] || '');
-                    alertSuccess('החקירות הועברו בהצלחה');
+                    onSuccess();
                     onClose();
                 }
             })
@@ -127,6 +128,7 @@ interface Props {
     allCounties: County[];
     onClose: () => void;
     onConfirm: (updatedCounty: County, transferReason: string) => void;
+    onSuccess: () => Promise<SweetAlertResult<any>>
 }
 
 export default TransferInvestigationCounty;

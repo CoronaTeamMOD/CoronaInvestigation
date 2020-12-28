@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { SweetAlertResult } from 'sweetalert2';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Tooltip } from '@material-ui/core';
 
 import theme from 'styles/theme';
@@ -14,7 +15,7 @@ const unSelectedRow = -1;
 
 const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
 
-    const { isOpen, handleCloseDialog, investigators, allocateInvestigationToInvestigator, groupIds, epidemiologyNumbers } = props;
+    const { isOpen, handleCloseDialog, investigators, allocateInvestigationToInvestigator, groupIds, epidemiologyNumbers, onSuccess } = props;
 
     const [investigatorToAllocateIndex, setInvestigatorToAllocateIndex] = useState<number>(unSelectedRow);
 
@@ -53,6 +54,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
         .then(result => {
             if (result.value) {
                 allocateInvestigationToInvestigator(groupIds, epidemiologyNumbers, investigators[investigatorToAllocateIndex]);
+                onSuccess();
                 closeDialog();
             }
         })
@@ -109,6 +111,7 @@ interface Props {
     allocateInvestigationToInvestigator: (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => void;
     groupIds: string[];
     epidemiologyNumbers: number[];
+    onSuccess: () => Promise<SweetAlertResult<any>>
 }
 
 export default InvestigatorAllocationDialog;
