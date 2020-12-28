@@ -2,8 +2,12 @@ import React from 'react';
 import { ResponsiveBar } from '@nivo/bar';
 
 import InvestigationChartData from './InvestigationChartData';
+import useStyles from './InvestigationBarChartStyles';
 
 const InvestigationBarChart: React.FC = (): JSX.Element => {
+
+    const classes = useStyles();
+
     return (
         <ResponsiveBar
             data={InvestigationChartData}
@@ -12,7 +16,12 @@ const InvestigationBarChart: React.FC = (): JSX.Element => {
             enableGridX={false}
             enableGridY={false}
             enableLabel={false}
-            isInteractive={false}
+            isInteractive={true}
+            tooltip={({indexValue, color, value}) => {
+                return (
+                    <b style={{color}} className={classes.barTooltip}>{indexValue}: {value}</b>
+                )
+            }}
             colors={investigationChart => investigationChart.data.color}
         />
     )
