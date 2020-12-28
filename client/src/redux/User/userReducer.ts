@@ -1,5 +1,5 @@
 import User from 'models/User';
-import userType from 'models/enums/UserType';
+import UserType from 'models/enums/UserType';
 
 import * as Actions from './userActionTypes';
 
@@ -20,7 +20,7 @@ export const initialUserState: UserState = {
         newInvestigationsCount: 0,
         pauseInvestigationsCount: 0,
         languages: [],
-        userType: userType.INVESTIGATOR,
+        userType: UserType.NOT_LOGGED_IN,
         sourceOrganization: '',
         deskName: '',
         countyByInvestigationGroup: {

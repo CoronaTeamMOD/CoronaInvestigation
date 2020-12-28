@@ -1,5 +1,6 @@
 import Desk from './Desk';
 import Language from './Language';
+import UserType from './enums/UserType';
 
 interface User {
     id: string;
@@ -12,7 +13,7 @@ interface User {
     activeInvestigationsCount: number;
     pauseInvestigationsCount: number;
     languages: Language[];
-    userType: number;
+    userType: UserType;
     sourceOrganization: string;
     deskName: string;
     countyByInvestigationGroup: CountyByInvestigationGroup;

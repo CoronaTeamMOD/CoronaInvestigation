@@ -1,6 +1,7 @@
-import { useSelector } from 'react-redux';
-import React, { useMemo, useState, useRef } from 'react';
 import {format} from 'date-fns';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import React, { useMemo, useState, useRef } from 'react';
 import { Autocomplete, Pagination } from '@material-ui/lab';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
@@ -10,7 +11,7 @@ import {
 } from '@material-ui/core';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Refresh, Close, KeyboardArrowDown, KeyboardArrowLeft, Search, Comment, Call } from '@material-ui/icons';
+import { Refresh, Close, KeyboardArrowDown, KeyboardArrowLeft, Search, Comment, Call, ArrowForward } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
@@ -19,6 +20,7 @@ import userType from 'models/enums/UserType';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import InvestigatorOption from 'models/InvestigatorOption';
+import { adminLandingPageRoute } from 'Utils/Routes/Routes';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
@@ -29,15 +31,15 @@ import DeskFilter from './DeskFilter/DeskFilter';
 import TableFilter from './TableFilter/TableFilter';
 import SettingsActions from './SettingsActions/SettingsActions';
 import ClickableTooltip from './clickableTooltip/clickableTooltip';
-import useInvestigationTable, { SelectedRow, DEFAULT_SELECTED_ROW } from './useInvestigationTable';
+import useStyles, {useTooltipStyles} from './InvestigationTableStyles';
+import InfoItem from '../../InvestigationForm/InvestigationInfo/InfoItem';
 import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
 import InvestigatorAllocationCell from './InvestigatorAllocation/InvestigatorAllocationCell';
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
 import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorAllocationDialog';
+import useInvestigationTable, { SelectedRow, DEFAULT_SELECTED_ROW } from './useInvestigationTable';
 import InvestigationIndicatorsColumn from './InvestigationIndicatorsColumn/InvestigationIndicatorsColumn';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
-import InfoItem from '../../InvestigationForm/InvestigationInfo/InfoItem';
-import useStyles, {useTooltipStyles} from './InvestigationTableStyles';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -46,6 +48,7 @@ const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך ה�
 const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 const searchBarLabel = 'הכנס מס\' אפידימיולוגי, ת\"ז, שם מלא או טלפון...';
 const searchBarError = 'יש להכניס רק אותיות ומספרים';
+const returnToAdminLandingPage = 'חזרה לדף הנחיתה';
 
 export const rowsPerPage = 100;
 
@@ -97,6 +100,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const onAllocationSuccess = () => alertSuccess('החוקר הוקצה בהצלחה');
 
     const theme = useTheme();
+    const history = useHistory();
 
     const [checkedIndexedRows, setCheckedIndexedRows] = useState<IndexedInvestigation[]>([]);
     const [selectedRow, setSelectedRow] = useState<SelectedRow>(DEFAULT_SELECTED_ROW);
@@ -421,7 +425,16 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 event.key === 'Escape' && closeDropdowns()}
         >
             <Grid className={classes.title} container alignItems='center' justify='space-between'>
-                <Grid item xs={2} />
+                <Grid item xs={2}>
+                    {
+                        (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) &&
+                        <Tooltip title={returnToAdminLandingPage}>
+                            <IconButton color='primary' onClick={() => history.push(adminLandingPageRoute)}>
+                                <ArrowForward />
+                            </IconButton>
+                        </Tooltip>
+                    }
+                </Grid>
                 <Grid item xs={7}>
                     <Typography color='textPrimary' className={classes.welcomeMessage}>
                         {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}

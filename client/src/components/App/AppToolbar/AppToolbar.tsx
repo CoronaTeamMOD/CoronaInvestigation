@@ -1,19 +1,19 @@
 import React from 'react';
-import {NavLink, NavLinkProps, useLocation, useHistory} from 'react-router-dom';
 import { ExitToApp, Home, SupervisorAccount } from '@material-ui/icons';
+import { NavLink, NavLinkProps, useLocation, useHistory } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Tooltip, IconButton } from '@material-ui/core';
 
 import UserType from 'models/enums/UserType';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
-import { landingPageRoute, usersManagementRoute } from 'Utils/Routes/Routes';
+import { adminLandingPageRoute, landingPageRoute, usersManagementRoute } from 'Utils/Routes/Routes';
 
-import useAppToolbar from './useAppToolbar';
 import useStyles from './AppToolbarStyles';
+import useAppToolbar from './useAppToolbar';
 
 const toggleMessage = 'מה הסטטוס שלך?';
 const navButtonsWhitelist = {
   allowedUserTypes: [UserType.ADMIN, UserType.SUPER_ADMIN],
-  allowedRoutes: [landingPageRoute, usersManagementRoute]
+  allowedRoutes: [landingPageRoute, adminLandingPageRoute, usersManagementRoute]
 };
 
 const StatePersistentNavLink = (props: NavLinkProps) => {
@@ -26,17 +26,17 @@ const StatePersistentNavLink = (props: NavLinkProps) => {
   };
 
   return (
-      <NavLink {...props} location={history.location}
-               onClick={handleNavClick}
-               activeClassName={classes.activeItem} className={classes.menuItem}>
-        {props.children}
-      </NavLink>
+    <NavLink {...props} location={history.location}
+      onClick={handleNavClick}
+      activeClassName={classes.activeItem} className={classes.menuItem}>
+      {props.children}
+    </NavLink>
   )
 };
 
 const AppToolbar: React.FC = (): JSX.Element => {
   const { user, isActive, logout, setUserActivityStatus, countyDisplayName } = useAppToolbar();
-  
+
   const classes = useStyles();
   const location = useLocation();
 
@@ -44,8 +44,8 @@ const AppToolbar: React.FC = (): JSX.Element => {
     <AppBar className={classes.appBar} position="static">
       <Toolbar>
         <div className={classes.rightSection}>
-          <img alt="logo" src="./assets/img/logo.png" width={48} height={48} />
-          <Typography variant="h4">אבן יסוד</Typography>
+          <img alt='logo' src='./assets/img/logo.png' width={48} height={48} />
+          <Typography variant='h4'>אבן יסוד</Typography>
           {
             navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
             navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&
