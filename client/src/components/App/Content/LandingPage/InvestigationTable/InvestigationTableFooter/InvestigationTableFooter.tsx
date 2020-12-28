@@ -37,9 +37,9 @@ const multipleAssignments = 'הקצאות';
 
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
 
-    const { checkedIndexedRows, allDesks, allCounties, allInvestigators, isInvestigatorAllocationDialogOpen,
+    const { checkedIndexedRows, allDesks, allCounties, fetchInvestigators, isInvestigatorAllocationDialogOpen,
             onDialogClose, tableRows, allGroupedInvestigations, onDeskChange,
-            onDeskGroupChange, onCountyChange, onCountyGroupChange,
+            onDeskGroupChange, onCountyChange, onCountyGroupChange, 
             fetchTableData, fetchInvestigationsByGroupId, setIsInvestigatorAllocationDialogOpen, allocateInvestigationToInvestigator } = props;
 
     const { alertSuccess } = useCustomSwal();
@@ -169,7 +169,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
             <InvestigatorAllocationDialog
                 isOpen={isInvestigatorAllocationDialogOpen}
                 handleCloseDialog={handleCloseInvesigatorAllocationDialog}
-                investigators={allInvestigators}
+                fetchInvestigators={fetchInvestigators}
                 allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
                 groupIds={trimmedGroup.uniqueGroupIds}
                 epidemiologyNumbers={trimmedGroup.epidemiologyNumbers}
@@ -194,7 +194,7 @@ interface Props {
     checkedIndexedRows: IndexedInvestigation[];
     allDesks: Desk[];
     allCounties: County[];
-    allInvestigators: InvestigatorOption[];
+    fetchInvestigators: Promise<InvestigatorOption[]>;
     tableRows: InvestigationTableRow[];
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     isInvestigatorAllocationDialogOpen: boolean;

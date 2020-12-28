@@ -137,7 +137,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         moveToTheInvestigationForm, totalCount, unassignedInvestigationsCount,
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
         statusFilter, changeStatusFilter, deskFilter, changeDeskFilter, searchQuery, changeSearchQuery, isSearchQueryValid,
-        changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter
+        changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers
     } = useInvestigationTable({
         setSelectedRow, setAllUsersOfCurrCounty, allGroupedInvestigations,
         setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations,
@@ -168,16 +168,18 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         setCheckedIndexedRows([]);
     }
 
-    const getFilteredUsersOfCurrentCounty = (): InvestigatorOption[] => {
-        const allUsersOfCountyArray = Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }));
-        return deskFilter.length === 0 ?
-            allUsersOfCountyArray :
-            allUsersOfCountyArray.filter(({ id, value }) => {
+    const getFilteredUsersOfCurrentCounty = async () : Promise<InvestigatorOption[]> => { 
+        const allCountyUsers = await fetchAllCountyUsers();
+        const allUsersOfCountyArray: InvestigatorOption[] = Array.from(allCountyUsers, ([id, value]) => ({ id, value }));
+        if (deskFilter.length > 0) {
+            allUsersOfCountyArray.filter(({ value }) => {
                 if (!value.deskByDeskId) {
                     return false;
                 }
                 return deskFilter.includes(value.deskByDeskId.id);
-            });
+            });     
+        }
+        return allUsersOfCountyArray;
     }
 
     const allocateInvestigationToInvestigator = async (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => {
@@ -606,7 +608,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             <InvestigatorAllocationDialog
                 isOpen={isInvestigatorAllocationDialogOpen}
                 handleCloseDialog={() => setIsInvestigatorAllocationDialogOpen(false)}
-                investigators={getFilteredUsersOfCurrentCounty()}
+                fetchInvestigators={getFilteredUsersOfCurrentCounty()}
                 allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
                 groupIds={[selectedRow.groupId]}
                 epidemiologyNumbers={[selectedRow.epidemiologyNumber]}
@@ -614,7 +616,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             /> 
             <Slide direction='up' in={checkedIndexedRows.length > 0} mountOnEnter unmountOnExit>
                 <InvestigationTableFooter
-                    allInvestigators={getFilteredUsersOfCurrentCounty()}
                     checkedIndexedRows={checkedIndexedRows}
                     allDesks={allDesks}
                     allCounties={allCounties}
@@ -629,6 +630,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
                     isInvestigatorAllocationDialogOpen={isInvestigatorAllocationDialogOpen}
                     setIsInvestigatorAllocationDialogOpen={setIsInvestigatorAllocationDialogOpen}
+                    fetchInvestigators={getFilteredUsersOfCurrentCounty()}
                     allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
                 />
             </Slide>

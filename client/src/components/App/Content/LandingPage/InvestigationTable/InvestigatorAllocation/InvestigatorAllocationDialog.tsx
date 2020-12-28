@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
 import { SweetAlertResult } from 'sweetalert2';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Tooltip } from '@material-ui/core';
 
 import theme from 'styles/theme';
@@ -15,12 +15,18 @@ const unSelectedRow = -1;
 
 const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
 
-    const { isOpen, handleCloseDialog, investigators, allocateInvestigationToInvestigator, groupIds, epidemiologyNumbers, onSuccess } = props;
+    const { isOpen, handleCloseDialog, fetchInvestigators, allocateInvestigationToInvestigator, groupIds, epidemiologyNumbers, onSuccess } = props;
 
     const [investigatorToAllocateIndex, setInvestigatorToAllocateIndex] = useState<number>(unSelectedRow);
-
+    const [allInvestigators, setAllInvestigators] = useState<InvestigatorOption[]>([]);
     const classes = useStyles();
     const { alertWarning } = useCustomSwal();
+
+    useEffect(() => {
+        fetchInvestigators.then((investigators) => {
+            setAllInvestigators(investigators)
+        })
+    }, [fetchInvestigators])
 
     const shouldButtonDisabled: boolean = useMemo(() => {
        return investigatorToAllocateIndex === unSelectedRow;
@@ -33,7 +39,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
         } else if (epidemiologyNumbers.length === 1) {
             message += `את חקירה מספר <b>${epidemiologyNumbers[0]}</b> `;            
         }
-        message += `לחוקר <b>${investigators[investigatorToAllocateIndex].value.userName}</b>?</p>`;
+        message += `לחוקר <b>${allInvestigators[investigatorToAllocateIndex].value.userName}</b>?</p>`;
         return message;     
     }
 
@@ -53,7 +59,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
         })
         .then(result => {
             if (result.value) {
-                allocateInvestigationToInvestigator(groupIds, epidemiologyNumbers, investigators[investigatorToAllocateIndex]);
+                allocateInvestigationToInvestigator(groupIds, epidemiologyNumbers, allInvestigators[investigatorToAllocateIndex]);
                 onSuccess();
                 closeDialog();
             }
@@ -69,7 +75,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
             </DialogTitle>
             <DialogContent>
                 <InvestigatorsTable 
-                    investigators={investigators.map((investigator: InvestigatorOption) => investigator.value)}
+                    investigators={allInvestigators.map((investigator: InvestigatorOption) => investigator.value)}
                     selectedRow={investigatorToAllocateIndex}
                     setSelectedRow={setInvestigatorToAllocateIndex}
                 />
@@ -107,7 +113,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
 interface Props {
     isOpen: boolean;
     handleCloseDialog: () => void;
-    investigators: InvestigatorOption[];
+    fetchInvestigators: Promise<InvestigatorOption[]>;
     allocateInvestigationToInvestigator: (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => void;
     groupIds: string[];
     epidemiologyNumbers: number[];

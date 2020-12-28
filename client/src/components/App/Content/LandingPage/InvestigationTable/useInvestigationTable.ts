@@ -294,34 +294,34 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fisrtUser.newInvestigationsCount - secondUser.newInvestigationsCount ||
         fisrtUser.activeInvestigationsCount - secondUser.activeInvestigationsCount
 
-    const fetchAllCountyUsers = () => {
+    const fetchAllCountyUsers = async () => {
         const countyUsersLogger = logger.setup('Getting group users');
         countyUsersLogger.info('requesting the server the connected admin group users', Severity.LOW);
-        axios.get('/users/group')
-            .then((result: any) => {
-                let countyUsers: Map<string, User> = new Map();
-                if (result && result.data) {
-                    result.data.forEach((user: any) => {
-                        countyUsers.set(user.id, {
-                            ...user,
-                            newInvestigationsCount: user.newInvestigationsCount.totalCount,
-                            activeInvestigationsCount: user.activeInvestigationsCount.totalCount,
-                            pauseInvestigationsCount: user.pauseInvestigationsCount.totalCount
-                        })
-                        countyUsers = new Map(Array.from(countyUsers.entries())
-                            .sort((fisrtUser, secondUser) => sortUsersByAvailability(fisrtUser[1], secondUser[1])));
-                    });
-                    countyUsersLogger.info('fetched all the users successfully', Severity.LOW);
-                    setAllUsersOfCurrCounty(countyUsers);
-                } else {
-                    countyUsersLogger.warn('the connected admin doesnt have group users', Severity.MEDIUM);
-                }
-            }).catch(err => {
-                countyUsersLogger.error(err, Severity.HIGH);
-                alertError('לא ניתן היה לשלוף חוקרים');
-            });
+        const countyUsers: Map<string, User> = new Map();
+        try {
+            const result = await axios.get('/users/group');
+            if (result && result.data) {
+                result.data.forEach((user: any) => {
+                    countyUsers.set(user.id, {
+                        ...user,
+                        newInvestigationsCount: user.newInvestigationsCount.totalCount,
+                        activeInvestigationsCount: user.activeInvestigationsCount.totalCount,
+                        pauseInvestigationsCount: user.pauseInvestigationsCount.totalCount
+                    })
+                });
+                countyUsersLogger.info('fetched all the users successfully', Severity.LOW);
+            } else {
+                countyUsersLogger.warn('the connected admin doesnt have group users', Severity.MEDIUM);
+            }                    
+        } catch (err) {
+            countyUsersLogger.error(err, Severity.HIGH);
+            alertError('לא ניתן היה לשלוף חוקרים');
+        };
+        const sortedCountyUsers = new Map(Array.from(countyUsers.entries())
+        .sort((fisrtUser, secondUser) => sortUsersByAvailability(fisrtUser[1], secondUser[1])));
+        return sortedCountyUsers;
     }
-
+    
     const fetchAllCounties = () => {
         const fetchAllCountiesLogger = logger.setup('GraphQL request to the DB');
         axios.get('/counties').then((result: any) => {
@@ -344,12 +344,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return format(new Date(date), 'dd/MM')
     };
 
-    const fetchTableData = () => {
+    const fetchTableData = async () => {
         const fetchInvestigationsLogger = logger.setup('Getting Investigations');
         if (isLoggedIn) {
             setIsLoading(true);
             if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
-                fetchAllCountyUsers();
+                const allCountyUsers = await fetchAllCountyUsers();
+                setAllUsersOfCurrCounty(allCountyUsers);
                 fetchAllCounties();
             }
             fetchInvestigationsLogger.info(`launching the selected request to the DB ordering by ${orderBy}`, Severity.LOW);
@@ -850,7 +851,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeUnassginedUserFilter,
         unassignedUserFilter,
         changeInactiveUserFilter,
-        inactiveUserFilter
+        inactiveUserFilter,
+        fetchAllCountyUsers
     };
 };
 
