@@ -6,25 +6,28 @@ const useStyles = makeStyles({
         height: '35vh',
         borderRadius: '1vw',
         display: 'flex',
-        flexDirection: 'column-reverse',
+        flexDirection: 'column',
+        justifyContent: 'center'
+    },
+    investigationInfoButtonWrapper: {
+        display: 'flex',
+        alignItems: 'flex-end',
+        justifyContent: 'space-around'
     },
     investigationAmountContainer: {
-        paddingLeft: '2.5vw',
-    },
-    investigationAmount: {
         display: 'flex',
-        justifyContent: 'center',
+        paddingTop: '1vh',
+        paddingRight: '2vw',
+        alignItems: 'center',
+        flip: false
     },
     investigationAmountText: {
-        fontSize: '1.1vw',
-    },
-    allInvestigations: {
-        display: 'flex',
-        flexDirection: 'row',
+        fontSize: '1.5vw',
+        marginLeft: '0.3vw',
+        flip: false
     },
     allInvestigationsText: {
         fontSize: '1.3vw',
-        paddingTop: '0.6vh',
     },
     navigateIcon: {
         backgroundColor: 'WhiteSmoke',

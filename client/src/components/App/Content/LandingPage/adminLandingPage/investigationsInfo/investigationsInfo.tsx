@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
-import { Card, CardActions, Grid, IconButton, Typography } from '@material-ui/core';
+import { Card, CardContent, Grid, IconButton, Typography } from '@material-ui/core';
 
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationChart from 'models/InvestigationChart';
@@ -18,39 +18,31 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
 
     return (
         <Card className={classes.filtersCard}>
-            <CardActions>
+            <CardContent>
                 <Grid container>
-                    <Grid item xs={3}>
-                        <div style={{ height: '15vh', width: '14vw' }}>
+                    <Grid item xs={12} className={classes.investigationInfoButtonWrapper}>
+                        <div style={{ height: '14vh', width: '11vw' }}>
                             <InvestigationBarChart />
                         </div>
-                    </Grid>
-                    {
-                        InvestigationChartData.map((InvestigationData: InvestigationChart) => (
-                            <Grid item xs={2}>
+                        {
+                            InvestigationChartData.map((InvestigationData: InvestigationChart) => (
                                 <InvestigationInfoButton
                                     amountOfInvestigations={InvestigationData.value}
                                     text={InvestigationData.id}
                                     style={{ backgroundColor: InvestigationData.color }}
                                 />
-                            </Grid>
-                        ))
-                    }
-                    <Grid item xs={1}>
+                            ))
+                        }
                     </Grid>
-                    <div className={classes.investigationAmountContainer}>
-                        <div className={classes.investigationAmount}>
-                            <Typography className={classes.investigationAmountText}><b>{102}</b></Typography>
-                        </div>
-                        <div className={classes.allInvestigations}>
-                            <Typography className={classes.allInvestigationsText}><b>חקירות בסך הכל</b></Typography>
-                            <IconButton onClick={() => history.push(landingPageRoute)}>
-                                <NavigateBeforeIcon className={classes.navigateIcon} />
-                            </IconButton>
-                        </div>
-                    </div>
+                    <Grid item xs={12} className={classes.investigationAmountContainer}>
+                        <Typography className={classes.investigationAmountText}><b>{102} </b></Typography>
+                        <Typography className={classes.allInvestigationsText}><b>חקירות בסך הכל</b></Typography>
+                        <IconButton onClick={() => history.push(landingPageRoute)}>
+                            <NavigateBeforeIcon className={classes.navigateIcon} />
+                        </IconButton>
+                    </Grid>
                 </Grid>
-            </CardActions>
+            </CardContent>
         </Card>
     )
 }
