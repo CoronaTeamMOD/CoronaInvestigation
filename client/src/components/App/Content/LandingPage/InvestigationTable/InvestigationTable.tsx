@@ -94,7 +94,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const classes = useStyles(isScreenWide);
     const { alertWarning, alertSuccess } = useCustomSwal();
-    const onAllocationSuccess = () => alertSuccess('החוקר הוקצא בהצלחה');
+    const onAllocationSuccess = () => alertSuccess('החוקר הוקצה בהצלחה');
 
     const theme = useTheme();
 

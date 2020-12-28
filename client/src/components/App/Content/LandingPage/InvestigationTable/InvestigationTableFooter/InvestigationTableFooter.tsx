@@ -44,7 +44,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
 
     const { alertSuccess } = useCustomSwal();
     const onTransferSuccess = () => alertSuccess('החקירות הועברו בהצלחה');
-    const onAllocationSuccess = () => alertSuccess('החוקר הוקצא בהצלחה');
+    const onAllocationSuccess = () => alertSuccess('החוקר הוקצה בהצלחה');
 
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
