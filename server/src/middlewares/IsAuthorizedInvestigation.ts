@@ -13,20 +13,9 @@ export const handleInvestigationRequest = async (
 ) => {
     const {user} = response.locals;
     const epidemiologynumber = parseInt(response.locals.epidemiologynumber); 
-    //console.log(epidemiologynumber)
+    //todo - add logger
     const {investigationGroup , id} = await graphqlRequest(GET_INVESTIGATION_CREATOR, response.locals, { epidemiologynumber }).then((result: any) => {
         return result.data.investigationByEpidemiologyNumber.userByCreator;
-        // authenticationLogger.info('fetched user by id successfully', Severity.LOW);
-        // response.locals.user = {
-        //     id: userId,
-        //     name: result.data.userById?.userName,
-        //     userType: result.data.userById?.userType,
-        //     investigationGroup: result.data.userById?.investigationGroup,
-        //     countyByInvestigationGroup: {
-        //         districtId: result.data.userById?.countyByInvestigationGroup?.districtId
-        //     }
-        // };
-        return next();
     }).catch(err => {
         console.log(err);
         //authenticationLogger.error(`error in requesting the graphql API: ${err}`, Severity.HIGH);
@@ -43,9 +32,4 @@ export const handleInvestigationRequest = async (
         : response.status(401).json({ error: "unauthorized user - user is not creator" });
     }
 
-}
-
-const checkForPermission = (investigationGroup: number , id: string) => {
-    
-    // if()
 }
