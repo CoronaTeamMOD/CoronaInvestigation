@@ -67,7 +67,6 @@ export const useExposuresAndFlights = (props : Props) => {
 
     const fetchExposuresAndFlights = () => {
         const fetchExposuresAndFlightsLogger = logger.setup('Fetching Exposures And Flights');
-
         const getCoronaTestDateLogger = logger.setup('Getting Corona Test Date');
 
         fetchExposuresAndFlightsLogger.info('launching exposures and flights request', Severity.LOW);
