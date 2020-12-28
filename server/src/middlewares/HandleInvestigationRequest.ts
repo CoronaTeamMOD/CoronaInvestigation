@@ -21,15 +21,12 @@ export const handleInvestigationRequest = async (request: Request, response: Res
     }
 
     InvestigationMiddlewareLogger.info('getting current investigation details from DB', Severity.LOW);
-    const { investigationGroup, id } = await graphqlRequest(GET_INVESTIGATION_CREATOR, response.locals, { epidemiologynumber })
-        .then((result: any) => {
-            InvestigationMiddlewareLogger.info('got investigation details', Severity.LOW);
-            return result.data?.investigationByEpidemiologyNumber?.userByCreator;
-        })
-        .catch((err) => {
-            InvestigationMiddlewareLogger.info(`error in requesting the graphql API: ${err}`, Severity.HIGH);
-            return response.sendStatus(500);
-        });
+    const { investigationGroup, id , err} = await fetchInvestigationCreatorDetails(response.locals , epidemiologynumber , logger)
+    if(investigationGroup === -1) {
+        InvestigationMiddlewareLogger.info(`error in requesting the graphql API: ${err}`, Severity.HIGH);
+        response.sendStatus(500);
+    }
+    InvestigationMiddlewareLogger.info('got investigation details', Severity.LOW);
 
     if (user.userType === UserType.ADMIN || user.userType === UserType.SUPER_ADMIN) {
         if (user.countyByInvestigationGroup.districtId === investigationGroup) {
@@ -47,3 +44,19 @@ export const handleInvestigationRequest = async (request: Request, response: Res
         return response.status(401).json({ error: 'unauthorized user - user is not creator' });
     }
 };
+
+const fetchInvestigationCreatorDetails = async (locals : any , epidemiologynumber : number , logger : any) : Promise<{investigationGroup : number , id : string , err? : any}>=> {
+    const investigationCreatorDetails = await graphqlRequest(GET_INVESTIGATION_CREATOR, locals, { epidemiologynumber })
+    .then((result: any) => {
+        
+        return result.data?.investigationByEpidemiologyNumber?.userByCreator;
+    })
+    .catch((err) => {
+        return {
+            investigationGroup : -1,
+            id: "N/A",
+            err
+        }
+    });
+    return investigationCreatorDetails;
+}
