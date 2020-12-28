@@ -6,7 +6,7 @@ import useStyles from './InvestigatorAllocationCellStyles';
 
 const InvestigatorAllocationCell: React.FC<Props> = (props: Props) => {
 
-    const { investigatorName ,isInvestigatorActive} = props;
+    const { investigatorName, isInvestigatorActive, disabled } = props;
 
     const [isCellHovered, setIsCellHovered] = useState<boolean>(false);
 
@@ -20,15 +20,15 @@ const InvestigatorAllocationCell: React.FC<Props> = (props: Props) => {
     )
 
     return (
-        <div 
-            className={`${classes.selectedInvestigator} ${ !isInvestigatorActive && !isUnassigned ? classes.inActiveInvestigator : ''}`}
-            onMouseOver={() => setIsCellHovered(true)}
-            onMouseLeave={() => setIsCellHovered(false)}
+        <div
+            className={`${classes.selectedInvestigator} ${!isInvestigatorActive && !isUnassigned ? classes.inActiveInvestigator : ''}`}
+            onMouseOver={() => !disabled && setIsCellHovered(true)}
+            onMouseLeave={() => !disabled && setIsCellHovered(false)}
         >
             {isUnassigned && !isCellHovered && <UnassignedWarning />}
             {investigatorName}
             {isCellHovered && <Edit fontSize='small' className={classes.editIcon} />}
-            
+
         </div>
     )
 };
@@ -36,6 +36,7 @@ const InvestigatorAllocationCell: React.FC<Props> = (props: Props) => {
 interface Props {
     investigatorName: string;
     isInvestigatorActive: Boolean;
+    disabled: boolean;
 }
 
 export default InvestigatorAllocationCell;

@@ -139,10 +139,11 @@ const InvestigationTableRow = ({
                     <InvestigatorAllocationCell
                         investigatorName={indexedRow[cellName as keyof typeof TableHeadersNames]}
                         isInvestigatorActive={row.investigator?.isActive}
+                        disabled={disabled}
                     />
                 )
             case TableHeadersNames.investigationDesk:
-                if (selected && deskAutoCompleteClicked &&
+                if (selected && deskAutoCompleteClicked && !disabled &&
                     (user.userType === UserType.ADMIN || user.userType === UserType.SUPER_ADMIN) && !wasInvestigationFetchedByGroup) {
                     return (
                         <Autocomplete
@@ -174,11 +175,11 @@ const InvestigationTableRow = ({
                     <div>{subOccupation || '-'}</div>
                 </Tooltip>
             case TableHeadersNames.comment:
-                return <ClickableTooltip value={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                return <ClickableTooltip disabled={disabled} value={indexedRow[cellName as keyof typeof TableHeadersNames]}
                     defaultValue='אין הערה' scrollableRef={tableContainerRef.current} InputIcon={Comment} />
 
             case TableHeadersNames.phoneNumber:
-                return <ClickableTooltip value={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                return <ClickableTooltip disabled={disabled} value={indexedRow[cellName as keyof typeof TableHeadersNames]}
                     defaultValue='' scrollableRef={tableContainerRef.current} InputIcon={Call} />
             case TableHeadersNames.investigationStatus:
                 const investigationStatus = indexedRow[cellName as keyof typeof TableHeadersNames];
@@ -206,6 +207,7 @@ const InvestigationTableRow = ({
                 )
             case TableHeadersNames.settings:
                 return (
+                    !disabled &&
                     <SettingsActions
                         epidemiologyNumber={indexedRow.epidemiologyNumber}
                         investigationStatus={indexedRow.investigationStatus}
@@ -240,7 +242,7 @@ const InvestigationTableRow = ({
                         <TableCell
                             classes={{ root: classes.tableCellRoot }}
                             className={tableCellStyleFunction(key).join(' ')}
-                            onClick={(event: any) => onCellClick(event, key, indexedRow.epidemiologyNumber, indexedRow.groupId)}
+                            onClick={(event: any) => !disabled && onCellClick(event, key, indexedRow.epidemiologyNumber, indexedRow.groupId)}
                         >
                             {
                                 getTableCell(key)
