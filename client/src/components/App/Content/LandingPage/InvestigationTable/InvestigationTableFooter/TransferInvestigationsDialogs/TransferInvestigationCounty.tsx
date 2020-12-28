@@ -21,7 +21,7 @@ const tranferCountyFormName = 'transferCounty';
 
 const TransferInvestigationCounty = (props: Props) => {
 
-    const { alertWarning } = useCustomSwal();
+    const { alertWarning, alertSuccess } = useCustomSwal();
 
     const theme = useTheme();
 
@@ -45,6 +45,8 @@ const TransferInvestigationCounty = (props: Props) => {
             }).then((result) => {
                 if (result.value) {
                     onConfirm(data[TransferInvestigationInputsNames.COUNTY], data[TransferInvestigationInputsNames.REASON] || '');
+                    alertSuccess('החקירות הועברו בהצלחה');
+                    onClose();
                 }
             })
         })()

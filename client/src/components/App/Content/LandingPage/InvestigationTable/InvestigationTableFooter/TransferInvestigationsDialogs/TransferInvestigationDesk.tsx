@@ -22,7 +22,7 @@ const tranferDeskFormName = 'transferDesk';
 
 const TransferInvestigationDesk = (props: Props) => {
 
-    const { alertWarning } = useCustomSwal();
+    const { alertWarning, alertSuccess } = useCustomSwal();
 
     const theme = useTheme();
 
@@ -46,6 +46,8 @@ const TransferInvestigationDesk = (props: Props) => {
             }).then((result) => {
                 if (result.value) {
                     onConfirm(data[TransferInvestigationInputsNames.DESK], data[TransferInvestigationInputsNames.REASON] || '');
+                    alertSuccess('החקירות הועברו בהצלחה');
+                    onClose();
                 }
             })
         })()
