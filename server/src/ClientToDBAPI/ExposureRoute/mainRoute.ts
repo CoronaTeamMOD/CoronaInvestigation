@@ -70,7 +70,9 @@ exposureRoute.get('/exposures/:investigationId', (request: Request, response: Re
 
 const convertSearchValueToRegex = (searchValue: string, isPhoneOrIdentityNumber: boolean) => {
     let searchRegexContent : string;
-    if (isPhoneOrIdentityNumber) searchRegexContent = searchValue;
+    if (isPhoneOrIdentityNumber) {
+        searchRegexContent = searchValue;
+    }
     else searchRegexContent = searchValue.replace(new RegExp(invalidCharsRegex, 'g'), '%');
     return `%${searchRegexContent}%`
 }
@@ -110,16 +112,16 @@ const filterCovidPatientsByRegex = (searchValue: string, patientsToFilter: Covid
 
 exposureRoute.get('/optionalExposureSources/:searchValue/:coronaTestDate', (request: Request, response: Response) => {
     const searchValue : string = request.params.searchValue || '';
+    const searchInt = isNaN(parseInt(searchValue)) ? 0 : parseInt(searchValue);
     const isPhoneOrIdentityNumber = phoneOrIdentityNumberRegex.test(searchValue);
-    const searchRegex = convertSearchValueToRegex(searchValue, isPhoneOrIdentityNumber);
     const dateToStartSearching = subDays(new Date(request.params.coronaTestDate), searchDaysAmount);
     const optionalExposureSourcesLogger = logger.setup({
         workflow: 'Getting exposure source options',
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    optionalExposureSourcesLogger.info(`launcing DB request with parameters ${searchRegex} and ${dateToStartSearching}`, Severity.LOW);
-    graphqlRequest(GET_EXPOSURE_SOURCE_OPTIONS, response.locals, {searchRegex, dateToStartSearching})
+    optionalExposureSourcesLogger.info(`launcing DB request with parameters ${searchValue} and ${dateToStartSearching}`, Severity.LOW);
+    graphqlRequest(GET_EXPOSURE_SOURCE_OPTIONS, response.locals, {searchValue, searchInt})
         .then((result: OptionalExposureSourcesResponse) => {
             if (result?.data?.allCovidPatients?.nodes) {
                 optionalExposureSourcesLogger.info('got response from DB', Severity.LOW);
