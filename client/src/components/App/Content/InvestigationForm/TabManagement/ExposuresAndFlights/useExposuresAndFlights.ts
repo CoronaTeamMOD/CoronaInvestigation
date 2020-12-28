@@ -26,10 +26,12 @@ interface Props {
     exposureAndFlightsData: ExposureAndFlightsDetails;
     setExposureDataAndFlights: React.Dispatch<React.SetStateAction<ExposureAndFlightsDetails>>;
     id: number;
+    reset: any;
+    trigger: any;
 }
 
 export const useExposuresAndFlights = (props : Props) => {
-    const {exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights , id} = props;
+    const {exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, id, reset, trigger} = props;
     
     const { saveExposureAndFlightData, saveResortsData } = useExposuresSaving({ exposureAndFlightsData, setExposureDataAndFlights });
     const { parseAddress } = useGoogleApiAutocomplete();
@@ -79,14 +81,17 @@ export const useExposuresAndFlights = (props : Props) => {
         .then((exposures?: Exposure[]) => {
             if (exposures) {
             fetchResortsData().then((result) => {
-                setExposureDataAndFlights({
+                const formattedRes = {
                     exposures,
                     exposuresToDelete: [],
                     wereConfirmedExposures: doesHaveConfirmedExposures(exposures),
                     wereFlights: doesHaveFlights(exposures),
                     wasInEilat: result.wasInEilat,
                     wasInDeadSea: result.wasInDeadSea,
-                });
+                }
+                setExposureDataAndFlights(formattedRes);
+                reset(formattedRes);
+                trigger();
             }).catch((error) => {
                 getCoronaTestDateLogger.error(`failed to get resorts response due to ${error}`, Severity.HIGH);
             })

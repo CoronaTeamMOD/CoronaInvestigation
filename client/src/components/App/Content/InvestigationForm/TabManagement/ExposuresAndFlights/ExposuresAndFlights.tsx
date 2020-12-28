@@ -27,15 +27,18 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     resolver: yupResolver(ExposureSchema(validationDate))
   });
 
+  const {reset , trigger} = methods;
+
   useEffect(() => {
-    methods.reset({
-      wasInEilat,
-      wasInDeadSea,
-      exposures,
-      wereFlights,
-      wereConfirmedExposures
-    });
-    methods.trigger();
+    // methods.reset({
+    //   wasInEilat,
+    //   wasInDeadSea,
+    //   exposures,
+    //   wereFlights,
+    //   wereConfirmedExposures
+    // });
+    // methods.trigger();
+    // console.log('triggered')
   }, [exposureAndFlightsData])
 
   const {
@@ -45,7 +48,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     onExposureAdded,
     disableConfirmedExposureAddition,
     disableFlightAddition
-  } = useExposuresAndFlights({exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights , id});
+  } = useExposuresAndFlights({exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, id, reset, trigger});
 
   const onSubmit = (e : React.FormEvent) => {
     e.preventDefault();
