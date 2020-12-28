@@ -16,10 +16,6 @@ export const displayPatientFields: CovidPatientFields = {
     address: 'כתובת',
 };
 
-const minFullNameLengthToSearch = 2;
-const minNumbersLengthToSearch = 4;
-const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
-
 const useExposureForm = (props: Props) => {
     const { alertError } = useCustomSwal();
 
@@ -27,10 +23,7 @@ const useExposureForm = (props: Props) => {
 
     const { exposureAndFlightsData, exposureSourceSearchString } = props;
 
-    const minSourceSearchLengthToSearch: number = React.useMemo(
-        () => (phoneAndIdentityNumberRegex.test(exposureSourceSearchString) ? minNumbersLengthToSearch : minFullNameLengthToSearch),
-        [exposureSourceSearchString]
-    );
+    const minSourceSearchLengthToSearch: number = 2;
 
     const fetchOptionalCovidPatients = async (props: getOptionalCovidPatientsProps): Promise<CovidPatient[]> => {
         const { setIsLoading } = props;

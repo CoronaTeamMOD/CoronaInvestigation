@@ -63,9 +63,9 @@ const ExposureForm = (props: Props) => {
 		setOptionalCovidPatients(optionalCovidPatients);
 	};
 
-	useEffect(() => {
-		setOptionalCovidPatientsAsync();
-	}, [exposureSourceSearchString]);
+	// useEffect(() => {
+	// 	setOptionalCovidPatientsAsync();
+	// }, [exposureSourceSearchString]);
 
 	useEffect(() => {
 		if (Boolean(exposureAndFlightsData.exposureSource)) {
