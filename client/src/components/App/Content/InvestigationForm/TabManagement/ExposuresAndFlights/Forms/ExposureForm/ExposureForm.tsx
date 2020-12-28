@@ -167,17 +167,13 @@ const ExposureForm = (props: Props) => {
 					render={(props) => {
 						return (
 							<DatePick
-								name={`exposures[${index}].${fieldsNames.date}`}
-								maxDateMessage={MAX_DATE_ERROR_MESSAGE}
-								invalidDateMessage={INVALID_DATE_ERROR_MESSAGE}
-								FormHelperTextProps={{
-									classes: { root: classes.errorLabel },
-								}}
-								maxDate={new Date(validationDate)}
+								{...props}
+								maxDateMessage={''}
+								invalidDateMessage={''}
+								maxDate={new Date()}
 								testId='exposureDate'
 								labelText={getDateLabel(dateError)}
 								error={Boolean(dateError)}
-								value={exposureAndFlightsData[fieldsNames.date]}
                                 onChange={(newDate: Date) => {
                                     props.onChange(newDate);
                                     }
