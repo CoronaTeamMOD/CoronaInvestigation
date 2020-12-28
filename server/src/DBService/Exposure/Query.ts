@@ -44,7 +44,7 @@ query ExposureByInvestigationId ($investigationId: Int!){
 `;
 
 export const GET_EXPOSURE_SOURCE_OPTIONS = gql`
-    query getOptionalExposureSources($searchValue: String! , $searchInt: Int!) {
+    query getOptionalExposureSources($searchValue: String! , $searchInt: Int! , $searchStartDate : Datetime! , $searchEndDate : Datetime!) {
         allCovidPatients(
             filter: {
                 or: [
@@ -52,6 +52,10 @@ export const GET_EXPOSURE_SOURCE_OPTIONS = gql`
                     { identityNumber: { includes: $searchValue } }
                     { primaryPhone: { includes: $searchValue } }
                     { epidemiologyNumber: {equalTo: $searchInt } }
+                ]
+                and : [
+                    { validationDate: {greaterThanOrEqualTo: $searchStartDate} }
+                    { validationDate: {lessThanOrEqualTo: $searchEndDate} }
                 ]
             }
         ) {

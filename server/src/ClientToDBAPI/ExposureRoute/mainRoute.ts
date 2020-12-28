@@ -114,14 +114,17 @@ exposureRoute.get('/optionalExposureSources/:searchValue/:coronaTestDate', (requ
     const searchValue : string = request.params.searchValue || '';
     const searchInt = isNaN(parseInt(searchValue)) ? 0 : parseInt(searchValue);
     const isPhoneOrIdentityNumber = phoneOrIdentityNumberRegex.test(searchValue);
-    const dateToStartSearching = subDays(new Date(request.params.coronaTestDate), searchDaysAmount);
+
+    const searchEndDate = new Date(request.params.coronaTestDate);
+    const searchStartDate = subDays(searchEndDate, searchDaysAmount);
+
     const optionalExposureSourcesLogger = logger.setup({
         workflow: 'Getting exposure source options',
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    optionalExposureSourcesLogger.info(`launcing DB request with parameters ${searchValue} and ${dateToStartSearching}`, Severity.LOW);
-    graphqlRequest(GET_EXPOSURE_SOURCE_OPTIONS, response.locals, {searchValue, searchInt})
+    optionalExposureSourcesLogger.info(`launcing DB request with parameters ${searchValue} and ${searchStartDate}`, Severity.LOW);
+    graphqlRequest(GET_EXPOSURE_SOURCE_OPTIONS, response.locals, {searchValue, searchInt, searchStartDate, searchEndDate})
         .then((result: OptionalExposureSourcesResponse) => {
             if (result?.data?.allCovidPatients?.nodes) {
                 optionalExposureSourcesLogger.info('got response from DB', Severity.LOW);
