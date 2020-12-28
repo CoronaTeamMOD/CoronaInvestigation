@@ -57,7 +57,7 @@ investigationInfo.get('/staticInfo', handleInvestigationRequest ,(request: Reque
     staticInfoLogger.info('requesting the graphql API to query investigations staticInfo', Severity.LOW);
 
     graphqlRequest(GET_INVESTIGATION_INFO, response.locals, {
-        investigationId: +request.query.investigationId
+        investigationId: +response.locals.epidemiologynumber
     })
         .then((result: any) => {
             if (result?.data?.investigationByEpidemiologyNumber) {

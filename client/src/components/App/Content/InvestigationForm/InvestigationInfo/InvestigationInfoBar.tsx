@@ -79,7 +79,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
         const investigationInfoLogger = logger.setup('Fetching investigation Info');
         investigationInfoLogger.info('launching investigation info request', Severity.LOW);
         epidemiologyNumber !== defaultEpidemiologyNumber &&
-            axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
+            axios.get(`/investigationInfo/staticInfo`
             ).then((result: any) => {
                 if (result && result.data) {
                     investigationInfoLogger.info('investigation info request was successful', Severity.LOW);
