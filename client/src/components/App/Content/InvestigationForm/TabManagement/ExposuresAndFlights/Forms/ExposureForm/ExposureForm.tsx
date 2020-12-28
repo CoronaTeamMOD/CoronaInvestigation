@@ -63,10 +63,6 @@ const ExposureForm = (props: Props) => {
 		setOptionalCovidPatients(optionalCovidPatients);
 	};
 
-	// useEffect(() => {
-	// 	setOptionalCovidPatientsAsync();
-	// }, [exposureSourceSearchString]);
-
 	useEffect(() => {
 		if (Boolean(exposureAndFlightsData.exposureSource)) {
 			setExposureSourceSearchString(selectedExposureSourceDisplay(exposureAndFlightsData.exposureSource));
@@ -116,6 +112,11 @@ const ExposureForm = (props: Props) => {
 								test-id='exposureSource'
 								placeholder={INSERT_EXPOSURE_SOURCE_SEARCH}
 								onSearchClick={setOptionalCovidPatientsAsync}
+								onKeyDown={(e : React.KeyboardEvent) => {
+									if(e.key === 'Enter') {
+										setOptionalCovidPatientsAsync()
+									}
+								}}
 							/>
 						);
 					}}

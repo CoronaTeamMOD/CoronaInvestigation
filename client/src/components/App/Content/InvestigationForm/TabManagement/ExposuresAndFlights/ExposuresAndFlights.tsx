@@ -49,14 +49,21 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
   const onSubmit = (e : React.FormEvent) => {
     e.preventDefault();
+    console.log(e);
     methods.trigger();
     const data = methods.getValues();
     saveExposure(data , ids);
   }
 
+  const preventEnter = (e : React.KeyboardEvent) => {
+    if(e.key === 'Enter'){
+      e.preventDefault();
+    }
+  }
+
   return (
       <FormProvider {...methods}>
-        <form id={`form-${id}`} onSubmit={(e) => (onSubmit(e))}>
+        <form id={`form-${id}`} onSubmit={(e) => (onSubmit(e))} onKeyDown={preventEnter}>
           <PossibleExposure
             wereConfirmedExposures={wereConfirmedExposures}
             onExposuresStatusChange={onExposuresStatusChange}

@@ -13,8 +13,9 @@ const maxLengthErrorMessage = 'השדה יכול להכיל 100 תווים בל�
 const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
 
 interface Props extends AlphabetTextFieldProps<string> {
-  value: string | null,
-  onSearchClick: () => void;
+  value: string | null;
+  onSearchClick: () => void; 
+  onKeyDown: (e : React.KeyboardEvent) => void;
 }
 
 const stringAlphabet = yup
@@ -41,8 +42,8 @@ const ExposureSearchTextField = (props: Props) => {
                 </InputAdornment>
             )
             }}
-        placeholder={INSERT_EXPOSURE_SOURCE_SEARCH}
-        test-id='exposureSource'
+            placeholder={INSERT_EXPOSURE_SOURCE_SEARCH}
+            test-id='exposureSource'
         />
     );
 };
