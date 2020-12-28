@@ -22,7 +22,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         cursor: 'pointer'
     },
     disabled: {
-        opacity: theme.palette.action.disabledOpacity
+        opacity: theme.palette.action.disabledOpacity,
+        cursor: 'not-allowed'
     }
 }));
 
