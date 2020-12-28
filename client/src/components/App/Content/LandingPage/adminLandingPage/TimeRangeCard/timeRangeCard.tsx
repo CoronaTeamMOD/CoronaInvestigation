@@ -20,7 +20,7 @@ const TimeRangeCard: React.FC = (): JSX.Element => {
                     onChange={() => { }}
                 />
             </CardContent>
-            <CardActions style={{ direction: 'ltr', paddingLeft: '1vw' }}>
+            <CardActions className={classes.timeCardActions}>
                 <UpdateButton/>
             </CardActions>
         </Card>

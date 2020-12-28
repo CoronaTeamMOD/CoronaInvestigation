@@ -29,7 +29,7 @@ const DesksFilterCard: React.FC = (): JSX.Element => {
                     ))
                 }
             </CardContent>
-            <CardActions style={{ direction: 'ltr', paddingLeft: '1vw' }}>
+            <CardActions className={classes.desksCardActions}>
                 <UpdateButton/>
             </CardActions>
         </Card>

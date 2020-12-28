@@ -12,6 +12,11 @@ const useStyles = makeStyles({
     cardTitle: {
         fontSize: '0.9vw',
     },
+    desksCardActions: {
+        direction: 'ltr', 
+        paddingLeft: '1vw',
+        flip: false
+    }
 });
 
 export default useStyles;
