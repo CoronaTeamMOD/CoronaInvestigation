@@ -31,7 +31,7 @@ export const handleInvestigationRequest = async (
         console.log(err);
         //authenticationLogger.error(`error in requesting the graphql API: ${err}`, Severity.HIGH);
         response.sendStatus(500);
-    });;
+    });
 
     if(user.userType === UserType.ADMIN || user.userType === UserType.SUPER_ADMIN) {
         return (user.countyByInvestigationGroup.districtId === investigationGroup)
