@@ -25,7 +25,7 @@ import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFields';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import HebrewTextField from 'commons/AlphabetTextField/HebrewTextField';
+import HebrewTextField from 'commons/HebrewTextField/HebrewTextField';
 
 import useStyles from './ContactQuestioningStyles';
 

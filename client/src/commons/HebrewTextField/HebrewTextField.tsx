@@ -1,7 +1,7 @@
 import React from 'react';
 import * as yup from 'yup';
 
-import AlphbetTextFieldType from './AlphabetTextFieldTypes';
+import HebrewTextFieldType from './HebrewTextFieldTypes';
 import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventionTextField';
 
 const errorMessage = 'השדה יכול להכיל רק אותיות בעברית';
@@ -13,7 +13,7 @@ const stringHebrew = yup
   .max(50, maxLengthErrorMessage);
 
 
-const HebrewTextField: AlphbetTextFieldType = (props) => {
+const HebrewTextField: HebrewTextFieldType = (props) => {
   return (
     <TypePreventiveTextField
         {...props}
