@@ -25,6 +25,7 @@ import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFields';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import HebrewTextField from 'commons/AlphabetTextField/HebrewTextField';
 
 import useStyles from './ContactQuestioningStyles';
 
@@ -165,7 +166,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         defaultValue={interactedContact.relationship}
                         render={(props) => { 
                             return(
-                            <AlphanumericTextField
+                            <HebrewTextField
                                 {...props}
                                 disabled={isFieldDisabled}
                                 testId='relationship'
