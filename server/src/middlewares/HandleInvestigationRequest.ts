@@ -28,7 +28,7 @@ export const handleInvestigationRequest = async (request: Request, response: Res
         })
         .catch((err) => {
             InvestigationMiddlewareLogger.info(`error in requesting the graphql API: ${err}`, Severity.HIGH);
-            response.sendStatus(500);
+            return response.sendStatus(500);
         });
 
     if (user.userType === UserType.ADMIN || user.userType === UserType.SUPER_ADMIN) {
