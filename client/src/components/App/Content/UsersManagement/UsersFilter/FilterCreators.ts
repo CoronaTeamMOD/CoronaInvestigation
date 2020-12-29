@@ -1,5 +1,15 @@
-
 const filterCreators = {
+    USER_NAME_OR_ID: {
+        create(value: string) {
+            return value.length > 0 ?
+            {
+                or: [
+                    { userName: { includes: value } },
+                    { id: { includes: value } }
+                ]
+            } : { or: null };
+        }
+    },
     SOURCE_ORGANIZATION: {
         create(values: string[]) {
             return values.length > 0 ?
