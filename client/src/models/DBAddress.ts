@@ -4,6 +4,7 @@ interface DBAddress {
     floor: string;
     houseNum: string;
     streetName?: string;
+    addressId?: number | null;
 }
 
 export const initDBAddress: DBAddress  = {
@@ -11,6 +12,7 @@ export const initDBAddress: DBAddress  = {
     street: '',
     floor: '',
     houseNum: '',
+    addressId: null
 };
 
 export default DBAddress;

@@ -25,6 +25,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
+    // const investigatedPatientAddressId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>((state) => state.investigation.investigationStatus);
 
     const { complexityErrorAlert } = useComplexitySwal();
@@ -82,6 +83,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
                         street,
                         floor: patientAddress.floor,
                         houseNum: patientAddress.houseNum,
+                        addressId: patientAddress.id
                     }
                 } else {
                     convertedPatientAddress = initDBAddress;
