@@ -115,7 +115,7 @@ clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields', (reques
     });
 });
 
-const saveClinicalDetails = (request: Request, response: Response, baseLog: InitialLogData, isolationAddress?: number) => {
+const saveClinicalDetails = (request: Request, response: Response, baseLog: InitialLogData, isolationAddress: number) => {
     const clinicalDetails: ClinicalDetails = request.body.clinicalDetails;
 
     const requestInvestigation: Investigation = {

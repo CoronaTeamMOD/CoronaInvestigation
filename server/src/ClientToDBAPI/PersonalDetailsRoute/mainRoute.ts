@@ -136,7 +136,7 @@ personalDetailsRoute.get('/educationSubOccupations', (request: Request, response
     });
 });
 
-const savePersonalDetails = (request: Request, response: Response, baseLog: InitialLogData, address?: number, ) => {
+const savePersonalDetails = (request: Request, response: Response, baseLog: InitialLogData, address: number ) => {
     const { personalInfoData } = request.body;
     
     const dbPersonalInfoData = {
