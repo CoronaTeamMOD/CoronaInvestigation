@@ -2,7 +2,8 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(() => ({
     searchBar: {
-        justifyContent: 'flex-end',
+        height: '5vh',
+        marginTop: '2vh',
         width: '20vw',
         backgroundColor: 'white',
         borderRadius: '20px'

@@ -33,10 +33,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     active: {},
     filters: {
         flip: false,
+        width: '90vw',
         margin: theme.spacing(2),
         display: 'flex',
-        justifyContent: 'flex-end',
-        marginLeft: '10vw'
+        justifyContent: 'space-between',
     },
     header: {
         fontSize: '4vh',
