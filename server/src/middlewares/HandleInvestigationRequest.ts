@@ -51,7 +51,9 @@ export const handleInvestigationRequest = async (request: Request, response: Res
 const fetchInvestigationCreatorDetails = async (locals : any , epidemiologynumber : number) : Promise<{investigationGroup : number , id : string , err? : any}>=> {
     return await graphqlRequest(GET_INVESTIGATION_CREATOR, locals, { epidemiologynumber })
     .then((result: any) => {
-        return result.data?.investigationByEpidemiologyNumber?.userByCreator;
+        return (result.data && !result.errors) 
+        ? result.data?.investigationByEpidemiologyNumber?.userByCreator
+        : { err : result.errors };
     })
     .catch((err) => {
         return { err }
