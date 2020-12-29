@@ -95,7 +95,7 @@ const UsersManagement: React.FC = () => {
                             },
                             getContentAnchorEl: null
                         }}
-                        value={row[cellName]?.id}
+                        value={row[cellName]?.id || ''}
                         onChange={(event: React.ChangeEvent<any>) => setUserDesk(event.target.value as number, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
                         className={classes.desks}
                         variant='outlined'
@@ -127,11 +127,11 @@ const UsersManagement: React.FC = () => {
                             },
                             getContentAnchorEl: null
                         }}
+                        value={row.sourceOrganization  || ''}
+                        onChange={(event: React.ChangeEvent<any>) => setUserSourceOrganization(event.target.value as string, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
+                        label={sourceOrganizationLabel}
                         variant='outlined'
                         className={classes.sourceOrganization}
-                        label={sourceOrganizationLabel}
-                        value={row.sourceOrganization}
-                        onChange={(event: React.ChangeEvent<any>) => setUserSourceOrganization(event.target.value as string, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
                     >
                         {
                             sourcesOrganization.map(sourceOrganization => (
