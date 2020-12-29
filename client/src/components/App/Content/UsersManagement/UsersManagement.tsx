@@ -157,7 +157,7 @@ const UsersManagement: React.FC = () => {
                     {usersManagementTitle}
                 </Typography>
             </Grid>
-            <Grid container className={classes.filters}>
+            <Grid container justify='space-between' className={classes.filters}>
                 <SearchBar 
                     onClick={(value: string) => handleFilterChange(filterCreators.USER_NAME_OR_ID.create(value))}
                 />
