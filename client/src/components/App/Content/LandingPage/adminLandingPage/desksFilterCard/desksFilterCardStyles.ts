@@ -16,6 +16,10 @@ const useStyles = makeStyles({
         direction: 'ltr', 
         paddingLeft: '1vw',
         flip: false
+    },
+    desksWrapper: {
+        overflowY: 'auto',
+        height: '95%',
     }
 });
 
