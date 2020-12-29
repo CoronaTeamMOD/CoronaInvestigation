@@ -201,7 +201,8 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!]){
   }
   inactiveInvestigations: allInvestigations(filter: {
     userByCreator: {
-      isActive: {equalTo: false}
+      isActive: {equalTo: false},
+      userName: {notEqualTo: "לא משויך"}
     },
     and: $userFilters
   }) {

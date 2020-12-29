@@ -8,12 +8,12 @@ import TimeRangeCard from './TimeRangeCard/timeRangeCard';
 import UnassignedCard from './UnassignedCard/UnassignedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
-import { DeskFilter, StatusFilter } from '../InvestigationTable/InvestigationTableInterfaces';
+import { DeskFilter } from '../InvestigationTable/InvestigationTableInterfaces';
 
 const AdminLandingPage: React.FC = (): JSX.Element => {
     const classes = useStyles();
 
-    const [statusFilter, setStatusFilter] = useState<StatusFilter>([]);
+    const [investigationInfoFilter, setInvestigationInfoFilter] = useState({});
     const [deskFilter, setDeskFilter] = useState<DeskFilter>([]);
     const [unassignedUserFilter, setUnassignedUserFilter] = useState<boolean>(false);
     const [inactiveUserFilter, setInactiveUserFilter] = useState<boolean>(false);

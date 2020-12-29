@@ -5,6 +5,7 @@ const useStyle = (width?: string, height?: string) => makeStyles({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        borderRadius: '1vw',
         width,
         height
     }

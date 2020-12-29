@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import React, { useMemo, useState, useEffect } from 'react';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
-import { Card, CardContent, Grid, IconButton, Typography } from '@material-ui/core';
+import { CardContent, Grid, IconButton, Typography } from '@material-ui/core';
 
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationChart from 'models/InvestigationChart';
@@ -10,9 +10,11 @@ import InvestigationStatistics from 'models/InvestigationStatistics';
 
 import LoadingCard from '../LoadingCard/LoadingCard';
 
+import statusToFilterConvertor from './statusToFilterConvertor';
 import useStyles, { cardWidth, cardHeight } from './investigationsInfoStyles';
 import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart';
 import InvestigationInfoButton from './investigationInfoButton/investigationInfoButton';
+
 
 const convertorsToGraph: { [T in keyof InvestigationStatistics]: Omit<InvestigationChart, 'value'>} = {
     newInvestigations: {
@@ -69,6 +71,10 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
         return returnedArray;
     }, [investigationsStatistics])
 
+    const onStatusClick = (id: string) => {
+        console.log(id);
+    }
+
     return (
         <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.filtersCard}>
             <CardContent>
@@ -83,6 +89,7 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
                                     amountOfInvestigations={InvestigationData.value}
                                     text={InvestigationData.id}
                                     style={{ backgroundColor: InvestigationData.color }}
+                                    onClick={() => onStatusClick(InvestigationData.id)}
                                 />
                             ))
                         }
@@ -98,6 +105,10 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
             </CardContent>
         </LoadingCard>
     )
+}
+
+interface Props {
+    onInfoButtonClick: (infoFilter: any) => void;
 }
 
 export default InvestigationsInfo;
