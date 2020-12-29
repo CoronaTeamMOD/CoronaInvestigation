@@ -1,15 +1,21 @@
-import React from 'react';
+import React , { useState , useEffect} from 'react';
 import { Card, CardActions, CardContent, Typography } from '@material-ui/core';
 
+import Desk from 'models/Desk';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 
 import useStyles from './desksFilterCardStyles';
+import useDesksFilterCard from './useDesksFilterCard';
 import UpdateButton from '../UpdateButton/UpdateButton';
 
 const DesksFilterCard: React.FC = (): JSX.Element => {
     const classes = useStyles();
+    const [allDesks, setAllDesks] = useState<Desk[]>([])
+    const { setAllDesksAsync } = useDesksFilterCard({setAllDesks});
 
-    const allDesks = ['דסק א', 'דסק ב', 'דסק ג'];
+    useEffect(() => {
+        setAllDesksAsync();
+    }, [])
 
     return (
         <Card className={classes.desksCard}>
@@ -18,12 +24,12 @@ const DesksFilterCard: React.FC = (): JSX.Element => {
                     <b>הדסקים בהם הינך צופה</b>
                 </Typography>
                 {
-                    allDesks.map((desk: any) => (
+                    allDesks.map((desk: Desk) => (
                         <CustomCheckbox
                             checkboxElements={[{
-                                key: desk,
-                                value: desk,
-                                labelText: desk,
+                                key: desk.id,
+                                value: desk.id,
+                                labelText: desk.deskName,
                             }]}
                         />
                     ))
