@@ -54,7 +54,8 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
             const { data: {allInvestigations, ...statistics} } = response;
             setAllInvestigationsCount(allInvestigations);
             setInvestigationsStatistics(statistics);
-        }).finally(() => setIsLoading(false));
+            setIsLoading(false);
+        });
     }, [])
 
     const investigationsGraphData = useMemo<InvestigationChart[]>(() => {

@@ -11,7 +11,7 @@ const useDesksFilterCard = () => {
     const fetchDesks = () => {
         const fetchDesksLogger = logger.setup('Getting desks');
         fetchDesksLogger.info('launching desks request', Severity.LOW);
-        axios.get('/desks').then(response => {
+        axios.get('/desks/county').then(response => {
             fetchDesksLogger.info('The desks were fetched successfully', Severity.LOW);
             const { data } = response;
             setDesks(data);

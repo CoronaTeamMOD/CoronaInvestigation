@@ -20,10 +20,7 @@ router.get('/', (request: Request, response: Response) => {
     graphqlRequest(ALL_DESKS_QUERY, response.locals)
     .then((res: GetAllDesks) => {
         desksLogger.info('got results from the DB', Severity.LOW);
-        response.send(res.data.allDesks.nodes.map((desk: any) => ({
-            id: desk.id,
-            name: desk.deskName
-        })));
+        response.send(res.data.allDesks.nodes);
     })
     .catch(err => {
         desksLogger.error(`got error in requesting the graphql API ${err}`, Severity.HIGH);

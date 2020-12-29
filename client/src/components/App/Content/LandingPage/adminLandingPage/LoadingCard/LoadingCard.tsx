@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Card, CardProps, CircularProgress } from '@material-ui/core';
 
 import useStyle from './LoadingCardStyles';
@@ -7,14 +7,7 @@ const LoadingCard: React.FC<Props> = ({isLoading, width, height, className, ...c
 
     const classes = useStyle(width, height)();
 
-    const cardClass = useMemo<string>(() => {
-        if (isLoading) {
-            return classes.loadingSpinnerCard;
-        } else if (className) {
-            return className
-        } 
-        return '';
-    }, [isLoading]);
+    const cardClass = isLoading ? classes.loadingSpinnerCard : (className || '');
 
     return (
         <Card {...cardProps} className={cardClass}>
