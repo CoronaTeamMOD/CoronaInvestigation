@@ -44,9 +44,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   }
 
   const preventEnter = (e : React.KeyboardEvent) => {
-    if(e.key === 'Enter'){
-      e.preventDefault();
-    }
+    (e.key === 'Enter') && e.preventDefault();
   }
 
   return (
