@@ -233,9 +233,9 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
         updateAddressLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
         graphqlRequest(UPDATE_ADDRESS, response.locals, parameters)
-        .then((result: CreateAddressResponse) => {
+        .then(result => {
             updateAddressLogger.info(validDBResponseLog, Severity.LOW);
-            saveClinicalDetails(request, response, logData, result.data.insertAndGetAddressId.integer);
+            saveClinicalDetails(request, response, logData, result.data.updateAddressById.address.id);
         }).catch(error => {
             updateAddressLogger.error(invalidDBResponseLog(error),Severity.HIGH);
             response.status(errorStatusCode).send(error);
