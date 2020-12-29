@@ -35,7 +35,7 @@ import {
     investigatorIdPropertyName
 } from './InvestigationTablesHeaders';
 import { DeskFilter, HistoryState, StatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
-import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/ExposureForm/ExposureForm';
+import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/Forms/ExposureForm/ExposureForm';
 import filterCreators from './FilterCreators';
 
 const investigationURL = '/investigation';

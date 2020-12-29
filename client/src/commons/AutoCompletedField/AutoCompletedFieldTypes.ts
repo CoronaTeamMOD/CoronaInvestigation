@@ -22,6 +22,7 @@ export interface AutocompletedFieldProps<T> {
     placeholder?: string;
     noOptionsMessage?: string;
     fullWidth?: boolean;
+    error?: boolean;
 }
 
 type AutocompletedFieldType = <T>(props: AutocompletedFieldProps<T>) => JSX.Element;

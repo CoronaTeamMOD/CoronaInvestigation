@@ -18,14 +18,15 @@ const AutocompletedField: AutocompletedFieldType = (props) => {
         placeholder,
         filterOptions = (x: any) => x,
         noOptionsMessage = defaultNoOptionsMessage,
-        fullWidth
+        fullWidth,
+        error
     } = props;
     const classes = useStyles();
 
 
     const inputElement = (params: AutocompleteRenderInputParams) =>
         <TextField className={classes.autcompleteField}
-                   required={required} placeholder={placeholder} label={label} {...params} fullWidth/>;
+                   required={required} placeholder={placeholder} label={label} error={error} {...params} fullWidth/>;
 
     const staticOptionConfig = {
         autoComplete: true,

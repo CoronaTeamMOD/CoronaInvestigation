@@ -6,7 +6,7 @@ const useStyles = makeStyles({
         flexDirection: 'row',
     },
     airportCountryTextField: {
-        width: '10vw',
+        minWidth: '10vw',
     },
     airportTextField: {
         marginLeft: '1vw',

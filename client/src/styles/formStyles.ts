@@ -65,8 +65,6 @@ const useStyles = makeStyles({
         },
     },
     inputRow: {
-        display: 'flex',
-        justifyContent: 'space-between',
         alignItems: 'center',
         minWidth: '45vw',
     },
