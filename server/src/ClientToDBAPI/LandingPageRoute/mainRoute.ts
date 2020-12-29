@@ -7,7 +7,7 @@ import { convertUserInvestigationsData, convertGroupInvestigationsData } from '.
 import { CHANGE_DESK_ID, UPDATE_DESK_BY_GROUP_ID } from '../../DBService/LandingPage/Mutation';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
-import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS } from '../../DBService/LandingPage/Query';
+import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS, GET_INVESTIGATION_STATISTICS, GET_UNALLOCATED_INVESTIGATIONS_COUNT } from '../../DBService/LandingPage/Query';
 
 const landingPageRoute = Router();
 
@@ -163,5 +163,50 @@ landingPageRoute.post('/changeGroupDesk', adminMiddleWare, (request: Request, re
         });
 });
 
+landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Request, response: Response) => {
+    const userFilters = {
+        userByCreator: {
+            countyByInvestigationGroup: {
+                id: {equalTo: response.locals.user.investigationGroup}
+            }
+        },
+        ...request.body
+    }
+    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, { userFilters, allInvesitgationsFilter: userFilters })
+    .then((results) => {
+        const {data: preprocessedResults} = results;
+        const outcome: any = {};
+        Object.keys(preprocessedResults).forEach(preprocessedResult => {
+            outcome[preprocessedResult] = preprocessedResults[preprocessedResult].totalCount;
+        })
+        response.send(outcome);
+    })
+})
+
+landingPageRoute.post('/unallocatedInvestigationsCount', adminMiddleWare ,(request: Request, response: Response) => {
+    const { filterRules } = request.body;
+    
+    const filterBy = {
+        ...filterRules,
+        userByCreator: {
+            ...filterRules?.userByCreator,
+            countyByInvestigationGroup: {
+                id: {
+                    equalTo: +response.locals.user.investigationGroup
+                }
+            }
+        },
+    };
+    
+    graphqlRequest(GET_UNALLOCATED_INVESTIGATIONS_COUNT, response.locals, { allInvesitgationsFilter: filterBy })
+    .then((result) => {
+        console.log(result.data.unassignedInvestigations.totalCount);
+        response.send(result.data.unassignedInvestigations.totalCount);
+    })
+    .catch(error => {
+        console.log('----------e', error);
+        response.send(error);
+    })
+})
 
 export default landingPageRoute;

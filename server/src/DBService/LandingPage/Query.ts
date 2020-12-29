@@ -169,3 +169,52 @@ query allDesks {
   }
 }
 `;
+
+export const GET_INVESTIGATION_STATISTICS = gql`
+query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitgationsFilter: InvestigationFilter!){
+  allInvestigations(filter: $allInvesitgationsFilter) {
+    totalCount
+  }
+  inProcessInvestigations: allInvestigations(filter: {
+    investigationStatusByInvestigationStatus: {
+      id: {equalTo: 100000002}
+    },
+    and: $userFilters
+  }) {
+    totalCount
+  }
+  newInvestigations: allInvestigations(filter: {
+    investigationStatusByInvestigationStatus: {
+      id: {equalTo: 1}
+    }, 
+    and: $userFilters
+  }) {
+    totalCount
+  }
+  unassignedInvestigations: allInvestigations(filter: {
+    userByCreator: {
+      userName: {equalTo: "לא משויך"}
+    },
+    and: $userFilters
+  }) {
+    totalCount
+  }
+  inactiveInvestigations: allInvestigations(filter: {
+    userByCreator: {
+      isActive: {equalTo: false},
+      userName: {notEqualTo: "לא משויך"}
+    },
+    and: $userFilters
+  }) {
+    totalCount
+  }
+}
+`;
+
+export const GET_UNALLOCATED_INVESTIGATIONS_COUNT = gql`
+query unallocatedInvestigationsCount($allInvesitgationsFilter: [InvestigationFilter!]) {
+  unassignedInvestigations: allInvestigations(filter: {userByCreator: {or: {userName: {equalTo: "לא משויך"}, isActive: {equalTo: false}}}, and: $allInvesitgationsFilter}) {
+    totalCount
+  }
+}
+`;

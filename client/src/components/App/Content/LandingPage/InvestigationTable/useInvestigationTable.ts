@@ -35,8 +35,7 @@ import {
     investigatorIdPropertyName
 } from './InvestigationTablesHeaders';
 import { DeskFilter, HistoryState, StatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
-import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/Forms/ExposureForm/ExposureForm';
-import filterCreators from './FilterCreators';
+import { buildFilterRules } from './FilterCreators';
 
 const investigationURL = '/investigation';
 const getFlooredRandomNumber = (min: number, max: number): number => (
@@ -131,6 +130,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             inactiveUserFilter : historyInactiveUserFilter = false, 
             unassignedUserFilter : historyUnassignedUserFilter = false } = useMemo(() => {
         const { location: { state } } = history;
+        console.log(state)
         return state || {};
     }, []);
 
@@ -262,17 +262,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const getInvestigationsAxiosRequest = (orderBy: string): any => {
         const getInvestigationsLogger = logger.setup('Getting Investigations');
 
-        const searchQueryFilter = phoneAndIdentityNumberRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.FULL_NAME(searchQuery);
-
-        const filterRules = {
-            ...filterCreators.DESK_ID(deskFilter),
-            ...filterCreators.STATUS(statusFilter),
-            userByCreator: {
-                ...filterCreators.UNASSIGNED_USER(unassignedUserFilter),
-                ...filterCreators.INACTIVE_USER(inactiveUserFilter),
-            },
-            ...searchQueryFilter,
-        };
+        const filterRules = buildFilterRules({ deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery });
 
         const requestData = {
             orderBy,

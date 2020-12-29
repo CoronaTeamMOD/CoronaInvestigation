@@ -6,7 +6,7 @@ import useStyles from './investigationInfoButtonStyles';
 const InvestigationInfoButton: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
 
-    const { amountOfInvestigations, text, ...rest } = props;
+    const { amountOfInvestigations, text,  ...rest } = props;
 
     return (
         <>
