@@ -20,8 +20,7 @@ addressRoute.get('/cities', (request: Request, response: Response) => {
     graphqlRequest(GET_ALL_CITIES, response.locals)
     .then((result: any) => {
         citiesLogger.info(validDBResponseLog, Severity.LOW);
-        const cities: City[] = result?.data?.allCities?.nodes || [];
-        response.send(result?.data?.allCities?.nodes || []);
+        response.send(result.data.allCities.nodes);
     })
     .catch(error => {
         citiesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
@@ -41,8 +40,7 @@ addressRoute.get('/city/:cityId/streets', (request: Request, response: Response)
 
     graphqlRequest(GET_CITY_STREETS, response.locals, {id: request.params.cityId}).then((result: any) => {
       streetsLogger.info(validDBResponseLog, Severity.LOW);
-      const streets: Street[] = result?.data?.cityById?.streetsByCity?.nodes || [];
-      response.send(streets);
+      response.send(result.data.cityById.streetsByCity.nodes);
     }).catch(error => {
         streetsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.status(errorStatusCode).send(error);
@@ -59,8 +57,7 @@ addressRoute.get('/countries', (request: Request, response: Response) => {
   graphqlRequest(GET_ALL_COUNTRIES, response.locals)
   .then((result: any) => {
       countriesLogger.info(validDBResponseLog, Severity.LOW);
-      const countries: Country[] = result?.data?.allCountries?.nodes || [];
-      response.send(countries);
+      response.send(result.data.allCountries.nodes);
   })
   .catch(error => {
       countriesLogger.error(invalidDBResponseLog(error), Severity.HIGH);

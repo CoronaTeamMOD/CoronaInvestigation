@@ -10,7 +10,7 @@ query getAllBackgroundDeseases {
   }
 `;
 
-export const GET_SYMPTOMS = gql`
+export const GET_ALL_SYMPTOMS = gql`
 query getAllSymptoms {
     allSymptoms {
       nodes {

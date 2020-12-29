@@ -18,8 +18,7 @@ educationRoute.get('/grades', (request: Request, response: Response) => {
   graphqlRequest(GET_ALL_EDUCATION_GRADES, response.locals)
   .then((result: any) => {
     allEducationGradesLogger.info(validDBResponseLog, Severity.LOW);
-    const grades: EducationGrade[] = result?.data?.allEducationGrades?.nodes || [];
-    response.send(grades);
+    response.send(result.data.allEducationGrades.nodes);
   })
   .catch(error => {
     allEducationGradesLogger.error(invalidDBResponseLog(error), Severity.HIGH);

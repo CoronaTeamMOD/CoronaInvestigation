@@ -70,7 +70,7 @@ intersectionsRoute.get('/contactTypes', (request: Request, response: Response) =
     graphqlRequest(GET_ALL_CONTACT_TYPES, response.locals)
         .then((result: GetContactTypeResponse) => {
             contactTypesLogger.info(validDBResponseLog, Severity.LOW);
-            response.send(result?.data?.allContactTypes?.nodes || []);
+            response.send(result.data.allContactTypes.nodes);
         }).catch((error) => {
             contactTypesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
@@ -171,8 +171,8 @@ intersectionsRoute.delete('/deleteContactEvent', (request: Request, response: Re
         investigation: response.locals.epidemiologynumber
     });
     const queryVariables = {
-        contactEventId: +request.query.contactEventId,
-        investigationId: +request.query.investigationId
+        contactEventId: parseInt(request.query.contactEventId as string),
+        investigationId: parseInt(request.query.investigationId as string)
     };
     deleteContactEventLogger.info(launchingDBRequestLog(queryVariables), Severity.LOW);
     graphqlRequest(DELETE_CONTACT_EVENT, response.locals, queryVariables)
@@ -193,9 +193,9 @@ intersectionsRoute.delete('/contactedPerson', (request: Request, response: Respo
         investigation: response.locals.epidemiologynumber
     });
     const queryVariables = {
-        contactedPersonId: +request.query.contactedPersonId,
-        involvedContactId: request.query.involvedContactId ? +request.query.involvedContactId : null,
-        investigationId: +request.query.investigationId,
+        contactedPersonId: parseInt(request.query.contactedPersonId as string),
+        involvedContactId: request.query.involvedContactId ? parseInt(request.query.involvedContactId as string) : null,
+        investigationId: parseInt(request.query.investigationId as string),
     }
     contactedPersonLogger.info(launchingDBRequestLog(queryVariables), Severity.LOW);
     graphqlRequest(DELETE_CONTACTED_PERSON, response.locals, queryVariables)

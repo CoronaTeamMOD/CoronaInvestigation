@@ -9,12 +9,13 @@ export const baseUrl = 'http://localhost:';
 const initialEpidemiologyNumberByRedux:number = -1;
 export const errorStatusCode = 500;
 export const validStatusCode = 200;
+export const unauthorizedStatusCode = 401;
 
 const updateLastTimeAndUpdator = (requestHeaders: any) =>
     httpRequest(baseUrl + process.env.PORT + graphqlURL, 'POST', {
         query: (UPDATE_INVESTIGATION_METADATA as DocumentNode).loc?.source.body,
         variables: {
-            epidemiologyNumber: +requestHeaders.epidemiologynumber,
+            epidemiologyNumber: parseInt(requestHeaders.epidemiologynumber),
             lastUpdateTime: new Date(),
             lastUpdator: requestHeaders.user.id
         }
@@ -26,7 +27,7 @@ export const graphqlRequest = (query: DocumentNode, requestHeaders: any, variabl
     .then((result) => {
         if (requestHeaders) {
             //@ts-ignore
-            if (query.definitions[0].operation === 'mutation' && +requestHeaders.epidemiologynumber !== initialEpidemiologyNumberByRedux) {
+            if (query.definitions[0].operation === 'mutation' && parseInt(requestHeaders.epidemiologynumber) !== initialEpidemiologyNumberByRedux) {
                 updateLastTimeAndUpdator(requestHeaders)
             }
         }

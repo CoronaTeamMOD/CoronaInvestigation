@@ -69,7 +69,7 @@ clinicalDetailsRoute.get('/isolationSources', (request: Request, response: Respo
     graphqlRequest(GET_ISOLATION_SOURCES, response.locals)
     .then(result => {
         isolationSourcesLogger.info(validDBResponseLog, Severity.LOW);
-        response.send(result?.data?.allIsolationSources?.nodes || []);
+        response.send(result.data.allIsolationSources.nodes);
     }).catch(error => {
         isolationSourcesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.sendStatus(error);
@@ -101,7 +101,7 @@ clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields', (reques
         user: response.locals.user.id
     })
 
-    const parameters = { epidemiologyNumber: +request.query.epidemiologyNumber };
+    const parameters = { epidemiologyNumber: parseInt(request.query.epidemiologyNumber as string) };
     fetchClinicalDetailsFieldsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, response.locals, parameters).then(
@@ -271,7 +271,7 @@ clinicalDetailsRoute.get('/isDeceased/:investigatedPatientId/:isDeceased', (requ
 
     const parameters = {
         isDeceased: Boolean(request.params.isDeceased),
-        investigatedPatientId: +request.params.investigatedPatientId
+        investigatedPatientId: parseInt(request.params.investigatedPatientId)
     };
     isDeceasedLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
@@ -294,7 +294,7 @@ clinicalDetailsRoute.get('/isCurrentlyHospitialized/:investigatedPatientId/:isCu
     const isHospitializedLogger = logger.setup(logData);
 
     const parameters = {
-        investigatedPatientId: +request.params.investigatedPatientId, 
+        investigatedPatientId: parseInt(request.params.investigatedPatientId),
         isCurrentlyHospitalized: Boolean(request.params.isCurrentlyHospitalized)
     }
     isHospitializedLogger.info(launchingDBRequestLog(parameters), Severity.LOW);

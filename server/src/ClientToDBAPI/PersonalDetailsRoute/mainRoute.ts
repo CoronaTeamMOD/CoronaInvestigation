@@ -58,7 +58,7 @@ personalDetailsRoute.get('/investigatedPatientRoles', (request: Request, respons
     graphqlRequest(GET_ALL_INVESTIGATED_PATIENT_ROLES, response.locals)
     .then(result => {
         investigatedPatientRolesLogger.info(validDBResponseLog, Severity.LOW);
-        response.send(result?.data?.allInvestigatedPatientRoles?.nodes);
+        response.send(result.data.allInvestigatedPatientRoles.nodes);
     }).catch(error => {
         investigatedPatientRolesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.sendStatus(errorStatusCode).send(error);
@@ -82,7 +82,7 @@ personalDetailsRoute.get('/investigatedPatientPersonalInfoFields', (request: Req
         investigation: response.locals.epidemiologynumber,
     });
 
-    const parameters = {id: +request.query.epidemioligyNumber};
+    const parameters = {id: parseInt(request.query.epidemioligyNumber as string)};
     investigatedPatientPersonalInfoFieldsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIOLOGY_NUMBER, response.locals, parameters)

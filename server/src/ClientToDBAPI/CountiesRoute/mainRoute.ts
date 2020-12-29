@@ -16,9 +16,8 @@ countiesRoute.get('', (request: Request, response: Response) => {
         .then((result: GetAllCountiesResponse) => {
             getCountiesLogger.info(validDBResponseLog, Severity.LOW);
             const counties = result.data.allCounties.nodes.map((county: any) => ({
-                id: county.id,
-                displayName: county.displayName,
-                district: county.districtByDistrictId.displayName
+                ...county,
+                district: county.district.displayName
             }));
             response.send(counties);
         })
@@ -41,7 +40,7 @@ countiesRoute.get('/county/displayName', (request: Request, response: Response) 
     graphqlRequest(GET_COUNTY_DISPLAY_NAME_BY_USER, response.locals, paramertes)
         .then(result => {
             countyByUserLogger.info(validDBResponseLog, Severity.LOW);
-            return response.send(result?.data?.countyById?.displayName as string);
+            return response.send(result.data.countyById.displayName as string);
         })
         .catch(error => {
             countyByUserLogger.error(invalidDBResponseLog(error), Severity.HIGH);

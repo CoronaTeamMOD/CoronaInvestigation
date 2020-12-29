@@ -3,8 +3,6 @@ import { Router, Request, Response } from 'express';
 import { Severity } from '../../Models/Logger/types';
 import { getPatientAge } from '../../Utils/patientUtils';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
-import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
-import InvestigationMainStatusCodes from '../../Models/InvestigationStatus/InvestigationMainStatusCodes';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { GET_INVESTIGATION_INFO, GET_SUB_STATUSES_BY_STATUS, GET_INVESTIGAION_SETTINGS_FAMILY_DATA } from '../../DBService/InvestigationInfo/Query';
 import {
@@ -50,7 +48,7 @@ investigationInfo.get('/staticInfo', handleInvestigationRequest,(request: Reques
         investigation: response.locals.epidemiologynumber
     });
 
-    const parameters = {investigationId: +request.query.investigationId};
+    const parameters = {investigationId: parseInt(request.query.investigationId as string)};
     staticInfoLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_INVESTIGATION_INFO, response.locals, parameters)
@@ -154,7 +152,7 @@ investigationInfo.post('/updateInvestigationStartTime', handleInvestigationReque
     });
 
     const parameters = {
-        epidemiologyNumber: +epidemiologyNumber,
+        epidemiologyNumber: parseInt(epidemiologyNumber),
         investigationStartTime
     };
     updateInvestigationStartTimeLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
@@ -176,7 +174,7 @@ investigationInfo.get('/subStatuses/:parentStatus', handleInvestigationRequest, 
     });
 
     const parameters = {
-        parentStatus: +request.params.parentStatus
+        parentStatus: parseInt(request.params.parentStatus)
     }
     subStatusesLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
@@ -198,12 +196,12 @@ investigationInfo.get('/resorts/:id', handleInvestigationRequest, (request: Requ
         investigation: response.locals.epidemiologynumber,
     });
 
-    const parameters = {id: +request.params.id};
+    const parameters = {id: parseInt(request.params.id)};
     resortsByIdLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     return graphqlRequest(GET_INVESTIGATED_PATIENT_RESORTS_DATA, response.locals, parameters)
         .then((result) => {
-            const resortsData = result?.data?.investigatedPatientById; 
+            const resortsData = result.data.investigatedPatientById; 
             resortsByIdLogger.info(validDBResponseLog, Severity.LOW);
             response.send(resortsData);
         })
@@ -226,7 +224,7 @@ investigationInfo.post('/resorts', handleInvestigationRequest, (request: Request
     return graphqlRequest(UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA, response.locals, queryVariables)
         .then((result) => {
             resortsLogger.info(validDBResponseLog, Severity.LOW);
-            response.send(result?.data);
+            response.send(result.data);
         })
         .catch(error => {
             resortsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
@@ -241,13 +239,13 @@ investigationInfo.get('/interactionsTabSettings/:id', handleInvestigationRequest
         investigation: response.locals.epidemiologynumber
     });
 
-    const parameters = {id: +request.params.id};
+    const parameters = {id: parseInt(request.params.id)};
     settingsFamilyLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_INVESTIGAION_SETTINGS_FAMILY_DATA, response.locals, parameters)
         .then(result => {
             settingsFamilyLogger.info('query from db successfully', Severity.LOW);
-            response.send(result?.data?.investigationSettingByEpidemiologyNumber);
+            response.send(result.data.investigationSettingByEpidemiologyNumber);
         }).catch((error) => {
             settingsFamilyLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
@@ -267,7 +265,7 @@ investigationInfo.post('/investigationSettingsFamily', handleInvestigationReques
     return graphqlRequest(UPDATE_INVESTIGAION_SETTINGS_FAMILY_DATA, response.locals, queryVariables)
         .then((result) => {
             settingsFamilyLogger.info('saved to db successfully', Severity.LOW);
-            response.send(result?.data);
+            response.send(result.data);
         })
         .catch(error => {
             settingsFamilyLogger.error(invalidDBResponseLog(error), Severity.HIGH);

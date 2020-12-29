@@ -27,7 +27,7 @@ const handleConfidentialAuth = (
     const userId =  userUpn.split('@')[0];
     const authenticationLogger = logger.setup({
         workflow: 'Authentication',
-        investigation: +request.headers.epidemiologynumber
+        investigation: parseInt(request.headers.epidemiologynumber as string)
     });
     if (!userUpn) {
         authenticationLogger.error('got no user at all', Severity.MEDIUM);
@@ -64,7 +64,7 @@ const authMiddleware = (
     response.locals.epidemiologynumber = request.headers.epidemiologynumber;
     const authenticationLogger = logger.setup({
         workflow: 'Authentication',
-        investigation: +request.headers.epidemiologynumber
+        investigation: parseInt(request.headers.epidemiologynumber as string)
     });
     if (process.env.ENVIRONMENT === 'dev' || process.env.ENVIRONMENT === 'prod') {
         authenticationLogger.info('authenticating with the azure recived upn', Severity.LOW);

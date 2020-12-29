@@ -131,7 +131,7 @@ landingPageRoute.post('/changeDesk', adminMiddleWare, (request: Request, respons
     graphqlRequest(CHANGE_DESK_ID, response.locals, parameters)
         .then((result: any) => {
             changeDeskLogger.info(validDBResponseLog, Severity.LOW);
-            response.send(result?.data || '');
+            response.send(result.data);
         }).catch(error => {
             changeDeskLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);

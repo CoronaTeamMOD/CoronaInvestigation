@@ -43,7 +43,7 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
     contactStatusesLogger.info(launchingDBRequestLog(), Severity.LOW);
     graphqlRequest(GET_ALL_CONTACT_STATUSES, response.locals).then((result: any) => {
         contactStatusesLogger.info(validDBResponseLog, Severity.LOW);
-        response.send(result?.data?.allContactStatuses?.nodes || []);
+        response.send(result.data.allContactStatuses.nodes);
     }).catch(error => {
         contactStatusesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.status(errorStatusCode).send(error);
@@ -81,8 +81,8 @@ ContactedPeopleRoute.get('/allContacts/:investigationId', (request: Request, res
     allContactsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     graphqlRequest(GET_CONTACTED_PEOPLE, response.locals, parameters)
         .then(result => {
-            const allContactedPersons = result?.data?.allContactedPeople?.nodes;
             allContactsLogger.info(validDBResponseLog, Severity.LOW);
+            const allContactedPersons = result.data.allContactedPeople.nodes;
             const convertedContacts = allContactedPersons.map((contact: InteractedContact) => ({...contact, ...contact.involvementReason}));
             response.send(convertedContacts);
         })

@@ -262,7 +262,7 @@ usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: R
     graphqlRequest(UPDATE_COUNTY_BY_USER, response.locals, parameters)
     .then(result => {
         changeCountyLogger.info(validDBResponseLog, Severity.LOW);
-        response.send(result?.data || '');
+        response.send(result.data);
     }).catch(error => {
         changeCountyLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.sendStatus(errorStatusCode).send(error);
