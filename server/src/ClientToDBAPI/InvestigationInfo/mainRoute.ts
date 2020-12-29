@@ -48,7 +48,7 @@ investigationInfo.get('/staticInfo', handleInvestigationRequest,(request: Reques
         investigation: response.locals.epidemiologynumber
     });
 
-    const parameters = {investigationId: parseInt(request.query.investigationId as string)};
+    const parameters = {investigationId: parseInt(response.locals.epidemiologynumber)};
     staticInfoLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_INVESTIGATION_INFO, response.locals, parameters)
