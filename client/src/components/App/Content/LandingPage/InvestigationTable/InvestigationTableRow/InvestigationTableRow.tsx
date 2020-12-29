@@ -22,6 +22,7 @@ import InvestigationStatusColumn from '../InvestigationStatusColumn/Investigatio
 import InvestigationIndicatorsColumn from '../InvestigationIndicatorsColumn/InvestigationIndicatorsColumn';
 
 interface RowTooltipProps {
+    titleOverride?: string;
     creationDate: InvestigationTableRowType['creationDate'];
     startTime: InvestigationTableRowType['startTime'];
     children: React.ReactElement;
@@ -30,7 +31,7 @@ interface RowTooltipProps {
 const noDataMessage = 'אין מידע אודות תאריכים לחקירה זו';
 const tooltipEnterDelay = 800;
 const RowTooltip = (props: RowTooltipProps) => {
-    const { creationDate, startTime } = props;
+    const { creationDate, startTime, titleOverride } = props;
     const tooltipClasses = useTooltipStyles();
 
     const formatDate = (date: Date): string => date ? format(new Date(date), 'dd/MM/yyyy') : 'אין מידע';
@@ -44,7 +45,7 @@ const RowTooltip = (props: RowTooltipProps) => {
         </>
         : noDataMessage;
 
-    return <Tooltip title={title} enterDelay={tooltipEnterDelay} enterNextDelay={tooltipEnterDelay}
+    return <Tooltip title={titleOverride ? titleOverride : title} enterDelay={tooltipEnterDelay} enterNextDelay={tooltipEnterDelay}
         classes={{ tooltip: tooltipClasses.content }}
         PopperProps={{
             placement: 'right',
@@ -63,11 +64,11 @@ interface Props {
     deskAutoCompleteClicked: boolean;
     checked: boolean;
     clickable: boolean;
+    disabled?: boolean;
     desks: Desk[];
     indexedRow: { [T in keyof typeof TableHeadersNames]: any };
     row: InvestigationTableRowType;
     isGroupShown: boolean;
-    index: number;
     tableContainerRef: MutableRefObject<HTMLElement | undefined>;
     allGroupedInvestigations: Map<string, InvestigationTableRowType[]>;
     checkGroupedInvestigationOpen: number[];
@@ -97,7 +98,7 @@ const InvestigationTableRow = ({
     isGroupShown,
     checked,
     clickable,
-    index,
+    disabled = false,
     tableContainerRef,
     allGroupedInvestigations,
     checkGroupedInvestigationOpen,
@@ -138,10 +139,11 @@ const InvestigationTableRow = ({
                     <InvestigatorAllocationCell
                         investigatorName={indexedRow[cellName as keyof typeof TableHeadersNames]}
                         isInvestigatorActive={row.investigator?.isActive}
+                        disabled={disabled}
                     />
                 )
             case TableHeadersNames.investigationDesk:
-                if (selected && deskAutoCompleteClicked &&
+                if (selected && deskAutoCompleteClicked && !disabled &&
                     (user.userType === UserType.ADMIN || user.userType === UserType.SUPER_ADMIN) && !wasInvestigationFetchedByGroup) {
                     return (
                         <Autocomplete
@@ -167,17 +169,17 @@ const InvestigationTableRow = ({
                     return deskValue ? deskValue : unassignedToDesk
                 }
             case TableHeadersNames.subOccupation:
-                const subOccupation =  row.isInInstitute && indexedRow[cellName as keyof typeof TableHeadersNames];
+                const subOccupation = row.isInInstitute && indexedRow[cellName as keyof typeof TableHeadersNames];
                 const parentOccupation = Boolean(subOccupation) ? row.parentOccupation : '';
                 return <Tooltip title={parentOccupation} placement='top'>
                     <div>{subOccupation || '-'}</div>
                 </Tooltip>
             case TableHeadersNames.comment:
-                return <ClickableTooltip value={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                return <ClickableTooltip disabled={disabled} value={indexedRow[cellName as keyof typeof TableHeadersNames]}
                     defaultValue='אין הערה' scrollableRef={tableContainerRef.current} InputIcon={Comment} />
 
             case TableHeadersNames.phoneNumber:
-                return <ClickableTooltip value={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                return <ClickableTooltip disabled={disabled} value={indexedRow[cellName as keyof typeof TableHeadersNames]}
                     defaultValue='' scrollableRef={tableContainerRef.current} InputIcon={Call} />
             case TableHeadersNames.investigationStatus:
                 const investigationStatus = indexedRow[cellName as keyof typeof TableHeadersNames];
@@ -204,16 +206,19 @@ const InvestigationTableRow = ({
                     </>
                 )
             case TableHeadersNames.settings:
-                return <SettingsActions
-                    epidemiologyNumber={indexedRow.epidemiologyNumber}
-                    investigationStatus={indexedRow.investigationStatus}
-                    groupId={indexedRow.groupId}
-                    allGroupedInvestigations={allGroupedInvestigations}
-                    checkGroupedInvestigationOpen={checkGroupedInvestigationOpen}
-                    fetchTableData={fetchTableData}
-                    fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
-                    moveToTheInvestigationForm={moveToTheInvestigationForm}
-                />
+                return (
+                    !disabled &&
+                    <SettingsActions
+                        epidemiologyNumber={indexedRow.epidemiologyNumber}
+                        investigationStatus={indexedRow.investigationStatus}
+                        groupId={indexedRow.groupId}
+                        allGroupedInvestigations={allGroupedInvestigations}
+                        checkGroupedInvestigationOpen={checkGroupedInvestigationOpen}
+                        fetchTableData={fetchTableData}
+                        fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
+                        moveToTheInvestigationForm={moveToTheInvestigationForm}
+                    />
+                );
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames]
         }
@@ -222,20 +227,22 @@ const InvestigationTableRow = ({
     return (
         <RowTooltip
             creationDate={row.creationDate}
-            startTime={row.startTime}>
+            startTime={row.startTime}
+            titleOverride={disabled ? `חקירה של נפת ${row.county.displayName}` : ''}
+        >
             <TableRow
                 selected={checked}
                 key={indexedRow.epidemiologyNumber}
                 classes={{ selected: classes.checkedRow }}
-                className={[classes.investigationRow, clickable && classes.clickableInvestigationRow].join(' ')}
-                onClick={() => clickable && onInvestigationRowClick(indexedRow as { [T in keyof IndexedInvestigationData]: any })}
+                className={`${classes.investigationRow} ${clickable && classes.clickableInvestigationRow} ${disabled && classes.disabled}`}
+                onClick={() => clickable && !disabled && onInvestigationRowClick(indexedRow as { [T in keyof IndexedInvestigationData]: any })}
             >
                 {
                     Object.values(columns).map((key: string) => (
                         <TableCell
                             classes={{ root: classes.tableCellRoot }}
                             className={tableCellStyleFunction(key).join(' ')}
-                            onClick={(event: any) => onCellClick(event, key, indexedRow.epidemiologyNumber, indexedRow.groupId)}
+                            onClick={(event: any) => !disabled && onCellClick(event, key, indexedRow.epidemiologyNumber, indexedRow.groupId)}
                         >
                             {
                                 getTableCell(key)

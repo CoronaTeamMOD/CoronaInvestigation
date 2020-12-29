@@ -4,7 +4,7 @@ import { SvgIconComponent } from '@material-ui/icons';
 
 import useStyles from './clickableTooltipStyles';
 
-const ClickableTooltip = ({value, defaultValue, scrollableRef, InputIcon}: Props) => {
+const ClickableTooltip = ({value, defaultValue, scrollableRef, InputIcon, disabled = false}: Props) => {
     const [isTooltipOpen, setIsTooltipOpen] = React.useState<boolean>(false);
 
     const handleTooltipClose = () => setIsTooltipOpen(false);
@@ -37,7 +37,7 @@ const ClickableTooltip = ({value, defaultValue, scrollableRef, InputIcon}: Props
             open={isTooltipOpen}
                    disableHoverListener
             title={value || defaultValue || ''}>
-                  <IconButton onClick={handleTooltipToggle}>
+                  <IconButton disabled={disabled} onClick={handleTooltipToggle}>
                       <InputIcon color={value ? 'primary' : 'disabled'}/>
                   </IconButton>
           </Tooltip>
@@ -50,6 +50,7 @@ interface Props {
     defaultValue?: string;
     scrollableRef?: HTMLElement;
     InputIcon: SvgIconComponent;
+    disabled?: boolean;
 }
 
 export default ClickableTooltip;

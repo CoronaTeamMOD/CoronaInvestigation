@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 
 import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
@@ -8,9 +8,15 @@ import TimeRangeCard from './TimeRangeCard/timeRangeCard';
 import UnassignedCard from './UnassignedCard/UnassignedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
+import { DeskFilter, StatusFilter } from '../InvestigationTable/InvestigationTableInterfaces';
 
 const AdminLandingPage: React.FC = (): JSX.Element => {
     const classes = useStyles();
+
+    const [statusFilter, setStatusFilter] = useState<StatusFilter>([]);
+    const [deskFilter, setDeskFilter] = useState<DeskFilter>([]);
+    const [unassignedUserFilter, setUnassignedUserFilter] = useState<boolean>(false);
+    const [inactiveUserFilter, setInactiveUserFilter] = useState<boolean>(false);
 
     const { countyDisplayName } = useAppToolbar();
 

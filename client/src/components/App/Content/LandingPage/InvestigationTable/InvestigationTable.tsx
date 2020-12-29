@@ -1,4 +1,3 @@
-import {format} from 'date-fns';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import React, { useMemo, useState, useRef } from 'react';
@@ -398,7 +397,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             isGroupShown={isGroupShown}
                                             checked={isRowSelected(indexedRow.epidemiologyNumber)}
                                             clickable={isRowClickable}
-                                            index={index}
                                             tableContainerRef={tableContainerRef}
                                             allGroupedInvestigations={allGroupedInvestigations}
                                             checkGroupedInvestigationOpen={checkGroupedInvestigationOpen}
@@ -444,7 +442,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                         isGroupShown={isGroupShown}
                                                         checked={isRowSelected(indexedRow.epidemiologyNumber)}
                                                         clickable={isGroupedRowClickable}
-                                                        index={index}
+                                                        disabled={user.investigationGroup !== row.county.id}
                                                         tableContainerRef={tableContainerRef}
                                                         allGroupedInvestigations={allGroupedInvestigations}
                                                         checkGroupedInvestigationOpen={checkGroupedInvestigationOpen}

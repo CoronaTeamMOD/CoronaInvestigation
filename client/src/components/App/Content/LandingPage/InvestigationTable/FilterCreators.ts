@@ -1,4 +1,5 @@
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
+import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/ExposureForm/ExposureForm';
 
 const unassignedUserName = 'לא משויך';
 
@@ -53,5 +54,30 @@ const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => E
             {};
     },
 };
+
+interface FilterRulesVariables {
+    deskFilter: number[],
+    statusFilter: number[],
+    unassignedUserFilter: boolean,
+    inactiveUserFilter: boolean,
+    searchQuery?: string,
+}
+
+export const buildFilterRules = (filterRulesVariables: FilterRulesVariables) => {
+
+    const { deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery } = filterRulesVariables;
+
+    const searchQueryFilter = searchQuery ? phoneAndIdentityNumberRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.FULL_NAME(searchQuery) : {};
+
+    return {
+        ...filterCreators.DESK_ID(deskFilter),
+        ...filterCreators.STATUS(statusFilter),
+        userByCreator: {
+            ...filterCreators.UNASSIGNED_USER(unassignedUserFilter),
+            ...filterCreators.INACTIVE_USER(inactiveUserFilter),
+        },
+        ...searchQueryFilter,
+    }
+}
 
 export default filterCreators;
