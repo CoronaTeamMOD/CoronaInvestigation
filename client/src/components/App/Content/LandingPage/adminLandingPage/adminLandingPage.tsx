@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Grid, Typography } from '@material-ui/core';
+import React, { useState, useEffect, useRef } from 'react';
 
+import { landingPageRoute } from 'Utils/Routes/Routes';
 import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
 
 import useStyles from './adminLandingPageStyles';
@@ -12,6 +14,10 @@ import { DeskFilter } from '../InvestigationTable/InvestigationTableInterfaces';
 
 const AdminLandingPage: React.FC = (): JSX.Element => {
     const classes = useStyles();
+    
+    const history = useHistory();
+
+    const renderedForFirstTime = useRef(true);
 
     const [investigationInfoFilter, setInvestigationInfoFilter] = useState({});
     const [deskFilter, setDeskFilter] = useState<DeskFilter>([]);
@@ -19,9 +25,15 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
     const [inactiveUserFilter, setInactiveUserFilter] = useState<boolean>(false);
 
     const { countyDisplayName } = useAppToolbar();
-
+    
     useEffect(() => {
-        console.log(investigationInfoFilter);
+        if (!renderedForFirstTime.current) {
+            console.log(investigationInfoFilter);
+            history.push(landingPageRoute, {
+                ...investigationInfoFilter
+            });
+        }
+        renderedForFirstTime.current = false;
     }, [investigationInfoFilter]);
 
     return (

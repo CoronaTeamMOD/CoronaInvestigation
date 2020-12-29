@@ -93,7 +93,7 @@ const InvestigationsInfo: React.FC<Props> = ({ onInfoButtonClick }): JSX.Element
                     <Grid item xs={12} className={classes.investigationAmountContainer}>
                         <Typography className={classes.investigationAmountText}><b>{allInvestigationsCount}</b></Typography>
                         <Typography className={classes.allInvestigationsText}><b>חקירות בסך הכל</b></Typography>
-                        <IconButton onClick={() => history.push(landingPageRoute)}>
+                        <IconButton onClick={() => onInfoButtonClick({})}>
                             <NavigateBeforeIcon className={classes.navigateIcon} />
                         </IconButton>
                     </Grid>
