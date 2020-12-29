@@ -21,8 +21,8 @@ export const handleInvestigationRequest = async (request: Request, response: Res
     }
 
     InvestigationMiddlewareLogger.info('getting current investigation details from DB', Severity.LOW);
-    const { investigationGroup, id , err} = await fetchInvestigationCreatorDetails(response.locals , epidemiologynumber , logger)
-    if(investigationGroup === -1) {
+    const { investigationGroup, id , err} = await fetchInvestigationCreatorDetails(response.locals , epidemiologynumber);
+    if(err) {
         InvestigationMiddlewareLogger.info(`error in requesting the graphql API: ${err}`, Severity.HIGH);
         response.sendStatus(500);
     }
@@ -45,18 +45,13 @@ export const handleInvestigationRequest = async (request: Request, response: Res
     }
 };
 
-const fetchInvestigationCreatorDetails = async (locals : any , epidemiologynumber : number , logger : any) : Promise<{investigationGroup : number , id : string , err? : any}>=> {
+const fetchInvestigationCreatorDetails = async (locals : any , epidemiologynumber : number) : Promise<{investigationGroup : number , id : string , err? : any}>=> {
     const investigationCreatorDetails = await graphqlRequest(GET_INVESTIGATION_CREATOR, locals, { epidemiologynumber })
     .then((result: any) => {
-        
         return result.data?.investigationByEpidemiologyNumber?.userByCreator;
     })
     .catch((err) => {
-        return {
-            investigationGroup : -1,
-            id: "N/A",
-            err
-        }
+        return { err }
     });
     return investigationCreatorDetails;
 }
