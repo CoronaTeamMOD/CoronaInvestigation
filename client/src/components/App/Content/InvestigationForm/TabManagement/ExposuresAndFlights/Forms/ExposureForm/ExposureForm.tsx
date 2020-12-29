@@ -9,7 +9,6 @@ import PlaceSubType from 'models/PlaceSubType';
 import CovidPatient from 'models/CovidPatient';
 import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
-import ExposureFields from 'models/enums/ExposureFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ExposureSearchTextField from './ExposureSearchTextField/ExposureSearchTextField';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
@@ -37,9 +36,8 @@ const ExposureForm = (props: Props) => {
 
 	const { control , setValue , errors } = useFormContext();
 
-	const validationDate = useSelector<StoreStateType, Date>((state) => state.investigation.validationDate);
 	const [exposureSourceSearchString, setExposureSourceSearchString] = useState<string>('');
-	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isOptionalPatientsLoading, setOptionalPatientsLoading] = useState<boolean>(false);
 	const [optionalCovidPatients, setOptionalCovidPatients] = useState<CovidPatient[]>([]);
 
 	const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
@@ -47,7 +45,7 @@ const ExposureForm = (props: Props) => {
 	const { fetchOptionalCovidPatients, selectedExposureSourceDisplay } = useExposureForm({
 		exposureAndFlightsData,
 		exposureSourceSearchString,
-		setIsLoading
+		setOptionalPatientsLoading
 	});
 	const setOptionalCovidPatientsAsync = async () => {
 		const optionalCovidPatients = await fetchOptionalCovidPatients();
@@ -112,10 +110,10 @@ const ExposureForm = (props: Props) => {
 				/>
 			</FormRowWithInput>
 
-			{(isLoading || optionalCovidPatients?.length > 0) && (
+			{(isOptionalPatientsLoading || optionalCovidPatients?.length > 0) && (
 				<FormRowWithInput fieldName=''>
 					<div className={classes.optionalExposureSources}>
-						{isLoading ? (
+						{isOptionalPatientsLoading ? (
 							<div className={classes.loadingDiv}>
 								<CircularProgress className={classes.loadingSpinner} size='5vh' />
 							</div>

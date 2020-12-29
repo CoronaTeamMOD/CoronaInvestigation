@@ -21,17 +21,16 @@ const useExposureForm = (props: Props) => {
 
     const validationDate = useSelector<StoreStateType, Date>((state) => state.investigation.validationDate);
 
-    const { exposureAndFlightsData, exposureSourceSearchString } = props;
+    const { exposureAndFlightsData, exposureSourceSearchString , setOptionalPatientsLoading} = props;
 
     const minSourceSearchLengthToSearch: number = 2;
 
-    const fetchOptionalCovidPatients = async (props: getOptionalCovidPatientsProps): Promise<CovidPatient[]> => {
-        const { setIsLoading } = props;
+    const fetchOptionalCovidPatients = async (): Promise<CovidPatient[]> => {
         if (exposureAndFlightsData.exposureSource || exposureSourceSearchString.length < minSourceSearchLengthToSearch) {
             return [];
         } else {
             const confirmedExposuresLogger = logger.setup('Fetching list of confirmed exposures');
-            setIsLoading(true);
+            setOptionalPatientsLoading(true);
             confirmedExposuresLogger.info(
                 `launching request with parameters ${exposureSourceSearchString} and ${validationDate}`,
                 Severity.LOW
@@ -57,7 +56,7 @@ const useExposureForm = (props: Props) => {
                     });
                     return [];
                 })
-                .finally(() => setIsLoading(false));
+                .finally(() => setOptionalPatientsLoading(false));
             return optionalCovidPatients;
         }
     }
@@ -81,8 +80,5 @@ export default useExposureForm;
 interface Props {
     exposureAndFlightsData : Exposure;
     exposureSourceSearchString : string;
-}
-
-interface getOptionalCovidPatientsProps {
-    setIsLoading : React.Dispatch<React.SetStateAction<boolean>>
+    setOptionalPatientsLoading: React.Dispatch<React.SetStateAction<boolean>> 
 }
