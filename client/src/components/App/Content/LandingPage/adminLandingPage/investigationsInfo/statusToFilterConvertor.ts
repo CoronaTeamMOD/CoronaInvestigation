@@ -1,4 +1,4 @@
-const statusConvertor = {
+const statusConvertorToHistoryFilter = {
     'חדשות': {
         statusFilter: [1]
     },
@@ -13,4 +13,4 @@ const statusConvertor = {
     }
 }
 
-export default statusConvertor;
+export default statusConvertorToHistoryFilter;

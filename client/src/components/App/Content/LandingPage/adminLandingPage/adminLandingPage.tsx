@@ -26,10 +26,14 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
 
     const { countyDisplayName } = useAppToolbar();
     
+    // A useEffect whenever there is a need to redirect to the investigation table
     useEffect(() => {
         if (!renderedForFirstTime.current) {
-            console.log(investigationInfoFilter);
-            history.push(landingPageRoute, investigationInfoFilter);
+            // append with desk/time filter when done
+            // P.S: when finishing the time filter make sure 
+            //      that the history in useInvestigationTable.ts is expecting to recive it
+            // Good Luck! 😁 R.R
+            history.push(landingPageRoute, {...investigationInfoFilter});
         }
         renderedForFirstTime.current = false;
     }, [investigationInfoFilter]);
