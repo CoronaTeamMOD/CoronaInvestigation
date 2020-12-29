@@ -21,7 +21,7 @@ const usePlacesTypesAndSubTypes = (parameters: usePlacesTypesAndSubTypesIncome) 
             result => {
                 if (result?.data) {
 
-                    let sortedResult : PlacesSubTypesByTypes = {};
+                    const sortedResult : PlacesSubTypesByTypes = {};
                     Object.keys(result.data).forEach((placeTypes)=>{
                         sortedResult[placeTypes] = moveOtherValueLocationToLast(result.data[placeTypes]);
                     })
