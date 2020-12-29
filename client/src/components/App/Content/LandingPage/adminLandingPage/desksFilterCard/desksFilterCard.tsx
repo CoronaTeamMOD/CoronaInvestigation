@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
-import { Card, CardActions, CardContent, Typography } from '@material-ui/core';
+import { CardActions, CardContent, Typography } from '@material-ui/core';
 
+import Desk from 'models/Desk';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 
-import useStyles from './desksFilterCardStyles';
+import LoadingCard from '../LoadingCard/LoadingCard';
+
 import UpdateButton from '../UpdateButton/UpdateButton';
-import Desk from 'models/Desk';
 import useDesksFilterCard from './useDesksFilterCard';
+import useStyles, { cardHeight, cardWidth } from './desksFilterCardStyles';
 
 const DesksFilterCard: React.FC = (): JSX.Element => {
     const classes = useStyles();
 
     const [filteredDesks, setFilteredDesks] = useState<number[]>([]);
 
-    const { desks } = useDesksFilterCard();
+    const { desks, isLoading } = useDesksFilterCard();
 
     const onDeskClicked = (checkedDesk: number) => {
         if (filteredDesks.includes(checkedDesk)) {
@@ -24,7 +26,7 @@ const DesksFilterCard: React.FC = (): JSX.Element => {
     }
 
     return (
-        <Card className={classes.desksCard}>
+        <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.desksCard}>
             <CardContent className={classes.desksCardContent}>
                 <Typography variant='h6' className={classes.cardTitle}>
                     <b>הדסקים בהם הינך צופה</b>
@@ -48,7 +50,7 @@ const DesksFilterCard: React.FC = (): JSX.Element => {
             <CardActions className={classes.desksCardActions}>
                 <UpdateButton/>
             </CardActions>
-        </Card>
+        </LoadingCard>
     )
 }
 
