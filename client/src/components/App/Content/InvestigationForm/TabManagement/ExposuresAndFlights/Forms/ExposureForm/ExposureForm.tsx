@@ -102,7 +102,10 @@ const ExposureForm = (props: Props) => {
 								placeholder={INSERT_EXPOSURE_SOURCE_SEARCH}
 								onSearchClick={setOptionalCovidPatientsAsync}
 								onKeyDown={(e : React.KeyboardEvent) => {
-									(e.key === 'Enter') && setOptionalCovidPatientsAsync()
+									if(e.key === 'Enter'){
+										e.preventDefault();
+										setOptionalCovidPatientsAsync()
+									}
 								}}
 							/>
 						);

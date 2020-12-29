@@ -43,13 +43,9 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     saveExposure(data , ids);
   }
 
-  const preventEnter = (e : React.KeyboardEvent) => {
-    (e.key === 'Enter') && e.preventDefault();
-  }
-
   return (
       <FormProvider {...methods}>
-        <form id={`form-${id}`} onSubmit={(e) => (onSubmit(e))} onKeyDown={preventEnter}>
+        <form id={`form-${id}`} onSubmit={(e) => (onSubmit(e))}>
           <PossibleExposure
             wereConfirmedExposures={wereConfirmedExposures}
             onExposuresStatusChange={onExposuresStatusChange}
