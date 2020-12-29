@@ -5,7 +5,7 @@ export interface GetInvestigatedPatientClinicalDetailsFields {
 }
 
 interface ClinicalDetails {
-    addressByIsolationAddress: {
+    isolationAddress: {
         floor: number;
         houseNum: number;
         streetByStreet: {
@@ -21,12 +21,11 @@ interface ClinicalDetails {
     isolationStartDate: Date | null;
     isolationEndDate: Date | null;
     isolationSource: number | null;
-    isolationAddress: string;
     isInIsolation: boolean;
     isIsolationProblem: boolean;
     isIsolationProblemMoreInfo: string;
     symptomsStartDate: Date | null;
-    investigatedPatientSymptomsByInvestigationId: {
+    symptoms: {
         nodes: {symptomName: string}[]
     },
     investigatedPatientByInvestigatedPatientId: {

@@ -1,34 +1,27 @@
 import { Router, Request, Response } from 'express';
 
-import logger from '../../Logger/Logger';
 import { Severity } from '../../Models/Logger/types';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import EducationGrade from '../../Models/Education/EducationGrade';
 import { GET_ALL_EDUCATION_GRADES } from '../../DBService/Education/Query';
+import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 
 const educationRoute = Router();
 
 educationRoute.get('/grades', (request: Request, response: Response) => {
   const allEducationGradesLogger = logger.setup({
-    workflow: 'Query all education grades',
+    workflow: 'query all education grades',
     investigation: response.locals.epidemiologynumber,
     user: response.locals.user.id
   });
-  allEducationGradesLogger.info('launching server request', Severity.LOW);
+  allEducationGradesLogger.info(launchingDBRequestLog(), Severity.LOW);
   graphqlRequest(GET_ALL_EDUCATION_GRADES, response.locals)
   .then((result: any) => {
-    const grades: EducationGrade[] = result?.data?.allEducationGrades?.nodes;
-    if (grades) {
-      allEducationGradesLogger.info('the query got valid response from db', Severity.LOW);
-      response.send(grades);
-    } else {
-      const errorMessage = result?.errors ? result.errors[0]?.message : undefined;
-      allEducationGradesLogger.error(`the query got invalid response from db due to ${errorMessage}`, Severity.HIGH);
-      response.send(errorMessage);
-    }
+    allEducationGradesLogger.info(validDBResponseLog, Severity.LOW);
+    response.send(result.data.allEducationGrades.nodes);
   })
   .catch(error => {
-    allEducationGradesLogger.error(`the query got invalid response from db due to ${error}`, Severity.HIGH);
+    allEducationGradesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
     response.send(error);
   });
 });

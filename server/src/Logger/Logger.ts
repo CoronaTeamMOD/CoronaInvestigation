@@ -8,6 +8,26 @@ dotenv.config();
 
 appinsights.setup(process.env.INSTRUMENTATION_KEY).start();
 
+const valueToString = (value: any) => {
+    if (typeof value === 'object') return JSON.stringify(value);
+    return value;
+}
+
+export const formatParameters = (parameters: Object) => {
+    const indexedParametrs : {[index: string] : any} = {...parameters};
+    const flatParametrs = Object.keys(indexedParametrs).map(key => `${key}: ${valueToString(indexedParametrs[key as string])}`).join(', ');
+    return `{${flatParametrs}}`
+}
+
+export const launchingDBRequestLog = (parameters?: Object): string => {
+    let log = 'launching DB request';
+    if (parameters) log = log.concat(` with parameters: ${formatParameters(parameters)}`);
+    return log;
+}
+
+export const validDBResponseLog : string = 'DB response is successful';
+
+export const invalidDBResponseLog = (errorMessage: string) : string => `got errors on graphql API ${errorMessage}`;
 class Logger {
 
     logger: winstonLogger;
