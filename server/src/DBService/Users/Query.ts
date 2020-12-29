@@ -41,6 +41,14 @@ query AllGroupUsers($investigationGroup: Int!) {
       activeInvestigationsCount: investigationsByCreator(filter: {investigationStatus: {equalTo: ${String(InvestigationMainStatusCodes.IN_PROCESS)}}}) {
         totalCount
       }
+      pauseInvestigationsCount: investigationsByCreator(filter: {investigationStatus: {equalTo: ${String(InvestigationMainStatusCodes.IN_PROCESS)}}, investigationSubStatus: {isNull: false}}) {
+        totalCount
+      }
+      languages: userLanguagesByUserId {
+        nodes {
+          language
+        }
+      }
       userType
       sourceOrganization
       deskByDeskId {
@@ -116,6 +124,7 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter:
         displayName
       }
       deskByDeskId {
+        id,
         deskName
       }
     }
@@ -159,6 +168,7 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter:
         displayName
       }
       deskByDeskId {
+        id,
         deskName
       }
     }

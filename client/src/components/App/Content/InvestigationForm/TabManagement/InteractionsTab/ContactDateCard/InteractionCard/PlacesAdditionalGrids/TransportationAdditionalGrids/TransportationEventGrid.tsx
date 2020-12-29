@@ -1,6 +1,6 @@
 import React from 'react';
 
-import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import placeTypesCodesHierarchy from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import BusEventGrid from './BusEventGrid';

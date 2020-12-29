@@ -15,16 +15,9 @@ interface Props {
     wereConfirmedExposures: boolean;
     onExposuresStatusChange: (fieldName: any, value: any) => void;
     exposures: Exposure[];
-    handleChangeExposureDataAndFlightsField: (
-        index: number,
-        fieldName: string,
-        value: any
-    ) => void;
+    handleChangeExposureDataAndFlightsField: (index: number, fieldName: string, value: any) => void;
     disableConfirmedExposureAddition: boolean;
-    onExposureAdded: (
-        wasConfirmedExposure: boolean,
-        wasAbroad: boolean
-    ) => void;
+    onExposureAdded: (wasConfirmedExposure: boolean, wasAbroad: boolean) => void;
 }
 
 const addConfirmedExposureButton: string = 'הוסף חשיפה';
@@ -38,83 +31,60 @@ const PossibleExposure = (props: Props) => {
         onExposureAdded,
         disableConfirmedExposureAddition,
     } = props;
-	const classes = useStyles();
-	
-	const { control , watch } = useFormContext();
-	
-    const watchWasConfirmedExposure = watch(fieldsNames.wereConfirmedExposures , wereConfirmedExposures);
+    const classes = useStyles();
+
+    const { control, watch } = useFormContext();
+
+    const watchWasConfirmedExposure = watch(fieldsNames.wereConfirmedExposures, wereConfirmedExposures);
 
     return (
         <div className={classes.subForm}>
-            <FormTitle title="חשיפה אפשרית" />
-            <FormRowWithInput
-                testId="wasConfirmedExposure"
-                fieldName="האם היה מגע ידוע עם חולה מאומת?"
-            >
-				<Controller
-					control={control}
-					name={fieldsNames.wereConfirmedExposures}
-					defaultValue={wereConfirmedExposures}
-					render={(props) => {
-						return(
-							<Toggle
-								{...props}
-								onChange={(e, value) => {
-									if (value !== null) {
-										props.onChange(value);
-										onExposuresStatusChange(
-											fieldsNames.wereConfirmedExposures,
-											value
-										);
-									}
-								}}
-							/>
-						)
-					}}
-				/>
-
+            <FormTitle title='חשיפה אפשרית' />
+            <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
+                <Controller
+                    control={control}
+                    name={fieldsNames.wereConfirmedExposures}
+                    defaultValue={wereConfirmedExposures}
+                    render={(props) => {
+                        return (
+                            <Toggle
+                                {...props}
+                                onChange={(e, value) => {
+                                    if (value !== null) {
+                                        props.onChange(value);
+                                        onExposuresStatusChange(fieldsNames.wereConfirmedExposures, value);
+                                    }
+                                }}
+                            />
+                        );
+                    }}
+                />
             </FormRowWithInput>
-            <Collapse
-                in={watchWasConfirmedExposure}
-                className={classes.additionalInformationForm}
-            >
+            <Collapse in={watchWasConfirmedExposure} className={classes.additionalInformationForm}>
                 <div>
                     {exposures.map(
                         (exposure, index) =>
                             exposure.wasConfirmedExposure && (
                                 <>
                                     <ExposureForm
-                                        key={
-                                            (exposure.id || '') +
-                                            index.toString()
-                                        }
+                                        key={(exposure.id || '') + index.toString()}
                                         fieldsNames={fieldsNames}
-										exposureAndFlightsData={exposure}
-										index={index}
-                                        handleChangeExposureDataAndFlightsField={
-                                            handleChangeExposureDataAndFlightsField
-                                        }
+                                        exposureAndFlightsData={exposure}
+                                        index={index}
+                                        handleChangeExposureDataAndFlightsField={handleChangeExposureDataAndFlightsField}
                                     />
                                     <Divider />
                                 </>
                             )
                     )}
                     <IconButton
-                        test-id="addConfirmedExposure"
+                        test-id='addConfirmedExposure'
                         onClick={() => onExposureAdded(true, false)}
                         disabled={disableConfirmedExposureAddition}
                     >
-                        <AddCircle
-                            color={
-                                disableConfirmedExposureAddition
-                                    ? 'disabled'
-                                    : 'primary'
-                            }
-                        />
+                        <AddCircle color={disableConfirmedExposureAddition ? 'disabled' : 'primary'} />
                     </IconButton>
-                    <Typography variant="caption">
-                        {addConfirmedExposureButton}
-                    </Typography>
+                    <Typography variant='caption'>{addConfirmedExposureButton}</Typography>
                 </div>
             </Collapse>
         </div>

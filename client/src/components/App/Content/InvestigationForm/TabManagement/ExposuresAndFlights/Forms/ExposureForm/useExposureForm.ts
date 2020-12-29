@@ -60,29 +60,29 @@ const useExposureForm = (props: Props) => {
                 .finally(() => setIsLoading(false));
             return optionalCovidPatients;
         }
-    };
-
+    }
+    
     const selectedExposureSourceDisplay = (exposureSource: CovidPatient): string => {
         const fields: string[] = [];
         exposureSource.fullName && fields.push(displayPatientFields.fullName + ': ' + exposureSource.fullName);
-        exposureSource.age && exposureSource.age !== -1 && fields.push(displayPatientFields.age + ': ' + exposureSource.age);
+        (exposureSource.age && exposureSource.age !== -1) && fields.push(displayPatientFields.age + ': ' + exposureSource.age);
         exposureSource.address && fields.push(displayPatientFields.address + ': ' + exposureSource.address);
         return fields.join(', ');
-    };
+    }
 
     return {
         fetchOptionalCovidPatients,
-        selectedExposureSourceDisplay,
-    };
-};
+        selectedExposureSourceDisplay
+    }
+}
 
 export default useExposureForm;
 
 interface Props {
-    exposureAndFlightsData: Exposure;
-    exposureSourceSearchString: string;
+    exposureAndFlightsData : Exposure;
+    exposureSourceSearchString : string;
 }
 
 interface getOptionalCovidPatientsProps {
-    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    setIsLoading : React.Dispatch<React.SetStateAction<boolean>>
 }

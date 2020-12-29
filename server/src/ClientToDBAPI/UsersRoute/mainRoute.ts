@@ -2,14 +2,15 @@ import { Router, Request, Response } from 'express';
 
 import logger from '../../Logger/Logger';
 import User from '../../Models/User/User';
-import {Service, Severity } from '../../Models/Logger/types';
+import { Service, Severity } from '../../Models/Logger/types';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
 import GetAllUserTypesResponse from '../../Models/User/GetAllUserTypesResponse';
 import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
 import { adminMiddleWare, superAdminMiddleWare } from '../../middlewares/Authentication';
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import { graphqlRequest, multipleInvestigationsBulkErrorMessage, areAllResultsValid } from '../../GraphqlHTTPRequest';
-import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, UPDATE_INVESTIGATOR_BY_GROUP_ID } from '../../DBService/Users/Mutation';
+import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, UPDATE_INVESTIGATOR_BY_GROUP_ID,
+         UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK } from '../../DBService/Users/Mutation';
 import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
     GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_USERS_BY_DISTRICT_ID, GET_ALL_USER_TYPES, GET_USERS_BY_COUNTY_ID
@@ -42,11 +43,65 @@ usersRoute.get('/userActivityStatus', (request: Request, response: Response) => 
         })
 })
 
-usersRoute.post('/updateIsUserActive', (request: Request, response: Response) => {
+usersRoute.post('/updateSourceOrganizationById', adminMiddleWare, (request: Request, response: Response) => {
+    const updateSourceOrganizationVariables = {
+        id : request.body.userId,
+        sourceOrganization : request.body.sourceOrganization
+    };
+    const updateSourceOrganizationLogger = logger.setup({
+        workflow: 'Updating user source organization',
+        user: response.locals.user.id,
+    });
+    updateSourceOrganizationLogger.info(`make the graphql API request with parameters ${JSON.stringify(updateSourceOrganizationVariables)}`, Severity.LOW);
+    graphqlRequest(UPDATE_SOURCE_ORGANIZATION, response.locals, updateSourceOrganizationVariables)
+        .then((result: any) => {
+            if (result.data.updateUserById && !result.errors) {
+                updateSourceOrganizationLogger.info('user source organization was updated successfully', Severity.LOW);
+                response.send(result.data.updateUserById.user);
+            }
+            else {
+                updateSourceOrganizationLogger.error(`update user failed due to  ${result.errors[0]?.message}`, Severity.HIGH);
+                response.status(badRequestStatusCode).send(`Couldn't find the user nor update source organization`);
+            }
+        })
+        .catch(error => {
+            updateSourceOrganizationLogger.error(`failed to update due to: ${error}`, Severity.HIGH);
+            response.status(RESPONSE_ERROR_CODE).send('Error while trying to change user source organization')
+        })
+})
+
+usersRoute.post('/updateDesk', adminMiddleWare, (request: Request, response: Response) => {
+    const updateDeskVariables = {
+        id: request.body.userId,
+        desk: request.body.desk
+    };
+    const updateDeskLogger = logger.setup({
+        workflow: 'Updating user desk',
+        user: response.locals.user.id,
+    });
+    updateDeskLogger.info(`make the graphql API request with parameters ${JSON.stringify(updateDeskVariables)}`, Severity.LOW);
+    graphqlRequest(UPDATE_DESK, response.locals, updateDeskVariables)
+        .then((result: any) => {
+            if (result.data.updateUserById && !result.errors) {
+                updateDeskLogger.info('user desk was updated successfully', Severity.LOW);
+                response.send(result.data.updateUserById.user);
+            }
+            else {
+                updateDeskLogger.error(`user desk was failed to update due to  ${result.errors[0]?.message}`, Severity.HIGH);
+                response.status(badRequestStatusCode).send(`Couldn't find the user nor update desk`);
+            }
+        })
+        .catch(error => {
+            updateDeskLogger.error(`failed to update due to: ${error}`, Severity.HIGH);
+            response.status(RESPONSE_ERROR_CODE).send('Error while trying to change user desk')
+        })
+})
+
+const updateIsUserActive = (response: Response, id: string, isActive: Boolean) => {
     const updateIsActiveStatusVariables = {
-        id: response.locals.user.id,
-        isActive: request.body.isActive
-    }
+        id,
+        isActive
+    };
     const updateIsUserActiveLogger = logger.setup({
         workflow: 'Updating user activity status',
         user: response.locals.user.id,
@@ -67,6 +122,14 @@ usersRoute.post('/updateIsUserActive', (request: Request, response: Response) =>
             updateIsUserActiveLogger.error(`failed to get response from the graphql API due to: ${error}`, Severity.HIGH);
             response.status(RESPONSE_ERROR_CODE).send('Error while trying to activate / deactivate user')
         })
+}
+
+usersRoute.post('/updateIsUserActive', (request: Request, response: Response) => {
+    updateIsUserActive(response, response.locals.user.id, request.body.isActive);
+})
+
+usersRoute.post('/updateIsUserActiveById', adminMiddleWare, (request: Request, response: Response) => {
+    updateIsUserActive(response, request.body.userId, request.body.isActive);
 })
 
 usersRoute.get('/user', (request: Request, response: Response) => {
@@ -88,33 +151,23 @@ usersRoute.get('/user', (request: Request, response: Response) => {
 usersRoute.post('/changeInvestigator', adminMiddleWare, (request: Request, response: Response) => {
     const epidemiologyNumbers: number[] = request.body.epidemiologyNumbers;
     const newUser: string = request.body.user;
-    const transferReason: number = request.body.transferReason;
+    const transferReason: string = request.body.transferReason;
     const changeInvestigatorLogger = logger.setup({
         workflow: 'Switch investigator',
         user: response.locals.user.id,
     });
     changeInvestigatorLogger.info(`querying the graphql API with parameters ${JSON.stringify(request.body)}`, Severity.LOW);
-    Promise.all(epidemiologyNumbers.map(epidemiologyNumber => graphqlRequest(UPDATE_INVESTIGATOR, response.locals, 
-        {epidemiologyNumber, newUser, transferReason})))
-    .then((results: any[]) => {
-        if (areAllResultsValid(results)) {
-            changeInvestigatorLogger.info(`investigator have been changed in the DB, investigations: ${epidemiologyNumbers}`, Severity.LOW);
-            response.send(results[0]?.data);
-        } else {
-            changeInvestigatorLogger.error(`desk id hasnt been changed in the DB in investigations ${epidemiologyNumbers}, due to: ${multipleInvestigationsBulkErrorMessage(results, epidemiologyNumbers)}`, Severity.HIGH);
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.HIGH,
-                workflow: 'Switch investigator',
-                step: `desk id hasnt been changed in the DB in investigations ${epidemiologyNumbers}, due to: ${multipleInvestigationsBulkErrorMessage(results, epidemiologyNumbers)}`,
-                user: response.locals.user.id
-            });
-            response.sendStatus(RESPONSE_ERROR_CODE);
-        }
-    }).catch(err => {
-        changeInvestigatorLogger.error(`querying the graphql API failed du to ${err}`, Severity.HIGH);
-        response.sendStatus(RESPONSE_ERROR_CODE);
-    });
+    Promise.all(epidemiologyNumbers.map(epidemiologyNumber => graphqlRequest(UPDATE_INVESTIGATOR, response.locals,
+        { epidemiologyNumber, newUser, transferReason })))
+        .then((results: any[]) => {
+            if (areAllResultsValid(results)) {
+                changeInvestigatorLogger.info(`investigator have been changed in the DB, investigations: ${epidemiologyNumbers}`, Severity.LOW);
+                response.send(results[0]?.data);
+            } else {
+                changeInvestigatorLogger.error(`desk id hasnt been changed in the DB in investigations ${epidemiologyNumbers}, due to: ${multipleInvestigationsBulkErrorMessage(results, epidemiologyNumbers)}`, Severity.HIGH);
+                response.sendStatus(RESPONSE_ERROR_CODE);
+            }
+        });
 });
 
 usersRoute.post('/changeGroupInvestigator', adminMiddleWare, (request: Request, response: Response) => {
@@ -124,22 +177,22 @@ usersRoute.post('/changeGroupInvestigator', adminMiddleWare, (request: Request, 
     });
     const newInvestigator = request.body.user;
     const selectedGroups = request.body.groupIds;
-    const reason = request.body.reason ? request.body.reason : ''; 
+    const userCounty = response.locals.user.investigationGroup;
     changeGroupInvestigatorLogger.info(`querying the graphql API with parameters ${JSON.stringify(request.body)}`, Severity.LOW);
-    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, {newInvestigator, selectedGroups, reason})
-    .then((result: any) => {
-        if (result?.data && !result.errors) {
-            changeGroupInvestigatorLogger.info(`investigator have been changed in the DB for group: ${selectedGroups}`, Severity.LOW);
-            response.send(result);
-        } else {
-            changeGroupInvestigatorLogger.error(`failed to change investigator for group ${selectedGroups} due to: ${JSON.stringify(result)}`, Severity.HIGH);
-            response.status(RESPONSE_ERROR_CODE).json({ message: `failed to change investigator for group ${selectedGroups}` });
-        }
-    })
-    .catch(error => {
-        changeGroupInvestigatorLogger.error(`failed to get response from the graphql API due to: ${error}`, Severity.HIGH);
-        response.status(RESPONSE_ERROR_CODE).send(`Error while trying to change investigator to group: ${selectedGroups}`);
-    });
+    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, { newInvestigator, selectedGroups, userCounty })
+        .then((result: any) => {
+            if (result?.data && !result.errors) {
+                changeGroupInvestigatorLogger.info(`investigator have been changed in the DB for group: ${selectedGroups}`, Severity.LOW);
+                response.send(result);
+            } else {
+                changeGroupInvestigatorLogger.error(`failed to change investigator for group ${selectedGroups} due to: ${JSON.stringify(result)}`, Severity.HIGH);
+                response.status(RESPONSE_ERROR_CODE).json({ message: `failed to change investigator for group ${selectedGroups}` });
+            }
+        })
+        .catch(error => {
+            changeGroupInvestigatorLogger.error(`failed to get response from the graphql API due to: ${error}`, Severity.HIGH);
+            response.status(RESPONSE_ERROR_CODE).send(`Error while trying to change investigator to group: ${selectedGroups}`);
+        });
 });
 
 usersRoute.post('/changeGroupCounty', adminMiddleWare, (request: Request, response: Response) => {
@@ -149,21 +202,22 @@ usersRoute.post('/changeGroupCounty', adminMiddleWare, (request: Request, respon
     });
     let newInvestigator = 'admin.group' + request.body.county;
     const selectedGroups = request.body.groupIds;
+    const userCounty = response.locals.user.investigationGroup;
     changeGroupCountyLogger.info(`querying the graphql API with parameters ${JSON.stringify(request.body)}`, Severity.LOW);
-    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, {newInvestigator, selectedGroups, wasInvestigationTransferred: true})
-    .then((result: any) => {
-        if (result?.data && !result.errors) {
-            changeGroupCountyLogger.info(`investigator have been changed in the DB for group: ${selectedGroups}`, Severity.LOW);
-            response.send(result);
-        } else {
-            changeGroupCountyLogger.error(`failed to change investigator for group ${selectedGroups} due to: ${JSON.stringify(result)}`, Severity.HIGH);
-            response.status(RESPONSE_ERROR_CODE).json({ message: `failed to change investigator for group ${selectedGroups}` });
-        }
-    })
-    .catch(error => {
-        changeGroupCountyLogger.error(`failed to get response from the graphql API due to: ${error}`, Severity.HIGH);
-        response.status(RESPONSE_ERROR_CODE).send(`Error while trying to change investigator to group: ${selectedGroups}`);
-    });
+    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, { newInvestigator, selectedGroups, userCounty, wasInvestigationTransferred: true })
+        .then((result: any) => {
+            if (result?.data && !result.errors) {
+                changeGroupCountyLogger.info(`investigator have been changed in the DB for group: ${selectedGroups}`, Severity.LOW);
+                response.send(result);
+            } else {
+                changeGroupCountyLogger.error(`failed to change investigator for group ${selectedGroups} due to: ${JSON.stringify(result)}`, Severity.HIGH);
+                response.status(RESPONSE_ERROR_CODE).json({ message: `failed to change investigator for group ${selectedGroups}` });
+            }
+        })
+        .catch(error => {
+            changeGroupCountyLogger.error(`failed to get response from the graphql API due to: ${error}`, Severity.HIGH);
+            response.status(RESPONSE_ERROR_CODE).send(`Error while trying to change investigator to group: ${selectedGroups}`);
+        });
 });
 
 usersRoute.get('/userTypes', (request: Request, response: Response) => {
@@ -190,53 +244,59 @@ usersRoute.get('/userTypes', (request: Request, response: Response) => {
 
 usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response) => {
     const groupLogger = logger.setup({
-        workflow: 'Switch investigator',
+        workflow: `fetch investigators by county ${response.locals.user.investigationGroup}`,
         user: response.locals.user.id,
     });
-    groupLogger.info(`querying the graphql API with parameters ${JSON.stringify({ investigationGroup: response.locals.user.investigationGroup })}`, Severity.LOW);
+    groupLogger.info('requesting the graphql API', Severity.LOW);
     graphqlRequest(GET_ACTIVE_GROUP_USERS, response.locals, { investigationGroup: +response.locals.user.investigationGroup })
         .then((result: any) => {
-            let users: User[] = [];
-            if (result && result.data && result.data.allUsers) {
+            if (result.data && !result.errors) {
+                let users: User[] = [];
                 groupLogger.info('got group users from the DB', Severity.LOW);
-                users = result.data.allUsers.nodes.map((user: User) => ({
+                users = result.data.allUsers.nodes.map((user: any) => ({
                     ...user,
+                    languages: user.languages.nodes.map((language: any) => language?.language),
                     token: ''
                 }));
+                response.send(users);
             } else {
-                groupLogger.error('didnt get group users from the DB', Severity.HIGH);
+                groupLogger.error(`didnt get group users from the DB due to ${result.errors[0]?.message}`, Severity.HIGH);
+                response.status(RESPONSE_ERROR_CODE).send(result.errors[0]?.message);
             }
-            return response.send(users);
-        });
+        })
+        .catch(err => {
+            groupLogger.error(`couldnt query investigators due to ${err}`, Severity.CRITICAL);
+            response.status(RESPONSE_ERROR_CODE).send(`couldn't query investigators`);
+        })
 });
 
 usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: Response) => {
+    const epidemiologyNumbers: number[] = request.body.epidemiologyNumbers;
     let userAdmin = 'admin.group' + request.body.updatedCounty;
-    const workflow = 'GraphQL request to the change the investigation county';
+    const transferReason: string = request.body.transferReason || '';
     const changeCountyLogger = logger.setup({
-        workflow,
+        workflow: 'GraphQL request to the change the investigation county',
         user: response.locals.user.id,
-        investigation: response.locals.epidemiologyNumber
+        investigation: response.locals.epidemiologynumber,
     });
-    changeCountyLogger.info(`post with parameters ${JSON.stringify({ epidemiologyNumber: request.body.epidemiologyNumber, newUser: userAdmin })}`, Severity.LOW);
-
+    changeCountyLogger.info('launching graphql API counties request', Severity.LOW);
     graphqlRequest(UPDATE_COUNTY_BY_USER, response.locals, {
-        epidemiologyNumber: request.body.epidemiologyNumber,
-        newUser: userAdmin
+        epidemiologyNumbers,
+        newUser: userAdmin,
+        transferReason
     }).then((result: any) => {
-        if (result?.data && !result?.errors) {
-            changeCountyLogger.info('The investigation county changed successfully', Severity.LOW);
-            response.send({message: 'The county has changed successfully'});
+        if (result?.data && !result.errors) {
+            changeCountyLogger.info(`The investigation county changed successfully, investigations: ${epidemiologyNumbers}`, Severity.LOW);
+            response.send(result?.data || '');
         } else {
-            const errorMessage = result?.errors[0]?.message || '';
-            changeCountyLogger.error(`The graphql mutation to chage county failed ${errorMessage && ('due to ' + errorMessage)}`, Severity.HIGH);
+            changeCountyLogger.error(`County hasnt been changed in the DB in investigations ${epidemiologyNumbers}, due to: ${multipleInvestigationsBulkErrorMessage(result, epidemiologyNumbers)}`, Severity.HIGH);
             response.status(RESPONSE_ERROR_CODE).send('error while changing county');
         }
-    }).catch((error) => {
-        changeCountyLogger.error(error, Severity.HIGH);
+    }).catch(err => {
+        changeCountyLogger.error(`querying the graphql API failed du to ${err}`, Severity.HIGH);
         response.status(RESPONSE_ERROR_CODE).send('error while changing county');
-    });
-})
+    })
+});
 
 usersRoute.get('/sourcesOrganization', (request: Request, response: Response) => {
     const sourcesOrganizationLogger = logger.setup({
@@ -406,7 +466,7 @@ const toUser = (user: any) => ({
     isActive: user.isActive,
     languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
     userType: user.userTypeByUserType.displayName,
-    desk: user.deskByDeskId?.deskName,
+    desk: { id: user.deskByDeskId?.id, deskName: user.deskByDeskId?.deskName},
     investigationGroup: user.countyByInvestigationGroup?.displayName,
     sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
 });

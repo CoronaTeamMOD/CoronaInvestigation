@@ -6,11 +6,14 @@ import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material
 import Contact from 'models/Contact';
 import useFormStyles from 'styles/formStyles';
 import { timeFormat } from 'Utils/displayUtils';
-import useContactFields from 'Utils/vendor/useContactFields';
+import FormInput from 'commons/FormInput/FormInput';
+import useContactFields from 'Utils/Contacts/useContactFields';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
-import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import placeTypesCodesHierarchy from 'Utils/ContactEvent/placeTypesCodesHierarchy';
+import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
+import useStyles from './InteractionCardStyles';
 import ContactGrid from './ContactGrid/ContactGrid';
 import ContactUploader from './ExcelUploader/ContactUploader';
 import OfficeEventGrid from './PlacesAdditionalGrids/OfficeEventGrid';
@@ -21,8 +24,6 @@ import ExcelFormatDownloader from './ExcelFormatDownloader/ExcelFormatDownloader
 import PrivateHouseEventGrid from './PlacesAdditionalGrids/PrivateHouseEventGrid';
 import OtherPublicLocationGrid from './PlacesAdditionalGrids/OtherPublicLocationGrid';
 import TransportationEventGrid from './PlacesAdditionalGrids/TransportationAdditionalGrids/TransportationEventGrid';
-
-import useStyles from './InteractionCardStyles';
 
 const unknownTimeMessage = 'זמן לא ידוע';
 
@@ -38,7 +39,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
     
     const {getDisabledFields} = useContactFields();
     const completedContacts = getDisabledFields(interaction.contacts);
-    const isFieldDisabled = (contactId: Contact['serialId']) => !!completedContacts.find(contact => contact.serialId === contactId);
+    const isFieldDisabled = (contactId: Contact[InteractionEventContactFields.ID]) => !!completedContacts.find(contact => contact.id === contactId);
     
     const { shouldDisableContact } = useStatusUtils();
     
@@ -102,23 +103,16 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                         interaction.placeType === otherPublicPlaces.code &&
                         <OtherPublicLocationGrid interaction={interaction} />
                     }
-                    <Grid container justify='flex-start'>
-                        <Grid item xs={2}>
-                            <Typography variant='caption'>
-                                <b>שעה: </b>
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={10}>
-                            <Typography>
-                                {
-                                    interaction.unknownTime ? 
-                                        unknownTimeMessage
-                                    : 
-                                    `${format(interaction.endTime, timeFormat)} - ${format(interaction.startTime, timeFormat)}`
-                                }
-                            </Typography>
-                        </Grid>
-                    </Grid>
+                    <FormInput xs={6} fieldName='שעה'>
+                        <Typography variant='caption'>
+                            {
+                                interaction.unknownTime ? 
+                                    unknownTimeMessage
+                                : 
+                                `${format(interaction.endTime, timeFormat)} - ${format(interaction.startTime, timeFormat)}`
+                            }
+                        </Typography>
+                    </FormInput>
                     <Divider className={classes.divider} />
                     <Grid container>
                         <Grid item xs={12}>
@@ -137,11 +131,11 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                                 />}
                             </div>
                         </Grid>
-                        {interaction.contacts.map(person => (
+                        {interaction.contacts.map(contact => (
                             <Grid item xs={12} className={classes.interactionItem}>
                                 <ContactGrid
-                                    isContactComplete={isFieldDisabled(person.serialId)}
-                                    contact={person}
+                                    isContactComplete={isFieldDisabled(contact.id)}
+                                    contact={contact}
                                     onDeleteContactClick={onDeleteContactClick}
                                 /> 
                             </Grid>

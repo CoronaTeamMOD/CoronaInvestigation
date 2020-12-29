@@ -29,11 +29,7 @@ export const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
 interface Props {
 	exposureAndFlightsData: any; 
 	fieldsNames: any; 
-	handleChangeExposureDataAndFlightsField: (
-        index: number,
-        fieldName: string,
-        value: any
-    ) => void;
+	handleChangeExposureDataAndFlightsField: (index: number, fieldName: string, value: any) => void;
 	index : number; 
 }
 
@@ -46,7 +42,6 @@ const ExposureForm = (props: Props) => {
 	const { control , setValue , errors } = useFormContext();
 
 	const validationDate = useSelector<StoreStateType, Date>((state) => state.investigation.validationDate);
-
 	const [exposureSourceSearchString, setExposureSourceSearchString] = useState<string>('');
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [optionalCovidPatients, setOptionalCovidPatients] = useState<CovidPatient[]>([]);
@@ -57,7 +52,6 @@ const ExposureForm = (props: Props) => {
 		exposureAndFlightsData,
 		exposureSourceSearchString,
 	});
-
 	const setOptionalCovidPatientsAsync = async () => {
 		const optionalCovidPatients = await fetchOptionalCovidPatients({ setIsLoading });
 		setOptionalCovidPatients(optionalCovidPatients);
@@ -70,9 +64,9 @@ const ExposureForm = (props: Props) => {
 	}, [exposureAndFlightsData.exposureSource]);
 
     useEffect(() => {
-        setValue(`exposures[${index}].${fieldsNames.placeType}`, exposureAndFlightsData[fieldsNames.placeType] )
-		setValue(`exposures[${index}].${fieldsNames.placeSubType}`, exposureAndFlightsData[fieldsNames.placeSubType] )
-	} , []);
+      setValue(`exposures[${index}].${fieldsNames.placeType}`, exposureAndFlightsData[fieldsNames.placeType] )
+		  setValue(`exposures[${index}].${fieldsNames.placeSubType}`, exposureAndFlightsData[fieldsNames.placeSubType] )
+	  } , []);
 
 	const getDateLabel = (dateError : {message? : string , type? : string}) => {
 		if(dateError) {
@@ -171,17 +165,13 @@ const ExposureForm = (props: Props) => {
 					render={(props) => {
 						return (
 							<DatePick
-								name={`exposures[${index}].${fieldsNames.date}`}
-								maxDateMessage={MAX_DATE_ERROR_MESSAGE}
-								invalidDateMessage={INVALID_DATE_ERROR_MESSAGE}
-								FormHelperTextProps={{
-									classes: { root: classes.errorLabel },
-								}}
-								maxDate={new Date(validationDate)}
+								{...props}
+								maxDateMessage={''}
+								invalidDateMessage={''}
+								maxDate={new Date()}
 								testId='exposureDate'
 								labelText={getDateLabel(dateError)}
 								error={Boolean(dateError)}
-								value={exposureAndFlightsData[fieldsNames.date]}
                                 onChange={(newDate: Date) => {
                                     props.onChange(newDate);
                                     }

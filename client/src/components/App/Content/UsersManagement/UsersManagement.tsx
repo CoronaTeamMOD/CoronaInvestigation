@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import {
     Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
-    IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse
+    IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse, MenuItem, Select
 } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { PersonPin } from '@material-ui/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
+import Desk from 'models/Desk';
 import SortOrder from 'models/enums/SortOrder';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
@@ -28,7 +29,7 @@ interface CellNameSort {
 }
 
 const usersManagementTitle = 'ניהול משתמשים';
-
+const sourceOrganizationLabel = 'מסגרת';
 const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, UsersManagementTableHeadersNames.LANGUAGES,
 UsersManagementTableHeadersNames.COUNTY, UsersManagementTableHeadersNames.USER_TYPE,
 UsersManagementTableHeadersNames.DESK];
@@ -38,9 +39,10 @@ const UsersManagement: React.FC = () => {
     const [cellNameSort, setCellNameSort] = useState<CellNameSort>({ name: '', direction: undefined });
     const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
 
-    const { users, counties, sourcesOrganization, userTypes, languages,
-        totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange } =
-        useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
+    const { users, counties, desks, sourcesOrganization, userTypes, languages,
+            totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange, setUserActivityStatus,
+            setUserSourceOrganization, setUserDesk } =
+            useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
 
@@ -65,7 +67,7 @@ const UsersManagement: React.FC = () => {
                 return (
                     <IsActiveToggle
                         value={row[cellName]}
-                        setUserActivityStatus={(isActive: boolean) => console.log(isActive)}
+                        onToggle={(isActive) => setUserActivityStatus(isActive, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
                     />
                 )
             }
@@ -79,7 +81,68 @@ const UsersManagement: React.FC = () => {
                 )
             }
             case UsersManagementTableHeadersNames.DESK: {
-                return row[cellName] ? row[cellName] : noDeskAssignment
+                return (
+                    <Select
+                        MenuProps={{
+                            anchorOrigin: {
+                                vertical: 'bottom',
+                                horizontal: 'left'
+                            },
+                            transformOrigin: {
+                                vertical: 'top',
+                                horizontal: 'left'
+                            },
+                            getContentAnchorEl: null
+                        }}
+                        value={row[cellName]?.id}
+                        onChange={(event: React.ChangeEvent<any>) => setUserDesk(event.target.value as number, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
+                        className={classes.desks}
+                        variant='outlined'
+                    >
+                        {
+                            desks.map((desk: Desk) => (
+                                <MenuItem
+                                    key={desk.id}
+                                    value={desk.id}>
+                                    {desk.deskName}
+                                </MenuItem>
+                            ))
+                        }
+                    </Select>
+                )
+                
+            }
+            case UsersManagementTableHeadersNames.SOURCE_ORGANIZATION : {
+                return (
+                    <Select
+                        MenuProps={{
+                            anchorOrigin: {
+                                vertical: 'bottom',
+                                horizontal: 'left'
+                            },
+                            transformOrigin: {
+                                vertical: 'top',
+                                horizontal: 'left'
+                            },
+                            getContentAnchorEl: null
+                        }}
+                        variant='outlined'
+                        className={classes.sourceOrganization}
+                        label={sourceOrganizationLabel}
+                        value={row.sourceOrganization}
+                        onChange={(event: React.ChangeEvent<any>) => setUserSourceOrganization(event.target.value as string, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
+                    >
+                        {
+                            sourcesOrganization.map(sourceOrganization => (
+                                <MenuItem
+                                    key={sourceOrganization.displayName}
+                                    value={sourceOrganization.displayName}>
+                                    {sourceOrganization.displayName}
+                                </MenuItem>
+                            ))
+                        }
+                    </Select>
+                )
             }
             default:
                 return row[cellName]

@@ -26,17 +26,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     mode: 'all',
     resolver: yupResolver(ExposureSchema(validationDate))
   });
-
-  useEffect(() => {
-    methods.reset({
-      wasInEilat,
-      wasInDeadSea,
-      exposures,
-      wereFlights,
-      wereConfirmedExposures
-    });
-    methods.trigger();
-  }, [exposureAndFlightsData])
+  const {reset , trigger} = methods;
 
   const {
     saveExposure,
@@ -45,16 +35,14 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     onExposureAdded,
     disableConfirmedExposureAddition,
     disableFlightAddition
-  } = useExposuresAndFlights({exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights , id});
+  } = useExposuresAndFlights({exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, id, reset, trigger});
 
   const onSubmit = (e : React.FormEvent) => {
     e.preventDefault();
-    console.log(e);
     methods.trigger();
     const data = methods.getValues();
     saveExposure(data , ids);
-  }
-
+        
   const preventEnter = (e : React.KeyboardEvent) => {
     if(e.key === 'Enter'){
       e.preventDefault();

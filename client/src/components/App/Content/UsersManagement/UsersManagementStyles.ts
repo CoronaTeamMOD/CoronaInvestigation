@@ -46,6 +46,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     filtersContent: {
         width: '90vw',
         marginBottom: '2vh'
+    },
+    sourceOrganization: {
+        width: '8vw',
+        height: '2vw'
+    },
+    desks: {
+        width: '9vw',
+        height: '2vw'
     }
 }));
 

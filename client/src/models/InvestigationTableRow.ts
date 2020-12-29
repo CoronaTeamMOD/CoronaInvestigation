@@ -28,6 +28,9 @@ interface InvestigationTableRow {
     reasonId: number;
     subOccupation: string;
     parentOccupation:string;
+    isInInstitute: boolean;
+    creationDate: Date;
+    startTime: Date;
 };
 
 export default InvestigationTableRow;

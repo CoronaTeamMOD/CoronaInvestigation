@@ -1,5 +1,3 @@
-import { is } from 'date-fns/locale';
-
 const get = (obj: any, path: string, defaultValue = undefined) => {
     const travel = (regexp: RegExp) =>
         path
@@ -14,6 +12,8 @@ const get = (obj: any, path: string, defaultValue = undefined) => {
     return result === undefined || result === obj ? defaultValue : result;
 };
 
+export const idBasicValidation = /^\d+|^$/;
+export const idLength = 9;
 const isIdValid = (id: string | null | undefined) => {
     let sum = 0;
     if (Boolean(id)) {
@@ -32,14 +32,15 @@ const isIdValid = (id: string | null | undefined) => {
     }
 };
 
-const passportValidation = /^[a-zA-Z0-9\u0590-\u05fe\/\s():&\-\\]{0,15}$/;
+export const generalIdentificationValidation = /^[a-zA-Z0-9\u0590-\u05fe\/\s():&\-\\]*$/;
+export const maxIdentificationLength = 15;
 const isPassportValid = (id: string | null | undefined): boolean => {
     /*
      *  note : this is a funcion and not a constant because the logic
      *        will most likely be changed to something more complicated (like id)
      */
     if (Boolean(id)) {
-        return passportValidation.test(String(id));
+        return generalIdentificationValidation.test(String(id));
     }
     return true;
 };

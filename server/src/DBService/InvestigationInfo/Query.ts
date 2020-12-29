@@ -68,3 +68,14 @@ query investigationSettingsFamilyData($id: Int!) {
   }
 }
 `; 
+
+export const GET_INVESTIGATION_CREATOR = gql`
+query InvestigationCreator($epidemiologynumber: Int!) {
+  investigationByEpidemiologyNumber(epidemiologyNumber: $epidemiologynumber) {
+    userByCreator {
+      investigationGroup
+      id
+    }
+  }
+}
+`;

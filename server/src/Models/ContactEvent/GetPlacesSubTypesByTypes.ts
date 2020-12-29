@@ -16,7 +16,7 @@ interface DBPlaceType {
     placeSubTypesByParentPlaceType: {nodes: PlaceSubType[]}
 }
 
-interface PlaceSubType {
+export interface PlaceSubType {
     id: number;
     displayName: string;
 }

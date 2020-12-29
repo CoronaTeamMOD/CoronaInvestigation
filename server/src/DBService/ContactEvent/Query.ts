@@ -47,7 +47,9 @@ isContactedPerson
 cityByIsolationCity {
   city: displayName
 }
-educationGrade
+educationGrade: educationGradeByEducationGrade {
+  educationGrade: displayName
+}
 educationClassNumber
 subOccupationByInstitutionName {
   institutionName: displayName
@@ -106,8 +108,8 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
           personByPersonInfo {
             firstName
             identificationNumber
+            identificationType
             lastName
-            gender
             phoneNumber
           }
           involvedContact: involvedContactByInvolvedContactId {

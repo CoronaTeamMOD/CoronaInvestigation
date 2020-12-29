@@ -1,10 +1,10 @@
 import React from 'react';
 
-import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import placeTypesCodesHierarchy from 'Utils/ContactEvent/placeTypesCodesHierarchy';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import HospitalEventGrid from './HospitalEventGrid';
 import DefaultPlaceEventGrid from './DefaultPlaceEventGrid';
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 const MedicalLocationGrid : React.FC<Props> = (props: Props) : JSX.Element => {
 

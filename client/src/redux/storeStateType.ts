@@ -6,6 +6,7 @@ import InvestigationRedux from 'models/InvestigationRedux';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
 import { UserState } from './User/userReducer';
+import EducationGrade from 'models/EducationGrade';
 
 export default interface StoreStateType {
     user: UserState;
@@ -21,4 +22,5 @@ export default interface StoreStateType {
     statuses: InvestigationMainStatus[];
     formsValidations: { [key: number]: (boolean | null)[] };
     address: DBAddress;
+    educationGrades: EducationGrade[];
 };

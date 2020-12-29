@@ -81,11 +81,7 @@ const convertDBEvent = (event: ContactEvent) => {
         }
         return {
             ...personNoData,
-            serialId: personNoData.id,
-            firstName: personByPersonInfo.firstName,
-            lastName: personByPersonInfo.lastName,
-            phoneNumber: personByPersonInfo.phoneNumber,
-            idNumber: personByPersonInfo.identificationNumber,
+            ...personByPersonInfo,
             involvedContact: convertedInvolvedContact,
         };
     });
@@ -244,9 +240,9 @@ const convertInvolvedContact = (contact: InvolvedContactDB) => ({
     id: contact.id,
     isContactedPerson: contact.isContactedPerson,
     involvementReason: contact.involvementReason,
-    educationGrade: contact.educationGrade,
     educationClassNumber: contact.educationClassNumber,
     familyRelationship: contact.familyRelationship,
+    ...contact.educationGrade,
     ...contact.cityByIsolationCity,
     ...contact.personByPersonId,
     ...contact.subOccupationByInstitutionName,

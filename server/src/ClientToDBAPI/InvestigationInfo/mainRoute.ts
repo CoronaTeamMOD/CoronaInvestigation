@@ -14,6 +14,7 @@ import {
     UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA,
     CLOSE_ISOLATED_CONTACT
 } from '../../DBService/InvestigationInfo/Mutation';
+import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
 import InvestigationMainStatusCodes from '../../Models/InvestigationStatus/InvestigationMainStatusCodes';
 
@@ -47,7 +48,7 @@ const convertInvestigationInfoFromDB = (investigationInfo: any) => {
     return convertedInvestigation;
 }
 
-investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
+investigationInfo.get('/staticInfo', handleInvestigationRequest,(request: Request, response: Response) => {
     const staticInfoLogger = logger.setup({
         workflow: 'query investigation staticInfo',
         user: response.locals.user.id,
@@ -56,7 +57,7 @@ investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
     staticInfoLogger.info('requesting the graphql API to query investigations staticInfo', Severity.LOW);
 
     graphqlRequest(GET_INVESTIGATION_INFO, response.locals, {
-        investigationId: +request.query.investigationId
+        investigationId: +response.locals.epidemiologynumber
     })
         .then((result: any) => {
             if (result?.data?.investigationByEpidemiologyNumber) {
@@ -73,7 +74,7 @@ investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
         });
 });
 
-investigationInfo.post('/comment', (request: Request, response: Response) => {
+investigationInfo.post('/comment', handleInvestigationRequest, (request: Request, response: Response) => {
     const { comment } = request.body;
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const data = { comment, epidemiologyNumber };
@@ -99,7 +100,7 @@ investigationInfo.post('/comment', (request: Request, response: Response) => {
         });
 });
 
-investigationInfo.post('/updateInvestigationStatus', (request: Request, response: Response) => {
+investigationInfo.post('/updateInvestigationStatus', handleInvestigationRequest, (request: Request, response: Response) => {
     const { investigationMainStatus, investigationSubStatus, statusReason, epidemiologyNumber } = request.body;
     const currentWorkflow = investigationMainStatus === InvestigationMainStatusCodes.DONE ? 'Ending Investigation' : 'Investigation click';
 
@@ -164,7 +165,7 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
     });
 });
 
-investigationInfo.post('/updateInvestigationStartTime', (request: Request, response: Response) => {
+investigationInfo.post('/updateInvestigationStartTime', handleInvestigationRequest, (request: Request, response: Response) => {
     const { epidemiologyNumber } = request.body;
     const investigationStartTime = new Date();
  
@@ -191,7 +192,7 @@ investigationInfo.post('/updateInvestigationStartTime', (request: Request, respo
         });
 });
 
-investigationInfo.get('/subStatuses/:parentStatus', (request: Request, response: Response) => {
+investigationInfo.get('/subStatuses/:parentStatus', handleInvestigationRequest, (request: Request, response: Response) => {
     const subStatusesLogger = logger.setup({
         workflow: 'GraphQL GET subStatuses request to the DB',
     });
@@ -214,7 +215,7 @@ investigationInfo.get('/subStatuses/:parentStatus', (request: Request, response:
         });
 });
 
-investigationInfo.get('/resorts/:id', (request: Request, response: Response) => {
+investigationInfo.get('/resorts/:id', handleInvestigationRequest, (request: Request, response: Response) => {
     const workflow = 'Query investigated patients resorts data';
     const resortsByIdLogger = logger.setup({
         workflow,
@@ -244,7 +245,7 @@ investigationInfo.get('/resorts/:id', (request: Request, response: Response) => 
         })
 });
 
-investigationInfo.post('/resorts', (request: Request, response: Response) => {
+investigationInfo.post('/resorts', handleInvestigationRequest, (request: Request, response: Response) => {
     const workflow = 'Save investigated patients resorts data';
     const resortsLogger = logger.setup({
         workflow,
@@ -276,7 +277,7 @@ investigationInfo.post('/resorts', (request: Request, response: Response) => {
         })
 });
 
-investigationInfo.get('/interactionsTabSettings/:id', (request: Request, response: Response) => {
+investigationInfo.get('/interactionsTabSettings/:id', handleInvestigationRequest, (request: Request, response: Response) => {
     const settingsFamilyLogger = logger.setup({
         workflow: 'query investigation us family data',
         user: response.locals.user.id,
@@ -305,7 +306,7 @@ investigationInfo.get('/interactionsTabSettings/:id', (request: Request, respons
         });
 });
 
-investigationInfo.post('/investigationSettingsFamily', (request: Request, response: Response) => {
+investigationInfo.post('/investigationSettingsFamily', handleInvestigationRequest, (request: Request, response: Response) => {
     const workflow = 'Save investigaion settings family data';
     const settingsFamilyLogger = logger.setup({
         workflow,

@@ -2,11 +2,11 @@ import {useSelector} from 'react-redux';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import Contact from 'models/Contact';
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import useDBParser from 'Utils/vendor/useDBParsing';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import useContactEvent from 'Utils/ContactEvent/useContactEvent';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
@@ -15,20 +15,21 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
         
         const { parseLocation } = useDBParser();
         const { alertError } = useCustomSwal();
+        const { isPatientHouse } = useContactEvent();
 
         const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
+        const shouldParseLocation = (interactionsDataToSave: InteractionEventDialogData) =>
+            !isPatientHouse(interactionsDataToSave[InteractionEventDialogFields.PLACE_SUB_TYPE]) &&
+                interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS];
+
         const saveInteractions = async (interactionsDataToSave: InteractionEventDialogData) => {
-            const locationAddress = interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS] ?
+            const locationAddress = shouldParseLocation(interactionsDataToSave) ?
                 await parseLocation(interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS]) : null;
             const parsedData = {
                 ...interactionsDataToSave,
                 [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
-                [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber,
-                [InteractionEventDialogFields.CONTACTS]: interactionsDataToSave?.contacts?.map((contact: Contact) => ({
-                    ...contact,
-                    id: contact.idNumber
-                }))
+                [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber
             };
             if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
                 const updateInteractionsLogger = logger.setup('Update Interaction')

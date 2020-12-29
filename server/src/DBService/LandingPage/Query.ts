@@ -7,6 +7,8 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
       comment
       epidemiologyNumber
       coronaTestDate
+      startTime
+      creationDate
       complexityCode
       priority
       statusReason
@@ -17,6 +19,10 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         deskName
       }
       investigatedPatientByInvestigatedPatientId {
+        investigatedPatientRoleByRole{
+          id,
+          displayName
+        }
         subOccupationBySubOccupation{
           displayName
           parentOccupation
@@ -42,6 +48,7 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
       userByCreator {
         id
         userName
+        isActive
       }
       investigationGroupByGroupId {
         investigationGroupReasonByReason {
@@ -63,6 +70,8 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
       comment
       epidemiologyNumber
       coronaTestDate
+      startTime
+      creationDate
       complexityCode
       priority
       statusReason
@@ -73,6 +82,10 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         deskName
       }
       investigatedPatientByInvestigatedPatientId {
+        investigatedPatientRoleByRole{
+          id,
+          displayName
+        }
         subOccupationBySubOccupation{
           displayName
           parentOccupation
@@ -98,6 +111,7 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
       userByCreator {
         id
         userName
+        isActive
         countyByInvestigationGroup {
           displayName
           id

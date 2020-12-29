@@ -1,8 +1,9 @@
 enum InteractionEventContactFields {
-    SERIAL_ID = 'serialId',
+    ID = 'id',
     FIRST_NAME = 'firstName',
     LAST_NAME = 'lastName',
-    ID = 'idNumber',
+    IDENTIFICATION_NUMBER = 'identificationNumber',
+    IDENTIFICATION_TYPE = 'identificationType',
     PHONE_NUMBER = 'phoneNumber',
     CONTACT_TYPE = 'contactType',
     EXTRA_INFO = 'extraInfo'

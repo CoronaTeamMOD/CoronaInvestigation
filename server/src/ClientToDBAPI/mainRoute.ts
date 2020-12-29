@@ -3,6 +3,7 @@ import { Router } from 'express';
 import addressRoute from './Address/mainRoute';
 import usersRoute from './UsersRoute/mainRoute';
 import desksRoute from './DesksRoute/mainRoute';
+import educationRoute from './EducationRoute/mainRoute';
 import exposureRoute from './ExposureRoute/mainRoute';
 import countiesRoute from './CountiesRoute/mainRoute';
 import authMiddleware from '../middlewares/Authentication';
@@ -28,5 +29,6 @@ clientToDBRouter.use('/contactedPeople', contactedPeopleRoute);
 clientToDBRouter.use('/users', usersRoute);
 clientToDBRouter.use('/counties', countiesRoute);
 clientToDBRouter.use('/groupedInvestigations', groupedInvestigationsRoute)
+clientToDBRouter.use('/education', educationRoute)
 
 export default clientToDBRouter;

@@ -4,7 +4,7 @@ import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import placeTypesCodesHierarchy from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 export const elementarySchoolGrades = [

@@ -1,21 +1,22 @@
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-import logger from 'logger/logger'
-import { Severity } from 'models/Logger'
+import Desk from 'models/Desk';
 import User from 'models/User';
-import SignUpUser from 'models/SignUpUser';
-import SignUpFields from 'models/enums/SignUpFields';
-import SortOrder from 'models/enums/SortOrder';
+import axios from 'Utils/axios';
+import logger from 'logger/logger';
 import County from 'models/County';
+import Language from 'models/Language';
+import { Severity } from 'models/Logger';
+import SignUpUser from 'models/SignUpUser';
+import UserTypeModel from 'models/UserType';
+import SortOrder from 'models/enums/SortOrder';
+import UserTypeEnum from 'models/enums/UserType';
+import StoreStateType from 'redux/storeStateType';
+import SignUpFields from 'models/enums/SignUpFields';
 import SourceOrganization from 'models/SourceOrganization';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import UserTypeModel from 'models/UserType';
-import UserTypeEnum from 'models/enums/UserType';
-import Language from 'models/Language';
-import StoreStateType from 'redux/storeStateType'
-import axios from 'Utils/axios'
-import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 import { SortOrderTableHeadersNames } from './UsersManagementTableHeaders'
 import { defaultPage } from './UsersManagement';
@@ -33,6 +34,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     
     const [users, setUsers] = useState<SignUpUser[]>([]);
     const [counties, setCounties] = useState<County[]>([]);
+    const [desks, setDesks] = useState<Desk[]>([]);
     const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([])
     const [userTypes, setUserTypes] = useState<UserTypeModel[]>([]);
     const [languages, setLanguages] = useState<Language[]>([]);
@@ -42,7 +44,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     const [isBadgeInVisible, setIsBadgeInVisible] = useState<boolean>(true);
     
     const user = useSelector<StoreStateType, User>(state => state.user.data);
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const { alertError } = useCustomSwal();
     
@@ -119,6 +120,22 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             });
     };
 
+    const fetchDesks = () => {
+        const desksLogger = logger.setup('Fetching desks');
+        desksLogger.info('launching desks request', Severity.LOW);
+        axios.get('/desks/county')
+            .then(result => {
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    setDesks(result.data);
+                    desksLogger.info('got results back from the server', Severity.LOW);
+                }  
+            })
+            .catch(() => {
+                alertError('לא ניתן היה לקבל דסקים');
+                desksLogger.error('didnt get results back from the server', Severity.HIGH);      
+            });
+    }
+
     const fetchUserTypes = () => {
         const fetchUserTypesLogger = logger.setup('Fetching userTypes');
         fetchUserTypesLogger.info('launching userTypes request', Severity.LOW);
@@ -170,6 +187,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     useEffect(() => {
         fetchSourcesOrganization();
         fetchCounties();
+        fetchDesks();
         fetchUserTypes();
         fetchLanguages();
     }, [])
@@ -200,9 +218,58 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
 
     const handleCloseDialog = () => setUserDialog({ isOpen: false, info: {} })
 
+    const setUserActivityStatus = (isActive: boolean, userId: string) : Promise<any> => {
+        const setUpdateActivityStatusLogger = logger.setup('Updating user activity status');
+        setUpdateActivityStatusLogger.info('send request to server for updating user activity status', Severity.LOW);
+        return axios.post('users/updateIsUserActiveById', {
+            isActive,
+            userId
+        }).then((result) => {
+            if(result.data)
+                fetchUsers();
+                setUpdateActivityStatusLogger.info('updated user activity status successfully', Severity.LOW);
+        }).catch((error) => {
+            alertError('לא הצלחנו לעדכן את סטטוס הפעילות של המשתמש');
+            setUpdateActivityStatusLogger.error(`error in updating user activity status ${error}`, Severity.HIGH);
+        });
+    }
+
+    const setUserSourceOrganization = (sourceOrganization: string, userId: string) => {
+        const setUpdateSourcesOrganizationLogger = logger.setup('Updating user source organization');
+        setUpdateSourcesOrganizationLogger.info('send request to server for updating user source organization', Severity.LOW);
+        axios.post('users/updateSourceOrganizationById', {
+            sourceOrganization,
+            userId
+        }).then((result) => {
+            if(result.data)
+                fetchUsers();
+                setUpdateSourcesOrganizationLogger.info('updated user source organization successfully', Severity.LOW);
+        }).catch((error) => {
+            alertError('לא הצלחנו לעדכן את מסגרת המשתמש');
+            setUpdateSourcesOrganizationLogger.error(`error in updating user source organization ${error}`, Severity.HIGH);
+        });
+    }
+
+    const setUserDesk = (deskId: number, userId: string) => {
+        const setUpdateDeskLogger = logger.setup('Updating user desk');
+        setUpdateDeskLogger.info('send request to server for updating user desk', Severity.LOW);
+        axios.post('users/updateDesk', {
+            desk: deskId,
+            userId
+        }).then((result) => {
+            if(result.data)
+                setUpdateDeskLogger.info('updated user desk successfully', Severity.LOW);
+                fetchUsers();
+        }).catch((error) => {
+            alertError('לא הצלחנו לעדכן את הדסק של המשתמש');
+            setUpdateDeskLogger.error(`error in updating user desk due to ${error}`, Severity.HIGH);
+        });
+    }
+
     return {
         users,
         counties,
+        desks,
         sourcesOrganization,
         userTypes,
         languages,
@@ -211,7 +278,10 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         isBadgeInVisible,
         watchUserInfo,
         handleCloseDialog,
-        handleFilterChange
+        handleFilterChange,
+        setUserActivityStatus,
+        setUserSourceOrganization,
+        setUserDesk
     }
 }
 
@@ -225,6 +295,7 @@ interface useUsersManagementInCome {
 interface useUsersManagementOutCome {
     users: SignUpUser[];
     counties: County[];
+    desks: Desk[];
     sourcesOrganization: SourceOrganization[];
     userTypes: UserTypeModel[];
     languages: Language[];
@@ -234,6 +305,9 @@ interface useUsersManagementOutCome {
     watchUserInfo: (row: any) => void;
     handleCloseDialog: () => void;
     handleFilterChange: (filterBy: any) => void;
+    setUserActivityStatus: (isActive: boolean, userId: string) => Promise<any>;
+    setUserSourceOrganization: (sourceOrganization: string, userId: string) => void;
+    setUserDesk: (deskId: number, userId: string) => void;
 }
 
 export default useUsersManagement;

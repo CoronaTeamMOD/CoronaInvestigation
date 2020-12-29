@@ -49,7 +49,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             id: TabId.CONTACTS_QUESTIONING,
             name: orderedTabsNames[4],
             displayComponent: <ContactQuestioning id={4} />
-        }
+        },
     ];
 
     const classes = useStyles({});
@@ -58,6 +58,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         createStyles({
             root: {
                 fontWeight: theme.typography.fontWeightRegular,
+                minHeight: '7vh'
             },
             wrapper: {
                 flexDirection: 'row-reverse',
@@ -89,7 +90,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                             onClick={() => { setNextTab(tab.id) }}
                             key={tab.id}
                             label={tab.name}
-                            icon={isTabValid(tab.id) ? <ErrorOutlineIcon /> : undefined}
+                            icon={isTabValid(tab.id) ? <ErrorOutlineIcon className={classes.icon} fontSize={'small'}/> : undefined}
                             className={isTabValid(tab.id) ? classes.errorIcon : undefined}
                         />
                     )

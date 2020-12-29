@@ -2,15 +2,23 @@ import React from 'react';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
+import { useFormContext } from 'react-hook-form'
 
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
 import InteractedContact from 'models/InteractedContact';
+import InvalidFormIcon from 'commons/Icons/InvalidFormIcon';
 import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 
+
 const ContactDetails = (props: Props) => {
-    const { interactedContact } = props;
+    const { errors } = useFormContext();
+    const { index , interactedContact } = props;
+
+    const formErrors = errors.form ? (errors.form[index] ? errors.form[index] : {}) : {};
+    const formHasErrors = Object.entries(formErrors)
+        .some(([key, value]) => value !== undefined);
 
     const { isInvolvedThroughFamily } = useInvolvedContact();
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(
@@ -22,6 +30,10 @@ const ContactDetails = (props: Props) => {
             {isInvolvedThroughFamily(interactedContact.involvementReason) && (
                 <FamilyContactIcon />
             )}
+            {
+                formHasErrors && <InvalidFormIcon />
+            }
+
             <Typography variant='body2'>
                 <b>שם פרטי:</b> {interactedContact.firstName}
             </Typography>
@@ -54,4 +66,5 @@ export default ContactDetails;
 
 interface Props {
     interactedContact: InteractedContact;
+    index : number;
 }

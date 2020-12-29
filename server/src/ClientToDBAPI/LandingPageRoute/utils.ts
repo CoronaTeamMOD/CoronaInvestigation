@@ -19,6 +19,10 @@ interface UserInvestigations {
                 deskName: string;
             } | null;
             investigatedPatientByInvestigatedPatientId: {
+                investigatedPatientRoleByRole: {
+                    id: number;
+                    displayName: string;
+                  }
                 subOccupationBySubOccupation: {
                     displayName: string;
                     parentOccupation: string;
@@ -41,6 +45,7 @@ interface UserInvestigations {
             userByCreator: {
                 id: string;
                 userName: string;
+                isActive: boolean;
             };
             investigationGroupByGroupId: {
                 investigationGroupReasonByReason: {
@@ -68,6 +73,10 @@ interface GroupIvestigations {
                 deskName: string;
             } | null;
             investigatedPatientByInvestigatedPatientId: {
+                investigatedPatientRoleByRole: {
+                    id: number;
+                    displayName: string;
+                  }
                 subOccupationBySubOccupation: {
                     displayName: string;
                     parentOccupation: string;
@@ -90,6 +99,7 @@ interface GroupIvestigations {
             userByCreator: {
                 id: string;
                 userName: string;
+                isActive: boolean;
                 countyByInvestigationGroup: {
                     districtByDistrictId: {
                         displayName: string;

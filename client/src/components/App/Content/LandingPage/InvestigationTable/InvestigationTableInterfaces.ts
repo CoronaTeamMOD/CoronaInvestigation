@@ -3,12 +3,12 @@ import { MutableRefObject } from 'react';
 import User from 'models/User';
 import Desk from 'models/Desk';
 import County from 'models/County';
-import Investigator from 'models/Investigator';
+import InvestigatorOption from 'models/InvestigatorOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
-import InvestigatorOption from 'models/InvestigatorOption';
 
-import { IndexedInvestigation, IndexedInvestigationData } from './InvestigationTablesHeaders';
+import { IndexedInvestigationData } from './InvestigationTablesHeaders';
+import { SelectedRow } from './useInvestigationTable';
 
 export type StatusFilter = number[];
 export type DeskFilter = number[];
@@ -17,15 +17,16 @@ export interface HistoryState {
     filterRules?: any;
     statusFilter?: StatusFilter;
     deskFilter?: DeskFilter;
+    unassignedUserFilter?: boolean;
+    inactiveUserFilter?: boolean;
 }
 
 export interface useInvestigationTableParameters {
-    selectedInvestigator: Investigator;
     currentPage: number;
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
-    setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
+    setSelectedRow: React.Dispatch<React.SetStateAction<SelectedRow>>;
     setAllUsersOfCurrCounty: React.Dispatch<React.SetStateAction<Map<string, User>>>;
-    setAllCounties: React.Dispatch<React.SetStateAction<Map<number, County>>>;
+    setAllCounties: React.Dispatch<React.SetStateAction<County[]>>;
     setAllStatuses: React.Dispatch<React.SetStateAction<InvestigationMainStatus[]>>;
     setAllDesks: React.Dispatch<React.SetStateAction<Desk[]>>;
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
@@ -39,8 +40,8 @@ export interface useInvestigationTableOutcome {
     onInvestigationRowClick: (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => void;
     convertToIndexedRow: (row: InvestigationTableRow) => { [T in keyof IndexedInvestigationData]: any };
     getUserMapKeyByValue: (map: Map<string, User>, value: string) => string;
-    getNestedCellStyle: (cellKey: string , isLast : boolean) => string[];
-    getRegularCellStyle: (rowIndex: number, cellKey: string , isGroupShown : boolean) => string[];
+    getNestedCellStyle: (isLast: boolean) => (cellKey: string) => string[];
+    getRegularCellStyle: (rowIndex: number, isGroupShown: boolean) => (cellKey: string) => string[];
     sortInvestigationTable: (orderByValue: string) => void;
     onOk: () => void;
     onCancel: () => void;
@@ -60,4 +61,11 @@ export interface useInvestigationTableOutcome {
     searchQuery: string;
     changeSearchQuery: (searchQuery: string) => void;
     isSearchQueryValid: boolean;
+    changeUnassginedUserFilter: (isFilterOn: boolean) => void;
+    unassignedUserFilter: boolean;
+    changeInactiveUserFilter: (isFilterOn: boolean) => void;
+    inactiveUserFilter: boolean;
+    changeGroupsCounty: (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => void;
+    changeInvestigationCounty: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => void;
+    fetchAllCountyUsers: () => Promise<Map<string, User>>;
 };

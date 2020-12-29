@@ -1,20 +1,20 @@
-import React from "react";
-import { Typography } from "@material-ui/core";
+import React from 'react';
+import { Typography } from '@material-ui/core';
 
-import CovidPatient from "models/CovidPatient";
+import CovidPatient from 'models/CovidPatient';
 
-import useStyles from "./ExposureFormStyles";
-import { displayPatientFields } from "./useExposureForm";
-import CovidPatientFields from "models/CovidPatientFields";
+import useStyles from './ExposureFormStyles';
+import { displayPatientFields } from './useExposureForm';
+import CovidPatientFields from 'models/CovidPatientFields';
 
 const invalidAge = -1;
 const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
 
 const allCovidPatientFields: CovidPatientFields = {
     ...displayPatientFields,
-    epidemiologyNumber: "מספר אפידמיולוגי",
-    identityNumber: "מספר זיהוי",
-    primaryPhone: "מספר טלפון",
+    epidemiologyNumber: 'מספר אפידמיולוגי',
+    identityNumber: 'מספר זיהוי',
+    primaryPhone: 'מספר טלפון',
 };
 
 const ExposureSourceOption = (props: Props) => {
@@ -36,55 +36,37 @@ const ExposureSourceOption = (props: Props) => {
                 <Typography
                     className={[
                         classes.optionField,
-                        !phoneAndIdentityNumberRegex.test(
-                            exposureSourceSearchString
-                        ) && classes.searchedField,
-                    ].join(" ")}
+                        !phoneAndIdentityNumberRegex.test(exposureSourceSearchString) && classes.searchedField,
+                    ].join(' ')}
                 >
-                    {allCovidPatientFields.fullName + ": " + fullName}
+                    {allCovidPatientFields.fullName + ': ' + fullName}
                 </Typography>
             )}
             {Boolean(epidemiologyNumber) && (
                 <Typography className={classes.optionField}>
-                    {allCovidPatientFields.epidemiologyNumber +
-                        ": " +
-                        epidemiologyNumber}
+                    {allCovidPatientFields.epidemiologyNumber + ': ' + epidemiologyNumber}
                 </Typography>
             )}
             {Boolean(identityNumber) && (
                 <Typography
-                    className={[
-                        classes.optionField,
-                        identityNumber.includes(exposureSourceSearchString) &&
-                            classes.searchedField,
-                    ].join(" ")}
+                    className={[classes.optionField, identityNumber.includes(exposureSourceSearchString) && classes.searchedField].join(
+                        ' '
+                    )}
                 >
-                    {allCovidPatientFields.identityNumber +
-                        ": " +
-                        identityNumber}
+                    {allCovidPatientFields.identityNumber + ': ' + identityNumber}
                 </Typography>
             )}
             {Boolean(primaryPhone) && (
                 <Typography
-                    className={[
-                        classes.optionField,
-                        primaryPhone.includes(exposureSourceSearchString) &&
-                            classes.searchedField,
-                    ].join(" ")}
+                    className={[classes.optionField, primaryPhone.includes(exposureSourceSearchString) && classes.searchedField].join(' ')}
                 >
-                    {allCovidPatientFields.primaryPhone + ": " + primaryPhone}
+                    {allCovidPatientFields.primaryPhone + ': ' + primaryPhone}
                 </Typography>
             )}
             {Boolean(age) && age !== invalidAge && (
-                <Typography className={classes.optionField}>
-                    {allCovidPatientFields.age + ": " + age}
-                </Typography>
+                <Typography className={classes.optionField}>{allCovidPatientFields.age + ': ' + age}</Typography>
             )}
-            {Boolean(address) && (
-                <Typography className={classes.optionField}>
-                    {allCovidPatientFields.address + ": " + address}
-                </Typography>
-            )}
+            {Boolean(address) && <Typography className={classes.optionField}>{allCovidPatientFields.address + ': ' + address}</Typography>}
         </>
     );
 };

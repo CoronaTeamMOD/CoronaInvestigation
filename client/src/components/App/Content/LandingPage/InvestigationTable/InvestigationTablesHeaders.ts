@@ -5,6 +5,7 @@ export const investigatorIdPropertyName = 'investigatorId';
 
 export enum TableHeadersNames {
     color = 'color',
+    rowIndicators = 'rowIndicators',
     multipleCheck = 'multipleCheck',
     epidemiologyNumber = 'epidemiologyNumber',
     coronaTestDate = 'coronaTestDate',
@@ -38,6 +39,7 @@ export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean }
 
 export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.color]: '',
+    [TableHeadersNames.rowIndicators]: '',
     [TableHeadersNames.multipleCheck]: '',
     [TableHeadersNames.epidemiologyNumber]: 'מס. אפידמיולוגי',
     [TableHeadersNames.coronaTestDate]: 'תחילת המחלה',
@@ -68,13 +70,14 @@ export const TableHeaders: IndexedInvestigation = {
 export const adminCols: string[] = [
     TableHeadersNames.color,
     TableHeadersNames.multipleCheck,
+    TableHeadersNames.rowIndicators,
     TableHeadersNames.epidemiologyNumber,
     TableHeadersNames.coronaTestDate,
     TableHeadersNames.fullName,
-    TableHeadersNames.phoneNumber,
     TableHeadersNames.age,
     TableHeadersNames.city,
     TableHeadersNames.subOccupation,
+    TableHeadersNames.phoneNumber,
     TableHeadersNames.investigatorName,
     TableHeadersNames.investigationStatus,
     TableHeadersNames.investigationDesk,
@@ -83,20 +86,22 @@ export const adminCols: string[] = [
 ]
 
 export const userCols: string[] = [
+    TableHeadersNames.rowIndicators,
     TableHeadersNames.epidemiologyNumber,
     TableHeadersNames.coronaTestDate,
     TableHeadersNames.investigationStatus,
     TableHeadersNames.fullName,
-    TableHeadersNames.phoneNumber,
     TableHeadersNames.age,
     TableHeadersNames.city,
     TableHeadersNames.subOccupation,
+    TableHeadersNames.phoneNumber,
     TableHeadersNames.investigationDesk,
     TableHeadersNames.comment,
 ]
 
 export const sortableCols: sortableHeaders = {
     [TableHeadersNames.color]: false,
+    [TableHeadersNames.rowIndicators]: false,
     [TableHeadersNames.multipleCheck]: false,
     [TableHeadersNames.epidemiologyNumber]: true,
     [TableHeadersNames.coronaTestDate]: true,

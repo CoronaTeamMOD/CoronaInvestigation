@@ -1,17 +1,18 @@
 import React from 'react';
+import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import axios from 'axios';
 
 import logger from 'logger/logger';
-import { timeout } from 'Utils/Timeout/Timeout';
 import { Severity } from 'models/Logger';
+import UserType from 'models/enums/UserType';
+import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
-import { landingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationInfo from 'models/InvestigationInfo';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setGender } from 'redux/Gender/GenderActionCreators';
+import { landingPageRoute, adminLandingPageRoute } from 'Utils/Routes/Routes';
 import { setEpidemiologyNum, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigatedPatientId, setValidationDate , setIsCurrentlyHospitialized, setIsDeceased, setEndTime } from 'redux/Investigation/investigationActionCreators';
 
@@ -65,6 +66,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const lastOpenedEpidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.lastOpenedEpidemiologyNumber);
+    const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
 
     React.useEffect(() => {
         if (lastOpenedEpidemiologyNumber !== defaultEpidemiologyNumber) {
@@ -79,8 +81,8 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
         const investigationInfoLogger = logger.setup('Fetching investigation Info');
         investigationInfoLogger.info('launching investigation info request', Severity.LOW);
         epidemiologyNumber !== defaultEpidemiologyNumber &&
-            axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
-            ).then((result: any) => {
+            axios.get('/investigationInfo/staticInfo')
+            .then((result: any) => {
                 if (result && result.data) {
                     investigationInfoLogger.info('investigation info request was successful', Severity.LOW);
                     const investigationInfo : InvestigationInfo = result.data;
@@ -108,7 +110,8 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
             timer: 1750,
             showConfirmButton: false
         });
-        timeout(LandingPageTimer).then(() => history.push(landingPageRoute));
+        timeout(LandingPageTimer).then(() =>
+            (userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN) ? history.push(adminLandingPageRoute) : history.push(landingPageRoute));
     };
 
     const updateComment = (comment: string | null) => {
