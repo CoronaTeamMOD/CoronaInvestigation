@@ -48,7 +48,7 @@ const convertInvestigationInfoFromDB = (investigationInfo: any) => {
     return convertedInvestigation;
 }
 
-investigationInfo.get('/staticInfo', handleInvestigationRequest ,(request: Request, response: Response) => {
+investigationInfo.get('/staticInfo', handleInvestigationRequest,(request: Request, response: Response) => {
     const staticInfoLogger = logger.setup({
         workflow: 'query investigation staticInfo',
         user: response.locals.user.id,
