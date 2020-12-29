@@ -26,8 +26,8 @@ mutation updateInvestigationByEpidemiologyNumber ($epidemiologyNumber: Int!, $ho
 `;
 
 export const ADD_BACKGROUND_DISEASES = gql`
-mutation addBackgroundDeseases ($backgroundDeseases: [String!], $investigatedPatientId: Int!) {
-    insertBackgroundDeseases(input: {backgroundDeseasesVal: $backgroundDeseases, investigatedPatientIdVal: $investigatedPatientId}) {
+mutation addBackgroundDiseases ($backgroundDiseases: [String!], $investigatedPatientId: Int!) {
+    insertBackgroundDeseases(input: {backgroundDeseasesVal: $backgroundDiseases, investigatedPatientIdVal: $investigatedPatientId}) {
         clientMutationId
     }
 }

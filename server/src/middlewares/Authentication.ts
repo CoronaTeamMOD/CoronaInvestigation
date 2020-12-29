@@ -1,12 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 
-import logger from '../Logger/Logger';
 import UserType from '../Models/User/UserType';
 import { Severity } from '../Models/Logger/types';
-
-import { graphqlRequest } from '../GraphqlHTTPRequest';
 import { GET_USER_BY_ID } from '../DBService/Users/Query';
-
+import { errorStatusCode, graphqlRequest } from '../GraphqlHTTPRequest';
+import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../Logger/Logger';
 
 const stubUsers = {
     'fake token!': {
@@ -35,27 +33,27 @@ const handleConfidentialAuth = (
         authenticationLogger.error('got no user at all', Severity.MEDIUM);
         return response.status(401).json({ error: "unauthorized prod user" });
     }
+    authenticationLogger.info(`authorized azure upn successfully! got user: ${JSON.stringify(userId)}`, Severity.LOW);
+    
+    const parameters = { id: userId };
+    authenticationLogger.info(`get user by id: ${launchingDBRequestLog(parameters)}`, Severity.LOW);
 
-        authenticationLogger.info(`authorized azure upn successfully! got user: ${JSON.stringify(userId)}`, Severity.LOW);
-
-        authenticationLogger.info(`request to the graphql API with parameters: ${userId}`, Severity.LOW);
-
-        graphqlRequest(GET_USER_BY_ID, response.locals, { id: userId }).then((result: any) => {
-            authenticationLogger.info('fetched user by id successfully', Severity.LOW);
-            response.locals.user = {
-                id: userId,
-                name: result.data.userById?.userName,
-                userType: result.data.userById?.userType,
-                investigationGroup: result.data.userById?.investigationGroup,
-                countyByInvestigationGroup: {
-                    districtId: result.data.userById?.countyByInvestigationGroup?.districtId
-                }
-            };
-            return next();
-        }).catch(err => {
-            authenticationLogger.error(`error in requesting the graphql API: ${err}`, Severity.HIGH);
-            response.sendStatus(500);
-        });;
+    graphqlRequest(GET_USER_BY_ID, response.locals, parameters).then((result: any) => {
+        authenticationLogger.info(validDBResponseLog, Severity.LOW);
+        response.locals.user = {
+            id: userId,
+            name: result.data.userById?.userName,
+            userType: result.data.userById?.userType,
+            investigationGroup: result.data.userById?.investigationGroup,
+            countyByInvestigationGroup: {
+                districtId: result.data.userById?.countyByInvestigationGroup?.districtId
+            }
+        };
+        return next();
+    }).catch(error => {
+        authenticationLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+        response.sendStatus(errorStatusCode).send(error);
+    });;
 }
 
 const authMiddleware = (
@@ -80,10 +78,11 @@ const authMiddleware = (
             return response.status(401).json({ error: "unauthorized noauth user" });
         } else {
             authenticationLogger.info(`noauth user found successfully, the user is: ${JSON.stringify(user)}`, Severity.LOW);
-
-            authenticationLogger.info(`request to the graphql API with parameters: ${user.id}`, Severity.LOW);
-            graphqlRequest(GET_USER_BY_ID, response.locals, { id: user.id }).then((result: any) => {
-                authenticationLogger.info('fetched user by id successfully', Severity.LOW);
+            const parameters = { id: user.id };
+            authenticationLogger.info(`get user by id: ${launchingDBRequestLog(parameters)}`, Severity.LOW);
+            graphqlRequest(GET_USER_BY_ID, response.locals, parameters)
+            .then((result: any) => {
+                authenticationLogger.info(validDBResponseLog, Severity.LOW);
                 response.locals.user = {
                     ...user,
                     userType: result.data.userById?.userType,
@@ -93,8 +92,9 @@ const authMiddleware = (
                     }
                 };
                 return next();
-            }).catch(err => {
-                authenticationLogger.error(`error in requesting the graphql API due to ${err}`, Severity.HIGH);
+            }).catch(error => {
+                authenticationLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                response.sendStatus(errorStatusCode).send(error);
             });;
 
         }

@@ -164,9 +164,9 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         const familyRelationshipsLogger = logger.setup('Getting family relationships')
         familyRelationshipsLogger.info('launching server request', Severity.LOW);
         axios.get('/contactedPeople/familyRelationships').then((result: any) => {
-            if (result?.data?.data?.allFamilyRelationships) {
+            if (result?.data && result.headers['content-type'].includes('application/json')) {
                 familyRelationshipsLogger.info('got respond from the server that has data', Severity.LOW);
-                setFamilyRelationships(result?.data?.data?.allFamilyRelationships?.nodes);
+                setFamilyRelationships(result?.data);
             } else {
                 familyRelationshipsLogger.warn('got respond from the server without data', Severity.MEDIUM);
             }

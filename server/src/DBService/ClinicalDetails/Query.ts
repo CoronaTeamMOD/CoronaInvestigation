@@ -34,7 +34,7 @@ query getAllIsolationSources {
 export const GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER = gql`
 query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
   investigationByEpidemiologyNumber(epidemiologyNumber: $epidemiologyNumber) {
-    addressByIsolationAddress {
+    isolationAddress: addressByIsolationAddress {
       floor
       houseNum
       streetByStreet {
@@ -59,7 +59,7 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
     hospitalizationStartTime
     hospitalizationEndTime
     otherSymptomsMoreInfo
-    investigatedPatientSymptomsByInvestigationId {
+    symptoms: investigatedPatientSymptomsByInvestigationId {
       nodes {
         symptomName
       }
