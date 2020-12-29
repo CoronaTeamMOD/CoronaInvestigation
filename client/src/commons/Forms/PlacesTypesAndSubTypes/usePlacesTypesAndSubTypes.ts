@@ -3,6 +3,7 @@ import React from 'react';
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
+import PlaceSubType from 'models/PlaceSubType';
 
 import { usePlacesTypesAndSubTypesIncome } from './usePlacesTypesAndSubTypesInterfaces';
 
@@ -17,11 +18,11 @@ const usePlacesTypesAndSubTypes = (parameters: usePlacesTypesAndSubTypesIncome) 
         getPlacesSubTypesByTypesLogger.info('launching places and sub types by types request', Severity.LOW);
         axios.get('/intersections/getPlacesSubTypesByTypes').then(
             result => {
-                if (result && result.data) {
+                if (result?.data) {
 
-                    for(let placeTypes in result.data){
+                    Object.keys(result.data).forEach((placeTypes)=>{
                         result.data[placeTypes] = moveOtherValueLocationToLast(result.data[placeTypes]);
-                    }
+                    })
 
                     getPlacesSubTypesByTypesLogger.info('places and sub types by types request was successful', Severity.LOW);
                     setPlacesSubTypesByTypes(result.data)
@@ -34,19 +35,10 @@ const usePlacesTypesAndSubTypes = (parameters: usePlacesTypesAndSubTypesIncome) 
         })
     };
 
-    const moveOtherValueLocationToLast = (placetypes:Array<{id:number,displayName:string}>) => {
-        let foundOtherValue = false;
-        //Checks if the 'other' value is not last already
-        if(placetypes[placetypes.length-1].displayName != OTHER){
-            for(let index = 0; index < placetypes.length && !foundOtherValue; index++){
-                if(placetypes[index].displayName === OTHER){
-                    placetypes.push(placetypes.splice(index, 1)[0]);
-                    foundOtherValue = true;
-                }
-            }
-        }
-        
-        return placetypes;
+    const moveOtherValueLocationToLast = (placetypes: PlaceSubType[] ) => {
+        const otherIndex : number = placetypes.findIndex(source => source.displayName === OTHER);
+        const otherPlaceType : {id:number,displayName:string}[] = placetypes.splice(otherIndex, 1);
+        return placetypes.concat(otherPlaceType);
     }
 
     React.useEffect(() => {
