@@ -124,13 +124,16 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const classes = useStyle(false);
     const { alertError } = useCustomSwal();
-    const history = useHistory<HistoryState>();
+    const history = useHistory<HistoryState & {adminFilterRules? :any}>();
     const { statusFilter: historyStatusFilter = [], 
             deskFilter: historyDeskFilter = [], 
             inactiveUserFilter : historyInactiveUserFilter = false, 
-            unassignedUserFilter : historyUnassignedUserFilter = false } = useMemo(() => {
+            unassignedUserFilter : historyUnassignedUserFilter = false,
+            adminFilterRules } = useMemo(() => {
         const { location: { state } } = history;
-        return state || {};
+        const adminFilterRules = JSON.parse(JSON.stringify(state.adminFilterRules))
+        delete state.adminFilterRules;
+        return {...state, adminFilterRules} || {};
     }, []);
 
     const [rows, setRows] = useState<InvestigationTableRow[]>([]);
@@ -261,7 +264,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const getInvestigationsAxiosRequest = (orderBy: string): any => {
         const getInvestigationsLogger = logger.setup('Getting Investigations');
 
-        const filterRules = buildFilterRules({ deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery });
+        const filterRules = buildFilterRules({ deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery }, adminFilterRules);
 
         const requestData = {
             orderBy,

@@ -30,7 +30,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
         if (!renderedForFirstTime.current) {
             console.log(investigationInfoFilter);
             history.push(landingPageRoute, {
-                ...investigationInfoFilter
+                adminFilterRules: {...investigationInfoFilter}
             });
         }
         renderedForFirstTime.current = false;

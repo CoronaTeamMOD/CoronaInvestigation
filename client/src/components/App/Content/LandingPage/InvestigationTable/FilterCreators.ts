@@ -63,20 +63,24 @@ interface FilterRulesVariables {
     searchQuery?: string,
 }
 
-export const buildFilterRules = (filterRulesVariables: FilterRulesVariables) => {
+export const buildFilterRules = (filterRulesVariables: FilterRulesVariables, adminFilterRules?: any) => {
 
-    const { deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery } = filterRulesVariables;
+    if (!adminFilterRules) {
+        const { deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery } = filterRulesVariables;
 
-    const searchQueryFilter = searchQuery ? phoneAndIdentityNumberRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.FULL_NAME(searchQuery) : {};
+        const searchQueryFilter = searchQuery ? phoneAndIdentityNumberRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.FULL_NAME(searchQuery) : {};
 
-    return {
-        ...filterCreators.DESK_ID(deskFilter),
-        ...filterCreators.STATUS(statusFilter),
-        userByCreator: {
-            ...filterCreators.UNASSIGNED_USER(unassignedUserFilter),
-            ...filterCreators.INACTIVE_USER(inactiveUserFilter),
-        },
-        ...searchQueryFilter,
+        return {
+            ...filterCreators.DESK_ID(deskFilter),
+            ...filterCreators.STATUS(statusFilter),
+            userByCreator: {
+                ...filterCreators.UNASSIGNED_USER(unassignedUserFilter),
+                ...filterCreators.INACTIVE_USER(inactiveUserFilter),
+            },
+            ...searchQueryFilter,
+        }
+    } else {
+        return adminFilterRules
     }
 }
 
