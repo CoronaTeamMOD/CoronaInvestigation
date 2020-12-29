@@ -42,7 +42,7 @@ const DeskFilter = ({ desks, filteredDesks, onFilterChange }: Props) => {
                         {option.deskName}
                     </>
                 )}
-                limitTags={2}
+                limitTags={1}
             />
         </Card>
     )
