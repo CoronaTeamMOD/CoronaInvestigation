@@ -1,4 +1,3 @@
-
 const filterCreators = {
     USER_NAME_OR_ID: {
         create(value: string) {

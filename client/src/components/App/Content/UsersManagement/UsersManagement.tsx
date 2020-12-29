@@ -159,7 +159,7 @@ const UsersManagement: React.FC = () => {
             </Grid>
             <Grid container className={classes.filters}>
                 <SearchBar 
-                    onClick={(value: string) => handleFilterChange(get(filterCreators, 'USER_NAME_OR_ID').create(value))}
+                    onClick={(value: string) => handleFilterChange(filterCreators.USER_NAME_OR_ID.create(value))}
                 />
                 <Tooltip title='סינון'>
                     <IconButton onClick={() => setIsFilterOpen(true)}>

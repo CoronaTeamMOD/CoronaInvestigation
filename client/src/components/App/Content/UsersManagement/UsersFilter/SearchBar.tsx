@@ -27,7 +27,7 @@ const SearchBar: React.FC<Props> = (props: Props) => {
         }
     }
 
-    const onClearClose = () => {
+    const onClearClick = () => {
         setSearchQuery('');
         !isQueryValid && setIsQueryValid(true);
         onClick(''); 
@@ -49,7 +49,7 @@ const SearchBar: React.FC<Props> = (props: Props) => {
                         {
                             searchQuery.length > 0 &&
                             <IconButton
-                                onClick={onClearClose}
+                                onClick={onClearClick}
                                 className={classes.searchBarIcons} 
                             >
                                 <Close />
