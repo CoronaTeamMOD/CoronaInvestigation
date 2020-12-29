@@ -35,7 +35,7 @@ const convertorsToGraph: { [T in keyof InvestigationStatistics]: Omit<Investigat
     }
 }
 
-const InvestigationsInfo: React.FC = (): JSX.Element => {
+const InvestigationsInfo: React.FC<Props> = ({ onInfoButtonClick }): JSX.Element => {
     const classes = useStyles();
 
     let history = useHistory();
@@ -71,10 +71,6 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
         return returnedArray;
     }, [investigationsStatistics])
 
-    const onStatusClick = (id: string) => {
-        console.log(id);
-    }
-
     return (
         <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.filtersCard}>
             <CardContent>
@@ -89,7 +85,7 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
                                     amountOfInvestigations={InvestigationData.value}
                                     text={InvestigationData.id}
                                     style={{ backgroundColor: InvestigationData.color }}
-                                    onClick={() => onStatusClick(InvestigationData.id)}
+                                    onClick={() => onInfoButtonClick(statusToFilterConvertor[InvestigationData.id as keyof typeof statusToFilterConvertor])}
                                 />
                             ))
                         }

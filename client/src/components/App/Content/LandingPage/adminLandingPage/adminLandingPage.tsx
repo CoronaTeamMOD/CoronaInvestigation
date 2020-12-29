@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 
 import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
@@ -20,6 +20,10 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
 
     const { countyDisplayName } = useAppToolbar();
 
+    useEffect(() => {
+        console.log(investigationInfoFilter);
+    }, [investigationInfoFilter]);
+
     return (
         <div className={classes.content}>
             <Typography color='textPrimary' className={classes.countyDisplayName}>
@@ -30,7 +34,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                     <DesksFilterCard />
                 </Grid>
                 <Grid item xs={9}>
-                    <InvestigationsInfo />
+                    <InvestigationsInfo onInfoButtonClick={(infoFilter) => setInvestigationInfoFilter(infoFilter)} />
                 </Grid>
                 <Grid item xs={3}>
                     <TimeRangeCard />
