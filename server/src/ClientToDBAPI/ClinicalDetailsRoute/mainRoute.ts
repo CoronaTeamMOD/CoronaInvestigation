@@ -188,7 +188,7 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
 }
 
 clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: Response) => {
-
+    const isolationAddressId = request.body.clinicalDetails?.isolationAddressId;
     const isolationAddress = request.body.clinicalDetails?.isolationAddress;
     const saveClinicalDetailsFieldsLogger = logger.setup({
         workflow: 'Saving clinical details tab',

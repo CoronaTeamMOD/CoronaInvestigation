@@ -58,7 +58,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const [isolationSources, setIsolationSources] = React.useState<IsolationSource[]>([]);
     const [didDeletingContactEventsSucceed, setDidDeletingContactEventsSucceed] = React.useState<boolean>(true);
     const { handleSymptomsDateDataChange } = useSymptomsFields();
-    
+    const [isolationAddressId, setIsolationAddressId] = useState<number | null>(null);
+
     React.useEffect(() => {
         getSymptoms();
         getBackgroundDiseases();
@@ -169,9 +170,11 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                             city: patientAddress.cityByCity?.id,
                             street: patientAddress.streetByStreet?.id,
                             floor: patientAddress.floor,
-                            houseNum: patientAddress.houseNum
+                            houseNum: patientAddress.houseNum,
+                            isolationAddressId: patientAddress.id
                         }
                     }
+                    setIsolationAddressId(patientAddress.isolationAddressId ? patientAddress.isolationAddressId : null);
                     const initialDBClinicalDetailsToSet = {
                         ...initialClinicalDetails,
                         isPregnant: Boolean(patientClinicalDetails.isPregnant),
@@ -243,7 +246,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             clinicalDetails: {
                 ...clinicalDetails,
                 epidemiologyNumber,
-                investigatedPatientId
+                investigatedPatientId,
+                isolationAddressId
             }
         })).then(() => {
             saveClinicalDetailsLogger.info('saved clinical details successfully', Severity.LOW);
