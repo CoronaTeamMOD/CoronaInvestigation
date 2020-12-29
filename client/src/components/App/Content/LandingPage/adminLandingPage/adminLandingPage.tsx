@@ -1,8 +1,6 @@
-import { useHistory } from 'react-router-dom';
+import React, { useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
-import React, { useState, useEffect, useRef } from 'react';
 
-import { landingPageRoute } from 'Utils/Routes/Routes';
 import FilterRulesVariables from 'models/FilterRulesVariables';
 import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
 import InvestigationStatistics, { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
@@ -16,10 +14,6 @@ import InvestigationsInfo from './investigationsInfo/investigationsInfo';
 
 const AdminLandingPage: React.FC = (): JSX.Element => {
     const classes = useStyles();
-    
-    const history = useHistory();
-
-    const renderedForFirstTime = useRef(true);
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [investigationInfoFilter, setInvestigationInfoFilter] = useState<FilterRulesVariables>({});
@@ -33,19 +27,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
     });
 
     const { countyDisplayName } = useAppToolbar();
-    useAdminLandingPage({setIsLoading, investigationInfoFilter, setInvestigationsStatistics});
-
-    // A useEffect whenever there is a need to redirect to the investigation table
-    useEffect(() => {
-        if (!renderedForFirstTime.current) {
-            // append with desk/time filter when done
-            // P.S: when finishing the time filter make sure 
-            //      that the history in useInvestigationTable.ts is expecting to recive it
-            // Good Luck! 😁 R.R
-            history.push(landingPageRoute, {...investigationInfoFilter});
-        }
-        renderedForFirstTime.current = false;
-    }, [investigationInfoFilter]);
+    const { redirectToInvestigationTable } = useAdminLandingPage({setIsLoading, investigationInfoFilter, setInvestigationsStatistics});
 
     return (
         <div className={classes.content}>
@@ -61,7 +43,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                         isLoading={isLoading}
                         allInvestigationsCount={investigationsStatistics.allInvestigations}
                         investigationsStatistics={investigationsStatistics as InvesitgationInfoStatistics}
-                        onInfoButtonClick={(infoFilter) => setInvestigationInfoFilter(infoFilter)} />
+                        onInfoButtonClick={(infoFilter) => redirectToInvestigationTable(infoFilter)} />
                 </Grid>
                 <Grid item xs={3}>
                     <TimeRangeCard />
@@ -69,7 +51,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                 <Grid item xs={3}>
                     <UnallocatedCard
                         isLoading={isLoading}
-                        onClick={(infoFilter) => setInvestigationInfoFilter(infoFilter)} 
+                        onClick={(infoFilter) => redirectToInvestigationTable(infoFilter)} 
                         unallocatedInvestigationsCount={investigationsStatistics.unallocatedInvestigations}
                     />
                 </Grid>
