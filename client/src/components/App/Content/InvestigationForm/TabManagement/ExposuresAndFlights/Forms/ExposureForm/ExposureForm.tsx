@@ -136,7 +136,7 @@ const ExposureForm = (props: Props) => {
 											key={exposureSource.epidemiologyNumber}
 											value={exposureSource.epidemiologyNumber}
 											onClick={() => {
-												setValue(`${fieldsNames.exposureSource}[${index}]`, exposureSource);
+												setValue(`exposures[${index}].${fieldsNames.exposureSource}`, exposureSource);
 												setOptionalCovidPatients([]);
 												handleChangeExposureDataAndFlightsField(
 													index,

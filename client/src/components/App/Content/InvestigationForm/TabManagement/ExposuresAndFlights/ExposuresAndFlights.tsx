@@ -15,7 +15,6 @@ import { FormData } from './ExposuresAndFlightsInterfaces';
 import { useExposuresAndFlights } from './useExposuresAndFlights';
 import ExposureSchema from './Schema/exposuresAndFlightsSchema';
 
-
 const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);
   const { exposures, wereFlights, wereConfirmedExposures, wasInEilat, wasInDeadSea } = exposureAndFlightsData;
@@ -42,7 +41,8 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     methods.trigger();
     const data = methods.getValues();
     saveExposure(data , ids);
-        
+  }
+
   const preventEnter = (e : React.KeyboardEvent) => {
     if(e.key === 'Enter'){
       e.preventDefault();
@@ -79,7 +79,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
             disableFlightAddition={disableFlightAddition}
           />
           
-        </form>
+        </form>      
       </FormProvider>
   );
 };
@@ -87,5 +87,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 interface Props {
   id: number;
 }
+
 
 export default ExposuresAndFlights;
