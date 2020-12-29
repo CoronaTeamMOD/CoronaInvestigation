@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, Tooltip, Typography } from '@material-ui/core';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
+import FilterRulesVariables from 'models/FilterRulesVariables';
+
 import LoadingCard from '../LoadingCard/LoadingCard';
 import useStyles, { cardHeight, cardWidth } from './UnallocatedCardStyles';
-import FilterRulesVariables from 'models/FilterRulesVariables';
-import useUnallocatedCard from './useUnallocatedCard';
 
 const unallocatedInvestigationsText = 'חקירות לא משויכות/ משויכות לחוקרים לא פעילים';
 
@@ -14,19 +14,14 @@ const unallocateFilter : FilterRulesVariables = {inactiveUserFilter: true, unass
 const UnallocatedCard: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
 
-    const { onClick, investigationInfoFilter } = props;
-
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [unallocatedCount, setUnallocatedCount] = useState<number>(0);
-
-    useUnallocatedCard({setIsLoading, setUnallocatedCount, investigationInfoFilter});
+    const { onClick, isLoading, unallocatedInvestigationsCount } = props;
 
     return (
         <Tooltip title={unallocatedInvestigationsText}>
             <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.unallocatedCard}>
                 <Card onClick={() => onClick(unallocateFilter)}>
                     <div className={classes.investigationAmount}>
-                        <Typography className={classes.investigationNumberText}><b>{unallocatedCount}</b></Typography>
+                        <Typography className={classes.investigationNumberText}><b>{unallocatedInvestigationsCount}</b></Typography>
                         <Typography className={classes.investigationAmountText}><b>חקירות</b></Typography>
                     </div>
                     <div className={classes.unallocatedInvestigations}>
@@ -43,5 +38,6 @@ export default UnallocatedCard;
 
 interface Props {
     onClick: (infoFilter: FilterRulesVariables) => void;
-    investigationInfoFilter: FilterRulesVariables;
+    isLoading: boolean;
+    unallocatedInvestigationsCount: number;
 }

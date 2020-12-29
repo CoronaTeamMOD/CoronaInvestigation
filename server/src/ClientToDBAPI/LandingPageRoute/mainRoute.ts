@@ -164,6 +164,11 @@ landingPageRoute.post('/changeGroupDesk', adminMiddleWare, (request: Request, re
 });
 
 landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Request, response: Response) => {
+    const investigationsStatisticsLogger = logger.setup({
+        workflow: 'query investigations statistics',
+        user: response.locals.user.id,
+    });
+    
     const userFilters = {
         userByCreator: {
             countyByInvestigationGroup: {
@@ -172,8 +177,12 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
         },
         ...request.body
     }
+    const parameters = { userFilters, allInvesitgationsFilter: userFilters };
+    investigationsStatisticsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+
     graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, { userFilters, allInvesitgationsFilter: userFilters })
     .then((results) => {
+        investigationsStatisticsLogger.info(validDBResponseLog, Severity.LOW);
         const {data: preprocessedResults} = results;
         const outcome: any = {};
         Object.keys(preprocessedResults).forEach(preprocessedResult => {
@@ -181,31 +190,9 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
         })
         response.send(outcome);
     })
-})
-
-landingPageRoute.post('/unallocatedInvestigationsCount', adminMiddleWare ,(request: Request, response: Response) => {
-    const { filterRules } = request.body;
-    
-    const filterBy = {
-        ...filterRules,
-        userByCreator: {
-            ...filterRules?.userByCreator,
-            countyByInvestigationGroup: {
-                id: {
-                    equalTo: +response.locals.user.investigationGroup
-                }
-            }
-        },
-    };
-    
-    graphqlRequest(GET_UNALLOCATED_INVESTIGATIONS_COUNT, response.locals, { allInvesitgationsFilter: filterBy })
-    .then((result) => {
-        console.log(result.data.unassignedInvestigations.totalCount);
-        response.send(result.data.unassignedInvestigations.totalCount);
-    })
     .catch(error => {
-        console.log('----------e', error);
-        response.send(error);
+        investigationsStatisticsLogger.error(invalidDBResponseLog(error), Severity.HIGH)
+        response.status(errorStatusCode).send(error);
     })
 })
 

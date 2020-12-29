@@ -2,7 +2,6 @@ import React from 'react';
 import { ResponsiveBar } from '@nivo/bar';
 
 import InvestigationChart from 'models/InvestigationChart';
-import InvestigationChartData from './InvestigationChartData';
 
 import useStyles from './InvestigationBarChartStyles';
 

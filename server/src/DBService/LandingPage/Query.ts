@@ -208,6 +208,11 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
   }) {
     totalCount
   }
+  unallocatedInvestigations: allInvestigations(filter: {
+    userByCreator: {or: [{isActive: {equalTo: false}}, {userName: {equalTo: "לא משויך"}}]}, and: $userFilters
+  }) {
+    totalCount
+  }
 }
 `;
 

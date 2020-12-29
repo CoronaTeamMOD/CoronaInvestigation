@@ -5,13 +5,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import FilterRulesVariables from 'models/FilterRulesVariables';
 import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
+import InvestigationStatistics, { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 
 import useStyles from './adminLandingPageStyles';
+import useAdminLandingPage from './useAdminLandingPage';
 import TimeRangeCard from './TimeRangeCard/timeRangeCard';
 import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
-import { DeskFilter } from '../InvestigationTable/InvestigationTableInterfaces';
 
 const AdminLandingPage: React.FC = (): JSX.Element => {
     const classes = useStyles();
@@ -20,10 +21,20 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
 
     const renderedForFirstTime = useRef(true);
 
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [investigationInfoFilter, setInvestigationInfoFilter] = useState<FilterRulesVariables>({});
+    const [investigationsStatistics, setInvestigationsStatistics] = useState<InvestigationStatistics>({
+        allInvestigations: 0,
+        inProcessInvestigations: 0,
+        inactiveInvestigations: 0,
+        newInvestigations: 0,
+        unassignedInvestigations: 0,
+        unallocatedInvestigations: 0,
+    });
 
     const { countyDisplayName } = useAppToolbar();
-    
+    useAdminLandingPage({setIsLoading, investigationInfoFilter, setInvestigationsStatistics});
+
     // A useEffect whenever there is a need to redirect to the investigation table
     useEffect(() => {
         if (!renderedForFirstTime.current) {
@@ -46,15 +57,20 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                     <DesksFilterCard />
                 </Grid>
                 <Grid item xs={9}>
-                    <InvestigationsInfo onInfoButtonClick={(infoFilter) => setInvestigationInfoFilter(infoFilter)} />
+                    <InvestigationsInfo
+                        isLoading={isLoading}
+                        allInvestigationsCount={investigationsStatistics.allInvestigations}
+                        investigationsStatistics={investigationsStatistics as InvesitgationInfoStatistics}
+                        onInfoButtonClick={(infoFilter) => setInvestigationInfoFilter(infoFilter)} />
                 </Grid>
                 <Grid item xs={3}>
                     <TimeRangeCard />
                 </Grid>
                 <Grid item xs={3}>
-                    <UnallocatedCard 
+                    <UnallocatedCard
+                        isLoading={isLoading}
                         onClick={(infoFilter) => setInvestigationInfoFilter(infoFilter)} 
-                        investigationInfoFilter={investigationInfoFilter}
+                        unallocatedInvestigationsCount={investigationsStatistics.unallocatedInvestigations}
                     />
                 </Grid>
             </Grid>
