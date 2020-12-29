@@ -16,7 +16,7 @@ export const handleInvestigationRequest = async (request: Request, response: Res
 
     const InvestigationMiddlewareLogger = logger.setup({
         workflow: 'InvestigationMiddleware',
-        investigation: +response.locals.epidemiologynumber,
+        investigation: epidemiologynumber,
     });
 
     if (isNaN(epidemiologynumber)) {
