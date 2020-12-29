@@ -3,7 +3,7 @@ import { Router, Request, Response } from 'express';
 import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Severity } from '../../Models/Logger/types';
-import { CREATE_ADDRESS } from '../../DBService/Address/Mutation';
+import { CREATE_ADDRESS, UPDATE_ADDRESS } from '../../DBService/Address/Mutation';
 import Investigation from '../../Models/ClinicalDetails/Investigation';
 import CreateAddressResponse from '../../Models/Address/CreateAddress';
 import ClinicalDetails from '../../Models/ClinicalDetails/ClinicalDetails';
@@ -203,16 +203,29 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
             floorValue: isolationAddress?.floor ? isolationAddress?.floor : null,
             houseNumValue: isolationAddress?.houseNum ? isolationAddress?.houseNum : null,
         }
-        saveClinicalDetailsFieldsLogger.info(`launching the graphql API request for address creation with the parameters: ${JSON.stringify(requestAddress)}`, Severity.LOW);
-        graphqlRequest(CREATE_ADDRESS, response.locals, {
-            input: requestAddress
-        }).then((result: CreateAddressResponse) => {
-            saveClinicalDetailsFieldsLogger.info('got response from the DB for address creation', Severity.LOW);
-            saveClinicalDetails(request, response, result.data.insertAndGetAddressId.integer);
-        }).catch(err => {
-            saveClinicalDetailsFieldsLogger.error(`got errors approaching the graphql API ${err}`,Severity.HIGH);
-            response.status(errorStatusCode).send(err);
-        });
+        if (!isolationAddressId){
+            saveClinicalDetailsFieldsLogger.info(`launching the graphql API request for address creation with the parameters: ${JSON.stringify(requestAddress)}`, Severity.LOW);
+            graphqlRequest(CREATE_ADDRESS, response.locals, {
+                input: requestAddress
+            }).then((result: CreateAddressResponse) => {
+                saveClinicalDetailsFieldsLogger.info('got response from the DB for address creation', Severity.LOW);
+                saveClinicalDetails(request, response, result.data.insertAndGetAddressId.integer);
+            }).catch(err => {
+                saveClinicalDetailsFieldsLogger.error(`got errors approaching the graphql API ${err}`,Severity.HIGH);
+                response.status(errorStatusCode).send(err);
+            });
+        } else {
+            saveClinicalDetailsFieldsLogger.info(`launching the graphql API request for update address with the id of ${isolationAddressId} with the parameters: ${JSON.stringify(requestAddress)}`, Severity.LOW);
+            graphqlRequest(UPDATE_ADDRESS, response.locals, {
+                id: isolationAddressId, addressPatch: isolationAddress
+            }).then((result) => {
+                saveClinicalDetailsFieldsLogger.info('got response from the DB for address update', Severity.LOW);
+                saveClinicalDetails(request, response, result.data.updateAddressById.address.id);
+            }).catch(err => {
+                saveClinicalDetailsFieldsLogger.error(`got errors approaching the graphql API ${err}`,Severity.HIGH);
+                response.status(errorStatusCode).send(err);
+            });
+        }
     } else {
         saveClinicalDetails(request, response, null);
     }
