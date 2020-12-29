@@ -79,7 +79,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
             disableFlightAddition={disableFlightAddition}
           />
           
-        </form>      
+        </form>
       </FormProvider>
   );
 };
@@ -87,6 +87,5 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 interface Props {
   id: number;
 }
-
 
 export default ExposuresAndFlights;
