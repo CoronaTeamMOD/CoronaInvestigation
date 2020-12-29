@@ -29,18 +29,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
   const {reset , trigger} = methods;
 
-  useEffect(() => {
-    // methods.reset({
-    //   wasInEilat,
-    //   wasInDeadSea,
-    //   exposures,
-    //   wereFlights,
-    //   wereConfirmedExposures
-    // });
-    // methods.trigger();
-    // console.log('triggered')
-  }, [exposureAndFlightsData])
-
   const {
     saveExposure,
     onExposuresStatusChange,

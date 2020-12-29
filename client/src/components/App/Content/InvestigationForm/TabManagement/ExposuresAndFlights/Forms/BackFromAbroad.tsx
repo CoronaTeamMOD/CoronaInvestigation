@@ -42,7 +42,6 @@ export const BackFromAbroad = (props: Props) => {
     return (
         <div className={classes.subForm}>
             <FormTitle title='חזרה מחו״ל' />
-
             <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?'>
                 <Controller
                     control={control}
@@ -66,8 +65,7 @@ export const BackFromAbroad = (props: Props) => {
             <Collapse in={watchWereFlights} className={classes.additionalInformationForm}>
                 <div>
                     <FieldName fieldName='פרטי טיסת חזור לארץ:' className={fieldContainer} />
-                    {exposures.map(
-                        (exposure, index) =>
+                    {exposures.map( (exposure, index) =>
                             exposure.wasAbroad && (
                                 <>
                                     <FlightsForm

@@ -29,11 +29,7 @@ export const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
 interface Props {
 	exposureAndFlightsData: any; 
 	fieldsNames: any; 
-	handleChangeExposureDataAndFlightsField: (
-        index: number,
-        fieldName: string,
-        value: any
-    ) => void;
+	handleChangeExposureDataAndFlightsField: (index: number, fieldName: string, value: any) => void;
 	index : number; 
 }
 
@@ -44,8 +40,6 @@ const ExposureForm = (props: Props) => {
 	const formClasses = useFormStyles();
 
 	const { control , setValue , errors } = useFormContext();
-
-	const validationDate = useSelector<StoreStateType, Date>((state) => state.investigation.validationDate);
 
 	const [exposureSourceSearchString, setExposureSourceSearchString] = useState<string>('');
 	const [isLoading, setIsLoading] = useState<boolean>(false);
