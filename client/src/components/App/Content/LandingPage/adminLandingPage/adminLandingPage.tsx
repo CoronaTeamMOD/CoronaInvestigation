@@ -29,9 +29,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
     useEffect(() => {
         if (!renderedForFirstTime.current) {
             console.log(investigationInfoFilter);
-            history.push(landingPageRoute, {
-                adminFilterRules: {...investigationInfoFilter}
-            });
+            history.push(landingPageRoute, investigationInfoFilter);
         }
         renderedForFirstTime.current = false;
     }, [investigationInfoFilter]);

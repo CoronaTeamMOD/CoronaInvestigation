@@ -38,8 +38,6 @@ const convertorsToGraph: { [T in keyof InvestigationStatistics]: Omit<Investigat
 const InvestigationsInfo: React.FC<Props> = ({ onInfoButtonClick }): JSX.Element => {
     const classes = useStyles();
 
-    let history = useHistory();
-
     const [allInvestigationsCount, setAllInvestigationsCount] = useState<number>(0);
     const [investigationsStatistics, setInvestigationsStatistics] = useState<InvestigationStatistics>({
         inProcessInvestigations: 0,

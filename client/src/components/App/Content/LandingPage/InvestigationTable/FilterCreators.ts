@@ -49,7 +49,10 @@ const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => E
     },
     [InvestigationsFilterByFields.INACTIVE_USER]: (isFilterOn: boolean) => {
         return isFilterOn ?
-            { isActive: {equalTo: false} }
+            { 
+                isActive: {equalTo: false},
+                userName: {notEqualTo: "לא משויך"}
+            }
             :
             {};
     },
@@ -63,24 +66,20 @@ interface FilterRulesVariables {
     searchQuery?: string,
 }
 
-export const buildFilterRules = (filterRulesVariables: FilterRulesVariables, adminFilterRules?: any) => {
+export const buildFilterRules = (filterRulesVariables: FilterRulesVariables) => {
 
-    if (!adminFilterRules) {
-        const { deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery } = filterRulesVariables;
+    const { deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery } = filterRulesVariables;
 
-        const searchQueryFilter = searchQuery ? phoneAndIdentityNumberRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.FULL_NAME(searchQuery) : {};
+    const searchQueryFilter = searchQuery ? phoneAndIdentityNumberRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.FULL_NAME(searchQuery) : {};
 
-        return {
-            ...filterCreators.DESK_ID(deskFilter),
-            ...filterCreators.STATUS(statusFilter),
-            userByCreator: {
-                ...filterCreators.UNASSIGNED_USER(unassignedUserFilter),
-                ...filterCreators.INACTIVE_USER(inactiveUserFilter),
-            },
-            ...searchQueryFilter,
-        }
-    } else {
-        return adminFilterRules
+    return {
+        ...filterCreators.DESK_ID(deskFilter),
+        ...filterCreators.STATUS(statusFilter),
+        userByCreator: {
+            ...filterCreators.UNASSIGNED_USER(unassignedUserFilter),
+            ...filterCreators.INACTIVE_USER(inactiveUserFilter),
+        },
+        ...searchQueryFilter,
     }
 }
 
