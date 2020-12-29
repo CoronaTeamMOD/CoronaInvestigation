@@ -7,9 +7,10 @@ import { Card, CardContent, Grid, IconButton, Typography } from '@material-ui/co
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationChart from 'models/InvestigationChart';
 import InvestigationStatistics from 'models/InvestigationStatistics';
-import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
-import useStyles from './investigationsInfoStyles';
+import LoadingCard from '../LoadingCard/LoadingCard';
+
+import useStyles, { cardWidth, cardHeight } from './investigationsInfoStyles';
 import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart';
 import InvestigationInfoButton from './investigationInfoButton/investigationInfoButton';
 
@@ -43,7 +44,8 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
         inactiveInvestigations: 0,
         newInvestigations: 0,
         unassignedInvestigations: 0
-    })
+    });
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
         setIsLoading(true);
@@ -67,7 +69,7 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
     }, [investigationsStatistics])
 
     return (
-        <Card className={classes.filtersCard}>
+        <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.filtersCard}>
             <CardContent>
                 <Grid container>
                     <Grid item xs={12} className={classes.investigationInfoButtonWrapper}>
@@ -93,7 +95,7 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
                     </Grid>
                 </Grid>
             </CardContent>
-        </Card>
+        </LoadingCard>
     )
 }
 
