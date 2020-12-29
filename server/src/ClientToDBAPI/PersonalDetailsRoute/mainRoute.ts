@@ -4,7 +4,7 @@ import { Router, Request, Response } from 'express';
 import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Severity } from '../../Models/Logger/types';
-import { CREATE_ADDRESS } from '../../DBService/Address/Mutation';
+import { CREATE_ADDRESS, UPDATE_ADDRESS } from '../../DBService/Address/Mutation';
 import InsertAndGetAddressIdInput from '../../Models/Address/InsertAndGetAddressIdInput';
 import { calculateInvestigationComplexity } from '../../Utils/InvestigationComplexity/InvestigationComplexity';
 import GetInvestigatedPatientDetails, { PersonalInfoDbData } from '../../Models/PersonalInfo/GetInvestigatedPatientDetails';
@@ -174,6 +174,7 @@ const savePersonalDetails = (request: Request, response: Response, address?: num
 }
 
 personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response: Response) => {
+    const addressId = request.body.addressId;
     const address = request.body.personalInfoData.address;
     const updatePersonalDetailsLogger = logger.setup({
         workflow: 'Saving personal details tab',
@@ -189,16 +190,29 @@ personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response:
         floorValue: address?.floor ? address?.floor : null,
         houseNumValue: address?.houseNum ? address?.houseNum : null,
     }
-    updatePersonalDetailsLogger.info(`launching the graphql API request for address creation with the parameters: ${JSON.stringify(requestAddress)}`, Severity.LOW);
-    graphqlRequest(CREATE_ADDRESS,  response.locals, { input: requestAddress})
-    .then((result) => {
-        updatePersonalDetailsLogger.info('got response from the DB for address creation', Severity.LOW);
-        savePersonalDetails(request, response, result.data.insertAndGetAddressId.integer)
-    })
-    .catch(err => {
-        updatePersonalDetailsLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
-        response.status(errorStatusCode).json({message: 'failed to save the personal details address due to ' + err});
-    });
+    if (!addressId){
+        updatePersonalDetailsLogger.info(`launching the graphql API request for address creation with the parameters: ${JSON.stringify(requestAddress)}`, Severity.LOW);
+        graphqlRequest(CREATE_ADDRESS, response.locals, { input: requestAddress})
+        .then((result) => {
+            updatePersonalDetailsLogger.info('got response from the DB for address creation', Severity.LOW);
+            savePersonalDetails(request, response, result.data.insertAndGetAddressId.integer)
+        })
+        .catch(err => {
+            updatePersonalDetailsLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
+            response.status(errorStatusCode).json({message: 'failed to save the personal details address due to ' + err});
+        });
+    } else {
+        updatePersonalDetailsLogger.info(`launching the graphql API request for update address with the id of ${addressId} with the parameters: ${JSON.stringify(requestAddress)}`, Severity.LOW);
+        graphqlRequest(UPDATE_ADDRESS, response.locals, { id: addressId, addressPatch: address })
+        .then((result) => {
+            updatePersonalDetailsLogger.info('got response from the DB for address update', Severity.LOW);
+            savePersonalDetails(request, response, result.data.updateAddressById.address.id)
+        })
+        .catch(err => {
+            updatePersonalDetailsLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
+            response.status(errorStatusCode).json({message: 'failed to save the personal details address due to ' + err});
+        });
+    }
 });
 
 export default personalDetailsRoute;
