@@ -1,4 +1,3 @@
-import {format} from 'date-fns';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import React, { useMemo, useState, useRef } from 'react';
