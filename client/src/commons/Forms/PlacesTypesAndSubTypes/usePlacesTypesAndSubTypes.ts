@@ -4,6 +4,7 @@ import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import PlaceSubType from 'models/PlaceSubType';
+import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
 
 import { usePlacesTypesAndSubTypesIncome } from './usePlacesTypesAndSubTypesInterfaces';
 
@@ -20,12 +21,13 @@ const usePlacesTypesAndSubTypes = (parameters: usePlacesTypesAndSubTypesIncome) 
             result => {
                 if (result?.data) {
 
+                    let sortedResult : PlacesSubTypesByTypes = {};
                     Object.keys(result.data).forEach((placeTypes)=>{
-                        result.data[placeTypes] = moveOtherValueLocationToLast(result.data[placeTypes]);
+                        sortedResult[placeTypes] = moveOtherValueLocationToLast(result.data[placeTypes]);
                     })
 
                     getPlacesSubTypesByTypesLogger.info('places and sub types by types request was successful', Severity.LOW);
-                    setPlacesSubTypesByTypes(result.data)
+                    setPlacesSubTypesByTypes(sortedResult)
                 } else {
                     getPlacesSubTypesByTypesLogger.warn('got status 200 but wrong data', Severity.HIGH);
                 }
