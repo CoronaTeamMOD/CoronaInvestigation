@@ -1,16 +1,18 @@
 import React from 'react';
 import { ResponsiveBar } from '@nivo/bar';
 
+import InvestigationChart from 'models/InvestigationChart';
 import InvestigationChartData from './InvestigationChartData';
+
 import useStyles from './InvestigationBarChartStyles';
 
-const InvestigationBarChart: React.FC = (): JSX.Element => {
+const InvestigationBarChart: React.FC<Props> = ({ investigationsGraphData }): JSX.Element => {
 
     const classes = useStyles();
 
     return (
         <ResponsiveBar
-            data={InvestigationChartData}
+            data={investigationsGraphData}
             borderRadius={9}
             axisLeft={null}
             enableGridX={false}
@@ -26,5 +28,9 @@ const InvestigationBarChart: React.FC = (): JSX.Element => {
         />
     )
 };
+
+interface Props {
+    investigationsGraphData: InvestigationChart[];
+}
 
 export default InvestigationBarChart;

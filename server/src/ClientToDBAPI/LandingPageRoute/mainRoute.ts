@@ -6,7 +6,7 @@ import { adminMiddleWare } from '../../middlewares/Authentication';
 import { CHANGE_DESK_ID, UPDATE_DESK_BY_GROUP_ID } from '../../DBService/LandingPage/Mutation';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
 import { graphqlRequest, multipleInvestigationsBulkErrorMessage, areAllResultsValid } from '../../GraphqlHTTPRequest';
-import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS } from '../../DBService/LandingPage/Query';
+import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS, GET_INVESTIGATION_STATISTICS } from '../../DBService/LandingPage/Query';
 
 import { convertUserInvestigationsData, convertGroupInvestigationsData } from './utils';
 import InvestigationStatus from '../../Models/InvestigationStatus/InvestigationMainStatus';
@@ -182,6 +182,26 @@ landingPageRoute.post('/changeGroupDesk', adminMiddleWare, (request: Request, re
             response.status(errorStatusResponse).send(`Error while trying to change investigator to group: ${selectedGroups}`);
         });
 });
+
+landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Request, response: Response) => {
+    const userFilters = {
+        userByCreator: {
+            countyByInvestigationGroup: {
+                id: {equalTo: response.locals.user.investigationGroup}
+            }
+        },
+        ...request.body
+    }
+    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, { userFilters })
+    .then((results) => {
+        const {data: preprocessedResults} = results;
+        const outcome: any = {};
+        Object.keys(preprocessedResults).forEach(preprocessedResult => {
+            outcome[preprocessedResult] = preprocessedResults[preprocessedResult].totalCount;
+        })
+        response.send(outcome);
+    })
+})
 
 
 export default landingPageRoute;

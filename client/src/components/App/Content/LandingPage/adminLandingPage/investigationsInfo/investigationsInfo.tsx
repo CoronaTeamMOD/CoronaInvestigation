@@ -1,20 +1,70 @@
-import React from 'react';
+import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import React, { useMemo, useState, useEffect } from 'react';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import { Card, CardContent, Grid, IconButton, Typography } from '@material-ui/core';
 
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationChart from 'models/InvestigationChart';
+import InvestigationStatistics from 'models/InvestigationStatistics';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import useStyles from './investigationsInfoStyles';
 import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart';
-import InvestigationChartData from './InvestigationBarChart/InvestigationChartData';
 import InvestigationInfoButton from './investigationInfoButton/investigationInfoButton';
+
+const convertorsToGraph: { [T in keyof InvestigationStatistics]: Omit<InvestigationChart, 'value'>} = {
+    newInvestigations: {
+        id: 'חדשות',
+        color: '#1F78B4'
+    },
+    inProcessInvestigations: {
+        id: 'בטיפול',
+        color: 'grey'
+    },
+    unassignedInvestigations: {
+        id: 'לא משויכות',
+        color: '#33A02C'
+    },
+    inactiveInvestigations: {
+        id: 'מוקצות לחוקרים לא פעילים',
+        color: '#F95959'
+    }
+}
 
 const InvestigationsInfo: React.FC = (): JSX.Element => {
     const classes = useStyles();
 
     let history = useHistory();
+
+    const [allInvestigationsCount, setAllInvestigationsCount] = useState<number>(0);
+    const [investigationsStatistics, setInvestigationsStatistics] = useState<InvestigationStatistics>({
+        inProcessInvestigations: 0,
+        inactiveInvestigations: 0,
+        newInvestigations: 0,
+        unassignedInvestigations: 0
+    })
+
+    useEffect(() => {
+        setIsLoading(true);
+        axios.post<InvestigationStatistics & {allInvestigations: number}>('/landingPage/investigationStatistics')
+        .then((response) => {
+            const { data: {allInvestigations, ...statistics} } = response;
+            setAllInvestigationsCount(allInvestigations);
+            setInvestigationsStatistics(statistics);
+        }).finally(() => setIsLoading(false));
+    }, [])
+
+    const investigationsGraphData = useMemo<InvestigationChart[]>(() => {
+        const returnedArray:InvestigationChart[] = [];
+        Object.keys(convertorsToGraph).forEach((convertor) => {
+            returnedArray.push({
+                ...convertorsToGraph[convertor as keyof InvestigationStatistics],
+                value: investigationsStatistics[convertor as keyof InvestigationStatistics]
+            });
+        });
+        return returnedArray;
+    }, [investigationsStatistics])
 
     return (
         <Card className={classes.filtersCard}>
@@ -22,10 +72,10 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
                 <Grid container>
                     <Grid item xs={12} className={classes.investigationInfoButtonWrapper}>
                         <div className={classes.investigationsGraphContainer}>
-                            <InvestigationBarChart />
+                            <InvestigationBarChart investigationsGraphData={investigationsGraphData} />
                         </div>
                         {
-                            InvestigationChartData.map((InvestigationData: InvestigationChart) => (
+                            investigationsGraphData.map((InvestigationData: InvestigationChart) => (
                                 <InvestigationInfoButton
                                     amountOfInvestigations={InvestigationData.value}
                                     text={InvestigationData.id}
@@ -35,7 +85,7 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
                         }
                     </Grid>
                     <Grid item xs={12} className={classes.investigationAmountContainer}>
-                        <Typography className={classes.investigationAmountText}><b>{102} </b></Typography>
+                        <Typography className={classes.investigationAmountText}><b>{allInvestigationsCount}</b></Typography>
                         <Typography className={classes.allInvestigationsText}><b>חקירות בסך הכל</b></Typography>
                         <IconButton onClick={() => history.push(landingPageRoute)}>
                             <NavigateBeforeIcon className={classes.navigateIcon} />
