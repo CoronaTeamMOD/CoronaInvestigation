@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
     card: {
-        padding: theme.spacing(1.5),
+        padding: theme.spacing(1),
         borderRadius: 16,
         display: 'flex',
         flexDirection: 'column',
