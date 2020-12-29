@@ -171,8 +171,8 @@ query allDesks {
 `;
 
 export const GET_INVESTIGATION_STATISTICS = gql`
-query InvestigationStatistics($userFilters: [InvestigationFilter!]){
-  allInvestigations {
+query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitgationsFilter: InvestigationFilter!){
+  allInvestigations(filter: $allInvesitgationsFilter) {
     totalCount
   }
   inProcessInvestigations: allInvestigations(filter: {

@@ -192,7 +192,7 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
         },
         ...request.body
     }
-    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, { userFilters })
+    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, { userFilters, allInvesitgationsFilter: userFilters })
     .then((results) => {
         const {data: preprocessedResults} = results;
         const outcome: any = {};
