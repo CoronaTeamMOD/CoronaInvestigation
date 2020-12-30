@@ -1,4 +1,6 @@
-import { gql } from "postgraphile";
+import { gql } from 'postgraphile';
+
+const unassignedUserName = 'לא משויך';
 
 export const USER_INVESTIGATIONS = gql`
 query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter) {
@@ -193,7 +195,7 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
   }
   unassignedInvestigations: allInvestigations(filter: {
     userByCreator: {
-      userName: {equalTo: "לא משויך"}
+      userName: {equalTo: "${unassignedUserName}"}
     },
     and: $userFilters
   }) {
@@ -202,14 +204,14 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
   inactiveInvestigations: allInvestigations(filter: {
     userByCreator: {
       isActive: {equalTo: false},
-      userName: {notEqualTo: "לא משויך"}
+      userName: {notEqualTo: "${unassignedUserName}"}
     },
     and: $userFilters
   }) {
     totalCount
   }
   unallocatedInvestigations: allInvestigations(filter: {
-    userByCreator: {or: [{isActive: {equalTo: false}}, {userName: {equalTo: "לא משויך"}}]}, and: $userFilters
+    userByCreator: {or: [{isActive: {equalTo: false}}, {userName: {equalTo: "${unassignedUserName}"}}]}, and: $userFilters
   }) {
     totalCount
   }
@@ -218,7 +220,7 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
 
 export const GET_UNALLOCATED_INVESTIGATIONS_COUNT = gql`
 query unallocatedInvestigationsCount($allInvesitgationsFilter: [InvestigationFilter!]) {
-  unassignedInvestigations: allInvestigations(filter: {userByCreator: {or: {userName: {equalTo: "לא משויך"}, isActive: {equalTo: false}}}, and: $allInvesitgationsFilter}) {
+  unassignedInvestigations: allInvestigations(filter: {userByCreator: {or: {userName: {equalTo: "${unassignedUserName}"}, isActive: {equalTo: false}}}, and: $allInvesitgationsFilter}) {
     totalCount
   }
 }
