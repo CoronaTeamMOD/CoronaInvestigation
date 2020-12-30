@@ -825,7 +825,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         });
     }
 
-    const getTitleByAdminLandingFilter = () => {
+    const titleByAdminLandingFilter = useMemo(() => {
 
         const currStatusFilter = {
             statusFilter
@@ -845,14 +845,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             return false;
         });
         return isStatusFiltered ? title : welcomeMessage;
-    }
+    }, [])
 
     const isAdmin = user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN;
 
     const tableTitle = useMemo(() => {
         if (rows.length === 0) return noInvestigationsMessage;
         if (isAdminLandingRedirect === false || !isAdmin) return welcomeMessage;
-        return getTitleByAdminLandingFilter();
+        return titleByAdminLandingFilter;
     }, [rows])
 
     return {
