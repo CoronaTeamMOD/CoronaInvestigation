@@ -37,15 +37,11 @@ const InvestigationsInfo: React.FC<Props> = (props: Props): JSX.Element => {
 
     const { onInfoButtonClick, investigationsStatistics, allInvestigationsCount, isLoading } = props;
 
-    const investigationsGraphData = useMemo<InvestigationChart[]>(() => {
-        const returnedArray:InvestigationChart[] = [];
-        Object.keys(convertorsToGraph).forEach((convertor) => {
-            returnedArray.push({
-                ...convertorsToGraph[convertor as keyof InvesitgationInfoStatistics],
-                value: investigationsStatistics[convertor as keyof InvesitgationInfoStatistics]
-            });
-        });
-        return returnedArray;
+    const investigationsGraphData : InvestigationChart[] = useMemo<InvestigationChart[]>(() => {
+        return Object.keys(convertorsToGraph).map((convertor) => ({
+            ...convertorsToGraph[convertor as keyof InvesitgationInfoStatistics],
+            value: investigationsStatistics[convertor as keyof InvesitgationInfoStatistics]
+        }));
     }, [investigationsStatistics])
 
     return (
