@@ -156,7 +156,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
             return {
                 ...contactedPerson,
                 contactEvent,
-                contactedPersonCity,
+                isolationAddress:{city:contactedPersonCity},
                 contactType,
                 familyRelationship,
                 contactStatus
@@ -166,7 +166,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
             return {
                 ...contactedPerson,
                 contactEvent,
-                contactedPersonCity: null,
+                isolationAddress: {city: null},
                 contactType: null,
                 familyRelationship: null,
                 contactStatus: null

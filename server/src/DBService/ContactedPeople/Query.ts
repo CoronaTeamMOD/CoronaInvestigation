@@ -46,7 +46,6 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
       occupation
       doesHaveBackgroundDiseases
       contactType
-      contactedPersonCity
       doesFeelGood
       doesNeedHelpInIsolation
       repeatingOccuranceWithConfirmed
