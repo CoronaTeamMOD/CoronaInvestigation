@@ -17,31 +17,12 @@ interface Props {
 
 const DesksFilterCard = (props : Props): JSX.Element => {
     const classes = useStyles();
-    
-    const { desks, isLoading } = useDesksFilterCard();
-    const {filteredDesks , setFilteredDesks , setInvestigationInfoFilter} = props;
-
-    const onDeskClicked = (checkedDesk: number) => {
-        if (filteredDesks.includes(checkedDesk)) {
-            setFilteredDesks(filteredDesks.filter(desk => desk !== checkedDesk));
-        } else {
-            setFilteredDesks([...filteredDesks, checkedDesk])
-        }
-    }
-
-    const onUpdateButtonCLicked = () => {
-        if(filteredDesks.length > 0) {
-            setInvestigationInfoFilter({
-                deskId : { in : filteredDesks}
-            })
-        } else {
-            setInvestigationInfoFilter({})
-        }
-    }
-
-    const clearAllDesks = () => {
-        setFilteredDesks([])
-    }
+    const { filteredDesks, setFilteredDesks, setInvestigationInfoFilter } = props;
+    const { desks, isLoading, clearAllDesks, onDeskClicked, onUpdateButtonCLicked } = useDesksFilterCard({
+        filteredDesks,
+        setFilteredDesks,
+        setInvestigationInfoFilter,
+    });
 
     return (
         <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.desksCard}>
