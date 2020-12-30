@@ -1,4 +1,7 @@
+import FilterRulesVariables from 'models/FilterRulesVariables';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
+
+import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/Forms/ExposureForm/ExposureForm';
 
 const unassignedUserName = 'לא משויך';
 
@@ -48,10 +51,45 @@ const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => E
     },
     [InvestigationsFilterByFields.INACTIVE_USER]: (isFilterOn: boolean) => {
         return isFilterOn ?
-            { isActive: {equalTo: false} }
+            { 
+                isActive: {equalTo: false},
+                userName: {notEqualTo:unassignedUserName}
+            }
+            :
+            {};
+    },
+    [InvestigationsFilterByFields.UNALLOCATED_USER]: (isFilterOn: boolean) => {
+        return isFilterOn ?
+            {
+                or: [
+                    {isActive: {equalTo: false}},
+                    {userName: {equalTo:unassignedUserName}}
+                ]
+            }
             :
             {};
     },
 };
+
+export const buildFilterRules = (filterRulesVariables: FilterRulesVariables) => {
+
+    const { deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery } = filterRulesVariables;
+
+    const searchQueryFilter = searchQuery ? phoneAndIdentityNumberRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.FULL_NAME(searchQuery) : {};
+
+    const userByCreator = (unassignedUserFilter && inactiveUserFilter) ?
+        filterCreators.UNALLOCATED_USER(unassignedUserFilter && inactiveUserFilter)
+        : {
+            ...filterCreators.UNASSIGNED_USER(unassignedUserFilter),
+            ...filterCreators.INACTIVE_USER(inactiveUserFilter),
+        }
+
+    return {
+        ...filterCreators.DESK_ID(deskFilter),
+        ...filterCreators.STATUS(statusFilter),
+        userByCreator,
+        ...searchQueryFilter,
+    }
+}
 
 export default filterCreators;

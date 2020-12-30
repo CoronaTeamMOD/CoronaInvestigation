@@ -7,7 +7,7 @@ import { convertUserInvestigationsData, convertGroupInvestigationsData } from '.
 import { CHANGE_DESK_ID, UPDATE_DESK_BY_GROUP_ID } from '../../DBService/LandingPage/Mutation';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
-import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS } from '../../DBService/LandingPage/Query';
+import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS, GET_INVESTIGATION_STATISTICS, GET_UNALLOCATED_INVESTIGATIONS_COUNT } from '../../DBService/LandingPage/Query';
 
 const landingPageRoute = Router();
 
@@ -163,5 +163,37 @@ landingPageRoute.post('/changeGroupDesk', adminMiddleWare, (request: Request, re
         });
 });
 
+landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Request, response: Response) => {
+    const investigationsStatisticsLogger = logger.setup({
+        workflow: 'query investigations statistics',
+        user: response.locals.user.id,
+    });
+    
+    const userFilters = {
+        userByCreator: {
+            countyByInvestigationGroup: {
+                id: {equalTo: response.locals.user.investigationGroup}
+            }
+        },
+        ...request.body
+    }
+    const parameters = { userFilters, allInvesitgationsFilter: userFilters };
+    investigationsStatisticsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+
+    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, { userFilters, allInvesitgationsFilter: userFilters })
+    .then((results) => {
+        investigationsStatisticsLogger.info(validDBResponseLog, Severity.LOW);
+        const {data: preprocessedResults} = results;
+        const outcome: any = {};
+        Object.keys(preprocessedResults).forEach(preprocessedResult => {
+            outcome[preprocessedResult] = preprocessedResults[preprocessedResult].totalCount;
+        })
+        response.send(outcome);
+    })
+    .catch(error => {
+        investigationsStatisticsLogger.error(invalidDBResponseLog(error), Severity.HIGH)
+        response.status(errorStatusCode).send(error);
+    })
+})
 
 export default landingPageRoute;

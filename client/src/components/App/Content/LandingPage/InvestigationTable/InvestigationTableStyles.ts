@@ -37,8 +37,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     welcomeMessage: {
         fontSize: '4vh',
-        display: 'flex',
-        justifyContent: 'center'
     },
     errorAlertTitle: {
         fontFamily: 'Assistant'

@@ -38,8 +38,6 @@ import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCo
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
 const resetSortButtonText = 'סידור לפי תעדוף';
-const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך היום. בואו נקטע את שרשראות ההדבקה!';
-const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 const searchBarLabel = 'הכנס מס\' אפידימיולוגי, ת\"ז, שם מלא או טלפון...';
 const searchBarError = 'יש להכניס רק אותיות ומספרים';
 const returnToAdminLandingPage = 'חזרה לדף הנחיתה';
@@ -97,7 +95,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         moveToTheInvestigationForm, totalCount, unassignedInvestigationsCount,
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
         statusFilter, changeStatusFilter, deskFilter, changeDeskFilter, searchQuery, changeSearchQuery, isSearchQueryValid,
-        changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers
+        changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers,
+        tableTitle
     } = useInvestigationTable({
         setSelectedRow, setAllUsersOfCurrCounty, allGroupedInvestigations,
         setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations,
@@ -263,19 +262,17 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 event.key === 'Escape' && closeDropdowns()}
         >
             <Grid className={classes.title} container alignItems='center' justify='space-between'>
-                <Grid item xs={2}>
-                    {
-                        (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) &&
-                        <Tooltip title={returnToAdminLandingPage}>
-                            <IconButton color='primary' onClick={() => history.push(adminLandingPageRoute)}>
-                                <ArrowForward />
-                            </IconButton>
-                        </Tooltip>
-                    }
-                </Grid>
-                <Grid item xs={7}>
+                {
+                    (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) &&
+                    <Tooltip title={returnToAdminLandingPage}>
+                        <IconButton color='primary' onClick={() => history.push(adminLandingPageRoute)}>
+                            <ArrowForward />
+                        </IconButton>
+                    </Tooltip>
+                }
+                <Grid item xs={8}>
                     <Typography color='textPrimary' className={classes.welcomeMessage}>
-                        {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}
+                        {tableTitle}
                     </Typography>
                 </Grid>
                 <Grid item xs={2} >

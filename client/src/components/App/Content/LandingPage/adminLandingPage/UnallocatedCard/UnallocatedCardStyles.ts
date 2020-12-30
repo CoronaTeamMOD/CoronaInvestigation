@@ -1,9 +1,12 @@
 import { makeStyles } from '@material-ui/styles';
 
+export const cardWidth = '14vw';
+export const cardHeight = '8vh';
+
 const useStyles = makeStyles({
-    unassignedCard: {
-        width: '14vw',
-        height: '8vh',
+    unallocatedCard: {
+        width: cardWidth,
+        height: cardHeight,
         borderRadius: '1vw',
         padding: '1vw',
         cursor: 'pointer',
@@ -19,13 +22,13 @@ const useStyles = makeStyles({
     investigationAmountText: {
         fontSize: '1.2vw',
     },
-    unnasignedInvestigations: {
+    unallocatedInvestigations: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '13vw',
     },
-    unnasignedInvestigationsText: {
+    unallocatedInvestigationsText: {
         fontSize: '1.3vw',
     },
     navigateIcon: {

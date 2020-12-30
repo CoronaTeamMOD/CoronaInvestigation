@@ -1,4 +1,6 @@
-import { gql } from "postgraphile";
+import { gql } from 'postgraphile';
+
+const unassignedUserName = 'לא משויך';
 
 export const USER_INVESTIGATIONS = gql`
 query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter) {
@@ -166,6 +168,60 @@ query allDesks {
     nodes {
       deskName
     }
+  }
+}
+`;
+
+export const GET_INVESTIGATION_STATISTICS = gql`
+query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitgationsFilter: InvestigationFilter!){
+  allInvestigations(filter: $allInvesitgationsFilter) {
+    totalCount
+  }
+  inProcessInvestigations: allInvestigations(filter: {
+    investigationStatusByInvestigationStatus: {
+      id: {equalTo: 100000002}
+    },
+    and: $userFilters
+  }) {
+    totalCount
+  }
+  newInvestigations: allInvestigations(filter: {
+    investigationStatusByInvestigationStatus: {
+      id: {equalTo: 1}
+    }, 
+    and: $userFilters
+  }) {
+    totalCount
+  }
+  unassignedInvestigations: allInvestigations(filter: {
+    userByCreator: {
+      userName: {equalTo: "${unassignedUserName}"}
+    },
+    and: $userFilters
+  }) {
+    totalCount
+  }
+  inactiveInvestigations: allInvestigations(filter: {
+    userByCreator: {
+      isActive: {equalTo: false},
+      userName: {notEqualTo: "${unassignedUserName}"}
+    },
+    and: $userFilters
+  }) {
+    totalCount
+  }
+  unallocatedInvestigations: allInvestigations(filter: {
+    userByCreator: {or: [{isActive: {equalTo: false}}, {userName: {equalTo: "${unassignedUserName}"}}]}, and: $userFilters
+  }) {
+    totalCount
+  }
+}
+`;
+
+export const GET_UNALLOCATED_INVESTIGATIONS_COUNT = gql`
+query unallocatedInvestigationsCount($allInvesitgationsFilter: [InvestigationFilter!]) {
+  unassignedInvestigations: allInvestigations(filter: {userByCreator: {or: {userName: {equalTo: "${unassignedUserName}"}, isActive: {equalTo: false}}}, and: $allInvesitgationsFilter}) {
+    totalCount
   }
 }
 `;
