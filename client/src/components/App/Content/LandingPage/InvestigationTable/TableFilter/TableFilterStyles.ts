@@ -20,10 +20,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         flip: false
     }, 
     title: {
-        fontSize: '1vw',
+        fontSize: '1.2vw',
     },
     option: {
-        fontSize: '1vw',
+        fontSize: '1.2vw',
     }
 }));
 
