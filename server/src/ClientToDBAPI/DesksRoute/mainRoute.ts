@@ -1,56 +1,48 @@
 import { Router, Request, Response } from 'express';
 
-import logger from '../../Logger/Logger';
-import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import { ALL_DESKS_QUERY, DESKS_BY_COUNTY_ID } from "../../DBService/Desk/Query";
 import { Severity } from '../../Models/Logger/types';
-import GetAllDesks from '../../Models/Desk/GetAllDesks'
+import GetAllDesks from '../../Models/Desk/GetAllDesks';
+import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
+import { ALL_DESKS_QUERY, DESKS_BY_COUNTY_ID } from "../../DBService/Desk/Query";
+import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 
 const router = Router();
 
-const RESPONSE_ERROR_CODE = 500;
-
 router.get('/', (request: Request, response: Response) => {
     const desksLogger = logger.setup({
-        workflow: 'Getting desks',
+        workflow: 'query all desks',
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    desksLogger.info('launching graphql API desks request', Severity.LOW);
+    desksLogger.info(launchingDBRequestLog(), Severity.LOW);
     graphqlRequest(ALL_DESKS_QUERY, response.locals)
-    .then((res: GetAllDesks) => {
-        desksLogger.info('got results from the DB', Severity.LOW);
-        response.send(res.data.allDesks.nodes.map((desk: any) => ({
-            id: desk.id,
-            name: desk.deskName
-        })));
+    .then((result: GetAllDesks) => {
+        desksLogger.info(validDBResponseLog, Severity.LOW);
+        response.send(result.data.allDesks.nodes);
     })
-    .catch(err => {
-        desksLogger.error(`got error in requesting the graphql API ${err}`, Severity.HIGH);
-        response.sendStatus(RESPONSE_ERROR_CODE);
+    .catch(error => {
+        desksLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+        response.sendStatus(errorStatusCode).send(error);
     })
 });
 
 router.get('/county', (request: Request, response: Response) => {
     const countyLogger = logger.setup({
-        workflow: 'Getting desks by county id',
+        workflow: 'query desks by county id',
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    countyLogger.info(`launching graphql API desks request with parameters ${JSON.stringify({ countyId: response.locals.user.investigationGroup })}`, Severity.LOW);
-    graphqlRequest(DESKS_BY_COUNTY_ID, response.locals, { countyId: +response.locals.user.investigationGroup })
+    
+    const parameters = { countyId: +response.locals.user.investigationGroup };
+    countyLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+    graphqlRequest(DESKS_BY_COUNTY_ID, response.locals, parameters)
     .then((res: GetAllDesks) => {
-        if (res?.data?.allDesks) {
-            countyLogger.info('got results from the DB', Severity.LOW);
-            response.send(res.data.allDesks.nodes)
-        } else {
-            countyLogger.error('didnt get data from the DB', Severity.HIGH);
-            response.status(RESPONSE_ERROR_CODE).send('Error while trying to get userTypes')
-        }
+        countyLogger.info(validDBResponseLog, Severity.LOW);
+        response.send(res.data.allDesks.nodes);
     })
-    .catch(err => {
-        countyLogger.error(`got error in requesting the graphql API ${err}`, Severity.HIGH);
-        response.sendStatus(RESPONSE_ERROR_CODE);
+    .catch(error => {
+        countyLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+        response.sendStatus(errorStatusCode).send(error);
     })
 });
 

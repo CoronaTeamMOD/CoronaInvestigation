@@ -1,5 +1,6 @@
-import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
@@ -26,6 +27,8 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>((state) => state.investigation.investigationStatus);
+
+    const [addressId, setAddressId] = useState<number | null>(null);
 
     const { complexityErrorAlert } = useComplexitySwal();
 
@@ -82,10 +85,12 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
                         street,
                         floor: patientAddress.floor,
                         houseNum: patientAddress.houseNum,
+                        addressId: patientAddress.id
                     }
                 } else {
                     convertedPatientAddress = initDBAddress;
                 }
+                setAddressId(convertedPatientAddress.addressId);
                 const PersonalInfoData = {
                     phoneNumber: investigatedPatient.primaryPhone,
                     additionalPhoneNumber: investigatedPatient.additionalPhoneNumber,
@@ -187,6 +192,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
             {
                 id: investigatedPatientId,
                 personalInfoData,
+                addressId
             })
             .then(() => {
                 const isInvestigationNew = investigationStatus.mainStatus === InvestigationMainStatusCodes.NEW;

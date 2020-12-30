@@ -5,7 +5,7 @@ query AllDesks {
   allDesks {
     nodes {
       id
-      deskName
+      name: deskName
     }
   }
 }

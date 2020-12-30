@@ -1,23 +1,25 @@
 import { Router, Request, Response } from 'express';
 
-import logger from '../../Logger/Logger';
 import { Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
+import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
+import { convertUserInvestigationsData, convertGroupInvestigationsData } from './utils';
 import { CHANGE_DESK_ID, UPDATE_DESK_BY_GROUP_ID } from '../../DBService/LandingPage/Mutation';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
-import { graphqlRequest, multipleInvestigationsBulkErrorMessage, areAllResultsValid } from '../../GraphqlHTTPRequest';
+import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS } from '../../DBService/LandingPage/Query';
-
-import { convertUserInvestigationsData, convertGroupInvestigationsData } from './utils';
-import InvestigationStatus from '../../Models/InvestigationStatus/InvestigationMainStatus';
-
-const errorStatusResponse = 500;
 
 const landingPageRoute = Router();
 
 const calculateOffset = (pageNumber: number, pageSize: number) => ((pageNumber - 1) * pageSize);
 
 landingPageRoute.post('/investigations', (request: Request, response: Response) => {
+    const investigationsLogger = logger.setup({
+        workflow: `query investigator's Investigations`,
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    })
+
     const { orderBy, size, currentPage, filterRules } = request.body;
     const filterBy = {
         ...filterRules,
@@ -35,33 +37,29 @@ landingPageRoute.post('/investigations', (request: Request, response: Response) 
         offset: calculateOffset(currentPage, size),
         size
     };
-    const investigationsLogger = logger.setup({
-        workflow: 'Getting Investigations',
-        user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber
-    })
+    investigationsLogger.info(launchingDBRequestLog(getInvestigationsParameters), Severity.LOW);
+
     graphqlRequest(USER_INVESTIGATIONS, response.locals, getInvestigationsParameters)
-        .then((result: any) => {
-            const orderedInvestigations = result?.data?.orderedInvestigations?.nodes;
-            if (orderedInvestigations) {
-                investigationsLogger.info('got investigations from the DB', Severity.LOW);
-                response.send({
-                    allInvestigations: convertUserInvestigationsData(result.data),
-                    totalCount: +result.data.orderedInvestigations.totalCount
-                });
-            }
-            else {
-                investigationsLogger.error(`got errors in querying the investigations from the DB ${JSON.stringify(result)}`, Severity.HIGH);
-                response.status(errorStatusResponse).send('error in fetching data')
-            }
+        .then(result => {
+            investigationsLogger.info(validDBResponseLog, Severity.LOW);
+            response.send({
+                allInvestigations: convertUserInvestigationsData(result.data),
+                totalCount: +result.data.orderedInvestigations.totalCount
+            });
         })
-        .catch(err => {
-            investigationsLogger.error(`got errors in request to graphql API ${err}`, Severity.HIGH);
-            response.status(errorStatusResponse).send('error in fetching data: ' + err);
+        .catch(error => {
+            investigationsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
         });
 })
 
 landingPageRoute.post('/groupInvestigations', adminMiddleWare, (request: Request, response: Response) => {
+    const groupInvestigationsLogger = logger.setup({
+        workflow: `query group's Investigations`,
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    })
+
     const { orderBy, size, currentPage, filterRules } = request.body;
     const filterBy = {
         ...filterRules,
@@ -81,79 +79,62 @@ landingPageRoute.post('/groupInvestigations', adminMiddleWare, (request: Request
         size,
         unassignedFilter: filterBy
     };
-    const groupInvestigationsLogger = logger.setup({
-        workflow: 'Getting Investigations',
-        user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber
-    })
+    groupInvestigationsLogger.info(launchingDBRequestLog(getInvestigationsParameters), Severity.LOW);
+
     graphqlRequest(GROUP_INVESTIGATIONS(+response.locals.user.investigationGroup), response.locals, getInvestigationsParameters)
-        .then((result: any) => {
-            if (result?.data?.orderedInvestigations?.nodes) {
-                groupInvestigationsLogger.info('got results from the DB', Severity.LOW);
-                response.send({
-                    allInvestigations: convertGroupInvestigationsData(result.data),
-                    totalCount: +result.data.orderedInvestigations.totalCount,
-                    unassignedInvestigationsCount: +result.data.unassignedInvestigations.totalCount
-                });
-            }
-            else {
-                groupInvestigationsLogger.error(`got error in querying the DB ${JSON.stringify(result)}`, Severity.HIGH);
-                response.send(result)
-            }
+        .then(result => {
+            groupInvestigationsLogger.info(validDBResponseLog, Severity.LOW);
+            response.send({
+                allInvestigations: convertGroupInvestigationsData(result.data),
+                totalCount: +result.data.orderedInvestigations.totalCount,
+                unassignedInvestigationsCount: +result.data.unassignedInvestigations.totalCount
+            });
         })
-        .catch(err => {
-            groupInvestigationsLogger.error(`got error in requesting the graphql API ${err}`, Severity.HIGH);
-            response.status(errorStatusResponse).send('error in fetching data: ' + err)
+        .catch(error => {
+            groupInvestigationsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
         });
 })
 
 landingPageRoute.get('/investigationStatuses', (request: Request, response: Response) => {
     const investigationStatusesLogger = logger.setup({
-        workflow: 'Getting Investigations statuses',
+        workflow: 'query all investigation statuses',
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber,
     });
-    investigationStatusesLogger.info('launching graphql API investigationStatuses request', Severity.LOW);
+    investigationStatusesLogger.info(launchingDBRequestLog(), Severity.LOW);
     graphqlRequest(GET_ALL_INVESTIGATION_STATUS, response.locals)
         .then((result: GetAllInvestigationStatuses) => {
-            if (result?.data?.allInvestigationStatuses) {
-                investigationStatusesLogger.info('got results from the DB', Severity.LOW);
-                const convertedStatuses: InvestigationStatus[] = result.data.allInvestigationStatuses.nodes;
-                response.send(convertedStatuses);
-            }
-            else {
-                investigationStatusesLogger.error(`got error in querying the DB ${JSON.stringify(result)}`, Severity.HIGH);
-                response.status(errorStatusResponse).send('error in fetching data')
-            }
+            investigationStatusesLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data.allInvestigationStatuses.nodes);
         })
-        .catch(err => {
-            investigationStatusesLogger.error(`got error in requesting the graphql API ${err}`, Severity.HIGH);
-            response.status(errorStatusResponse).send('error in fetching data: ' + err)
+        .catch(error => {
+            investigationStatusesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
         });
 })
 
 landingPageRoute.post('/changeDesk', adminMiddleWare, (request: Request, response: Response) => {
-    const epidemiologyNumbers: number[] = request.body.epidemiologyNumbers;
-    const updatedDesk: number = request.body.updatedDesk;
-    const transferReason: string = request.body.transferReason;
     const changeDeskLogger = logger.setup({
-        workflow: 'Change desk id',
+        workflow: 'change investigation desk',
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber,
     });
-    changeDeskLogger.info('launching graphql API desks request', Severity.LOW);
-    graphqlRequest(CHANGE_DESK_ID, response.locals, { epidemiologyNumbers, updatedDesk, transferReason })
+
+    const parameters = { 
+        epidemiologyNumbers: request.body.epidemiologyNumbers, 
+        updatedDesk: request.body.updatedDesk, 
+        transferReason: request.body.transferReason
+    };
+    changeDeskLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+
+    graphqlRequest(CHANGE_DESK_ID, response.locals, parameters)
         .then((result: any) => {
-            if (result?.data && !result.errors) {
-                changeDeskLogger.info(`desk id has been changed in the DB, investigations: ${epidemiologyNumbers}`, Severity.LOW);
-                response.send(result?.data || '');
-            } else {
-                changeDeskLogger.error(`desk id hasnt been changed in the DB in investigations ${epidemiologyNumbers}, due to: ${multipleInvestigationsBulkErrorMessage(result, epidemiologyNumbers)}`, Severity.HIGH);
-                response.sendStatus(errorStatusResponse);
-            }
-        }).catch(err => {
-            changeDeskLogger.error(`querying the graphql API failed due to ${err}`, Severity.HIGH);
-            response.sendStatus(errorStatusResponse);
+            changeDeskLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data);
+        }).catch(error => {
+            changeDeskLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
         });
 })
 
@@ -162,24 +143,23 @@ landingPageRoute.post('/changeGroupDesk', adminMiddleWare, (request: Request, re
         workflow: 'change desk for grouped investigatios',
         user: response.locals.user.id,
     });
-    const desk = request.body.desk;
-    const selectedGroups = request.body.groupIds;
-    const reason = request.body.reason ? request.body.reason : '';
-    const userCounty = response.locals.user.investigationGroup;
-    changeGroupDeskLogger.info(`querying the graphql API with parameters ${JSON.stringify(request.body)}`, Severity.LOW);
-    graphqlRequest(UPDATE_DESK_BY_GROUP_ID, response.locals, { desk, selectedGroups, userCounty, reason })
-        .then((result: any) => {
-            if (result?.data && !result.errors) {
-                changeGroupDeskLogger.info(`investigator have been changed in the DB for group: ${selectedGroups}`, Severity.LOW);
-                response.send(result);
-            } else {
-                changeGroupDeskLogger.error(`failed to change investigator for group ${selectedGroups} due to: ${JSON.stringify(result)}`, Severity.HIGH);
-                response.status(errorStatusResponse).json({ message: `failed to change investigator for group ${selectedGroups}` });
-            }
+
+    const parameters = { 
+        desk: request.body.desk,
+        selectedGroups: request.body.groupIds,
+        userCounty: response.locals.user.investigationGroup, 
+        reason:  request.body.reason || ''
+    }
+    changeGroupDeskLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+    
+    graphqlRequest(UPDATE_DESK_BY_GROUP_ID, response.locals, parameters)
+        .then(result => {
+            changeGroupDeskLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result);
         })
         .catch(error => {
-            changeGroupDeskLogger.error(`failed to get response from the graphql API due to: ${error}`, Severity.HIGH);
-            response.status(errorStatusResponse).send(`Error while trying to change investigator to group: ${selectedGroups}`);
+            changeGroupDeskLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
         });
 });
 

@@ -5,8 +5,8 @@ query allCounties {
   allCounties(filter: {isDisplayed: {equalTo: true}}) {
     nodes {
       id
-      displayName,
-      districtByDistrictId {
+      displayName
+      district: districtByDistrictId {
         displayName
       }
     }

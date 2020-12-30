@@ -11,7 +11,6 @@ import UserTypeEnum from 'models/enums/UserType';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import SourceOrganization from 'models/SourceOrganization';
-import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 import useStyles from './UsersFilterStyles';
 import FilterCreators from './FilterCreators'
@@ -77,7 +76,7 @@ const UsersFilter:React.FC<Props> = ( props : Props ) => {
             <FormInput fieldName='מסגרת'>
                 <GenericAutoComplete 
                     options={sourcesOrganization}
-                    handleChange={(sourceOrganizations) => handleFilterChange(get(FilterCreators, 'SOURCE_ORGANIZATION').create(
+                    handleChange={(sourceOrganizations) => handleFilterChange(FilterCreators.SOURCE_ORGANIZATION.create(
                         sourceOrganizations.map((sourceOrganization: SourceOrganization) => sourceOrganization.displayName)))
                     }
                     className={classes.autoComplete}
@@ -87,7 +86,7 @@ const UsersFilter:React.FC<Props> = ( props : Props ) => {
                 <GenericAutoComplete 
                     options={languages}
                     inputRootClass={classes.autocompleteInput}
-                    handleChange={(languages) => handleFilterChange(get(FilterCreators, 'LANGUAGES').create(
+                    handleChange={(languages) => handleFilterChange(FilterCreators.LANGUAGES.create(
                         languages.map((language : Language) => language.displayName)))
                     }
                     className={classes.autoComplete}
@@ -98,7 +97,7 @@ const UsersFilter:React.FC<Props> = ( props : Props ) => {
                 <FormInput fieldName='נפות'>
                     <GenericAutoComplete 
                         options={counties}
-                        handleChange={(counties) => handleFilterChange(get(FilterCreators, 'COUNTY').create(
+                        handleChange={(counties) => handleFilterChange(FilterCreators.COUNTY.create(
                             counties.map((county: County) => county.id)))
                         }
                         className={classes.autoComplete}
@@ -108,7 +107,7 @@ const UsersFilter:React.FC<Props> = ( props : Props ) => {
             <FormInput fieldName='סוג משתמש'>
                 <GenericAutoComplete 
                     options={userTypes}
-                    handleChange={(userTypes) => handleFilterChange(get(FilterCreators, 'USER_TYPE').create(
+                    handleChange={(userTypes) => handleFilterChange(FilterCreators.USER_TYPE.create(
                         userTypes.map((userType: UserTypeModel) => userType.id)))
                     }
                     className={classes.autoComplete}
@@ -117,7 +116,7 @@ const UsersFilter:React.FC<Props> = ( props : Props ) => {
             <FormInput fieldName='פעיל/לא פעיל'>
                 <GenericAutoComplete 
                     options={activeStatuses}
-                    handleChange={(userStatuses) => handleFilterChange(get(FilterCreators, 'USER_STATUS').create(
+                    handleChange={(userStatuses) => handleFilterChange(FilterCreators.USER_STATUS.create(
                         userStatuses.map((userStatus: activeStatus) => userStatus.value)))
                     }
                     className={classes.autoComplete}

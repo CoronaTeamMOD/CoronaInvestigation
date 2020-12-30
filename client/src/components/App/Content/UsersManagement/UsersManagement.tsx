@@ -12,13 +12,14 @@ import Desk from 'models/Desk';
 import SortOrder from 'models/enums/SortOrder';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-import { noDeskAssignment } from 'Utils/consts';
 
 import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
 import useStyles from './UsersManagementStyles';
+import SearchBar from './UsersFilter/SearchBar';
 import useUsersManagementTable from './useUsersManagement';
 import UserInfoDialog from './UserInfoDialog/UserInfoDialog';
 import UsersFilter from './UsersFilter/UsersFilter';
+import filterCreators from './UsersFilter/FilterCreators';
 
 const rowsPerPage: number = 100;
 export const defaultPage: number = 1;
@@ -94,7 +95,7 @@ const UsersManagement: React.FC = () => {
                             },
                             getContentAnchorEl: null
                         }}
-                        value={row[cellName]?.id}
+                        value={row[cellName]?.id || ''}
                         onChange={(event: React.ChangeEvent<any>) => setUserDesk(event.target.value as number, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
                         className={classes.desks}
                         variant='outlined'
@@ -126,11 +127,11 @@ const UsersManagement: React.FC = () => {
                             },
                             getContentAnchorEl: null
                         }}
+                        value={row.sourceOrganization  || ''}
+                        onChange={(event: React.ChangeEvent<any>) => setUserSourceOrganization(event.target.value as string, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
+                        label={sourceOrganizationLabel}
                         variant='outlined'
                         className={classes.sourceOrganization}
-                        label={sourceOrganizationLabel}
-                        value={row.sourceOrganization}
-                        onChange={(event: React.ChangeEvent<any>) => setUserSourceOrganization(event.target.value as string, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
                     >
                         {
                             sourcesOrganization.map(sourceOrganization => (
@@ -156,7 +157,10 @@ const UsersManagement: React.FC = () => {
                     {usersManagementTitle}
                 </Typography>
             </Grid>
-            <Grid container className={classes.filters}>
+            <Grid container justify='space-between' className={classes.filters}>
+                <SearchBar 
+                    onClick={(value: string) => handleFilterChange(filterCreators.USER_NAME_OR_ID.create(value))}
+                />
                 <Tooltip title='סינון'>
                     <IconButton onClick={() => setIsFilterOpen(true)}>
                         <Badge

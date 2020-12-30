@@ -1,29 +1,24 @@
+import { subDays } from 'date-fns';
 import { Router, Request, Response } from 'express';
-import { differenceInYears, subDays } from 'date-fns';
 
-import Exposure from '../../Models/Exposure/Exposure';
-import logger from '../../Logger/Logger';
-import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Severity } from '../../Models/Logger/types';
+import Exposure from '../../Models/Exposure/Exposure';
+import { getPatientAge } from '../../Utils/patientUtils';
 import CovidPatient from '../../Models/Exposure/CovidPatient';
 import { UPDATE_EXPOSURES } from '../../DBService/Exposure/Mutation';
-import CovidPatientDBOutput, { AddressDBOutput } from '../../Models/Exposure/CovidPatientDBOutput';
+import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import ExposureByInvestigationId from '../../Models/Exposure/ExposureByInvestigationId';
 import { GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS } from '../../DBService/Exposure/Query';
+import CovidPatientDBOutput, { AddressDBOutput } from '../../Models/Exposure/CovidPatientDBOutput';
 import OptionalExposureSourcesResponse from '../../Models/Exposure/OptionalExposureSourcesResponse';
+import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 
 const exposureRoute = Router();
 
-const errorStatusCode = 500;
 const phoneOrIdentityNumberRegex = /^([\da-zA-Z]+)$/;
 const invalidCharsRegex = /[^א-ת\da-zA-Z0-9]/;
 
 const searchDaysAmount = 14;
-
-const getPatientAge = (birthDate: Date) : number => {
-    if (birthDate) return differenceInYears(new Date(), new Date(birthDate));
-    return -1;
-}
 
 const convertExposuresFromDB = (result: ExposureByInvestigationId) : Exposure[] => {
     const convertedExposures : Exposure[] = result.data.allExposures.nodes.map(exposure => 
@@ -51,19 +46,22 @@ const convertExposuresFromDB = (result: ExposureByInvestigationId) : Exposure[] 
 
 exposureRoute.get('/exposures/:investigationId', (request: Request, response: Response) => {
     const exposuresLogger = logger.setup({
-        workflow: 'Getting exposures',
+        workflow: 'query all exposures of investigation',
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    exposuresLogger.info(`launcing DB request with parameter ${request.params.investigationId}`, Severity.LOW);
-    graphqlRequest(GET_EXPOSURE_INFO, response.locals, {investigationId: parseInt(request.params.investigationId)})
+
+    const parameters = {investigationId: parseInt(request.params.investigationId)};
+    exposuresLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+
+    graphqlRequest(GET_EXPOSURE_INFO, response.locals, parameters)
         .then((result: ExposureByInvestigationId) => {
-            exposuresLogger.info('got response from DB', Severity.LOW);
+            exposuresLogger.info(validDBResponseLog, Severity.LOW);
             response.send(convertExposuresFromDB(result));
         })
-        .catch(err => {
-            exposuresLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
-            response.status(errorStatusCode).send(err);
+        .catch(error => {
+            exposuresLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
         })
     }
 );
@@ -77,7 +75,7 @@ const convertSearchValueToRegex = (searchValue: string, isPhoneOrIdentityNumber:
     return `%${searchRegexContent}%`
 }
 
-const createAddressString = (address: AddressDBOutput) => {
+const createAddressString = (address: AddressDBOutput) : string => {
     const addressParts = [];
     if (address) {
         address.streetByStreet && addressParts.push(address.streetByStreet.displayName);
@@ -106,28 +104,26 @@ const filterCovidPatientsByRegex = (searchValue: string, patientsToFilter: Covid
         trimmedSerachValue = trimmedSerachValue.slice(0, lastIndexValue);
     }
     const complicatedRegex = new RegExp(trimmedSerachValue.replace(new RegExp(invalidCharsRegex, 'g'), '[ -]+[^0-9A-Za-z]*') + '*');
-    patientsToFilter = patientsToFilter.filter(patient => complicatedRegex.test(patient.fullName) === true);
-    return patientsToFilter;
+    return patientsToFilter.filter(patient => complicatedRegex.test(patient.fullName) === true);
 }
 
 exposureRoute.get('/optionalExposureSources/:searchValue/:coronaTestDate', (request: Request, response: Response) => {
     const searchValue : string = request.params.searchValue || '';
     const searchInt = isNaN(parseInt(searchValue)) ? 0 : parseInt(searchValue);
     const isPhoneOrIdentityNumber = phoneOrIdentityNumberRegex.test(searchValue);
-
     const searchEndDate = new Date(request.params.coronaTestDate);
     const searchStartDate = subDays(searchEndDate, searchDaysAmount);
-
+    const parameters = {searchValue, searchInt, searchStartDate, searchEndDate}
     const optionalExposureSourcesLogger = logger.setup({
-        workflow: 'Getting exposure source options',
+        workflow: 'query optioanl exposures sources by regex and date',
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    optionalExposureSourcesLogger.info(`launcing DB request with parameters ${searchValue} and ${searchStartDate}`, Severity.LOW);
-    graphqlRequest(GET_EXPOSURE_SOURCE_OPTIONS, response.locals, {searchValue, searchInt, searchStartDate, searchEndDate})
+    optionalExposureSourcesLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+    graphqlRequest(GET_EXPOSURE_SOURCE_OPTIONS, response.locals, parameters)
         .then((result: OptionalExposureSourcesResponse) => {
             if (result?.data?.allCovidPatients?.nodes) {
-                optionalExposureSourcesLogger.info('got response from DB', Severity.LOW);
+                optionalExposureSourcesLogger.info(validDBResponseLog, Severity.LOW);
                 let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
                 if (!isPhoneOrIdentityNumber) {
                     dbBCovidPatients = filterCovidPatientsByRegex(searchValue, dbBCovidPatients);
@@ -138,7 +134,7 @@ exposureRoute.get('/optionalExposureSources/:searchValue/:coronaTestDate', (requ
             }
         })
         .catch(error => {
-            optionalExposureSourcesLogger.error(`got error when approaching the graphql API: ${error}`, Severity.HIGH);
+            optionalExposureSourcesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.sendStatus(errorStatusCode);
         })
 });
@@ -152,20 +148,22 @@ const convertExposuresToDB = (request: Request) => {
 }
 
 exposureRoute.post('/updateExposures', (request: Request, response: Response) => {
-    const inputExposures = {inputExposures: JSON.stringify(convertExposuresToDB(request))}
     const updateExposuresLogger = logger.setup({
-        workflow: 'Saving Exposures and Flights tab',
+        workflow: `saving investigation's exposures`,
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    updateExposuresLogger.info(`launching update exposures and flights info with the parameters ${inputExposures}`, Severity.LOW);
-    return graphqlRequest(UPDATE_EXPOSURES, response.locals, inputExposures)
+
+    const parameters = {inputExposures: JSON.stringify(convertExposuresToDB(request))}
+    updateExposuresLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+    
+    return graphqlRequest(UPDATE_EXPOSURES, response.locals, parameters)
         .then((result) => {
-            updateExposuresLogger.info('saved exposures and flights', Severity.LOW);
+            updateExposuresLogger.info(validDBResponseLog, Severity.LOW);
             response.send(result);
         })
         .catch(error => {
-            updateExposuresLogger.error('error in requesting graphql API request in UPDATE_EXPOSURES request', Severity.HIGH);
+            updateExposuresLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error)
         })
 });

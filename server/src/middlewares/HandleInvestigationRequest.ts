@@ -3,11 +3,8 @@ import { NextFunction, Request, Response } from 'express';
 import logger from '../Logger/Logger';
 import UserType from '../Models/User/UserType';
 import { Severity } from '../Models/Logger/types';
-import { graphqlRequest } from '../GraphqlHTTPRequest';
 import { GET_INVESTIGATION_CREATOR } from '../DBService/InvestigationInfo/Query';
-
-const UNAUTHORIZED_STATUS = 401;
-const INTERNAL_SERVER_ERROR_STATUS = 500;
+import { errorStatusCode, graphqlRequest, unauthorizedStatusCode } from '../GraphqlHTTPRequest';
 
 export const handleInvestigationRequest = async (request: Request, response: Response, next: NextFunction) => {
     const { user } = response.locals;
@@ -20,14 +17,14 @@ export const handleInvestigationRequest = async (request: Request, response: Res
 
     if (isNaN(epidemiologynumber)) {
         investigationMiddlewareLogger.info('client sent investigation request with no epidemiology number', Severity.MEDIUM);
-        return response.status(UNAUTHORIZED_STATUS).json({ error: 'no epidemiology number supplied' });
+        return response.status(unauthorizedStatusCode).json({ error: 'no epidemiology number supplied' });
     }
 
     investigationMiddlewareLogger.info('getting current investigation details from DB', Severity.LOW);
     const { investigationGroup, id , err} = await fetchInvestigationCreatorDetails(response.locals , epidemiologynumber);
     if(err) {
         investigationMiddlewareLogger.info(`error in requesting the graphql API: ${err}`, Severity.HIGH);
-        response.sendStatus(INTERNAL_SERVER_ERROR_STATUS);
+        response.sendStatus(errorStatusCode);
     }
     investigationMiddlewareLogger.info('got investigation details', Severity.LOW);
 
@@ -37,23 +34,21 @@ export const handleInvestigationRequest = async (request: Request, response: Res
             return next();
         }
         investigationMiddlewareLogger.info('user is admin but investigation is not in his county , returning 401', Severity.HIGH);
-        return response.status(UNAUTHORIZED_STATUS).json({ error: "unauthorized user - investigation is not in user's investigation group" });
+        return response.status(unauthorizedStatusCode).json({ error: "unauthorized user - investigation is not in user's investigation group" });
     } else {
         if (user.id === id) {
             investigationMiddlewareLogger.info('user is creator of the investigation', Severity.LOW);
             return next();
         }
         investigationMiddlewareLogger.info('user is not admin nor creator of the investigation , returning 401', Severity.HIGH);
-        return response.status(UNAUTHORIZED_STATUS).json({ error: 'unauthorized user - user is not creator' });
+        return response.status(unauthorizedStatusCode).json({ error: 'unauthorized user - user is not creator' });
     }
 };
 
 const fetchInvestigationCreatorDetails = async (locals : any , epidemiologynumber : number) : Promise<{investigationGroup : number , id : string , err? : any}>=> {
     return await graphqlRequest(GET_INVESTIGATION_CREATOR, locals, { epidemiologynumber })
-    .then((result: any) => {
-        return (result.data && !result.errors) 
-        ? result.data?.investigationByEpidemiologyNumber?.userByCreator
-        : { err : result.errors };
+    .then(result => {
+        return  result.data.investigationByEpidemiologyNumber.userByCreator;
     })
     .catch((err) => {
         return { err }
