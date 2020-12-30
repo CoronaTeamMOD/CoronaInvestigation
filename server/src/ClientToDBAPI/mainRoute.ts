@@ -13,6 +13,7 @@ import contactedPeopleRoute from './ContactedPeople/mainRoute';
 import intersectionsRoute from './IntersectionsRoute/mainRoute';
 import personalDetailsRoute from './PersonalDetailsRoute/mainRoute';
 import clinicalDetailsRoute from './ClinicalDetailsRoute/mainRoute';
+import adminLandingPageRoute from './AdminLandingPageRoute/mainRoute';
 import groupedInvestigationsRoute from './GroupedInvestigationsRoute/mainRoute';
 
 const clientToDBRouter = Router();
@@ -30,5 +31,6 @@ clientToDBRouter.use('/users', usersRoute);
 clientToDBRouter.use('/counties', countiesRoute);
 clientToDBRouter.use('/groupedInvestigations', groupedInvestigationsRoute)
 clientToDBRouter.use('/education', educationRoute)
+clientToDBRouter.use('/adminLandingPage', adminLandingPageRoute);
 
 export default clientToDBRouter;

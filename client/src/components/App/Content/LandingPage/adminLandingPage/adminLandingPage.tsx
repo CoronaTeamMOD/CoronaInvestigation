@@ -1,18 +1,26 @@
-import React from 'react';
+import React , { useEffect } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 
 import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
 
 import useStyles from './adminLandingPageStyles';
+import useAdminLandingPage from './useAdminLandingPage';
 import TimeRangeCard from './TimeRangeCard/timeRangeCard';
 import UnassignedCard from './UnassignedCard/UnassignedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
 
+
 const AdminLandingPage: React.FC = (): JSX.Element => {
     const classes = useStyles();
 
     const { countyDisplayName } = useAppToolbar();
+
+    const { fetchStats } = useAdminLandingPage({});
+    
+    useEffect(() => {
+        fetchStats();
+    }, [])
 
     return (
         <div className={classes.content}>

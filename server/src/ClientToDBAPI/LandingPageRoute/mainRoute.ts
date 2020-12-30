@@ -28,6 +28,7 @@ landingPageRoute.post('/investigations', (request: Request, response: Response) 
             }
         },
     };
+    console.log(filterBy);
 
     const getInvestigationsParameters = {
         filter: filterBy,
