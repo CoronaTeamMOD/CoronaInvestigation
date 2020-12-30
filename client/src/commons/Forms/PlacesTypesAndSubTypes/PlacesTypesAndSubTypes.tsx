@@ -1,7 +1,7 @@
 import { Autocomplete } from '@material-ui/lab';
 import React, { useState, useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import {Grid, FormControl, TextField} from '@material-ui/core';
+import { Grid, FormControl, TextField, Collapse } from '@material-ui/core';
 
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import useFormStyles from 'styles/formStyles';
@@ -44,7 +44,7 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
 
     useEffect(() => {
         if (placeSubType !== null && placeSubTypeObj) {
-                setPlaceSubTypeInput(placeSubTypeObj.displayName);
+            setPlaceSubTypeInput(placeSubTypeObj.displayName);
         }
     }, [placeSubType]);
 
@@ -73,8 +73,8 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                 <InputWrapperComp fieldName={placeTypeDisplayName}>
                     <Grid item xs={7}>
                         <FormControl
-                                     disabled={Object.keys(placesSubTypesByTypes).length === 0}
-                                     fullWidth
+                            disabled={Object.keys(placesSubTypesByTypes).length === 0}
+                            fullWidth
                         >
                             <Controller
                                 name={placeTypeName}
@@ -112,48 +112,53 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                 </InputWrapperComp>
             </Grid>
             {
-                placesSubTypesByTypes[placeType] && placesSubTypesByTypes[placeType].length > 1 &&
-                <Grid item xs={6}>
-                    <InputWrapperComp fieldName={placeSubTypeDisplayName} labelLength={2}>
-                        <Grid item xs={8}>
-                            <FormControl
-                                fullWidth
-                            >
-                                <Controller
-                                    name={placeSubTypeName}
-                                    control={control}
-                                    render={(props) => (
-                                        <Autocomplete
-                                            options={placesSubTypesByTypes[placeType]}
-                                            getOptionLabel={(option) => option ? option.displayName : option}
-                                            value={placeSubType === null ? defaultSubType : placeSubTypeObj}
-                                            inputValue={placeSubTypeInput}
-                                            getOptionSelected={(option) => option.id === placeSubType}
-                                            onChange={(event, chosenPlaceSubType) =>
-                                                onPlaceSubTypeChange(chosenPlaceSubType ? chosenPlaceSubType : null)
-                                            }
-                                            onInputChange={(event, placeSubTypeInput) => {
-                                                if (event?.type !== 'blur') {
-                                                    handleSubTypeInputChange(placeSubTypeInput);
+                    <Grid item xs={6}>
+                <Collapse in={placesSubTypesByTypes[placeType] && placesSubTypesByTypes[placeType].length > 1}>
+                      <InputWrapperComp fieldName={placeSubTypeDisplayName} labelLength={2}>
+                            <Grid item xs={8}>
+                                <FormControl
+                                    fullWidth
+                                >
+                                    <Controller
+                                        name={placeSubTypeName}
+                                        control={control}
+                                        render={(props) => (
+                                            placesSubTypesByTypes[placeType] ? <Autocomplete
+                                                options={placesSubTypesByTypes[placeType]}
+                                                getOptionLabel={(option) => option ? option.displayName : option}
+                                                value={placeSubType === null ? defaultSubType : placeSubTypeObj}
+                                                inputValue={placeSubTypeInput}
+                                                getOptionSelected={(option) => option.id === placeSubType}
+                                                onChange={(event, chosenPlaceSubType) =>
+                                                    onPlaceSubTypeChange(chosenPlaceSubType ? chosenPlaceSubType : null)
                                                 }
-                                            }}
-                                            onBlur={props.onBlur}
-                                            placeholder={placeSubTypeDisplayName}
-                                            renderInput={(params) =>
-                                                <TextField
-                                                    {...params}
-                                                    error={errors && errors[placeSubTypeName]}
-                                                    label={(errors && errors[placeSubTypeName]?.message) || placeSubTypeDisplayName}
-                                                    test-id='placeSubType'
-                                                />
-                                            }
-                                        />
-                                    )}
-                                />
-                            </FormControl>
-                        </Grid>
-                    </InputWrapperComp>
-                </Grid>
+                                                onInputChange={(event, placeSubTypeInput) => {
+                                                    if (event?.type !== 'blur') {
+                                                        handleSubTypeInputChange(placeSubTypeInput);
+                                                    }
+                                                }}
+                                                onBlur={props.onBlur}
+                                                placeholder={placeSubTypeDisplayName}
+                                                renderInput={(params) =>
+                                                    <TextField
+                                                        {...params}
+                                                        error={errors && errors[placeSubTypeName]}
+                                                        label={(errors && errors[placeSubTypeName]?.message) || placeSubTypeDisplayName}
+                                                        test-id='placeSubType'
+                                                    />
+                                                }
+                                            />
+                                            :
+                                            <>
+                                            </>
+                                        )}
+                                    />
+                                </FormControl>
+                            </Grid>
+                        </InputWrapperComp>
+                        </Collapse>
+                    </Grid>
+                
             }
         </Grid>
     );
@@ -170,5 +175,5 @@ export interface PlacesTypesAndSubTypesProps {
     placeSubType: number;
     onPlaceTypeChange: (newPlaceType: string) => void;
     onPlaceSubTypeChange: (placeSubType: PlaceSubType | null) => void;
-    size:FormSize;
+    size: FormSize;
 };
