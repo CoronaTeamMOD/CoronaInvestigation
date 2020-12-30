@@ -468,13 +468,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const investigationClickLogger = logger.setupVerbose({
-            workflow: 'Investigation click',
+            workflow: 'opening an investigation',
             investigation: investigationRow.epidemiologyNumber,
             user: user.id
         });
 
         if (epidemiologyNumber !== investigationRow.epidemiologyNumber) {
-            investigationClickLogger.info('the clicked investigation is not the first one', Severity.LOW);
+            investigationClickLogger.info('the chosen investigation isnt the last one that was opened', Severity.LOW);
             const newInterceptor = axios.interceptors.request.use(
                 (config) => {
                     config.headers.EpidemiologyNumber = investigationRow.epidemiologyNumber;
@@ -487,15 +487,16 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             axiosInterceptorId !== -1 && axios.interceptors.request.eject(axiosInterceptorId);
         }
         const indexOfInvestigationObject = rows.findIndex(currInvestigationRow => currInvestigationRow.epidemiologyNumber === investigationRow.epidemiologyNumber);
-        indexOfInvestigationObject !== -1 &&
-            setCreator(rows[indexOfInvestigationObject].investigator.id);
+        indexOfInvestigationObject !== -1 && setCreator(rows[indexOfInvestigationObject].investigator.id);
         if (canChangeStatusNewToInProcess(investigationRow.investigationStatus.id, investigationRow.investigatorId)) {
-            investigationClickLogger.info('the user clicked a new investigation', Severity.LOW);
+            investigationClickLogger.info('the chosen investigation is new', Severity.LOW);
+            investigationClickLogger.info('launching request to update the investigation start time', Severity.LOW);
             axios.post('/investigationInfo/updateInvestigationStartTime', {
                 epidemiologyNumber: investigationRow.epidemiologyNumber
             })
                 .then(async () => {
-                    investigationClickLogger.info('updated investigation start time now sending request to update status', Severity.LOW);
+                    investigationClickLogger.info('the db response is successfull', Severity.LOW);
+                    investigationClickLogger.info('launching request to update status to in process', Severity.LOW);
                     try {
                         await axios.post('/investigationInfo/updateInvestigationStatus', {
                             investigationMainStatus: InvestigationMainStatusCodes.IN_PROCESS,
@@ -511,12 +512,15 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         investigated person: ${investigationRow.fullName}, 
                         investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`, Severity.LOW);
                         moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
-                    } catch (e) {
-                        throw new Error('failed to update investigation status with error' + JSON.stringify(e))
+                    } catch (error) {
+                        const errorMessage = `failed to update investigation status dut to ${JSON.stringify(error)}`;
+                        investigationClickLogger.error(errorMessage, Severity.HIGH);
+                        throw new Error(errorMessage)
                     }
                 })
                 .catch((error) => {
-                    investigationClickLogger.error(error, Severity.HIGH);
+                    const errorMessage = `failed to update investigation start time dut to ${JSON.stringify(error)}`;
+                    investigationClickLogger.error(errorMessage, Severity.HIGH);
                     alertError(OPEN_INVESTIGATION_ERROR_TITLE)
                 })
         } else {
