@@ -39,12 +39,23 @@ const DesksFilterCard = (props : Props): JSX.Element => {
         }
     }
 
+    const clearAllDesks = () => {
+        setFilteredDesks([])
+    }
+
     return (
         <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.desksCard}>
             <CardContent className={classes.desksCardContent}>
                 <Typography variant='h6' className={classes.cardTitle}>
                     <b>הדסקים בהם הינך צופה</b>
                 </Typography>
+                    <CustomCheckbox
+                        checkboxElements={[{
+                            checked: filteredDesks.length === 0,
+                            labelText: <b>כל הדסקים</b>,
+                            onChange: clearAllDesks
+                        }]}
+                    />
                 <div className={classes.desksWrapper}>
                     {
                         desks.map((desk: Desk) => (
