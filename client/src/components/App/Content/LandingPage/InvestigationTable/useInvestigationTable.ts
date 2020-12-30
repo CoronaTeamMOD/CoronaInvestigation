@@ -32,7 +32,9 @@ import { defaultOrderBy, rowsPerPage, defaultPage } from './InvestigationTable';
 import {
     TableHeadersNames,
     IndexedInvestigationData,
-    investigatorIdPropertyName
+    investigatorIdPropertyName,
+    TableKeys,
+    HiddenTableKeys
 } from './InvestigationTablesHeaders';
 import { DeskFilter, HistoryState, StatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
 import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/Forms/ExposureForm/ExposureForm';
@@ -561,6 +563,28 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
+    const getInvestigationsOldValues = (investigations: InvestigationTableRow[], key: TableKeys, countyValue?: number) => (
+        investigations
+        .map(investigation => `${investigation.epidemiologyNumber}: ${countyValue || convertToIndexedRow(investigation)[key as TableHeadersNames]}`)
+        .join(', ')
+    )
+
+    const logInvestigationTransfer = (epidemiologyNumbers: number[], key: TableKeys, newValue: number | string, reason?: string) => {
+        const countyValue : number | undefined = key  === HiddenTableKeys.county ? user.investigationGroup : undefined;
+        const investigations =  rows.filter(investigation => epidemiologyNumbers.includes(investigation.epidemiologyNumber))
+        const investigationsPreviousValues = getInvestigationsOldValues(investigations, key, countyValue);
+        return `launching request to transfer the investigations ${key} to ${newValue} from their old values: {${investigationsPreviousValues}} ${reason ? `due to ${reason}` : ''}`;
+    }
+
+    const logGroupTransfer = (groupIds: string[], key: TableKeys, newValue: number | string, reason?: string) => {
+        const countyValue = key  === HiddenTableKeys.county ? user.investigationGroup : undefined;
+        const groups =  Array.from(allGroupedInvestigations.keys()).filter(groupId => groupIds.includes(groupId))
+        const investigationsPreviousValues = groups
+        .map(groupId => `group ${groupId}- investigations:{${getInvestigationsOldValues(allGroupedInvestigations.get(groupId) as InvestigationTableRow[], key, countyValue)}}`)
+        .join(', ');
+        return `launching request to transfer the groups investigations ${key} to ${newValue} from their old values: ${investigationsPreviousValues} ${reason ? `due to ${reason}` : ''}`;
+    }
+
     const getUserMapKeyByValue = (map: Map<string, User>, value: string): string => {
         const key = Array.from(map.keys()).find(key => map.get(key)?.userName === value);
         return key ? key : ''
@@ -569,7 +593,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null) => {
         const changeGroupsInvestigatorLogger = logger.setup('Change groups investigator');
         const joinedGroupIds = groupIds.join(', ');
-        changeGroupsInvestigatorLogger.info(`performing investigator change request for groups ${joinedGroupIds}`, Severity.LOW);
+        changeGroupsInvestigatorLogger.info(logGroupTransfer(groupIds, TableHeadersNames.investigatorName, investigator?.value.userName || ''), Severity.LOW);
         try {
             await axios.post('/users/changeGroupInvestigator', {
                 groupIds,
@@ -587,7 +611,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             workflow: 'Change investigations investigator',
             user: user.id,
         });
-        changeInvestigationsInvestigatorLogger.info('performing investigator change request', Severity.LOW);
+        changeInvestigationsInvestigatorLogger.info(logInvestigationTransfer(epidemiologyNumbers, TableHeadersNames.investigatorName, investigator?.value.userName || '', transferReason), Severity.LOW);
         try {
             await axios.post('/users/changeInvestigator', {
                 epidemiologyNumbers,
@@ -611,7 +635,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 desk: newSelectedDesk?.id,
                 reason: transferReason
             });
-            changeDeskLogger.info(`changed the desk successfully for group ${joinedGroupIds}`, Severity.LOW);
+            changeDeskLogger.info(logGroupTransfer(groupIds, TableHeadersNames.investigationDesk, newSelectedDesk?.deskName || '', transferReason), Severity.LOW);
             setSelectedRow(DEFAULT_SELECTED_ROW);
             fetchTableData();
         } catch (error) {
@@ -628,7 +652,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 county: newSelectedCounty?.id,
                 transferReason
             });
-            changeCountyLogger.info(`changed the county successfully for groups ${groupIds}`, Severity.LOW);
+            changeCountyLogger.info(logGroupTransfer(groupIds, HiddenTableKeys.county, newSelectedCounty?.id || '', transferReason), Severity.LOW);
             setSelectedRow(DEFAULT_SELECTED_ROW);
             fetchTableData();
         } catch (error) {
@@ -639,11 +663,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const changeInvestigationsDesk = async (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => {
         const changeDeskLogger = logger.setupVerbose({
-            workflow: 'Change Groups Desk',
+            workflow: 'change investigations desk',
             user: user.id,
             investigation: epidemiologyNumbers.join(', ')
         });
-        changeDeskLogger.info('performing desk change request', Severity.LOW);
+        changeDeskLogger.info(logInvestigationTransfer(epidemiologyNumbers, TableHeadersNames.investigationDesk, newSelectedDesk?.deskName || '', transferReason), Severity.LOW);
         try {
             await axios.post('/landingPage/changeDesk', {
                 epidemiologyNumbers,
@@ -665,7 +689,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 updatedCounty: newSelectedCounty?.id,
                 transferReason
             });
-            changeCountyLogger.info(`changed the county successfully for ${epidemiologyNumbers}`, Severity.LOW);
+            changeCountyLogger.info(logInvestigationTransfer(epidemiologyNumbers, HiddenTableKeys.county, newSelectedCounty?.id || '', transferReason), Severity.LOW);
             setSelectedRow(DEFAULT_SELECTED_ROW);
             fetchTableData();
         } catch (error) {
