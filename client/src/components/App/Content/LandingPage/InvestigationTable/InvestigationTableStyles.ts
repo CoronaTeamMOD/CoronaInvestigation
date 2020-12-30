@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 
 const tableWidth = '96vw';
 
-export const useTooltipStyles = makeStyles( ({
+export const useTooltipStyles = makeStyles(({
     content: {
         display: 'flex',
         flexDirection: 'column',
@@ -132,7 +132,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     searchBar: {
         justifyContent: 'flex-end',
-        width: '20vw',
+        width: '27vw',
         backgroundColor: 'white',
         borderRadius: '20px'
     },
