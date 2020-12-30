@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { differenceInYears } from 'date-fns';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Avatar, Grid, Typography } from '@material-ui/core';
@@ -24,8 +24,18 @@ const ContactQuestioningPersonal: React.FC<Props> = (
     const { control, getValues } = useFormContext();
 
     const { index, interactedContact } = props;
+    
+    const calcAge = (birthDate: Date) => {
+        const newAge: number = differenceInYears(new Date(),new Date(birthDate));
+        return birthDate && !isNaN(newAge as number)
+            ? newAge === 0
+                ? '0'
+                : String(newAge)
+            : ''
+    };
 
     const [shouldIdDisable, setShouldIdDisable] = useState<boolean>(false);
+    const [age, setAge] = useState<string>(calcAge(interactedContact.birthDate));
 
     const formValues = getValues().form
         ? getValues().form[index]
@@ -36,16 +46,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
     );
 
     const classes = useStyles();
-    const age: number = differenceInYears(
-        new Date(),
-        new Date(interactedContact.birthDate)
-    );
-    const contactAge =
-        interactedContact.birthDate && !isNaN(age as number)
-            ? age === 0
-                ? '0'
-                : age
-            : null;
+
     const PHONE_LABEL = 'טלפון';
 
     const { shouldDisableContact } = useStatusUtils();
@@ -141,6 +142,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                     useBigCalender={false}
                                     onChange={(newDate: Date) => {
                                         props.onChange(newDate);
+                                        setAge(calcAge(newDate));
                                     }}
                                 />
                             );
@@ -153,7 +155,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                         disabled={isFieldDisabled}
                         name="age"
                         testId="contactAge"
-                        value={contactAge}
+                        value={age}
                         onChange={() => {}}
                         placeholder="בחר תאריך לידה"
                     />

@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: '17vw',
         display: 'flex',
         flexDirection: 'row',
-    }
+    },
 }));
 
 export default useStyles;
