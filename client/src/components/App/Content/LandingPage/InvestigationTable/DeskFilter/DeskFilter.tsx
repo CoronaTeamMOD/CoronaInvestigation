@@ -1,16 +1,10 @@
 import React from 'react'
-import { Card, Checkbox, TextField, Typography } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
+import { Card, Checkbox, TextField, Typography } from '@material-ui/core';
 
 import Desk from 'models/Desk';
 
 import useStyles from './DeskFilterStyles';
-
-interface Props {
-    desks: Desk[];
-    filteredDesks: number[];
-    onFilterChange: (event: React.ChangeEvent<{}>, selectedDesks: Desk[]) => void;
-}
 
 const DeskFilter = ({ desks, filteredDesks, onFilterChange }: Props) => {
     const classes = useStyles();
@@ -36,6 +30,7 @@ const DeskFilter = ({ desks, filteredDesks, onFilterChange }: Props) => {
                     <>
                         <Checkbox
                             size='small'
+                            color='primary'
                             className={classes.optionCheckbox}
                             checked={selected}
                         />
@@ -48,4 +43,10 @@ const DeskFilter = ({ desks, filteredDesks, onFilterChange }: Props) => {
     )
 }
 
-export default DeskFilter
+export default DeskFilter;
+
+interface Props {
+    desks: Desk[];
+    filteredDesks: number[];
+    onFilterChange: (event: React.ChangeEvent<{}>, selectedDesks: Desk[]) => void;
+};
