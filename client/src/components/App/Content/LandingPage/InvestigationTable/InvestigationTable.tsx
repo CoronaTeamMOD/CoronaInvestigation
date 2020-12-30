@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import React, { useMemo, useState, useRef } from 'react';
 import { Pagination } from '@material-ui/lab';
+import React, { useMemo, useState, useRef } from 'react';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button,
@@ -127,7 +127,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         setCheckedIndexedRows([]);
     }
 
-    const getFilteredUsersOfCurrentCounty = async () : Promise<InvestigatorOption[]> => { 
+    const getFilteredUsersOfCurrentCounty = async (): Promise<InvestigatorOption[]> => {
         const allCountyUsers = await fetchAllCountyUsers();
         const allUsersOfCountyArray: InvestigatorOption[] = Array.from(allCountyUsers, ([id, value]) => ({ id, value }));
         if (deskFilter.length > 0) {
@@ -136,7 +136,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     return false;
                 }
                 return deskFilter.includes(value.deskByDeskId.id);
-            });     
+            });
         }
         return allUsersOfCountyArray;
     }
@@ -275,7 +275,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         {tableTitle}
                     </Typography>
                 </Grid>
-                <Grid item xs={3} >
+                <Grid item xs={2} >
                     <DeskFilter
                         desks={allDesks}
                         filteredDesks={deskFilter}
@@ -476,7 +476,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 groupIds={[selectedRow.groupId]}
                 epidemiologyNumbers={[selectedRow.epidemiologyNumber]}
                 onSuccess={onAllocationSuccess}
-            /> 
+            />
             <Slide direction='up' in={checkedIndexedRows.length > 0} mountOnEnter unmountOnExit>
                 <InvestigationTableFooter
                     checkedIndexedRows={checkedIndexedRows}

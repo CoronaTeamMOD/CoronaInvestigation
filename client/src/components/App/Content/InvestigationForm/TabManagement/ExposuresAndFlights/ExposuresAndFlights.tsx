@@ -15,7 +15,6 @@ import { FormData } from './ExposuresAndFlightsInterfaces';
 import { useExposuresAndFlights } from './useExposuresAndFlights';
 import ExposureSchema from './Schema/exposuresAndFlightsSchema';
 
-
 const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);
   const { exposures, wereFlights, wereConfirmedExposures, wasInEilat, wasInDeadSea } = exposureAndFlightsData;
@@ -26,7 +25,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     mode: 'all',
     resolver: yupResolver(ExposureSchema(validationDate))
   });
-
   const {reset , trigger} = methods;
 
   const {

@@ -17,7 +17,6 @@ const useDesksFilterCard = (props : Props) => {
     
     const [desks, setDesks] = useState<Desk[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-
     const {filteredDesks , setFilteredDesks , setInvestigationInfoFilter} = props;
 
     const fetchDesks = () => {

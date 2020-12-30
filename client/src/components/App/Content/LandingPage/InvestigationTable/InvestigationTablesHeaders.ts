@@ -29,8 +29,14 @@ export enum TableHeadersNames {
     reasonId = 'reasonId',
     canFetchGroup = 'canFetchGroup',
     settings = 'settings',
-    subOccupation = 'subOccupation'
+    subOccupation = 'subOccupation',
 }
+
+export enum HiddenTableKeys {
+    county = 'county',
+}
+
+export type TableKeys = TableHeadersNames | HiddenTableKeys;
 
 export type IndexedInvestigation = { [T in keyof typeof TableHeadersNames]: string | number | boolean | InvestigationMainStatus };
 export interface IndexedInvestigationData extends IndexedInvestigation { [investigatorIdPropertyName]: string; }

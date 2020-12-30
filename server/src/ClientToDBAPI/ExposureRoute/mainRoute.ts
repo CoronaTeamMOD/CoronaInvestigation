@@ -68,7 +68,9 @@ exposureRoute.get('/exposures/:investigationId', (request: Request, response: Re
 
 const convertSearchValueToRegex = (searchValue: string, isPhoneOrIdentityNumber: boolean) => {
     let searchRegexContent : string;
-    if (isPhoneOrIdentityNumber) searchRegexContent = searchValue;
+    if (isPhoneOrIdentityNumber) {
+        searchRegexContent = searchValue;
+    }
     else searchRegexContent = searchValue.replace(new RegExp(invalidCharsRegex, 'g'), '%');
     return `%${searchRegexContent}%`
 }
@@ -107,32 +109,34 @@ const filterCovidPatientsByRegex = (searchValue: string, patientsToFilter: Covid
 
 exposureRoute.get('/optionalExposureSources/:searchValue/:coronaTestDate', (request: Request, response: Response) => {
     const searchValue : string = request.params.searchValue || '';
+    const searchInt = isNaN(parseInt(searchValue)) ? 0 : parseInt(searchValue);
     const isPhoneOrIdentityNumber = phoneOrIdentityNumberRegex.test(searchValue);
-    const searchRegex = convertSearchValueToRegex(searchValue, isPhoneOrIdentityNumber);
-    const dateToStartSearching = subDays(new Date(request.params.coronaTestDate), searchDaysAmount);
-
+    const searchEndDate = new Date(request.params.coronaTestDate);
+    const searchStartDate = subDays(searchEndDate, searchDaysAmount);
+    const parameters = {searchValue, searchInt, searchStartDate, searchEndDate}
     const optionalExposureSourcesLogger = logger.setup({
         workflow: 'query optioanl exposures sources by regex and date',
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-
-    const parameters = {searchRegex, dateToStartSearching};
     optionalExposureSourcesLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-
     graphqlRequest(GET_EXPOSURE_SOURCE_OPTIONS, response.locals, parameters)
-    .then((result: OptionalExposureSourcesResponse) => {
-        optionalExposureSourcesLogger.info(validDBResponseLog, Severity.LOW);
-        let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
-        if (!isPhoneOrIdentityNumber) {
-            dbBCovidPatients = filterCovidPatientsByRegex(searchValue, dbBCovidPatients);
-        }
-        response.send(convertCovidPatientsFromDB(dbBCovidPatients));
-    })
-    .catch(error => {
-        optionalExposureSourcesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-        response.sendStatus(errorStatusCode);
-    })
+        .then((result: OptionalExposureSourcesResponse) => {
+            if (result?.data?.allCovidPatients?.nodes) {
+                optionalExposureSourcesLogger.info(validDBResponseLog, Severity.LOW);
+                let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
+                if (!isPhoneOrIdentityNumber) {
+                    dbBCovidPatients = filterCovidPatientsByRegex(searchValue, dbBCovidPatients);
+                }
+                response.send(convertCovidPatientsFromDB(dbBCovidPatients));
+            } else {
+                optionalExposureSourcesLogger.warn('didnt get exposure source options from DB', Severity.MEDIUM);
+            }
+        })
+        .catch(error => {
+            optionalExposureSourcesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.sendStatus(errorStatusCode);
+        })
 });
 
 const convertExposuresToDB = (request: Request) => {

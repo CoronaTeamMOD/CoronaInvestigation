@@ -37,15 +37,11 @@ const InvestigationsInfo: React.FC<Props> = (props: Props): JSX.Element => {
 
     const { onInfoButtonClick, investigationsStatistics, allInvestigationsCount, isLoading } = props;
 
-    const investigationsGraphData = useMemo<InvestigationChart[]>(() => {
-        const returnedArray:InvestigationChart[] = [];
-        Object.keys(convertorsToGraph).forEach((convertor) => {
-            returnedArray.push({
-                ...convertorsToGraph[convertor as keyof InvesitgationInfoStatistics],
-                value: investigationsStatistics[convertor as keyof InvesitgationInfoStatistics]
-            });
-        });
-        return returnedArray;
+    const investigationsGraphData : InvestigationChart[] = useMemo<InvestigationChart[]>(() => {
+        return Object.keys(convertorsToGraph).map((convertor) => ({
+            ...convertorsToGraph[convertor as keyof InvesitgationInfoStatistics],
+            value: investigationsStatistics[convertor as keyof InvesitgationInfoStatistics]
+        }));
     }, [investigationsStatistics])
 
     return (
@@ -62,7 +58,7 @@ const InvestigationsInfo: React.FC<Props> = (props: Props): JSX.Element => {
                                     amountOfInvestigations={InvestigationData.value}
                                     text={InvestigationData.id}
                                     style={{ backgroundColor: InvestigationData.color }}
-                                    onClick={() => onInfoButtonClick(statusToFilterConvertor[InvestigationData.id as keyof typeof statusToFilterConvertor])}
+                                    onClick={() => onInfoButtonClick(statusToFilterConvertor[InvestigationData.id], InvestigationData.id)}
                                 />
                             ))
                         }
@@ -81,7 +77,7 @@ const InvestigationsInfo: React.FC<Props> = (props: Props): JSX.Element => {
 }
 
 interface Props {
-    onInfoButtonClick: (infoFilter: FilterRulesVariables) => void;
+    onInfoButtonClick: (infoFilter: FilterRulesVariables, filterType?: FilterRulesDescription) => void;
     investigationsStatistics: InvesitgationInfoStatistics;
     allInvestigationsCount: number;
     isLoading: boolean;

@@ -33,7 +33,9 @@ import { defaultOrderBy, rowsPerPage, defaultPage } from './InvestigationTable';
 import {
     TableHeadersNames,
     IndexedInvestigationData,
-    investigatorIdPropertyName
+    investigatorIdPropertyName,
+    TableKeys,
+    HiddenTableKeys
 } from './InvestigationTablesHeaders';
 import { DeskFilter, HistoryState, StatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
 import { buildFilterRules } from './FilterCreators';
@@ -133,7 +135,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             deskFilter: historyDeskFilter = [], 
             inactiveUserFilter : historyInactiveUserFilter = false, 
             unassignedUserFilter : historyUnassignedUserFilter = false,
-            isAdminLandingRedirect : historyisAdminLandingRedirect = false} = useMemo(() => {
+            isAdminLandingRedirect : historyisAdminLandingRedirect = false,
+            filterTitle} = useMemo(() => {
         const { location: { state } } = history;
         return state || {};
     }, []);
@@ -463,13 +466,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const investigationClickLogger = logger.setupVerbose({
-            workflow: 'Investigation click',
+            workflow: 'opening an investigation',
             investigation: investigationRow.epidemiologyNumber,
             user: user.id
         });
 
         if (epidemiologyNumber !== investigationRow.epidemiologyNumber) {
-            investigationClickLogger.info('the clicked investigation is not the first one', Severity.LOW);
+            investigationClickLogger.info('the chosen investigation isnt the last one that was opened', Severity.LOW);
             const newInterceptor = axios.interceptors.request.use(
                 (config) => {
                     config.headers.EpidemiologyNumber = investigationRow.epidemiologyNumber;
@@ -482,15 +485,16 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             axiosInterceptorId !== -1 && axios.interceptors.request.eject(axiosInterceptorId);
         }
         const indexOfInvestigationObject = rows.findIndex(currInvestigationRow => currInvestigationRow.epidemiologyNumber === investigationRow.epidemiologyNumber);
-        indexOfInvestigationObject !== -1 &&
-            setCreator(rows[indexOfInvestigationObject].investigator.id);
+        indexOfInvestigationObject !== -1 && setCreator(rows[indexOfInvestigationObject].investigator.id);
         if (canChangeStatusNewToInProcess(investigationRow.investigationStatus.id, investigationRow.investigatorId)) {
-            investigationClickLogger.info('the user clicked a new investigation', Severity.LOW);
+            investigationClickLogger.info('the chosen investigation is new', Severity.LOW);
+            investigationClickLogger.info('launching request to update the investigation start time', Severity.LOW);
             axios.post('/investigationInfo/updateInvestigationStartTime', {
                 epidemiologyNumber: investigationRow.epidemiologyNumber
             })
                 .then(async () => {
-                    investigationClickLogger.info('updated investigation start time now sending request to update status', Severity.LOW);
+                    investigationClickLogger.info('the db response is successfull', Severity.LOW);
+                    investigationClickLogger.info('launching request to update status to in process', Severity.LOW);
                     try {
                         await axios.post('/investigationInfo/updateInvestigationStatus', {
                             investigationMainStatus: InvestigationMainStatusCodes.IN_PROCESS,
@@ -506,12 +510,15 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         investigated person: ${investigationRow.fullName}, 
                         investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`, Severity.LOW);
                         moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
-                    } catch (e) {
-                        throw new Error('failed to update investigation status with error' + JSON.stringify(e))
+                    } catch (error) {
+                        const errorMessage = `failed to update investigation status dut to ${JSON.stringify(error)}`;
+                        investigationClickLogger.error(errorMessage, Severity.HIGH);
+                        throw new Error(errorMessage)
                     }
                 })
                 .catch((error) => {
-                    investigationClickLogger.error(error, Severity.HIGH);
+                    const errorMessage = `failed to update investigation start time dut to ${JSON.stringify(error)}`;
+                    investigationClickLogger.error(errorMessage, Severity.HIGH);
                     alertError(OPEN_INVESTIGATION_ERROR_TITLE)
                 })
         } else {
@@ -558,6 +565,28 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
+    const getInvestigationsOldValues = (investigations: InvestigationTableRow[], key: TableKeys, countyValue?: number) => (
+        investigations
+        .map(investigation => `${investigation.epidemiologyNumber}: ${countyValue || convertToIndexedRow(investigation)[key as TableHeadersNames]}`)
+        .join(', ')
+    )
+
+    const logInvestigationTransfer = (epidemiologyNumbers: number[], key: TableKeys, newValue: number | string, reason?: string) => {
+        const countyValue : number | undefined = key  === HiddenTableKeys.county ? user.investigationGroup : undefined;
+        const investigations =  rows.filter(investigation => epidemiologyNumbers.includes(investigation.epidemiologyNumber))
+        const investigationsPreviousValues = getInvestigationsOldValues(investigations, key, countyValue);
+        return `launching request to transfer the investigations ${key} to ${newValue} from their old values: {${investigationsPreviousValues}} ${reason ? `due to ${reason}` : ''}`;
+    }
+
+    const logGroupTransfer = (groupIds: string[], key: TableKeys, newValue: number | string, reason?: string) => {
+        const countyValue = key  === HiddenTableKeys.county ? user.investigationGroup : undefined;
+        const groups =  Array.from(allGroupedInvestigations.keys()).filter(groupId => groupIds.includes(groupId))
+        const investigationsPreviousValues = groups
+        .map(groupId => `group ${groupId}- investigations:{${getInvestigationsOldValues(allGroupedInvestigations.get(groupId) as InvestigationTableRow[], key, countyValue)}}`)
+        .join(', ');
+        return `launching request to transfer the groups investigations ${key} to ${newValue} from their old values: ${investigationsPreviousValues} ${reason ? `due to ${reason}` : ''}`;
+    }
+
     const getUserMapKeyByValue = (map: Map<string, User>, value: string): string => {
         const key = Array.from(map.keys()).find(key => map.get(key)?.userName === value);
         return key ? key : ''
@@ -566,7 +595,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null) => {
         const changeGroupsInvestigatorLogger = logger.setup('Change groups investigator');
         const joinedGroupIds = groupIds.join(', ');
-        changeGroupsInvestigatorLogger.info(`performing investigator change request for groups ${joinedGroupIds}`, Severity.LOW);
+        changeGroupsInvestigatorLogger.info(logGroupTransfer(groupIds, TableHeadersNames.investigatorName, investigator?.value.userName || ''), Severity.LOW);
         try {
             await axios.post('/users/changeGroupInvestigator', {
                 groupIds,
@@ -584,7 +613,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             workflow: 'Change investigations investigator',
             user: user.id,
         });
-        changeInvestigationsInvestigatorLogger.info('performing investigator change request', Severity.LOW);
+        changeInvestigationsInvestigatorLogger.info(logInvestigationTransfer(epidemiologyNumbers, TableHeadersNames.investigatorName, investigator?.value.userName || '', transferReason), Severity.LOW);
         try {
             await axios.post('/users/changeInvestigator', {
                 epidemiologyNumbers,
@@ -608,7 +637,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 desk: newSelectedDesk?.id,
                 reason: transferReason
             });
-            changeDeskLogger.info(`changed the desk successfully for group ${joinedGroupIds}`, Severity.LOW);
+            changeDeskLogger.info(logGroupTransfer(groupIds, TableHeadersNames.investigationDesk, newSelectedDesk?.deskName || '', transferReason), Severity.LOW);
             setSelectedRow(DEFAULT_SELECTED_ROW);
             fetchTableData();
         } catch (error) {
@@ -625,7 +654,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 county: newSelectedCounty?.id,
                 transferReason
             });
-            changeCountyLogger.info(`changed the county successfully for groups ${groupIds}`, Severity.LOW);
+            changeCountyLogger.info(logGroupTransfer(groupIds, HiddenTableKeys.county, newSelectedCounty?.id || '', transferReason), Severity.LOW);
             setSelectedRow(DEFAULT_SELECTED_ROW);
             fetchTableData();
         } catch (error) {
@@ -636,11 +665,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const changeInvestigationsDesk = async (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => {
         const changeDeskLogger = logger.setupVerbose({
-            workflow: 'Change Groups Desk',
+            workflow: 'change investigations desk',
             user: user.id,
             investigation: epidemiologyNumbers.join(', ')
         });
-        changeDeskLogger.info('performing desk change request', Severity.LOW);
+        changeDeskLogger.info(logInvestigationTransfer(epidemiologyNumbers, TableHeadersNames.investigationDesk, newSelectedDesk?.deskName || '', transferReason), Severity.LOW);
         try {
             await axios.post('/landingPage/changeDesk', {
                 epidemiologyNumbers,
@@ -662,7 +691,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 updatedCounty: newSelectedCounty?.id,
                 transferReason
             });
-            changeCountyLogger.info(`changed the county successfully for ${epidemiologyNumbers}`, Severity.LOW);
+            changeCountyLogger.info(logInvestigationTransfer(epidemiologyNumbers, HiddenTableKeys.county, newSelectedCounty?.id || '', transferReason), Severity.LOW);
             setSelectedRow(DEFAULT_SELECTED_ROW);
             fetchTableData();
         } catch (error) {
@@ -816,43 +845,16 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const isEqual = (first: any, second: any) => {
-        return !Object.keys(first).some(key => {
-            if (Array.isArray(first[key]) && Array.isArray(second[key])) {
-                return !first[key].every((node: any) => second[key].includes(node));
-            }
-            return second[key] !== first[key]
-        });
-    }
-
-    const titleByAdminLandingFilter = useMemo(() => {
-
-        const currStatusFilter = {
-            statusFilter
-        }
-        const currUserFilter = {
-            inactiveUserFilter,
-            unassignedUserFilter,
-        }
-
-        let title = '';
-        const indexedStatusToFilter : {[index: string] : any} = {...statusToFilterConvertor};
-        const isStatusFiltered = Object.keys(indexedStatusToFilter).some((key: string) => {
-            if (isEqual(indexedStatusToFilter[key], currStatusFilter) || isEqual(indexedStatusToFilter[key], currUserFilter)) {
-                title = `חקירות ${key}`;
-                return true;
-            }
-            return false;
-        });
-        return isStatusFiltered ? title : welcomeMessage;
-    }, [])
-
     const isAdmin = user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN;
+
+    const noAdminFilterTitle = rows.length === 0 ? noInvestigationsMessage : welcomeMessage;;
 
     const tableTitle = useMemo(() => {
         if (rows.length === 0) return noInvestigationsMessage;
-        if (isAdminLandingRedirect === false || !isAdmin) return welcomeMessage;
-        return titleByAdminLandingFilter;
+        if (isAdminLandingRedirect === false || !isAdmin) {
+            return noAdminFilterTitle;
+        }
+        return filterTitle || noAdminFilterTitle;
     }, [rows])
 
     return {

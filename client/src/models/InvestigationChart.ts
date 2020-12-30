@@ -1,5 +1,7 @@
+import statusToFilterConvertor from 'commons/statusToFilterConvertor';
+
 interface InvestigationChart {
-    id: string;
+    id: keyof typeof statusToFilterConvertor;
     value: number;
     color: string;
 };

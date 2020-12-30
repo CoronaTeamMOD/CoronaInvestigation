@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 
+import FilterRulesVariables from 'models/FilterRulesVariables';
 import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
 import InvestigationStatistics, { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 
@@ -11,6 +12,7 @@ import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import AdminLandingPageFilters from './AdminLandingPageFilters';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
+import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 
 const AdminLandingPage: React.FC = (): JSX.Element => {
     const classes = useStyles();
@@ -36,7 +38,6 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
         filteredDesks,
         setFilteredDesks,
     });
-
     return (
         <div className={classes.content}>
             <Typography color='textPrimary' className={classes.countyDisplayName}>
@@ -55,7 +56,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                         isLoading={isLoading}
                         allInvestigationsCount={investigationsStatistics.allInvestigations}
                         investigationsStatistics={investigationsStatistics as InvesitgationInfoStatistics}
-                        onInfoButtonClick={(infoFilter) => redirectToInvestigationTable(infoFilter)} />
+                        onInfoButtonClick={(infoFilter, filterType) => redirectToInvestigationTable(infoFilter, filterType)} />
                 </Grid>
                 <Grid item xs={3}>
                     <TimeRangeCard />
@@ -63,7 +64,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                 <Grid item xs={3}>
                     <UnallocatedCard
                         isLoading={isLoading}
-                        onClick={(infoFilter) => redirectToInvestigationTable(infoFilter)} 
+                        onClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNALLOCATED)} 
                         unallocatedInvestigationsCount={investigationsStatistics.unallocatedInvestigations}
                     />
                 </Grid>

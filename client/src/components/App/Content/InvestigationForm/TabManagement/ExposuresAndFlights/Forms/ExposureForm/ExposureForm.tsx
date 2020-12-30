@@ -9,20 +9,15 @@ import PlaceSubType from 'models/PlaceSubType';
 import CovidPatient from 'models/CovidPatient';
 import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
-import ExposureFields from 'models/enums/ExposureFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import ExposureSearchTextField from 'commons/AlphabetTextField/ExposureSearchTextField';
+import ExposureSearchTextField from './ExposureSearchTextField/ExposureSearchTextField';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
 import useStyles from './ExposureFormStyles';
 import useExposureForm from './useExposureForm';
 import ExposureSourceOption from './ExposureSourceOption';
-import { FormData } from '../../ExposuresAndFlightsInterfaces';
-import { Exposure } from 'commons/Contexts/ExposuresAndFlights';
 
 const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
-const MAX_DATE_ERROR_MESSAGE = 'לא ניתן להזין תאריך מאוחר מתאריך תחילת המחלה';
-const INVALID_DATE_ERROR_MESSAGE = 'תאריך לא חוקי';
 
 export const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
 
@@ -42,7 +37,7 @@ const ExposureForm = (props: Props) => {
 	const { control , setValue , errors } = useFormContext();
 
 	const [exposureSourceSearchString, setExposureSourceSearchString] = useState<string>('');
-	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isOptionalPatientsLoading, setOptionalPatientsLoading] = useState<boolean>(false);
 	const [optionalCovidPatients, setOptionalCovidPatients] = useState<CovidPatient[]>([]);
 
 	const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
@@ -50,25 +45,23 @@ const ExposureForm = (props: Props) => {
 	const { fetchOptionalCovidPatients, selectedExposureSourceDisplay } = useExposureForm({
 		exposureAndFlightsData,
 		exposureSourceSearchString,
+		setOptionalPatientsLoading
 	});
-	useEffect(() => {
-		const setOptionalCovidPatientsAsync = async () => {
-			const optionalCovidPatients = await fetchOptionalCovidPatients({ setIsLoading });
-			setOptionalCovidPatients(optionalCovidPatients);
-		};
-		setOptionalCovidPatientsAsync();
-	}, [exposureSourceSearchString]);
+	const setOptionalCovidPatientsAsync = async () => {
+		const optionalCovidPatients = await fetchOptionalCovidPatients();
+		setOptionalCovidPatients(optionalCovidPatients);
+	};
 
 	useEffect(() => {
 		if (Boolean(exposureAndFlightsData.exposureSource)) {
 			setExposureSourceSearchString(selectedExposureSourceDisplay(exposureAndFlightsData.exposureSource));
 		}
-    }, [exposureAndFlightsData.exposureSource]);
+	}, [exposureAndFlightsData.exposureSource]);
 
     useEffect(() => {
-        setValue(`exposures[${index}].${fieldsNames.placeType}`, exposureAndFlightsData[fieldsNames.placeType] )
-		setValue(`exposures[${index}].${fieldsNames.placeSubType}`, exposureAndFlightsData[fieldsNames.placeSubType] )
-    } , []);
+      setValue(`exposures[${index}].${fieldsNames.placeType}`, exposureAndFlightsData[fieldsNames.placeType] )
+		  setValue(`exposures[${index}].${fieldsNames.placeSubType}`, exposureAndFlightsData[fieldsNames.placeSubType] )
+	  } , []);
 
 	const getDateLabel = (dateError : {message? : string , type? : string}) => {
 		if(dateError) {
@@ -107,16 +100,23 @@ const ExposureForm = (props: Props) => {
 								value={exposureSourceSearchString}
 								test-id='exposureSource'
 								placeholder={INSERT_EXPOSURE_SOURCE_SEARCH}
+								onSearchClick={setOptionalCovidPatientsAsync}
+								onKeyDown={(e : React.KeyboardEvent) => {
+									if(e.key === 'Enter'){
+										e.preventDefault();
+										setOptionalCovidPatientsAsync()
+									}
+								}}
 							/>
 						);
 					}}
 				/>
 			</FormRowWithInput>
 
-			{(isLoading || optionalCovidPatients?.length > 0) && (
+			{(isOptionalPatientsLoading || optionalCovidPatients?.length > 0) && (
 				<FormRowWithInput fieldName=''>
 					<div className={classes.optionalExposureSources}>
-						{isLoading ? (
+						{isOptionalPatientsLoading ? (
 							<div className={classes.loadingDiv}>
 								<CircularProgress className={classes.loadingSpinner} size='5vh' />
 							</div>
@@ -132,7 +132,7 @@ const ExposureForm = (props: Props) => {
 											key={exposureSource.epidemiologyNumber}
 											value={exposureSource.epidemiologyNumber}
 											onClick={() => {
-												setValue(`${fieldsNames.exposureSource}[${index}]`, exposureSource);
+												setValue(`exposures[${index}].${fieldsNames.exposureSource}`, exposureSource);
 												setOptionalCovidPatients([]);
 												handleChangeExposureDataAndFlightsField(
 													index,

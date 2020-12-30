@@ -8,6 +8,7 @@ import { landingPageRoute } from 'Utils/Routes/Routes';
 import FilterRulesVariables from 'models/FilterRulesVariables';
 import AdminLandingPageFilters from './AdminLandingPageFilters';
 import InvesitgationStatistics from 'models/InvestigationStatistics';
+import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 import { HistoryState } from '../InvestigationTable/InvestigationTableInterfaces';
 interface Parameters {
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -55,7 +56,8 @@ const useAdminLandingPage = (parameters: Parameters) => {
         .finally(() => setIsLoading(false));
     }, [investigationInfoFilter])
 
-    const redirectToInvestigationTable = (investigationInfoFilter: FilterRulesVariables) => {
+    const redirectToInvestigationTable = (investigationInfoFilter: FilterRulesVariables, filterType?: FilterRulesDescription) => {
+        const filterTitle = filterType ? `חקירות ${filterType}` : undefined;
         history.push(landingPageRoute, {...investigationInfoFilter, isAdminLandingRedirect: true, deskFilter : filteredDesks});
     };
 

@@ -17,8 +17,8 @@ const UnallocatedCard: React.FC<Props> = (props: Props): JSX.Element => {
     const { onClick, isLoading, unallocatedInvestigationsCount } = props;
 
     return (
-        <Tooltip title={unallocatedInvestigationsText}>
-            <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.unallocatedCard}>
+        <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.unallocatedCard}>
+            <Tooltip title={unallocatedInvestigationsText}>
                 <Card onClick={() => onClick(statusToFilterConvertor[FilterRulesDescription.UNALLOCATED])}>
                     <div className={classes.investigationAmount}>
                         <Typography className={classes.investigationNumberText}><b>{unallocatedInvestigationsCount}</b></Typography>
@@ -29,8 +29,8 @@ const UnallocatedCard: React.FC<Props> = (props: Props): JSX.Element => {
                         <NavigateBeforeIcon className={classes.navigateIcon} />
                     </div>
                 </Card>
-            </LoadingCard>
-        </Tooltip>
+            </Tooltip>
+        </LoadingCard>
     )
 }
 

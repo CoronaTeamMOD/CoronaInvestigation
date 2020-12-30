@@ -1,23 +1,29 @@
 import React from 'react';
-import {ReplyAll} from '@material-ui/icons';
-import {Tooltip,} from '@material-ui/core';
+import { Tooltip } from '@material-ui/core';
+import { ReplyAll } from '@material-ui/icons';
 
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
+
 import useStyles from './InvestigationIndicatorsColumnStyles';
 
 const complexInvestigationMessage = 'חקירה מורכבת';
+
 const InvestigationIndicatorsColumn = (props: Props) => {
-    const {isComplex, wasInvestigationTransferred, transferReason} = props;
+    const { isComplex, wasInvestigationTransferred, transferReason } = props;
 
     const classes = useStyles();
 
     return (
         <div className={classes.columnContainer}>
-            {isComplex && <ComplexityIcon tooltipText={complexInvestigationMessage}/>}
+            <div className={classes.complexIconContainer}>
+                {
+                    isComplex && <ComplexityIcon tooltipText={complexInvestigationMessage} />
+                }
+            </div>
             {
                 wasInvestigationTransferred &&
                 <Tooltip title={transferReason === null ? '' : transferReason} placement='top' arrow>
-                    <ReplyAll color='primary'/>
+                    <ReplyAll color='primary' />
                 </Tooltip>
             }
         </div>
