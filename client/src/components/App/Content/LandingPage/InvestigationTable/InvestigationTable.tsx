@@ -1,8 +1,7 @@
-import {format} from 'date-fns';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import React, { useMemo, useState, useRef } from 'react';
 import { Pagination } from '@material-ui/lab';
+import React, { useMemo, useState, useRef } from 'react';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button,
@@ -28,13 +27,13 @@ import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 import DeskFilter from './DeskFilter/DeskFilter';
+import useStyles from './InvestigationTableStyles';
 import TableFilter from './TableFilter/TableFilter';
-import useInvestigationTable, { SelectedRow, DEFAULT_SELECTED_ROW } from './useInvestigationTable';
+import InvestigationTableRow from './InvestigationTableRow/InvestigationTableRow';
 import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
 import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorAllocationDialog';
+import useInvestigationTable, { SelectedRow, DEFAULT_SELECTED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
-import useStyles from './InvestigationTableStyles';
-import InvestigationTableRow from './InvestigationTableRow/InvestigationTableRow';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -129,7 +128,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         setCheckedIndexedRows([]);
     }
 
-    const getFilteredUsersOfCurrentCounty = async () : Promise<InvestigatorOption[]> => { 
+    const getFilteredUsersOfCurrentCounty = async (): Promise<InvestigatorOption[]> => {
         const allCountyUsers = await fetchAllCountyUsers();
         const allUsersOfCountyArray: InvestigatorOption[] = Array.from(allCountyUsers, ([id, value]) => ({ id, value }));
         if (deskFilter.length > 0) {
@@ -138,7 +137,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     return false;
                 }
                 return deskFilter.includes(value.deskByDeskId.id);
-            });     
+            });
         }
         return allUsersOfCountyArray;
     }
@@ -480,7 +479,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 groupIds={[selectedRow.groupId]}
                 epidemiologyNumbers={[selectedRow.epidemiologyNumber]}
                 onSuccess={onAllocationSuccess}
-            /> 
+            />
             <Slide direction='up' in={checkedIndexedRows.length > 0} mountOnEnter unmountOnExit>
                 <InvestigationTableFooter
                     checkedIndexedRows={checkedIndexedRows}
