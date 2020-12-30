@@ -7,14 +7,23 @@ const useStyles = makeStyles((theme: Theme) => ({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: theme.spacing(1),
-        marginBottom: theme.spacing(1)
+        marginBottom: theme.spacing(1),
+        borderRadius: 16,
     },
     autocomplete: {
-        width: '60%'
+        width: '40%',
+        height: '60%'
     },
     optionCheckbox: {
+        height: '0.5vh',
         marginLeft: theme.spacing(1),
         flip: false
+    }, 
+    title: {
+        fontSize: '1vw',
+    },
+    option: {
+        fontSize: '1vw',
     }
 }));
 
