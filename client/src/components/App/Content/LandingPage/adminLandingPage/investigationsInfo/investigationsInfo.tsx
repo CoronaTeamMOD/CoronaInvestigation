@@ -58,7 +58,7 @@ const InvestigationsInfo: React.FC<Props> = (props: Props): JSX.Element => {
                                     amountOfInvestigations={InvestigationData.value}
                                     text={InvestigationData.id}
                                     style={{ backgroundColor: InvestigationData.color }}
-                                    onClick={() => onInfoButtonClick(statusToFilterConvertor[InvestigationData.id as keyof typeof statusToFilterConvertor], InvestigationData.id as FilterRulesDescription)}
+                                    onClick={() => onInfoButtonClick(statusToFilterConvertor[InvestigationData.id], InvestigationData.id)}
                                 />
                             ))
                         }
