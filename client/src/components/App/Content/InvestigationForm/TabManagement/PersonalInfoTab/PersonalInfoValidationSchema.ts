@@ -1,15 +1,14 @@
 import * as yup from 'yup';
 
-import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import Occupations from 'models/enums/Occupations';
+import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
+import { notRequiredPhoneNumberRegex, phoneNumberRegex } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 const occupationsWithInstitution = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון'];
 const occupationsWithoutExtraInfo = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון', 'לא עובד'];
 const requiredText = 'שגיאה: שדה חובה';
 const numberValidationText = 'שגיאה: מספר אינו תקין';
 const requiredSelectionText = 'שגיאה: יש לבחור מבין האפשרויות הקיימות';
-const phoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/
-const notRequiredPhoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$|^$/
 
 const schema = yup.object().shape({
     [PersonalInfoDataContextFields.PHONE_NUMBER]: yup.string().nullable().required(requiredText).matches(phoneNumberRegex, numberValidationText),

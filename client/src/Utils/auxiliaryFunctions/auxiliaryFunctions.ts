@@ -1,3 +1,8 @@
+
+export const phoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/;
+export const notRequiredPhoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$|^$/;
+export const mailValidation = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
 const get = (obj: any, path: string, defaultValue = undefined) => {
     const travel = (regexp: RegExp) =>
         path

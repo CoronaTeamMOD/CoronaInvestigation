@@ -367,11 +367,11 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
     const parseFormBeforeSending = (data: FormInputs) => {
         const { form } = data;
-        const mappedForm = form.map(
+        const mappedForm = form?.map(
             (person: InteractedContact, index: number) => {
                 return parsePerson(person, index);
             }
-        );
+        ) || [];
 
         return mappedForm;
     };
