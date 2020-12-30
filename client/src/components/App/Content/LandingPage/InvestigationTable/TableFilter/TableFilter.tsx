@@ -26,7 +26,7 @@ const TableFilter = (props: Props) => {
 
     return (
         <Card className={classes.card}>
-            <Typography variant='body2'>
+            <Typography className={classes.title} >
                 <b>סינון לפי סטטוס</b>
             </Typography>
             <Autocomplete
@@ -49,8 +49,9 @@ const TableFilter = (props: Props) => {
                             size='small'
                             className={classes.optionCheckbox}
                             checked={selected}
+                            color='primary'
                         />
-                        {option.displayName}
+                        <Typography className={classes.option} >{option.displayName}</Typography>
                     </>
                 )}
                 limitTags={2}
@@ -60,7 +61,7 @@ const TableFilter = (props: Props) => {
                 color='primary'
                 checked={unassignedUserFilter}
             />
-            <Typography variant='body2'>
+            <Typography className={classes.title} >
                 <b>חקירות לא משויכות</b>
             </Typography>
             <Checkbox
@@ -68,7 +69,7 @@ const TableFilter = (props: Props) => {
                 color='primary'
                 checked={inactiveUserFilter}
             />
-            <Typography variant='body2'>
+            <Typography className={classes.title} >
                 <b>חקירות משויכות לחוקרים לא פעילים</b>
             </Typography>
             <IconButton onClick={() => onClose()}><Close /></IconButton>
