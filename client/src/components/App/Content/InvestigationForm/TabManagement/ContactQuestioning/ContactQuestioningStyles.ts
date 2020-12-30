@@ -56,9 +56,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: 'flex',
         flexDirection: 'row',
     },
-    isolationCity: {
-        fontSize: '1vw'
-    }
 }));
 
 export default useStyles;
