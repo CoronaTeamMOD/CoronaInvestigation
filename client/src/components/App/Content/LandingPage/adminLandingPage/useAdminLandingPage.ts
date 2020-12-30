@@ -11,11 +11,12 @@ interface Parameters {
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
     setInvestigationsStatistics: React.Dispatch<React.SetStateAction<InvesitgationStatistics>>;
     investigationInfoFilter: FilterRulesVariables;
+    filteredDesks: number[]
 }
 
 const useAdminLandingPage = (parameters: Parameters) => {
 
-    const { setIsLoading, setInvestigationsStatistics, investigationInfoFilter } = parameters;
+    const { setIsLoading, setInvestigationsStatistics, investigationInfoFilter , filteredDesks} = parameters;
     
     const history = useHistory();
     
@@ -35,7 +36,7 @@ const useAdminLandingPage = (parameters: Parameters) => {
     }, [investigationInfoFilter])
 
     const redirectToInvestigationTable = (investigationInfoFilter: FilterRulesVariables) => {
-        history.push(landingPageRoute, {...investigationInfoFilter, isAdminLandingRedirect: true});
+        history.push(landingPageRoute, {...investigationInfoFilter, isAdminLandingRedirect: true, deskFilter : filteredDesks});
     };
 
     return {

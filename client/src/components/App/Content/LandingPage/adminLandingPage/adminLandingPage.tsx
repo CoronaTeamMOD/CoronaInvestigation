@@ -25,9 +25,10 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
         unassignedInvestigations: 0,
         unallocatedInvestigations: 0,
     });
+    const [filteredDesks, setFilteredDesks] = useState<number[]>([]);
 
     const { countyDisplayName } = useAppToolbar();
-    const { redirectToInvestigationTable } = useAdminLandingPage({setIsLoading, investigationInfoFilter, setInvestigationsStatistics});
+    const { redirectToInvestigationTable } = useAdminLandingPage({setIsLoading, investigationInfoFilter, setInvestigationsStatistics, filteredDesks});
 
     return (
         <div className={classes.content}>
@@ -36,7 +37,10 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
             </Typography>
             <Grid container spacing={5} className={classes.gridContainer}>
                 <Grid item xs={3}>
-                    <DesksFilterCard />
+                    <DesksFilterCard 
+                        filteredDesks={filteredDesks}
+                        setFilteredDesks={setFilteredDesks}
+                    />
                 </Grid>
                 <Grid item xs={9}>
                     <InvestigationsInfo
