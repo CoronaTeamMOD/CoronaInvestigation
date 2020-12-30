@@ -15,7 +15,9 @@ export interface TypePreventiveTextFieldProps<T> {
     className?: string,
     multiline?: TextFieldProps['multiline'];
     fullWidth?: TextFieldProps['fullWidth'];
-    inputProps?: TextFieldProps['inputProps']
+    inputProps?: TextFieldProps['inputProps'];
+    InputProps?: TextFieldProps['InputProps'];
+    onKeyDown? : (e : React.KeyboardEvent) => void;
 }
 
 type TypePreventiveTextFieldType = <T>(props: TypePreventiveTextFieldProps<T>) => JSX.Element;
