@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { format } from 'date-fns';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { useEffect, useState, useRef, useMemo } from 'react';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
@@ -16,16 +16,17 @@ import { activateIsLoading } from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import { BC_TABS_NAME } from 'models/BroadcastMessage';
 import usePageRefresh from 'Utils/vendor/usePageRefresh';
+import InvestigatorOption from 'models/InvestigatorOption';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
+import statusToFilterConvertor from 'commons/statusToFilterConvertor';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
 import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
-import InvestigatorOption from 'models/InvestigatorOption';
 
 import useStyle from './InvestigationTableStyles';
 import { defaultOrderBy, rowsPerPage, defaultPage } from './InvestigationTable';
@@ -117,6 +118,9 @@ const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את החקירה';
 const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החקירה';
 export const transferredSubStatus = 'נדרשת העברה';
 
+const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך היום. בואו נקטע את שרשראות ההדבקה!';
+const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
+
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const { setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
         setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations,
@@ -128,9 +132,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const { statusFilter: historyStatusFilter = [], 
             deskFilter: historyDeskFilter = [], 
             inactiveUserFilter : historyInactiveUserFilter = false, 
-            unassignedUserFilter : historyUnassignedUserFilter = false } = useMemo(() => {
+            unassignedUserFilter : historyUnassignedUserFilter = false,
+            isAdminLandingRedirect : historyisAdminLandingRedirect = false} = useMemo(() => {
         const { location: { state } } = history;
-        console.log(state)
         return state || {};
     }, []);
 
@@ -145,6 +149,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [isSearchQueryValid, setIsSearchQueryValid] = useState<boolean>(true);
     const [unassignedUserFilter, setUnassignedUserFilter] = useState<boolean>(historyUnassignedUserFilter);
     const [inactiveUserFilter, setInactiveUserFilter] = useState<boolean>(historyInactiveUserFilter);
+    const [isAdminLandingRedirect, setIsAdminLandingRedirect] = useState<boolean>(historyisAdminLandingRedirect);
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const isLoggedIn = useSelector<StoreStateType, boolean>(state => state.user.isLoggedIn);
@@ -195,9 +200,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         history.replace({
             state: {
                 ...state,
+                isAdminLandingRedirect: false,
                 [key]: value
             }
         });
+        setIsAdminLandingRedirect(false);
     };
 
     const fetchAllDesksByCountyId = () => {
@@ -809,6 +816,45 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
+    const isEqual = (first: any, second: any) => {
+        return !Object.keys(first).some(key => {
+            if (Array.isArray(first[key]) && Array.isArray(second[key])) {
+                return !first[key].every((node: any) => second[key].includes(node));
+            }
+            return second[key] !== first[key]
+        });
+    }
+
+    const getTitleByAdminLandingFilter = () => {
+
+        const currStatusFilter = {
+            statusFilter
+        }
+        const currUserFilter = {
+            inactiveUserFilter,
+            unassignedUserFilter,
+        }
+
+        let title = '';
+        const indexedStatusToFilter : {[index: string] : any} = {...statusToFilterConvertor};
+        const isStatusFiltered = Object.keys(indexedStatusToFilter).some((key: string) => {
+            if (isEqual(indexedStatusToFilter[key], currStatusFilter) || isEqual(indexedStatusToFilter[key], currUserFilter)) {
+                title = `חקירות ${key}`;
+                return true;
+            }
+            return false;
+        });
+        return isStatusFiltered ? title : welcomeMessage;
+    }
+
+    const isAdmin = user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN;
+
+    const tableTitle = useMemo(() => {
+        if (rows.length === 0) return noInvestigationsMessage;
+        if (isAdminLandingRedirect === false || !isAdmin) return welcomeMessage;
+        return getTitleByAdminLandingFilter();
+    }, [rows])
+
     return {
         tableRows: rows,
         fetchTableData,
@@ -842,7 +888,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         unassignedUserFilter,
         changeInactiveUserFilter,
         inactiveUserFilter,
-        fetchAllCountyUsers
+        fetchAllCountyUsers,
+        tableTitle
     };
 };
 

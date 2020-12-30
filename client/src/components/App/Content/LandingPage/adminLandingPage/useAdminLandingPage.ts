@@ -40,7 +40,7 @@ const useAdminLandingPage = (parameters: Parameters) => {
         // P.S: when finishing the time filter make sure 
         //      that the history in useInvestigationTable.ts is expecting to recive it
         // Good Luck! 😁 R.R
-        history.push(landingPageRoute, {...investigationInfoFilter});
+        history.push(landingPageRoute, {...investigationInfoFilter, isAdminLandingRedirect: true});
     };
 
     return {

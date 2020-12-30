@@ -27,13 +27,13 @@ import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 import DeskFilter from './DeskFilter/DeskFilter';
+import useStyles from './InvestigationTableStyles';
 import TableFilter from './TableFilter/TableFilter';
-import useInvestigationTable, { SelectedRow, DEFAULT_SELECTED_ROW } from './useInvestigationTable';
+import InvestigationTableRow from './InvestigationTableRow/InvestigationTableRow';
 import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
 import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorAllocationDialog';
+import useInvestigationTable, { SelectedRow, DEFAULT_SELECTED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
-import useStyles from './InvestigationTableStyles';
-import InvestigationTableRow from './InvestigationTableRow/InvestigationTableRow';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -97,7 +97,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         moveToTheInvestigationForm, totalCount, unassignedInvestigationsCount,
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
         statusFilter, changeStatusFilter, deskFilter, changeDeskFilter, searchQuery, changeSearchQuery, isSearchQueryValid,
-        changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers
+        changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers,
+        tableTitle
     } = useInvestigationTable({
         setSelectedRow, setAllUsersOfCurrCounty, allGroupedInvestigations,
         setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations,
@@ -275,7 +276,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={7}>
                     <Typography color='textPrimary' className={classes.welcomeMessage}>
-                        {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}
+                        {tableTitle}
                     </Typography>
                 </Grid>
                 <Grid item xs={3} >

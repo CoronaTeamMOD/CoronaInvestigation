@@ -4,31 +4,30 @@ import { CardContent, Grid, IconButton, Typography } from '@material-ui/core';
 
 import InvestigationChart from 'models/InvestigationChart';
 import FilterRulesVariables from 'models/FilterRulesVariables';
+import statusToFilterConvertor from 'commons/statusToFilterConvertor';
+import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 import { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 
 import LoadingCard from '../LoadingCard/LoadingCard';
-
-import statusToFilterConvertor from './statusToFilterConvertor';
 import useStyles, { cardWidth, cardHeight } from './investigationsInfoStyles';
 import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart';
 import InvestigationInfoButton from './investigationInfoButton/investigationInfoButton';
 
-
 const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit<InvestigationChart, 'value'>} = {
     newInvestigations: {
-        id: 'חדשות',
+        id: FilterRulesDescription.NEW,
         color: '#1F78B4'
     },
     inProcessInvestigations: {
-        id: 'בטיפול',
+        id: FilterRulesDescription.IN_PROCESS,
         color: 'grey'
     },
     unassignedInvestigations: {
-        id: 'לא משויכות',
+        id: FilterRulesDescription.UNASSIGNED,
         color: '#33A02C'
     },
     inactiveInvestigations: {
-        id: 'מוקצות לחוקרים לא פעילים',
+        id: FilterRulesDescription.INACTIVE,
         color: '#F95959'
     }
 }

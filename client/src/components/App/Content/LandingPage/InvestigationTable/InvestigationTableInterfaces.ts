@@ -9,9 +9,10 @@ import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
 import { IndexedInvestigationData } from './InvestigationTablesHeaders';
 import { SelectedRow } from './useInvestigationTable';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
-export type StatusFilter = number[];
-export type DeskFilter = number[];
+export type StatusFilter = InvestigationMainStatusCodes[];
+export type DeskFilter = InvestigationMainStatusCodes[];
 
 export interface HistoryState {
     filterRules?: any;
@@ -19,6 +20,7 @@ export interface HistoryState {
     deskFilter?: DeskFilter;
     unassignedUserFilter?: boolean;
     inactiveUserFilter?: boolean;
+    isAdminLandingRedirect: boolean;
 }
 
 export interface useInvestigationTableParameters {
@@ -68,4 +70,5 @@ export interface useInvestigationTableOutcome {
     changeGroupsCounty: (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => void;
     changeInvestigationCounty: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => void;
     fetchAllCountyUsers: () => Promise<Map<string, User>>;
+    tableTitle: string;
 };
