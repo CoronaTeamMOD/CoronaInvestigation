@@ -13,6 +13,10 @@ interface Props {
 const useDesksFilterCard = (props : Props) => {
     const { setAllDesks } = props;
     const { alertError } = useCustomSwal();
+    
+    const setAllDesksAsync = async () => {
+        setAllDesks(await fetchAllDesks());
+    }
 
     const fetchAllDesks = async () => {
         const desksByCountyIdLogger = logger.setup('Getting Desks by county id');
@@ -21,7 +25,6 @@ const useDesksFilterCard = (props : Props) => {
             .then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     desksByCountyIdLogger.info('The desks were fetched successfully', Severity.LOW);
-                    console.log(result);
                     return ([{ id: -1, deskName: 'לא שוייך לדסק' }, ...result.data]);
                 } else {
                     desksByCountyIdLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
@@ -34,10 +37,6 @@ const useDesksFilterCard = (props : Props) => {
                 return [];
             });
     };
-
-    const setAllDesksAsync = async () => {
-        setAllDesks(await fetchAllDesks());
-    }
 
     return {
         setAllDesksAsync
