@@ -3,7 +3,10 @@ import { makeStyles } from '@material-ui/styles';
 const useStyles = makeStyles(() => ({
     columnContainer: {
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+    },
+    complexIconContainer: {
+        width: '2vw',
     },
 }));
 
