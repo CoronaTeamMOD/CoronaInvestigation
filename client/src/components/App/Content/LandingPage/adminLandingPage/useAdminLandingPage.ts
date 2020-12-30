@@ -6,11 +6,12 @@ import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import FilterRulesVariables from 'models/FilterRulesVariables';
+import AdminLandingPageFilters from './AdminLandingPageFilters';
 import InvesitgationStatistics from 'models/InvestigationStatistics';
 interface Parameters {
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
     setInvestigationsStatistics: React.Dispatch<React.SetStateAction<InvesitgationStatistics>>;
-    investigationInfoFilter: FilterRulesVariables;
+    investigationInfoFilter: AdminLandingPageFilters;
     filteredDesks: number[]
 }
 

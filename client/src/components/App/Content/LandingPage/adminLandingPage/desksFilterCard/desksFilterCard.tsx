@@ -1,26 +1,25 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
 import { CardActions, CardContent, Typography } from '@material-ui/core';
 
 import Desk from 'models/Desk';
-import { landingPageRoute } from 'Utils/Routes/Routes';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 
 import LoadingCard from '../LoadingCard/LoadingCard';
 import UpdateButton from '../UpdateButton/UpdateButton';
 import useDesksFilterCard from './useDesksFilterCard';
+import AdminLandingPageFilters from '../AdminLandingPageFilters';
 import useStyles, { cardHeight, cardWidth } from './desksFilterCardStyles';
-
 interface Props {
     filteredDesks: number[];
     setFilteredDesks: React.Dispatch<React.SetStateAction<number[]>>
+    setInvestigationInfoFilter: React.Dispatch<React.SetStateAction<AdminLandingPageFilters>>
 }
 
 const DesksFilterCard = (props : Props): JSX.Element => {
     const classes = useStyles();
     
     const { desks, isLoading } = useDesksFilterCard();
-    const {filteredDesks , setFilteredDesks} = props;
+    const {filteredDesks , setFilteredDesks , setInvestigationInfoFilter} = props;
 
     const onDeskClicked = (checkedDesk: number) => {
         if (filteredDesks.includes(checkedDesk)) {
@@ -31,7 +30,9 @@ const DesksFilterCard = (props : Props): JSX.Element => {
     }
 
     const onUpdateButtonCLicked = () => {
-        
+        setInvestigationInfoFilter({
+            deskId : { in : filteredDesks}
+        })
     }
 
     return (

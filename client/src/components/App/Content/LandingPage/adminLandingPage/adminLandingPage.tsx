@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 
-import FilterRulesVariables from 'models/FilterRulesVariables';
 import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
 import InvestigationStatistics, { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 
@@ -10,13 +9,14 @@ import useAdminLandingPage from './useAdminLandingPage';
 import TimeRangeCard from './TimeRangeCard/timeRangeCard';
 import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
+import AdminLandingPageFilters from './AdminLandingPageFilters';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
 
 const AdminLandingPage: React.FC = (): JSX.Element => {
     const classes = useStyles();
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [investigationInfoFilter, setInvestigationInfoFilter] = useState<FilterRulesVariables>({});
+    const [investigationInfoFilter, setInvestigationInfoFilter] = useState<AdminLandingPageFilters>({});
     const [investigationsStatistics, setInvestigationsStatistics] = useState<InvestigationStatistics>({
         allInvestigations: 0,
         inProcessInvestigations: 0,
@@ -40,6 +40,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                     <DesksFilterCard 
                         filteredDesks={filteredDesks}
                         setFilteredDesks={setFilteredDesks}
+                        setInvestigationInfoFilter={setInvestigationInfoFilter}
                     />
                 </Grid>
                 <Grid item xs={9}>
