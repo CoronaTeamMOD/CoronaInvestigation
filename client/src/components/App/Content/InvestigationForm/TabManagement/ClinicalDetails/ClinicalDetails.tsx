@@ -10,7 +10,8 @@ import Street from 'models/Street';
 import Gender from 'models/enums/Gender';
 import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
-import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import {getStreetByCity} from 'Utils/Address/AddressUtils';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
@@ -43,8 +44,8 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
-    const { fetchClinicalDetails, getStreetByCity, saveClinicalDetailsAndDeleteContactEvents, isolationSources } =
-        useClinicalDetails({ id, setSymptoms, setBackgroundDiseases, setStreetsInCity, didSymptomsDateChangeOccur });
+    const { fetchClinicalDetails, saveClinicalDetailsAndDeleteContactEvents, isolationSources } =
+        useClinicalDetails({ id, setSymptoms, setBackgroundDiseases, didSymptomsDateChangeOccur });
 
     const handleSymptomCheck = (
         checkedSymptom: string,
@@ -94,7 +95,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
     useEffect(() => {
         if (watchAddress.city) {
-            getStreetByCity(watchAddress.city);
+            getStreetByCity(watchAddress.city, setStreetsInCity);
         }
     }, [watchAddress?.city]);
 

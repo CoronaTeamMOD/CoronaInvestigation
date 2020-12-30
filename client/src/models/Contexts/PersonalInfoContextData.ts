@@ -1,13 +1,13 @@
 import EducationGrade from 'models/EducationGrade';
 
-import DBAddress from '../DBAddress';
+import FlattenedDBAddress from '../DBAddress';
 export interface PersonalInfoDbData {
     phoneNumber: string | null;
     additionalPhoneNumber: string | null;
     contactPhoneNumber: string | null;
     contactInfo: string | null;
     insuranceCompany: string | null;
-    address: DBAddress;
+    address: FlattenedDBAddress;
     relevantOccupation: string | null;
     educationOccupationCity: string | null;
     institutionName: string | null;

@@ -33,11 +33,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     idTextField: {
         width: '9vw',
-        marginTop: '-1vh',
     },
-    autocompleteTextField: {
-        width: '13vw',
-        marginTop: '-1vh',
+    addressTextField: {
+        width: '11vw',
+        paddingBottom: '1vh',
     },
     extraInfo: {
         direction: 'rtl',

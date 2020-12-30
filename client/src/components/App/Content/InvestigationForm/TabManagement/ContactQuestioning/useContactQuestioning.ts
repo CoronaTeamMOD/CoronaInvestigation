@@ -1,4 +1,3 @@
-import { AxiosResponse } from 'axios';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { differenceInCalendarDays, subDays } from 'date-fns';
@@ -10,6 +9,8 @@ import InteractedContact from 'models/InteractedContact';
 import { setFormState } from 'redux/Form/formActionCreators';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import useDuplicateContactId from 'Utils/Contacts/useDuplicateContactId';
+
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 
@@ -25,6 +26,7 @@ import {
     useDateUtils,
 } from 'Utils/DateUtils/useDateUtils';
 
+
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {
         id,
@@ -38,6 +40,24 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const { convertDate } = useDateUtils();
     const { checkDuplicateIds } = useDuplicateContactId();
+    const { alertError } = useCustomSwal();
+
+    const makeSaveContactRequest = (contactsSavingVariable: { unSavedContacts: { contacts: InteractedContact[] } },
+                                    workflowName: string) => {
+        const contactLogger = logger.setup(workflowName);
+
+        contactLogger.info(`launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`, Severity.LOW);
+        return axios.post('/contactedPeople/interactedContacts', contactsSavingVariable)
+            .then((response) => {
+                if (response.data?.data?.updateContactPersons) {
+                    contactLogger.info('got response from the server', Severity.LOW);
+                }
+            })
+            .catch((err) => {
+                contactLogger.error(`got the following error from the server: ${err}`, Severity.HIGH);
+                alertError('חלה שגיאה בשמירת הנתונים');
+            });
+    };
 
     const saveContact = (interactedContact: InteractedContact): boolean => {
         if (
@@ -49,38 +69,12 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         ) {
             return false;
         } else {
-            const contactLogger = logger.setup('Saving single contact');
             const contacts = [interactedContact];
             const contactsSavingVariable = {
                 unSavedContacts: { contacts },
             };
-            contactLogger.info(
-                `launching server request with parameter: ${JSON.stringify(
-                    contactsSavingVariable
-                )}`,
-                Severity.LOW
-            );
-            axios
-                .post(
-                    '/contactedPeople/interactedContacts',
-                    contactsSavingVariable
-                )
-                .then((response) => {
-                    if (response.data?.data?.updateContactPersons) {
-                        contactLogger.info(
-                            `launching server request with parameter: ${JSON.stringify(
-                                contactsSavingVariable
-                            )}`,
-                            Severity.LOW
-                        );
-                    }
-                })
-                .catch((err) => {
-                    contactLogger.error(
-                        `got the following error from the server: ${err}`,
-                        Severity.LOW
-                    );
-                });
+
+            makeSaveContactRequest(contactsSavingVariable, 'Saving single contact');
             return true;
         }
     };
@@ -95,18 +89,9 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         ) {
             const contactsSavingVariable = {
                 unSavedContacts: {contacts: parsedFormData}
-            }
-            const contactLogger = logger.setup('Saving all contacts');
-            contactLogger.info(`launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`, Severity.LOW);
-            axios.post('/contactedPeople/interactedContacts', contactsSavingVariable)
-            .then((response: AxiosResponse<any>) => {
-                if (response.data?.data?.updateContactPersons) {
-                    contactLogger.info('got respond from the server', Severity.LOW);
-                }
-            })
-            .catch(err => {
-                contactLogger.error(`got the following error from the server: ${err}`, Severity.HIGH);
-            })
+            };
+
+            makeSaveContactRequest(contactsSavingVariable, 'Saving all contacts')
             .finally(() => {
                 ContactQuestioningSchema.isValid(originalFormData).then(valid => {
                     setFormState(epidemiologyNumber, id, valid);
@@ -276,7 +261,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             extraInfo: contact.extraInfo,
                             relationship: contact.relationship,
                             familyRelationship: contact.familyRelationship,
-                            contactedPersonCity: contact.contactedPersonCity,
+                            isolationAddress: contact.isolationAddress,
                             occupation: contact.occupation,
                             doesFeelGood: contact.doesFeelGood
                                 ? contact.doesFeelGood
@@ -362,7 +347,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         e.preventDefault();
         const data = getValues();
         const parsedFormData = parseFormBeforeSending(data as FormInputs);
-        saveContactQuestioning(parsedFormData , data);
+        parsedFormData && saveContactQuestioning(parsedFormData , data);
     };
 
     const parseFormBeforeSending = (data: FormInputs) => {
@@ -405,7 +390,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     return {
         saveContact,
         loadInteractedContacts,
-        saveContactQuestioning,
         loadFamilyRelationships,
         loadContactStatuses,
         checkForSpecificDuplicateIds,

@@ -1,4 +1,4 @@
-interface DBAddress {
+interface FlattenedDBAddress {
     city: string;
     street: string;
     floor: string;
@@ -7,7 +7,17 @@ interface DBAddress {
     addressId?: number | null;
 }
 
-export const initDBAddress: DBAddress  = {
+type AddressComponent = {id: string; displayName: string}
+
+export interface DBAddress {
+    city: AddressComponent;
+    street: AddressComponent;
+    floor: string;
+    houseNum: string;
+    apartment: string;
+}
+
+export const initDBAddress: FlattenedDBAddress  = {
     city: '',
     street: '',
     floor: '',
@@ -15,4 +25,4 @@ export const initDBAddress: DBAddress  = {
     addressId: null
 };
 
-export default DBAddress;
+export default FlattenedDBAddress;

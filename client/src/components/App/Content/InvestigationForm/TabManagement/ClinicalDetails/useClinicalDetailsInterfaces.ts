@@ -8,7 +8,6 @@ export interface useClinicalDetailsIncome {
     id: number;
     setSymptoms: React.Dispatch<React.SetStateAction<string[]>>;
     setBackgroundDiseases: React.Dispatch<React.SetStateAction<string[]>>;
-    setStreetsInCity: React.Dispatch<React.SetStateAction<Map<string,Street>>>;
     didSymptomsDateChangeOccur: boolean;
 }
 
@@ -17,7 +16,6 @@ export interface useClinicalDetailsOutcome {
         reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
         trigger: (payload?: string | string[]) => Promise<boolean>
     ) => void;
-    getStreetByCity: (cityId: string) => void;
     saveClinicalDetailsAndDeleteContactEvents: (clinicalDetails: ClinicalDetailsData, validationDate: Date, id: number) => void;
     isolationSources: IsolationSource[];
 }

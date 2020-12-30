@@ -1,6 +1,6 @@
 import City from 'models/City';
 import Country from 'models/Country';
-import DBAddress from 'models/DBAddress';
+import FlattenedDBAddress from 'models/DBAddress';
 import ContactType from 'models/ContactType';
 import InvestigationRedux from 'models/InvestigationRedux';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
@@ -21,6 +21,6 @@ export default interface StoreStateType {
     subStatuses: string[];
     statuses: InvestigationMainStatus[];
     formsValidations: { [key: number]: (boolean | null)[] };
-    address: DBAddress;
+    address: FlattenedDBAddress;
     educationGrades: EducationGrade[];
 };

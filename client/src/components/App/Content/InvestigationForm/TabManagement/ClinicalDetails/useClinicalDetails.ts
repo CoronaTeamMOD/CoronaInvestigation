@@ -7,7 +7,7 @@ import logger from 'logger/logger';
 import {Severity} from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import IsolationSource from 'models/IsolationSource';
-import DBAddress, {initDBAddress} from 'models/DBAddress';
+import FlattenedDBAddress, {initDBAddress} from 'models/DBAddress';
 import { useDateUtils} from 'Utils/DateUtils/useDateUtils';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setFormState } from 'redux/Form/formActionCreators';
@@ -46,14 +46,13 @@ export const initialClinicalDetails: ClinicalDetailsData = {
 const deletingContactEventsErrorMsg = 'קרתה תקלה במחיקת אירועים מיותרים';
 
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
-    const { id, setSymptoms, setBackgroundDiseases,
-            setStreetsInCity, didSymptomsDateChangeOccur } = parameters;
+    const { id, setSymptoms, setBackgroundDiseases, didSymptomsDateChangeOccur } = parameters;
     const { getDatesToInvestigate, convertDate } = useDateUtils();
     const { alertError } = useCustomSwal();
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
     const tabsValidations  = useSelector<StoreStateType, (boolean | null)[]>(store => store.formsValidations[epidemiologyNumber]);
-    const address = useSelector<StoreStateType, DBAddress>(state => state.address);
+    const address = useSelector<StoreStateType, FlattenedDBAddress>(state => state.address);
     const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
     const [isolationSources, setIsolationSources] = React.useState<IsolationSource[]>([]);
     const [didDeletingContactEventsSucceed, setDidDeletingContactEventsSucceed] = React.useState<boolean>(true);
@@ -129,24 +128,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         }
         );
     }
-
-    const getStreetByCity = (cityId: string) => {
-        const getStreetByCityLogger = logger.setup('Getting streets of city');
-        getStreetByCityLogger.info(`launching request to server with parameter ${cityId}`, Severity.LOW);
-        axios.get('/addressDetails/city/' + cityId + '/streets').then(result => {
-            if (result?.data) {
-                getStreetByCityLogger.info('got data from the server', Severity.LOW);
-                const streets: Map<string, Street> = new Map();
-                result.data.forEach((street: Street) => {
-                    streets.set(street.id, street)
-                });
-                setStreetsInCity(streets);
-            } else {
-                getStreetByCityLogger.error(`got errors in server result: ${JSON.stringify(result)}`, Severity.HIGH);
-            }
-        }
-        )
-    };
 
     const fetchClinicalDetails = (
         reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
@@ -279,7 +260,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     }
 
     return {
-        getStreetByCity,
         saveClinicalDetailsAndDeleteContactEvents,
         fetchClinicalDetails,
         isolationSources
