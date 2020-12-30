@@ -58,7 +58,7 @@ const InvestigationsInfo: React.FC<Props> = (props: Props): JSX.Element => {
                                     amountOfInvestigations={InvestigationData.value}
                                     text={InvestigationData.id}
                                     style={{ backgroundColor: InvestigationData.color }}
-                                    onClick={() => onInfoButtonClick(statusToFilterConvertor[InvestigationData.id as keyof typeof statusToFilterConvertor])}
+                                    onClick={() => onInfoButtonClick(statusToFilterConvertor[InvestigationData.id as keyof typeof statusToFilterConvertor], InvestigationData.id as FilterRulesDescription)}
                                 />
                             ))
                         }
@@ -77,7 +77,7 @@ const InvestigationsInfo: React.FC<Props> = (props: Props): JSX.Element => {
 }
 
 interface Props {
-    onInfoButtonClick: (infoFilter: FilterRulesVariables) => void;
+    onInfoButtonClick: (infoFilter: FilterRulesVariables, filterType?: FilterRulesDescription) => void;
     investigationsStatistics: InvesitgationInfoStatistics;
     allInvestigationsCount: number;
     isLoading: boolean;

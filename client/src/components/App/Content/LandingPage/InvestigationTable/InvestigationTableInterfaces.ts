@@ -21,6 +21,7 @@ export interface HistoryState {
     unassignedUserFilter?: boolean;
     inactiveUserFilter?: boolean;
     isAdminLandingRedirect: boolean;
+    filterTitle?: string;
 }
 
 export interface useInvestigationTableParameters {

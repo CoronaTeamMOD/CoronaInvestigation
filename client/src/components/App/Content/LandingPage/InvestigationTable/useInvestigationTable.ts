@@ -133,7 +133,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             deskFilter: historyDeskFilter = [], 
             inactiveUserFilter : historyInactiveUserFilter = false, 
             unassignedUserFilter : historyUnassignedUserFilter = false,
-            isAdminLandingRedirect : historyisAdminLandingRedirect = false} = useMemo(() => {
+            isAdminLandingRedirect : historyisAdminLandingRedirect = false,
+            filterTitle} = useMemo(() => {
         const { location: { state } } = history;
         return state || {};
     }, []);
@@ -816,43 +817,16 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const isEqual = (first: any, second: any) => {
-        return !Object.keys(first).some(key => {
-            if (Array.isArray(first[key]) && Array.isArray(second[key])) {
-                return !first[key].every((node: any) => second[key].includes(node));
-            }
-            return second[key] !== first[key]
-        });
-    }
-
-    const titleByAdminLandingFilter = useMemo(() => {
-
-        const currStatusFilter = {
-            statusFilter
-        }
-        const currUserFilter = {
-            inactiveUserFilter,
-            unassignedUserFilter,
-        }
-
-        let title = '';
-        const indexedStatusToFilter : {[index: string] : any} = {...statusToFilterConvertor};
-        const isStatusFiltered = Object.keys(indexedStatusToFilter).some((key: string) => {
-            if (isEqual(indexedStatusToFilter[key], currStatusFilter) || isEqual(indexedStatusToFilter[key], currUserFilter)) {
-                title = `חקירות ${key}`;
-                return true;
-            }
-            return false;
-        });
-        return isStatusFiltered ? title : welcomeMessage;
-    }, [])
-
     const isAdmin = user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN;
+
+    const noAdminFilterTitle = rows.length === 0 ? noInvestigationsMessage : welcomeMessage;;
 
     const tableTitle = useMemo(() => {
         if (rows.length === 0) return noInvestigationsMessage;
-        if (isAdminLandingRedirect === false || !isAdmin) return welcomeMessage;
-        return titleByAdminLandingFilter;
+        if (isAdminLandingRedirect === false || !isAdmin) {
+            return noAdminFilterTitle;
+        }
+        return filterTitle || noAdminFilterTitle;
     }, [rows])
 
     return {

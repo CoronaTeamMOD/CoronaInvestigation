@@ -7,6 +7,8 @@ import { Severity } from 'models/Logger';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import FilterRulesVariables from 'models/FilterRulesVariables';
 import InvesitgationStatistics from 'models/InvestigationStatistics';
+import FilterRulesDescription from 'models/enums/FilterRulesDescription';
+
 interface Parameters {
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
     setInvestigationsStatistics: React.Dispatch<React.SetStateAction<InvesitgationStatistics>>;
@@ -34,8 +36,9 @@ const useAdminLandingPage = (parameters: Parameters) => {
         .finally(() => setIsLoading(false));
     }, [investigationInfoFilter])
 
-    const redirectToInvestigationTable = (investigationInfoFilter: FilterRulesVariables) => {
-        history.push(landingPageRoute, {...investigationInfoFilter, isAdminLandingRedirect: true});
+    const redirectToInvestigationTable = (investigationInfoFilter: FilterRulesVariables, filterType?: FilterRulesDescription) => {
+        const filterTitle = filterType ? `חקירות ${filterType}` : undefined;
+        history.push(landingPageRoute, {...investigationInfoFilter, isAdminLandingRedirect: true, filterTitle});
     };
 
     return {

@@ -11,6 +11,7 @@ import TimeRangeCard from './TimeRangeCard/timeRangeCard';
 import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
+import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 
 const AdminLandingPage: React.FC = (): JSX.Element => {
     const classes = useStyles();
@@ -43,7 +44,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                         isLoading={isLoading}
                         allInvestigationsCount={investigationsStatistics.allInvestigations}
                         investigationsStatistics={investigationsStatistics as InvesitgationInfoStatistics}
-                        onInfoButtonClick={(infoFilter) => redirectToInvestigationTable(infoFilter)} />
+                        onInfoButtonClick={(infoFilter, filterType) => redirectToInvestigationTable(infoFilter, filterType)} />
                 </Grid>
                 <Grid item xs={3}>
                     <TimeRangeCard />
@@ -51,7 +52,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                 <Grid item xs={3}>
                     <UnallocatedCard
                         isLoading={isLoading}
-                        onClick={(infoFilter) => redirectToInvestigationTable(infoFilter)} 
+                        onClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNALLOCATED)} 
                         unallocatedInvestigationsCount={investigationsStatistics.unallocatedInvestigations}
                     />
                 </Grid>
