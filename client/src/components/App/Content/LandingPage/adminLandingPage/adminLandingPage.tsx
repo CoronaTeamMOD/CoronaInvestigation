@@ -28,7 +28,13 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
     const [filteredDesks, setFilteredDesks] = useState<number[]>([]);
 
     const { countyDisplayName } = useAppToolbar();
-    const { redirectToInvestigationTable } = useAdminLandingPage({setIsLoading, investigationInfoFilter, setInvestigationsStatistics, filteredDesks});
+    const { redirectToInvestigationTable } = useAdminLandingPage({
+        setIsLoading,
+        investigationInfoFilter,
+        setInvestigationsStatistics,
+        filteredDesks,
+        setFilteredDesks,
+    });
 
     return (
         <div className={classes.content}>

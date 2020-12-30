@@ -8,18 +8,29 @@ import { landingPageRoute } from 'Utils/Routes/Routes';
 import FilterRulesVariables from 'models/FilterRulesVariables';
 import AdminLandingPageFilters from './AdminLandingPageFilters';
 import InvesitgationStatistics from 'models/InvestigationStatistics';
+import { HistoryState } from '../InvestigationTable/InvestigationTableInterfaces';
 interface Parameters {
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
     setInvestigationsStatistics: React.Dispatch<React.SetStateAction<InvesitgationStatistics>>;
     investigationInfoFilter: AdminLandingPageFilters;
     filteredDesks: number[]
+    setFilteredDesks:  React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 const useAdminLandingPage = (parameters: Parameters) => {
 
-    const { setIsLoading, setInvestigationsStatistics, investigationInfoFilter , filteredDesks} = parameters;
+    const { setIsLoading, setInvestigationsStatistics, investigationInfoFilter , filteredDesks , setFilteredDesks} = parameters;
     
-    const history = useHistory();
+    const history = useHistory<HistoryState>();
+
+    useEffect(() => {
+        const { location: { state } } = history;
+        const {deskFilter} = state;
+        if(deskFilter) {
+            setFilteredDesks(deskFilter)
+        }
+        console.log(history)
+    }, [])
     
     useEffect(() => {
         const unallocatedCountLogger = logger.setup('query investigation statistics');

@@ -12,7 +12,7 @@ import { SelectedRow } from './useInvestigationTable';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 export type StatusFilter = InvestigationMainStatusCodes[];
-export type DeskFilter = InvestigationMainStatusCodes[];
+export type DeskFilter = number[];
 
 export interface HistoryState {
     filterRules?: any;

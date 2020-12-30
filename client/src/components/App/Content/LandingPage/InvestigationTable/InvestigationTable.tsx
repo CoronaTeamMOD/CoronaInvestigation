@@ -265,7 +265,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 {
                     (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) &&
                     <Tooltip title={returnToAdminLandingPage}>
-                        <IconButton color='primary' onClick={() => history.push(adminLandingPageRoute)}>
+                        <IconButton color='primary' onClick={() => history.push(adminLandingPageRoute , { deskFilter })}>
                             <ArrowForward />
                         </IconButton>
                     </Tooltip>
