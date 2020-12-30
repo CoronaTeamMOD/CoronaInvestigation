@@ -31,6 +31,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
     const { redirectToInvestigationTable } = useAdminLandingPage({
         setIsLoading,
         investigationInfoFilter,
+        setInvestigationInfoFilter,
         setInvestigationsStatistics,
         filteredDesks,
         setFilteredDesks,

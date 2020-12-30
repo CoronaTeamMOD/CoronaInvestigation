@@ -11,6 +11,7 @@ import InvesitgationStatistics from 'models/InvestigationStatistics';
 import { HistoryState } from '../InvestigationTable/InvestigationTableInterfaces';
 interface Parameters {
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    setInvestigationInfoFilter: React.Dispatch<React.SetStateAction<AdminLandingPageFilters>>
     setInvestigationsStatistics: React.Dispatch<React.SetStateAction<InvesitgationStatistics>>;
     investigationInfoFilter: AdminLandingPageFilters;
     filteredDesks: number[]
@@ -19,7 +20,7 @@ interface Parameters {
 
 const useAdminLandingPage = (parameters: Parameters) => {
 
-    const { setIsLoading, setInvestigationsStatistics, investigationInfoFilter , filteredDesks , setFilteredDesks} = parameters;
+    const { setIsLoading, setInvestigationsStatistics, investigationInfoFilter , filteredDesks , setFilteredDesks , setInvestigationInfoFilter} = parameters;
     
     const history = useHistory<HistoryState>();
 
@@ -28,8 +29,15 @@ const useAdminLandingPage = (parameters: Parameters) => {
         const {deskFilter} = state;
         if(deskFilter) {
             setFilteredDesks(deskFilter)
+            
+            if(deskFilter.length > 0) {
+                setInvestigationInfoFilter({
+                    deskId : { in : deskFilter}
+                })
+            } else {
+                setInvestigationInfoFilter({})
+            }
         }
-        console.log(history)
     }, [])
     
     useEffect(() => {

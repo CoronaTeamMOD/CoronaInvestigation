@@ -30,9 +30,13 @@ const DesksFilterCard = (props : Props): JSX.Element => {
     }
 
     const onUpdateButtonCLicked = () => {
-        setInvestigationInfoFilter({
-            deskId : { in : filteredDesks}
-        })
+        if(filteredDesks.length > 0) {
+            setInvestigationInfoFilter({
+                deskId : { in : filteredDesks}
+            })
+        } else {
+            setInvestigationInfoFilter({})
+        }
     }
 
     return (
