@@ -278,7 +278,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}
                     </Typography>
                 </Grid>
-                <Grid item xs={3} >
+                <Grid item xs={2} >
                     <DeskFilter
                         desks={allDesks}
                         filteredDesks={deskFilter}
