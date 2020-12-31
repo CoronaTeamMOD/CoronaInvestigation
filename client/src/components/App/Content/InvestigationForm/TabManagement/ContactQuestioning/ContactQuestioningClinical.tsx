@@ -113,8 +113,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid item>
                     <Grid container>
-                        <FieldName xs={6} fieldName='קרבה משפחתית:' />
-                        <Grid item xs={6}>
+                        <FieldName xs={5} fieldName='קרבה משפחתית:' />
+                        <Grid item xs={7}>
                             <Controller
                                 control={control}
                                 name={`form[${index}].${InteractedContactFields.FAMILY_RELATIONSHIP}`}
@@ -148,8 +148,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     </Grid>
                 </Grid>
                 <Grid container item>
-                    <FieldName xs={6} fieldName='קשר:' />
-                    <Grid item xs={6}>
+                    <FieldName xs={5} fieldName='קשר:' />
+                    <Grid item xs={7}>
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.RELATIONSHIP}`}

@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: '9vw',
     },
     addressTextField: {
-        width: '11vw',
+        width: '14vw',
         paddingBottom: '1vh',
     },
     extraInfo: {
