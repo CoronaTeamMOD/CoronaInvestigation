@@ -49,7 +49,7 @@ const useDesksFilterCard = (props : Props) => {
     const onUpdateButtonCLicked = () => {
         if(filteredDesks.length > 0) {
             setInvestigationInfoFilter({
-                deskId : { in : filteredDesks}
+                desks : filteredDesks
             })
         } else {
             setInvestigationInfoFilter({})

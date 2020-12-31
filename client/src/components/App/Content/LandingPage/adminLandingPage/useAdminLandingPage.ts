@@ -27,13 +27,13 @@ const useAdminLandingPage = (parameters: Parameters) => {
 
     useEffect(() => {
         const { location: { state } } = history;
-        const {deskFilter} = state;
+        const deskFilter = state ? state.deskFilter : undefined;
         if(deskFilter) {
             setFilteredDesks(deskFilter)
             
             if(deskFilter.length > 0) {
                 setInvestigationInfoFilter({
-                    deskId : { in : deskFilter}
+                    desks : deskFilter
                 })
             } else {
                 setInvestigationInfoFilter({})
@@ -58,7 +58,8 @@ const useAdminLandingPage = (parameters: Parameters) => {
 
     const redirectToInvestigationTable = (investigationInfoFilter: FilterRulesVariables, filterType?: FilterRulesDescription) => {
         const filterTitle = filterType ? `חקירות ${filterType}` : undefined;
-        history.push(landingPageRoute, {...investigationInfoFilter, isAdminLandingRedirect: true, deskFilter : filteredDesks});
+        const state = {...investigationInfoFilter, isAdminLandingRedirect: true, filterTitle, deskFilter : filteredDesks}
+        history.push(landingPageRoute, state);
     };
 
     return {
