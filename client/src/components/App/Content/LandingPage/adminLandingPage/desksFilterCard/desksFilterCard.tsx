@@ -1,29 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { CardActions, CardContent, Typography } from '@material-ui/core';
 
 import Desk from 'models/Desk';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 
 import LoadingCard from '../LoadingCard/LoadingCard';
-
 import UpdateButton from '../UpdateButton/UpdateButton';
 import useDesksFilterCard from './useDesksFilterCard';
+import AdminLandingPageFilters from '../AdminLandingPageFilters';
 import useStyles, { cardHeight, cardWidth } from './desksFilterCardStyles';
+interface Props {
+    filteredDesks: number[];
+    setFilteredDesks: React.Dispatch<React.SetStateAction<number[]>>
+    setInvestigationInfoFilter: React.Dispatch<React.SetStateAction<AdminLandingPageFilters>>
+}
 
-const DesksFilterCard: React.FC = (): JSX.Element => {
+const DesksFilterCard = (props : Props): JSX.Element => {
     const classes = useStyles();
-
-    const [filteredDesks, setFilteredDesks] = useState<number[]>([]);
-
-    const { desks, isLoading } = useDesksFilterCard();
-
-    const onDeskClicked = (checkedDesk: number) => {
-        if (filteredDesks.includes(checkedDesk)) {
-            setFilteredDesks(filteredDesks.filter(desk => desk !== checkedDesk));
-        } else {
-            setFilteredDesks([...filteredDesks, checkedDesk])
-        }
-    }
+    const { filteredDesks, setFilteredDesks, setInvestigationInfoFilter } = props;
+    const { desks, isLoading, clearAllDesks, onDeskClicked, onUpdateButtonCLicked } = useDesksFilterCard({
+        filteredDesks,
+        setFilteredDesks,
+        setInvestigationInfoFilter,
+    });
 
     return (
         <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.desksCard}>
@@ -31,6 +30,13 @@ const DesksFilterCard: React.FC = (): JSX.Element => {
                 <Typography variant='h6' className={classes.cardTitle}>
                     <b>הדסקים בהם הינך צופה</b>
                 </Typography>
+                    <CustomCheckbox
+                        checkboxElements={[{
+                            checked: filteredDesks.length === 0,
+                            labelText: <b>כל הדסקים</b>,
+                            onChange: clearAllDesks
+                        }]}
+                    />
                 <div className={classes.desksWrapper}>
                     {
                         desks.map((desk: Desk) => (
@@ -48,7 +54,9 @@ const DesksFilterCard: React.FC = (): JSX.Element => {
                 </div>
             </CardContent>
             <CardActions className={classes.desksCardActions}>
-                <UpdateButton/>
+                <UpdateButton
+                    onClick={onUpdateButtonCLicked}
+                />
             </CardActions>
         </LoadingCard>
     )

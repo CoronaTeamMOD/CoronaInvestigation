@@ -3,14 +3,21 @@ import { Button } from '@material-ui/core';
 
 import useStyles from './UpdateButtonStyles';
 
-const UpdateButton: React.FC = (): JSX.Element => {
+interface Props {
+    onClick? : () => void;
+}
+
+const UpdateButton = (props : Props): JSX.Element => {
     const classes = useStyles();
+    const {onClick} = props;
 
     return (
         <Button
             className={classes.updateButton}
             variant='contained'
-            size='small'>
+            size='small'
+            onClick={onClick}
+            >
             עדכון
         </Button>
     )

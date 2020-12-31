@@ -10,6 +10,7 @@ import useAdminLandingPage from './useAdminLandingPage';
 import TimeRangeCard from './TimeRangeCard/timeRangeCard';
 import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
+import AdminLandingPageFilters from './AdminLandingPageFilters';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
 import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 
@@ -17,7 +18,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
     const classes = useStyles();
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [investigationInfoFilter, setInvestigationInfoFilter] = useState<FilterRulesVariables>({});
+    const [investigationInfoFilter, setInvestigationInfoFilter] = useState<AdminLandingPageFilters>({});
     const [investigationsStatistics, setInvestigationsStatistics] = useState<InvestigationStatistics>({
         allInvestigations: 0,
         inProcessInvestigations: 0,
@@ -26,10 +27,17 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
         unassignedInvestigations: 0,
         unallocatedInvestigations: 0,
     });
+    const [filteredDesks, setFilteredDesks] = useState<number[]>([]);
 
     const { countyDisplayName } = useAppToolbar();
-    const { redirectToInvestigationTable } = useAdminLandingPage({setIsLoading, investigationInfoFilter, setInvestigationsStatistics});
-
+    const { redirectToInvestigationTable } = useAdminLandingPage({
+        setIsLoading,
+        investigationInfoFilter,
+        setInvestigationInfoFilter,
+        setInvestigationsStatistics,
+        filteredDesks,
+        setFilteredDesks,
+    });
     return (
         <div className={classes.content}>
             <Typography color='textPrimary' className={classes.countyDisplayName}>
@@ -37,7 +45,11 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
             </Typography>
             <Grid container spacing={5} className={classes.gridContainer}>
                 <Grid item xs={3}>
-                    <DesksFilterCard />
+                    <DesksFilterCard 
+                        filteredDesks={filteredDesks}
+                        setFilteredDesks={setFilteredDesks}
+                        setInvestigationInfoFilter={setInvestigationInfoFilter}
+                    />
                 </Grid>
                 <Grid item xs={9}>
                     <InvestigationsInfo

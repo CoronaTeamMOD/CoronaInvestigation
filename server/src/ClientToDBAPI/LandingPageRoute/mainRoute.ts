@@ -168,6 +168,12 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
         workflow: 'query investigations statistics',
         user: response.locals.user.id,
     });
+
+    const { desks } = request.body
+
+    const desksFilter = desks
+                        ? { deskId : { in : desks}} 
+                        : {};
     
     const userFilters = {
         userByCreator: {
@@ -175,7 +181,7 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
                 id: {equalTo: response.locals.user.investigationGroup}
             }
         },
-        ...request.body
+        ...desksFilter
     }
     const parameters = { userFilters, allInvesitgationsFilter: userFilters };
     investigationsStatisticsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
