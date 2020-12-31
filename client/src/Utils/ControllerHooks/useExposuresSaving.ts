@@ -43,7 +43,7 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
 
     const saveExposureAndFlightData = async (data : FormData , ids : (number | null)[]) : Promise<void> => {
         let { exposures, wereFlights, wereConfirmedExposures } = data;
-        const formattedExposure = formatExposures(exposures , ids);
+        const formattedExposure = exposures ? formatExposures(exposures , ids) : [];
         let exposuresToDelete : number[] = [];
         let filteredExposures : (Exposure | DBExposure)[] = [];
         const saveExposureAndFlightDataLogger = logger.setup('Saving Exposures And Flights');
