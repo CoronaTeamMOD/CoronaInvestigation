@@ -59,7 +59,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [checkedIndexedRows, setCheckedIndexedRows] = useState<IndexedInvestigation[]>([]);
     const [selectedRow, setSelectedRow] = useState<SelectedRow>(DEFAULT_SELECTED_ROW);
     const [deskAutoCompleteClicked, setDeskAutoCompleteClicked] = useState<boolean>(false);
-    const [allUsersOfCurrCounty, setAllUsersOfCurrCounty] = useState<Map<string, User>>(new Map());
     const [allCounties, setAllCounties] = useState<County[]>([]);
     const [order, setOrder] = useState<Order>(SortOrder.asc);
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
@@ -98,8 +97,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers,
         tableTitle
     } = useInvestigationTable({
-        setSelectedRow, setAllUsersOfCurrCounty, allGroupedInvestigations,
-        setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations,
+        setSelectedRow, allGroupedInvestigations, setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations,
         investigationColor
     });
 
@@ -471,7 +469,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             <InvestigatorAllocationDialog
                 isOpen={isInvestigatorAllocationDialogOpen}
                 handleCloseDialog={() => setIsInvestigatorAllocationDialogOpen(false)}
-                fetchInvestigators={getFilteredUsersOfCurrentCounty()}
+                fetchInvestigators={getFilteredUsersOfCurrentCounty}
                 allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
                 groupIds={[selectedRow.groupId]}
                 epidemiologyNumbers={[selectedRow.epidemiologyNumber]}
@@ -493,7 +491,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
                     isInvestigatorAllocationDialogOpen={isInvestigatorAllocationDialogOpen}
                     setIsInvestigatorAllocationDialogOpen={setIsInvestigatorAllocationDialogOpen}
-                    fetchInvestigators={getFilteredUsersOfCurrentCounty()}
+                    fetchInvestigators={getFilteredUsersOfCurrentCounty}
                     allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
                 />
             </Slide>

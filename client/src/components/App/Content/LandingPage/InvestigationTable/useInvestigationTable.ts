@@ -124,8 +124,7 @@ const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך ה�
 const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
-    const { setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
-        setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations,
+    const { setSelectedRow, setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations,
         investigationColor } = parameters;
 
     const classes = useStyle(false);
@@ -349,8 +348,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (isLoggedIn) {
             setIsLoading(true);
             if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
-                const allCountyUsers = await fetchAllCountyUsers();
-                setAllUsersOfCurrCounty(allCountyUsers);
                 fetchAllCounties();
             }
             fetchInvestigationsLogger.info(`launching the selected request to the DB ordering by ${orderBy}`, Severity.LOW);
