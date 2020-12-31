@@ -1,6 +1,6 @@
 import { SweetAlertResult } from 'sweetalert2';
-import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Tooltip } from '@material-ui/core';
+import React, { useMemo, useState } from 'react';
+import { Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Tooltip } from '@material-ui/core';
 
 import theme from 'styles/theme';
 import InvestigatorOption from 'models/InvestigatorOption';
@@ -18,18 +18,12 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
     const { isOpen, handleCloseDialog, fetchInvestigators, allocateInvestigationToInvestigator, groupIds, epidemiologyNumbers, onSuccess } = props;
 
     const [investigatorToAllocateIndex, setInvestigatorToAllocateIndex] = useState<number>(unSelectedRow);
-    const [allInvestigators, setAllInvestigators] = useState<InvestigatorOption[]>([]);
+    const [allInvestigators, setAllInvestigators] = useState<InvestigatorOption[] | undefined>(undefined);
     const classes = useStyles();
     const { alertWarning } = useCustomSwal();
 
-    useEffect(() => {
-        fetchInvestigators.then((investigators) => {
-            setAllInvestigators(investigators)
-        })
-    }, [fetchInvestigators])
-
     const shouldButtonDisabled: boolean = useMemo(() => {
-       return investigatorToAllocateIndex === unSelectedRow;
+        return investigatorToAllocateIndex === unSelectedRow;
     }, [investigatorToAllocateIndex])
 
     const createAlertMessage = () => {
@@ -37,10 +31,10 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
         if ((groupIds.length && groupIds[0]) || epidemiologyNumbers.length > 1) {
             message += 'את כל החקירות ';
         } else if (epidemiologyNumbers.length === 1) {
-            message += `את חקירה מספר <b>${epidemiologyNumbers[0]}</b> `;            
+            message += `את חקירה מספר <b>${epidemiologyNumbers[0]}</b> `;
         }
-        message += `לחוקר <b>${allInvestigators[investigatorToAllocateIndex].value.userName}</b>?</p>`;
-        return message;     
+        message += allInvestigators && `לחוקר <b>${allInvestigators[investigatorToAllocateIndex].value.userName}</b>?</p>`;
+        return message;
     }
 
     const closeDialog = () => {
@@ -57,28 +51,35 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
             confirmButtonColor: theme.palette.primary.main,
             confirmButtonText: 'כן, המשך',
         })
-        .then(result => {
-            if (result.value) {
-                allocateInvestigationToInvestigator(groupIds, epidemiologyNumbers, allInvestigators[investigatorToAllocateIndex]);
-                onSuccess();
-                closeDialog();
-            }
-        })
+            .then(result => {
+                if (result.value && allInvestigators) {
+                    allocateInvestigationToInvestigator(groupIds, epidemiologyNumbers, allInvestigators[investigatorToAllocateIndex]);
+                    onSuccess();
+                    closeDialog();
+                }
+            })
     }
 
     return (
-        <Dialog open={isOpen} maxWidth='md' classes={{paper: classes.dialog}} onClose={() => closeDialog()}>
+        <Dialog open={isOpen} maxWidth='md' classes={{ paper: classes.dialog }}
+            onClose={() => closeDialog()}
+            onEnter={() => fetchInvestigators().then((investigators) => {
+                setAllInvestigators(investigators)
+            })}
+        >
             <DialogTitle>
                 <b>
                     {title}
                 </b>
             </DialogTitle>
             <DialogContent>
-                <InvestigatorsTable 
-                    investigators={allInvestigators.map((investigator: InvestigatorOption) => investigator.value)}
-                    selectedRow={investigatorToAllocateIndex}
-                    setSelectedRow={setInvestigatorToAllocateIndex}
-                />
+                <Collapse in={allInvestigators !== undefined}>
+                    <InvestigatorsTable
+                        investigators={allInvestigators ? allInvestigators.map((investigator: InvestigatorOption) => investigator.value) : []}
+                        selectedRow={investigatorToAllocateIndex}
+                        setSelectedRow={setInvestigatorToAllocateIndex}
+                    />
+                </Collapse>
             </DialogContent>
             <TransferInvestigationDialogNote />
             <DialogActions>
@@ -92,7 +93,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
                 >
                     ביטול
                 </Button>
-                <Tooltip title={shouldButtonDisabled ? 'לא נבחר חוקר' : ''}>    
+                <Tooltip title={shouldButtonDisabled ? 'לא נבחר חוקר' : ''}>
                     <span> {/* The span role is to wrap the button to make sure the tooltip work properly even if the button is disabled */}
                         <Button
                             form='investigatorAllocation'
@@ -104,7 +105,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
                             אישור
                         </Button>
                     </span>
-                </Tooltip>         
+                </Tooltip>
             </DialogActions>
         </Dialog>
     );
@@ -113,7 +114,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
 interface Props {
     isOpen: boolean;
     handleCloseDialog: () => void;
-    fetchInvestigators: Promise<InvestigatorOption[]>;
+    fetchInvestigators: () => Promise<InvestigatorOption[]>;
     allocateInvestigationToInvestigator: (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => void;
     groupIds: string[];
     epidemiologyNumbers: number[];

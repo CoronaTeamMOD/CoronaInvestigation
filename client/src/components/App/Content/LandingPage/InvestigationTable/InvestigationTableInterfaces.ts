@@ -28,7 +28,6 @@ export interface useInvestigationTableParameters {
     currentPage: number;
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     setSelectedRow: React.Dispatch<React.SetStateAction<SelectedRow>>;
-    setAllUsersOfCurrCounty: React.Dispatch<React.SetStateAction<Map<string, User>>>;
     setAllCounties: React.Dispatch<React.SetStateAction<County[]>>;
     setAllStatuses: React.Dispatch<React.SetStateAction<InvestigationMainStatus[]>>;
     setAllDesks: React.Dispatch<React.SetStateAction<Desk[]>>;

@@ -194,7 +194,7 @@ interface Props {
     checkedIndexedRows: IndexedInvestigation[];
     allDesks: Desk[];
     allCounties: County[];
-    fetchInvestigators: Promise<InvestigatorOption[]>;
+    fetchInvestigators: () => Promise<InvestigatorOption[]>;
     tableRows: InvestigationTableRow[];
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     isInvestigatorAllocationDialogOpen: boolean;
