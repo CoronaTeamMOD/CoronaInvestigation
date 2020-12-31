@@ -10,7 +10,8 @@ const useStyles = makeStyles({
         borderRadius: '1vw',
     },
     desksCardContent: {
-        height: '68%',
+        height: '70%',
+        width: '13.6vw',
     },
     cardTitle: {
         fontSize: '0.9vw',
