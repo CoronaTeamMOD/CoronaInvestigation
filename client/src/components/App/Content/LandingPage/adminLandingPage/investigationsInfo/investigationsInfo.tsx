@@ -13,7 +13,7 @@ import useStyles, { cardWidth, cardHeight } from './investigationsInfoStyles';
 import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart';
 import InvestigationInfoButton from './investigationInfoButton/investigationInfoButton';
 
-const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit<InvestigationChart, 'value'>} = {
+const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit<InvestigationChart, 'value'> } = {
     newInvestigations: {
         id: FilterRulesDescription.NEW,
         color: '#1F78B4'
@@ -37,7 +37,7 @@ const InvestigationsInfo: React.FC<Props> = (props: Props): JSX.Element => {
 
     const { onInfoButtonClick, investigationsStatistics, allInvestigationsCount, isLoading } = props;
 
-    const investigationsGraphData : InvestigationChart[] = useMemo<InvestigationChart[]>(() => {
+    const investigationsGraphData: InvestigationChart[] = useMemo<InvestigationChart[]>(() => {
         return Object.keys(convertorsToGraph).map((convertor) => ({
             ...convertorsToGraph[convertor as keyof InvesitgationInfoStatistics],
             value: investigationsStatistics[convertor as keyof InvesitgationInfoStatistics]
