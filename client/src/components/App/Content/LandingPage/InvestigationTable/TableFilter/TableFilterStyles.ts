@@ -11,8 +11,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: 16,
     },
     autocomplete: {
-        width: '40%',
-        height: '60%'
+        width: '45%',
     },
     optionCheckbox: {
         height: '0.5vh',

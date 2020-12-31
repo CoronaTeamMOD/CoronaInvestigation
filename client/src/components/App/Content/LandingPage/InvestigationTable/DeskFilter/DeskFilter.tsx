@@ -24,6 +24,7 @@ const DeskFilter = ({ desks, filteredDesks, onFilterChange }: Props) => {
                 renderInput={(params) =>
                     <TextField
                         {...params}
+                        size='small'
                         className={classes.textfield}
                     />
                 }
@@ -34,7 +35,6 @@ const DeskFilter = ({ desks, filteredDesks, onFilterChange }: Props) => {
                             color='primary'
                             className={classes.optionCheckbox}
                             checked={selected}
-                            color='primary'
                         />
                         <Typography variant='body2'>{option.deskName}</Typography>
                     </>

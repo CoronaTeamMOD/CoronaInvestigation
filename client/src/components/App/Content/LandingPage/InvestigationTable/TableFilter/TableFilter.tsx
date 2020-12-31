@@ -40,6 +40,7 @@ const TableFilter = (props: Props) => {
                 onChange={onFilterChange}
                 renderInput={(params) =>
                     <TextField
+                        size='small'
                         {...params}
                     />
                 }
@@ -72,7 +73,7 @@ const TableFilter = (props: Props) => {
             <Typography className={classes.title} >
                 <b>חקירות משויכות לחוקרים לא פעילים</b>
             </Typography>
-            <IconButton onClick={() => onClose()}><Close /></IconButton>
+            <IconButton onClick={() => onClose()} size='small'><Close /></IconButton>
         </Card>
     )
 }
