@@ -98,7 +98,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const contactedCityField = {
         id: currentCity,
-        value: Boolean(contactedCity) ? contactedCity : { id: "-1", displayName: "..." }
+        value: Boolean(contactedCity) ? contactedCity : { id: '-1', displayName: '...' }
     };
 
     return (
