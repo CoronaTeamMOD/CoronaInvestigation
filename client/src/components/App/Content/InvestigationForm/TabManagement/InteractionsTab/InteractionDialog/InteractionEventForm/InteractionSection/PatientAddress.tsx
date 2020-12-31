@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Grid, TextField } from '@material-ui/core';
 
-import DBAddress from 'models/DBAddress';
+import FlattenedDBAddress from 'models/DBAddress';
 import StoreStateType from 'redux/storeStateType';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import City from 'models/City';
@@ -16,7 +16,7 @@ const UNKNOWN = 'לא ידוע';
 
 const PatientAddress: React.FC<PatientAddressProps> = (): JSX.Element => {
 
-    const patientAddress = useSelector<StoreStateType, DBAddress>(state => state.address);
+    const patientAddress = useSelector<StoreStateType, FlattenedDBAddress>(state => state.address);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const { city, floor, houseNum, streetName: street } = patientAddress;

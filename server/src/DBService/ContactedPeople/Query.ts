@@ -23,6 +23,18 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
         additionalPhoneNumber
         gender
       }
+      isolationAddress: addressByIsolationAddress {
+        city: cityByCity {
+          id
+          displayName
+        }
+        street: streetByStreet {
+          id
+          displayName
+        }
+        houseNum
+        apartment
+      }
       contactEventByContactEvent {
         startTime
         id
@@ -34,7 +46,6 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
       occupation
       doesHaveBackgroundDiseases
       contactType
-      contactedPersonCity
       doesFeelGood
       doesNeedHelpInIsolation
       repeatingOccuranceWithConfirmed

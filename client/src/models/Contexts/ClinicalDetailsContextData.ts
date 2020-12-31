@@ -1,10 +1,10 @@
-import DBAddress from 'models/DBAddress';
+import FlattenedDBAddress from 'models/DBAddress';
 
 interface ClinicalDetailsData {
     isolationStartDate: Date | null;
     isolationEndDate: Date | null;
     isolationSource: number | null;
-    isolationAddress: DBAddress;
+    isolationAddress: FlattenedDBAddress;
     isInIsolation: boolean;
     isIsolationProblem: boolean;
     isIsolationProblemMoreInfo: string;

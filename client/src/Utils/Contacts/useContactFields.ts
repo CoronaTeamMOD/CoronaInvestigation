@@ -4,6 +4,7 @@ import Contact from 'models/Contact';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import {ContactedPersonFieldMapper} from 'models/enums/contactQuestioningExcelFields';
 import ContactType from 'models/enums/ContactType';
+import {get} from '../auxiliaryFunctions/auxiliaryFunctions';
 
 export const COMPLETE_STATUS = 5;
 export const STRICT_CONTACT_TYPE = 1;
@@ -27,7 +28,7 @@ export enum ValidationReason {
 const COMPLETE_CONTACT_QUESTIONING_STATUS = 'הושלם התחקור';
 
 const mandatoryQuarantineFields = [InteractedContactFields.IDENTIFICATION_NUMBER, InteractedContactFields.IDENTIFICATION_TYPE,
-    InteractedContactFields.CONTACTED_PERSON_CITY, InteractedContactFields.PHONE_NUMBER, InteractedContactFields.FIRST_NAME,
+    `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`, InteractedContactFields.PHONE_NUMBER, InteractedContactFields.FIRST_NAME,
     InteractedContactFields.LAST_NAME];
 
 const useContactFields = (contactStatus?: InteractedContact['contactStatus']) => {
@@ -48,7 +49,7 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
             return { valid: true };
         } else {
             const emptyFieldNames = mandatoryQuarantineFields.filter(mandatoryField =>
-                !Boolean(contact[mandatoryField as keyof InteractedContact])
+                !Boolean(get(contact, mandatoryField))
             );
             const isLooseContact = checkIsLooseContact(contact.contactType);
 
@@ -65,7 +66,7 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         let message = '';
         if(emptyFields.length > 0) {
             const fieldWord = `לא מילאת את ${emptyFields.length > 1 ? 'שדות ' : 'שדה '}`;
-            const emptyFieldProblem = emptyFields.map(fieldName => ContactedPersonFieldMapper[fieldName as keyof typeof ContactedPersonFieldMapper]);
+            const emptyFieldProblem = emptyFields.map(fieldName => get(ContactedPersonFieldMapper, fieldName));
             message = fieldWord.concat(emptyFieldProblem.join(', '));
             if(isLooseContact) message = message.concat(' ו')
         }

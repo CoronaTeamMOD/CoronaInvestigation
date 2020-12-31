@@ -92,12 +92,15 @@ ContactedPeopleRoute.get('/allContacts/:investigationId', (request: Request, res
         })
 });
 
-ContactedPeopleRoute.post('/interactedContacts', (request: Request, response: Response) => {
+ContactedPeopleRoute.post('/interactedContacts',  (request: Request, response: Response) => {
+    const requestData = request.body;
+
     const epidemiologyNumber = +response.locals.epidemiologynumber;
-    const isThereDoneContact = request.body.unSavedContacts.contacts.some((contact : InteractedContact) => contact.contactStatus === DONE_CONTACT);
-    const isSingleContact = request.body.unSavedContacts?.contacts.length === 1;
+    const isThereDoneContact = requestData.unSavedContacts.contacts.some((contact : InteractedContact) => contact.contactStatus === DONE_CONTACT);
+    const isSingleContact = requestData.unSavedContacts?.contacts.length === 1;
+
     const workflow = `Saving ${isSingleContact ? 'single': 'all'} contact${isSingleContact ? '' : 's'}`;
-    
+
     const interactedContactsLogger = logger.setup({
         workflow,
         investigation: response.locals.epidemiologynumber,
@@ -109,6 +112,10 @@ ContactedPeopleRoute.post('/interactedContacts', (request: Request, response: Re
 
     graphqlRequest(UPDATE_LIST_OF_CONTACTS, response.locals, parameters)
         .then(result => {
+            if (result?.errors) {
+                interactedContactsLogger.error(invalidDBResponseLog(result?.errors), Severity.HIGH);
+                return response.sendStatus
+            }
             interactedContactsLogger.info(validDBResponseLog, Severity.LOW);
             isThereDoneContact && sendSavedInvestigationToIntegration(epidemiologyNumber, workflow, response.locals.user.id);
             response.send(result);
@@ -149,7 +156,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
             return {
                 ...contactedPerson,
                 contactEvent,
-                contactedPersonCity,
+                isolationAddress:{city:contactedPersonCity},
                 contactType,
                 familyRelationship,
                 contactStatus
@@ -159,7 +166,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
             return {
                 ...contactedPerson,
                 contactEvent,
-                contactedPersonCity: null,
+                isolationAddress: {city: null},
                 contactType: null,
                 familyRelationship: null,
                 contactStatus: null

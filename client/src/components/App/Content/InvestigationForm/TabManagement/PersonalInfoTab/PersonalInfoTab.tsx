@@ -8,7 +8,7 @@ import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, FormCo
 
 import City from 'models/City';
 import Street from 'models/Street';
-import DBAddress from 'models/DBAddress';
+import FlattenedDBAddress from 'models/DBAddress';
 import Occupations from 'models/enums/Occupations';
 import EducationGrade from 'models/EducationGrade';
 import { setAddress } from 'redux/Address/AddressActionCreators';
@@ -170,7 +170,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     }
 
     useEffect(() => {
-        const address: DBAddress = {
+        const address: FlattenedDBAddress = {
             city: data.city || null,
             street: data.street || null,
             floor: data.floor || null,

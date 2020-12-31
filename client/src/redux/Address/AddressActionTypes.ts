@@ -1,10 +1,10 @@
-import DBAddress from 'models/DBAddress';
+import FlattenedDBAddress from 'models/DBAddress';
 
 export const SET_ADDRESS = 'SET_ADDRESS';
 
 interface SetAddress {
     type: typeof SET_ADDRESS,
-    payload: { address: DBAddress }
+    payload: { address: FlattenedDBAddress }
 }
 
 export type AddressAction = SetAddress;

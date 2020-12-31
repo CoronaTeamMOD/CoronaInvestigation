@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, {useEffect} from 'react';
 import { useSelector } from 'react-redux';
 import { addDays, format } from 'date-fns';
 import { Autocomplete } from '@material-ui/lab';
@@ -14,6 +14,8 @@ import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
+import {getStreetByCity} from 'Utils/Address/AddressUtils';
+import Street from 'models/Street';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import HebrewTextField from 'commons/HebrewTextField/HebrewTextField';
 import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFields';
@@ -27,13 +29,14 @@ const emptyFamilyRelationship: FamilyRelationship = {
 };
 
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
-    const { control, getValues, watch, errors } = useFormContext();
+    const {control , getValues , watch , errors} = useFormContext();
+    const { index, familyRelationships, interactedContact, isFamilyContact } = props;
 
     const classes = useStyles();
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
-
-    const { index, familyRelationships, interactedContact, isFamilyContact } = props;
+    const [streetsInCity, setStreetsInCity] = React.useState<Map<string, Street>>(new Map());
+    const watchAddress = watch(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}`);
 
     const { shouldDisableContact } = useStatusUtils();
     const shouldDisableIdByReopen = interactedContact.creationTime ?
@@ -47,6 +50,14 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const daysToIsolate = 14;
     const isolationEndDate = addDays(new Date(interactedContact.contactDate), daysToIsolate);
     const formattedIsolationEndDate = format(new Date(isolationEndDate), 'dd/MM/yyyy');
+
+    useEffect(() => {
+        if (watchAddress?.city) {
+            getStreetByCity(formValues.isolationAddress.city, setStreetsInCity);
+        } else {
+            setStreetsInCity(new Map())
+        }
+    }, [watchAddress?.city]);
 
     const formatContactToValidate = () => {
         return {
@@ -66,7 +77,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
             }
         }
         return true;
-    }
+    };
 
     const handleIsolation = (value: boolean, onChange: (...event: any[]) => void) => {
         const contactWithIsolationRequirement = { ...formatContactToValidate(), doesNeedIsolation: value };
@@ -93,14 +104,6 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         }
     };
 
-    const currentCity = getValues().form ? watch(`form[${index}].${InteractedContactFields.CONTACTED_PERSON_CITY}`) : interactedContact.contactedPersonCity;
-    const contactedCity = useMemo(() => cities.get(currentCity?.id ? currentCity.id : currentCity), currentCity);
-
-    const contactedCityField = {
-        id: currentCity,
-        value: Boolean(contactedCity) ? contactedCity : { id: '-1', displayName: '...' }
-    };
-
     return (
         <Grid item xs={3}>
             <Grid container direction='column' spacing={4}>
@@ -110,8 +113,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid item>
                     <Grid container>
-                        <FieldName xs={6} fieldName='קרבה משפחתית:' />
-                        <Grid item xs={6}>
+                        <FieldName xs={5} fieldName='קרבה משפחתית:' />
+                        <Grid item xs={7}>
                             <Controller
                                 control={control}
                                 name={`form[${index}].${InteractedContactFields.FAMILY_RELATIONSHIP}`}
@@ -145,8 +148,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     </Grid>
                 </Grid>
                 <Grid container item>
-                    <FieldName xs={6} fieldName='קשר:' />
-                    <Grid item xs={6}>
+                    <FieldName xs={5} fieldName='קשר:' />
+                    <Grid item xs={7}>
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.RELATIONSHIP}`}
@@ -168,32 +171,79 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid container item>
                     <Grid container item>
-                        <FieldName xs={5} fieldName='יישוב השהייה בבידוד:' />
+                        <FieldName xs={5} fieldName='מיקום השהייה בבידוד:' />
                         <Grid item xs={7}>
                             <Controller
                                 control={control}
-                                name={`form[${index}].${InteractedContactFields.CONTACTED_PERSON_CITY}`}
-                                defaultValue={currentCity}
+                                name={`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`}
+                                defaultValue={interactedContact.isolationAddress?.city?.id}
                                 render={(props) => {
-                                    return (
-                                        <Autocomplete
-                                            value={contactedCityField}
-                                            disabled={isFieldDisabled}
-                                            options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                                            getOptionLabel={(option) => option?.value ? option.value.displayName : ''}
-                                            onChange={(event, selectedCity) => {
-                                                props.onChange(selectedCity?.id);
-                                            }}
-                                            renderInput={(params) =>
-                                                <TextField
-                                                    {...params}
-                                                    test-id='contactedPersonCity'
-                                                    placeholder='עיר'
-                                                />
-                                            }
-                                        />
-                                    )
-                                }}
+                                return (
+                                    <Autocomplete className={classes.addressTextField}
+                                        disabled={isFieldDisabled}
+                                        value={props.value && {id: props.value as string, value: cities.get(props.value) as City}}
+                                        options={Array.from(cities, ([id, value]) => ({ id, value }))}
+                                        getOptionLabel={(option) => option?.value ? option.value.displayName : ''}
+                                        onChange={(event, selectedCity) => props.onChange(selectedCity?.id)}
+                                        renderInput={(params) =>
+                                            <TextField
+                                                {...params}
+                                                test-id='contactedPersonCity'
+                                                placeholder='עיר'
+                                            />
+                                        }
+                                    />
+                                )
+                            }}
+                        />
+                            <Controller
+                                control={control}
+                                name={`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`}
+                                defaultValue={interactedContact.isolationAddress?.street?.id}
+                                render={(props) => (
+                                    <Autocomplete className={classes.addressTextField}
+                                        options={Array.from(streetsInCity, ([id, value]) => ({ id, value }))}
+                                        getOptionLabel={(option) => option?.value?.displayName || ''}
+                                        value={props.value && {id: props.value as string, value: streetsInCity.get(props.value) as Street}}
+                                        onChange={(event, selectedStreet) => {
+                                            props.onChange(selectedStreet?.id || '')
+                                        }}
+                                        renderInput={(params) =>
+                                            <TextField
+                                                {...params}
+                                                placeholder='רחוב'
+                                            />
+                                        }
+                                    />
+                                )}
+                            />
+                            <Controller
+                                control={control}
+                                name={`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`}
+                                defaultValue={interactedContact.isolationAddress?.houseNum}
+                                render={(props) => (
+                                    <AlphanumericTextField className={classes.addressTextField}
+                                        name={InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}
+                                        value={props.value}
+                                        onChange={props.onChange}
+                                        onBlur={props.onBlur}
+                                        placeholder='מספר בית'
+                                    />
+                                )}
+                            />
+                            <Controller
+                                control={control}
+                                name={`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`}
+                                defaultValue={interactedContact.isolationAddress?.apartment}
+                                render={(props) => (
+                                    <AlphanumericTextField className={classes.addressTextField}
+                                        name={InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}
+                                        value={props.value}
+                                        onChange={props.onChange}
+                                        onBlur={props.onBlur}
+                                        placeholder='מספר דירה'
+                                    />
+                                )}
                             />
                         </Grid>
                     </Grid>

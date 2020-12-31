@@ -1,6 +1,7 @@
 import Person from './Person';
 import ContactType from './enums/ContactType';
 import Occupations from './enums/Occupations';
+import {DBAddress} from "./DBAddress";
 
 interface InteractedContact extends Person {
     id: number;
@@ -14,7 +15,7 @@ interface InteractedContact extends Person {
     familyRelationship: number;
     occupation: Occupations;
     doesHaveBackgroundDiseases: boolean;
-    contactedPersonCity: string;
+    isolationAddress: DBAddress;
     doesFeelGood: boolean;
     doesNeedHelpInIsolation: boolean;
     repeatingOccuranceWithConfirmed: boolean;
