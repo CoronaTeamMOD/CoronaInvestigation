@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Tooltip, Typography } from '@material-ui/core';
+import { Tooltip, Typography } from '@material-ui/core';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
 import FilterRulesVariables from 'models/FilterRulesVariables';
@@ -19,7 +19,7 @@ const UnallocatedCard: React.FC<Props> = (props: Props): JSX.Element => {
     return (
         <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.unallocatedCard}>
             <Tooltip title={unallocatedInvestigationsText}>
-                <Card onClick={() => onClick(statusToFilterConvertor[FilterRulesDescription.UNALLOCATED])}>
+                <div onClick={() => onClick(statusToFilterConvertor[FilterRulesDescription.UNALLOCATED])}>
                     <div className={classes.investigationAmount}>
                         <Typography className={classes.investigationNumberText}><b>{unallocatedInvestigationsCount}</b></Typography>
                         <Typography className={classes.investigationAmountText}><b>חקירות</b></Typography>
@@ -28,7 +28,7 @@ const UnallocatedCard: React.FC<Props> = (props: Props): JSX.Element => {
                         <Typography className={classes.unallocatedInvestigationsText}><b>{FilterRulesDescription.UNALLOCATED}</b></Typography>
                         <NavigateBeforeIcon className={classes.navigateIcon} />
                     </div>
-                </Card>
+                </div>
             </Tooltip>
         </LoadingCard>
     )

@@ -29,7 +29,7 @@ const useStyles = makeStyles({
         width: '13vw',
     },
     unallocatedInvestigationsText: {
-        fontSize: '1.3vw',
+        fontSize: '1.2vw',
     },
     navigateIcon: {
         backgroundColor: 'WhiteSmoke',
