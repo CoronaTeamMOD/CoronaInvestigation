@@ -137,7 +137,6 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
     const getIdFromResult = (result: any) => result?.nodes.length > 0 ? parseInt(result.nodes[0].id) : null;
     const parsedContactsPromises = contacts.map(async (contactedPerson: InteractedContact) => {
         const parsingVariables = {
-            city: contactedPerson.contactedPersonCity || '',
             contactType: contactedPerson.contactType || '',
             familyRelationship: contactedPerson.familyRelationship || '',
             contactStatus: contactedPerson.contactStatus || ''
@@ -147,12 +146,10 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
             excelLogger.info(`GET_FOREIGN_KEYS_BY_NAMES: ${launchingDBRequestLog(parsingVariables)}`, Severity.LOW);
             const parsedForeignKeys = await graphqlRequest(GET_FOREIGN_KEYS_BY_NAMES, response.locals, parsingVariables)
 
-            const {allCities, allContactTypes, allFamilyRelationships, allContactStatuses} = parsedForeignKeys.data;
+            const {allContactTypes, allFamilyRelationships, allContactStatuses} = parsedForeignKeys.data;
             const contactType = getIdFromResult(allContactTypes),
                 familyRelationship = getIdFromResult(allFamilyRelationships),
                 contactStatus = getIdFromResult(allContactStatuses);
-
-                console.log(contactedPerson.cityId)
             return {
                 ...contactedPerson,
                 contactEvent,

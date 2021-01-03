@@ -1,6 +1,4 @@
 import InteractedContact from 'models/InteractedContact';
-import { string } from 'yup';
-import {DBAddress} from "../DBAddress";
 
 export enum booleanAnswers {
     TRUE = 'כן',
@@ -24,6 +22,9 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
     familyRelationship: 'קרבה משפחתית',
     occupation: 'האם עוסק באחד מן התחומים הבאים',
     doesHaveBackgroundDiseases: 'האם סובל ממחלות רקע',
+    isolationAddress: {
+        city: 'יישוב השהייה בבידוד',
+    },
     doesFeelGood: 'האם חש בטוב',
     doesNeedHelpInIsolation: 'האם נדרש סיוע עבור מקום בידוד',
     repeatingOccuranceWithConfirmed: 'מפגש חוזר עם המאומת',
@@ -36,7 +37,15 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
     apartment: 'מספר דירה השהייה בבידוד',
 };
 
-type AddressNames = { cityId : string , streetId : string , houseNum: string , apartment: string};
+type AddressNames = {
+    isolationAddress: {
+        city: 'יישוב השהייה בבידוד';
+    };
+    cityId: 'מזהה עיר';
+    streetId: 'מזהה רחוב';
+    houseNum: 'מספר בית השהייה בבידוד';
+    apartment: 'מספר דירה השהייה בבידוד';
+};
 export type ContactedPersonExcel =  {
     [K in keyof Omit<InteractedContact, 'id'|'contactEvent'|'involvementReason' | 'involvedContactId'| 'isolationAddress'>]: string;
  }  & AddressNames;
@@ -47,4 +56,6 @@ export interface ExcelRow extends ContactedPersonExcel {
 
 export interface ParsedExcelRow extends InteractedContact {
     rowNum: number;
+    cityId: number;
+    streetId: number;
 };
