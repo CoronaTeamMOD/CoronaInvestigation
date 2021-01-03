@@ -46,6 +46,7 @@ const AddressForm: React.FC<Props> = ({
                             <TextField 
                                 value={cities.get(props.value)?.displayName} 
                                 label='עיר' 
+                                InputLabelProps={{ shrink: true }}
                                 disabled 
                             />
                         )}
@@ -85,6 +86,7 @@ const AddressForm: React.FC<Props> = ({
                                 test-id={streetField.testId || ''} 
                                 value={props.value} 
                                 label='רחוב' 
+                                InputLabelProps={{ shrink: true }}
                                 disabled 
                             />
                         )}
@@ -131,6 +133,7 @@ const AddressForm: React.FC<Props> = ({
                                 test-id={houseNumberField.testId || ''} 
                                 value={props.value} 
                                 label='מספר הבית' 
+                                InputLabelProps={{ shrink: true }}
                                 disabled
                             />
                         )}
@@ -165,6 +168,7 @@ const AddressForm: React.FC<Props> = ({
                                 test-id={floorField.testId || ''} 
                                 value={props.value} 
                                 label='קומה' 
+                                InputLabelProps={{ shrink: true }}
                                 disabled={true} 
                             />
                         )}
