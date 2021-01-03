@@ -148,29 +148,34 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
             const parsedForeignKeys = await graphqlRequest(GET_FOREIGN_KEYS_BY_NAMES, response.locals, parsingVariables)
 
             const {allCities, allContactTypes, allFamilyRelationships, allContactStatuses} = parsedForeignKeys.data;
-            const contactedPersonCity = getIdFromResult(allCities),
-                contactType = getIdFromResult(allContactTypes),
+            const contactType = getIdFromResult(allContactTypes),
                 familyRelationship = getIdFromResult(allFamilyRelationships),
                 contactStatus = getIdFromResult(allContactStatuses);
 
+                console.log(contactedPerson.cityId)
             return {
                 ...contactedPerson,
                 contactEvent,
-                isolationAddress:{city:contactedPersonCity},
+                isolationAddress: {
+                    city: contactedPerson.cityId,
+                    street: contactedPerson.streetId,
+                    houseNum: contactedPerson.houseNum,
+                    apartment: contactedPerson.apartment,
+                },
                 contactType,
                 familyRelationship,
-                contactStatus
+                contactStatus,
             };
         } catch (e) {
             excelLogger.error(`caught error ${e} from try clause`, Severity.HIGH);
             return {
                 ...contactedPerson,
                 contactEvent,
-                isolationAddress: {city: null},
+                isolationAddress: { city: null, street: null, houseNum: null, apartment: null },
                 contactType: null,
                 familyRelationship: null,
-                contactStatus: null
-            }
+                contactStatus: null,
+            };
         }
 
     });

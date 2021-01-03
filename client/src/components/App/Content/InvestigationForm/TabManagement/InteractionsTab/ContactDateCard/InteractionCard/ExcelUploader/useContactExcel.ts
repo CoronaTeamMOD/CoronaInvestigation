@@ -54,6 +54,7 @@ const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallba
                 const englishFieldName: keyof ContactedPersonExcel | undefined = getEnglishNameByHebrew(hebrewColumnName);
                 if (!englishFieldName) return;
                 const value = row[hebrewColumnName as keyof typeof row];
+                console.log(englishFieldName , value);
                 const parsingFunc = constParsingFunctions[englishFieldName];
                 (parsedObj as any)[englishFieldName] = parsingFunc ? parsingFunc(value) : value
             });
@@ -71,7 +72,6 @@ const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallba
             setIsWorkbookDate1904 (!!(workbook?.Workbook?.WBProps?.date1904));
             const sheetJson = sheet_to_json<ExcelRow>(sheet);
             const parsedData = sheetJson.map(parseRow).filter(row => !isObjectEmpty(row));
-            console.log(parsedData);
             parseCallback(parsedData);
         } catch (e) {
             console.error('error reading or parsing file:', e);

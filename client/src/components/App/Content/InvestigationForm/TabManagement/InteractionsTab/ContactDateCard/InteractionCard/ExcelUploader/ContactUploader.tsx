@@ -76,15 +76,15 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
                 });
                 if (!checkExcelDuplicateKeys(contacts, existingContacts)) {
                     console.log({ contactEvent, contacts: contactsData });
-                    // axios.post('/contactedPeople/excel', { contactEvent, contacts: contactsData })
-                    //     .then(() => {
-                    //         dataInFileLogger.info('contacted people excel was saved successfully', Severity.LOW);
-                    //         onSave();
-                    //     })
-                    //     .catch(error => {
-                    //         dataInFileLogger.error(`got error from server: ${error}`, Severity.LOW);
-                    //         alertError('שגיאה בשמירת הנתונים');
-                    //     })
+                    axios.post('/contactedPeople/excel', { contactEvent, contacts: contactsData })
+                        .then(() => {
+                            dataInFileLogger.info('contacted people excel was saved successfully', Severity.LOW);
+                            onSave();
+                        })
+                        .catch(error => {
+                            dataInFileLogger.error(`got error from server: ${error}`, Severity.LOW);
+                            alertError('שגיאה בשמירת הנתונים');
+                        })
                 }
             }
         }

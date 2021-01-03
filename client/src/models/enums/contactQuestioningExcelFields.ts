@@ -24,12 +24,6 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
     familyRelationship: 'קרבה משפחתית',
     occupation: 'האם עוסק באחד מן התחומים הבאים',
     doesHaveBackgroundDiseases: 'האם סובל ממחלות רקע',
-    isolationAddress: {
-        city: 'יישוב השהייה בבידוד',
-        street: 'רחוב השהייה בבידוד',
-        houseNum: 'מספר בית השהייה בבידוד',
-        apartment: 'מספר דירה השהייה בבידוד',
-    },
     doesFeelGood: 'האם חש בטוב',
     doesNeedHelpInIsolation: 'האם נדרש סיוע עבור מקום בידוד',
     repeatingOccuranceWithConfirmed: 'מפגש חוזר עם המאומת',
@@ -37,10 +31,12 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
     doesWorkWithCrowd: 'עבודה עם קהל במסגרת העבודה',
     doesNeedIsolation: 'הקמת דיווח בידוד',
     cityId: 'מזהה עיר',
-    streetId: 'מזהה רחוב'
+    streetId: 'מזהה רחוב',
+    houseNum: 'מספר בית השהייה בבידוד',
+    apartment: 'מספר דירה השהייה בבידוד',
 };
 
-type AddressNames = { isolationAddress: Partial<{ [K in keyof DBAddress]: string }> , cityId : string , streetId : string };
+type AddressNames = { cityId : string , streetId : string , houseNum: string , apartment: string};
 export type ContactedPersonExcel =  {
     [K in keyof Omit<InteractedContact, 'id'|'contactEvent'|'involvementReason' | 'involvedContactId'| 'isolationAddress'>]: string;
  }  & AddressNames;
