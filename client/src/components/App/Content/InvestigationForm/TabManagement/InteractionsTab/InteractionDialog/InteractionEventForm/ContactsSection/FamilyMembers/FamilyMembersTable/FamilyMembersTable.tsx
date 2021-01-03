@@ -55,8 +55,8 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
     const isRowSelected = (selectedFamilyMember: InvolvedContact) => selectedFamilyMembers?.includes(selectedFamilyMember);
 
     const isHouseMember = (familyMemberAddress: DBAddress) => (
-        familyMemberAddress?.city?.id === investigatedPatientAddress.city
-        && familyMemberAddress?.street?.id === investigatedPatientAddress.street
+        familyMemberAddress?.city?.id === investigatedPatientAddress.city &&
+        familyMemberAddress?.street?.id === investigatedPatientAddress.street
     );
 
     return (

@@ -1,3 +1,6 @@
+import City from '../Address/City';
+import Street from '../Address/Street';
+
 export interface GetInvolvedContactsResponse {
     data: {
         allInvolvedContacts: {
@@ -12,7 +15,7 @@ export interface GetInvolvedContactsResponse {
 export interface InvolvedContactDB {
     id: number;
     familyRelationship: {
-        id: number,
+        id: number;
         displayName: string;
     },
     personByPersonId: {
@@ -27,21 +30,15 @@ export interface InvolvedContactDB {
     involvementReason: number;
     isContactedPerson: boolean;
     address: {
-        city: {
-            id: string
-            displayName: string
-        },
-        street: {
-            id: string
-            displayName: string
-        },
-        houseNum: string
-        floor: string
+        city: City;
+        street: Street;
+        houseNum: string;
+        floor: string;
     },
     educationGrade: {
-        educationGrade: string
+        educationGrade: string;
     },
-    educationClassNumber: number,
+    educationClassNumber: number;
     subOccupationByInstitutionName: {
         institutionName: string;
     }
