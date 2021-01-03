@@ -11,7 +11,11 @@ import { getStreetByCity } from 'Utils/Address/AddressUtils';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
-import useStyle from './AddressFormStyles';
+const CITY_LABEL = 'עיר';
+const STREET_LABEL = 'רחוב';
+const FLOOR_LABEL = 'קומה';
+const HOUSE_NUM_LABEL = 'מספר בית';
+const UNKNOWN = 'לא ידוע';
 
 const AddressForm: React.FC<Props> = ({ 
     disabled = false,
@@ -20,7 +24,6 @@ const AddressForm: React.FC<Props> = ({
     floorField, 
     houseNumberField
 }) => {
-    const classes = useStyle();
     const methods = useFormContext();
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
@@ -44,8 +47,8 @@ const AddressForm: React.FC<Props> = ({
                         control={methods.control}
                         render={(props) => (
                             <TextField 
-                                value={cities.get(props.value)?.displayName} 
-                                label='עיר' 
+                                value={cities.get(props.value)?.displayName || UNKNOWN} 
+                                label={CITY_LABEL}
                                 InputLabelProps={{ shrink: true }}
                                 disabled 
                             />
@@ -57,7 +60,6 @@ const AddressForm: React.FC<Props> = ({
                         control={methods.control}
                         render={(props) => (
                             <Autocomplete
-                                disabled={disabled}
                                 options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                 getOptionLabel={(option) => option ? option.value.displayName : option}
                                 value={props.value && {id: props.value as string, value: cities.get(props.value) as City}}
@@ -66,9 +68,9 @@ const AddressForm: React.FC<Props> = ({
                                     <TextField
                                         test-id={cityField.testId || ''}
                                         error={Boolean(get(methods.errors, cityField.name))}
-                                        label={get(methods.errors, cityField.name)?.message || 'עיר *'}
+                                        label={get(methods.errors, cityField.name)?.message || `${CITY_LABEL} *`}
                                         {...params}
-                                        placeholder='עיר'
+                                        placeholder={CITY_LABEL}
                                     />}
                             />
                         )}
@@ -84,8 +86,8 @@ const AddressForm: React.FC<Props> = ({
                         render={(props) => (
                             <TextField 
                                 test-id={streetField.testId || ''} 
-                                value={props.value} 
-                                label='רחוב' 
+                                value={props.value || UNKNOWN} 
+                                label={STREET_LABEL} 
                                 InputLabelProps={{ shrink: true }}
                                 disabled 
                             />
@@ -97,7 +99,6 @@ const AddressForm: React.FC<Props> = ({
                         control={methods.control}
                         render={(props) => (
                             <Autocomplete
-                                disabled={disabled}
                                 options={Array.from(streetsInCity, ([id, value]) => ({ id, value }))}
                                 getOptionLabel={(option) => {
                                     if (option) {
@@ -130,9 +131,9 @@ const AddressForm: React.FC<Props> = ({
                         control={methods.control}
                         render={(props) => (
                             <TextField 
-                                test-id={houseNumberField.testId || ''} 
+                                test-id={houseNumberField.testId || UNKNOWN} 
                                 value={props.value} 
-                                label='מספר הבית' 
+                                label={HOUSE_NUM_LABEL} 
                                 InputLabelProps={{ shrink: true }}
                                 disabled
                             />
@@ -144,20 +145,19 @@ const AddressForm: React.FC<Props> = ({
                         control={methods.control}
                         render={(props) => (
                             <AlphanumericTextField
-                                disabled={disabled}
                                 testId={houseNumberField.testId || ''}
                                 name={houseNumberField.name}
                                 value={props.value}
                                 onChange={(newValue: string) => props.onChange(newValue)}
                                 onBlur={props.onBlur}
-                                placeholder='מספר הבית'
-                                label='מספר הבית'
+                                placeholder={HOUSE_NUM_LABEL}
+                                label={HOUSE_NUM_LABEL}
                             />
                         )}
                     />
                 }
             </Grid>
-            <Grid item xs={2} className={[floorField.className, classes.cancelWhiteSpace].join(' ')}>
+            <Grid item xs={2} className={floorField.className}>
                 {
                     disabled ?
                     <Controller
@@ -167,7 +167,7 @@ const AddressForm: React.FC<Props> = ({
                             <TextField 
                                 test-id={floorField.testId || ''} 
                                 value={props.value} 
-                                label='קומה' 
+                                label={FLOOR_LABEL} 
                                 InputLabelProps={{ shrink: true }}
                                 disabled={true} 
                             />
@@ -179,14 +179,13 @@ const AddressForm: React.FC<Props> = ({
                         control={methods.control}
                         render={(props) => (
                             <AlphanumericTextField
-                                disabled={disabled}
                                 testId={cityField.testId || ''}
                                 name={floorField.name}
                                 value={props.value}
                                 onChange={(newValue: string) => props.onChange(newValue)}
                                 onBlur={props.onBlur}
-                                placeholder='קומה'
-                                label='קומה'
+                                placeholder={FLOOR_LABEL}
+                                label={FLOOR_LABEL}
                             />
                         )}
                     />
