@@ -17,7 +17,7 @@ const useFamilyContactsUtils = () => {
         [FamilyContactsTableHeadersNames.BIRTH_DATE]: row.birthDate,
         [FamilyContactsTableHeadersNames.PHONE_NUMBER]: row.phoneNumber,
         [FamilyContactsTableHeadersNames.ADDITIONAL_PHONE_NUMBER]: row.additionalPhoneNumber,
-        [FamilyContactsTableHeadersNames.ISOLATION_CITY]: row.isolationCity
+        [FamilyContactsTableHeadersNames.ISOLATION_CITY]: row.isolationAddress?.city
     });
 
     const getTableCell = (row: IndexedContactRow, cellName: string) => {

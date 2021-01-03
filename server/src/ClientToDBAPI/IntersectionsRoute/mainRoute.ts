@@ -28,8 +28,9 @@ import {
     GET_ALL_INVOLVED_CONTACTS
 } from '../../DBService/ContactEvent/Query';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
+import Address from '../../Models/Address/Address';
 
-        const intersectionsRoute = Router();
+const intersectionsRoute = Router();
         
 intersectionsRoute.get('/', (request: Request, response: Response) => {
     response.send(request.query.epidemioligyNumber);
@@ -209,17 +210,27 @@ intersectionsRoute.delete('/contactedPerson', (request: Request, response: Respo
         });
 });
 
-const convertInvolvedContact = (contact: InvolvedContactDB) => ({
-    id: contact.id,
-    isContactedPerson: contact.isContactedPerson,
-    involvementReason: contact.involvementReason,
-    educationClassNumber: contact.educationClassNumber,
-    familyRelationship: contact.familyRelationship,
-    ...contact.educationGrade,
-    ...contact.cityByIsolationCity,
-    ...contact.personByPersonId,
-    ...contact.subOccupationByInstitutionName,
-});
+const convertInvolvedContact = (contact: InvolvedContactDB) => {
+    
+    const convertedAddress : Address = {
+        city: contact.address.city?.city || null,
+        street: contact.address.street?.street || null,
+        floor: contact.address.floor,
+        houseNum: contact.address.houseNum
+    }
+
+    return {
+        id: contact.id,
+        isContactedPerson: contact.isContactedPerson,
+        involvementReason: contact.involvementReason,
+        educationClassNumber: contact.educationClassNumber,
+        familyRelationship: contact.familyRelationship,
+        isolationAddress: convertedAddress,
+        ...contact.educationGrade,
+        ...contact.personByPersonId,
+        ...contact.subOccupationByInstitutionName,
+    }
+};
 
 intersectionsRoute.get('/involvedContacts/:investigationId', (request: Request, response: Response) => {
     const involvedContacts = logger.setup({

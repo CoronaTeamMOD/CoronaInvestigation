@@ -48,7 +48,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
     const isFamilyContact = isInvolvedThroughFamily(involvementReason);
 
     const familyContactsAdditionalFields = () => {
-        const { birthDate, isolationCity, additionalPhoneNumber, familyRelationship } = contact.involvedContact as InvolvedContact;
+        const { birthDate, isolationAddress, additionalPhoneNumber, familyRelationship } = contact.involvedContact as InvolvedContact;
         return <>
             <FormInput xs={2} fieldName={contactedAdditionalPhone}>
                 <Typography variant='caption'>
@@ -67,7 +67,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
             </FormInput>
             <FormInput xs={2} fieldName={contactedIsolationCity}>
                 <Typography variant='caption'>
-                    {isolationCity || noDataIndication}
+                    {isolationAddress?.city || noDataIndication}
                 </Typography>
             </FormInput>
             <FormInput xs={2} fieldName={contactedFamilyRelationshop}>

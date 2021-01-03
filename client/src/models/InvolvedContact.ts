@@ -1,11 +1,12 @@
 import Person from './Person';
+import { DBAddress } from './DBAddress';
 import FamilyRelationship from './FamilyRelationship';
 
 interface InvolvedContact extends Person {
 	id: number;
     involvementReason: number | null;
 	isContactedPerson: boolean;
-	isolationCity: string;
+	isolationAddress: DBAddress;
 	familyRelationship: FamilyRelationship | null;
 	selected?: boolean;
 	educationGrade: string,

@@ -26,8 +26,15 @@ export interface InvolvedContactDB {
     },
     involvementReason: number;
     isContactedPerson: boolean;
-    cityByIsolationCity: {
-        city: string;
+    address: {
+        city: {
+            city: string
+        },
+        street: {
+            street: string
+        },
+        houseNum: string
+        floor: string
     },
     educationGrade: {
         educationGrade: string
