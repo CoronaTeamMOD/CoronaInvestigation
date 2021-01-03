@@ -71,6 +71,7 @@ const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallba
             setIsWorkbookDate1904 (!!(workbook?.Workbook?.WBProps?.date1904));
             const sheetJson = sheet_to_json<ExcelRow>(sheet);
             const parsedData = sheetJson.map(parseRow).filter(row => !isObjectEmpty(row));
+            console.log(parsedData);
             parseCallback(parsedData);
         } catch (e) {
             console.error('error reading or parsing file:', e);

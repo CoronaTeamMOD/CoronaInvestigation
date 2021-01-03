@@ -1,4 +1,5 @@
 import InteractedContact from 'models/InteractedContact';
+import { string } from 'yup';
 import {DBAddress} from "../DBAddress";
 
 export enum booleanAnswers {
@@ -35,9 +36,11 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
     doesLiveWithConfirmed: 'האם חי באותו הבית עם המאומת',
     doesWorkWithCrowd: 'עבודה עם קהל במסגרת העבודה',
     doesNeedIsolation: 'הקמת דיווח בידוד',
+    cityId: 'מזהה עיר',
+    streetId: 'מזהה רחוב'
 };
 
-type AddressNames = { isolationAddress: Partial<{ [K in keyof DBAddress]: string }> };
+type AddressNames = { isolationAddress: Partial<{ [K in keyof DBAddress]: string }> , cityId : string , streetId : string };
 export type ContactedPersonExcel =  {
     [K in keyof Omit<InteractedContact, 'id'|'contactEvent'|'involvementReason' | 'involvedContactId'| 'isolationAddress'>]: string;
  }  & AddressNames;
