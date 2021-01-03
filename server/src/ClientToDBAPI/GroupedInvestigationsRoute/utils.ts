@@ -1,5 +1,4 @@
-import { differenceInYears } from 'date-fns';
-
+import { getPatientAge } from '../../Utils/patientUtils';
 import InvestigationMainStatus from '../../Models/InvestigationStatus/InvestigationMainStatus';
 
 interface GroupedInvestigations {
@@ -62,7 +61,7 @@ const mappingInvestigationsGroup = (investigation: GroupedInvestigations['allInv
             ...investigation.investigatedPatientByInvestigatedPatientId,
             covidPatientByCovidPatient: {
                 ...investigation.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient,
-                age: differenceInYears(new Date(), new Date(investigation.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient.birthDate))
+                age: getPatientAge(investigation.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient.birthDate)
             }
         },
         desk: investigation.deskByDeskId?.deskName,

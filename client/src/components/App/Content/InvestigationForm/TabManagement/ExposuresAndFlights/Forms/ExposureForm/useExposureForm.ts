@@ -64,7 +64,7 @@ const useExposureForm = (props: Props) => {
     const selectedExposureSourceDisplay = (exposureSource: CovidPatient): string => {
         const fields: string[] = [];
         exposureSource.fullName && fields.push(displayPatientFields.fullName + ': ' + exposureSource.fullName);
-        (exposureSource.age && exposureSource.age !== -1) && fields.push(displayPatientFields.age + ': ' + exposureSource.age);
+        exposureSource.age && fields.push(displayPatientFields.age + ': ' + exposureSource.age);
         exposureSource.address && fields.push(displayPatientFields.address + ': ' + exposureSource.address);
         return fields.join(', ');
     }
