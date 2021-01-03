@@ -6,7 +6,7 @@ import { UPDATE_INVESTIGATION_METADATA } from './DBService/InvestigationMetadata
 export const graphqlURL = '/coronai/graphql';
 export const baseUrl = 'http://localhost:';
 
-const initialEpidemiologyNumberByRedux:number = -1;
+export const initialEpidemiologyNumberByRedux = -1;
 export const errorStatusCode = 500;
 export const validStatusCode = 200;
 export const unauthorizedStatusCode = 401;

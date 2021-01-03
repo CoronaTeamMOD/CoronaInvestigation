@@ -1,14 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 
-import logger from '../Logger/Logger';
 import UserType from '../Models/User/UserType';
 import { Severity } from '../Models/Logger/types';
 import { GET_INVESTIGATION_CREATOR } from '../DBService/InvestigationInfo/Query';
-import { errorStatusCode, graphqlRequest, unauthorizedStatusCode } from '../GraphqlHTTPRequest';
+import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../Logger/Logger';
+import { errorStatusCode, graphqlRequest, unauthorizedStatusCode, initialEpidemiologyNumberByRedux } from '../GraphqlHTTPRequest';
 
-export const handleInvestigationRequest = async (request: Request, response: Response, next: NextFunction) => {
+export const handleInvestigationRequest = async (request: Request, response: Response, next: NextFunction, epidemiologynumber: number) => {
     const { user } = response.locals;
-    const epidemiologynumber = parseInt(response.locals.epidemiologynumber);
 
     const investigationMiddlewareLogger = logger.setup({
         workflow: 'InvestigationMiddleware',
@@ -20,16 +19,21 @@ export const handleInvestigationRequest = async (request: Request, response: Res
         return response.status(unauthorizedStatusCode).json({ error: 'no epidemiology number supplied' });
     }
 
-    investigationMiddlewareLogger.info('getting current investigation details from DB', Severity.LOW);
-    const { investigationGroup, id , err} = await fetchInvestigationCreatorDetails(response.locals , epidemiologynumber);
-    if(err) {
-        investigationMiddlewareLogger.info(`error in requesting the graphql API: ${err}`, Severity.HIGH);
-        response.sendStatus(errorStatusCode);
+    if (epidemiologynumber === initialEpidemiologyNumberByRedux) {
+        investigationMiddlewareLogger.info('the epidemiology number wasnt loaded yet', Severity.MEDIUM);
+        return response.status(unauthorizedStatusCode).json({ error: 'no epidemiology number supplied' });
     }
-    investigationMiddlewareLogger.info('got investigation details', Severity.LOW);
+
+    investigationMiddlewareLogger.info(launchingDBRequestLog({ epidemiologynumber }), Severity.LOW);
+    const { investigationGroup, id , err } = await fetchInvestigationCreatorDetails(response.locals , epidemiologynumber);
+    if(err) {
+        investigationMiddlewareLogger.info(invalidDBResponseLog(err), Severity.HIGH);
+        response.sendStatus(errorStatusCode).json({ error: invalidDBResponseLog(err) });
+    }
+    investigationMiddlewareLogger.info(validDBResponseLog, Severity.LOW);
 
     if (user.userType === UserType.ADMIN || user.userType === UserType.SUPER_ADMIN) {
-        if (user.countyByInvestigationGroup.districtId === investigationGroup) {
+        if (user.countyByInvestigationGroup.investigationGroup === investigationGroup) {
             investigationMiddlewareLogger.info('user is admin and investigation is in his county', Severity.LOW);
             return next();
         }
@@ -48,7 +52,7 @@ export const handleInvestigationRequest = async (request: Request, response: Res
 const fetchInvestigationCreatorDetails = async (locals : any , epidemiologynumber : number) : Promise<{investigationGroup : number , id : string , err? : any}>=> {
     return await graphqlRequest(GET_INVESTIGATION_CREATOR, locals, { epidemiologynumber })
     .then(result => {
-        return  result.data.investigationByEpidemiologyNumber.userByCreator;
+        return  result.data.investigationByEpidemiologyNumber?.userByCreator || { err : 'investigation wasnt found' };
     })
     .catch((err) => {
         return { err }
