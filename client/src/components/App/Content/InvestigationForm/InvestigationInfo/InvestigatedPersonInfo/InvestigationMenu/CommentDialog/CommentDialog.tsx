@@ -1,6 +1,5 @@
 import React, {useContext} from 'react';
 import {useSelector} from 'react-redux';
-import axios from 'Utils/axios';
 import {
     Dialog,
     DialogActions,
@@ -9,19 +8,19 @@ import {
     IconButton,
     Typography,
 } from '@material-ui/core';
-import CommentIcon from '@material-ui/icons/CommentOutlined';
 import CloseIcon from '@material-ui/icons/Close';
+import CommentIcon from '@material-ui/icons/CommentOutlined';
 
+import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
-
-import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import StoreStateType from 'redux/storeStateType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import {commentContext} from '../../../Context/CommentContext';
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
-import useStyles from './CommentDialogStyles';
 import CommentInput from './CommentInput';
+import useStyles from './CommentDialogStyles';
+import {commentContext} from '../../../Context/CommentContext';
 
 const SAVE_BUTTON_TEXT = 'שמור הערה';
 const DELETE_BUTTON_TEXT = 'מחק';
@@ -47,6 +46,7 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
                 sendCommentLogger.info('Successfully added comment to investigation', Severity.LOW);
             })
             .catch(() => {
+                resetInput();
                 alertError(errorMessage);
                 sendCommentLogger.error('Error occured in adding comment to investigation', Severity.HIGH);
             })
@@ -60,7 +60,6 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
 
     const handleCommentSave = () => {
         sendComment(commentInput as string, 'שגיאה בשמירת ההערה')
-
     };
 
     const handleCommentDelete = () => {
