@@ -6,8 +6,9 @@ import { GET_INVESTIGATION_CREATOR } from '../DBService/InvestigationInfo/Query'
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../Logger/Logger';
 import { errorStatusCode, graphqlRequest, unauthorizedStatusCode, initialEpidemiologyNumberByRedux } from '../GraphqlHTTPRequest';
 
-export const handleInvestigationRequest = async (request: Request, response: Response, next: NextFunction, epidemiologynumber: number) => {
+export const handleInvestigationRequest = async (request: Request, response: Response, next: NextFunction) => {
     const { user } = response.locals;
+    const epidemiologynumber = parseInt(response.locals.epidemiologynumber);
 
     const investigationMiddlewareLogger = logger.setup({
         workflow: 'InvestigationMiddleware',
