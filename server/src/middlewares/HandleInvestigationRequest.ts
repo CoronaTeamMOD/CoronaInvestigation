@@ -34,7 +34,7 @@ export const handleInvestigationRequest = async (request: Request, response: Res
     investigationMiddlewareLogger.info(validDBResponseLog, Severity.LOW);
 
     if (user.userType === UserType.ADMIN || user.userType === UserType.SUPER_ADMIN) {
-        if (user.countyByInvestigationGroup.investigationGroup === investigationGroup) {
+        if (user.investigationGroup === investigationGroup) {
             investigationMiddlewareLogger.info('user is admin and investigation is in his county', Severity.LOW);
             return next();
         }
