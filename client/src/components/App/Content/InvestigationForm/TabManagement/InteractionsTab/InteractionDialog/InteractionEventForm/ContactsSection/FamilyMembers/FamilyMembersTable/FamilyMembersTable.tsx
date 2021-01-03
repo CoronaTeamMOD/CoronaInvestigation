@@ -1,11 +1,15 @@
+import { Home } from '@material-ui/icons';
 import React, { useEffect, useMemo, useState } from 'react';
-import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Typography } from '@material-ui/core';
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Typography, Tooltip } from '@material-ui/core';
 
 import InvolvedContact from 'models/InvolvedContact';
 import useFamilyContactsUtils from 'Utils/FamilyContactsUtils/useFamilyContactsUtils';
 import { FamilyContactsTableHeaders } from 'Utils/FamilyContactsUtils/FamilyContactsTableHeaders';
 
 import useStyles from './FamilyMembersTableStyles';
+
+const houseMember = 'בן בית';
+const cityCellName = 'isolationCity';
 
 const FamilyMembersTable: React.FC<Props> = (props: Props) => {
     
@@ -45,6 +49,8 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
 
     const isRowSelected = (selectedFamilyMember: InvolvedContact) => selectedFamilyMembers?.includes(selectedFamilyMember);
 
+    const isHouseMember = (selectedFamilyMember: InvolvedContact) => selectedFamilyMember.isolationCity !== '';
+
     return (
         <>
             <TableContainer component={Paper}>
@@ -75,7 +81,14 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
                                         }
                                         {
                                             Object.keys(FamilyContactsTableHeaders).map(cellName => (
-                                                <TableCell className={classes.cell}>{getTableCell(convertToIndexedRow(familyMember), cellName)}</TableCell>
+                                                <TableCell className={classes.cell}>{getTableCell(convertToIndexedRow(familyMember), cellName)}
+                                                    {
+                                                        cellName === cityCellName && isHouseMember(familyMember) &&
+                                                        <Tooltip title={houseMember}>
+                                                            <Home />
+                                                        </Tooltip>
+                                                    }
+                                                </TableCell>
                                             ))
                                         }
                                     </TableRow>
