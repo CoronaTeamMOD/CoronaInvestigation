@@ -32,8 +32,9 @@ const AddressForm: React.FC<Props> = ({
     }, [cityWatcher]);
 
     return (
-        <Grid container direction={direction}>
-            <Grid item xs={2}>
+        // <Grid container direction={direction}>
+        <>
+            <Grid item xs={2} className={cityField.className}>
                 <Controller
                     name={cityField.name}
                     control={methods.control}
@@ -55,7 +56,7 @@ const AddressForm: React.FC<Props> = ({
                     )}
                 />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={2} className={streetField.className}>
                 <Controller
                     name={streetField.name}
                     control={methods.control}
@@ -84,7 +85,7 @@ const AddressForm: React.FC<Props> = ({
                     )}
                 />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={2} className={houseNumberField.className}>
                 <Controller
                     name={houseNumberField.name}
                     control={methods.control}
@@ -101,7 +102,7 @@ const AddressForm: React.FC<Props> = ({
                     )}
                 />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={2} className={floorField.className}>
                 <Controller
                     name={floorField.name}
                     control={methods.control}
@@ -118,7 +119,8 @@ const AddressForm: React.FC<Props> = ({
                     )}
                 />
             </Grid>
-        </Grid>
+            </>
+        // </Grid>
     )
 };
 

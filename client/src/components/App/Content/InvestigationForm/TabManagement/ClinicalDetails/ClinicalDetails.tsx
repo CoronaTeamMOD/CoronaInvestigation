@@ -24,6 +24,7 @@ import IsolationProblemFields from './IsolationProblemFields';
 import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields/SymptomsFields';
 import useClinicalDetails, { initialClinicalDetails } from './useClinicalDetails';
 import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
+import AddressForm from 'commons/Forms/AddressForm/AddressForm';
 
 const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles();
@@ -169,94 +170,12 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                         </Grid>
                         <Grid item xs={12}>
                             <FormRowWithInput fieldName='כתובת לבידוד:'>
-                                <>
-                                <Grid item xs={2}>
-                                    <Controller
-                                        name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`}
-                                        control={methods.control}
-                                        render={(props) => (
-                                            <Autocomplete
-                                                test-id='currentQuarantineCity'
-                                                options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                                                getOptionLabel={(option) => option ? option.value.displayName : option}
-                                                value={props.value && {id: props.value as string, value: cities.get(props.value) as City}}
-                                                onChange={(event, selectedCity) => props.onChange(selectedCity ? selectedCity.id : '')}
-                                                renderInput={(params) =>
-                                                    <TextField
-                                                        error={Boolean(get(methods.errors, `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`))}
-                                                        label={get(methods.errors, `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`)?.message || 'עיר *'}
-                                                        {...params}
-                                                        placeholder='עיר'
-                                                    />
-                                                }
-                                            />
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid item xs={2}>
-                                    <Controller
-                                        name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`}
-                                        control={methods.control}
-                                        render={(props) => (
-                                            <Autocomplete
-                                                options={Array.from(streetsInCity, ([id, value]) => ({ id, value }))}
-                                                getOptionLabel={(option) => {
-                                                    if (option) {
-                                                        if (option?.value) return option.value?.displayName
-                                                        else return '';
-                                                    } else return option
-                                                }}
-                                                value={props.value && {id: props.value as string, value: streetsInCity.get(props.value) as Street}}
-                                                onChange={(event, selectedStreet) => {
-                                                    props.onChange(selectedStreet ? selectedStreet.id : '')
-                                                }}
-                                                renderInput={(params) =>
-                                                    <TextField
-                                                        test-id='currentQuarantineStreet'
-                                                        {...params}
-                                                        placeholder='רחוב'
-                                                        label='רחוב'
-                                                    />
-                                                }
-                                            />
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid item xs={2}>
-                                    <Controller
-                                        name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`}
-                                        control={methods.control}
-                                        render={(props) => (
-                                            <AlphanumericTextField
-                                                testId='currentQuarantineHomeNumber'
-                                                name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`}
-                                                value={props.value}
-                                                onChange={(newValue: string) => props.onChange(newValue)}
-                                                onBlur={props.onBlur}
-                                                placeholder='מספר הבית'
-                                                label='מספר הבית'
-                                            />
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid item xs={2} className={classes.cancelWhiteSpace}>
-                                    <Controller
-                                        name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`}
-                                        control={methods.control}
-                                        render={(props) => (
-                                            <AlphanumericTextField
-                                                testId='currentQuarantineFloor'
-                                                name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`}
-                                                value={props.value}
-                                                onChange={(newValue: string) => props.onChange(newValue)}
-                                                onBlur={props.onBlur}
-                                                placeholder='קומה'
-                                                label='קומה'
-                                            />
-                                        )}
-                                    />
-                                </Grid>
-                                </>
+                                <AddressForm
+                                    cityField={{ name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`, testId: 'currentQuarantineCity' }}
+                                    streetField={{ name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, testId: 'currentQuarantineStreet' }}
+                                    houseNumberField={{ name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`, testId: 'currentQuarantineHomeNumber' }}
+                                    floorField={{ name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`, testId: 'currentQuarantineFloor', className: classes.cancelWhiteSpace }}
+                                />
                             </FormRowWithInput>
                         </Grid>
                         <Grid item xs={12}>
