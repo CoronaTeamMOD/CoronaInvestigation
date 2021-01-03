@@ -6,10 +6,13 @@ import { GET_INVESTIGATION_CREATOR } from '../DBService/InvestigationInfo/Query'
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../Logger/Logger';
 import { errorStatusCode, graphqlRequest, unauthorizedStatusCode, initialEpidemiologyNumberByRedux } from '../GraphqlHTTPRequest';
 
+const defaultEpidemiologyNumber = "-1";
+
 export const handleInvestigationRequest = async (request: Request, response: Response, next: NextFunction) => {
     const { user } = response.locals;
-    const epidemiologynumber = parseInt(response.locals.epidemiologynumber);
-
+    const epidemiologynumber = response.locals.epidemiologynumber !== defaultEpidemiologyNumber
+    ? parseInt(response.locals.epidemiologynumber)
+    : parseInt(request.body.epidemiologyNumber);
     const investigationMiddlewareLogger = logger.setup({
         workflow: 'InvestigationMiddleware',
         investigation: epidemiologynumber,
