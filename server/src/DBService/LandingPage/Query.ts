@@ -1,5 +1,7 @@
 import { gql } from 'postgraphile';
 
+import InvestigationMainStatusCodes from '../../Models/InvestigationStatus/InvestigationMainStatusCodes';
+
 const unassignedUserName = 'לא משויך';
 
 export const USER_INVESTIGATIONS = gql`
@@ -179,7 +181,7 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
   }
   inProcessInvestigations: allInvestigations(filter: {
     investigationStatusByInvestigationStatus: {
-      id: {equalTo: 100000002}
+      id: {equalTo: ${String(InvestigationMainStatusCodes.IN_PROCESS)}}
     },
     and: $userFilters
   }) {
@@ -187,7 +189,7 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
   }
   newInvestigations: allInvestigations(filter: {
     investigationStatusByInvestigationStatus: {
-      id: {equalTo: 1}
+      id: {equalTo: ${String(InvestigationMainStatusCodes.NEW)}}
     }, 
     and: $userFilters
   }) {
@@ -210,9 +212,13 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
   }) {
     totalCount
   }
-  unallocatedInvestigations: allInvestigations(filter: {
-    userByCreator: {or: [{isActive: {equalTo: false}}, {userName: {equalTo: "${unassignedUserName}"}}]}, and: $userFilters
-  }) {
+  unallocatedInvestigations: allInvestigations(
+    filter: {and: [
+        {userByCreator: {or: [{isActive: {equalTo: false}}, {userName: {equalTo: "${unassignedUserName}"}}]}},
+        {investigationStatus: {in:[${String(InvestigationMainStatusCodes.NEW)}, ${String(InvestigationMainStatusCodes.IN_PROCESS)}]}},
+        $allInvesitgationsFilter
+      ]},
+    ) {
     totalCount
   }
 }
