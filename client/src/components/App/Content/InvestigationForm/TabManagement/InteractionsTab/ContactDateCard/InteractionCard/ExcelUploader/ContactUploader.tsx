@@ -57,7 +57,8 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
             dataInFileLogger.info('launching saving contacted people excel request', Severity.LOW);
 
             const validationErrors = contacts.reduce<string[]>((aggregatedArr, contact) => {
-                const parsedContact = contact.cityId ? {
+                const parsedContact = contact.cityId 
+                ? {
                     ...contact,
                     isolationAddress: {
                         city : {id: String(contact.cityId) , displayName : ""},
@@ -66,8 +67,8 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
                         apartment : "",
                         floor : "", 
                     }
-                } : contact;
-                console.log(parsedContact);
+                } 
+                : contact;
                 const validationInfo = validateContact(parsedContact, ValidationReason.EXCEL_LOADING);
 
                 if (!validationInfo.valid) {
@@ -86,7 +87,6 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
                     return contactData;
                 });
                 if (!checkExcelDuplicateKeys(contacts, existingContacts)) {
-                    console.log({ contactEvent, contacts: contactsData });
                     axios.post('/contactedPeople/excel', { contactEvent, contacts: contactsData })
                         .then(() => {
                             dataInFileLogger.info('contacted people excel was saved successfully', Severity.LOW);

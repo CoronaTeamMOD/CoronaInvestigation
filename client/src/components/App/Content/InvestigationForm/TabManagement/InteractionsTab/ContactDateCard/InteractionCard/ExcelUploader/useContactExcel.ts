@@ -54,7 +54,6 @@ const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallba
                 const englishFieldName: keyof ContactedPersonExcel | undefined = getEnglishNameByHebrew(hebrewColumnName);
                 if (!englishFieldName) return;
                 const value = row[hebrewColumnName as keyof typeof row];
-                console.log(englishFieldName , value);
                 const parsingFunc = constParsingFunctions[englishFieldName];
                 (parsedObj as any)[englishFieldName] = parsingFunc ? parsingFunc(value) : value
             });

@@ -14,10 +14,6 @@ interface InteractedContact extends Person {
     occupation: string;
     doesHaveBackgroundDiseases: boolean;
     contactedPersonCity: string;
-    cityId? : number;
-    streetId? : number;
-    houseNum? : string;
-    apartment? : string;
     doesFeelGood: boolean;
     doesNeedHelpInIsolation: boolean;
     repeatingOccuranceWithConfirmed: boolean;
@@ -28,5 +24,12 @@ interface InteractedContact extends Person {
         involvementReason: number
     } | null
 };
+
+export interface InteractedExcelContact extends InteractedContact {
+    cityId? : number;
+    streetId? : number;
+    houseNum? : string;
+    apartment? : string;
+} 
 
 export default InteractedContact;

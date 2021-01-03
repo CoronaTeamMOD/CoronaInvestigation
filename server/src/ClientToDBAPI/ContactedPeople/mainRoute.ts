@@ -11,7 +11,7 @@ import {
     GET_CONTACTED_PEOPLE,
     GET_FOREIGN_KEYS_BY_NAMES
 } from '../../DBService/ContactedPeople/Query';
-import InteractedContact from '../../Models/ContactedPerson/ContactedPerson';
+import InteractedContact , {InteractedExcelContact} from '../../Models/ContactedPerson/ContactedPerson';
 import { sendSavedInvestigationToIntegration } from '../../Utils/InterfacesIntegration';
 
 const DONE_CONTACT = 5;
@@ -135,7 +135,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
     const {contactEvent, contacts} = request.body;
     excelLogger.info('starting excel parsing', Severity.LOW);
     const getIdFromResult = (result: any) => result?.nodes.length > 0 ? parseInt(result.nodes[0].id) : null;
-    const parsedContactsPromises = contacts.map(async (contactedPerson: InteractedContact) => {
+    const parsedContactsPromises = contacts.map(async (contactedPerson: InteractedExcelContact) => {
         const parsingVariables = {
             contactType: contactedPerson.contactType || '',
             familyRelationship: contactedPerson.familyRelationship || '',
