@@ -14,7 +14,7 @@ doesNeedIsolation boolean;
 personRelationship varchar;
 familyRelationship int4;
 personOccupation varchar;
-contactedPersonCity varchar;
+
 doesHaveBackgroundDiseases bool;
 doesFeelGood bool;
 doesNeedHelpInIsolation bool;
@@ -36,6 +36,12 @@ personId int4;
 contactEvent int4;
 completionTime timestamp;
 involvedContactId int4;
+
+addressId integer;
+city varchar;
+street varchar;
+houseNum varchar;
+apartment varchar;
 
 begin 	
 	/*contacted_persons is a Jsonthat may recieved in 2 different structures: */
@@ -69,7 +75,6 @@ begin
 		select trim(nullif((contactedPerson->'doesNeedIsolation')::text,'null'),'"')::boolean into doesNeedIsolation;
 	   	select nullif(trim((contactedPerson->'id')::text,'"'),'null')::int4 into contactedPersonId;
 	    select trim(nullif((contactedPerson->'contactType')::text,'null'),'"')::int4 into contactType;
-		select trim(nullif((contactedPerson->'contactedPersonCity')::text,'null'),'"') into contactedPersonCity;
 		select trim(nullif((contactedPerson->'relationship')::text,'null'),'"') into personRelationship;
  		select trim(nullif((contactedPerson->'familyRelationship')::text,'null'),'"')::int4 into familyRelationship;
  		select trim(nullif((contactedPerson->'occupation')::text,'null'),'"') into personOccupation;
@@ -82,7 +87,16 @@ begin
 		select nullif((contactedPerson->'involvedContactId')::text,'null')::int4 into involvedContactId;
 		select nullif((contactedPerson->'doesWorkWithCrowd')::text,'null')::bool into doesWorkWithCrowd;
 		    identificationType:= REPLACE(identificationType, '\', '' );
-	
+		   
+		select trim(nullif((contactedPerson->'isolationAddress'->'city')::text,'null'),'"')  into city;
+		select trim(nullif((contactedPerson->'isolationAddress'->'street')::text,'null'),'"')  into street;
+		select trim(nullif((contactedPerson->'isolationAddress'->'houseNum')::text,'null'),'"')  into houseNum;
+		select trim(nullif((contactedPerson->'isolationAddress'->'apartment')::text,'null'),'"')  into apartment;
+ 
+		  
+		addressId := insert_and_get_address_id(city, null, street, houseNum, apartment, null, null);
+									 
+
 		if contactedPersonId is not null then
 	    	/*update person and contacted person */
 		select completion_time from contacted_person cp where cp.id = contactedPersonId into completionTime;
@@ -91,10 +105,10 @@ begin
 	    	update contacted_person 
 	    	set does_need_isolation = doesNeedIsolation,
 			extra_info = extraInfo,
+			isolation_address = addressId,
 			contact_type = contactType,
 			family_relationship=familyRelationship ,
 			occupation = personOccupation,
-			contacted_person_city =contactedPersonCity ,
 			does_have_background_diseases = doesHaveBackgroundDiseases ,
 			does_feel_good =doesFeelGood ,
 			does_need_help_in_isolation =doesNeedHelpInIsolation ,
@@ -122,10 +136,10 @@ begin
 	  		  	phone_number = phoneNumber
 			from contacted_person 
 	    	where person.id= contacted_person.person_info and contacted_person.id = contactedPersonId;
-			
+
 			if (involvedContactId is not null ) then
 				update public.involved_contact
-				set isolation_city = contactedPersonCity
+				set isolation_city = city
 				where id = involvedContactId;
 			end if;
 	   else
@@ -137,14 +151,15 @@ begin
 			
 		    personId := currval('person_id_seq');
  		raise notice 'insert new person %', personId	;   
-	   	   INSERT INTO public.contacted_person (person_info, contact_event, relationship, extra_info, contact_type, 
-	   	   contacted_person_city, does_have_background_diseases, occupation, does_feel_good, does_need_help_in_isolation, 
+	   	   INSERT INTO public.contacted_person (isolation_address,person_info, contact_event, relationship, extra_info, contact_type, 
+	   	    does_have_background_diseases, occupation, does_feel_good, does_need_help_in_isolation, 
 	   	   repeating_occurance_with_confirmed, does_live_with_confirmed, contact_status, family_relationship, does_work_with_crowd, does_need_isolation, creation_time) 
-	    VALUES(personId, contactEvent, personRelationship, extraInfo, contactType, 
-	   		contactedPersonCity, doesHaveBackgroundDiseases, personOccupation , doesfeelGood, doesNeedHelpInIsolation,
+	    VALUES(addressId,personId, contactEvent, personRelationship, extraInfo, contactType, 
+	   		 doesHaveBackgroundDiseases, personOccupation , doesfeelGood, doesNeedHelpInIsolation,
 	   		repeatingOccuranceWithConfirmed, doesLiveWithConfirmed, contactStatus, familyRelationship, doesWorkWithCrowd, doesNeedIsolation, now());
 
 	   end if;
 	end loop;
 end;
 $function$
+;

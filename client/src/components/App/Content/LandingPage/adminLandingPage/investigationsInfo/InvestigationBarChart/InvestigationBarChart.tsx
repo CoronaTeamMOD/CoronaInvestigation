@@ -23,6 +23,7 @@ const InvestigationBarChart: React.FC<Props> = ({ investigationsGraphData }): JS
                     <b style={{color}} className={classes.barTooltip}>{indexValue}: {value}</b>
                 )
             }}
+            theme={{tooltip: {container: {zIndex: 9999, position: 'absolute'}}}}
             colors={investigationChart => investigationChart.data.color}
         />
     )

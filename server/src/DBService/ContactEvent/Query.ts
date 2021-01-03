@@ -44,8 +44,15 @@ personByPersonId {
 }
 involvementReason,
 isContactedPerson
-cityByIsolationCity {
-  city: displayName
+address: addressByIsolationAddress {
+  city: cityByCity {
+    city: displayName
+  }
+  street: streetByStreet {
+    street: displayName
+  }
+  houseNum
+  floor
 }
 educationGrade: educationGradeByEducationGrade {
   educationGrade: displayName

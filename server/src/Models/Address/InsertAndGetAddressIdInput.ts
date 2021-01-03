@@ -1,8 +1,8 @@
 interface InsertAndGetAddressIdInput {
     cityValue: string;
     streetValue: string;
-    floorValue: number;
-    houseNumValue: number;
+    floorValue: string;
+    houseNumValue: string;
 }
 
 export default InsertAndGetAddressIdInput;

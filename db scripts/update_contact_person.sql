@@ -79,8 +79,8 @@ begin
 	   else 
 	   		if (involvedContactId is not null) then
 				INSERT INTO public.contacted_person
-				(person_info, contact_event, contact_type, contact_status, creation_time, contacted_person_city, involved_contact_id, family_relationship)
-				select person_id, contact_event_id, contactType, 1, now(), isolation_city, involvedContactId, familyRelationship
+				(person_info, contact_event, contact_type, contact_status, creation_time, isolation_address, involved_contact_id, family_relationship)
+				select person_id, contact_event_id, contactType, 1, now(), isolation_address, involvedContactId, familyRelationship
 				from public.involved_contact
 				where id = involvedContactId;
 				
