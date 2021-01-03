@@ -29,6 +29,7 @@ import {
 } from '../../DBService/ContactEvent/Query';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import Address from '../../Models/Address/Address';
+import InvolvedContactAddress from '../../Models/Address/InvolvedContactAddress';
 
 const intersectionsRoute = Router();
         
@@ -212,9 +213,9 @@ intersectionsRoute.delete('/contactedPerson', (request: Request, response: Respo
 
 const convertInvolvedContact = (contact: InvolvedContactDB) => {
     
-    const convertedAddress : Address = {
-        city: contact.address.city?.city || null,
-        street: contact.address.street?.street || null,
+    const convertedAddress: InvolvedContactAddress = {
+        city: contact.address.city || null,
+        street: contact.address.street || null,
         floor: contact.address.floor,
         houseNum: contact.address.houseNum
     }

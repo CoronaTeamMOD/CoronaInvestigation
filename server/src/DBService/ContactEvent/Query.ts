@@ -46,10 +46,12 @@ involvementReason,
 isContactedPerson
 address: addressByIsolationAddress {
   city: cityByCity {
-    city: displayName
+    id
+    displayName
   }
   street: streetByStreet {
-    street: displayName
+    id
+    displayName
   }
   houseNum
   floor

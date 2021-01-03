@@ -28,10 +28,12 @@ export interface InvolvedContactDB {
     isContactedPerson: boolean;
     address: {
         city: {
-            city: string
+            id: string
+            displayName: string
         },
         street: {
-            street: string
+            id: string
+            displayName: string
         },
         houseNum: string
         floor: string
