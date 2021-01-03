@@ -120,9 +120,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                         </Typography>
                     </FormInput>
                     {
-                        isFamilyContact ?
-                            familyContactsAdditionalFields()
-                            : contact.extraInfo &&
+                        isFamilyContact ? familyContactsAdditionalFields() : contact.extraInfo &&
                             <FormInput xs={10} fieldName={ContactFieldName.EXTRA_INFO}>
                                 <Typography variant='caption'>
                                     {contact.extraInfo}
