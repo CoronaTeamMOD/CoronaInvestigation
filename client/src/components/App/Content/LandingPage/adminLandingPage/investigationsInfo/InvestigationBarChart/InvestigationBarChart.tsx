@@ -3,6 +3,8 @@ import { ResponsiveBar } from '@nivo/bar';
 
 import InvestigationChart from 'models/InvestigationChart';
 
+import theme from 'styles/theme';
+
 import useStyles from './InvestigationBarChartStyles';
 
 const InvestigationBarChart: React.FC<Props> = ({ investigationsGraphData }): JSX.Element => {
@@ -23,6 +25,7 @@ const InvestigationBarChart: React.FC<Props> = ({ investigationsGraphData }): JS
                     <b style={{color}} className={classes.barTooltip}>{indexValue}: {value}</b>
                 )
             }}
+            theme={{tooltip: {container: {zIndex: 9999, position: 'absolute'}}}}
             colors={investigationChart => investigationChart.data.color}
         />
     )
