@@ -1,5 +1,4 @@
-import { differenceInYears } from 'date-fns';
-
+import { getPatientAge } from '../../Utils/patientUtils';
 import InvestigationMainStatus from '../../Models/InvestigationStatus/InvestigationMainStatus';
 
 // All the different interfaces and functions are there for decoupling the user and the group investigations
@@ -126,7 +125,7 @@ const mappingUserInvestigations = (investigation: UserInvestigations['orderedInv
             ...investigation.investigatedPatientByInvestigatedPatientId,
             covidPatientByCovidPatient: {
                 ...investigation.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient,
-                age: differenceInYears(new Date(), new Date(investigation.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient.birthDate))
+                age: getPatientAge(investigation.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient.birthDate)
             }
         },
         desk: investigation.deskByDeskId?.deskName,
@@ -153,7 +152,7 @@ const mappingGroupInvestigations = (investigation: UserInvestigations['orderedIn
             ...investigation.investigatedPatientByInvestigatedPatientId,
             covidPatientByCovidPatient: {
                 ...investigation.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient,
-                age: differenceInYears(new Date(), new Date(investigation.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient.birthDate))
+                age: getPatientAge(investigation.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient.birthDate)
             }
         },
         desk: investigation.deskByDeskId?.deskName,

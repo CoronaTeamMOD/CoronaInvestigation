@@ -7,7 +7,7 @@ import flightValidation from './flightsValidation';
 import exposureValidation from './exposureValidation';
 
 const hasExposureSource = (exposure : Exposure) => {
-    return exposure.exposureSource !== undefined
+    return exposure?.exposureSource !== undefined
 }
 
 const flightsAndExposures = (validationDate : Date) => {
