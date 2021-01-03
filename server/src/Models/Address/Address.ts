@@ -1,8 +1,8 @@
 interface Address {
     city: string;
     street: string;
-    floor: number;
-    houseNum: number;
+    floor: string;
+    houseNum: string;
 }
 
 export default Address;
