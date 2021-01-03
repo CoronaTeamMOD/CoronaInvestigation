@@ -7,8 +7,9 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import Country from 'models/Country';
 import useFormStyles from 'styles/formStyles';
+import AirportTextField from 'commons/AirportTextField/AirportTextField';
 import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import InternationalCityTextField from 'commons/InternationalCityTextField/InternationalCityTextField';
 
 import useStyles from './AirportInputStyles';
 
@@ -94,7 +95,7 @@ const AirportInput = (props: any) => {
                     defaultValue={city}
                     render={(props) => {
                         return (
-                            <AlphanumericTextField
+                            <InternationalCityTextField
                                 {...props}
                                 onChange={(value) => {
                                     props.onChange(value);
@@ -114,7 +115,7 @@ const AirportInput = (props: any) => {
                     defaultValue={airport}
                     render={(props) => {
                         return (
-                            <AlphanumericTextField
+                            <AirportTextField
                                 {...props}
                                 onChange={(value) => {
                                     props.onChange(value);

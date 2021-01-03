@@ -18,6 +18,7 @@ export interface TypePreventiveTextFieldProps<T> {
     inputProps?: TextFieldProps['inputProps'];
     InputProps?: TextFieldProps['InputProps'];
     onKeyDown? : (e : React.KeyboardEvent) => void;
+    InputLabelProps?: TextFieldProps['InputLabelProps'];
 }
 
 type TypePreventiveTextFieldType = <T>(props: TypePreventiveTextFieldProps<T>) => JSX.Element;
