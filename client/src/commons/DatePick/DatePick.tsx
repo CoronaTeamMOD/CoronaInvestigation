@@ -33,6 +33,7 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
       }}
       InputLabelProps={{
         shrink: true,
+        className: classes.label
       }}
     />
   );
