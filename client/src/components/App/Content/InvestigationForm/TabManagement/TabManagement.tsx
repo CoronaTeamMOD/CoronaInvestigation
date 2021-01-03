@@ -74,7 +74,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     }
 
     return (
-        <Card className={classes.card}>
+        <Card>
             <Tabs
                 value={currentTab}
                 indicatorColor='primary'
