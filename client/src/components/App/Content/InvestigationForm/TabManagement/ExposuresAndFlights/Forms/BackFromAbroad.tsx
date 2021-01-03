@@ -15,25 +15,11 @@ import useStyles from '../ExposuresAndFlightsStyles';
 
 const addFlightButton: string = 'הוסף טיסה לחול';
 
-interface Props {
-    wereFlights: boolean;
-    onExposuresStatusChange: (fieldName: any, value: any) => void;
-    exposures: Exposure[];
-    handleChangeExposureDataAndFlightsField: (index: number, fieldName: string, value: any) => void;
-    onExposureAdded: (wasConfirmedExposure: boolean, wasAbroad: boolean) => void;
-    disableFlightAddition: boolean;
-}
-
 export const BackFromAbroad = (props: Props) => {
     const { control, watch } = useFormContext();
     const { fieldContainer } = useFormStyles();
-    const {
-        wereFlights,
-        onExposuresStatusChange,
-        exposures,
-        handleChangeExposureDataAndFlightsField,
-        onExposureAdded,
-        disableFlightAddition,
+    const { wereFlights, onExposuresStatusChange, exposures, handleChangeExposureDataAndFlightsField,
+        onExposureAdded, disableFlightAddition,
     } = props;
     const classes = useStyles();
 
@@ -53,6 +39,7 @@ export const BackFromAbroad = (props: Props) => {
                                 {...props}
                                 onChange={(event, value) => {
                                     if (value !== null) {
+                                        props.onChange(value);
                                         onExposuresStatusChange(fieldsNames.wereFlights, value);
                                     }
                                 }}
@@ -65,21 +52,20 @@ export const BackFromAbroad = (props: Props) => {
             <Collapse in={watchWereFlights} className={classes.additionalInformationForm}>
                 <div>
                     <FieldName fieldName='פרטי טיסת חזור לארץ:' className={fieldContainer} />
-                    {exposures.map( (exposure, index) =>
-                            exposure.wasAbroad && (
-                                <>
-                                    <FlightsForm
-                                        fieldsNames={fieldsNames}
-                                        key={(exposure.id || '') + index.toString()}
-                                        exposureAndFlightsData={exposure}
-                                        index={index}
-                                        handleChangeExposureDataAndFlightsField={(fieldName: string, value: any) =>
-                                            handleChangeExposureDataAndFlightsField(index, fieldName, value)
-                                        }
-                                    />
-                                    <Divider />
-                                </>
-                            )
+                    {exposures.map((exposure, index) =>
+                        exposure.wasAbroad &&
+                        <>
+                            <FlightsForm
+                                fieldsNames={fieldsNames}
+                                key={(exposure.id || '') + index.toString()}
+                                exposureAndFlightsData={exposure}
+                                index={index}
+                                handleChangeExposureDataAndFlightsField={(fieldName: string, value: any) =>
+                                    handleChangeExposureDataAndFlightsField(index, fieldName, value)
+                                }
+                            />
+                            <Divider />
+                        </>
                     )}
                     <IconButton test-id='addFlight' onClick={() => onExposureAdded(false, true)} disabled={disableFlightAddition}>
                         <AddCircle color={disableFlightAddition ? 'disabled' : 'primary'} />
@@ -89,4 +75,13 @@ export const BackFromAbroad = (props: Props) => {
             </Collapse>
         </div>
     );
+};
+
+interface Props {
+    wereFlights: boolean;
+    onExposuresStatusChange: (fieldName: any, value: any) => void;
+    exposures: Exposure[];
+    handleChangeExposureDataAndFlightsField: (index: number, fieldName: string, value: any) => void;
+    onExposureAdded: (wasConfirmedExposure: boolean, wasAbroad: boolean) => void;
+    disableFlightAddition: boolean;
 };
