@@ -3,8 +3,6 @@ import { ResponsiveBar } from '@nivo/bar';
 
 import InvestigationChart from 'models/InvestigationChart';
 
-import theme from 'styles/theme';
-
 import useStyles from './InvestigationBarChartStyles';
 
 const InvestigationBarChart: React.FC<Props> = ({ investigationsGraphData }): JSX.Element => {
