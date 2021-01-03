@@ -11,13 +11,16 @@ import { getStreetByCity } from 'Utils/Address/AddressUtils';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
+import useStyle from './AddressFormStyles';
+
 const AddressForm: React.FC<Props> = ({ 
-    direction = 'row', 
+    disabled = false,
     cityField, 
     streetField,
     floorField, 
     houseNumberField
 }) => {
+    const classes = useStyle();
     const methods = useFormContext();
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
@@ -32,95 +35,160 @@ const AddressForm: React.FC<Props> = ({
     }, [cityWatcher]);
 
     return (
-        // <Grid container direction={direction}>
         <>
             <Grid item xs={2} className={cityField.className}>
-                <Controller
-                    name={cityField.name}
-                    control={methods.control}
-                    render={(props) => (
-                        <Autocomplete
-                        options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                        getOptionLabel={(option) => option ? option.value.displayName : option}
-                        value={props.value && {id: props.value as string, value: cities.get(props.value) as City}}
-                        onChange={(event, selectedCity) => props.onChange(selectedCity ? selectedCity.id : '')}
-                        renderInput={(params) =>
-                            <TextField
-                                test-id={cityField.testId || ''}
-                                error={Boolean(get(methods.errors, cityField.name))}
-                                label={get(methods.errors, cityField.name)?.message || 'עיר *'}
-                                {...params}
-                                placeholder='עיר'
-                            />}
-                        />
-                    )}
-                />
+                {
+                    disabled ?
+                    <Controller
+                        name={cityField.name}
+                        control={methods.control}
+                        render={(props) => (
+                            <TextField 
+                                value={cities.get(props.value)?.displayName} 
+                                label='עיר' 
+                                disabled 
+                            />
+                        )}
+                    />
+                    :
+                    <Controller
+                        name={cityField.name}
+                        control={methods.control}
+                        render={(props) => (
+                            <Autocomplete
+                                disabled={disabled}
+                                options={Array.from(cities, ([id, value]) => ({ id, value }))}
+                                getOptionLabel={(option) => option ? option.value.displayName : option}
+                                value={props.value && {id: props.value as string, value: cities.get(props.value) as City}}
+                                onChange={(event, selectedCity) => props.onChange(selectedCity ? selectedCity.id : '')}
+                                renderInput={(params) =>
+                                    <TextField
+                                        test-id={cityField.testId || ''}
+                                        error={Boolean(get(methods.errors, cityField.name))}
+                                        label={get(methods.errors, cityField.name)?.message || 'עיר *'}
+                                        {...params}
+                                        placeholder='עיר'
+                                    />}
+                            />
+                        )}
+                    />
+                }
             </Grid>
             <Grid item xs={2} className={streetField.className}>
-                <Controller
-                    name={streetField.name}
-                    control={methods.control}
-                    render={(props) => (
-                        <Autocomplete
-                            options={Array.from(streetsInCity, ([id, value]) => ({ id, value }))}
-                            getOptionLabel={(option) => {
-                                if (option) {
-                                    if (option?.value) return option.value?.displayName
-                                    else return '';
-                                } else return option
-                            }}
-                            value={props.value && {id: props.value as string, value: streetsInCity.get(props.value) as Street}}
-                            onChange={(event, selectedStreet) => {
-                                props.onChange(selectedStreet ? selectedStreet.id : '')
-                            }}
-                            renderInput={(params) =>
-                                <TextField
-                                    test-id={cityField.testId || ''}
-                                    {...params}
-                                    placeholder='רחוב'
-                                    label='רחוב'
-                                />
-                            }
-                        />
-                    )}
-                />
+                {
+                    disabled ?
+                    <Controller
+                        name={streetField.name}
+                        control={methods.control}
+                        render={(props) => (
+                            <TextField 
+                                test-id={streetField.testId || ''} 
+                                value={props.value} 
+                                label='רחוב' 
+                                disabled 
+                            />
+                        )}
+                    />
+                    :
+                    <Controller
+                        name={streetField.name}
+                        control={methods.control}
+                        render={(props) => (
+                            <Autocomplete
+                                disabled={disabled}
+                                options={Array.from(streetsInCity, ([id, value]) => ({ id, value }))}
+                                getOptionLabel={(option) => {
+                                    if (option) {
+                                        if (option?.value) return option.value?.displayName
+                                        else return '';
+                                    } else return option
+                                }}
+                                value={props.value && {id: props.value as string, value: streetsInCity.get(props.value) as Street}}
+                                onChange={(event, selectedStreet) => {
+                                    props.onChange(selectedStreet ? selectedStreet.id : '')
+                                }}
+                                renderInput={(params) =>
+                                    <TextField
+                                        test-id={streetField.testId || ''}
+                                        {...params}
+                                        placeholder='רחוב'
+                                        label='רחוב'
+                                    />
+                                }
+                            />
+                        )}
+                    />
+                }
             </Grid>
             <Grid item xs={2} className={houseNumberField.className}>
-                <Controller
-                    name={houseNumberField.name}
-                    control={methods.control}
-                    render={(props) => (
-                        <AlphanumericTextField
-                            testId={cityField.testId || ''}
-                            name={houseNumberField.name}
-                            value={props.value}
-                            onChange={(newValue: string) => props.onChange(newValue)}
-                            onBlur={props.onBlur}
-                            placeholder='מספר הבית'
-                            label='מספר הבית'
-                        />
-                    )}
-                />
+                {
+                    disabled ?
+                    <Controller
+                        name={houseNumberField.name}
+                        control={methods.control}
+                        render={(props) => (
+                            <TextField 
+                                test-id={houseNumberField.testId || ''} 
+                                value={props.value} 
+                                label='מספר הבית' 
+                                disabled
+                            />
+                        )}
+                    />
+                    :
+                    <Controller
+                        name={houseNumberField.name}
+                        control={methods.control}
+                        render={(props) => (
+                            <AlphanumericTextField
+                                disabled={disabled}
+                                testId={houseNumberField.testId || ''}
+                                name={houseNumberField.name}
+                                value={props.value}
+                                onChange={(newValue: string) => props.onChange(newValue)}
+                                onBlur={props.onBlur}
+                                placeholder='מספר הבית'
+                                label='מספר הבית'
+                            />
+                        )}
+                    />
+                }
             </Grid>
-            <Grid item xs={2} className={floorField.className}>
-                <Controller
-                    name={floorField.name}
-                    control={methods.control}
-                    render={(props) => (
-                        <AlphanumericTextField
-                            testId={cityField.testId || ''}
-                            name={floorField.name}
-                            value={props.value}
-                            onChange={(newValue: string) => props.onChange(newValue)}
-                            onBlur={props.onBlur}
-                            placeholder='קומה'
-                            label='קומה'
-                        />
-                    )}
-                />
+            <Grid item xs={2} className={[floorField.className, classes.cancelWhiteSpace].join(' ')}>
+                {
+                    disabled ?
+                    <Controller
+                        name={floorField.name}
+                        control={methods.control}
+                        render={(props) => (
+                            <TextField 
+                                test-id={floorField.testId || ''} 
+                                value={props.value} 
+                                label='קומה' 
+                                disabled={true} 
+                            />
+                        )}
+                    />
+                    :
+                    <Controller
+                        name={floorField.name}
+                        control={methods.control}
+                        render={(props) => (
+                            <AlphanumericTextField
+                                disabled={disabled}
+                                testId={cityField.testId || ''}
+                                name={floorField.name}
+                                value={props.value}
+                                onChange={(newValue: string) => props.onChange(newValue)}
+                                onBlur={props.onBlur}
+                                placeholder='קומה'
+                                label='קומה'
+                            />
+                        )}
+                    />
+                }
             </Grid>
-            </>
-        // </Grid>
+        </>
     )
 };
 
@@ -131,7 +199,7 @@ interface FormField {
 }
 
 interface Props {
-    direction?: "row" | "row-reverse" | "column" | "column-reverse";
+    disabled?: boolean;
     cityField: FormField;
     streetField: FormField;
     houseNumberField: FormField;

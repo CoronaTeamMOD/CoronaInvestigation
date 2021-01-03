@@ -60,7 +60,20 @@ const interactionEventSchema = yup.object().shape({
         [InteractionEventContactFields.PHONE_NUMBER]: yup.string().nullable()
           .matches(phoneNumberMatchValidation, 'מספר טלפון לא תקין'),
         [InteractionEventContactFields.IDENTIFICATION_NUMBER]: ContactIdValidationSchema
-        })),
+    })),
+    [InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS]: yup.object().when(
+      [InteractionEventDialogFields.PLACE_TYPE, InteractionEventDialogFields.PLACE_SUB_TYPE], {
+        is: (placeType, placeSubType) => placeType === placeTypesCodesHierarchy.privateHouse.code &&
+                                         placeSubType === placeTypesCodesHierarchy.privateHouse.subTypesCodes?.patientHouse.code,
+        then: yup.object().shape({
+          [InteractionEventDialogFields.PRIVATE_HOUSE_CITY]: yup.string().nullable(),
+          [InteractionEventDialogFields.PRIVATE_HOUSE_STREET]: yup.string().nullable(),
+          [InteractionEventDialogFields.PRIVATE_HOUSE_HOUSE_NUMBER]: yup.string().nullable(),
+          [InteractionEventDialogFields.PRIVATE_HOUSE_FLOOR]: yup.string().nullable()
+        }),
+        else: yup.object()                                         
+      }
+    )
   });
 
 export default interactionEventSchema;
