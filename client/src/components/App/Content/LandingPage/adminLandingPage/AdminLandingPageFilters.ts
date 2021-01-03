@@ -1,3 +1,6 @@
+import { TimeRangeDates } from "models/TimeRange";
+
 export default interface AdminLandingPageFilters {
-    desks? :  number[]
-}
+    desks? :  number[],
+    timeRange? : TimeRangeDates
+};
