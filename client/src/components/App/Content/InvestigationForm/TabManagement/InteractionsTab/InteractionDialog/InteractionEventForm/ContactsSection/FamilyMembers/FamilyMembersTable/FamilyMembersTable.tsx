@@ -93,7 +93,7 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
                                                     {
                                                         cellName === cityCellName && isHouseMember(familyMember.isolationAddress) &&
                                                         <Tooltip title={houseMember}>
-                                                            <Home />
+                                                            <Home className={classes.homeIcon} />
                                                         </Tooltip>
                                                     }
                                                 </TableCell>
