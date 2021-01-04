@@ -19,10 +19,16 @@ const useStyles = makeStyles((theme: Theme) => ({
         flip: false
     }, 
     title: {
-        fontSize: '1.2vw',
+        fontSize: '14px',
     },
     option: {
         fontSize: '1.2vw',
+    },
+    chip: {
+        maxWidth: '50%',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
     }
 }));
 

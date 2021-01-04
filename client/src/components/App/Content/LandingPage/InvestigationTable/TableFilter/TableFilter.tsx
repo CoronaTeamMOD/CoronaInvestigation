@@ -30,6 +30,7 @@ const TableFilter = (props: Props) => {
                 <b>סינון לפי סטטוס</b>
             </Typography>
             <Autocomplete
+                ChipProps={{className:classes.chip}}
                 className={classes.autocomplete}
                 size='small'
                 disableCloseOnSelect
@@ -55,7 +56,7 @@ const TableFilter = (props: Props) => {
                         <Typography className={classes.option} >{option.displayName}</Typography>
                     </>
                 )}
-                limitTags={2}
+                limitTags={1}
             />
             <Checkbox
                 onChange={(event) => changeUnassginedUserFilter(event.target.checked)}
