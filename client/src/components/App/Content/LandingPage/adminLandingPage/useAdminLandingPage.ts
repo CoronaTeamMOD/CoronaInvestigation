@@ -12,6 +12,7 @@ import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 
 import AdminLandingPageFilters from './AdminLandingPageFilters';
 import { HistoryState } from '../InvestigationTable/InvestigationTableInterfaces';
+
 const useAdminLandingPage = (parameters: Parameters) => {
 
     const allTimeRangeId = 10;
