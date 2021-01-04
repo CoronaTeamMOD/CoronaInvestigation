@@ -11,7 +11,7 @@ interface Props {
     fetchInvestigationStatistics: () => void;
 }
 
-const refreshRateInMs = 1000;
+const refreshRateInMs = 60000;
 
 const LastUpdateMessage = (props: Props) => {
     const classes = useStyles();

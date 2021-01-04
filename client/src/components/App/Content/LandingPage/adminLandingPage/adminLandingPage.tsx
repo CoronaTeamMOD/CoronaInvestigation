@@ -41,7 +41,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
         setInvestigationsStatistics,
         filteredDesks,
         setFilteredDesks,
-        setLastUpdated
+        setLastUpdated,
         timeRangeFilter,
         setTimeRangeFilter
     });
