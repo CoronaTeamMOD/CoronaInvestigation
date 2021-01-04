@@ -1,9 +1,9 @@
 import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles({
-    flightInputDate: {
-        marginRight: '6vw',
-    },
+    label: {
+        width: '30vw',
+    }
 });
 
 export default useStyles;

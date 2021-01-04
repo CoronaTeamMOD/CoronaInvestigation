@@ -6,20 +6,22 @@ import useFormStyles from 'styles/formStyles';
 import DatePick from 'commons/DatePick/DatePick';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import FlightNumberTextField from 'commons/FlightNumberTextField/FlightNumberTextField';
 
+import useStyles from './FlightFormStyles';
 import AirportInput from './AirportInput/AirportInput';
-
 
 const FlightsForm = (props: any) => {
   const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index } = props;
 
   const {control , errors} = useFormContext();
 
-  const classes = useFormStyles();
+  const classes = useStyles();
+  const formClasses = useFormStyles();
 
   const getDateLabel = (dateError : {message? : string , type? : string}) => {
 		if(dateError) {
-			if(dateError.type === "typeError") {
+			if(dateError.type === 'typeError') {
 				return 'תאריך לא ולידי'
 			}
 			return dateError.message;
@@ -32,7 +34,7 @@ const FlightsForm = (props: any) => {
   const endDateError = currentErrors ? currentErrors.flightEndDate : undefined;
 
   return (
-		<Grid className={classes.form} container justify='flex-start'>
+		<Grid className={formClasses.form} container justify='flex-start'>
 			<FormRowWithInput testId='flightStartingPoint' fieldName='מוצא:'>
 				<AirportInput
 					country={exposureAndFlightsData[fieldsNames.originCountry]}
@@ -60,8 +62,8 @@ const FlightsForm = (props: any) => {
 			</FormRowWithInput>
 
 			<FormRowWithInput fieldName='תאריך טיסה:'>
-				<Grid className={classes.inputRow} item container xs={9}  justify='flex-start' alignItems="center" spacing={1}>
-					<Grid item xs={5} lg={3}>
+				<Grid className={formClasses.inputRow} item container xs={9} justify='flex-start' alignItems='center' spacing={1}>
+					<Grid item xs={5} lg={3} className={classes.flightInputDate}>
 						<Typography variant='caption'>מתאריך</Typography>
 						<Controller
 							control={control}
@@ -85,7 +87,7 @@ const FlightsForm = (props: any) => {
 							}}
 						/>
 					</Grid>
-					<Grid item xs={5} lg={3}>
+					<Grid item xs={5} lg={3} className={classes.flightInputDate}>
 					<Typography variant='caption'>עד תאריך</Typography>
 						<Controller
 							control={control}
@@ -139,7 +141,7 @@ const FlightsForm = (props: any) => {
 					defaultValue={exposureAndFlightsData[fieldsNames.flightNumber]}
 					render={(props) => {
 						return (
-							<AlphanumericTextField
+							<FlightNumberTextField
 								{...props}
 								testId='airlineNumber'
 								onChange={(value) => {

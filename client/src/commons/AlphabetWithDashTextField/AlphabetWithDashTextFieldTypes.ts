@@ -1,4 +1,5 @@
 import React from 'react';
+import { TextFieldProps } from '@material-ui/core';
 
 export interface AlphabetWithDashTextFieldProps<T> {
     disabled?: boolean,
@@ -10,6 +11,7 @@ export interface AlphabetWithDashTextFieldProps<T> {
     placeholder?: string,
     label?: string,
     className?: string,
+    InputLabelProps?: TextFieldProps['InputLabelProps'];
 }
 
 type AlphabetWithDashTextFieldType = <T>(props: AlphabetWithDashTextFieldProps<T>) => JSX.Element;
