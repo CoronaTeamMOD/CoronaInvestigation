@@ -4,40 +4,58 @@ import { useHistory } from 'react-router-dom';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
+import { TimeRange } from 'models/TimeRange';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import FilterRulesVariables from 'models/FilterRulesVariables';
-import AdminLandingPageFilters from './AdminLandingPageFilters';
 import InvesitgationStatistics from 'models/InvestigationStatistics';
 import FilterRulesDescription from 'models/enums/FilterRulesDescription';
+
+import AdminLandingPageFilters from './AdminLandingPageFilters';
 import { HistoryState } from '../InvestigationTable/InvestigationTableInterfaces';
-interface Parameters {
-    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-    setInvestigationInfoFilter: React.Dispatch<React.SetStateAction<AdminLandingPageFilters>>
-    setInvestigationsStatistics: React.Dispatch<React.SetStateAction<InvesitgationStatistics>>;
-    investigationInfoFilter: AdminLandingPageFilters;
-    filteredDesks: number[]
-    setFilteredDesks:  React.Dispatch<React.SetStateAction<number[]>>;
-}
 
 const useAdminLandingPage = (parameters: Parameters) => {
 
-    const { setIsLoading, setInvestigationsStatistics, investigationInfoFilter , filteredDesks , setFilteredDesks , setInvestigationInfoFilter} = parameters;
-    
+    const allTimeRangeId = 10;
+    const { 
+        setIsLoading, setInvestigationsStatistics, 
+        investigationInfoFilter , setInvestigationInfoFilter,
+        filteredDesks , setFilteredDesks ,
+        timeRangeFilter, setTimeRangeFilter    
+    } = parameters;    
     const history = useHistory<HistoryState>();
 
     useEffect(() => {
         const { location: { state } } = history;
         const deskFilter = state ? state.deskFilter : undefined;
+        const timeRange = state ? state.timeRangeFilter : undefined;
         if(deskFilter) {
             setFilteredDesks(deskFilter)
-            
             if(deskFilter.length > 0) {
-                setInvestigationInfoFilter({
-                    desks : deskFilter
-                })
+                setInvestigationInfoFilter((investigationInfoFilter) => {
+                    return {...investigationInfoFilter, desks : deskFilter};
+                });
             } else {
-                setInvestigationInfoFilter({})
+                delete investigationInfoFilter.desks
+                setInvestigationInfoFilter((investigationInfoFilter) => {
+                    return {...investigationInfoFilter};
+                });
             }
+        } 
+        if (timeRange) {
+            setTimeRangeFilter(timeRange)
+            if(timeRange.id !== allTimeRangeId) {
+                setInvestigationInfoFilter((investigationInfoFilter) => {
+                    return {...investigationInfoFilter, timeRange : {startDate: timeRange.startDate, endDate: timeRange.endDate}};
+                });
+            } else {
+                delete investigationInfoFilter.timeRange
+                setInvestigationInfoFilter((investigationInfoFilter) => {
+                    return {...investigationInfoFilter};
+                });
+            }
+        }
+        if (!deskFilter && !timeRange){
+            setInvestigationInfoFilter({})
         }
     }, [])
     
@@ -58,14 +76,24 @@ const useAdminLandingPage = (parameters: Parameters) => {
 
     const redirectToInvestigationTable = (investigationInfoFilter: FilterRulesVariables, filterType?: FilterRulesDescription) => {
         const filterTitle = filterType ? `חקירות ${filterType}` : undefined;
-        const state = {...investigationInfoFilter, isAdminLandingRedirect: true, filterTitle, deskFilter : filteredDesks}
+        const state = {...investigationInfoFilter, isAdminLandingRedirect: true, filterTitle, deskFilter : filteredDesks, timeRangeFilter: timeRangeFilter}
         history.push(landingPageRoute, state);
     };
 
     return {
         redirectToInvestigationTable
     }
+};
 
+interface Parameters {
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    setInvestigationInfoFilter: React.Dispatch<React.SetStateAction<AdminLandingPageFilters>>;
+    setInvestigationsStatistics: React.Dispatch<React.SetStateAction<InvesitgationStatistics>>;
+    investigationInfoFilter: AdminLandingPageFilters;
+    filteredDesks: number[];
+    setFilteredDesks:  React.Dispatch<React.SetStateAction<number[]>>;
+    timeRangeFilter: TimeRange;
+    setTimeRangeFilter: React.Dispatch<React.SetStateAction<TimeRange>>;
 };
 
 export default useAdminLandingPage;

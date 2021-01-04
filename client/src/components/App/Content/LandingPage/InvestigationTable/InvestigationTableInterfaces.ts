@@ -3,13 +3,14 @@ import { MutableRefObject } from 'react';
 import User from 'models/User';
 import Desk from 'models/Desk';
 import County from 'models/County';
+import { TimeRange } from 'models/TimeRange';
 import InvestigatorOption from 'models/InvestigatorOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
-
-import { IndexedInvestigationData } from './InvestigationTablesHeaders';
-import { SelectedRow } from './useInvestigationTable';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+
+import { SelectedRow } from './useInvestigationTable';
+import { IndexedInvestigationData } from './InvestigationTablesHeaders';
 
 export type StatusFilter = InvestigationMainStatusCodes[];
 export type DeskFilter = number[];
@@ -18,6 +19,7 @@ export interface HistoryState {
     filterRules?: any;
     statusFilter?: StatusFilter;
     deskFilter?: DeskFilter;
+    timeRangeFilter?: TimeRange;
     unassignedUserFilter?: boolean;
     inactiveUserFilter?: boolean;
     isAdminLandingRedirect: boolean;
@@ -71,4 +73,5 @@ export interface useInvestigationTableOutcome {
     changeInvestigationCounty: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => void;
     fetchAllCountyUsers: () => Promise<Map<string, User>>;
     tableTitle: string;
+    timeRangeFilter: TimeRange;
 };

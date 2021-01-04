@@ -1,23 +1,24 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-import logger from 'logger/logger';
 import Desk from 'models/Desk';
+import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 
 import AdminLandingPageFilters from '../AdminLandingPageFilters';
 
 interface Props {
-    filteredDesks: number[]
-    setFilteredDesks: React.Dispatch<React.SetStateAction<number[]>>
-    setInvestigationInfoFilter: React.Dispatch<React.SetStateAction<AdminLandingPageFilters>>
+    filteredDesks: number[];
+    setFilteredDesks: React.Dispatch<React.SetStateAction<number[]>>;
+    investigationInfoFilter: AdminLandingPageFilters;
+    setInvestigationInfoFilter: React.Dispatch<React.SetStateAction<AdminLandingPageFilters>>;
 }
 
 const useDesksFilterCard = (props : Props) => {
     
     const [desks, setDesks] = useState<Desk[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const {filteredDesks , setFilteredDesks , setInvestigationInfoFilter} = props;
+    const {filteredDesks, setFilteredDesks, investigationInfoFilter, setInvestigationInfoFilter} = props;
 
     const fetchDesks = () => {
         const fetchDesksLogger = logger.setup('Getting desks');
@@ -49,10 +50,14 @@ const useDesksFilterCard = (props : Props) => {
     const onUpdateButtonCLicked = () => {
         if(filteredDesks.length > 0) {
             setInvestigationInfoFilter({
+                ...investigationInfoFilter,
                 desks : filteredDesks
             })
         } else {
-            setInvestigationInfoFilter({})
+            delete investigationInfoFilter.desks
+            setInvestigationInfoFilter({
+                ...investigationInfoFilter
+            })
         }
     }
 
@@ -67,7 +72,6 @@ const useDesksFilterCard = (props : Props) => {
         onUpdateButtonCLicked,
         onDeskClicked
     }
-
 };
 
 export default useDesksFilterCard;
