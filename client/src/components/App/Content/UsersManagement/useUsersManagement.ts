@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import axios  from 'axios';
+import { useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import County from 'models/County';
 import Language from 'models/Language';
@@ -17,9 +17,10 @@ import SignUpFields from 'models/enums/SignUpFields';
 import SourceOrganization from 'models/SourceOrganization';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
-import { SortOrderTableHeadersNames } from './UsersManagementTableHeaders'
 import { defaultPage } from './UsersManagement';
+import { SortOrderTableHeadersNames } from './UsersManagementTableHeaders'
 
 interface UserDialog {
     isOpen: boolean,
@@ -58,7 +59,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     const fetchUsers = () => {
         const fetchUsersLogger = logger.setup('Fetching users');
         fetchUsersLogger.info('launching users request', Severity.LOW);
-        const fetchUsersRoute = getUsersRoute(); 
+        const fetchUsersRoute = getUsersRoute();
+        setIsLoading(true);
         if (fetchUsersRoute !== '') {
             axios.post(fetchUsersRoute, {
                 page: {
@@ -84,7 +86,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                         alertError('לא ניתן היה לקבל משתמשים');
                     }
                     fetchUsersLogger.error('didnt get results back from the server', Severity.HIGH);
-                });
+                })
+                .finally(() => setIsLoading(false));
         }
     }
 
@@ -221,6 +224,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     const setUserActivityStatus = (isActive: boolean, userId: string) : Promise<any> => {
         const setUpdateActivityStatusLogger = logger.setup('Updating user activity status');
         setUpdateActivityStatusLogger.info('send request to server for updating user activity status', Severity.LOW);
+        setIsLoading(true);
         return axios.post('users/updateIsUserActiveById', {
             isActive,
             userId
@@ -231,12 +235,14 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         }).catch((error) => {
             alertError('לא הצלחנו לעדכן את סטטוס הפעילות של המשתמש');
             setUpdateActivityStatusLogger.error(`error in updating user activity status ${error}`, Severity.HIGH);
-        });
+        })
+        .finally(() => setIsLoading(false));
     }
 
     const setUserSourceOrganization = (sourceOrganization: string, userId: string) => {
         const setUpdateSourcesOrganizationLogger = logger.setup('Updating user source organization');
         setUpdateSourcesOrganizationLogger.info('send request to server for updating user source organization', Severity.LOW);
+        setIsLoading(true);
         axios.post('users/updateSourceOrganizationById', {
             sourceOrganization,
             userId
@@ -247,12 +253,14 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         }).catch((error) => {
             alertError('לא הצלחנו לעדכן את מסגרת המשתמש');
             setUpdateSourcesOrganizationLogger.error(`error in updating user source organization ${error}`, Severity.HIGH);
-        });
+        })
+        .finally(() => setIsLoading(false));
     }
 
     const setUserDesk = (deskId: number, userId: string) => {
         const setUpdateDeskLogger = logger.setup('Updating user desk');
         setUpdateDeskLogger.info('send request to server for updating user desk', Severity.LOW);
+        setIsLoading(false);
         axios.post('users/updateDesk', {
             desk: deskId,
             userId
@@ -263,7 +271,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         }).catch((error) => {
             alertError('לא הצלחנו לעדכן את הדסק של המשתמש');
             setUpdateDeskLogger.error(`error in updating user desk due to ${error}`, Severity.HIGH);
-        });
+        })
+        .finally(() => setIsLoading(false));
     }
 
     return {

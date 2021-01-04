@@ -1,10 +1,11 @@
 import React from 'react';
+import axios  from 'axios';
 
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import PlaceSubType from 'models/PlaceSubType';
 import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import { usePlacesTypesAndSubTypesIncome } from './usePlacesTypesAndSubTypesInterfaces';
 
@@ -17,10 +18,10 @@ const usePlacesTypesAndSubTypes = (parameters: usePlacesTypesAndSubTypesIncome) 
     const getPlacesSubTypesByTypes = () => {
         const getPlacesSubTypesByTypesLogger = logger.setup('Fetching Places And Sub Types By Types');
         getPlacesSubTypesByTypesLogger.info('launching places and sub types by types request', Severity.LOW);
+        setIsLoading(true)
         axios.get('/intersections/getPlacesSubTypesByTypes').then(
             result => {
                 if (result?.data) {
-
                     const sortedResult : PlacesSubTypesByTypes = {};
                     Object.keys(result.data).forEach((placeTypes)=>{
                         sortedResult[placeTypes] = moveOtherValueLocationToLast(result.data[placeTypes]);
@@ -34,7 +35,7 @@ const usePlacesTypesAndSubTypes = (parameters: usePlacesTypesAndSubTypesIncome) 
             }
         ).catch((error) => {
             getPlacesSubTypesByTypesLogger.error(`got errors in server result: ${error}`,Severity.HIGH);
-        })
+        }).finally(() => setIsLoading(false))
     };
 
     const moveOtherValueLocationToLast = (placetypes: PlaceSubType[] ) => {

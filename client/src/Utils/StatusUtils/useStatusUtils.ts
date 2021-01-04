@@ -1,11 +1,12 @@
+import axios  from 'axios';
 import { isBefore } from 'date-fns';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import InvestigatedPatient from 'models/InvestigatedPatient';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
 
 const useStatusUtils = () => {
@@ -19,6 +20,7 @@ const useStatusUtils = () => {
     const updateIsDeceased = (onInvestigationFinish: Function) => {
         const updateIsDeceasedLogger = logger.setup('Update isDeceased');
         if (!investigatedPatient.isDeceased) {
+            setIsLoading(true);
             axios.get('/clinicalDetails/isDeceased/' + investigatedPatient.investigatedPatientId + '/' + true)
                 .then((result: any) => {
                     updateIsDeceasedLogger.info(`launching isDeceased request succssesfully ${result}`, Severity.LOW);
@@ -27,6 +29,7 @@ const useStatusUtils = () => {
                     updateIsDeceasedLogger.error(`launching isDeceased request unsuccssesfully ${error}`, Severity.HIGH);
                     complexityErrorAlert(error);
                 })
+                .finally(() => setIsLoading(false));
         }
         else {
             onInvestigationFinish();
@@ -36,6 +39,7 @@ const useStatusUtils = () => {
     const updateIsCurrentlyHospitialized = (onInvestigationFinish: Function) => {
         const updateIsCurrentlyHospitializedLogger = logger.setup('Update isCurrentlyHospitialized');
         if (!investigatedPatient.isCurrentlyHospitialized) {
+            setIsLoading(true);
             axios.get('/clinicalDetails/isCurrentlyHospitialized/' + investigatedPatient.investigatedPatientId + '/' + true)
                 .then((result: any) => {
                     updateIsCurrentlyHospitializedLogger.info(`launching isCurrentlyHospitialized request succssesfully ${result}`, Severity.LOW);
@@ -44,6 +48,7 @@ const useStatusUtils = () => {
                     updateIsCurrentlyHospitializedLogger.error(`launching isCurrentlyHospitialized request unsuccssesfully ${error}`, Severity.HIGH);
                     complexityErrorAlert(error);
                 })
+                .finally(() => setIsLoading(false));
         }
         else {
             onInvestigationFinish();

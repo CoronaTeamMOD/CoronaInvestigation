@@ -1,21 +1,21 @@
-import React from 'react'
+import axios  from 'axios';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useEffect} from 'react';
 
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import ResortData from 'models/ResortData';
 import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import ExposureSchema from './Schema/exposuresAndFlightsSchema';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
-import {ExposureAndFlightsDetails} from 'commons/Contexts/ExposuresAndFlights'
+import {ExposureAndFlightsDetails} from 'commons/Contexts/ExposuresAndFlights';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 import { Exposure, initialExposureOrFlight, isConfirmedExposureInvalid, isFlightInvalid} from 'commons/Contexts/ExposuresAndFlights';
 
 import { FormData } from './ExposuresAndFlightsInterfaces';
+import ExposureSchema from './Schema/exposuresAndFlightsSchema';
 
 const defaultDestinationCountryCode = '900';
 
@@ -33,7 +33,7 @@ interface Props {
 export const useExposuresAndFlights = (props : Props) => {
     const {exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, id, reset, trigger} = props;
     
-    const { saveExposureAndFlightData, saveResortsData } = useExposuresSaving({ exposureAndFlightsData, setExposureDataAndFlights });
+    const { saveExposureAndFlightData, saveResortsData } = useExposuresSaving();
     const { parseAddress } = useGoogleApiAutocomplete();
     const { alertError } = useCustomSwal();
 
@@ -70,6 +70,7 @@ export const useExposuresAndFlights = (props : Props) => {
         const getCoronaTestDateLogger = logger.setup('Getting Corona Test Date');
 
         fetchExposuresAndFlightsLogger.info('launching exposures and flights request', Severity.LOW);
+        setIsLoading(true);
         axios
         .get('/exposure/exposures/' + investigationId)
         .then(result => {
@@ -94,11 +95,13 @@ export const useExposuresAndFlights = (props : Props) => {
             }).catch((error) => {
                 getCoronaTestDateLogger.error(`failed to get resorts response due to ${error}`, Severity.HIGH);
             })
+            .finally(() => setIsLoading(false));
             }
         })
         .catch((error) => {
             fetchExposuresAndFlightsLogger.error(`got error from server: ${error}`, Severity.HIGH);
             alertError('לא ניתן היה לטעון את החשיפה');
+            setIsLoading(false);
         });
     }
 
@@ -163,6 +166,7 @@ export const useExposuresAndFlights = (props : Props) => {
             ExposureSchema(validationDate).isValid(data).then(valid => {
                 setFormState(investigationId, id, valid)
             })
+            setIsLoading(false);
         })
     }
 

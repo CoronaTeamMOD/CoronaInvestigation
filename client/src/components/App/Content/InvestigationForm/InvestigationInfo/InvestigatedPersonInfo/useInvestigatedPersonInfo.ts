@@ -1,6 +1,6 @@
+import axios  from 'axios';
 import { useSelector } from 'react-redux';
 
-import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';

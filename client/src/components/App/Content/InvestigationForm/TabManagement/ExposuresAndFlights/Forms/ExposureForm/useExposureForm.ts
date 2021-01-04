@@ -1,7 +1,7 @@
 import React from 'react';
+import axios  from 'axios';
 import { useSelector } from 'react-redux';
 
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import CovidPatient from 'models/CovidPatient';

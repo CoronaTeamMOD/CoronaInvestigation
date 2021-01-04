@@ -1,32 +1,30 @@
+import axios  from 'axios';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { differenceInCalendarDays, subDays } from 'date-fns';
 
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import { setFormState } from 'redux/Form/formActionCreators';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
-import useDuplicateContactId from 'Utils/Contacts/useDuplicateContactId';
-
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-
-import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
-
-import {
-    FormInputs,
-    useContactQuestioningOutcome,
-    useContactQuestioningParameters,
-} from './ContactQuestioningInterfaces';
+import IdentificationTypes from 'models/enums/IdentificationTypes';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import useDuplicateContactId from 'Utils/Contacts/useDuplicateContactId';
 import {
     nonSymptomaticPatient,
     symptomsWithKnownStartDate,
     symptomsWithUnknownStartDate,
     useDateUtils,
-} from 'Utils/DateUtils/useDateUtils';
+    } from 'Utils/DateUtils/useDateUtils';
 
-
+import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
+import {
+    FormInputs,
+    useContactQuestioningOutcome,
+    useContactQuestioningParameters,
+} from './ContactQuestioningInterfaces';
+    
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {
         id,
@@ -47,6 +45,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         const contactLogger = logger.setup(workflowName);
 
         contactLogger.info(`launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`, Severity.LOW);
+        setIsLoading(true);
         return axios.post('/contactedPeople/interactedContacts', contactsSavingVariable)
             .then((response) => {
                 if (response.data?.data?.updateContactPersons) {
@@ -56,7 +55,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             .catch((err) => {
                 contactLogger.error(`got the following error from the server: ${err}`, Severity.HIGH);
                 alertError('חלה שגיאה בשמירת הנתונים');
-            });
+            })
+            .finally(() => setIsLoading(false));
     };
 
     const saveContact = (interactedContact: InteractedContact): boolean => {
@@ -129,6 +129,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const loadInteractedContacts = () => {
         const interactedContactsLogger = logger.setup('Getting corona test date')
         interactedContactsLogger.info(`launching server request with epidemiology number ${epidemiologyNumber}`, Severity.LOW);
+        setIsLoading(true);
         axios.get('/clinicalDetails/coronaTestDate').then((res: any) => {
             if (res.data !== null) {
                 interactedContactsLogger.info('got respond from the server that has data', Severity.LOW);
@@ -141,8 +142,9 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 interactedContactsLogger.warn('got respond from the server without data', Severity.MEDIUM);
             }
         }).catch(err => {
+            setIsLoading(false);
             interactedContactsLogger.error(`got the following error from the server: ${err}`, Severity.LOW);
-        })
+        });
     }
 
     const loadFamilyRelationships = () => {
@@ -158,34 +160,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         }).catch(err => {
             familyRelationshipsLogger.error(`got the following error from the server: ${err}`, Severity.LOW);
         });
-        familyRelationshipsLogger.info(
-            'launching server request',
-            Severity.LOW
-        );
-        axios
-            .get('/contactedPeople/familyRelationships')
-            .then((result: any) => {
-                if (result?.data?.data?.allFamilyRelationships) {
-                    familyRelationshipsLogger.info(
-                        'got respond from the server that has data',
-                        Severity.LOW
-                    );
-                    setFamilyRelationships(
-                        result?.data?.data?.allFamilyRelationships?.nodes
-                    );
-                } else {
-                    familyRelationshipsLogger.warn(
-                        'got respond from the server without data',
-                        Severity.MEDIUM
-                    );
-                }
-            })
-            .catch((err) => {
-                familyRelationshipsLogger.error(
-                    `got the following error from the server: ${err}`,
-                    Severity.LOW
-                );
-            });
     };
 
     const loadContactStatuses = () => {
@@ -312,7 +286,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     `got the following error from the server: ${err}`,
                     Severity.LOW
                 );
-            });
+            })
+            .finally(() => setIsLoading(false));
     };
 
     const checkForSpecificDuplicateIds = (
