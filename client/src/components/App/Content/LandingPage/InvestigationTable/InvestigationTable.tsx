@@ -55,7 +55,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const theme = useTheme();
     const history = useHistory();
-
+    
     const [checkedIndexedRows, setCheckedIndexedRows] = useState<IndexedInvestigation[]>([]);
     const [selectedRow, setSelectedRow] = useState<SelectedRow>(DEFAULT_SELECTED_ROW);
     const [deskAutoCompleteClicked, setDeskAutoCompleteClicked] = useState<boolean>(false);
@@ -95,7 +95,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
         statusFilter, changeStatusFilter, deskFilter, changeDeskFilter, searchQuery, changeSearchQuery, isSearchQueryValid,
         changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers,
-        tableTitle
+        tableTitle, timeRangeFilter
     } = useInvestigationTable({
         setSelectedRow, allGroupedInvestigations, setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations,
         investigationColor
@@ -263,7 +263,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 {
                     (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) &&
                     <Tooltip title={returnToAdminLandingPage}>
-                        <IconButton color='primary' onClick={() => history.push(adminLandingPageRoute , { deskFilter })}>
+                        <IconButton color='primary' onClick={() => history.push(adminLandingPageRoute , { deskFilter, timeRangeFilter })}>
                             <ArrowForward />
                         </IconButton>
                     </Tooltip>

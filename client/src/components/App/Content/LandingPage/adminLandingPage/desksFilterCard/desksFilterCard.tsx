@@ -5,22 +5,25 @@ import Desk from 'models/Desk';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 
 import LoadingCard from '../LoadingCard/LoadingCard';
-import UpdateButton from '../UpdateButton/UpdateButton';
 import useDesksFilterCard from './useDesksFilterCard';
+import UpdateButton from '../UpdateButton/UpdateButton';
 import AdminLandingPageFilters from '../AdminLandingPageFilters';
 import useStyles, { cardHeight, cardWidth } from './desksFilterCardStyles';
 interface Props {
     filteredDesks: number[];
-    setFilteredDesks: React.Dispatch<React.SetStateAction<number[]>>
-    setInvestigationInfoFilter: React.Dispatch<React.SetStateAction<AdminLandingPageFilters>>
+    setFilteredDesks: React.Dispatch<React.SetStateAction<number[]>>;
+    investigationInfoFilter: AdminLandingPageFilters;
+    setInvestigationInfoFilter: React.Dispatch<React.SetStateAction<AdminLandingPageFilters>>;
 }
 
 const DesksFilterCard = (props : Props): JSX.Element => {
+
     const classes = useStyles();
-    const { filteredDesks, setFilteredDesks, setInvestigationInfoFilter } = props;
+    const { filteredDesks, setFilteredDesks, investigationInfoFilter, setInvestigationInfoFilter } = props;
     const { desks, isLoading, clearAllDesks, onDeskClicked, onUpdateButtonCLicked } = useDesksFilterCard({
         filteredDesks,
         setFilteredDesks,
+        investigationInfoFilter,
         setInvestigationInfoFilter,
     });
 
@@ -60,6 +63,6 @@ const DesksFilterCard = (props : Props): JSX.Element => {
             </CardActions>
         </LoadingCard>
     )
-}
+};
 
 export default DesksFilterCard;

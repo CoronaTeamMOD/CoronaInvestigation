@@ -9,6 +9,10 @@ const useStyles = makeStyles({
     },
     disabledRow: {
         backgroundColor: 'lightgray',
+    },
+    homeIcon: {
+        marginBottom: '-0.8vh',
+        marginLeft: '1vw',
     }
 });
 

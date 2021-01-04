@@ -1,21 +1,19 @@
-import {useSelector} from 'react-redux';
-import {useEffect, useState} from 'react';
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
-import Contact from 'models/Contact';
-import {Severity} from 'models/Logger';
+import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import InvolvedContact from 'models/InvolvedContact';
 import { useDateUtils } from 'Utils/DateUtils/useDateUtils';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvolvementReason from 'models/enums/InvolvementReason';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
-import {useInteractionsTabOutcome, useInteractionsTabParameters} from './useInteractionsTabInterfaces';
+import { useInteractionsTabOutcome, useInteractionsTabParameters } from './useInteractionsTabInterfaces';
 
 const eventDeleteFailedMsg = 'לא הצלחנו למחוק את האירוע, אנא נסה שוב בעוד כמה דקות';
 const contactDeleteFailedMsg = 'לא הצלחנו למחוק את המגע, אנא נסה שוב בעוד כמה דקות';
@@ -33,7 +31,7 @@ interface GroupedInvolvedGroups {
 
 const useInteractionsTab = (parameters: useInteractionsTabParameters): useInteractionsTabOutcome => {
     const { interactions, setInteractions, setAreThereContacts, setDatesToInvestigate,
-            setEducationMembers, familyMembersStateContext, setInteractionsTabSettings, completeTabChange } = parameters;
+        setEducationMembers, familyMembersStateContext, setInteractionsTabSettings, completeTabChange } = parameters;
 
     const { parseAddress } = useGoogleApiAutocomplete();
     const { alertError, alertWarning } = useCustomSwal();
@@ -45,7 +43,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const { getDatesToInvestigate, convertDate } = useDateUtils();
-    
+
     const getCoronaTestDate = () => {
         const getCoronaTestDateLogger = logger.setup('Getting Corona Test Date');
         getCoronaTestDateLogger.info('launching Corona Test Date request', Severity.LOW);
@@ -76,7 +74,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             });
     }
 
-    const groupInvolvedContacts = (involvedContacts: InvolvedContact[]) : GroupedInvolvedGroups => {
+    const groupInvolvedContacts = (involvedContacts: InvolvedContact[]): GroupedInvolvedGroups => {
         return involvedContacts.reduce<GroupedInvolvedGroups>((previous, contact) => {
             if (contact.involvementReason === InvolvementReason.FAMILY) {
                 return {
@@ -90,17 +88,17 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 }
             }
             return previous;
-        }, {familyMembers: [], educationMembers: []});
+        }, { familyMembers: [], educationMembers: [] });
     }
 
     const loadInvolvedContacts = () => {
         const loadInvolvedContactsLogger = logger.setup('loading involved contacts');
         loadInvolvedContactsLogger.info('launching db request', Severity.LOW);
-        axios.get(`/intersections/involvedContacts/${epidemiologyNumber}`)
-        .then((result) => {
+
+        axios.get(`/intersections/involvedContacts/${epidemiologyNumber}`).then((result) => {
             if (result?.data && result.headers['content-type'].includes('application/json')) {
                 loadInvolvedContactsLogger.info('got response successfully', Severity.LOW);
-                const involvedContacts : InvolvedContact[] = result?.data;
+                const involvedContacts: InvolvedContact[] = result?.data;
                 const { familyMembers, educationMembers } = groupInvolvedContacts(involvedContacts);
                 familyMembersStateContext.familyMembers = familyMembers;
                 setEducationMembers(educationMembers);
@@ -110,41 +108,39 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         }).catch((error) => {
             loadInvolvedContactsLogger.error(`failed to get response due to ${error}`, Severity.HIGH);
         });
-    }
+    };
 
     const getInteractionsTabSettings = () => {
         const interactionsTabSettingsLogger = logger.setup('fetching interactions tab settings data');
-          interactionsTabSettingsLogger.info('launching db request', Severity.LOW);
-          axios.get(`/investigationInfo/interactionsTabSettings/${epidemiologyNumber}`)
-          .then((result) => {
-              if (result?.data) {
-                  interactionsTabSettingsLogger.info('got response successfully', Severity.LOW);
-                  setInteractionsTabSettings(result?.data);
-              } else {
-                  interactionsTabSettingsLogger.error(`failed to get response due to ${result}`, Severity.HIGH);
-              }
-          }).catch((error) => {
-              interactionsTabSettingsLogger.error(`failed to get response due to ${error}`, Severity.HIGH);
-          });
-    }
+        interactionsTabSettingsLogger.info('launching db request', Severity.LOW);
+        axios.get(`/investigationInfo/interactionsTabSettings/${epidemiologyNumber}`).then((result) => {
+            if (result?.data) {
+                interactionsTabSettingsLogger.info('got response successfully', Severity.LOW);
+                setInteractionsTabSettings(result?.data);
+            } else {
+                interactionsTabSettingsLogger.error(`failed to get response due to ${result}`, Severity.HIGH);
+            }
+        }).catch((error) => {
+            interactionsTabSettingsLogger.error(`failed to get response due to ${error}`, Severity.HIGH);
+        });
+    };
 
     const loadInteractions = () => {
         const loadInteractionsLogger = logger.setup('Fetching Interactions');
         loadInteractionsLogger.info('launching interactions request', Severity.LOW);
-        axios.get(`/intersections/contactEvent/${epidemiologyNumber}`)
-            .then((result) => {
-                loadInteractionsLogger.info('got results back from the server', Severity.LOW);
-                const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
-                const numberOfContactedPeople = allInteractions.reduce((currentValue: number, interaction: InteractionEventDialogData) => {
-                    return currentValue + interaction.contacts.length
-                }, 0);
-                setAreThereContacts(numberOfContactedPeople > 0);
-                setInteractions(allInteractions);
-            }).catch((error) => {
-                loadInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-                alertError('הייתה שגיאה בטעינת האירועים והמגעים');
-            });
-    }
+        axios.get(`/intersections/contactEvent/${epidemiologyNumber}`).then((result) => {
+            loadInteractionsLogger.info('got results back from the server', Severity.LOW);
+            const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
+            const numberOfContactedPeople = allInteractions.reduce((currentValue: number, interaction: InteractionEventDialogData) => {
+                return currentValue + interaction.contacts.length
+            }, 0);
+            setAreThereContacts(numberOfContactedPeople > 0);
+            setInteractions(allInteractions);
+        }).catch((error) => {
+            loadInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+            alertError('הייתה שגיאה בטעינת האירועים והמגעים');
+        });
+    };
 
     useEffect(() => {
         loadInteractions();
@@ -160,10 +156,10 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             getInteractionsTabSettings();
         }
         loadInteractions();
-    }
+    };
 
     useEffect(() => {
-        setDatesToInvestigate(getDatesToInvestigate(doesHaveSymptoms,symptomsStartDate,coronaTestDate));
+        setDatesToInvestigate(getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate));
     }, [coronaTestDate, doesHaveSymptoms, symptomsStartDate]);
 
     const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
@@ -178,27 +174,27 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const handleDeleteContactEvent = (contactEventId: number, areThereFamilyContacts: boolean) => {
         const deletingInteractionsLogger = logger.setup('Deleting Interaction');
         alertWarning(eventDeleteWarningTitle,
-        {
-            text: `${eventDeleteWarningText} ${areThereFamilyContacts ? familyContactEventDeleteWarningText : ''}`,
-            showCancelButton: true,
-            cancelButtonText: 'בטל',
-            cancelButtonColor: theme.palette.error.main,
-            confirmButtonColor: theme.palette.primary.main,
-            confirmButtonText: 'כן, המשך',
-        }).then((result) => {
-            if (result.value) {
-                deletingInteractionsLogger.info('launching interaction delete request', Severity.LOW);
-                axios.delete('/intersections/deleteContactEvent', {
-                    params: {contactEventId, investigationId: epidemiologyNumber}
-                }).then(() => {
-                    deletingInteractionsLogger.info('interaction was deleted successfully', Severity.LOW)
-                    postDeleteLoading(areThereFamilyContacts);
-                }).catch((error) => {
-                    deletingInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-                    alertError(eventDeleteFailedMsg);
-                })
-            }
-        });
+            {
+                text: `${eventDeleteWarningText} ${areThereFamilyContacts ? familyContactEventDeleteWarningText : ''}`,
+                showCancelButton: true,
+                cancelButtonText: 'בטל',
+                cancelButtonColor: theme.palette.error.main,
+                confirmButtonColor: theme.palette.primary.main,
+                confirmButtonText: 'כן, המשך',
+            }).then((result) => {
+                if (result.value) {
+                    deletingInteractionsLogger.info('launching interaction delete request', Severity.LOW);
+                    axios.delete('/intersections/deleteContactEvent', {
+                        params: { contactEventId, investigationId: epidemiologyNumber }
+                    }).then(() => {
+                        deletingInteractionsLogger.info('interaction was deleted successfully', Severity.LOW)
+                        postDeleteLoading(areThereFamilyContacts);
+                    }).catch((error) => {
+                        deletingInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+                        alertError(eventDeleteFailedMsg);
+                    })
+                }
+            });
     }
 
     const handleDeleteContactedPerson = (contactedPersonId: number, involvedContactId: number | null) => {
@@ -215,7 +211,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             if (result.value) {
                 deleteContactedPersonLogger.info('launching interaction delete request', Severity.LOW);
                 axios.delete('/intersections/contactedPerson', {
-                    params: { contactedPersonId,  involvedContactId, investigationId: epidemiologyNumber }
+                    params: { contactedPersonId, involvedContactId, investigationId: epidemiologyNumber }
                 }).then(() => {
                     deleteContactedPersonLogger.info('interaction was deleted successfully', Severity.LOW);
                     postDeleteLoading(isThisFamilyContact);

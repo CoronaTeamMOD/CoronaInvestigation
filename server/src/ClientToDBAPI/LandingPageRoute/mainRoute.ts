@@ -169,10 +169,15 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
         user: response.locals.user.id,
     });
 
-    const { desks } = request.body
+    const desks = request.body.desks;
+    const timeRange = request.body.timeRange; 
 
     const desksFilter = desks
                         ? { deskId : { in : desks}} 
+                        : {};
+
+    const timeRangeFilter = timeRange
+                        ? { creationDate: { greaterThanOrEqualTo: timeRange.startDate, lessThanOrEqualTo: timeRange.endDate }} 
                         : {};
     
     const userFilters = {
@@ -181,7 +186,8 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
                 id: {equalTo: response.locals.user.investigationGroup}
             }
         },
-        ...desksFilter
+        ...desksFilter,
+        ...timeRangeFilter
     }
     const parameters = { userFilters, allInvesitgationsFilter: userFilters };
     investigationsStatisticsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);

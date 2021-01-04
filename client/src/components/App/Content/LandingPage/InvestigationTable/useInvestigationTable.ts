@@ -8,11 +8,13 @@ import Desk from 'models/Desk';
 import User from 'models/User';
 import County from 'models/County';
 import logger from 'logger/logger';
-import { Severity } from 'models/Logger';
-import userType from 'models/enums/UserType';
 import { persistor } from 'redux/store';
+import { Severity } from 'models/Logger';
+import { TimeRange } from 'models/TimeRange';
+import userType from 'models/enums/UserType';
 import Investigator from 'models/Investigator';
 import { activateIsLoading } from 'Utils/axios';
+import timeRanges from 'models/enums/timeRanges';
 import StoreStateType from 'redux/storeStateType';
 import { BC_TABS_NAME } from 'models/BroadcastMessage';
 import usePageRefresh from 'Utils/vendor/usePageRefresh';
@@ -29,6 +31,7 @@ import { setInvestigationStatus, setCreator } from 'redux/Investigation/investig
 import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
+import { buildFilterRules } from './FilterCreators';
 import { defaultOrderBy, rowsPerPage, defaultPage } from './InvestigationTable';
 import {
     TableHeadersNames,
@@ -38,7 +41,6 @@ import {
     HiddenTableKeys
 } from './InvestigationTablesHeaders';
 import { DeskFilter, HistoryState, StatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
-import { buildFilterRules } from './FilterCreators';
 
 const investigationURL = '/investigation';
 const getFlooredRandomNumber = (min: number, max: number): number => (
@@ -132,6 +134,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const history = useHistory<HistoryState>();
     const { statusFilter: historyStatusFilter = [], 
             deskFilter: historyDeskFilter = [], 
+            timeRangeFilter: historyTimeRange = timeRanges[0],
             inactiveUserFilter : historyInactiveUserFilter = false, 
             unassignedUserFilter : historyUnassignedUserFilter = false,
             isAdminLandingRedirect : historyisAdminLandingRedirect = false,
@@ -147,6 +150,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [unassignedInvestigationsCount, setUnassignedInvestigationsCount] = useState<number>(0);
     const [statusFilter, setStatusFilter] = useState<StatusFilter>(historyStatusFilter);
     const [deskFilter, setDeskFilter] = useState<DeskFilter>(historyDeskFilter);
+    const [timeRangeFilter, setTimeRangeFilter] = useState<TimeRange>(historyTimeRange);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [isSearchQueryValid, setIsSearchQueryValid] = useState<boolean>(true);
     const [unassignedUserFilter, setUnassignedUserFilter] = useState<boolean>(historyUnassignedUserFilter);
@@ -271,7 +275,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const getInvestigationsAxiosRequest = (orderBy: string): any => {
         const getInvestigationsLogger = logger.setup('Getting Investigations');
 
-        const filterRules = buildFilterRules({ deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery });
+        const filterRules = buildFilterRules({ deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery, timeRangeFilter });
 
         const requestData = {
             orderBy,
@@ -888,7 +892,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeInactiveUserFilter,
         inactiveUserFilter,
         fetchAllCountyUsers,
-        tableTitle
+        tableTitle, 
+        timeRangeFilter
     };
 };
 

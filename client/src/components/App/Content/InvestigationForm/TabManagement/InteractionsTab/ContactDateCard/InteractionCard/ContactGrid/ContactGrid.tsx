@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Delete } from '@material-ui/icons';
 import { differenceInYears, format } from 'date-fns';
-import {Grid, Typography, IconButton, Tooltip} from '@material-ui/core';
+import { Grid, Typography, IconButton, Tooltip } from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import ContactType from 'models/ContactType';
@@ -36,7 +36,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
 
     const { isInvolvedThroughFamily, shouldDisableDeleteContact } = useInvolvedContact();
 
-    const CompletedQuestioningTooltip = ({children}: {children: React.ReactElement}) => (
+    const CompletedQuestioningTooltip = ({ children }: { children: React.ReactElement }) => (
         isContactComplete ?
             <Tooltip title='המגע בסטטוס הושלם'>
                 <span>{children}</span>
@@ -67,7 +67,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
             </FormInput>
             <FormInput xs={2} fieldName={contactedIsolationCity}>
                 <Typography variant='caption'>
-                    {isolationAddress?.city || noDataIndication}
+                    {isolationAddress?.city.displayName || noDataIndication}
                 </Typography>
             </FormInput>
             <FormInput xs={2} fieldName={contactedFamilyRelationshop}>
@@ -84,7 +84,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                     {
                         isFamilyContact &&
                         <Grid item xs={2}>
-                            <FamilyContactIcon/>
+                            <FamilyContactIcon />
                         </Grid>
                     }
                     <FormInput xs={2} fieldName={ContactFieldName.FIRST_NAME}>
@@ -120,9 +120,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                         </Typography>
                     </FormInput>
                     {
-                        isFamilyContact ?
-                            familyContactsAdditionalFields()
-                        : contact.extraInfo &&
+                        isFamilyContact ? familyContactsAdditionalFields() : contact.extraInfo &&
                             <FormInput xs={10} fieldName={ContactFieldName.EXTRA_INFO}>
                                 <Typography variant='caption'>
                                     {contact.extraInfo}

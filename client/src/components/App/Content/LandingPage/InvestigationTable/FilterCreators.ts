@@ -1,3 +1,4 @@
+import { TimeRange } from 'models/TimeRange';
 import FilterRulesVariables from 'models/FilterRulesVariables';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 
@@ -69,11 +70,20 @@ const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => E
             :
             {};
     },
+    [InvestigationsFilterByFields.TIME_RANGE]: (timeRangeFilter: TimeRange) => {
+        if (timeRangeFilter.id === 10) {
+            return {};
+        } else if (timeRangeFilter) {
+            return { creationDate: { greaterThanOrEqualTo: timeRangeFilter.startDate, lessThanOrEqualTo: timeRangeFilter.endDate }} 
+        } else {
+            return {}
+        }
+    },
 };
 
 export const buildFilterRules = (filterRulesVariables: FilterRulesVariables) => {
 
-    const { deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery } = filterRulesVariables;
+    const { deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery, timeRangeFilter } = filterRulesVariables;
 
     const searchQueryFilter = searchQuery ? phoneAndIdentityNumberRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.FULL_NAME(searchQuery) : {};
 
@@ -89,6 +99,7 @@ export const buildFilterRules = (filterRulesVariables: FilterRulesVariables) => 
         ...filterCreators.STATUS(statusFilter),
         userByCreator,
         ...searchQueryFilter,
+        ...filterCreators.TIME_RANGE(timeRangeFilter),
     }
 }
 
