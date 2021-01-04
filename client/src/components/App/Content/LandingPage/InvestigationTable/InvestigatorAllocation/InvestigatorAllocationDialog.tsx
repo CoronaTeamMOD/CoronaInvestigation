@@ -61,58 +61,60 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
             })
     }
 
-    return (
-        <Dialog open={isOpen} maxWidth='md' classes={{ paper: classes.dialog }}
-            onClose={() => closeDialog()}
-            onEnter={() => {
-                setIsLoading(true);
-                fetchInvestigators().then((investigators) => {
-                setAllInvestigators(investigators)
-            }).finally(()=> setIsLoading(false))}
-        }
-        >
-            <DialogTitle>
-                <b>
-                    {title}
-                </b>
-            </DialogTitle>
-            <DialogContent>
-                <Collapse in={allInvestigators !== undefined}>
-                    <InvestigatorsTable
-                        investigators={allInvestigators ? allInvestigators.map((investigator: InvestigatorOption) => investigator.value) : []}
-                        selectedRow={investigatorToAllocateIndex}
-                        setSelectedRow={setInvestigatorToAllocateIndex}
-                    />
-                </Collapse>
-            </DialogContent>
-            <TransferInvestigationDialogNote />
-            <DialogActions>
-                <Button
-                    variant='contained'
-                    color='default'
-                    onClick={(event) => {
-                        event.stopPropagation();
-                        closeDialog();
-                    }}
-                >
-                    ביטול
+    const loadInvestigators = () => {
+        setIsLoading(true);
+        fetchInvestigators().then((investigators) => {
+            setAllInvestigators(investigators)
+        }).finally(() => setIsLoading(false))
+    }
+}
+return (
+    <Dialog open={isOpen} maxWidth='md' classes={{ paper: classes.dialog }}
+        onClose={() => closeDialog()}
+        onEnter={() => loadInvestigators()}
+    >
+        <DialogTitle>
+            <b>
+                {title}
+            </b>
+        </DialogTitle>
+        <DialogContent>
+            <Collapse in={allInvestigators !== undefined}>
+                <InvestigatorsTable
+                    investigators={allInvestigators ? allInvestigators.map((investigator: InvestigatorOption) => investigator.value) : []}
+                    selectedRow={investigatorToAllocateIndex}
+                    setSelectedRow={setInvestigatorToAllocateIndex}
+                />
+            </Collapse>
+        </DialogContent>
+        <TransferInvestigationDialogNote />
+        <DialogActions>
+            <Button
+                variant='contained'
+                color='default'
+                onClick={(event) => {
+                    event.stopPropagation();
+                    closeDialog();
+                }}
+            >
+                ביטול
                 </Button>
-                <Tooltip title={shouldButtonDisabled ? 'לא נבחר חוקר' : ''}>
-                    <span> {/* The span role is to wrap the button to make sure the tooltip work properly even if the button is disabled */}
-                        <Button
-                            form='investigatorAllocation'
-                            variant='contained'
-                            color='primary'
-                            disabled={shouldButtonDisabled}
-                            onClick={handleClick}
-                        >
-                            אישור
+            <Tooltip title={shouldButtonDisabled ? 'לא נבחר חוקר' : ''}>
+                <span> {/* The span role is to wrap the button to make sure the tooltip work properly even if the button is disabled */}
+                    <Button
+                        form='investigatorAllocation'
+                        variant='contained'
+                        color='primary'
+                        disabled={shouldButtonDisabled}
+                        onClick={handleClick}
+                    >
+                        אישור
                         </Button>
-                    </span>
-                </Tooltip>
-            </DialogActions>
-        </Dialog>
-    );
+                </span>
+            </Tooltip>
+        </DialogActions>
+    </Dialog>
+);
 };
 
 interface Props {
