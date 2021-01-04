@@ -17,11 +17,20 @@ interface Parameters {
     investigationInfoFilter: AdminLandingPageFilters;
     filteredDesks: number[]
     setFilteredDesks:  React.Dispatch<React.SetStateAction<number[]>>;
+    setLastUpdated:  React.Dispatch<React.SetStateAction<Date>>;
 }
 
 const useAdminLandingPage = (parameters: Parameters) => {
 
-    const { setIsLoading, setInvestigationsStatistics, investigationInfoFilter , filteredDesks , setFilteredDesks , setInvestigationInfoFilter} = parameters;
+    const {
+		setIsLoading,
+		setInvestigationsStatistics,
+		investigationInfoFilter,
+		filteredDesks,
+		setFilteredDesks,
+		setInvestigationInfoFilter,
+		setLastUpdated,
+	} = parameters;
     
     const history = useHistory<HistoryState>();
 
@@ -42,6 +51,10 @@ const useAdminLandingPage = (parameters: Parameters) => {
     }, [])
     
     useEffect(() => {
+        fetchInvestigationStatistics();
+    }, [investigationInfoFilter])
+
+    const fetchInvestigationStatistics = () => {
         const unallocatedCountLogger = logger.setup('query investigation statistics');
         unallocatedCountLogger.info('launching db request', Severity.LOW);
         setIsLoading(true);
@@ -53,8 +66,11 @@ const useAdminLandingPage = (parameters: Parameters) => {
         .catch(error => {
             unallocatedCountLogger.error(`got error ${error}`, Severity.HIGH);
         })
-        .finally(() => setIsLoading(false));
-    }, [investigationInfoFilter])
+        .finally(() => {
+            setIsLoading(false)
+            setLastUpdated(new Date());
+        });
+    }
 
     const redirectToInvestigationTable = (investigationInfoFilter: FilterRulesVariables, filterType?: FilterRulesDescription) => {
         const filterTitle = filterType ? `חקירות ${filterType}` : undefined;
@@ -63,7 +79,8 @@ const useAdminLandingPage = (parameters: Parameters) => {
     };
 
     return {
-        redirectToInvestigationTable
+        redirectToInvestigationTable,
+        fetchInvestigationStatistics
     }
 
 };

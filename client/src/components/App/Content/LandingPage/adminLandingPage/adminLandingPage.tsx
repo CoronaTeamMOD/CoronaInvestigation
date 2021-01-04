@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 
-import FilterRulesVariables from 'models/FilterRulesVariables';
 import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
 import InvestigationStatistics, { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 
@@ -11,6 +10,7 @@ import TimeRangeCard from './TimeRangeCard/timeRangeCard';
 import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import AdminLandingPageFilters from './AdminLandingPageFilters';
+import LastUpdateMessage from './LastUpdateMessage/LastUpdateMessage';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
 import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 
@@ -28,22 +28,29 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
         unallocatedInvestigations: 0,
     });
     const [filteredDesks, setFilteredDesks] = useState<number[]>([]);
+    const [lastUpdated , setLastUpdated] = useState<Date>(new Date());
 
     const { countyDisplayName } = useAppToolbar();
-    const { redirectToInvestigationTable } = useAdminLandingPage({
+    const { redirectToInvestigationTable , fetchInvestigationStatistics} = useAdminLandingPage({
         setIsLoading,
         investigationInfoFilter,
         setInvestigationInfoFilter,
         setInvestigationsStatistics,
         filteredDesks,
         setFilteredDesks,
+        setLastUpdated
     });
     return (
         <div className={classes.content}>
-            <Typography color='textPrimary' className={classes.countyDisplayName}>
-                <b>{'נפת ' + countyDisplayName}</b>
-            </Typography>
             <Grid container spacing={5} className={classes.gridContainer}>
+                <Grid item xs={3}>
+                    <Typography color='textPrimary' className={classes.countyDisplayName}>
+                        <b>{'נפת ' + countyDisplayName}</b>
+                    </Typography>
+                </Grid>
+                <Grid item xs={9}>
+                    <LastUpdateMessage lastUpdated={lastUpdated} fetchInvestigationStatistics={fetchInvestigationStatistics}/>
+                </Grid>
                 <Grid item xs={3}>
                     <DesksFilterCard 
                         filteredDesks={filteredDesks}
