@@ -61,11 +61,11 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
                 ? {
                     ...contact,
                     isolationAddress: {
-                        city : {id: String(contact.cityId) , displayName : ""},
-                        street : {id : String(contact.streetId) , displayName: ""},
-                        houseNum : "",
-                        apartment : "",
-                        floor : "", 
+                        city : {id: String(contact.cityId) , displayName : ''},
+                        street : {id : String(contact.streetId) , displayName: ''},
+                        houseNum : '',
+                        apartment : '',
+                        floor : '', 
                     }
                 } 
                 : contact;
