@@ -90,6 +90,12 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
         setValue(InteractionEventDialogFields.END_TIME, isUnknownTime ? null : interactionData?.endTime);
     }, [isUnknownTime]);
 
+    const onPlaceTypeChange = (newPlaceType: string) => {
+        setValue(InteractionEventDialogFields.PLACE_TYPE, newPlaceType, {shouldValidate: true});
+        Boolean(placeName) && setValue(InteractionEventDialogFields.PLACE_NAME, '');
+        (!newPlaceType) && onPlaceSubTypeChange(null);
+    };
+
     const {
         hasAddress,
         isNamedLocation,
@@ -105,11 +111,7 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                                     placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
                                     placeType={placeType}
                                     placeSubType={placeSubType}
-                                    onPlaceTypeChange={(newValue) => {
-                                        setValue(InteractionEventDialogFields.PLACE_TYPE, newValue, {shouldValidate: true});
-                                        Boolean(placeName) &&
-                                        setValue(InteractionEventDialogFields.PLACE_NAME, '');
-                                    }}
+                                    onPlaceTypeChange={onPlaceTypeChange}
                                     onPlaceSubTypeChange={onPlaceSubTypeChange}
             />
 
