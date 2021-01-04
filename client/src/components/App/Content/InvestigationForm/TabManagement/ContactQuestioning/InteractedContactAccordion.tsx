@@ -21,9 +21,8 @@ import ContactQuestioningPersonal from './ContactQuestioningPersonal';
 import ContactQuestioningClinical from './ContactQuestioningClinical';
 
 const InteractedContactAccordion = (props: Props) => {
-    const methods = useFormContext();
+    const {errors, ...methods} = useFormContext();
     const classes = useStyles();
-    const {errors} = methods;
 
     const {
         interactedContact,

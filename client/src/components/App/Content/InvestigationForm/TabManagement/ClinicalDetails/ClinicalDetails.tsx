@@ -174,7 +174,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                     cityField={{ name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`, testId: 'currentQuarantineCity' }}
                                     streetField={{ name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, testId: 'currentQuarantineStreet' }}
                                     houseNumberField={{ name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`, testId: 'currentQuarantineHomeNumber' }}
-                                    floorField={{ name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`, testId: 'currentQuarantineFloor' }}
+                                    floorField={{ name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`, testId: 'currentQuarantineFloor', className: classes.cancelWhiteSpace }}
                                 />
                             </FormRowWithInput>
                         </Grid>

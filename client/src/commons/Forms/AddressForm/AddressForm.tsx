@@ -16,9 +16,11 @@ const STREET_LABEL = 'רחוב';
 const FLOOR_LABEL = 'קומה';
 const HOUSE_NUM_LABEL = 'מספר בית';
 const UNKNOWN = 'לא ידוע';
+const GRID_ITEM_SIZE = 2;
 
 const AddressForm: React.FC<Props> = ({ 
     disabled = false,
+    unsized = false,
     cityField, 
     streetField,
     floorField, 
@@ -39,7 +41,7 @@ const AddressForm: React.FC<Props> = ({
 
     return (
         <>
-            <Grid item xs={2} className={cityField.className}>
+            <Grid item xs={unsized ? undefined : GRID_ITEM_SIZE} className={cityField.className}>
                 {
                     disabled ?
                     <Controller
@@ -77,7 +79,7 @@ const AddressForm: React.FC<Props> = ({
                     />
                 }
             </Grid>
-            <Grid item xs={2} className={streetField.className}>
+            <Grid item xs={unsized ? undefined : GRID_ITEM_SIZE} className={streetField.className}>
                 {
                     disabled ?
                     <Controller
@@ -123,7 +125,7 @@ const AddressForm: React.FC<Props> = ({
                     />
                 }
             </Grid>
-            <Grid item xs={2} className={houseNumberField.className}>
+            <Grid item xs={unsized ? undefined : GRID_ITEM_SIZE} className={houseNumberField.className}>
                 {
                     disabled ?
                     <Controller
@@ -157,7 +159,7 @@ const AddressForm: React.FC<Props> = ({
                     />
                 }
             </Grid>
-            <Grid item xs={2} className={floorField.className}>
+            <Grid item xs={unsized ? undefined : GRID_ITEM_SIZE} className={floorField.className}>
                 {
                     disabled ?
                     <Controller
@@ -203,6 +205,7 @@ interface FormField {
 
 interface Props {
     disabled?: boolean;
+    unsized?: boolean;
     cityField: FormField;
     streetField: FormField;
     houseNumberField: FormField;

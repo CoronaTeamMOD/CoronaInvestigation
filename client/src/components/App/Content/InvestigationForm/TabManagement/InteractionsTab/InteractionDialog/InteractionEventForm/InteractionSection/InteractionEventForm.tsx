@@ -18,7 +18,6 @@ import {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCod
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import PlacesTypesAndSubTypes, {PlacesTypesAndSubTypesProps} from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
-import PatientAddress from './PatientAddress';
 import useStyles from './InteractionEventFormStyles';
 import GoogleAddressForm from './AddressForm/AddressForm';
 import PlaceNameForm from './PlaceNameForm/PlaceNameForm';
@@ -204,15 +203,14 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                 <GoogleAddressForm/>
             </Collapse>
             <Collapse in={isSubTypePatientHouse}>
-                {/* <PatientAddress/> */}
                 <FormRowWithInput labelLength={2} fieldName={ADDRESS_LABEL}>
-                <AddressForm
-                    disabled={true}
-                    cityField={{ name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_CITY}`, testId: 'currentQuarantineCity' }}
-                    streetField={{ name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_STREET}`, testId: 'currentQuarantineStreet' }}
-                    houseNumberField={{ name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_HOUSE_NUMBER}`, testId: 'currentQuarantineHomeNumber' }}
-                    floorField={{ name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_FLOOR}`, testId: 'currentQuarantineFloor' }}
-                />
+                    <AddressForm
+                        disabled={true}
+                        cityField={{ name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_CITY}`, testId: 'currentQuarantineCity' }}
+                        streetField={{ name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_STREET}`, testId: 'currentQuarantineStreet' }}
+                        houseNumberField={{ name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_HOUSE_NUMBER}`, testId: 'currentQuarantineHomeNumber' }}
+                        floorField={{ name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_FLOOR}`, testId: 'currentQuarantineFloor' }}
+                    />
                 </FormRowWithInput>
             </Collapse>
             <Collapse in={isNamedLocation}>

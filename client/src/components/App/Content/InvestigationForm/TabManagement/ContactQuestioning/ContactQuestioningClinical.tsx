@@ -22,6 +22,7 @@ import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFie
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './ContactQuestioningStyles';
+import AddressForm from 'commons/Forms/AddressForm/AddressForm';
 
 const emptyFamilyRelationship: FamilyRelationship = {
     id: null as any,
@@ -172,30 +173,37 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid container item>
                     <Grid container item>
                         <FieldName xs={5} fieldName='מיקום השהייה בבידוד:' />
-                        <Grid item xs={7}>
-                            <Controller
+                        <Grid container item xs={7}>
+                            <AddressForm
+                                unsized={true}
+                                cityField={{name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`, className: classes.addressTextField, testId: 'contactedPersonCity'}}
+                                streetField={{name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`, className: classes.addressTextField}}
+                                houseNumberField={{name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`}}
+                                floorField={{name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`}}
+                            />
+                            {/* <Controller
                                 control={control}
                                 name={`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`}
                                 defaultValue={interactedContact.isolationAddress?.city?.id}
                                 render={(props) => {
-                                return (
-                                    <Autocomplete className={classes.addressTextField}
-                                        disabled={isFieldDisabled}
-                                        value={props.value && {id: props.value as string, value: cities.get(props.value) as City}}
-                                        options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                                        getOptionLabel={(option) => option?.value ? option.value.displayName : ''}
-                                        onChange={(event, selectedCity) => props.onChange(selectedCity?.id)}
-                                        renderInput={(params) =>
-                                            <TextField
-                                                {...params}
-                                                test-id='contactedPersonCity'
-                                                placeholder='עיר'
-                                            />
-                                        }
-                                    />
-                                )
-                            }}
-                        />
+                                    return (
+                                        <Autocomplete className={classes.addressTextField}
+                                            disabled={isFieldDisabled}
+                                            value={props.value && {id: props.value as string, value: cities.get(props.value) as City}}
+                                            options={Array.from(cities, ([id, value]) => ({ id, value }))}
+                                            getOptionLabel={(option) => option?.value ? option.value.displayName : ''}
+                                            onChange={(event, selectedCity) => props.onChange(selectedCity?.id)}
+                                            renderInput={(params) =>
+                                                <TextField
+                                                    {...params}
+                                                    test-id='contactedPersonCity'
+                                                    placeholder='עיר'
+                                                />
+                                            }
+                                        />
+                                    )
+                                }}
+                            />
                             <Controller
                                 control={control}
                                 name={`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`}
@@ -216,8 +224,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                         }
                                     />
                                 )}
-                            />
-                            <Controller
+                            /> */}
+                            {/* <Controller
                                 control={control}
                                 name={`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`}
                                 defaultValue={interactedContact.isolationAddress?.houseNum}
@@ -230,8 +238,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                         placeholder='מספר בית'
                                     />
                                 )}
-                            />
-                            <Controller
+                            /> */}
+                            {/* <Controller
                                 control={control}
                                 name={`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`}
                                 defaultValue={interactedContact.isolationAddress?.apartment}
@@ -244,7 +252,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                         placeholder='מספר דירה'
                                     />
                                 )}
-                            />
+                            /> */}
                         </Grid>
                     </Grid>
                 </Grid>
