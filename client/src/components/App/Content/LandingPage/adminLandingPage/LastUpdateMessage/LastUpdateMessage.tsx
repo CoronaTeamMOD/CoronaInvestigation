@@ -1,7 +1,10 @@
 import React ,{ useState , useEffect} from 'react'
-import { Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 
+import RefreshIcon from 'commons/Icons/RefreshIcon';
 import getTimeSinceMessage from 'Utils/DateUtils/timeSince';
+
+import useStyles from './lastUpdateMessageStyles';
 
 interface Props {
     lastUpdated : Date;
@@ -11,6 +14,7 @@ interface Props {
 const refreshRateInMs = 1000;
 
 const LastUpdateMessage = (props: Props) => {
+    const classes = useStyles();
     const { lastUpdated , fetchInvestigationStatistics} = props;
     
     const [lastUpdatedMsg , setLastUpdatedMsg] = useState<string>(getTimeSinceMessage(lastUpdated , false))
@@ -19,8 +23,6 @@ const LastUpdateMessage = (props: Props) => {
         setLastUpdatedMsg(getTimeSinceMessage(lastUpdated , false));
     }
 
-    
-
     useEffect(() => {
         const handle = setInterval(updateTimeSince , refreshRateInMs);
         return () => {
@@ -28,11 +30,17 @@ const LastUpdateMessage = (props: Props) => {
         }
     }, [lastUpdated]);
     
-
     return (
-        <Typography color='textPrimary'>
-            <b>עודכן לאחרונה</b> {lastUpdatedMsg}
-        </Typography>
+        <Grid container spacing={2} justify='flex-end'>
+            <Grid item>
+                <Typography color='textPrimary' align='right'> 
+                    <b>עודכן לאחרונה</b> לפני {lastUpdatedMsg}
+                </Typography>
+            </Grid>
+            <Grid item>
+                <RefreshIcon className={classes.refreshIcon} onClick={fetchInvestigationStatistics}/>
+            </Grid>
+        </Grid>
     )
 }
 

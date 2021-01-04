@@ -5,7 +5,6 @@ export const cardHeight = '35vh';
 
 const useStyles = makeStyles({
     filtersCard: {
-        width: cardWidth,
         height: cardHeight,
         borderRadius: '1vw',
         display: 'flex',
