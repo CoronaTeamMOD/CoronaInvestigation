@@ -1,18 +1,27 @@
+import { Home } from '@material-ui/icons';
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
 import React, { useEffect, useMemo, useState } from 'react';
-import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Typography } from '@material-ui/core';
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Typography, Tooltip } from '@material-ui/core';
 
 import InvolvedContact from 'models/InvolvedContact';
+import FlattenedDBAddress, { DBAddress } from 'models/DBAddress';
 import useFamilyContactsUtils from 'Utils/FamilyContactsUtils/useFamilyContactsUtils';
 import { FamilyContactsTableHeaders } from 'Utils/FamilyContactsUtils/FamilyContactsTableHeaders';
 
 import useStyles from './FamilyMembersTableStyles';
 
+const houseMember = 'בן בית';
+const cityCellName = 'isolationCity';
+
 const FamilyMembersTable: React.FC<Props> = (props: Props) => {
-    
+
     const { familyMembers } = props;
     const classes = useStyles();
 
     const { convertToIndexedRow, getTableCell } = useFamilyContactsUtils();
+
+    const investigatedPatientAddress = useSelector<StoreStateType, FlattenedDBAddress>(state => state.address);
 
     const [selectedFamilyMembers, setSelectedFamilyMembers] = useState<InvolvedContact[]>([]);
 
@@ -37,13 +46,18 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
 
     const counterDescription: string = useMemo(() => {
         return selectedFamilyMembers.length > 0 ?
-        selectedFamilyMembers.length === 1 ?
+            selectedFamilyMembers.length === 1 ?
                 'נבחר מגע משפחה אחד' :
                 'בסה"כ נבחרו ' + selectedFamilyMembers.length + ' מגעי משפחה'
             : ''
     }, [selectedFamilyMembers]);
 
     const isRowSelected = (selectedFamilyMember: InvolvedContact) => selectedFamilyMembers?.includes(selectedFamilyMember);
+
+    const isHouseMember = (familyMemberAddress: DBAddress) => (
+        familyMemberAddress?.city?.id === investigatedPatientAddress.city &&
+        familyMemberAddress?.street?.id === investigatedPatientAddress.street
+    );
 
     return (
         <>
@@ -62,7 +76,7 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
                     </TableHead>
                     <TableBody>
                         {
-                            familyMembers.map(familyMember => (
+                            familyMembers.map((familyMember: InvolvedContact) => (
                                 <>
                                     <TableRow className={isRowSelected(familyMember) ? classes.checkedRow : familyMember.isContactedPerson ? classes.disabledRow : ''}>
                                         {
@@ -75,7 +89,14 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
                                         }
                                         {
                                             Object.keys(FamilyContactsTableHeaders).map(cellName => (
-                                                <TableCell className={classes.cell}>{getTableCell(convertToIndexedRow(familyMember), cellName)}</TableCell>
+                                                <TableCell className={classes.cell}>{getTableCell(convertToIndexedRow(familyMember), cellName)}
+                                                    {
+                                                        cellName === cityCellName && isHouseMember(familyMember.isolationAddress) &&
+                                                        <Tooltip title={houseMember}>
+                                                            <Home className={classes.homeIcon} />
+                                                        </Tooltip>
+                                                    }
+                                                </TableCell>
                                             ))
                                         }
                                     </TableRow>

@@ -2,33 +2,19 @@ import {Request, Response, Router} from 'express';
 
 import { Severity } from '../../Models/Logger/types';
 import {errorStatusCode, graphqlRequest} from '../../GraphqlHTTPRequest';
-import {
-    GetPlaceSubTypesByTypesResposne,
-    PlacesSubTypesByTypes
-} from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
 import {GetContactTypeResponse} from '../../Models/ContactEvent/GetContactType';
+import { GetContactEventResponse, ContactEvent } from '../../Models/ContactEvent/GetContactEvent';
+import { GetInvolvedContactsResponse, InvolvedContactDB} from '../../Models/ContactEvent/GetInvolvedContacts';
+import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
+import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
 import {
-    GetContactEventResponse,
-    ContactEvent
-} from '../../Models/ContactEvent/GetContactEvent';
-import {
-GetInvolvedContactsResponse,
-InvolvedContactDB} from '../../Models/ContactEvent/GetInvolvedContacts';
-import {
-    CREATE_CONTACT_EVENT,
-    DELETE_CONTACT_EVENT,
-    DELETE_CONTACT_EVENTS_BY_DATE,
-    DELETE_CONTACTED_PERSON,
+    CREATE_CONTACT_EVENT, DELETE_CONTACT_EVENT, DELETE_CONTACT_EVENTS_BY_DATE, DELETE_CONTACTED_PERSON,
     EDIT_CONTACT_EVENT
 } from '../../DBService/ContactEvent/Mutation';
 import {
-    GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID,
-    GET_LOACTIONS_SUB_TYPES_BY_TYPES,
-    GET_ALL_CONTACT_TYPES,
+    GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_ALL_CONTACT_TYPES,
     GET_ALL_INVOLVED_CONTACTS
 } from '../../DBService/ContactEvent/Query';
-import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
-import Address from '../../Models/Address/Address';
 
 const intersectionsRoute = Router();
         
@@ -211,21 +197,13 @@ intersectionsRoute.delete('/contactedPerson', (request: Request, response: Respo
 });
 
 const convertInvolvedContact = (contact: InvolvedContactDB) => {
-    
-    const convertedAddress : Address = {
-        city: contact.address.city?.city || null,
-        street: contact.address.street?.street || null,
-        floor: contact.address.floor,
-        houseNum: contact.address.houseNum
-    }
-
     return {
         id: contact.id,
         isContactedPerson: contact.isContactedPerson,
         involvementReason: contact.involvementReason,
         educationClassNumber: contact.educationClassNumber,
         familyRelationship: contact.familyRelationship,
-        isolationAddress: convertedAddress,
+        isolationAddress: contact.address,
         ...contact.educationGrade,
         ...contact.personByPersonId,
         ...contact.subOccupationByInstitutionName,
