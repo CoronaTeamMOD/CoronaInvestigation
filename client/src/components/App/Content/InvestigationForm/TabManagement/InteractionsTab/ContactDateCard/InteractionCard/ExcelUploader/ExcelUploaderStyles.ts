@@ -10,8 +10,8 @@ const useStyles = makeStyles(() => ({
         width: '3vw'
     },
     hiddenFileInput: {
-        width: '0.1px',
-        height: '0.1px',
+        width: 0,
+        height: 0,
         opacity: 0,
         overflow: 'hidden',
         position: 'absolute',
