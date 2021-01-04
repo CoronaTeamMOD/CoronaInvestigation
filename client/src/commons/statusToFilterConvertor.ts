@@ -9,6 +9,7 @@ const statusToFilterConvertor = {
         statusFilter: [InvestigationMainStatusCodes.IN_PROCESS]
     },
     [FilterRulesDescription.UNALLOCATED]: {
+        statusFilter: [InvestigationMainStatusCodes.NEW,InvestigationMainStatusCodes.IN_PROCESS],
         inactiveUserFilter: true,
         unassignedUserFilter: true
     },
