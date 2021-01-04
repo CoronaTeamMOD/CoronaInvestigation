@@ -1,12 +1,13 @@
 import React from 'react';
+import axios  from 'axios';
 import { Button, Typography } from '@material-ui/core';
 
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import Contact from 'models/Contact';
 import { Severity } from 'models/Logger';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import useDuplicateContactId from 'Utils/Contacts/useDuplicateContactId';
 import { ParsedExcelRow } from 'models/enums/contactQuestioningExcelFields';
 import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFields';
@@ -74,6 +75,7 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
                     const { rowNum, ...contactData } = contact;
                     return contactData;
                 });
+                setIsLoading(true);
                 if (!checkExcelDuplicateKeys(contacts, existingContacts)) {
                     axios.post('/contactedPeople/excel', { contactEvent, contacts: contactsData })
                         .then(() => {
@@ -84,6 +86,7 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
                             dataInFileLogger.error(`got error from server: ${error}`, Severity.LOW);
                             alertError('שגיאה בשמירת הנתונים');
                         })
+                        .finally(() => setIsLoading(false));
                 }
             }
         }

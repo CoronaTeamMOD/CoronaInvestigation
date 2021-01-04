@@ -2,13 +2,9 @@ import { Dispatch, SetStateAction } from 'react';
 
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
-import InteractedContactFields from 'models/enums/InteractedContact';
-
 export interface FormInputs {
     form : InteractedContact[]
 }
-
-
 export interface useContactQuestioningParameters {
     id: number;
     allContactedInteractions: InteractedContact[];
@@ -17,7 +13,6 @@ export interface useContactQuestioningParameters {
     setContactStatuses: Dispatch<SetStateAction<FamilyRelationship[]>>;
     getValues: () => FormInputs;
 }
-
 export interface useContactQuestioningOutcome {
     saveContact: (interactedContact: InteractedContact) => boolean;
     loadInteractedContacts: () => void;

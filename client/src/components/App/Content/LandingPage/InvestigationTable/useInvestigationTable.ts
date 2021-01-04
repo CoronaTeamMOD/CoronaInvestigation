@@ -13,7 +13,6 @@ import { Severity } from 'models/Logger';
 import { TimeRange } from 'models/TimeRange';
 import userType from 'models/enums/UserType';
 import Investigator from 'models/Investigator';
-import { activateIsLoading } from 'Utils/axios';
 import timeRanges from 'models/enums/timeRanges';
 import StoreStateType from 'redux/storeStateType';
 import { BC_TABS_NAME } from 'models/BroadcastMessage';
@@ -22,7 +21,6 @@ import InvestigatorOption from 'models/InvestigatorOption';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
-import statusToFilterConvertor from 'commons/statusToFilterConvertor';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
@@ -477,7 +475,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             const newInterceptor = axios.interceptors.request.use(
                 (config) => {
                     config.headers.EpidemiologyNumber = investigationRow.epidemiologyNumber;
-                    activateIsLoading(config);
                     return config;
                 },
                 (error) => Promise.reject(error)

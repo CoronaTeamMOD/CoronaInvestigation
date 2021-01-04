@@ -1,9 +1,10 @@
+import axios from 'axios';
 import {useSelector} from 'react-redux';
 
 import StoreStateType from 'redux/storeStateType';
-import {fieldsNames, ExposureAndFlightsDetailsAndSet, Exposure } from 'commons/Contexts/ExposuresAndFlights';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import {fieldsNames, Exposure } from 'commons/Contexts/ExposuresAndFlights';
 
-import axios from '../axios';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import ResortData from 'models/ResortData';
@@ -25,7 +26,7 @@ interface DBExposure extends Omit<Exposure, 'exposureAddress'> {
     exposureAddress: string|null;
 }
 
-const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet) => {
+const useExposuresSaving = () => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
 
@@ -33,7 +34,7 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
         let { wasInEilat, wasInDeadSea } = data;
         const saveResortsDataLogger = logger.setup('Saving investigated patient resort data');
         saveResortsDataLogger.info('launching the server request', Severity.LOW);
-
+        setIsLoading(true);
         return axios.post('/investigationInfo/resorts', {
             wasInEilat,
             wasInDeadSea,

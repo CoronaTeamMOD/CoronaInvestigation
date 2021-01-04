@@ -1,7 +1,7 @@
+import axios  from 'axios';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 
-import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
@@ -10,6 +10,7 @@ import InvolvedContact from 'models/InvolvedContact';
 import { useDateUtils } from 'Utils/DateUtils/useDateUtils';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvolvementReason from 'models/enums/InvolvementReason';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
@@ -128,19 +129,21 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const loadInteractions = () => {
         const loadInteractionsLogger = logger.setup('Fetching Interactions');
         loadInteractionsLogger.info('launching interactions request', Severity.LOW);
+        setIsLoading(true);
         axios.get(`/intersections/contactEvent/${epidemiologyNumber}`).then((result) => {
-            loadInteractionsLogger.info('got results back from the server', Severity.LOW);
-            const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
-            const numberOfContactedPeople = allInteractions.reduce((currentValue: number, interaction: InteractionEventDialogData) => {
-                return currentValue + interaction.contacts.length
-            }, 0);
-            setAreThereContacts(numberOfContactedPeople > 0);
-            setInteractions(allInteractions);
-        }).catch((error) => {
-            loadInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-            alertError('הייתה שגיאה בטעינת האירועים והמגעים');
-        });
-    };
+                loadInteractionsLogger.info('got results back from the server', Severity.LOW);
+                const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
+                const numberOfContactedPeople = allInteractions.reduce((currentValue: number, interaction: InteractionEventDialogData) => {
+                    return currentValue + interaction.contacts.length
+                }, 0);
+                setAreThereContacts(numberOfContactedPeople > 0);
+                setInteractions(allInteractions);
+            }).catch((error) => {
+                loadInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+                alertError('הייתה שגיאה בטעינת האירועים והמגעים');
+            })
+            .finally(() => setIsLoading(false));
+    }
 
     useEffect(() => {
         loadInteractions();
@@ -193,6 +196,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                         deletingInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                         alertError(eventDeleteFailedMsg);
                     })
+                    .finally(() => setIsLoading(false));
                 }
             });
     }
@@ -210,6 +214,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         }).then((result) => {
             if (result.value) {
                 deleteContactedPersonLogger.info('launching interaction delete request', Severity.LOW);
+                setIsLoading(true);
                 axios.delete('/intersections/contactedPerson', {
                     params: { contactedPersonId, involvedContactId, investigationId: epidemiologyNumber }
                 }).then(() => {
@@ -219,6 +224,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     deleteContactedPersonLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                     alertError(contactDeleteFailedMsg);
                 })
+                .finally(() => setIsLoading(false));
             }
             ;
         });
@@ -226,6 +232,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
 
     const saveInvestigaionSettingsFamily = () => {
         const saveInvestigaionSettingsLogger = logger.setup('Saving investigaion settings family data');
+        setIsLoading(true);
         axios.post('/investigationInfo/investigationSettingsFamily', {
             id: epidemiologyNumber,
             allowUncontactedFamily: true,
@@ -236,6 +243,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             saveInvestigaionSettingsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
             alertError(settingsSaveFailedMsg);
         })
+        .finally(() => setIsLoading(false));
     }
 
     return {

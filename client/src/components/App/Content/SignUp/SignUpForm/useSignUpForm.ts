@@ -1,30 +1,31 @@
+import axios  from 'axios';
 import { useState, useEffect } from 'react';
 
-import SignUpUser from 'models/SignUpUser';
-import City from 'models/City';
-import County from 'models/County';
 import Desk from 'models/Desk';
+import City from 'models/City';
+import logger from 'logger/logger';
+import County from 'models/County';
 import Language from 'models/Language';
 import { Severity } from 'models/Logger';
-import axios from 'Utils/axios';
-import logger from 'logger/logger';
+import SignUpUser from 'models/SignUpUser';
 import { setCities } from 'redux/City/cityActionCreators';
 import SourceOrganization from 'models/SourceOrganization';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCome  => {
 
     const [counties, setCounties] = useState<County[]>([]);
     const [languages, setLanguages] = useState<Language[]>([]);
     const [desks, setDesks] = useState<Desk[]>([]);
-    const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([])
+    const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([]);
 
     const { alertError } = useCustomSwal();
 
     const fetchCities = () => {
         const fetchCitiesLogger = logger.setup('Fetching cities');
         fetchCitiesLogger.info('launching cities request', Severity.LOW);
-        axios.get('/addressDetails/cities')
+        return axios.get('/addressDetails/cities')
             .then((result: any) => {
                 const cities: Map<string, City> = new Map();
                 result && result.data && result.data.forEach((city: City) => {
@@ -42,7 +43,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     const fetchCounties = () => {
         const fetchCountiesLogger = logger.setup('Fetching counties');
         fetchCountiesLogger.info('launching counties request', Severity.LOW);
-        axios.get('/counties')
+        return axios.get('/counties')
             .then(result => {
                 result?.data && setCounties(result?.data);
                 fetchCountiesLogger.info('got results back from the server', Severity.LOW);
@@ -56,7 +57,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     const fetchSourcesOrganization = () => {
         const fetchSourcesOrganizationLogger = logger.setup('Fetching sourcesOrganization');
         fetchSourcesOrganizationLogger.info('launching sourcesOrganization request', Severity.LOW);
-        axios.get('/users/sourcesOrganization')
+        return axios.get('/users/sourcesOrganization')
             .then(result => {
                 result?.data && setSourcesOrganization(result?.data);
                 fetchSourcesOrganizationLogger.info('got results back from the server', Severity.LOW);
@@ -70,7 +71,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     const fetchLanguages = () => {
         const fetchLanguagesLogger = logger.setup('Fetching languages');
         fetchLanguagesLogger.info('launching languages request', Severity.LOW);
-        axios.get('/users/languages')
+        return axios.get('/users/languages')
             .then(result => {
                 result?.data && setLanguages(result?.data);
                 fetchLanguagesLogger.info('got results back from the server', Severity.LOW);
@@ -84,21 +85,25 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     const fetchDesks = () => {
         const fetchDesksLogger = logger.setup('Getting desks');
         fetchDesksLogger.info('launching desks request', Severity.LOW);
-        axios.get('/desks').then(response => {
+        return axios.get('/desks').then(response => {
             fetchDesksLogger.info('The desks were fetched successfully', Severity.LOW);
             const { data } = response;
             setDesks(data);
         }).catch(err => {
             fetchDesksLogger.error(`got error from the server: ${err}`, Severity.HIGH);
-        })
+        });
     }
 
     useEffect(() => {
-        fetchCities();
-        fetchCounties();
-        fetchSourcesOrganization();
-        fetchLanguages();
-        fetchDesks();
+        setIsLoading(true);
+        Promise.all([
+        fetchCities(),
+        fetchCounties(),
+        fetchSourcesOrganization(),
+        fetchLanguages(),
+        fetchDesks(),
+        ])
+        .finally(() => setIsLoading(false))
     }, [])
 
     const createUser = (newUser: SignUpUser) => {
@@ -113,6 +118,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
             alertError('לא ניתן היה ליצור משתמש חדש');
             createUserLogger.error('create user was failed', Severity.CRITICAL);        
         })
+        .finally(() => setIsLoading(false));
     }
 
     return {

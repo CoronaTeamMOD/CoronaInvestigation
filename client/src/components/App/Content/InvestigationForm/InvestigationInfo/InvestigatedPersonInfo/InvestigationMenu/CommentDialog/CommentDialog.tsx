@@ -1,3 +1,4 @@
+import axios  from 'axios';
 import React, {useContext} from 'react';
 import {useSelector} from 'react-redux';
 import {
@@ -11,11 +12,11 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import CommentIcon from '@material-ui/icons/CommentOutlined';
 
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import CommentInput from './CommentInput';
@@ -39,22 +40,22 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
 
     const sendComment = (commentToSend: string | null, errorMessage: string) => {
         const sendCommentLogger = logger.setup(`POST request add comment to investigation ${epidemiologyNumber}`);
-       
+        setIsLoading(true);
         axios.post('/investigationInfo/comment', {comment: commentToSend, epidemiologyNumber})
             .then(() => {
                 setComment(commentToSend);
                 sendCommentLogger.info('Successfully added comment to investigation', Severity.LOW);
             })
             .catch(() => {
-                resetInput();
                 alertError(errorMessage);
                 sendCommentLogger.error('Error occured in adding comment to investigation', Severity.HIGH);
             })
-            .finally(handleDialogClose);
+            .finally(onDialogClose);
     };
 
     const onDialogClose = () => {
         resetInput();
+        setIsLoading(false);
         handleDialogClose();
     };
 
@@ -63,7 +64,7 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
     };
 
     const handleCommentDelete = () => {
-        sendComment(null, 'שגיאה במחקית ההערה')
+        sendComment(null, 'שגיאה במחיקת ההערה')
     };
 
     return (
