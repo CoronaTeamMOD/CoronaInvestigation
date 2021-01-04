@@ -260,7 +260,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     const setUserDesk = (deskId: number, userId: string) => {
         const setUpdateDeskLogger = logger.setup('Updating user desk');
         setUpdateDeskLogger.info('send request to server for updating user desk', Severity.LOW);
-        setIsLoading(false);
+        setIsLoading(true);
         axios.post('users/updateDesk', {
             desk: deskId,
             userId
