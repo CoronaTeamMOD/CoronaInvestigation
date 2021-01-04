@@ -5,6 +5,7 @@ import { Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, To
 import theme from 'styles/theme';
 import InvestigatorOption from 'models/InvestigatorOption';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import useStyles from './InvestigatorAllocationDialogStyles';
 import InvestigatorsTable from './InvestigatorsTable/InvestigatorsTable';
@@ -42,6 +43,13 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
         handleCloseDialog();
     }
 
+    const loadInvestigators = () => {
+        setIsLoading(true);
+        fetchInvestigators().then((investigators) => {
+            setAllInvestigators(investigators)
+        }).finally(() => setIsLoading(false))
+    }
+
     const handleClick = () => {
         const alertMessage = createAlertMessage();
         alertWarning(alertMessage, {
@@ -63,9 +71,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
     return (
         <Dialog open={isOpen} maxWidth='md' classes={{ paper: classes.dialog }}
             onClose={() => closeDialog()}
-            onEnter={() => fetchInvestigators().then((investigators) => {
-                setAllInvestigators(investigators)
-            })}
+            onEnter={() =>  loadInvestigators()}
         >
             <DialogTitle>
                 <b>
