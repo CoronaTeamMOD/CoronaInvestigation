@@ -2,9 +2,9 @@ import { TimeRange } from 'models/TimeRange';
 import FilterRulesVariables from 'models/FilterRulesVariables';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 
-import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/Forms/ExposureForm/ExposureForm';
-
 const unassignedUserName = 'לא משויך';
+const phoneAndIdentityNumberRegex = /^([\d]+)$/;
+const fullNameRegex = /^[\u0590-\u05fe\s]*$/;
 
 const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => Exclude<any, void>) } = {
     [InvestigationsFilterByFields.STATUS]: (values: string[]) => {
@@ -38,7 +38,15 @@ const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => E
             {
                 or: [
                     { epidemiologyNumber: { equalTo: Number(values) } },
-                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { primaryPhone: { includes: values } } } },
+                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { primaryPhone: { includes: values } } } }
+                ]
+            } :
+            {}
+    },
+    [InvestigationsFilterByFields.IDENTITY_NUMBER]: (values: string) => {
+        return Boolean(values) ?
+            {
+                or: [
                     { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { identityNumber: { includes: values } } } }
                 ]
             } :
@@ -85,7 +93,7 @@ export const buildFilterRules = (filterRulesVariables: FilterRulesVariables) => 
 
     const { deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery, timeRangeFilter } = filterRulesVariables;
 
-    const searchQueryFilter = searchQuery ? phoneAndIdentityNumberRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.FULL_NAME(searchQuery) : {};
+    const searchQueryFilter = searchQuery ? phoneAndIdentityNumberRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : fullNameRegex.test(searchQuery) ? filterCreators.FULL_NAME(searchQuery) : filterCreators.IDENTITY_NUMBER(searchQuery) : {};
 
     const userByCreator = (unassignedUserFilter && inactiveUserFilter) ?
         filterCreators.UNALLOCATED_USER(unassignedUserFilter && inactiveUserFilter)

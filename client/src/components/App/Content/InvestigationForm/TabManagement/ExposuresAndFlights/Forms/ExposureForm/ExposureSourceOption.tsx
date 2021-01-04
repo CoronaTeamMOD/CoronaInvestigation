@@ -2,10 +2,10 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 
 import CovidPatient from 'models/CovidPatient';
+import CovidPatientFields from 'models/CovidPatientFields';
 
 import useStyles from './ExposureFormStyles';
 import { displayPatientFields } from './useExposureForm';
-import CovidPatientFields from 'models/CovidPatientFields';
 
 const invalidAge = -1;
 const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
@@ -76,4 +76,4 @@ export default ExposureSourceOption;
 interface Props {
     exposureSource: CovidPatient;
     exposureSourceSearchString: string;
-}
+};

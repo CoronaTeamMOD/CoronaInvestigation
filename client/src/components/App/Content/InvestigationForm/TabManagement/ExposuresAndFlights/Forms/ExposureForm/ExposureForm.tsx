@@ -19,22 +19,13 @@ import ExposureSourceOption from './ExposureSourceOption';
 
 const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
 
-export const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
-
-interface Props {
-	exposureAndFlightsData: any; 
-	fieldsNames: any; 
-	handleChangeExposureDataAndFlightsField: (index: number, fieldName: string, value: any) => void;
-	index : number; 
-}
-
 const ExposureForm = (props: Props) => {
 	const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index } = props;
 
 	const classes = useStyles();
 	const formClasses = useFormStyles();
 
-	const { control , setValue , errors } = useFormContext();
+	const { control, setValue, errors } = useFormContext();
 
 	const [exposureSourceSearchString, setExposureSourceSearchString] = useState<string>('');
 	const [isOptionalPatientsLoading, setOptionalPatientsLoading] = useState<boolean>(false);
@@ -58,14 +49,14 @@ const ExposureForm = (props: Props) => {
 		}
 	}, [exposureAndFlightsData.exposureSource]);
 
-    useEffect(() => {
-      setValue(`exposures[${index}].${fieldsNames.placeType}`, exposureAndFlightsData[fieldsNames.placeType] )
-		  setValue(`exposures[${index}].${fieldsNames.placeSubType}`, exposureAndFlightsData[fieldsNames.placeSubType] )
-	  } , []);
+	useEffect(() => {
+		setValue(`exposures[${index}].${fieldsNames.placeType}`, exposureAndFlightsData[fieldsNames.placeType])
+		setValue(`exposures[${index}].${fieldsNames.placeSubType}`, exposureAndFlightsData[fieldsNames.placeSubType])
+	}, []);
 
-	const getDateLabel = (dateError : {message? : string , type? : string}) => {
-		if(dateError) {
-			if(dateError.type === "typeError") {
+	const getDateLabel = (dateError: { message?: string, type?: string }) => {
+		if (dateError) {
+			if (dateError.type === "typeError") {
 				return 'תאריך לא ולידי'
 			}
 			return dateError.message;
@@ -81,8 +72,8 @@ const ExposureForm = (props: Props) => {
 			<FormRowWithInput fieldName='פרטי החולה:'>
 				<Controller
 					control={control}
-                    name={`exposures[${index}].${fieldsNames.exposureSource}`}
-                    defaultValue={exposureAndFlightsData.exposureSource}
+					name={`exposures[${index}].${fieldsNames.exposureSource}`}
+					defaultValue={exposureAndFlightsData.exposureSource}
 					render={(props) => {
 						return (
 							<ExposureSearchTextField
@@ -91,18 +82,14 @@ const ExposureForm = (props: Props) => {
 								onChange={(value) => {
 									setExposureSourceSearchString(value);
 									(!value || !value.includes(':')) &&
-										handleChangeExposureDataAndFlightsField(
-											index,
-											fieldsNames.exposureSource,
-											null
-										);
+										handleChangeExposureDataAndFlightsField(index, fieldsNames.exposureSource, null);
 								}}
 								value={exposureSourceSearchString}
 								test-id='exposureSource'
 								placeholder={INSERT_EXPOSURE_SOURCE_SEARCH}
 								onSearchClick={setOptionalCovidPatientsAsync}
-								onKeyDown={(e : React.KeyboardEvent) => {
-									if(e.key === 'Enter'){
+								onKeyDown={(e: React.KeyboardEvent) => {
+									if (e.key === 'Enter') {
 										e.preventDefault();
 										setOptionalCovidPatientsAsync()
 									}
@@ -121,34 +108,30 @@ const ExposureForm = (props: Props) => {
 								<CircularProgress className={classes.loadingSpinner} size='5vh' />
 							</div>
 						) : (
-							<div>
-								{optionalCovidPatients
-									.filter(
-										(exposureSource) => exposureSource.epidemiologyNumber !== epidemiologyNumber
-									)
-									.map((exposureSource) => (
-										<MenuItem
-											className={classes.optionalExposureSource}
-											key={exposureSource.epidemiologyNumber}
-											value={exposureSource.epidemiologyNumber}
-											onClick={() => {
-												setValue(`exposures[${index}].${fieldsNames.exposureSource}`, exposureSource);
-												setOptionalCovidPatients([]);
-												handleChangeExposureDataAndFlightsField(
-													index,
-													fieldsNames.exposureSource,
-													exposureSource
-												);
-											}}
-										>
-											<ExposureSourceOption
-												exposureSource={exposureSource}
-												exposureSourceSearchString={exposureSourceSearchString}
-											/>
-										</MenuItem>
-									))}
-							</div>
-						)}
+								<div>
+									{optionalCovidPatients
+										.filter(
+											(exposureSource) => exposureSource.epidemiologyNumber !== epidemiologyNumber
+										)
+										.map((exposureSource) => (
+											<MenuItem
+												className={classes.optionalExposureSource}
+												key={exposureSource.epidemiologyNumber}
+												value={exposureSource.epidemiologyNumber}
+												onClick={() => {
+													setValue(`exposures[${index}].${fieldsNames.exposureSource}`, exposureSource);
+													setOptionalCovidPatients([]);
+													handleChangeExposureDataAndFlightsField(index, fieldsNames.exposureSource, exposureSource);
+												}}
+											>
+												<ExposureSourceOption
+													exposureSource={exposureSource}
+													exposureSourceSearchString={exposureSourceSearchString}
+												/>
+											</MenuItem>
+										))}
+								</div>
+							)}
 					</div>
 				</FormRowWithInput>
 			)}
@@ -156,8 +139,8 @@ const ExposureForm = (props: Props) => {
 			<FormRowWithInput fieldName='תאריך החשיפה:'>
 				<Controller
 					control={control}
-                    name={`exposures[${index}].${fieldsNames.date}`}
-                    defaultValue={exposureAndFlightsData[fieldsNames.date]}
+					name={`exposures[${index}].${fieldsNames.date}`}
+					defaultValue={exposureAndFlightsData[fieldsNames.date]}
 					render={(props) => {
 						return (
 							<DatePick
@@ -168,10 +151,10 @@ const ExposureForm = (props: Props) => {
 								testId='exposureDate'
 								labelText={getDateLabel(dateError)}
 								error={Boolean(dateError)}
-                                onChange={(newDate: Date) => {
-                                    props.onChange(newDate);
-                                    }
-                                }
+								onChange={(newDate: Date) => {
+									props.onChange(newDate);
+								}
+								}
 							/>
 						);
 					}}
@@ -179,41 +162,48 @@ const ExposureForm = (props: Props) => {
 			</FormRowWithInput>
 
 			<FormRowWithInput testId='exposureAddress' fieldName='כתובת החשיפה:'>
-                <Controller
-                    control={control}
-                    name={`exposures[${index}].${fieldsNames.address}`}
-                    defaultValue={exposureAndFlightsData[fieldsNames.address]}
-                    render={(props) => {
-                        return (
-                            <Map
-							name={fieldsNames.address}
-                            setSelectedAddress={(newAddress) => {
-                                props.onChange(newAddress);
-                                handleChangeExposureDataAndFlightsField(index , fieldsNames.address, newAddress)
-                                }
-                            }
-                            selectedAddress={exposureAndFlightsData[fieldsNames.address]}
-                        />
-                        )
-                    }}
-                    />
+				<Controller
+					control={control}
+					name={`exposures[${index}].${fieldsNames.address}`}
+					defaultValue={exposureAndFlightsData[fieldsNames.address]}
+					render={(props) => {
+						return (
+							<Map
+								name={fieldsNames.address}
+								setSelectedAddress={(newAddress) => {
+									props.onChange(newAddress);
+									handleChangeExposureDataAndFlightsField(index, fieldsNames.address, newAddress)
+								}
+								}
+								selectedAddress={exposureAndFlightsData[fieldsNames.address]}
+							/>
+						)
+					}}
+				/>
 			</FormRowWithInput>
-            <PlacesTypesAndSubTypes
+			<PlacesTypesAndSubTypes
 				size='Tab'
 				placeTypeName={`exposures[${index}].${fieldsNames.placeType}`}
 				placeSubTypeName={`exposures[${index}].${fieldsNames.placeSubType}`}
 				placeType={exposureAndFlightsData[fieldsNames.placeType]}
 				placeSubType={exposureAndFlightsData[fieldsNames.placeSubType]}
 				onPlaceTypeChange={(value) => {
-					setValue(`exposures[${index}].${fieldsNames.placeType}` , value);
+					setValue(`exposures[${index}].${fieldsNames.placeType}`, value);
 				}}
 				onPlaceSubTypeChange={(placeSubType: PlaceSubType | null) => {
-					setValue(`exposures[${index}].${fieldsNames.placeSubType}` , placeSubType);
-					}
+					setValue(`exposures[${index}].${fieldsNames.placeSubType}`, placeSubType);
 				}
-            />
+				}
+			/>
 		</Grid>
 	);
 };
 
 export default ExposureForm;
+
+interface Props {
+	exposureAndFlightsData: any;
+	fieldsNames: any;
+	handleChangeExposureDataAndFlightsField: (index: number, fieldName: string, value: any) => void;
+	index: number;
+};
