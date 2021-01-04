@@ -3,11 +3,6 @@ import { makeStyles } from '@material-ui/styles';
 import theme from 'styles/theme';
 
 const useStyles = makeStyles({
-    timeRangeCard: {
-        width: '15vw',
-        height: '105%',
-        borderRadius: '1vw',
-    },
     cardTitle: {
         fontSize: '0.9vw',
         marginBottom: theme.spacing(1)

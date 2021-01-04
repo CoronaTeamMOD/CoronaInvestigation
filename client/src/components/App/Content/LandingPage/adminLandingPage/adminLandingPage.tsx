@@ -9,12 +9,13 @@ import InvestigationStatistics, { InvesitgationInfoStatistics } from 'models/Inv
 
 import useStyles from './adminLandingPageStyles';
 import useAdminLandingPage from './useAdminLandingPage';
-import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
-import DesksFilterCard from './desksFilterCard/desksFilterCard';
+import UnallocatedCard from './DashboardCards/UnallocatedCard/UnallocatedCard';
+import DesksFilterCard from './DashboardCards/desksFilterCard/desksFilterCard';
 import AdminLandingPageFilters from './AdminLandingPageFilters';
 import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
-import TimeRangeFilterCard from './TimeRangeFilterCard/timeRangeFilterCard';
+import TimeRangeFilterCard from './DashboardCards/TimeRangeFilterCard/timeRangeFilterCard';
+import UnusualInvestigationsCard from "./DashboardCards/unusualInvestigationsCard/unusualInvestigationsCard";
 
 const AdminLandingPage: React.FC = (): JSX.Element => {
 
@@ -50,7 +51,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
             </Typography>
             <Grid container spacing={5} className={classes.gridContainer}>
                 <Grid item xs={3}>
-                    <DesksFilterCard 
+                    <DesksFilterCard
                         filteredDesks={filteredDesks}
                         setFilteredDesks={setFilteredDesks}
                         investigationInfoFilter={investigationInfoFilter}
@@ -65,7 +66,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                         onInfoButtonClick={(infoFilter, filterType) => redirectToInvestigationTable(infoFilter, filterType)} />
                 </Grid>
                 <Grid item xs={3}>
-                    <TimeRangeFilterCard 
+                    <TimeRangeFilterCard
                         timeRangeFilter={timeRangeFilter}
                         setTimeRangeFilter={setTimeRangeFilter}
                         investigationInfoFilter={investigationInfoFilter}
@@ -75,7 +76,14 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                 <Grid item xs={3}>
                     <UnallocatedCard
                         isLoading={isLoading}
-                        onClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNALLOCATED)} 
+                        onClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNALLOCATED)}
+                        unallocatedInvestigationsCount={investigationsStatistics.unallocatedInvestigations}
+                    />
+                </Grid>
+                <Grid item xs={3}>
+                    <UnusualInvestigationsCard
+                        isLoading={isLoading}
+                        onClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNALLOCATED)}
                         unallocatedInvestigationsCount={investigationsStatistics.unallocatedInvestigations}
                     />
                 </Grid>

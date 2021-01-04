@@ -7,7 +7,7 @@ const LoadingCard: React.FC<Props> = ({isLoading, width, height, className, ...c
 
     const classes = useStyle(width, height)();
 
-    const cardClass = isLoading ? classes.loadingSpinnerCard : (className || '');
+    const cardClass = isLoading ? classes.loadingSpinnerCard : `${classes.card} ${className || ''}`;
 
     return (
         <Card {...cardProps} className={cardClass}>

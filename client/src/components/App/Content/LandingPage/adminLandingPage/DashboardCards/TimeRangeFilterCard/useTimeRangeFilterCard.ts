@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { TimeRange } from 'models/TimeRange';
 import timeRanges from 'models/enums/timeRanges';
 
-import AdminLandingPageFilters from '../AdminLandingPageFilters';
+import AdminLandingPageFilters from '../../AdminLandingPageFilters';
 
 const useTimeRangeFilterCard = (props : Props) => {
     

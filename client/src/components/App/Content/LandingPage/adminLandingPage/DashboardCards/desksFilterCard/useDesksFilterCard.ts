@@ -5,7 +5,7 @@ import Desk from 'models/Desk';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 
-import AdminLandingPageFilters from '../AdminLandingPageFilters';
+import AdminLandingPageFilters from '../../AdminLandingPageFilters';
 
 interface Props {
     filteredDesks: number[];

@@ -4,11 +4,6 @@ export const cardWidth = '15vw';
 export const cardHeight = '35vh';
 
 const useStyles = makeStyles({
-    desksCard: {
-        width: '15vw',
-        height: '35vh',
-        borderRadius: '1vw',
-    },
     desksCardContent: {
         height: '70%',
         width: '13.6vw',

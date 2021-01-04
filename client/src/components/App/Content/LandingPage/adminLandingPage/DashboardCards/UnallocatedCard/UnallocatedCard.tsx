@@ -6,7 +6,7 @@ import FilterRulesVariables from 'models/FilterRulesVariables';
 import statusToFilterConvertor from 'commons/statusToFilterConvertor';
 import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 
-import LoadingCard from '../LoadingCard/LoadingCard';
+import LoadingCard from '../../LoadingCard/LoadingCard';
 import useStyles, { cardHeight, cardWidth } from './UnallocatedCardStyles';
 
 const unallocatedInvestigationsText = 'חקירות לא משויכות/ משויכות לחוקרים לא פעילים';

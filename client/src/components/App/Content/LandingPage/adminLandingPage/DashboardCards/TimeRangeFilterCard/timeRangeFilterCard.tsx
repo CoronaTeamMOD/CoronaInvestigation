@@ -6,10 +6,10 @@ import timeRanges from 'models/enums/timeRanges';
 import SelectDropdown from 'commons/Select/SelectDropdown';
 
 import useStyles from './timeRangeFilterCardStyles';
-import LoadingCard from '../LoadingCard/LoadingCard';
-import UpdateButton from '../UpdateButton/UpdateButton';
+import LoadingCard from '../../LoadingCard/LoadingCard';
+import UpdateButton from '../../UpdateButton/UpdateButton';
 import useTimeRangeFilterCard from './useTimeRangeFilterCard';
-import AdminLandingPageFilters from '../AdminLandingPageFilters';
+import AdminLandingPageFilters from '../../AdminLandingPageFilters';
 
 const filterTimeRangeLabel = 'טווח זמנים';
 
@@ -25,7 +25,7 @@ const TimeRangeCard = (props : Props): JSX.Element => {
     });
 
     return (
-        <LoadingCard isLoading={isLoading} className={classes.timeRangeCard}>
+        <LoadingCard isLoading={isLoading} width='15vw' height='10vh'>
             <CardContent className={classes.timeRangeCardContent}>
                 <Typography className={classes.cardTitle}>
                     <b>{filterTimeRangeLabel}</b>
