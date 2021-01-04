@@ -22,7 +22,7 @@ const genericOptions: PostGraphileOptions = {
     ignoreRBAC: false,
     disableQueryLog: process.env.ENVIRONMENT === 'prod',
     pgSettings: {
-        statement_timeout: '30000'
+        statement_timeout: '90000'
     }
 };
 
