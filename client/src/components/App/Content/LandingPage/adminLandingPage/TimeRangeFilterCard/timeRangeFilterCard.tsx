@@ -3,7 +3,7 @@ import { Card, CardActions, CardContent, Typography, FormControl, Select, MenuIt
 
 import { TimeRange } from 'models/TimeRange';
 import timeRanges from 'models/enums/timeRanges';
-import DatePick from 'commons/DatePick/DatePick';
+import SelectDropdown from 'commons/Select/SelectDropdown';
 
 import useStyles from './timeRangeFilterCardStyles';
 import LoadingCard from '../LoadingCard/LoadingCard';
@@ -31,39 +31,12 @@ const TimeRangeCard = (props : Props): JSX.Element => {
                     <b>{filterTimeRangeLabel}</b>
                 </Typography>
                 <FormControl variant='outlined' className={classes.timeRangeSelect}>
-                    <Select
-                        MenuProps={{
-                            anchorOrigin: {
-                                vertical: "bottom",
-                                horizontal: "left"
-                            },
-                            transformOrigin: {
-                                vertical: "top",
-                                horizontal: "left"
-                            },
-                            getContentAnchorEl: null
-                        }}
+                    <SelectDropdown
+                        onChange={onTimeRangeChange}
+                        items={timeRanges}
                         value={timeRangeFilter.id}
-                        onChange={(event) => {
-                            onTimeRangeChange(event.target.value as number)
-                        }}
-                    >
-                        {
-                            timeRanges.map((timeRange) => (
-                                <MenuItem
-                                    className={classes.timeRangeMenuItem}
-                                    key={timeRange.id}
-                                    value={timeRange.id}>
-                                    {timeRange.displayName}
-                                </MenuItem>
-                            ))
-                        }
-                    </Select>
+                    />
                 </FormControl>
-                {/* <DatePick
-                    value={new Date()}
-                    onChange={() => { }}
-                /> */}
             </CardContent>
             <CardActions className={classes.timeCardActions}>
                 <UpdateButton

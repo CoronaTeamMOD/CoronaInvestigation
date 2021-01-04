@@ -15,13 +15,13 @@ import { HistoryState } from '../InvestigationTable/InvestigationTableInterfaces
 
 const useAdminLandingPage = (parameters: Parameters) => {
 
+    const allTimeRangeId = 10;
     const { 
         setIsLoading, setInvestigationsStatistics, 
         investigationInfoFilter , setInvestigationInfoFilter,
         filteredDesks , setFilteredDesks ,
         timeRangeFilter, setTimeRangeFilter    
-    } = parameters;
-    
+    } = parameters;    
     const history = useHistory<HistoryState>();
 
     useEffect(() => {
@@ -43,7 +43,7 @@ const useAdminLandingPage = (parameters: Parameters) => {
         } 
         if (timeRange) {
             setTimeRangeFilter(timeRange)
-            if(timeRange.id !== 10) {
+            if(timeRange.id !== allTimeRangeId) {
                 setInvestigationInfoFilter((investigationInfoFilter) => {
                     return {...investigationInfoFilter, timeRange : {startDate: timeRange.startDate, endDate: timeRange.endDate}};
                 });

@@ -1,4 +1,4 @@
-import { TimeRange } from "./TimeRange";
+import { TimeRange } from './TimeRange';
 
 interface FilterRulesVariables {
     deskFilter?: number[],

@@ -27,13 +27,6 @@ const timeRanges: TimeRange[] = [
         endDate: format(new Date(),'yyyy-MM-dd'),
         startDate: format(subDays(new Date(), 7),'yyyy-MM-dd')
     },
-
-    // {
-    //     id: 0,
-    //     displayName: 'טווח זמנים',
-    //     endDate,
-    //     startDate
-    // },
 ];
 
 export default timeRanges;
