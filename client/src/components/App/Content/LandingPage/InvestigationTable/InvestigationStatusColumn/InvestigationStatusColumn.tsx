@@ -19,7 +19,7 @@ const InvestigationStatusColumn = (props: Props) => {
     const classes = useStyles();
 
     return (
-        <div className={shouldMarginNonIcon ? classes.marginStatusWithoutIcon : classes.columnWrapper}>
+        <div className={!shouldMarginNonIcon ?  classes.columnWrapper : ""}>
             {
                 investigationStatus.id === InvestigationMainStatusCodes.CANT_COMPLETE && investigationSubStatus &&
                 <Tooltip title={investigationSubStatus} placement='top' arrow>
