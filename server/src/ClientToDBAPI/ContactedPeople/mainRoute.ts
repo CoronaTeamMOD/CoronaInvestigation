@@ -50,19 +50,19 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
     });
 });
 
-ContactedPeopleRoute.get('/amountOfContacts/:investigationId', (request: Request, response: Response) => {
+ContactedPeopleRoute.get('/amountOfContacts/:investigationId/:minimalDateToFilter', (request: Request, response: Response) => {
     const contactsAmountLogger = logger.setup({
         workflow: 'query investigation amount of contacts',
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     });
 
-    const parameters = {investigationId: parseInt(request.params.investigationId)};
+    const parameters = {investigationId: parseInt(request.params.investigationId), minimalDateToFilter: new Date(request.params.minimalDateToFilter)};
     contactsAmountLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     graphqlRequest(GET_AMOUNT_OF_CONTACTED_PEOPLE, response.locals, parameters)
         .then(result => {
             contactsAmountLogger.info(validDBResponseLog, Severity.LOW);
-            response.send(result);
+            response.send(result.data.allContactedPeople.totalCount);
         })
         .catch(error => {
             contactsAmountLogger.error(invalidDBResponseLog(error), Severity.HIGH);

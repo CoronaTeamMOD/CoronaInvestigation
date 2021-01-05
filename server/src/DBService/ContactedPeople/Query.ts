@@ -1,8 +1,10 @@
 import { gql } from 'postgraphile';
 
 export const GET_AMOUNT_OF_CONTACTED_PEOPLE = gql`
-query ContactedPeopleAmountByInvestigationId ($investigationId: Int!) {
-  allContactedPeople(filter: {contactEventByContactEvent: {investigationId: {equalTo: $investigationId}}}) {
+query ContactedPeopleAmountByInvestigationId($investigationId: Int!, $minimalDateToFilter: Datetime!) {
+  allContactedPeople(
+    filter: {contactEventByContactEvent: {investigationId: {equalTo: $investigationId}, startTime: {greaterThanOrEqualTo: $minimalDateToFilter}}}
+  ) {
     totalCount
   }
 }

@@ -40,12 +40,13 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
 
-    const initializeTabShow = () => {
+    const checkAreThereContacts = () => {
         const tabShowLogger = logger.setup('Getting Amount Of Contacts');
         tabShowLogger.info('launching amount of contacts request', Severity.LOW);
-        axios.get('/contactedPeople/amountOfContacts/' + epidemiologyNumber).then((result: any) => {
+        axios.get(`/contactedPeople/amountOfContacts/${epidemiologyNumber}/${new Date()}`)
+        .then((result: any) => {
             tabShowLogger.info('amount of contacts request was successful', Severity.LOW);
-            setAreThereContacts(result?.data?.data?.allContactedPeople?.totalCount > 0);
+            setAreThereContacts(result?.data > 0);
         }).catch((error) => {
             tabShowLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
         });
@@ -158,7 +159,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             fetchCountries();
             fetchContactTypes();
             fetchStatuses();
-            initializeTabShow();
+            checkAreThereContacts();
             investigationStatus.mainStatus && fetchSubStatusesByStatus(investigationStatus.mainStatus);
             fetchEducationGrades();
         }
