@@ -39,12 +39,12 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
 
 type AddressNames = {
     isolationAddress: {
-        city: 'יישוב השהייה בבידוד';
+        city: string;
     };
-    cityId: 'מזהה עיר';
-    streetId: 'מזהה רחוב';
-    houseNum: 'מספר בית השהייה בבידוד';
-    apartment: 'מספר דירה השהייה בבידוד';
+    cityId: string;
+    streetId: string;
+    houseNum: string;
+    apartment: string;
 };
 export type ContactedPersonExcel =  {
     [K in keyof Omit<InteractedContact, 'id'|'contactEvent'|'involvementReason' | 'involvedContactId'| 'isolationAddress'>]: string;
