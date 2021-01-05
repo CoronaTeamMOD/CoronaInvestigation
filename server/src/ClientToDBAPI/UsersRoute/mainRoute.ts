@@ -232,11 +232,11 @@ usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response)
     graphqlRequest(GET_ACTIVE_GROUP_USERS, response.locals, parameters)
         .then(result => {
             groupLogger.info(validDBResponseLog, Severity.LOW);
-            const resData = result.data.getInvestigatorListByCountyFunction;
-            console.log('resData',resData);
+            const resData = JSON.parse(result.data.getInvestigatorListByCountyFunction.json);
+            resData.map((user: any) => (console.log('languages',user.languages)));
             const users: User[] = resData.map((user: any) => ({
                 ...user,
-                languages: user.languages.nodes.map((language: any) => language?.language),
+                languages: user.languages.map((language: any) => language),
                 token: ''
             }));
             response.send(users);

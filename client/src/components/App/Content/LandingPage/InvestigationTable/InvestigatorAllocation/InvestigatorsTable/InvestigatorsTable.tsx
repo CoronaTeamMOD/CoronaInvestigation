@@ -67,7 +67,7 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
                                 {
                                     Object.keys(TableHeaders).map((cellHeader: string) => (
                                         <TableCell key={cellHeader}>
-                                            { getTableCell(investigator, cellHeader) }
+                                            { getTableCell(investigator, cellHeader.toLocaleLowerCase()) }
                                         </TableCell>
                                     ))
                                 }

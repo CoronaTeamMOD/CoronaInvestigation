@@ -33,42 +33,6 @@ mutation getInvestigatorListByCounty($inputCountyId: Int!) {
 }   
 `;
 
-
-// export const GET_ACTIVE_GROUP_USERS = gql`
-// query AllGroupUsers($inputCountyId: Int!) {
-//   getInvestigatorListByCountyFunction(input: {inputCountyId: $inputCountyId}) {
-//     nodes { 
-//       id
-//       isActive
-//       phoneNumber
-//       serialNumber
-//       userName
-//       investigationGroup
-//       newInvestigationsCount: investigationsByCreator(filter: {investigationStatus: {equalTo: ${String(InvestigationMainStatusCodes.NEW)}}}) {
-//         totalCount
-//       }
-//       activeInvestigationsCount: investigationsByCreator(filter: {investigationStatus: {equalTo: ${String(InvestigationMainStatusCodes.IN_PROCESS)}}}) {
-//         totalCount
-//       }
-//       pauseInvestigationsCount: investigationsByCreator(filter: {investigationStatus: {equalTo: ${String(InvestigationMainStatusCodes.IN_PROCESS)}}, investigationSubStatus: {isNull: false}}) {
-//         totalCount
-//       }
-//       languages: userLanguagesByUserId {
-//         nodes {
-//           language
-//         }
-//       }
-//       userType
-//       sourceOrganization
-//       deskByDeskId {
-//         id
-//         deskName
-//       }
-//     }
-//   }
-// }
-// `;
-
 export const GET_ADMINS_OF_COUNTY = gql`
 query getAdminsOfGivenCounty($requestedCounty: Int) {
   allUsers(filter: { or: [{userType: {equalTo: 2}}, {userType: {equalTo: 3}}], investigationGroup: {equalTo: $requestedCounty}}) {

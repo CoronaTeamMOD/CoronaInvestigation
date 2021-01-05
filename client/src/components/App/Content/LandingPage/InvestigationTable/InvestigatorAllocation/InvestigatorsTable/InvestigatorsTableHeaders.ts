@@ -1,10 +1,10 @@
 export enum TableHeadersNames {
-    userName = 'userName',
-    sourceOrganization = 'sourceOrganization',
-    deskName = 'deskByDeskId.deskName',
-    newInvestigationsCount = 'newInvestigationsCount',
-    activeInvestigationsCount = 'activeInvestigationsCount',
-    pauseInvestigationsCount = 'pauseInvestigationsCount',
+    userName = 'username',
+    sourceOrganization = 'sourceorganization',
+    deskName = 'deskname',
+    newInvestigationsCount = 'newinvestigationscount',
+    activeInvestigationsCount = 'activeinvestigationscount',
+    pauseInvestigationsCount = 'pauseinvestigationscount',
     languages = 'languages'
 }
 
