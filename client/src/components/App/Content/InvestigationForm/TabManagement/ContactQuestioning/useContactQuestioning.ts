@@ -1,7 +1,7 @@
 import axios  from 'axios';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
-import { differenceInCalendarDays, subDays } from 'date-fns';
+import { differenceInCalendarDays } from 'date-fns';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
@@ -11,12 +11,6 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import useDuplicateContactId from 'Utils/Contacts/useDuplicateContactId';
-import {
-    nonSymptomaticPatient,
-    symptomsWithKnownStartDate,
-    symptomsWithUnknownStartDate,
-    useDateUtils,
-    } from 'Utils/DateUtils/useDateUtils';
 
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 import {
@@ -36,11 +30,12 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     } = parameters;
     
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const { convertDate } = useDateUtils();
+    const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
+
     const { checkDuplicateIds } = useDuplicateContactId();
     const { alertError } = useCustomSwal();
 
-    const makeSaveContactRequest = (contactsSavingVariable: { unSavedContacts: { contacts: InteractedContact[] } },
+    const createSaveContactRequest = (contactsSavingVariable: { unSavedContacts: { contacts: InteractedContact[] } },
                                     workflowName: string) => {
         const contactLogger = logger.setup(workflowName);
 
@@ -74,7 +69,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 unSavedContacts: { contacts },
             };
 
-            makeSaveContactRequest(contactsSavingVariable, 'Saving single contact');
+            createSaveContactRequest(contactsSavingVariable, 'Saving single contact');
             return true;
         }
     };
@@ -91,7 +86,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 unSavedContacts: {contacts: parsedFormData}
             };
 
-            makeSaveContactRequest(contactsSavingVariable, 'Saving all contacts')
+            createSaveContactRequest(contactsSavingVariable, 'Saving all contacts')
             .finally(() => {
                 ContactQuestioningSchema.isValid(originalFormData).then(valid => {
                     setFormState(epidemiologyNumber, id, valid);
@@ -100,52 +95,26 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         }        
     };
 
-    const calculateEarliestDateToInvestigate = (
-        coronaTestDate: Date | null,
-        symptomsStartTime: Date | null,
-        doesHaveSymptoms: boolean
-    ): Date => {
-        let earliestDate: Date = new Date();
-        if (coronaTestDate !== null) {
-            if (doesHaveSymptoms !== null && doesHaveSymptoms) {
-                if (symptomsStartTime) {
-                    earliestDate = subDays(
-                        symptomsStartTime,
-                        symptomsWithKnownStartDate
-                    );
-                } else {
-                    earliestDate = subDays(
-                        coronaTestDate,
-                        symptomsWithUnknownStartDate
-                    );
-                }
-            } else {
-                earliestDate = subDays(coronaTestDate, nonSymptomaticPatient);
-            }
-        }
-        return earliestDate;
-    };
-
-    const loadInteractedContacts = () => {
-        const interactedContactsLogger = logger.setup('Getting corona test date')
-        interactedContactsLogger.info(`launching server request with epidemiology number ${epidemiologyNumber}`, Severity.LOW);
-        setIsLoading(true);
-        axios.get('/clinicalDetails/coronaTestDate').then((res: any) => {
-            if (res.data !== null) {
-                interactedContactsLogger.info('got respond from the server that has data', Severity.LOW);
-                setInteractedContactsByMinimalDate(calculateEarliestDateToInvestigate(
-                    convertDate(res.data.coronaTestDate),
-                    convertDate(res.data.symptomsStartTime),
-                    res.data.doesHaveSymptoms
-                ));
-            } else {
-                interactedContactsLogger.warn('got respond from the server without data', Severity.MEDIUM);
-            }
-        }).catch(err => {
-            setIsLoading(false);
-            interactedContactsLogger.error(`got the following error from the server: ${err}`, Severity.LOW);
-        });
-    }
+    // const loadInteractedContacts = () => {
+    //     const interactedContactsLogger = logger.setup('Getting corona test date')
+    //     interactedContactsLogger.info(`launching server request with epidemiology number ${epidemiologyNumber}`, Severity.LOW);
+    //     setIsLoading(true);
+    //     axios.get('/clinicalDetails/coronaTestDate').then((res: any) => {
+    //         if (res.data !== null) {
+    //             interactedContactsLogger.info('got respond from the server that has data', Severity.LOW);
+    //             setInteractedContactsByMinimalDate(calculateEarliestDateToInvestigate(
+    //                 convertDate(res.data.coronaTestDate),
+    //                 convertDate(res.data.symptomsStartTime),
+    //                 res.data.doesHaveSymptoms
+    //             ));
+    //         } else {
+    //             interactedContactsLogger.warn('got respond from the server without data', Severity.MEDIUM);
+    //         }
+    //     }).catch(err => {
+    //         setIsLoading(false);
+    //         interactedContactsLogger.error(`got the following error from the server: ${err}`, Severity.LOW);
+    //     });
+    // }
 
     const loadFamilyRelationships = () => {
         const familyRelationshipsLogger = logger.setup('Getting family relationships')
@@ -165,53 +134,50 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const loadContactStatuses = () => {
         const contactStatusesLogger = logger.setup('Getting contact statuses');
         contactStatusesLogger.info('launching server request', Severity.LOW);
-        axios
-            .get('/contactedPeople/contactStatuses')
-            .then((result: any) => {
-                if (
-                    result?.data &&
-                    result.headers['content-type'].includes('application/json')
-                ) {
-                    contactStatusesLogger.info(
-                        'got respond from the server that has data',
-                        Severity.LOW
-                    );
-                    setContactStatuses(result.data);
-                } else {
-                    contactStatusesLogger.warn(
-                        'got respond from the server without data',
-                        Severity.MEDIUM
-                    );
-                }
-            })
-            .catch((err) => {
-                contactStatusesLogger.error(
-                    `got the following error from the server: ${err}`,
+        axios.get('/contactedPeople/contactStatuses')
+        .then((result: any) => {
+            if (
+                result?.data &&
+                result.headers['content-type'].includes('application/json')
+            ) {
+                contactStatusesLogger.info(
+                    'got respond from the server that has data',
                     Severity.LOW
                 );
-            });
+                setContactStatuses(result.data);
+            } else {
+                contactStatusesLogger.warn(
+                    'got respond from the server without data',
+                    Severity.MEDIUM
+                );
+            }
+        })
+        .catch((err) => {
+            contactStatusesLogger.error(
+                `got the following error from the server: ${err}`,
+                Severity.LOW
+            );
+        });
     };
 
-    const setInteractedContactsByMinimalDate = (minimalDateToFilter: Date) => {
+    // TODO - GRAPHQL QUERY BY CALENDAR DATES
+    const loadInteractedContacts = () => {
         const interactedContactsLogger = logger.setup('Getting contacts');
-        let interactedContacts: InteractedContact[] = [];
         interactedContactsLogger.info(
             `launching server request with epidemiology number ${epidemiologyNumber}`,
             Severity.LOW
         );
-        axios
-            .get('/contactedPeople/allContacts/' + epidemiologyNumber)
+        setIsLoading(true);
+        axios.get(`/contactedPeople/allContacts/${epidemiologyNumber}`)
             .then((result: any) => {
-                if (
-                    result?.data &&
-                    result.headers['content-type'].includes('application/json')
-                ) {
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
                     interactedContactsLogger.info(
                         'got respond from the server that has data',
                         Severity.LOW
                     );
-                    result.data.forEach((contact: any) => {
-                        interactedContacts.push({
+                    const minimalDate = datesToInvestigate.slice(-1)[0];
+                    const interactedContacts: InteractedContact[] = result.data.map((contact: any) =>
+                        ({
                             id: contact.id,
                             firstName: contact.personByPersonInfo.firstName,
                             lastName: contact.personByPersonInfo.lastName,
@@ -261,25 +227,23 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             creationTime: contact.creationTime,
                             involvementReason: contact.involvementReason,
                             involvedContactId: contact.involvedContactId,
-                        });
-                    });
+                        })
+                    )
+                    .filter(
+                        (contactedPerson: InteractedContact) =>
+                            differenceInCalendarDays(
+                                new Date(contactedPerson.contactDate),
+                                new Date(minimalDate)
+                            ) >= 0
+                    );
+
+                    setAllContactedInteractions(interactedContacts);
                 } else {
                     interactedContactsLogger.warn(
                         'got respond from the server without data',
                         Severity.MEDIUM
                     );
                 }
-            })
-            .then(() => {
-                setAllContactedInteractions(
-                    interactedContacts.filter(
-                        (contactedPerson: InteractedContact) =>
-                            differenceInCalendarDays(
-                                new Date(contactedPerson.contactDate),
-                                new Date(minimalDateToFilter)
-                            ) >= 0
-                    )
-                );
             })
             .catch((err) => {
                 interactedContactsLogger.error(
