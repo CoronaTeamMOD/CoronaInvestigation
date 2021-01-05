@@ -1,9 +1,10 @@
 import React, { ChangeEvent, useState } from 'react';
-import { Card, CardActions, CardContent, Typography, FormControl, Select, MenuItem } from '@material-ui/core';
+import { Card, CardActions, CardContent, Typography, FormControl, Select, MenuItem, Collapse } from '@material-ui/core';
 
 import { TimeRange } from 'models/TimeRange';
 import timeRanges from 'models/enums/timeRanges';
 import SelectDropdown from 'commons/Select/SelectDropdown';
+import DateRangePick from 'commons/DatePick/DateRangePick';
 
 import useStyles from './timeRangeFilterCardStyles';
 import LoadingCard from '../LoadingCard/LoadingCard';
@@ -12,12 +13,14 @@ import useTimeRangeFilterCard from './useTimeRangeFilterCard';
 import AdminLandingPageFilters from '../AdminLandingPageFilters';
 
 const filterTimeRangeLabel = 'טווח זמנים';
+const customTimeRangeId = -1;
+const timeRangeMinDate = new Date(2020, 1, 9)
 
 const TimeRangeCard = (props : Props): JSX.Element => {
 
     const classes = useStyles();
     const { timeRangeFilter, setTimeRangeFilter, investigationInfoFilter, setInvestigationInfoFilter } = props;
-    const { isLoading, onTimeRangeChange, onUpdateButtonCLicked } = useTimeRangeFilterCard({
+    const { isLoading, onTimeRangeChange, onUpdateButtonCLicked, startDate, onStartDateSelect, endDate, onEndDateSelect} = useTimeRangeFilterCard({
         timeRangeFilter,
         setTimeRangeFilter,
         investigationInfoFilter,
@@ -36,8 +39,20 @@ const TimeRangeCard = (props : Props): JSX.Element => {
                         items={timeRanges}
                         value={timeRangeFilter.id}
                     />
+                    
                 </FormControl>
             </CardContent>
+            <Collapse in={timeRangeFilter.id === customTimeRangeId} className={classes.collapse}>
+                <CardContent className={classes.dateRangeCardContent}>
+                    <DateRangePick
+                        startDate={startDate}
+                        onStartDateChange={onStartDateSelect}
+                        endDate={endDate}
+                        onEndDateChange={onEndDateSelect}
+                        // minDate={timeRangeMinDate}
+                    />   
+                </CardContent>
+            </Collapse>
             <CardActions className={classes.timeCardActions}>
                 <UpdateButton
                     onClick={onUpdateButtonCLicked}

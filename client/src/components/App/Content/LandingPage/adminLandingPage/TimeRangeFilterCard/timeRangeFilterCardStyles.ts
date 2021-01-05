@@ -4,8 +4,7 @@ import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     timeRangeCard: {
-        width: '15vw',
-        height: '105%',
+        width: '20vw',
         borderRadius: '1vw',
     },
     cardTitle: {
@@ -15,6 +14,17 @@ const useStyles = makeStyles({
     timeRangeCardContent: {
         height: '36%',
     },
+    dateRangeCardContent: {
+        paddingTop: 0,
+        paddingBottom: 0,
+        
+    },
+    collapse: {
+        height: '36%',
+        '& .MuiCardContent-root:last-child': {
+            paddingBottom: 0,
+        }
+    },
     timeCardActions: {
         direction: 'ltr', 
         paddingLeft: '1vw',
@@ -22,7 +32,13 @@ const useStyles = makeStyles({
     },
     timeRangeSelect: {
         width: '10vw',
-        height: '2vw'
+        height: '2vw',
+        '& .MuiSelect-select': {
+            fontSize: '1vw'
+        },
+    },
+    timeRangeSelectDropdown: {
+        height: '20px'
     },
     timeRangeMenuItem: {
         width: '10vw',
