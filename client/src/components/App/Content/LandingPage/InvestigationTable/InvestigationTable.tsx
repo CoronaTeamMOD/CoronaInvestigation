@@ -436,7 +436,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 const { isSelfInvestigated , selfInvestigationStatus ,selfInvestigationUpdateTime } = indexedRow;
                 return (
                     <Box flexWrap="nowrap" display="flex" alignItems="center">
-                        {isSelfInvestigated && <SelfInvestigationIcon status={selfInvestigationStatus} date={new Date(selfInvestigationUpdateTime)}/>}
                         {(!wasInvestigationFetchedByGroup) &&
                             <Checkbox onClick={(event) => {
                                 event.stopPropagation();
@@ -464,6 +463,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 </IconButton>
                             </Tooltip>
                         }
+                        {isSelfInvestigated && <SelfInvestigationIcon status={selfInvestigationStatus} date={new Date(selfInvestigationUpdateTime)}/>}
                     </Box>
                 )
             case TableHeadersNames.settings:
