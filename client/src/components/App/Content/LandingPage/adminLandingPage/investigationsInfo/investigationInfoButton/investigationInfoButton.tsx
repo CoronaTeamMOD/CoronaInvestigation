@@ -1,10 +1,12 @@
 import React from 'react';
 import { Button, ButtonProps, Typography } from '@material-ui/core';
 
+import useHoverStyles from '../../useHoverStyles';
 import useStyles from './investigationInfoButtonStyles';
 
 const InvestigationInfoButton: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
+    const hoverClasses = useHoverStyles();
 
     const { amountOfInvestigations, text,  ...rest } = props;
 
@@ -12,7 +14,7 @@ const InvestigationInfoButton: React.FC<Props> = (props: Props): JSX.Element => 
         <>
             <Button
                 {...rest}
-                className={classes.button}
+                className={[classes.button, hoverClasses.coloredButtons].join(' ')}
                 variant='contained'
                 size='large'
             >
