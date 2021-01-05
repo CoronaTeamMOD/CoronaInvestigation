@@ -3,6 +3,7 @@ import { Popover, Tooltip, ClickAwayListener, IconButton , Typography } from '@m
 
 import useStyles from './selfInvestigationIconStyles';
 import useSelfInvestigationIcon from './useSelfInvestigationIcon';
+import SelfInvestigationTooltip from './Tooltip/SelfInvestigationTooltip';
 
 const contactTitle = 'טופס תחקור עצמי';
 interface Props {
@@ -11,6 +12,8 @@ interface Props {
 }
 
 const SelfInvestigationIcon = (props: Props) => {
+	const {status , date} = props;
+
 	const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false);
 	const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
@@ -25,32 +28,34 @@ const SelfInvestigationIcon = (props: Props) => {
 		setAnchorEl(e.currentTarget)
 		setIsTooltipOpen((isOpen) => !isOpen);
 	}
-	const {getTooltipText , getIconByStatus} = useSelfInvestigationIcon(props);
+	const { getIconByStatus } = useSelfInvestigationIcon({status});
 
 	return (
-		<>
-			<ClickAwayListener onClickAway={handleTooltipClose}>
-				<Tooltip title={contactTitle} arrow placement={'top'}>
-					<IconButton onClick={handleButtonClick}>{getIconByStatus()}</IconButton>
-				</Tooltip>
-			</ClickAwayListener>
-			<Popover
-				anchorEl={anchorEl}
-				open={isTooltipOpen}
-				onClose={handleTooltipClose}
-				anchorOrigin={{
-					vertical: 'bottom',
-					horizontal: 'right',
-				}}
-				transformOrigin={{
-					vertical: 'top',
-					horizontal: 'right',
-				}}
-			>
-				<Typography className={classes.popover}>{getTooltipText()}</Typography>
-			</Popover>
-		</>
-	);
+        <>
+            <ClickAwayListener onClickAway={handleTooltipClose}>
+                <Tooltip title={contactTitle} arrow placement={'top'}>
+                    <IconButton onClick={handleButtonClick}>{getIconByStatus()}</IconButton>
+                </Tooltip>
+            </ClickAwayListener>
+            <Popover
+                anchorEl={anchorEl}
+                open={isTooltipOpen}
+                onClose={handleTooltipClose}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+            >
+                <Typography className={classes.popover}>
+                    <SelfInvestigationTooltip date={date} status={status} />
+                </Typography>
+            </Popover>
+        </>
+    );
 };
 
 export default SelfInvestigationIcon;

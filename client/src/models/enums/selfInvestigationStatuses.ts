@@ -4,17 +4,10 @@ enum SelfInvestigaionStatuses {
     COMPLETED = 2
 }
 
-export const getInvestigationStatusName = (status : number) => {
-    switch(status) {
-        case SelfInvestigaionStatuses.UNOPENED :
-            return 'לא נפתח'
-        case SelfInvestigaionStatuses.IN_PROGRESS :
-            return 'בתהליך'
-        case SelfInvestigaionStatuses.COMPLETED :
-            return 'הושלם'
-        default : 
-            return 'לא ידוע'
-    }
+export const statusNames : {[key: number]: string} = {
+    [SelfInvestigaionStatuses.UNOPENED] : 'לא נפתח',
+    [SelfInvestigaionStatuses.IN_PROGRESS] : 'בתהליך',
+    [SelfInvestigaionStatuses.COMPLETED] : 'הושלם'
 }
 
 export default SelfInvestigaionStatuses
