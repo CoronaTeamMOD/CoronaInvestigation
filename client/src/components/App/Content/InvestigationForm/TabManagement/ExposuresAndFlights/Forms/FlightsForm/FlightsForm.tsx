@@ -5,7 +5,7 @@ import { Controller , useFormContext } from 'react-hook-form';
 import useFormStyles from 'styles/formStyles';
 import DatePick from 'commons/DatePick/DatePick';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import AirelineTextField from 'commons/AirelineTextField/AirelineTextField';
 import FlightNumberTextField from 'commons/FlightNumberTextField/FlightNumberTextField';
 
 import useStyles from './FlightFormStyles';
@@ -121,7 +121,7 @@ const FlightsForm = (props: any) => {
 					defaultValue={exposureAndFlightsData[fieldsNames.airline]}
 					render={(props) => {
 						return (
-							<AlphanumericTextField
+							<AirelineTextField
 								{...props}
 								testId='airlineCompany'
 								onChange={(value) => {
