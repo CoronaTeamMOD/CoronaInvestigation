@@ -10,7 +10,7 @@ import IsolationSource from 'models/IsolationSource';
 import { useDateUtils } from 'Utils/DateUtils/useDateUtils';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setFormState } from 'redux/Form/formActionCreators';
-import FlattenedDBAddress, {initDBAddress} from 'models/DBAddress';
+import FlattenedDBAddress, { initDBAddress } from 'models/DBAddress';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { getDatesToInvestigate } from 'Utils/ClinicalDetails/useSymptomsUtils';
@@ -217,20 +217,21 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                 investigatedPatientId,
                 isolationAddressId
             }
-        })).then(() => {
+        }))
+        .then(() => {
             saveClinicalDetailsLogger.info('saved clinical details successfully', Severity.LOW);
             setSymptomsExistenceInfo({doesHaveSymptoms: clinicalDetails.doesHaveSymptoms, symptomsStartDate: clinicalDetails.symptomsStartDate});
         })
-            .catch((error) => {
-                saveClinicalDetailsLogger.error(`got error from server: ${error}`, Severity.HIGH);
-                alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
+        .catch((error) => {
+            saveClinicalDetailsLogger.error(`got error from server: ${error}`, Severity.HIGH);
+            alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
+        })
+        .finally(() => {
+            setIsLoading(false);
+            ClinicalDetailsSchema(validationDate).isValid(clinicalDetails).then(valid => {
+                setFormState(epidemiologyNumber, id, valid);
             })
-            .finally(() => {
-                setIsLoading(false);
-                ClinicalDetailsSchema(validationDate).isValid(clinicalDetails).then(valid => {
-                    setFormState(epidemiologyNumber, id, valid);
-                })
-            })
+        })
     }
 
     const alertSymptomsDatesChange = () =>

@@ -32,12 +32,12 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     const familyMembersStateContext = useContext(familyMembersContext);
 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const datesToInvestigate = useSelector<StoreStateType, Date[]>((state) => state.investigation.datesToInvestigate);
 
     const [interactionToEdit, setInteractionToEdit] = useState<InteractionEventDialogData>();
     const [newInteractionEventDate, setNewInteractionEventDate] = useState<Date>();
     const [interactionsMap, setInteractionsMap] = useState<Map<number, InteractionEventDialogData[]>>(new Map<number, InteractionEventDialogData[]>())
     const [interactions, setInteractions] = useState<InteractionEventDialogData[]>([]);
-    const [datesToInvestigate, setDatesToInvestigate] = useState<Date[]>([]);
     const [interactionsTabSettings, setInteractionsTabSettings] = useState<InteractionsTabSettings>(defaultInteractionsTabSettings);
     const [educationMembers, setEducationMembers] = useState<InvolvedContact[]>([]);
     const [uncontactedFamilyMembers, setUncontactedFamilyMembers] = useState<InvolvedContact[]>([]);
@@ -55,13 +55,13 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
             setInteractions,
             interactions,
             setAreThereContacts,
-            setDatesToInvestigate,
             setEducationMembers,
             familyMembersStateContext,
             setInteractionsTabSettings,
             completeTabChange
         });
 
+    // TODO - CHANGE TO USE MEMO + USE setAreThereContacts ONLY ONCE
     useEffect(() => {
         if(Boolean(interactions[0])) {
             const mappedInteractionsArray = new Map<number, Interaction[]>();
@@ -164,6 +164,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                 isOpen={uncontactedFamilyMembers.length > 0} 
                 closeDialog={closeFamilyDialog}
                 confirmDialog={saveInvestigaionSettingsFamily}/>
+                
             <EducationContactsDialog 
                 isOpen={showEducationMembers} 
                 educationContacts={educationMembers}

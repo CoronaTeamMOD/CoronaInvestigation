@@ -40,6 +40,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
 
+    // TODO - SEND REAL DATE
     const checkAreThereContacts = () => {
         const tabShowLogger = logger.setup('Getting Amount Of Contacts');
         tabShowLogger.info('launching amount of contacts request', Severity.LOW);

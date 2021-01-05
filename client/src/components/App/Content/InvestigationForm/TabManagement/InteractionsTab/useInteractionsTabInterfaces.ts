@@ -9,7 +9,6 @@ export interface useInteractionsTabParameters {
     interactions: Interaction[];
     setInteractions: (updatedInteractions: Interaction[]) => void;
     setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
-    setDatesToInvestigate: React.Dispatch<React.SetStateAction<Date[]>>;
     setEducationMembers: React.Dispatch<React.SetStateAction<InvolvedContact[]>>;
     familyMembersStateContext: FamilyMembersContext;
     setInteractionsTabSettings: React.Dispatch<React.SetStateAction<InteractionsTabSettings>>;
