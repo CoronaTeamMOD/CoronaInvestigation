@@ -11,15 +11,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     completed: {
         color: theme.palette.success.dark
     },
-    lightTooltip: {
+    popover: {
         backgroundColor: theme.palette.common.white,
         color: 'rgba(0, 0, 0, 0.87)',
         boxShadow: theme.shadows[1],
         fontSize: 14,
-        whiteSpace: 'normal'
-      },
-    popper: {
-        zIndex: 1,
+        whiteSpace: 'normal',
+        padding: theme.spacing(1)
     }
 }));
 

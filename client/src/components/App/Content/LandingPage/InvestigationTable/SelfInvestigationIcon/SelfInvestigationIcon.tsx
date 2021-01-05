@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Tooltip, ClickAwayListener, IconButton } from '@material-ui/core';
+import { Popover, Tooltip, ClickAwayListener, IconButton , Typography } from '@material-ui/core';
 
 import useStyles from './selfInvestigationIconStyles';
 import useSelfInvestigationIcon from './useSelfInvestigationIcon';
 
+const contactTitle = 'טופס תחקור עצמי';
 interface Props {
     status: number;
     date: Date;
@@ -11,38 +12,44 @@ interface Props {
 
 const SelfInvestigationIcon = (props: Props) => {
 	const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false);
+	const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
 	const classes = useStyles();
-	const handleTooltipClose = () => setIsTooltipOpen(false);
-	const handleTooltipToggle = (event: any) => {
-		event.stopPropagation();
+	const handleTooltipClose = (e : React.MouseEvent<Document, MouseEvent>) => {
+		e.stopPropagation();
+		setIsTooltipOpen(false);
+		setAnchorEl(null);
+	}
+	const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		e.stopPropagation();
+		setAnchorEl(e.currentTarget)
 		setIsTooltipOpen((isOpen) => !isOpen);
-	};
-
+	}
 	const {getTooltipText , getIconByStatus} = useSelfInvestigationIcon(props);
 
 	return (
-		<ClickAwayListener onClickAway={handleTooltipClose}>
-			<Tooltip
-                classes={{tooltip:classes.lightTooltip, popper: classes.popper}}
-				PopperProps={{
-					disablePortal: true,
-					placement: 'bottom-start',
-					modifiers: {
-						offset: {
-							enabled: true,
-							offset: '20px, 0',
-						},
-					},
-				}}
-				onClose={handleTooltipClose}
+		<>
+			<ClickAwayListener onClickAway={handleTooltipClose}>
+				<Tooltip title={contactTitle} arrow placement={'top'}>
+					<IconButton onClick={handleButtonClick}>{getIconByStatus()}</IconButton>
+				</Tooltip>
+			</ClickAwayListener>
+			<Popover
+				anchorEl={anchorEl}
 				open={isTooltipOpen}
-				disableHoverListener
-				title={getTooltipText()}
+				onClose={handleTooltipClose}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'right',
+				}}
+				transformOrigin={{
+					vertical: 'top',
+					horizontal: 'right',
+				}}
 			>
-				<IconButton onClick={handleTooltipToggle}>{getIconByStatus()}</IconButton>
-			</Tooltip>
-		</ClickAwayListener>
+				<Typography className={classes.popover}>{getTooltipText()}</Typography>
+			</Popover>
+		</>
 	);
 };
 

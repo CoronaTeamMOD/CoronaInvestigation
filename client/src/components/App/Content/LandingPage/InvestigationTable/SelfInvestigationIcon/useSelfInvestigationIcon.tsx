@@ -6,11 +6,8 @@ import SelfInvestigaionStatuses , {getInvestigationStatusName} from 'models/enum
 
 import useStyles from './selfInvestigationIconStyles';
 
-
-const contactTitle = 'תחקור עצמי';
 const lastUpdatedTime = 'זמן עדכון אחרון ע"י החולה';
 const statusTitle = 'סטטוס';
-
 interface Props {
     status : number;
     date : Date;
