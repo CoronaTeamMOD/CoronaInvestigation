@@ -58,7 +58,19 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
             dataInFileLogger.info('launching saving contacted people excel request', Severity.LOW);
 
             const validationErrors = contacts.reduce<string[]>((aggregatedArr, contact) => {
-                const validationInfo = validateContact(contact, ValidationReason.EXCEL_LOADING);
+                const parsedContact = contact.cityId 
+                ? {
+                    ...contact,
+                    isolationAddress: {
+                        city : {id: String(contact.cityId) , displayName : ''},
+                        street : {id : String(contact.streetId) , displayName: ''},
+                        houseNum : '',
+                        apartment : '',
+                        floor : '', 
+                    }
+                } 
+                : contact;
+                const validationInfo = validateContact(parsedContact, ValidationReason.EXCEL_LOADING);
 
                 if (!validationInfo.valid) {
                     const error = `שגיאה בשורה ${contact.rowNum + 1}: `.concat(validationInfo.error);

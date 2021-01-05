@@ -25,4 +25,11 @@ interface InteractedContact extends Person {
     } | null
 };
 
+export interface InteractedExcelContact extends InteractedContact {
+    cityId? : number;
+    streetId? : number;
+    houseNum? : string;
+    apartment? : string;
+} 
+
 export default InteractedContact;
