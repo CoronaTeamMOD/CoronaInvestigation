@@ -2,9 +2,9 @@ import React from 'react'
 import { Grid } from '@material-ui/core';
 
 import {statusNames} from 'models/enums/selfInvestigationStatuses';
-
+import SelfInvestigaionStatuses from 'models/enums/selfInvestigationStatuses';
 interface Props {
-    status : number;
+    status : SelfInvestigaionStatuses;
     date : Date;
 }
 

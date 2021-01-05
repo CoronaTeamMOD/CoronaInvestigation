@@ -4,7 +4,7 @@ enum SelfInvestigaionStatuses {
     COMPLETED = 2
 }
 
-export const statusNames : {[key: number]: string} = {
+export const statusNames : {[key in SelfInvestigaionStatuses]: string} = {
     [SelfInvestigaionStatuses.UNOPENED] : 'לא נפתח',
     [SelfInvestigaionStatuses.IN_PROGRESS] : 'בתהליך',
     [SelfInvestigaionStatuses.COMPLETED] : 'הושלם'
