@@ -1,6 +1,6 @@
 import React from 'react'
 import { Grid } from '@material-ui/core';
-import { AssignmentInd, AssignmentTurnedIn, AssignmentReturned } from '@material-ui/icons';
+import { AssignmentInd, AssignmentTurnedIn, AssignmentReturned , AssignmentLate} from '@material-ui/icons';
 
 import SelfInvestigaionStatuses , {getInvestigationStatusName} from 'models/enums/selfInvestigationStatuses';
 
@@ -20,13 +20,13 @@ const useSelfInvestigationIcon = (props: Props) => {
     const getIconByStatus = () : React.ReactElement  => {
 		switch (status) {
 			case SelfInvestigaionStatuses.UNOPENED:
-				return <AssignmentInd className={classes.unopened} />;
+				return <AssignmentInd />;
 			case SelfInvestigaionStatuses.IN_PROGRESS:
-				return <AssignmentReturned className={classes.inProgress} />;
+				return <AssignmentReturned />;
 			case SelfInvestigaionStatuses.COMPLETED:
 				return <AssignmentTurnedIn className={classes.completed} />;
 			default:
-				return <AssignmentInd />;
+				return <AssignmentLate />;
 		}
     };
     
