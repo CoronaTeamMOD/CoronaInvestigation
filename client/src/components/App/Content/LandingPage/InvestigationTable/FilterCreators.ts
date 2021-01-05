@@ -89,8 +89,7 @@ export const buildFilterRules = (filterRulesVariables: FilterRulesVariables) => 
 
     const { deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery, timeRangeFilter } = filterRulesVariables;
 
-    const searchQueryFilter = searchQuery ?
-        numericRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.IDENTITY_NUMBER(searchQuery) : {};
+    const searchQueryFilter = searchQuery ? numericRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.IDENTITY_NUMBER(searchQuery) : {};
 
     const userByCreator = (unassignedUserFilter && inactiveUserFilter) ?
         filterCreators.UNALLOCATED_USER(unassignedUserFilter && inactiveUserFilter)
