@@ -1,13 +1,15 @@
 import * as yup from 'yup';
-import { startOfTomorrow } from 'date-fns';
+import { startOfTomorrow, subDays } from 'date-fns';
 
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import { getMinimalSymptomsStartDate, maxInvestigatedDays } from 'Utils/ClinicalDetails/useSymptomsUtils';
 
 const requiredText = 'שדה זה הוא חובה';
 const StartDateAfterEndDateText = 'תאריך ההתחלה צריך להיות מוקדם יותר מתאריך הסיום';
 const EndDateBeforeStartDateText = 'תאריך הסיום צריך להיות מאוחר יותר מתאריך ההתחלה';
-const futureDateText = 'שגיאה: לא ניתן להכניס תאריך עתידי';
-const endDateBeforeValidationDateText = 'שגיאה: לא ניתן להכניס תאריך אחרי תאריך תחילת מחלה';
+const futureDateText = 'לא ניתן להכניס תאריך עתידי';
+const endDateBeforeValidationDateText = 'לא ניתן להכניס תאריך אחרי תאריך תחילת מחלה';
+const symptomsStartDateIsTooEarlyText = `לא ניתן להכניס תאריך יותר מ${maxInvestigatedDays} ימים לפני תאריך תחילת מחלה`
 
 const isInIsolationStartDateSchema = (validationDate: Date) => yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
@@ -108,7 +110,9 @@ const ClinicalDetailsSchema = (validationDate: Date) => yup.object().shape({
             } else if(!doesHaveSymptoms) {
                 return schema.nullable();
             }
-            return schema.required(requiredText).typeError(requiredText);
+            return yup.date().required(requiredText).typeError(requiredText)
+            .max(new Date(), futureDateText)
+            .min(subDays(getMinimalSymptomsStartDate(validationDate), 1), symptomsStartDateIsTooEarlyText);
         }),
     [ClinicalDetailsFields.SYMPTOMS]: yup.array().of(yup.string()).when(
         ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, {
