@@ -22,14 +22,13 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
-import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
 import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
-import { buildFilterRules } from './FilterCreators';
+import { filterCreators } from './FilterCreators';
 import { defaultOrderBy, rowsPerPage, defaultPage } from './InvestigationTable';
 import {
     TableHeadersNames,
@@ -149,11 +148,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [statusFilter, setStatusFilter] = useState<StatusFilter>(historyStatusFilter);
     const [deskFilter, setDeskFilter] = useState<DeskFilter>(historyDeskFilter);
     const [timeRangeFilter, setTimeRangeFilter] = useState<TimeRange>(historyTimeRange);
-    const [searchQuery, setSearchQuery] = useState<string>('');
-    const [isSearchQueryValid, setIsSearchQueryValid] = useState<boolean>(true);
     const [unassignedUserFilter, setUnassignedUserFilter] = useState<boolean>(historyUnassignedUserFilter);
     const [inactiveUserFilter, setInactiveUserFilter] = useState<boolean>(historyInactiveUserFilter);
     const [isAdminLandingRedirect, setIsAdminLandingRedirect] = useState<boolean>(historyisAdminLandingRedirect);
+    const [filterRules, setFitlerRules] = useState<any>({});
+    const [isBadgeInVisible, setIsBadgeInVisible] = useState<boolean>(true);
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const isLoggedIn = useSelector<StoreStateType, boolean>(state => state.user.isLoggedIn);
@@ -162,42 +161,47 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
     const windowTabsBroadcastChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
 
+    const changeDeskFilter = (desks: Desk[]) => {
+        const desksIds = desks.map(desk => desk.id);
+        updateFilterHistory('deskFilter', desksIds);
+        setDeskFilter(desksIds);
+        handleFilterChange(filterCreators.DESK_ID(desksIds))
+        setCurrentPage(defaultPage);
+    };
+
+    const changeSearchFilter = (searchQuery: string) => {
+        handleFilterChange(filterCreators.SEARCH_BAR(searchQuery)) 
+    }
+    
     const changeStatusFilter = (statuses: InvestigationMainStatus[]) => {
         const statusesIds = statuses.map(status => status.id);
         updateFilterHistory('statusFilter', statusesIds);
         setStatusFilter(statusesIds);
+        handleFilterChange(filterCreators.STATUS(statusesIds));
         setCurrentPage(defaultPage);
     };
 
     const changeUnassginedUserFilter = (value: boolean) => {
         updateFilterHistory('unassignedUserFilter', value);
         setUnassignedUserFilter(value);
+        if (inactiveUserFilter && value) {
+            handleFilterChange(filterCreators.UNALLOCATED_USER(value))
+        } else {
+            handleFilterChange(filterCreators.UNASSIGNED_USER(value))
+        }
         setCurrentPage(defaultPage);
     }
 
     const changeInactiveUserFilter = (value: boolean) => {
         updateFilterHistory('inactiveUserFilter', value);
         setInactiveUserFilter(value);
+        if (unassignedUserFilter && value) {
+            handleFilterChange(filterCreators.UNALLOCATED_USER(value));
+        } else {
+            handleFilterChange(filterCreators.INACTIVE_USER(value));
+        }
         setCurrentPage(defaultPage);
     }
-
-    const changeDeskFilter = (desks: Desk[]) => {
-        const desksIds = desks.map(desk => desk.id);
-        updateFilterHistory('deskFilter', desksIds);
-        setDeskFilter(desksIds);
-        setCurrentPage(defaultPage);
-    };
-
-    const changeSearchQuery = (newSearchQuery: string) => {
-        if (stringAlphanum.isValidSync(newSearchQuery)) {
-            setSearchQuery(newSearchQuery);
-            if (!isSearchQueryValid) {
-                setIsSearchQueryValid(true);
-            }
-        } else {
-            setIsSearchQueryValid(false);
-        }
-    };
 
     const updateFilterHistory = (key: string, value: any) => {
         const { location: { state } } = history;
@@ -270,24 +274,36 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchTableData();
     };
 
-    const getInvestigationsAxiosRequest = (orderBy: string): any => {
-        const getInvestigationsLogger = logger.setup('Getting Investigations');
+    const handleFilterChange = (filterBy: () => any) => {
+        let filterRulesToSet = {...filterRules};
+        if (Object.values(filterBy)[0] !== null) {
+            filterRulesToSet = {
+                ...filterRulesToSet,
+                ...filterBy
+            }
+        } else {
+            delete filterRulesToSet[Object.keys(filterBy)[0]]
+        }
+        setIsBadgeInVisible(Object.keys(filterRulesToSet).length === 0);
+        setFitlerRules(filterRulesToSet);
+    }  
 
-        const filterRules = buildFilterRules({ deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery, timeRangeFilter });
+    const fetchInvestigationsAxiosRequest = (): any => {
+        const investigationsLogger = logger.setup('Getting Investigations');
 
         const requestData = {
             orderBy,
             size: rowsPerPage,
-            currentPage: currentPage,
-            filterRules,
+            currentPage,
+            filterRules: Object.values(filterRules).reduce((obj, item) => Object.assign(obj, item) , {}),
         };
 
         if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
-            getInvestigationsLogger.info('user is admin so landingPage/groupInvestigations route is chosen', Severity.LOW);
+            investigationsLogger.info('user is admin so landingPage/groupInvestigations route is chosen', Severity.LOW);
             return axios.post('landingPage/groupInvestigations', requestData)
         }
 
-        getInvestigationsLogger.info('user isnt admin so landingPage/investigations route is chosen', Severity.LOW);
+        investigationsLogger.info('user isnt admin so landingPage/investigations route is chosen', Severity.LOW);
         return axios.post('/landingPage/investigations', requestData);
     }
 
@@ -353,7 +369,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 fetchAllCounties();
             }
             fetchInvestigationsLogger.info(`launching the selected request to the DB ordering by ${orderBy}`, Severity.LOW);
-            getInvestigationsAxiosRequest(orderBy)
+            fetchInvestigationsAxiosRequest()
                 .then((response: any) => {
                     fetchInvestigationsLogger.info('got response from the server', Severity.LOW);
 
@@ -461,7 +477,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (isLoggedIn) {
             fetchTableData();
         }
-    }, [isLoggedIn, currentPage, orderBy, statusFilter, deskFilter, unassignedUserFilter, inactiveUserFilter]);
+    }, [isLoggedIn, currentPage, orderBy, filterRules]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const investigationClickLogger = logger.setupVerbose({
@@ -881,16 +897,15 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeStatusFilter,
         deskFilter,
         changeDeskFilter,
-        searchQuery,
-        changeSearchQuery,
-        isSearchQueryValid,
+        changeSearchFilter,
         changeUnassginedUserFilter,
         unassignedUserFilter,
         changeInactiveUserFilter,
         inactiveUserFilter,
         fetchAllCountyUsers,
         tableTitle, 
-        timeRangeFilter
+        timeRangeFilter,
+        isBadgeInVisible
     };
 };
 

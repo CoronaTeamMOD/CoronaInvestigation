@@ -76,7 +76,7 @@ const UsersFilter:React.FC<Props> = ( props : Props ) => {
             <FormInput fieldName='מסגרת'>
                 <GenericAutoComplete 
                     options={sourcesOrganization}
-                    handleChange={(sourceOrganizations) => handleFilterChange(FilterCreators.SOURCE_ORGANIZATION.create(
+                    handleChange={(sourceOrganizations) => handleFilterChange(FilterCreators.SOURCE_ORGANIZATION(
                         sourceOrganizations.map((sourceOrganization: SourceOrganization) => sourceOrganization.displayName)))
                     }
                     className={classes.autoComplete}
@@ -86,7 +86,7 @@ const UsersFilter:React.FC<Props> = ( props : Props ) => {
                 <GenericAutoComplete 
                     options={languages}
                     inputRootClass={classes.autocompleteInput}
-                    handleChange={(languages) => handleFilterChange(FilterCreators.LANGUAGES.create(
+                    handleChange={(languages) => handleFilterChange(FilterCreators.LANGUAGES(
                         languages.map((language : Language) => language.displayName)))
                     }
                     className={classes.autoComplete}
@@ -97,7 +97,7 @@ const UsersFilter:React.FC<Props> = ( props : Props ) => {
                 <FormInput fieldName='נפות'>
                     <GenericAutoComplete 
                         options={counties}
-                        handleChange={(counties) => handleFilterChange(FilterCreators.COUNTY.create(
+                        handleChange={(counties) => handleFilterChange(FilterCreators.COUNTY(
                             counties.map((county: County) => county.id)))
                         }
                         className={classes.autoComplete}
@@ -107,7 +107,7 @@ const UsersFilter:React.FC<Props> = ( props : Props ) => {
             <FormInput fieldName='סוג משתמש'>
                 <GenericAutoComplete 
                     options={userTypes}
-                    handleChange={(userTypes) => handleFilterChange(FilterCreators.USER_TYPE.create(
+                    handleChange={(userTypes) => handleFilterChange(FilterCreators.USER_TYPE(
                         userTypes.map((userType: UserTypeModel) => userType.id)))
                     }
                     className={classes.autoComplete}
@@ -116,7 +116,7 @@ const UsersFilter:React.FC<Props> = ( props : Props ) => {
             <FormInput fieldName='פעיל/לא פעיל'>
                 <GenericAutoComplete 
                     options={activeStatuses}
-                    handleChange={(userStatuses) => handleFilterChange(FilterCreators.USER_STATUS.create(
+                    handleChange={(userStatuses) => handleFilterChange(FilterCreators.USER_STATUS(
                         userStatuses.map((userStatus: activeStatus) => userStatus.value)))
                     }
                     className={classes.autoComplete}

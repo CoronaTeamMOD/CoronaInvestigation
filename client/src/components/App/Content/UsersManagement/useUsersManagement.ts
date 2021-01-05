@@ -69,7 +69,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                 },
                 orderBy: cellNameSort.direction !== undefined ? 
                          `${get(SortOrderTableHeadersNames, cellNameSort.name)}_${cellNameSort.direction?.toUpperCase()}` : null,
-                filter: filterRules
+                filter: Object.values(filterRules).reduce((obj, item) => Object.assign(obj, item) , {}),
             })
                 .then(result => {
                     if (result?.data && result.headers['content-type'].includes('application/json')) {

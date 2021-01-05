@@ -1,42 +1,56 @@
 import { TimeRange } from 'models/TimeRange';
-import FilterRulesVariables from 'models/FilterRulesVariables';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
+
+import { allTimeRangeId } from '../adminLandingPage/useAdminLandingPage';
 
 const unassignedUserName = 'לא משויך';
 const numericRegex: RegExp = /^([\d]+)$/;
 
-const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => Exclude<any, void>) } = {
+export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => Exclude<any, void>) } = {
     [InvestigationsFilterByFields.STATUS]: (values: string[]) => {
         return values.length > 0 ?
-            { investigationStatus: { in: values } }
-            :
-            {};
+            { [InvestigationsFilterByFields.STATUS]: { investigationStatus: { in: values } } }    
+            : 
+            { [InvestigationsFilterByFields.STATUS]: null }
     },
     [InvestigationsFilterByFields.DESK_ID]: (deskIds: number[]) => {
         if (deskIds.includes(-1)) {
             return {
-                or: [
-                    { deskId: { in: deskIds.filter(deskId => deskId !== -1) } },
-                    { deskId: { isNull: true } }
-                ]
+                [InvestigationsFilterByFields.DESK_ID]: {
+                    or: [
+                        { deskId: { in: deskIds.filter(deskId => deskId !== -1) } },
+                        { deskId: { isNull: true } }
+                    ]
+                }
             }
         }
 
         return deskIds.length > 0 ?
-            { deskId: { in: deskIds } }
+            { [InvestigationsFilterByFields.DESK_ID]: { deskId: { in: deskIds } } }
             :
-            {};
+            { [InvestigationsFilterByFields.DESK_ID]: null };
     },
-    [InvestigationsFilterByFields.NUMERIC_PROPERTIES]: (values: string) => {
-        return Boolean(values) ?
-            {
-                or: [
-                    { epidemiologyNumber: { equalTo: Number(values) } },
-                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { primaryPhone: { includes: values } } } },
-                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { identityNumber: { includes: values } } } }
-                ]
-            } :
-            {}
+    [InvestigationsFilterByFields.SEARCH_BAR]: (value: string) => {
+        return Boolean(value) ?
+            numericRegex.test(value) ?
+                {
+                    [InvestigationsFilterByFields.SEARCH_BAR]: {
+                        or: [
+                            { epidemiologyNumber: { equalTo: Number(value) } },
+                            { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { primaryPhone: { includes: value } } } },
+                            { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { identityNumber: { includes: value } } } }
+                        ]
+                    }
+                } :
+                { 
+                    [InvestigationsFilterByFields.SEARCH_BAR]: {
+                        investigatedPatientByInvestigatedPatientId: {
+                            covidPatientByCovidPatient: { fullName: { includes: value } } 
+                        } 
+                    } 
+                } 
+            :
+            { [InvestigationsFilterByFields.SEARCH_BAR]: null  }
     },
     [InvestigationsFilterByFields.APLHA_NUMERIC_PROPERTIES]: (values: string) => {
         return Boolean(values) ?
@@ -50,61 +64,52 @@ const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => E
     },
     [InvestigationsFilterByFields.UNASSIGNED_USER]: (isFilterOn: boolean) => {
         return isFilterOn ?
-            { userName: {equalTo: unassignedUserName} }
+            { 
+                [InvestigationsFilterByFields.UNASSIGNED_USER]: {
+                    userByCreator: { userName: { equalTo: unassignedUserName } }
+                } 
+            }
             :
-            {};
+            { [InvestigationsFilterByFields.UNASSIGNED_USER]: null };
     },
     [InvestigationsFilterByFields.INACTIVE_USER]: (isFilterOn: boolean) => {
         return isFilterOn ?
             { 
-                isActive: {equalTo: false},
-                userName: {notEqualTo:unassignedUserName}
+                [InvestigationsFilterByFields.INACTIVE_USER]: {
+                    userByCreator: { 
+                        isActive: { equalTo: false },
+                        userName: { notEqualTo: unassignedUserName } 
+                    } 
+                } 
             }
             :
-            {};
+            { [InvestigationsFilterByFields.INACTIVE_USER]: null };
     },
     [InvestigationsFilterByFields.UNALLOCATED_USER]: (isFilterOn: boolean) => {
         return isFilterOn ?
             {
-                or: [
-                    {isActive: {equalTo: false}},
-                    {userName: {equalTo:unassignedUserName}}
-                ]
+                [InvestigationsFilterByFields.UNALLOCATED_USER]: {
+                    or: [
+                        { isActive: { equalTo: false } },
+                        { userName: { equalTo: unassignedUserName } }
+                    ]
+                }
             }
             :
-            {};
+            { [InvestigationsFilterByFields.UNALLOCATED_USER]: null };
     },
     [InvestigationsFilterByFields.TIME_RANGE]: (timeRangeFilter: TimeRange) => {
-        if (timeRangeFilter.id === 10) {
-            return {};
-        } else if (timeRangeFilter) {
-            return { creationDate: { greaterThanOrEqualTo: timeRangeFilter.startDate, lessThanOrEqualTo: timeRangeFilter.endDate }} 
+        if (timeRangeFilter.id !== allTimeRangeId) {
+            return { [InvestigationsFilterByFields.TIME_RANGE]: { 
+                creationDate: { 
+                    greaterThanOrEqualTo: timeRangeFilter.startDate,
+                    lessThanOrEqualTo: timeRangeFilter.endDate } 
+                }
+            } ;
         } else {
-            return {}
+            return { [InvestigationsFilterByFields.TIME_RANGE]: null }
         }
     },
 };
-
-export const buildFilterRules = (filterRulesVariables: FilterRulesVariables) => {
-
-    const { deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery, timeRangeFilter } = filterRulesVariables;
-
-    const searchQueryFilter = searchQuery ? numericRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.APLHA_NUMERIC_PROPERTIES(searchQuery) : {};
-
-    const userByCreator = (unassignedUserFilter && inactiveUserFilter) ?
-        filterCreators.UNALLOCATED_USER(unassignedUserFilter && inactiveUserFilter)
-        : {
-            ...filterCreators.UNASSIGNED_USER(unassignedUserFilter),
-            ...filterCreators.INACTIVE_USER(inactiveUserFilter),
-        }
-
-    return {
-        ...filterCreators.DESK_ID(deskFilter),
-        ...filterCreators.STATUS(statusFilter),
-        userByCreator,
-        ...searchQueryFilter,
-        ...filterCreators.TIME_RANGE(timeRangeFilter),
-    }
-}
 
 export default filterCreators;

@@ -162,7 +162,7 @@ const UsersManagement: React.FC = () => {
             <Grid container justify='space-between' className={classes.filters}>
                 <SearchBar 
                     searchBarLabel={searchBarLabel}
-                    onClick={(value: string) => handleFilterChange(filterCreators.SEARCH_BAR.create(value))}
+                    onClick={(value: string) => handleFilterChange(filterCreators.SEARCH_BAR(value))}
                 />
                 <Tooltip title='סינון'>
                     <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>

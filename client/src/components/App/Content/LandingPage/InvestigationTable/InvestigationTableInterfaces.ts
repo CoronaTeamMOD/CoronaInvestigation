@@ -62,9 +62,7 @@ export interface useInvestigationTableOutcome {
     changeStatusFilter: (statuses: InvestigationMainStatus[]) => void;
     deskFilter: DeskFilter;
     changeDeskFilter: (desks: Desk[]) => void;
-    searchQuery: string;
-    changeSearchQuery: (searchQuery: string) => void;
-    isSearchQueryValid: boolean;
+    changeSearchFilter: (searchQuery: string) => void;
     changeUnassginedUserFilter: (isFilterOn: boolean) => void;
     unassignedUserFilter: boolean;
     changeInactiveUserFilter: (isFilterOn: boolean) => void;
@@ -74,4 +72,5 @@ export interface useInvestigationTableOutcome {
     fetchAllCountyUsers: () => Promise<Map<string, User>>;
     tableTitle: string;
     timeRangeFilter: TimeRange;
+    isBadgeInVisible: boolean;
 };
