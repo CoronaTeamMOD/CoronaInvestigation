@@ -2,21 +2,20 @@ import axios from 'axios';
 import React, {useState} from 'react';
 import { useSelector } from 'react-redux';
 
-import Street from 'models/Street';
 import logger from 'logger/logger';
 import {Severity} from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import IsolationSource from 'models/IsolationSource';
-import FlattenedDBAddress, {initDBAddress} from 'models/DBAddress';
 import { useDateUtils} from 'Utils/DateUtils/useDateUtils';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setFormState } from 'redux/Form/formActionCreators';
+import FlattenedDBAddress, {initDBAddress} from 'models/DBAddress';
+import useSymptomsUtils from 'Utils/ClinicalDetails/useSymptomsUtils';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { setSymptomsExistenceInfo } from 'redux/Investigation/investigationActionCreators';
 
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
-import useSymptomsFields from './SymptomsFields/useSymptomsFields';
 import {useClinicalDetailsIncome, useClinicalDetailsOutcome} from './useClinicalDetailsInterfaces';
 
 const otherOptionDescription = 'אחר';
@@ -47,18 +46,22 @@ export const initialClinicalDetails: ClinicalDetailsData = {
 const deletingContactEventsErrorMsg = 'קרתה תקלה במחיקת אירועים מיותרים';
 
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
+
     const { id, setSymptoms, setBackgroundDiseases, didSymptomsDateChangeOccur } = parameters;
-    const { getDatesToInvestigate, convertDate } = useDateUtils();
+
     const { alertError } = useCustomSwal();
+    const { getDatesToInvestigate, convertDate } = useDateUtils();
+    const { alertSymptomsDatesChange } = useSymptomsUtils();
+
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
     const tabsValidations  = useSelector<StoreStateType, (boolean | null)[]>(store => store.formsValidations[epidemiologyNumber]);
     const address = useSelector<StoreStateType, FlattenedDBAddress>(state => state.address);
+    
     const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
+    const [isolationAddressId, setIsolationAddressId] = useState<number | null>(null);
     const [isolationSources, setIsolationSources] = React.useState<IsolationSource[]>([]);
     const [didDeletingContactEventsSucceed, setDidDeletingContactEventsSucceed] = React.useState<boolean>(true);
-    const { handleSymptomsDateDataChange } = useSymptomsFields();
-    const [isolationAddressId, setIsolationAddressId] = useState<number | null>(null);
 
     React.useEffect(() => {
         getSymptoms();
@@ -249,7 +252,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
 
     const saveClinicalDetailsAndDeleteContactEvents = (clinicalDetails: ClinicalDetailsData, validationDate: Date, id: number): void => {
         if(didSymptomsDateChangeOccur) {
-            handleSymptomsDateDataChange().then(result => {
+            alertSymptomsDatesChange().then(result => {
                 if(result.isConfirmed) {
                     deleteIrrelevantContactEvents(clinicalDetails.symptomsStartDate, clinicalDetails.doesHaveSymptoms);
                     didDeletingContactEventsSucceed &&

@@ -2,7 +2,7 @@ import { eachDayOfInterval, subDays } from 'date-fns';
 
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import InvestigationRedux from 'models/InvestigationRedux';
-import { nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownStartDate, useDateUtils } from 'Utils/DateUtils/useDateUtils';
+import { nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownStartDate } from 'Utils/ClinicalDetails/useSymptomsUtils';
 
 import * as Actions from './investigationActionTypes';
 
