@@ -305,9 +305,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 result.data.forEach((user: any) => {
                     countyUsers.set(user.id, {
                         ...user,
-                        newInvestigationsCount: user.newInvestigationsCount.totalCount,
-                        activeInvestigationsCount: user.activeInvestigationsCount.totalCount,
-                        pauseInvestigationsCount: user.pauseInvestigationsCount.totalCount
+                        newInvestigationsCount: user.newInvestigationsCount,
+                        activeInvestigationsCount: user.activeInvestigationsCount,
+                        pauseInvestigationsCount: user.pauseInvestigationsCount
                     })
                 });
                 countyUsersLogger.info('fetched all the users successfully', Severity.LOW);
