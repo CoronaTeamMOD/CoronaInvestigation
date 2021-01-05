@@ -288,7 +288,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     fetchInvestigationsLogger.info('got respond from the server', Severity.LOW);
 
                     const { data } = response;
-                    console.log(data);
                     let allInvestigationsRawData: any = [];
 
                     if (user.investigationGroup !== -1) {
