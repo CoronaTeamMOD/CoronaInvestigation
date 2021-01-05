@@ -38,7 +38,7 @@ const useSettingsActions = (props: useSettingsActionsIncome ): useSettingsAction
     const excludeInvestigationFromGroup = (epidemiologyNumber: number, groupId: string) => {
         const investigationsLeftInTheGroup = allGroupedInvestigations.get(groupId)?.length;
         if (investigationsLeftInTheGroup && investigationsLeftInTheGroup <= 2) {
-            alertWarning('שים לב נותרו 2 חקירות בקבוצה ולכן הקבוצה תתפרק. האם אתה בטוך שברצונך להמשיך?', {
+            alertWarning('שים לב נותרו 2 חקירות בקבוצה ולכן הקבוצה תתפרק. האם אתה בטוח שברצונך להמשיך?', {
                 showCancelButton: true,
                 cancelButtonText: 'בטל',
                 cancelButtonColor: theme.palette.error.main,

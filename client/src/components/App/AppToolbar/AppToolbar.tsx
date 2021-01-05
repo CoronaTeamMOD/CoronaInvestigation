@@ -5,7 +5,7 @@ import { AppBar, Toolbar, Typography, Tooltip, IconButton } from '@material-ui/c
 
 import UserType from 'models/enums/UserType';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
-import { adminLandingPageRoute, landingPageRoute, usersManagementRoute } from 'Utils/Routes/Routes';
+import { adminLandingPageRoute, landingPageRoute, usersManagementRoute, indexRoute } from 'Utils/Routes/Routes';
 
 import useStyles from './AppToolbarStyles';
 import useAppToolbar from './useAppToolbar';
@@ -50,7 +50,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
             navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
             navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&
             <div className={classes.navButtons}>
-              <StatePersistentNavLink exact to={landingPageRoute}>
+              <StatePersistentNavLink exact to={indexRoute}>
                 <Home className={classes.menuIcon} />
                 <Typography className={classes.menuTypo}> עמוד הבית</Typography>
               </StatePersistentNavLink>
