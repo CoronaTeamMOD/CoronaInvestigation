@@ -38,7 +38,7 @@ const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => E
             } :
             {}
     },
-    [InvestigationsFilterByFields.IDENTITY_NUMBER]: (values: string) => {
+    [InvestigationsFilterByFields.APLHA_NUMERIC_PROPERTIES]: (values: string) => {
         return Boolean(values) ?
             {
                 or: [
@@ -89,7 +89,7 @@ export const buildFilterRules = (filterRulesVariables: FilterRulesVariables) => 
 
     const { deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery, timeRangeFilter } = filterRulesVariables;
 
-    const searchQueryFilter = searchQuery ? numericRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.IDENTITY_NUMBER(searchQuery) : {};
+    const searchQueryFilter = searchQuery ? numericRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.APLHA_NUMERIC_PROPERTIES(searchQuery) : {};
 
     const userByCreator = (unassignedUserFilter && inactiveUserFilter) ?
         filterCreators.UNALLOCATED_USER(unassignedUserFilter && inactiveUserFilter)
