@@ -1,6 +1,6 @@
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import InvestigationRedux from 'models/InvestigationRedux';
-import { getDatesToInvestigate } from 'Utils/ClinicalDetails/useSymptomsUtils';
+import { getDatesToInvestigate } from 'Utils/ClinicalDetails/symptomsUtils';
 
 import * as Actions from './investigationActionTypes';
 

@@ -5,7 +5,7 @@ import { testHooksFunction } from 'TestHooks';
 import { subDays, eachDayOfInterval } from 'date-fns';
 
 import Interaction from 'models/Contexts/InteractionEventDialogData';
-import { getDatesToInvestigate } from 'Utils/ClinicalDetails/useSymptomsUtils';
+import { getDatesToInvestigate } from 'Utils/ClinicalDetails/symptomsUtils';
 
 import useInteractionsTab from './useInteractionsTab';
 import { useInteractionsTabOutcome as useInteactionsTabsOutcomeInterface,

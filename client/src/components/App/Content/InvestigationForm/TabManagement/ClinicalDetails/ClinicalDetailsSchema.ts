@@ -2,7 +2,7 @@ import * as yup from 'yup';
 import { startOfTomorrow, subDays } from 'date-fns';
 
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import { getMinimalSymptomsStartDate, maxInvestigatedDays } from 'Utils/ClinicalDetails/useSymptomsUtils';
+import { getMinimalSymptomsStartDate, maxInvestigatedDays } from 'Utils/ClinicalDetails/symptomsUtils';
 
 const requiredText = 'שדה זה הוא חובה';
 const StartDateAfterEndDateText = 'תאריך ההתחלה צריך להיות מוקדם יותר מתאריך הסיום';

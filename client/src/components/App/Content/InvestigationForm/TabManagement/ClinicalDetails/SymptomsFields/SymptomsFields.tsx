@@ -10,7 +10,7 @@ import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import { getMinimalSymptomsStartDate } from 'Utils/ClinicalDetails/useSymptomsUtils';
+import { getMinimalSymptomsStartDate } from 'Utils/ClinicalDetails/symptomsUtils';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import { ClinicalDetailsClasses } from '../ClinicalDetailsStyles';

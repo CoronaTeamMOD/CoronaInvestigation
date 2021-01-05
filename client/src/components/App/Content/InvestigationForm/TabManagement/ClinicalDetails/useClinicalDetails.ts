@@ -12,8 +12,8 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setFormState } from 'redux/Form/formActionCreators';
 import FlattenedDBAddress, { initDBAddress } from 'models/DBAddress';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { getDatesToInvestigate } from 'Utils/ClinicalDetails/symptomsUtils';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
-import { getDatesToInvestigate } from 'Utils/ClinicalDetails/useSymptomsUtils';
 import { setSymptomsExistenceInfo } from 'redux/Investigation/investigationActionCreators';
 
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
