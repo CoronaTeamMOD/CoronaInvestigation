@@ -1,5 +1,8 @@
+import { eachDayOfInterval, subDays } from 'date-fns';
+
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import InvestigationRedux from 'models/InvestigationRedux';
+import { nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownStartDate, useDateUtils } from 'Utils/DateUtils/useDateUtils';
 
 import * as Actions from './investigationActionTypes';
 
@@ -13,8 +16,11 @@ const initialState: InvestigationRedux = {
     investigatedPatient: {
         investigatedPatientId: -1,
         isDeceased: false,
-        isCurrentlyHospitialized: false
+        isCurrentlyHospitialized: false,
     },
+    doesHaveSymptoms: false,
+    symptomsStartDate: null,
+    datesToInvestigate: [],
     creator: '',
     lastUpdator: '',
     lastOpenedEpidemiologyNumber: defaultEpidemiologyNumber,
@@ -34,11 +40,45 @@ const investigationReducer = (state = initialState, action: Actions.Investigatio
         case Actions.SET_IS_CURRENTLY_LOADING: return { ...state, isCurrentlyLoading: action.payload.isCurrentlyLoading }
         case Actions.SET_LAST_OPENED_EPIDEMIOLOGY_NUM: return { ...state, lastOpenedEpidemiologyNumber: action.payload.lastOpenedEpidemiologyNumber }
         case Actions.SET_INVESTIGATION_STATUS: return { ...state, investigationStatus: action.payload.investigationStatus }
-        case Actions.SET_VALIDATION_DATE: return { ...state, validationDate: action.payload.validationDate }
+        case Actions.SET_SYMPTOMS_EXISTENCE_INFO: {
+            const { symptomsStartDate, doesHaveSymptoms } = action.payload.symptomsExistenceInfo;
+            return { 
+                ...state,
+                doesHaveSymptoms,
+                symptomsStartDate,
+                datesToInvestigate: getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, state.validationDate) 
+            }
+        }
+        case Actions.SET_VALIDATION_DATE: return { 
+            ...state, 
+            validationDate: action.payload.validationDate,
+            datesToInvestigate: getDatesToInvestigate(state.doesHaveSymptoms, state.symptomsStartDate, action.payload.validationDate) 
+        }
         case Actions.SET_END_TIME: return { ...state, endTime: action.payload.endTime }
         case Actions.SET_CREATOR: return  { ...state, creator: action.payload.creator }
         default: return state;
     }
+}
+
+const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, validationDate: Date | null): Date[] => {
+    if (validationDate !== null) {
+        const endInvestigationDate = new Date();
+        let startInvestigationDate: Date;
+        if (doesHaveSymptoms === true) {
+            if (symptomsStartDate)
+                startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
+            else
+                startInvestigationDate = subDays(validationDate, symptomsWithUnknownStartDate)
+        } else {
+            startInvestigationDate = subDays(validationDate, nonSymptomaticPatient)
+        }
+        try {
+            return eachDayOfInterval({ start: startInvestigationDate, end: endInvestigationDate });
+        } catch (e) {
+            return []
+        }
+    }
+    return [];
 }
 
 export default investigationReducer;

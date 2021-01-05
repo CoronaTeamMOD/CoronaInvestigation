@@ -8,27 +8,20 @@ export const symptomsWithUnknownStartDate: number = 7;
 const maxInvestigatedDays: number = 21;
 
 export const useDateUtils = (): useDateUtilsOutCome => {
-    const { alertError } = useCustomSwal();
-
+    
     const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : null;
 
-    const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null): Date[] => {
-        if (coronaTestDate !== null) {
+    const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, validationDate: Date | null): Date[] => {
+        if (validationDate !== null) {
             const endInvestigationDate = new Date();
             let startInvestigationDate: Date;
-            if (doesHaveSymptoms) {
-                if (symptomsStartDate) {
-                    const testAndSymptomsInterval = Math.abs(differenceInDays(symptomsStartDate, coronaTestDate));
-                    if (testAndSymptomsInterval > maxInvestigatedDays) {
-                        alertError('תאריך סימפטומים לא חוקי')
-                        return [];
-                    }
+            if (doesHaveSymptoms === true) {
+                if (symptomsStartDate)
                     startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
-                }
                 else
-                    startInvestigationDate = subDays(coronaTestDate, symptomsWithUnknownStartDate)
+                    startInvestigationDate = subDays(validationDate, symptomsWithUnknownStartDate)
             } else {
-                startInvestigationDate = subDays(coronaTestDate, nonSymptomaticPatient)
+                startInvestigationDate = subDays(validationDate, nonSymptomaticPatient)
             }
             try {
                 return eachDayOfInterval({ start: startInvestigationDate, end: endInvestigationDate });
@@ -38,7 +31,6 @@ export const useDateUtils = (): useDateUtilsOutCome => {
         }
         return [];
     }
-
     return {
         convertDate,
         getDatesToInvestigate

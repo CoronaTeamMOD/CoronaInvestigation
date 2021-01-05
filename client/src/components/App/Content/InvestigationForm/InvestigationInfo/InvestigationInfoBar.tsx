@@ -12,11 +12,11 @@ import InvestigationInfo from 'models/InvestigationInfo';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setGender } from 'redux/Gender/GenderActionCreators';
+import { CommentContextProvider } from './Context/CommentContext';
 import { landingPageRoute, adminLandingPageRoute } from 'Utils/Routes/Routes';
-import { setEpidemiologyNum, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
+import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setSymptomsExistenceInfo } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigatedPatientId, setValidationDate , setIsCurrentlyHospitialized, setIsDeceased, setEndTime } from 'redux/Investigation/investigationActionCreators';
 
-import {CommentContextProvider} from './Context/CommentContext';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
 
@@ -28,12 +28,14 @@ export const defaultUser = {
     investigationGroup: -1
 }
 
-const defaultInvestigationStaticInfo = {
+const defaultInvestigationStaticInfo : InvestigationInfo = {
     comment: '',
     startTime: new Date(),
     lastUpdateTime: new Date(),
     investigatingUnit: '',
     endTime: null,
+    symptomsStartDate: null,
+    doesHaveSymptoms: false,
     investigatedPatient: {
         isDeceased: false,
         additionalPhoneNumber: '',
@@ -92,6 +94,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                     const gender = investigationInfo.investigatedPatient.gender;
                     setGender(gender ? gender : '');
                     setValidationDate(investigationInfo.coronaTestDate);
+                    setSymptomsExistenceInfo({symptomsStartDate: investigationInfo.symptomsStartDate, doesHaveSymptoms: investigationInfo.doesHaveSymptoms})
                     setEndTime(investigationInfo.endTime);
                     setInvestigationStaticInfo(investigationInfo);
                 }

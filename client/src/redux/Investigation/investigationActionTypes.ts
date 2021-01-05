@@ -1,4 +1,5 @@
 import { InvestigationStatus } from 'models/InvestigationStatus';
+import SymptomsExistenceInfo from 'models/SymptomsExistenceInfo';
 
 export const SET_EPIDEMIOLOGY_NUM = 'SET_EPIDEMIOLOGY_NUM';
 export const SET_INVESTIGATED_PATIENT_ID = 'SET_INVESTIGATED_PATIENT_ID';
@@ -11,6 +12,7 @@ export const SET_INVESTIGATION_STATUS = 'SET_INVESTIGATION_STATUS';
 export const SET_VALIDATION_DATE = 'SET_VALIDATION_DATE';
 export const SET_END_TIME = 'SET_END_TIME';
 export const SET_CREATOR = 'SET_CREATOR';
+export const SET_SYMPTOMS_EXISTENCE_INFO = 'SET_SYMPTOMS_EXISTENCE_INFO';
 
 interface SetEpidemiologyNum {
     type: typeof SET_EPIDEMIOLOGY_NUM,
@@ -67,5 +69,11 @@ interface SetCreator {
     payload: {creator: string}
 }
 
+interface SetSymptomsExistenceInfo {
+    type: typeof SET_SYMPTOMS_EXISTENCE_INFO,
+    payload: {symptomsExistenceInfo: SymptomsExistenceInfo}
+}
+
 export type InvestigationAction = SetEpidemiologyNum | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId
- | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetValidationStatus | SetEndTime | SetCreator;
+ | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetValidationStatus
+ | SetEndTime | SetCreator | SetSymptomsExistenceInfo;

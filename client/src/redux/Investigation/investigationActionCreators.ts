@@ -1,4 +1,5 @@
 import { InvestigationStatus } from 'models/InvestigationStatus';
+import SymptomsExistenceInfo from 'models/SymptomsExistenceInfo';
 
 import { store } from '../store';
 import * as actionTypes from './investigationActionTypes';
@@ -79,3 +80,10 @@ export const setCreator = (creator: string) => {
         payload: { creator }
     })
 }
+
+export const setSymptomsExistenceInfo = (symptomsExistenceInfo: SymptomsExistenceInfo) => {
+    store.dispatch({
+        type: actionTypes.SET_SYMPTOMS_EXISTENCE_INFO,
+        payload: { symptomsExistenceInfo }
+    })
+};

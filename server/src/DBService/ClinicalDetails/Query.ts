@@ -47,7 +47,7 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
       }
       id
     }
-    symptomsStartTime
+    symptomsStartDate: symptomsStartTime
     isolationStartTime
     isolationEndTime
     isolationSource

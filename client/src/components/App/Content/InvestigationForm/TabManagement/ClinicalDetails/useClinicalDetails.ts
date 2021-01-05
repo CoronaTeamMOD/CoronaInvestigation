@@ -13,6 +13,7 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setFormState } from 'redux/Form/formActionCreators';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import { setSymptomsExistenceInfo } from 'redux/Investigation/investigationActionCreators';
 
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
 import useSymptomsFields from './SymptomsFields/useSymptomsFields';
@@ -172,7 +173,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         isolationEndDate: convertDate(patientClinicalDetails.isolationEndTime),
                         isolationSource: patientClinicalDetails.isolationSource,
                         symptoms: patientClinicalDetails.symptoms,
-                        symptomsStartDate: convertDate(patientClinicalDetails.symptomsStartTime),
+                        symptomsStartDate: convertDate(patientClinicalDetails.symptomsStartDate),
                         isSymptomsStartDateUnknown: patientClinicalDetails.symptomsStartTime === null,
                         doesHaveSymptoms: Boolean(patientClinicalDetails.doesHaveSymptoms),
                         wasHospitalized: Boolean(patientClinicalDetails.wasHospitalized),
@@ -232,6 +233,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             }
         })).then(() => {
             saveClinicalDetailsLogger.info('saved clinical details successfully', Severity.LOW);
+            setSymptomsExistenceInfo({doesHaveSymptoms: clinicalDetails.doesHaveSymptoms, symptomsStartDate: clinicalDetails.symptomsStartDate});
         })
             .catch((error) => {
                 saveClinicalDetailsLogger.error(`got error from server: ${error}`, Severity.HIGH);
