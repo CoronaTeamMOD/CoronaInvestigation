@@ -39,6 +39,9 @@ const AddressForm: React.FC<Props> = ({
         }
     }, [cityWatcher]);
 
+    const houseNumberFieldNameSplitted = houseNumberField.name.split('.');
+    const floorFieldNameSplitted = floorField.name.split('.');
+
     return (
         <>
             <Grid item xs={unsized ? undefined : GRID_ITEM_SIZE} className={cityField.className}>
@@ -148,9 +151,9 @@ const AddressForm: React.FC<Props> = ({
                         render={(props) => (
                             <AlphanumericTextField
                                 testId={houseNumberField.testId || ''}
-                                name={houseNumberField.name}
+                                name={houseNumberFieldNameSplitted[houseNumberFieldNameSplitted.length - 1]}
                                 value={props.value}
-                                onChange={(newValue: string) => props.onChange(newValue)}
+                                onChange={props.onChange}
                                 onBlur={props.onBlur}
                                 placeholder={HOUSE_NUM_LABEL}
                                 label={HOUSE_NUM_LABEL}
@@ -182,9 +185,9 @@ const AddressForm: React.FC<Props> = ({
                         render={(props) => (
                             <AlphanumericTextField
                                 testId={cityField.testId || ''}
-                                name={floorField.name}
+                                name={floorFieldNameSplitted[floorFieldNameSplitted.length - 1]}
                                 value={props.value}
-                                onChange={(newValue: string) => props.onChange(newValue)}
+                                onChange={props.onChange}
                                 onBlur={props.onBlur}
                                 placeholder={FLOOR_LABEL}
                                 label={FLOOR_LABEL}
