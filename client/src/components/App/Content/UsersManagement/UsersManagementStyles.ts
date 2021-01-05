@@ -33,7 +33,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     active: {},
     filters: {
         width: '90vw',
-        margin: theme.spacing(2),
     },
     header: {
         fontSize: '4vh',

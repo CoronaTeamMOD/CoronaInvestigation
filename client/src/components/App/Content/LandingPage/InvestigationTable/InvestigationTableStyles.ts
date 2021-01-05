@@ -78,12 +78,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     filterTableRow: {
         width: tableWidth,
     },
-    filterButton: {
-        fontWeight: 600,
-        minWidth: '3vw',
-        justifyContent: 'flex-end',
-        direction: 'ltr'
-    },
     searchButton: {
         fontWeight: 600,
         justifyContent: 'flex-end',
