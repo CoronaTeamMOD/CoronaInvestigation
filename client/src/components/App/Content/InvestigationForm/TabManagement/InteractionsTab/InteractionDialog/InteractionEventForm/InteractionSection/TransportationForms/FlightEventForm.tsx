@@ -10,7 +10,7 @@ import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import AirportTextField from 'commons/AirportTextField/AirportTextField';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import AirelineTextField from 'commons/AirelineTextField/AirelineTextField';
 import FlightNumberTextField from 'commons/FlightNumberTextField/FlightNumberTextField';
 import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
 import InternationalCityTextField from 'commons/InternationalCityTextField/InternationalCityTextField';
@@ -56,7 +56,7 @@ const FlightEventForm: React.FC = (): JSX.Element => {
                             name={InteractionEventDialogFields.AIR_LINE}
                             control={control}
                             render={(props) => (
-                                <AlphanumericTextField
+                                <AirelineTextField
                                     name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
