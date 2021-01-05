@@ -433,9 +433,10 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 />;
             case TableHeadersNames.multipleCheck:
                 const isGroupShown = checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber);
+                const { isSelfInvestigated , selfInvestigationStatus ,selfInvestigationUpdateTime } = indexedRow;
                 return (
                     <Box flexWrap="nowrap" display="flex" alignItems="center">
-                        <SelfInvestigationIcon status={2} date={new Date()}/>
+                        {isSelfInvestigated && <SelfInvestigationIcon status={selfInvestigationStatus} date={new Date(selfInvestigationUpdateTime)}/>}
                         {(!wasInvestigationFetchedByGroup) &&
                             <Checkbox onClick={(event) => {
                                 event.stopPropagation();

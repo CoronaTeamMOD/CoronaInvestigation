@@ -13,7 +13,6 @@ const SelfInvestigationIcon = (props: Props) => {
 	const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false);
 
 	const classes = useStyles();
-
 	const handleTooltipClose = () => setIsTooltipOpen(false);
 	const handleTooltipToggle = (event: any) => {
 		event.stopPropagation();

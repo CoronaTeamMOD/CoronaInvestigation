@@ -65,7 +65,10 @@ export const createRowData = (
     canFetchGroup: boolean,
     groupReason: string,
     otherReason: string,
-    reasonId: number
+    reasonId: number,
+    isSelfInvestigated: boolean,
+    selfInvestigationStatus: number,
+    selfInvestigationUpdateTime: string
 ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
@@ -89,7 +92,10 @@ export const createRowData = (
     canFetchGroup,
     groupReason,
     otherReason,
-    reasonId
+    reasonId,
+    isSelfInvestigated,
+    selfInvestigationStatus,
+    selfInvestigationUpdateTime
 });
 
 const TABLE_REFRESH_INTERVAL = 30;
@@ -282,6 +288,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     fetchInvestigationsLogger.info('got respond from the server', Severity.LOW);
 
                     const { data } = response;
+                    console.log(data);
                     let allInvestigationsRawData: any = [];
 
                     if (user.investigationGroup !== -1) {
@@ -339,7 +346,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     canFetchGroup,
                                     groupReason,
                                     otherReason,
-                                    reasonId
+                                    reasonId,
+                                    investigation.isSelfInvestigated,
+                                    investigation.selfInvestigationStatus,
+                                    investigation.selfInvestigationUpdateTime,
                                 )
                             });
                         setRows(investigationRows);
@@ -501,6 +511,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.groupReason]: row.groupReason,
             [TableHeadersNames.otherReason]: row.otherReason,
             [TableHeadersNames.reasonId]: row.reasonId,
+            [TableHeadersNames.isSelfInvestigated]: row.isSelfInvestigated,
+            [TableHeadersNames.selfInvestigationStatus]: row.selfInvestigationStatus,
+            [TableHeadersNames.selfInvestigationUpdateTime]: row.selfInvestigationUpdateTime,
         }
     }
 
@@ -730,7 +743,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             canFetchGroup,
                             groupReason,
                             otherReason,
-                            reasonId
+                            reasonId,
+                            investigation.isSelfInvestigated,
+                            investigation.selfInvestigationStatus,
+                            investigation.selfInvestigationUpdateTime,
                         )
                     });
                 setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))

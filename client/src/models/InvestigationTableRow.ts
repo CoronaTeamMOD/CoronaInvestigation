@@ -26,6 +26,9 @@ interface InvestigationTableRow {
     groupReason: string;
     otherReason: string;
     reasonId: number;
+    isSelfInvestigated: boolean;
+    selfInvestigationStatus: number;
+    selfInvestigationUpdateTime: string;
 };
 
 export default InvestigationTableRow;
