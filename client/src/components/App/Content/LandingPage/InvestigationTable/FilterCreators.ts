@@ -3,8 +3,7 @@ import FilterRulesVariables from 'models/FilterRulesVariables';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 
 const unassignedUserName = 'לא משויך';
-const phoneAndIdentityNumberRegex = /^([\d]+)$/;
-const fullNameRegex = /^[\u0590-\u05fe\s]*$/;
+const numericRegex: RegExp = /^([\d]+)$/;
 
 const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => Exclude<any, void>) } = {
     [InvestigationsFilterByFields.STATUS]: (values: string[]) => {
@@ -28,17 +27,13 @@ const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => E
             :
             {};
     },
-    [InvestigationsFilterByFields.FULL_NAME]: (values: string) => {
-        return Boolean(values) ?
-            { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { fullName: { includes: values } } } } :
-            {};
-    },
     [InvestigationsFilterByFields.NUMERIC_PROPERTIES]: (values: string) => {
         return Boolean(values) ?
             {
                 or: [
                     { epidemiologyNumber: { equalTo: Number(values) } },
-                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { primaryPhone: { includes: values } } } }
+                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { primaryPhone: { includes: values } } } },
+                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { identityNumber: { includes: values } } } }
                 ]
             } :
             {}
@@ -47,6 +42,7 @@ const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => E
         return Boolean(values) ?
             {
                 or: [
+                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { fullName: { includes: values } } } },
                     { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { identityNumber: { includes: values } } } }
                 ]
             } :
@@ -93,7 +89,8 @@ export const buildFilterRules = (filterRulesVariables: FilterRulesVariables) => 
 
     const { deskFilter, statusFilter, unassignedUserFilter, inactiveUserFilter, searchQuery, timeRangeFilter } = filterRulesVariables;
 
-    const searchQueryFilter = searchQuery ? phoneAndIdentityNumberRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : fullNameRegex.test(searchQuery) ? filterCreators.FULL_NAME(searchQuery) : filterCreators.IDENTITY_NUMBER(searchQuery) : {};
+    const searchQueryFilter = searchQuery ?
+        numericRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.IDENTITY_NUMBER(searchQuery) : {};
 
     const userByCreator = (unassignedUserFilter && inactiveUserFilter) ?
         filterCreators.UNALLOCATED_USER(unassignedUserFilter && inactiveUserFilter)
