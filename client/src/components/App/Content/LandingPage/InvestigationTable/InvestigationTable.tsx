@@ -33,6 +33,7 @@ import filterCreators from './FilterCreators';
 import useStyles from './InvestigationTableStyles';
 import CommentDisplay from './commentDisplay/commentDisplay';
 import SettingsActions from './SettingsActions/SettingsActions';
+import SelfInvestigationIcon from './SelfInvestigationIcon/SelfInvestigationIcon';
 import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
 import InvestigationNumberColumn from './InvestigationNumberColumn/InvestigationNumberColumn';
@@ -433,7 +434,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             case TableHeadersNames.multipleCheck:
                 const isGroupShown = checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber);
                 return (
-                    <>
+                    <Box flexWrap="nowrap" display="flex" alignItems="center">
+                        <SelfInvestigationIcon status={2} date={new Date()}/>
                         {(!wasInvestigationFetchedByGroup) &&
                             <Checkbox onClick={(event) => {
                                 event.stopPropagation();
@@ -461,7 +463,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 </IconButton>
                             </Tooltip>
                         }
-                    </>
+                    </Box>
                 )
             case TableHeadersNames.settings:
                 return <SettingsActions
