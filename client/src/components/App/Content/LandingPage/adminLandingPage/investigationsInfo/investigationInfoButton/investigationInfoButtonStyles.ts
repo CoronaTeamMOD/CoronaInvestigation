@@ -6,9 +6,6 @@ const useStyles = makeStyles({
         height: '11vh',
         width: '9.6vw',
         borderRadius: '0.8vw',
-        '&:hover': {
-            opacity: 0.75
-        }
     },
     amountOfInvestigations: {
         fontSize: '1.5vw',

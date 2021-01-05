@@ -25,10 +25,6 @@ const useStyles = makeStyles({
         paddingRight: '2vw',
         alignItems: 'center',
         flip: false,
-        color: theme.palette.text.secondary,
-        '&:hover': {
-            color: theme.palette.text.primary
-        }
     },
     investigationAmountText: {
         fontSize: '1.5vw',

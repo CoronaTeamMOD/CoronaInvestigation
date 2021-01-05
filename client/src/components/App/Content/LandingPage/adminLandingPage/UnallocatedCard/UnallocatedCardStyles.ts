@@ -1,7 +1,5 @@
 import { makeStyles } from '@material-ui/styles';
 
-import theme from 'styles/theme';
-
 export const cardWidth = '14vw';
 export const cardHeight = '8vh';
 
@@ -12,10 +10,6 @@ const useStyles = makeStyles({
         borderRadius: '1vw',
         padding: '1vw',
         cursor: 'pointer',
-        color: theme.palette.text.secondary,
-        '&:hover': {
-            color: theme.palette.text.primary
-        }
     },
     investigationAmount: {
         display: 'flex',

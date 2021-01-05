@@ -8,6 +8,7 @@ import statusToFilterConvertor from 'commons/statusToFilterConvertor';
 import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 import { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 
+import useHoverStyles from '../useHoverStyles';
 import LoadingCard from '../LoadingCard/LoadingCard';
 import useStyles, { cardWidth, cardHeight } from './investigationsInfoStyles';
 import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart';
@@ -34,6 +35,7 @@ const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit<Invest
 
 const InvestigationsInfo: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
+    const hoverClasses = useHoverStyles();
 
     const { onInfoButtonClick, investigationsStatistics, allInvestigationsCount, isLoading } = props;
 
@@ -63,7 +65,7 @@ const InvestigationsInfo: React.FC<Props> = (props: Props): JSX.Element => {
                             ))
                         }
                     </Grid>
-                    <Grid item xs={12} className={classes.investigationAmountContainer}>
+                    <Grid item xs={12} className={[classes.investigationAmountContainer, hoverClasses.whiteButtons].join(' ')}>
                         <Typography className={classes.investigationAmountText}><b>{allInvestigationsCount}</b></Typography>
                         <Typography className={classes.allInvestigationsText}><b>חקירות בסך הכל</b></Typography>
                         <IconButton onClick={() => onInfoButtonClick({})}>
