@@ -10,12 +10,12 @@ import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
 import Desk from 'models/Desk';
 import SortOrder from 'models/enums/SortOrder';
+import SearchBar from 'commons/SearchBar/SearchBar';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
 import useStyles from './UsersManagementStyles';
-import SearchBar from './UsersFilter/SearchBar';
 import useUsersManagementTable from './useUsersManagement';
 import UserInfoDialog from './UserInfoDialog/UserInfoDialog';
 import UsersFilter from './UsersFilter/UsersFilter';
@@ -31,9 +31,11 @@ interface CellNameSort {
 
 const usersManagementTitle = 'ניהול משתמשים';
 const sourceOrganizationLabel = 'מסגרת';
+const searchBarLabel = 'הכנס שם או שם משתמש...';
+
 const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, UsersManagementTableHeadersNames.LANGUAGES,
-UsersManagementTableHeadersNames.COUNTY, UsersManagementTableHeadersNames.USER_TYPE,
-UsersManagementTableHeadersNames.DESK];
+                                       UsersManagementTableHeadersNames.COUNTY, UsersManagementTableHeadersNames.USER_TYPE,
+                                       UsersManagementTableHeadersNames.DESK];
 
 const UsersManagement: React.FC = () => {
     const [page, setPage] = useState<number>(defaultPage);
@@ -159,10 +161,11 @@ const UsersManagement: React.FC = () => {
             </Grid>
             <Grid container justify='space-between' className={classes.filters}>
                 <SearchBar 
-                    onClick={(value: string) => handleFilterChange(filterCreators.USER_NAME_OR_ID.create(value))}
+                    searchBarLabel={searchBarLabel}
+                    onClick={(value: string) => handleFilterChange(filterCreators.SEARCH_BAR.create(value))}
                 />
                 <Tooltip title='סינון'>
-                    <IconButton onClick={() => setIsFilterOpen(true)}>
+                    <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
                         <Badge
                             invisible={isBadgeInVisible}
                             color='error'
