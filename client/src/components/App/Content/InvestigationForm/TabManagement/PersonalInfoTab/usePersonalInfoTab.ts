@@ -115,7 +115,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
                     otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo !== null ? investigatedPatient.otherOccupationExtraInfo : '',
                     contactInfo: investigatedPatient.patientContactInfo,
                     role: investigatedPatient.role,
-                    educationGrade: investigatedPatient.educationGrade,
+                    educationGrade: String(investigatedPatient.educationGrade),
                     educationClassNumber: investigatedPatient.educationClassNumber,
                 }
                 setPersonalInfoData(PersonalInfoData);
