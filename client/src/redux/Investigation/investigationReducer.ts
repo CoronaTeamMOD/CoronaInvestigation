@@ -1,8 +1,6 @@
-import { eachDayOfInterval, subDays } from 'date-fns';
-
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import InvestigationRedux from 'models/InvestigationRedux';
-import { nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownStartDate } from 'Utils/ClinicalDetails/useSymptomsUtils';
+import { getDatesToInvestigate } from 'Utils/ClinicalDetails/useSymptomsUtils';
 
 import * as Actions from './investigationActionTypes';
 
@@ -58,27 +56,6 @@ const investigationReducer = (state = initialState, action: Actions.Investigatio
         case Actions.SET_CREATOR: return  { ...state, creator: action.payload.creator }
         default: return state;
     }
-}
-
-const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, validationDate: Date | null): Date[] => {
-    if (validationDate !== null) {
-        const endInvestigationDate = new Date();
-        let startInvestigationDate: Date;
-        if (doesHaveSymptoms === true) {
-            if (symptomsStartDate)
-                startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
-            else
-                startInvestigationDate = subDays(validationDate, symptomsWithUnknownStartDate)
-        } else {
-            startInvestigationDate = subDays(validationDate, nonSymptomaticPatient)
-        }
-        try {
-            return eachDayOfInterval({ start: startInvestigationDate, end: endInvestigationDate });
-        } catch (e) {
-            return []
-        }
-    }
-    return [];
 }
 
 export default investigationReducer;

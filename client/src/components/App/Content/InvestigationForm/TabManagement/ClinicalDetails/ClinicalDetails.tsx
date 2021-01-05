@@ -74,7 +74,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const saveForm = (e: any) => {
         e.preventDefault();
         const values = methods.getValues();
-        saveClinicalDetailsAndDeleteContactEvents(values as ClinicalDetailsData, validationDate, id);
+        saveClinicalDetailsAndDeleteContactEvents(values as ClinicalDetailsData, id);
     }
 
     const watchIsInIsolation = methods.watch(ClinicalDetailsFields.IS_IN_ISOLATION);

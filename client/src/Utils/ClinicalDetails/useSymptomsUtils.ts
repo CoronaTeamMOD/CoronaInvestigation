@@ -1,29 +1,26 @@
-import { SweetAlertResult } from 'sweetalert2';
-
-import theme from 'styles/theme';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import { eachDayOfInterval, subDays } from 'date-fns';
 
 export const symptomsWithKnownStartDate: number = 4;
 export const nonSymptomaticPatient: number = 7;
 export const symptomsWithUnknownStartDate: number = 7;
 
-const useSymptomsUtils = (): useSymptomsUtilsOutCome => {
-    const { alertWarning } = useCustomSwal();
-
-    const alertSymptomsDatesChange = () =>
-        alertWarning('האם אתה בטוח שתרצה לשנות את שדה התסמינים? שינוי זה יגרום למחיקת האירועים והמגעים הקיימים בימים שימחקו', {
-            showCancelButton: true,
-            cancelButtonText: 'בטל',
-            cancelButtonColor: theme.palette.error.main,
-            confirmButtonColor: theme.palette.primary.main,
-            confirmButtonText: 'כן, המשך'
-        });
-
-    return { alertSymptomsDatesChange };
+export const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, validationDate: Date | null): Date[] => {
+    if (validationDate) {
+        const endInvestigationDate = new Date();
+        let startInvestigationDate: Date;
+        if (doesHaveSymptoms === true) {
+            if (symptomsStartDate)
+                startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
+            else
+                startInvestigationDate = subDays(validationDate, symptomsWithUnknownStartDate)
+        } else {
+            startInvestigationDate = subDays(validationDate, nonSymptomaticPatient)
+        }
+        try {
+            return eachDayOfInterval({ start: startInvestigationDate, end: endInvestigationDate });
+        } catch (e) {
+            return []
+        }
+    }
+    return [];
 }
-
-interface useSymptomsUtilsOutCome {
-    alertSymptomsDatesChange: () => Promise<SweetAlertResult>;
-}
-
-export default useSymptomsUtils;
