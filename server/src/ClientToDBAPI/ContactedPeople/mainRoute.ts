@@ -62,7 +62,7 @@ ContactedPeopleRoute.get('/amountOfContacts/:investigationId/:minimalDateToFilte
     graphqlRequest(GET_AMOUNT_OF_CONTACTED_PEOPLE, response.locals, parameters)
         .then(result => {
             contactsAmountLogger.info(validDBResponseLog, Severity.LOW);
-            response.send(result.data.allContactedPeople.totalCount);
+            response.send(String(result.data.allContactedPeople.totalCount));
         })
         .catch(error => {
             contactsAmountLogger.error(invalidDBResponseLog(error), Severity.HIGH);

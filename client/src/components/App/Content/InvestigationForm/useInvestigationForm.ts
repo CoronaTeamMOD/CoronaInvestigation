@@ -37,14 +37,14 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
+    const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
 
     const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
 
-    // TODO - SEND REAL DATE
     const checkAreThereContacts = () => {
         const tabShowLogger = logger.setup('Getting Amount Of Contacts');
         tabShowLogger.info('launching amount of contacts request', Severity.LOW);
-        axios.get(`/contactedPeople/amountOfContacts/${epidemiologyNumber}/${new Date()}`)
+        axios.get(`/contactedPeople/amountOfContacts/${epidemiologyNumber}/${new Date(datesToInvestigate[0])}`)
         .then((result: any) => {
             tabShowLogger.info('amount of contacts request was successful', Severity.LOW);
             setAreThereContacts(result?.data > 0);
@@ -160,11 +160,14 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             fetchCountries();
             fetchContactTypes();
             fetchStatuses();
-            checkAreThereContacts();
             investigationStatus.mainStatus && fetchSubStatusesByStatus(investigationStatus.mainStatus);
             fetchEducationGrades();
         }
     }, [epidemiologyNumber, userId]);
+
+    useEffect(() => {
+        datesToInvestigate.length > 0 && checkAreThereContacts();
+    }, [datesToInvestigate]);
 
     useEffect(() => {
         if (investigationStatus.mainStatus &&

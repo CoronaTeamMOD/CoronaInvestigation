@@ -95,27 +95,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         }        
     };
 
-    // const loadInteractedContacts = () => {
-    //     const interactedContactsLogger = logger.setup('Getting corona test date')
-    //     interactedContactsLogger.info(`launching server request with epidemiology number ${epidemiologyNumber}`, Severity.LOW);
-    //     setIsLoading(true);
-    //     axios.get('/clinicalDetails/coronaTestDate').then((res: any) => {
-    //         if (res.data !== null) {
-    //             interactedContactsLogger.info('got respond from the server that has data', Severity.LOW);
-    //             setInteractedContactsByMinimalDate(calculateEarliestDateToInvestigate(
-    //                 convertDate(res.data.coronaTestDate),
-    //                 convertDate(res.data.symptomsStartTime),
-    //                 res.data.doesHaveSymptoms
-    //             ));
-    //         } else {
-    //             interactedContactsLogger.warn('got respond from the server without data', Severity.MEDIUM);
-    //         }
-    //     }).catch(err => {
-    //         setIsLoading(false);
-    //         interactedContactsLogger.error(`got the following error from the server: ${err}`, Severity.LOW);
-    //     });
-    // }
-
     const loadFamilyRelationships = () => {
         const familyRelationshipsLogger = logger.setup('Getting family relationships')
         familyRelationshipsLogger.info('launching server request', Severity.LOW);
@@ -175,7 +154,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         'got respond from the server that has data',
                         Severity.LOW
                     );
-                    const minimalDate = datesToInvestigate.slice(-1)[0];
+                    const minimalDate = datesToInvestigate[0];
                     const interactedContacts: InteractedContact[] = result.data.map((contact: any) =>
                         ({
                             id: contact.id,

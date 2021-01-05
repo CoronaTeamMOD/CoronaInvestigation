@@ -135,9 +135,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
             }
             <form id={`form-${id}`} onSubmit={(e) => submitTab(e)}/>
             {
-                datesToInvestigate[0] < datesToInvestigate[datesToInvestigate.length -1] ?
-                    datesToInvestigate.reverse().map(date => generateContactCard(date)) :
-                    datesToInvestigate.map(date => generateContactCard(date))
+                datesToInvestigate.map(date => generateContactCard(date))
             }
             {
                 newInteractionEventDate && <NewInteractionEventDialog
