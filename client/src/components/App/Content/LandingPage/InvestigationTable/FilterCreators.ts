@@ -52,16 +52,6 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
             :
             { [InvestigationsFilterByFields.SEARCH_BAR]: null  }
     },
-    [InvestigationsFilterByFields.APLHA_NUMERIC_PROPERTIES]: (values: string) => {
-        return Boolean(values) ?
-            {
-                or: [
-                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { fullName: { includes: values } } } },
-                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { identityNumber: { includes: values } } } }
-                ]
-            } :
-            {}
-    },
     [InvestigationsFilterByFields.UNASSIGNED_USER]: (isFilterOn: boolean) => {
         return isFilterOn ?
             { 
@@ -89,10 +79,12 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
         return isFilterOn ?
             {
                 [InvestigationsFilterByFields.UNALLOCATED_USER]: {
-                    or: [
-                        { isActive: { equalTo: false } },
-                        { userName: { equalTo: unassignedUserName } }
-                    ]
+                    userByCreator: {
+                        or: [
+                            { isActive: { equalTo: false } },
+                            { userName: { equalTo: unassignedUserName } }
+                        ]
+                    }
                 }
             }
             :
@@ -109,7 +101,7 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
         } else {
             return { [InvestigationsFilterByFields.TIME_RANGE]: null }
         }
-    },
+    }  
 };
 
 export default filterCreators;
