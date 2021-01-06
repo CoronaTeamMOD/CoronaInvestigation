@@ -51,9 +51,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
 
     const { id, setSymptoms, setBackgroundDiseases, didSymptomsDateChangeOccur } = parameters;
 
-    const { alertError } = useCustomSwal();
     const { convertDate } = useDateUtils();
-    const { alertWarning } = useCustomSwal();
+    const { alertError, alertWarning } = useCustomSwal();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);

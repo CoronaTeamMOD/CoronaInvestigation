@@ -91,8 +91,8 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                 onBlur={props.onBlur}
                                                 maxDate={new Date()}
                                                 minDate={getMinimalSymptomsStartDate(validationDate)}
-                                                maxDateMessage={''}
-                                                minDateMessage={''}
+                                                maxDateMessage=''
+                                                minDateMessage=''
                                                 testId='symptomsStartDate'
                                                 value={props.value}
                                                 labelText={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE]?.message || '* תאריך התחלת תסמינים'}
