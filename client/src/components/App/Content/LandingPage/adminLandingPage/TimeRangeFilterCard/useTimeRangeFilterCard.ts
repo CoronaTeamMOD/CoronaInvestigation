@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { format, parse } from 'date-fns';
+import { useState } from 'react';
+import { format } from 'date-fns';
 
 import { TimeRange } from 'models/TimeRange';
 import timeRanges from 'models/enums/timeRanges';
@@ -12,12 +12,11 @@ const rangeError = 'טווח תאריכים צריך להיות תקין';
 const useTimeRangeFilterCard = (props : Props) => {
     
     const {timeRangeFilter , setTimeRangeFilter, investigationInfoFilter, setInvestigationInfoFilter} = props;
-
     const defaultTimeRange = timeRanges[0];
     const customTimeRange = timeRanges[4];
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorMes, setErrorMes] = useState<string>('');
-    
+
     const onTimeRangeChange = (timeRangeId: number) => {
         const selectedTimeRange = timeRanges.find(timeRange => timeRange.id === timeRangeId) as TimeRange;
         setTimeRangeFilter(selectedTimeRange)

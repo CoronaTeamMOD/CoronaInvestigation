@@ -1,13 +1,10 @@
 import React from 'react';
-import { Grid, TextField, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 
 import DatePick from './DatePick'
 
-import { useStyles } from './DatePickStyles';
-
 const DateRangePick: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const classes = useStyles();
     const { startDate, onStartDateChange, endDate, onEndDateChange, minDate, maxDate, ...rest } = props;
 
     return (
@@ -43,4 +40,4 @@ interface Props {
   onStartDateChange: any;
   endDate: any;
   onEndDateChange: any;
-}
+};
