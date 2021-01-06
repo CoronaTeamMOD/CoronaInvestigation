@@ -132,7 +132,13 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         justifyContent: 'flex-end',
         width: '27vw',
         backgroundColor: 'white',
-        borderRadius: '20px'
+        borderRadius: '20px',
+        '& .MuiInputLabel-root': {
+            maxWidth: '22vw',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden'
+        }
     },
     searchBarIcons: {
         marginRight: '-1vw'
