@@ -1,12 +1,12 @@
 import { MutableRefObject } from 'react';
 
-import User from 'models/User';
+import User ,{FetchedUser} from 'models/User';
 import Desk from 'models/Desk';
 import County from 'models/County';
 import Investigator from 'models/Investigator';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
-import InvestigatorOption from 'models/InvestigatorOption';
+import InvestigatorOption,{FetchedInvestigatorOption} from 'models/InvestigatorOption';
 
 import { IndexedInvestigation, IndexedInvestigationData } from './InvestigationTablesHeaders';
 
@@ -15,7 +15,7 @@ export interface useInvestigationTableParameters {
     currentPage: number;
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
-    setAllUsersOfCurrCounty: React.Dispatch<React.SetStateAction<Map<string, User>>>;
+    setAllUsersOfCurrCounty: React.Dispatch<React.SetStateAction<Map<string, FetchedUser>>>;
     setAllCounties: React.Dispatch<React.SetStateAction<Map<number, County>>>;
     setAllStatuses: React.Dispatch<React.SetStateAction<InvestigationMainStatus[]>>;
     setAllDesks: React.Dispatch<React.SetStateAction<Desk[]>>;
@@ -29,7 +29,7 @@ export interface useInvestigationTableOutcome {
     fetchTableData: () => void;
     onInvestigationRowClick: (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => void;
     convertToIndexedRow: (row: InvestigationTableRow) => { [T in keyof IndexedInvestigationData]: any };
-    getUserMapKeyByValue: (map: Map<string, User>, value: string) => string;
+    getUserMapKeyByValue: (map: Map<string, FetchedUser>, value: string) => string;
     getCountyMapKeyByValue: (map: Map<number, County>, value: string) => number;
     changeCounty: (indexedRow: IndexedInvestigation, newSelectedCountyId: { id: number, value: County } | null) => Promise<void>;
     getTableCellStyles: (rowIndex: number, cellKey: string) => string[];
@@ -42,8 +42,8 @@ export interface useInvestigationTableOutcome {
     handleFilterChange: (filterBy: any) => void;
     unassignedInvestigationsCount: number;
     fetchInvestigationsByGroupId: (groupId: string) => Promise<InvestigationTableRow[]>;
-    changeGroupsInvestigator: (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
-    changeInvestigationsInvestigator: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
+    changeGroupsInvestigator: (groupIds: string[], investigator: FetchedInvestigatorOption | null, transferReason?: string) => Promise<void>;
+    changeInvestigationsInvestigator: (epidemiologyNumbers: number[], investigator: FetchedInvestigatorOption | null, transferReason?: string) => Promise<void>;
     changeGroupsDesk: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
     changeInvestigationsDesk: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
 };

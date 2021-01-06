@@ -3,7 +3,7 @@ import { Card, IconButton, Typography, useMediaQuery } from '@material-ui/core';
 import { SvgIconComponent, Close, Send, PersonPin, CollectionsBookmark, CallSplit } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
-import InvestigatorOption from 'models/InvestigatorOption';
+import InvestigatorOption, { FetchedInvestigatorOption } from 'models/InvestigatorOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 
 import FooterAction from './FooterAction/FooterAction';
@@ -34,9 +34,9 @@ const singleAssignment = 'הקצאה';
 const multipleAssignments = 'הקצאות';
 
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
-        
+
     const { checkedIndexedRows, allDesks, allInvestigators, onDialogClose, tableRows, allGroupedInvestigations, onDeskChange,
-            onDeskGroupChange, onInvestigatorGroupChange, onInvestigatorChange, fetchTableData, fetchInvestigationsByGroupId } = props;
+        onDeskGroupChange, onInvestigatorGroupChange, onInvestigatorChange, fetchTableData, fetchInvestigationsByGroupId } = props;
 
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
@@ -53,23 +53,23 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         handleConfirmDesksDialog,
         handleConfirmInvestigatorsDialog,
         handleDisbandGroupedInvestigations
-    } = useInvestigationTableFooter({ 
-        setOpenDesksDialog, 
-        setOpenInvestigatorsDialog, 
+    } = useInvestigationTableFooter({
+        setOpenDesksDialog,
+        setOpenInvestigatorsDialog,
         setOpenGroupedInvestigations,
-        checkedIndexedRows, 
-        fetchTableData, 
-        onDialogClose, 
-        onDeskChange, 
+        checkedIndexedRows,
+        fetchTableData,
+        onDialogClose,
+        onDeskChange,
         onDeskGroupChange,
-        onInvestigatorChange, 
-        onInvestigatorGroupChange 
+        onInvestigatorChange,
+        onInvestigatorGroupChange
     });
 
     const classes = useStyle(isScreenWide)();
 
     const isSingleInvestigation = checkedIndexedRows.length === 1;
-    
+
     const checkedInvestigations: InvestigationTableRow[] = useMemo(() => {
         return tableRows.filter((tableRow: InvestigationTableRow) => checkedIndexedRows.map(indexedRow => indexedRow.epidemiologyNumber).includes(tableRow.epidemiologyNumber));
     }, [tableRows, checkedIndexedRows])
@@ -177,13 +177,13 @@ interface Props {
     onDialogClose: () => void;
     checkedIndexedRows: IndexedInvestigation[];
     allDesks: Desk[];
-    allInvestigators: InvestigatorOption[];
+    allInvestigators: FetchedInvestigatorOption[];
     tableRows: InvestigationTableRow[];
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     fetchTableData: () => void;
     fetchInvestigationsByGroupId: (groupId: string) => void;
     onDeskGroupChange: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
     onDeskChange: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
-    onInvestigatorGroupChange: (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
-    onInvestigatorChange: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
+    onInvestigatorGroupChange: (groupIds: string[], investigator: FetchedInvestigatorOption | null, transferReason?: string) => Promise<void>;
+    onInvestigatorChange: (epidemiologyNumbers: number[], investigator: FetchedInvestigatorOption | null, transferReason?: string) => Promise<void>;
 }

@@ -194,20 +194,20 @@ usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response)
         user: response.locals.user.id,
     });
     groupLogger.info(`querying the graphql API with parameters ${JSON.stringify({ investigationGroup: response.locals.user.investigationGroup })}`, Severity.LOW);
-    graphqlRequest(GET_ACTIVE_GROUP_USERS, response.locals, { investigationGroup: +response.locals.user.investigationGroup })
+    graphqlRequest(GET_ACTIVE_GROUP_USERS, response.locals, { inputCountyId: +response.locals.user.investigationGroup })
         .then((result: any) => {
-            let users: User[] = [];
-            if (result && result.data && result.data.allUsers) {
-                groupLogger.info('got group users from the DB', Severity.LOW);
-                users = result.data.allUsers.nodes.map((user: User) => ({
+            groupLogger.info('got group users from the DB', Severity.LOW);
+            const resData = JSON.parse(result.data.getInvestigatorListByCountyFunction.json);
+            const users: User[] = resData.map((user: any) => ({
                     ...user,
+                    languages: user.languages.map((language: any) => language),
                     token: ''
                 }));
-            } else {
+                return response.send(users);
+            })
+            .catch(error => {
                 groupLogger.error('didnt get group users from the DB', Severity.HIGH);
-            }
-            return response.send(users);
-        });
+            })
 });
 
 usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: Response) => {

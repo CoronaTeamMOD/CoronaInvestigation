@@ -4,7 +4,7 @@ import axios from 'axios';
 import { format } from 'date-fns';
 import { SweetAlertResult } from 'sweetalert2';
 
-import User from 'models/User';
+import User,{FetchedUser} from 'models/User';
 import theme from 'styles/theme';
 import County from 'models/County';
 import logger from 'logger/logger';
@@ -24,7 +24,7 @@ import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCo
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
 import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
-import InvestigatorOption from 'models/InvestigatorOption';
+import InvestigatorOption, {FetchedInvestigatorOption} from 'models/InvestigatorOption';
 import Desk from 'models/Desk';
 
 import useStyle from './InvestigationTableStyles';
@@ -213,9 +213,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return axios.post('/landingPage/investigations', requestData);
     }
 
-    const sortUsersByAvailability = (fisrtUser: User, secondUser: User) =>
-        fisrtUser.newInvestigationsCount - secondUser.newInvestigationsCount ||
-        fisrtUser.activeInvestigationsCount - secondUser.activeInvestigationsCount
+    const sortUsersByAvailability = (fisrtUser: FetchedUser, secondUser: FetchedUser) =>
+        fisrtUser.newinvestigationscount - secondUser.newinvestigationscount ||
+        fisrtUser.activeinvestigationscount - secondUser.activeinvestigationscount
 
     const fetchAllCountyUsers = () => {
         const countyUsersLogger = logger.setup({
@@ -225,13 +225,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         countyUsersLogger.info('requesting the server the connected admin group users', Severity.LOW);
         axios.get(`/users/group`)
             .then((result: any) => {
-                let countyUsers: Map<string, User> = new Map();
+                let countyUsers: Map<string, FetchedUser> = new Map();
                 if (result && result.data) {
                     result.data.forEach((user: any) => {
                         countyUsers.set(user.id, {
                             ...user,
-                            newInvestigationsCount: user.newInvestigationsCount.totalCount,
-                            activeInvestigationsCount: user.activeInvestigationsCount.totalCount,
+                            newInvestigationsCount: user.newInvestigationsCount,
+                            activeInvestigationsCount: user.activeInvestigationsCount,
+                            pauseInvestigationsCount: user.pauseInvestigationsCount
                         })
                         countyUsers = new Map(Array.from(countyUsers.entries())
                             .sort((fisrtUser, secondUser) => sortUsersByAvailability(fisrtUser[1], secondUser[1])));
@@ -516,8 +517,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const getUserMapKeyByValue = (map: Map<string, User>, value: string): string => {
-        const key = Array.from(map.keys()).find(key => map.get(key)?.userName === value);
+    const getUserMapKeyByValue = (map: Map<string, FetchedUser>, value: string): string => {
+        const key = Array.from(map.keys()).find(key => map.get(key)?.username === value);
         return key ? key : ''
     }
 
@@ -526,7 +527,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return key ? key : 0;
     }
 
-    const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => {
+    const changeGroupsInvestigator = async (groupIds: string[], investigator: FetchedInvestigatorOption | null, transferReason?: string) => {
         const changeGroupsInvestigatorLogger = logger.setup({
             workflow: 'Change groups investigator',
             user: user.id,
@@ -546,7 +547,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
-    const changeInvestigationsInvestigator = async (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: string) => {
+    const changeInvestigationsInvestigator = async (epidemiologyNumbers: number[], investigator: FetchedInvestigatorOption | null, transferReason?: string) => {
         const changeInvestigationsInvestigatorLogger = logger.setup({
             workflow: 'Change investigations investigator',
             user: user.id,
