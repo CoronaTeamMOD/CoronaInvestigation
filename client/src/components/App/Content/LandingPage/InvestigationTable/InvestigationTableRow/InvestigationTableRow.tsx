@@ -129,9 +129,13 @@ const InvestigationTableRow = ({
                 )
             case TableHeadersNames.rowIndicators:
                 return (
-                    <InvestigationIndicatorsColumn isComplex={indexedRow.isComplex}
+                    <InvestigationIndicatorsColumn 
+                        isComplex={indexedRow.isComplex}
                         wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
                         transferReason={indexedRow.transferReason}
+                        isSelfInvestigated={indexedRow.isSelfInvestigated}
+                        selfInvestigationStatus={indexedRow.selfInvestigationStatus}
+                        selfInvestigationUpdateTime={new Date(indexedRow.selfInvestigationUpdateTime)}
                     />
                 );
             case TableHeadersNames.investigatorName:

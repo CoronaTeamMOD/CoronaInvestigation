@@ -73,6 +73,9 @@ export const createRowData = (
     isInInstitute: boolean,
     creationDate: Date,
     startTime: Date,
+    isSelfInvestigated: boolean,
+    selfInvestigationStatus: number,
+    selfInvestigationUpdateTime: string
 ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
@@ -102,6 +105,9 @@ export const createRowData = (
     isInInstitute,
     creationDate,
     startTime,
+    isSelfInvestigated,
+    selfInvestigationStatus,
+    selfInvestigationUpdateTime
 });
 
 export interface SelectedRow {
@@ -423,7 +429,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     parentOccupation,
                                     isInInstitute,
                                     investigation.creationDate,
-                                    investigation.startTime
+                                    investigation.startTime,
+                                    investigation.isSelfInvestigated,
+                                    investigation.selfInvestigationStatus,
+                                    investigation.selfInvestigationUpdateTime
                                 )
                             });
                         investigationRows
@@ -560,6 +569,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.groupReason]: row.groupReason,
             [TableHeadersNames.otherReason]: row.otherReason,
             [TableHeadersNames.reasonId]: row.reasonId,
+            [TableHeadersNames.isSelfInvestigated]: row.isSelfInvestigated,
+            [TableHeadersNames.selfInvestigationStatus]: row.selfInvestigationStatus,
+            [TableHeadersNames.selfInvestigationUpdateTime]: row.selfInvestigationUpdateTime,
         }
     }
 
@@ -825,7 +837,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             parentOccupation,
                             isInInstitute,
                             investigation.creationDate,
-                            investigation.startTime
+                            investigation.startTime,
+                            investigation.isSelfInvestigated,
+                            investigation.selfInvestigationStatus,
+                            investigation.selfInvestigationUpdateTime
                         )
                     });
                 setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))

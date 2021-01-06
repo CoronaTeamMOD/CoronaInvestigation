@@ -31,6 +31,9 @@ interface InvestigationTableRow {
     isInInstitute: boolean;
     creationDate: Date;
     startTime: Date;
+    isSelfInvestigated: boolean;
+    selfInvestigationStatus: number;
+    selfInvestigationUpdateTime: string;
 };
 
 export default InvestigationTableRow;

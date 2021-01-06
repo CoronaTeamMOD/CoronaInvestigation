@@ -9,6 +9,9 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
   orderedInvestigations(orderBy: $orderBy, filter: $filter, offset: $offset, first: $size) {
     nodes {
       comment
+      isSelfInvestigated
+      selfInvestigationStatus
+      selfInvestigationUpdateTime
       epidemiologyNumber
       coronaTestDate
       startTime
@@ -72,6 +75,9 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
   orderedInvestigations(orderBy: $orderBy, filter: $filter, offset: $offset, first: $size) {
     nodes {
       comment
+      isSelfInvestigated
+      selfInvestigationStatus
+      selfInvestigationUpdateTime
       epidemiologyNumber
       coronaTestDate
       startTime
