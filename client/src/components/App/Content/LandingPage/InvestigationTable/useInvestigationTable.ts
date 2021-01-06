@@ -22,6 +22,7 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
@@ -129,6 +130,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const classes = useStyle(false);
     const { alertError } = useCustomSwal();
     const history = useHistory<HistoryState>();
+
     const { statusFilter: historyStatusFilter = [], 
             deskFilter: historyDeskFilter = [], 
             timeRangeFilter: historyTimeRange = timeRanges[0],
@@ -161,6 +163,24 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
     const windowTabsBroadcastChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
 
+    useEffect(() => {
+        const statusFilterToSet = statusFilter.length > 0 ? filterCreators.STATUS(statusFilter) : null;
+        const deskFilterToSet = deskFilter.length > 0 ? filterCreators.DESK_ID(deskFilter) : null;
+        const timeRangeFilterToSet = timeRangeFilter.id !== 10 ? filterCreators.TIME_RANGE(timeRangeFilter) : null;
+        const unAssignedFilterToSet = (unassignedUserFilter && !inactiveUserFilter) ? filterCreators.UNASSIGNED_USER(unassignedUserFilter) : null;
+        const inActiveToSet = (inactiveUserFilter && !unassignedUserFilter) ? filterCreators.INACTIVE_USER(unassignedUserFilter) : null;
+        const unAllocatedToSet = (unassignedUserFilter && unassignedUserFilter) ? filterCreators.UNALLOCATED_USER(unassignedUserFilter) : null;
+        setFitlerRules({
+            ...filterRules,
+            [InvestigationsFilterByFields.STATUS]: statusFilterToSet && Object.values(statusFilterToSet)[0],
+            [InvestigationsFilterByFields.DESK_ID]: deskFilterToSet && Object.values(deskFilterToSet)[0],
+            [InvestigationsFilterByFields.TIME_RANGE]: timeRangeFilterToSet && Object.values(timeRangeFilterToSet)[0],
+            [InvestigationsFilterByFields.UNASSIGNED_USER]: unAssignedFilterToSet && Object.values(unAssignedFilterToSet)[0],
+            [InvestigationsFilterByFields.INACTIVE_USER]: inActiveToSet && Object.values(inActiveToSet)[0],
+            [InvestigationsFilterByFields.UNALLOCATED_USER]: unAllocatedToSet && Object.values(unAllocatedToSet)[0],
+        }) 
+    }, [])
+
     const changeDeskFilter = (desks: Desk[]) => {
         const desksIds = desks.map(desk => desk.id);
         updateFilterHistory('deskFilter', desksIds);
@@ -185,8 +205,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         updateFilterHistory('unassignedUserFilter', value);
         setUnassignedUserFilter(value);
         if (inactiveUserFilter && value) {
+            delete filterRules[InvestigationsFilterByFields.INACTIVE_USER];
             handleFilterChange(filterCreators.UNALLOCATED_USER(value))
         } else {
+            delete filterRules[InvestigationsFilterByFields.UNALLOCATED_USER];
             handleFilterChange(filterCreators.UNASSIGNED_USER(value))
         }
         setCurrentPage(defaultPage);
@@ -196,8 +218,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         updateFilterHistory('inactiveUserFilter', value);
         setInactiveUserFilter(value);
         if (unassignedUserFilter && value) {
+            delete filterRules[InvestigationsFilterByFields.UNASSIGNED_USER];
             handleFilterChange(filterCreators.UNALLOCATED_USER(value));
         } else {
+            delete filterRules[InvestigationsFilterByFields.UNALLOCATED_USER];
             handleFilterChange(filterCreators.INACTIVE_USER(value));
         }
         setCurrentPage(defaultPage);
@@ -284,7 +308,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         } else {
             delete filterRulesToSet[Object.keys(filterBy)[0]]
         }
-        setIsBadgeInVisible(Object.keys(filterRulesToSet).length === 0);
         setFitlerRules(filterRulesToSet);
     }  
 
@@ -295,7 +318,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             orderBy,
             size: rowsPerPage,
             currentPage,
-            filterRules: Object.values(filterRules).reduce((obj, item) => Object.assign(obj, item) , {}),
+            filterRules: Object.values(filterRules).reduce((obj, item) => Object.assign(obj, item) , {})
         };
 
         if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
@@ -477,7 +500,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (isLoggedIn) {
             fetchTableData();
         }
-    }, [isLoggedIn, currentPage, orderBy, filterRules]);
+        setIsBadgeInVisible(!Boolean(Object.values(filterRules).find(item => item !== null)))
+    }, [isLoggedIn, filterRules]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const investigationClickLogger = logger.setupVerbose({
