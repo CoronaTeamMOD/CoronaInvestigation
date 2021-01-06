@@ -3,7 +3,6 @@ import { yupResolver } from '@hookform/resolvers';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
-
 import ContactStatus from 'models/ContactStatus';
 import FormTitle from 'commons/FormTitle/FormTitle';
 import InteractedContact from 'models/InteractedContact';

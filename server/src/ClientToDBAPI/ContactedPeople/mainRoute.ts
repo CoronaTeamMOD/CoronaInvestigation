@@ -7,7 +7,6 @@ import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog
 import {
     GET_ALL_CONTACT_STATUSES,
     GET_ALL_FAMILY_RELATIONSHIPS,
-    GET_AMOUNT_OF_CONTACTED_PEOPLE,
     GET_CONTACTED_PEOPLE,
     GET_FOREIGN_KEYS_BY_NAMES
 } from '../../DBService/ContactedPeople/Query';
@@ -50,34 +49,13 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
     });
 });
 
-ContactedPeopleRoute.get('/amountOfContacts/:investigationId', (request: Request, response: Response) => {
-    const contactsAmountLogger = logger.setup({
-        workflow: 'query investigation amount of contacts',
-        investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
-    });
-
-    const parameters = {investigationId: parseInt(request.params.investigationId)};
-    contactsAmountLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-    graphqlRequest(GET_AMOUNT_OF_CONTACTED_PEOPLE, response.locals, parameters)
-        .then(result => {
-            contactsAmountLogger.info(validDBResponseLog, Severity.LOW);
-            response.send(result);
-        })
-        .catch(error => {
-            contactsAmountLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-            response.status(errorStatusCode).send(error);
-        })
-}
-);
-
-ContactedPeopleRoute.get('/allContacts/:investigationId', (request: Request, response: Response) => {
+ContactedPeopleRoute.get('/allContacts/:investigationId/:minimalDateToFilter', (request: Request, response: Response) => {
     const allContactsLogger = logger.setup({
         workflow: `query all investigation's contacts`,
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     });
-    const parameters = { investigationId: parseInt(request.params.investigationId) }
+    const parameters = { investigationId: parseInt(request.params.investigationId), minimalDateToFilter: new Date(request.params.minimalDateToFilter)}
     allContactsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     graphqlRequest(GET_CONTACTED_PEOPLE, response.locals, parameters)
         .then(result => {

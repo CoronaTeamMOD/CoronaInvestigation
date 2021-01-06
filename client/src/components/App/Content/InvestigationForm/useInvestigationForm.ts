@@ -37,15 +37,17 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
+    const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
 
     const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
 
-    const initializeTabShow = () => {
+    const checkAreThereContacts = () => {
         const tabShowLogger = logger.setup('Getting Amount Of Contacts');
         tabShowLogger.info('launching amount of contacts request', Severity.LOW);
-        axios.get('/contactedPeople/amountOfContacts/' + epidemiologyNumber).then((result: any) => {
+        axios.get(`/contactedPeople/allContacts/${epidemiologyNumber}/${new Date(datesToInvestigate.slice(-1)[0])}`)
+        .then((result: any) => {
             tabShowLogger.info('amount of contacts request was successful', Severity.LOW);
-            setAreThereContacts(result?.data?.data?.allContactedPeople?.totalCount > 0);
+            setAreThereContacts(result?.data.length > 0);
         }).catch((error) => {
             tabShowLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
         });
@@ -158,11 +160,14 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             fetchCountries();
             fetchContactTypes();
             fetchStatuses();
-            initializeTabShow();
             investigationStatus.mainStatus && fetchSubStatusesByStatus(investigationStatus.mainStatus);
             fetchEducationGrades();
         }
     }, [epidemiologyNumber, userId]);
+
+    useEffect(() => {
+        datesToInvestigate.length > 0 && checkAreThereContacts();
+    }, [datesToInvestigate]);
 
     useEffect(() => {
         if (investigationStatus.mainStatus &&

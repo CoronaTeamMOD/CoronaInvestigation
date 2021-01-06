@@ -1,7 +1,8 @@
 import InvestigatedPatient from './InvestigatedPatient';
 import { InvestigationStatus } from './InvestigationStatus';
+import SymptomsExistenceInfo from './SymptomsExistenceInfo';
 
-interface InvestigationRedux {
+interface InvestigationRedux extends SymptomsExistenceInfo {
     epidemiologyNumber: number;
     investigationStatus: InvestigationStatus;
     investigatedPatient: InvestigatedPatient;
@@ -10,6 +11,7 @@ interface InvestigationRedux {
     lastOpenedEpidemiologyNumber: number;
     isCurrentlyLoading: boolean;
     axiosInterceptorId: number;
+    datesToInvestigate: Date[];
     validationDate: Date;
     endTime: Date | null;
 }

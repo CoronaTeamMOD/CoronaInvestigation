@@ -1,4 +1,5 @@
 import { InvestigationStatus } from 'models/InvestigationStatus';
+import SymptomsExistenceInfo from 'models/SymptomsExistenceInfo';
 
 import { store } from '../store';
 import * as actionTypes from './investigationActionTypes';
@@ -59,13 +60,6 @@ export const setInvestigationStatus = (investigationStatus: InvestigationStatus)
     })
 }
 
-export const setValidationDate = (validationDate: Date) => {
-    store.dispatch({
-        type: actionTypes.SET_VALIDATION_DATE,
-        payload: { validationDate }
-    })
-}
-
 export const setEndTime = (endTime: Date | null) => {
     store.dispatch({
         type: actionTypes.SET_END_TIME,
@@ -79,3 +73,10 @@ export const setCreator = (creator: string) => {
         payload: { creator }
     })
 }
+
+export const setDatesToInvestigateParams = (symptomsExistenceInfo?: SymptomsExistenceInfo, validationDate?: Date) => {
+    store.dispatch({
+        type: actionTypes.SET_DATES_TO_INVESTIGATE_PARAMS,
+        payload: { symptomsExistenceInfo, validationDate }
+    })
+};

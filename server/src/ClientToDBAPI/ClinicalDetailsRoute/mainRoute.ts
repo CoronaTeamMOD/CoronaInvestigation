@@ -8,12 +8,11 @@ import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import ClinicalDetails from '../../Models/ClinicalDetails/ClinicalDetails';
 import { formatToInsertAndGetAddressIdInput } from '../../Utils/addressUtils';
 import InsertAndGetAddressIdInput from '../../Models/Address/InsertAndGetAddressIdInput';
-import CoronaTestDateQueryResult from '../../Models/ClinicalDetails/CoronaTestDateQueryResult';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { calculateInvestigationComplexity } from '../../Utils/InvestigationComplexity/InvestigationComplexity';
 import {
     GET_ALL_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER,
-    GET_CORONA_TEST_DATE_OF_PATIENT, UPDATE_IS_DECEASED, UPDATE_IS_CURRENTLY_HOSPITIALIZED, GET_ISOLATION_SOURCES
+    UPDATE_IS_DECEASED, UPDATE_IS_CURRENTLY_HOSPITIALIZED, GET_ISOLATION_SOURCES
 } from '../../DBService/ClinicalDetails/Query';
 import {
     ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, UPDATE_INVESTIGATION
@@ -241,24 +240,6 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
             response.status(errorStatusCode).send(error);
         });
     }
-});
-
-clinicalDetailsRoute.get('/coronaTestDate', (request: Request, response: Response) => {
-    const coronaTestDateLogger = logger.setup({
-        workflow: 'query test date and symptoms data of patient',
-        investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
-    });
-    const parameters = {currInvestigation: +response.locals.epidemiologynumber};
-    coronaTestDateLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-    graphqlRequest(GET_CORONA_TEST_DATE_OF_PATIENT, response.locals, parameters)
-    .then((result: CoronaTestDateQueryResult) => {
-        coronaTestDateLogger.info(validDBResponseLog, Severity.LOW);
-        response.send(result.data.allInvestigations.nodes[0]);
-    }).catch(error => {
-        coronaTestDateLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-        response.status(errorStatusCode).send(error);
-    });
 });
 
 clinicalDetailsRoute.get('/isDeceased/:investigatedPatientId/:isDeceased', (request: Request, response: Response) => {

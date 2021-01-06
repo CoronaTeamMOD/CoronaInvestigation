@@ -47,7 +47,7 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
       }
       id
     }
-    symptomsStartTime
+    symptomsStartDate: symptomsStartTime
     isolationStartTime
     isolationEndTime
     isolationSource
@@ -75,18 +75,6 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
         }
       }
       otherBackgroundDiseasesMoreInfo
-    }
-  }
-}
-`;
-
-export const GET_CORONA_TEST_DATE_OF_PATIENT = gql`
-query getCoronaTestDateOfInvestigation($currInvestigation: Int!) {
-  allInvestigations(condition: {epidemiologyNumber: $currInvestigation}) {
-    nodes {
-      coronaTestDate
-      doesHaveSymptoms
-      symptomsStartTime
     }
   }
 }

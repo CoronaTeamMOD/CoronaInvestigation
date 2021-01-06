@@ -1,6 +1,7 @@
 import FlattenedDBAddress from 'models/DBAddress';
+import SymptomsExistenceInfo from 'models/SymptomsExistenceInfo';
 
-interface ClinicalDetailsData {
+interface ClinicalDetailsData extends SymptomsExistenceInfo {
     isolationStartDate: Date | null;
     isolationEndDate: Date | null;
     isolationSource: number | null;
@@ -9,14 +10,12 @@ interface ClinicalDetailsData {
     isIsolationProblem: boolean;
     isIsolationProblemMoreInfo: string;
     isSymptomsStartDateUnknown: boolean;
-    symptomsStartDate: Date | null;
     symptoms: string[];
     doesHaveBackgroundDiseases: boolean;
     backgroundDeseases: string[];
     hospital: string;
     hospitalizationStartDate: Date | null;
     hospitalizationEndDate: Date | null;
-    doesHaveSymptoms: boolean;
     wasHospitalized: boolean;
     isPregnant: boolean;
     otherSymptomsMoreInfo: string;

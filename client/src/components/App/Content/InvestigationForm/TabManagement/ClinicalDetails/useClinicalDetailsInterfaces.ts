@@ -16,6 +16,6 @@ export interface useClinicalDetailsOutcome {
         reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
         trigger: (payload?: string | string[]) => Promise<boolean>
     ) => void;
-    saveClinicalDetailsAndDeleteContactEvents: (clinicalDetails: ClinicalDetailsData, validationDate: Date, id: number) => void;
+    saveClinicalDetailsAndDeleteContactEvents: (clinicalDetails: ClinicalDetailsData, id: number) => void;
     isolationSources: IsolationSource[];
 }

@@ -2,20 +2,22 @@ import axios from 'axios';
 import React, {useState} from 'react';
 import { useSelector } from 'react-redux';
 
-import Street from 'models/Street';
+import theme from 'styles/theme';
 import logger from 'logger/logger';
 import {Severity} from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import IsolationSource from 'models/IsolationSource';
-import FlattenedDBAddress, {initDBAddress} from 'models/DBAddress';
-import { useDateUtils} from 'Utils/DateUtils/useDateUtils';
+import { useDateUtils } from 'Utils/DateUtils/useDateUtils';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setFormState } from 'redux/Form/formActionCreators';
+import FlattenedDBAddress, { initDBAddress } from 'models/DBAddress';
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { getDatesToInvestigate } from 'Utils/ClinicalDetails/symptomsUtils';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import { setDatesToInvestigateParams } from 'redux/Investigation/investigationActionCreators';
 
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
-import useSymptomsFields from './SymptomsFields/useSymptomsFields';
 import {useClinicalDetailsIncome, useClinicalDetailsOutcome} from './useClinicalDetailsInterfaces';
 
 const otherOptionDescription = 'אחר';
@@ -46,24 +48,26 @@ export const initialClinicalDetails: ClinicalDetailsData = {
 const deletingContactEventsErrorMsg = 'קרתה תקלה במחיקת אירועים מיותרים';
 
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
+
     const { id, setSymptoms, setBackgroundDiseases, didSymptomsDateChangeOccur } = parameters;
-    const { getDatesToInvestigate, convertDate } = useDateUtils();
-    const { alertError } = useCustomSwal();
+
+    const { convertDate } = useDateUtils();
+    const { alertError, alertWarning } = useCustomSwal();
+
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
     const tabsValidations  = useSelector<StoreStateType, (boolean | null)[]>(store => store.formsValidations[epidemiologyNumber]);
     const address = useSelector<StoreStateType, FlattenedDBAddress>(state => state.address);
-    const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
+    const validationDate = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
+    
+    const [isolationAddressId, setIsolationAddressId] = useState<number | null>(null);
     const [isolationSources, setIsolationSources] = React.useState<IsolationSource[]>([]);
     const [didDeletingContactEventsSucceed, setDidDeletingContactEventsSucceed] = React.useState<boolean>(true);
-    const { handleSymptomsDateDataChange } = useSymptomsFields();
-    const [isolationAddressId, setIsolationAddressId] = useState<number | null>(null);
 
     React.useEffect(() => {
         getSymptoms();
         getBackgroundDiseases();
         getIsolationSources();
-        getCoronaTestDate();
     }, []);
 
     const getSymptoms = () => {
@@ -79,21 +83,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         }
         );
     };
-
-    const getCoronaTestDate = () => {
-        const fetchCoronaTestDateLogger = logger.setup('Fetching corona test date');
-        fetchCoronaTestDateLogger.info('launching corona test date post request', Severity.LOW);
-        axios.get(`/clinicalDetails/coronaTestDate`).then((res: any) => {
-            if (Boolean(res?.data)) {
-                fetchCoronaTestDateLogger.info('got results back from the server', Severity.LOW);
-                setCoronaTestDate(convertDate(res.data.coronaTestDate));
-            } else {
-                fetchCoronaTestDateLogger.warn('got status 200 but wrong data', Severity.HIGH);
-            }
-        }).catch(err => {
-            fetchCoronaTestDateLogger.warn(`Got 500 from coronaTestDate request: ${err}`, Severity.HIGH);
-        });
-    }
 
     const getBackgroundDiseases = () => {
         const getBackgroundDiseasesLogger = logger.setup('Fetching Background Diseases');
@@ -172,7 +161,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         isolationEndDate: convertDate(patientClinicalDetails.isolationEndTime),
                         isolationSource: patientClinicalDetails.isolationSource,
                         symptoms: patientClinicalDetails.symptoms,
-                        symptomsStartDate: convertDate(patientClinicalDetails.symptomsStartTime),
+                        symptomsStartDate: convertDate(patientClinicalDetails.symptomsStartDate),
                         isSymptomsStartDateUnknown: patientClinicalDetails.symptomsStartTime === null,
                         doesHaveSymptoms: Boolean(patientClinicalDetails.doesHaveSymptoms),
                         wasHospitalized: Boolean(patientClinicalDetails.wasHospitalized),
@@ -195,31 +184,30 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
 
     const deleteIrrelevantContactEvents = (symptomsStartDate: Date | null, doesHaveSymptoms: boolean) => {
         const deleteIrrelevantEventsLogger = logger.setup('Deleting irrelevant contact events');
-        if(Boolean(coronaTestDate)) {
-            const allDatesToInvestigate = getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate);
-            if(allDatesToInvestigate.length > 0) {
-                deleteIrrelevantEventsLogger.info('Sending to server date to delete contact events by', Severity.LOW);
-                setIsLoading(true);
-                axios.delete('/intersections/deleteContactEventsByDate', {params: {earliestDateToInvestigate: allDatesToInvestigate[0]}}).then((result) => {
-                    if(result.data?.data?.deleteContactEventsBeforeDate) {
-                        deleteIrrelevantEventsLogger.info('Deleting contact events finished with success', Severity.LOW);
-                    } else {
-                        deleteIrrelevantEventsLogger.error(`Deleting contact events finished with errors: ${result.data}`, Severity.LOW);
-                        alertError(deletingContactEventsErrorMsg);
-                        setDidDeletingContactEventsSucceed(false);
-                    }
-                }).catch(err => {
-                    deleteIrrelevantEventsLogger.error(`Failed to delete irrelevant contact events: ${err}`, Severity.LOW);
+        const earliestDateToInvestigate = getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, validationDate).slice(-1)[0];
+        if(earliestDateToInvestigate) {
+            deleteIrrelevantEventsLogger.info('Sending to server date to delete contact events by', Severity.LOW);
+            setIsLoading(true);
+            axios.delete('/intersections/deleteContactEventsByDate', {params: {earliestDateToInvestigate}})
+            .then((result) => {
+                if(result.data?.data?.deleteContactEventsBeforeDate) {
+                    deleteIrrelevantEventsLogger.info('Deleting contact events finished with success', Severity.LOW);
+                } else {
+                    deleteIrrelevantEventsLogger.error(`Deleting contact events finished with errors: ${result.data}`, Severity.LOW);
                     alertError(deletingContactEventsErrorMsg);
                     setDidDeletingContactEventsSucceed(false);
-                }).finally(() => {
-                    setIsLoading(false);
-                })
-            }
+                }
+            }).catch(err => {
+                deleteIrrelevantEventsLogger.error(`Failed to delete irrelevant contact events: ${err}`, Severity.LOW);
+                alertError(deletingContactEventsErrorMsg);
+                setDidDeletingContactEventsSucceed(false);
+            }).finally(() => {
+                setIsLoading(false);
+            })
         }
     }
 
-    const saveClinicalDetailsToDB = (clinicalDetails: ClinicalDetailsData, validationDate: Date, id: number) => {
+    const saveClinicalDetailsToDB = (clinicalDetails: ClinicalDetailsData, id: number) => {
         const saveClinicalDetailsLogger = logger.setup('Saving clinical details tab');
         saveClinicalDetailsLogger.info('launching the server request', Severity.LOW);
         setIsLoading(true);
@@ -230,32 +218,49 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                 investigatedPatientId,
                 isolationAddressId
             }
-        })).then(() => {
+        }))
+        .then(() => {
             saveClinicalDetailsLogger.info('saved clinical details successfully', Severity.LOW);
+            didSymptomsDateChangeOccur && setDatesToInvestigateParams({doesHaveSymptoms: clinicalDetails.doesHaveSymptoms, symptomsStartDate: clinicalDetails.symptomsStartDate});
         })
-            .catch((error) => {
-                saveClinicalDetailsLogger.error(`got error from server: ${error}`, Severity.HIGH);
-                alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
+        .catch((error) => {
+            saveClinicalDetailsLogger.error(`got error from server: ${error}`, Severity.HIGH);
+            alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
+        })
+        .finally(() => {
+            setIsLoading(false);
+            ClinicalDetailsSchema(validationDate).isValid(clinicalDetails).then(valid => {
+                setFormState(epidemiologyNumber, id, valid);
             })
-            .finally(() => {
-                setIsLoading(false);
-                ClinicalDetailsSchema(validationDate).isValid(clinicalDetails).then(valid => {
-                    setFormState(epidemiologyNumber, id, valid);
-                })
-            })
+        })
     }
 
-    const saveClinicalDetailsAndDeleteContactEvents = (clinicalDetails: ClinicalDetailsData, validationDate: Date, id: number): void => {
+    const alertSymptomsDatesChange = () =>
+        alertWarning('האם אתה בטוח שתרצה לשנות את שדה התסמינים? שינוי זה יגרום למחיקת האירועים והמגעים הקיימים בימים שימחקו', {
+            showCancelButton: true,
+            cancelButtonText: 'בטל',
+            cancelButtonColor: theme.palette.error.main,
+            confirmButtonColor: theme.palette.primary.main,
+            confirmButtonText: 'כן, המשך'
+        });
+
+    const saveClinicalDetailsAndDeleteContactEvents = (clinicalDetails: ClinicalDetailsData, id: number): void => {
         if(didSymptomsDateChangeOccur) {
-            handleSymptomsDateDataChange().then(result => {
-                if(result.isConfirmed) {
-                    deleteIrrelevantContactEvents(clinicalDetails.symptomsStartDate, clinicalDetails.doesHaveSymptoms);
-                    didDeletingContactEventsSucceed &&
-                        saveClinicalDetailsToDB(clinicalDetails, validationDate, id);
-                }
-            })
+            const { symptomsStartDate, doesHaveSymptoms } = clinicalDetails;
+            ClinicalDetailsSchema(validationDate)
+            .validateAt(ClinicalDetailsFields.SYMPTOMS_START_DATE, clinicalDetails as any)
+            .then(() => 
+                alertSymptomsDatesChange().then(result => {
+                    if(result.isConfirmed) {
+                        deleteIrrelevantContactEvents(symptomsStartDate, doesHaveSymptoms);
+                        didDeletingContactEventsSucceed &&
+                            saveClinicalDetailsToDB(clinicalDetails, id);
+                    }
+                })
+            )
+            .catch(() => alertError('לא ניתן להשלים את הטאב עם תאריך תסמינים לא חוקי'));
         } else {
-            saveClinicalDetailsToDB(clinicalDetails, validationDate, id);
+            saveClinicalDetailsToDB(clinicalDetails, id);
         }
     }
 

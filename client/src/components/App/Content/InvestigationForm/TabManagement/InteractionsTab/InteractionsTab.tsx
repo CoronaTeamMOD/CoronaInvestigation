@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
 import StoreStateType from 'redux/storeStateType';
 import SchoolIcon from '@material-ui/icons/SchoolOutlined';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 
 import InvolvedContact from 'models/InvolvedContact';
 import { setFormState } from 'redux/Form/formActionCreators';
@@ -32,12 +32,11 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     const familyMembersStateContext = useContext(familyMembersContext);
 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const datesToInvestigate = useSelector<StoreStateType, Date[]>((state) => state.investigation.datesToInvestigate);
 
     const [interactionToEdit, setInteractionToEdit] = useState<InteractionEventDialogData>();
     const [newInteractionEventDate, setNewInteractionEventDate] = useState<Date>();
-    const [interactionsMap, setInteractionsMap] = useState<Map<number, InteractionEventDialogData[]>>(new Map<number, InteractionEventDialogData[]>())
     const [interactions, setInteractions] = useState<InteractionEventDialogData[]>([]);
-    const [datesToInvestigate, setDatesToInvestigate] = useState<Date[]>([]);
     const [interactionsTabSettings, setInteractionsTabSettings] = useState<InteractionsTabSettings>(defaultInteractionsTabSettings);
     const [educationMembers, setEducationMembers] = useState<InvolvedContact[]>([]);
     const [uncontactedFamilyMembers, setUncontactedFamilyMembers] = useState<InvolvedContact[]>([]);
@@ -55,32 +54,27 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
             setInteractions,
             interactions,
             setAreThereContacts,
-            setDatesToInvestigate,
             setEducationMembers,
             familyMembersStateContext,
             setInteractionsTabSettings,
             completeTabChange
         });
 
-    useEffect(() => {
-        if(Boolean(interactions[0])) {
-            const mappedInteractionsArray = new Map<number, Interaction[]>();
-            interactions.forEach(interaction => {
-                const interactionStartTime : Date | undefined = interaction.startTime;
-                
-                if (interactionStartTime) {
-                    const interactionDate = startOfDay(interactionStartTime).getTime();
-                    if (mappedInteractionsArray.get(interactionDate) === undefined) {
-                        mappedInteractionsArray.set(interactionDate, [interaction]);
-                    } else {
-                        (mappedInteractionsArray.get(interactionDate) as Interaction[]).push(interaction);
-                    }
+    const interactionsMap : Map<number, InteractionEventDialogData[]> = useMemo(() => {
+        const mappedInteractionsArray = new Map<number, Interaction[]>();
+        interactions.forEach(interaction => {
+            const interactionStartTime : Date | undefined = interaction.startTime;
+            
+            if (interactionStartTime) {
+                const interactionDate = startOfDay(interactionStartTime).getTime();
+                if (mappedInteractionsArray.get(interactionDate) === undefined) {
+                    mappedInteractionsArray.set(interactionDate, [interaction]);
+                } else {
+                    (mappedInteractionsArray.get(interactionDate) as Interaction[]).push(interaction);
                 }
-            });
-
-            setInteractionsMap(mappedInteractionsArray);
-            setAreThereContacts(!(interactions.findIndex((interaction) => interaction.contacts.length > 0) === -1));
-        }
+            }
+        });
+        return mappedInteractionsArray;
     }, [interactions]);
 
     const submitTab = (event : React.FormEvent<HTMLFormElement>) => {
@@ -135,9 +129,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
             }
             <form id={`form-${id}`} onSubmit={(e) => submitTab(e)}/>
             {
-                datesToInvestigate[0] < datesToInvestigate[datesToInvestigate.length -1] ?
-                    datesToInvestigate.reverse().map(date => generateContactCard(date)) :
-                    datesToInvestigate.map(date => generateContactCard(date))
+                datesToInvestigate.map(date => generateContactCard(date))
             }
             {
                 newInteractionEventDate && <NewInteractionEventDialog
@@ -164,6 +156,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                 isOpen={uncontactedFamilyMembers.length > 0} 
                 closeDialog={closeFamilyDialog}
                 confirmDialog={saveInvestigaionSettingsFamily}/>
+                
             <EducationContactsDialog 
                 isOpen={showEducationMembers} 
                 educationContacts={educationMembers}

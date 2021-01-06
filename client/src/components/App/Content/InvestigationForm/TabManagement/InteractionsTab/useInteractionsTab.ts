@@ -1,13 +1,12 @@
 import axios  from 'axios';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
 
 import theme from 'styles/theme';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import InvolvedContact from 'models/InvolvedContact';
-import { useDateUtils } from 'Utils/DateUtils/useDateUtils';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvolvementReason from 'models/enums/InvolvementReason';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
@@ -31,49 +30,12 @@ interface GroupedInvolvedGroups {
 }
 
 const useInteractionsTab = (parameters: useInteractionsTabParameters): useInteractionsTabOutcome => {
-    const { interactions, setInteractions, setAreThereContacts, setDatesToInvestigate,
-        setEducationMembers, familyMembersStateContext, setInteractionsTabSettings, completeTabChange } = parameters;
+    const { setInteractions, setAreThereContacts, setEducationMembers, familyMembersStateContext, setInteractionsTabSettings, completeTabChange } = parameters;
 
     const { parseAddress } = useGoogleApiAutocomplete();
     const { alertError, alertWarning } = useCustomSwal();
 
-    const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
-    const [doesHaveSymptoms, setDoesHaveSymptoms] = useState<boolean>(false);
-    const [symptomsStartDate, setSymptomsStartDate] = useState<Date | null>(null);
-
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-
-    const { getDatesToInvestigate, convertDate } = useDateUtils();
-
-    const getCoronaTestDate = () => {
-        const getCoronaTestDateLogger = logger.setup('Getting Corona Test Date');
-        getCoronaTestDateLogger.info('launching Corona Test Date request', Severity.LOW);
-
-        axios.get(`/clinicalDetails/coronaTestDate`).then((res: any) => {
-            if (res.data !== null) {
-                getCoronaTestDateLogger.info('got results back from the server', Severity.LOW);
-                setCoronaTestDate(convertDate(res.data.coronaTestDate));
-            } else {
-                getCoronaTestDateLogger.warn('got status 200 but wrong data', Severity.HIGH);
-            }
-        })
-    }
-
-    const getClinicalDetailsSymptoms = () => {
-        const getClinicalDetailsSymptomsLogger = logger.setup('Fetching Clinical Details');
-        getClinicalDetailsSymptomsLogger.info('launching clinical data request', Severity.LOW);
-        axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
-            result => {
-                if (result?.data) {
-                    getClinicalDetailsSymptomsLogger.info('got results back from the server', Severity.LOW);
-                    const clinicalDetails = result.data;
-                    setDoesHaveSymptoms(clinicalDetails.doesHaveSymptoms);
-                    setSymptomsStartDate(convertDate(clinicalDetails.symptomsStartTime));
-                } else {
-                    getClinicalDetailsSymptomsLogger.warn('got status 200 but got invalid outcome', Severity.HIGH);
-                }
-            });
-    }
 
     const groupInvolvedContacts = (involvedContacts: InvolvedContact[]): GroupedInvolvedGroups => {
         return involvedContacts.reduce<GroupedInvolvedGroups>((previous, contact) => {
@@ -126,6 +88,15 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         });
     };
 
+    const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
+        return ({
+            ...dbInteraction,
+            locationAddress: parseAddress(dbInteraction.locationAddress) || null,
+            startTime: new Date(dbInteraction.startTime),
+            endTime: new Date(dbInteraction.endTime),
+        })
+    }
+
     const loadInteractions = () => {
         const loadInteractionsLogger = logger.setup('Fetching Interactions');
         loadInteractionsLogger.info('launching interactions request', Severity.LOW);
@@ -148,8 +119,6 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     useEffect(() => {
         loadInteractions();
         loadInvolvedContacts();
-        getCoronaTestDate();
-        getClinicalDetailsSymptoms();
         getInteractionsTabSettings();
     }, []);
 
@@ -160,19 +129,6 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         }
         loadInteractions();
     };
-
-    useEffect(() => {
-        setDatesToInvestigate(getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate));
-    }, [coronaTestDate, doesHaveSymptoms, symptomsStartDate]);
-
-    const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
-        return ({
-            ...dbInteraction,
-            locationAddress: parseAddress(dbInteraction.locationAddress) || null,
-            startTime: new Date(dbInteraction.startTime),
-            endTime: new Date(dbInteraction.endTime),
-        })
-    }
 
     const handleDeleteContactEvent = (contactEventId: number, areThereFamilyContacts: boolean) => {
         const deletingInteractionsLogger = logger.setup('Deleting Interaction');
@@ -187,6 +143,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             }).then((result) => {
                 if (result.value) {
                     deletingInteractionsLogger.info('launching interaction delete request', Severity.LOW);
+                    setIsLoading(true);
                     axios.delete('/intersections/deleteContactEvent', {
                         params: { contactEventId, investigationId: epidemiologyNumber }
                     }).then(() => {
@@ -195,8 +152,8 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     }).catch((error) => {
                         deletingInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                         alertError(eventDeleteFailedMsg);
+                        setIsLoading(false);
                     })
-                    .finally(() => setIsLoading(false));
                 }
             });
     }
@@ -223,8 +180,8 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 }).catch((error) => {
                     deleteContactedPersonLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                     alertError(contactDeleteFailedMsg);
-                })
-                .finally(() => setIsLoading(false));
+                    setIsLoading(false);
+                });
             }
             ;
         });

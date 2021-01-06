@@ -1,7 +1,7 @@
 interface InvestigatedPatient {
     investigatedPatientId: number;
     isDeceased: boolean;
-    isCurrentlyHospitialized: boolean
+    isCurrentlyHospitialized: boolean;
 };
 
 export default InvestigatedPatient;

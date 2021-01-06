@@ -1,7 +1,8 @@
 import StaticUser from './StaticUser';
+import SymptomsExistenceInfo from './SymptomsExistenceInfo';
 import InvestigatedPatientStaticInfo from './InvestigatedPatientStaticInfo';
 
-interface InvestigationInfo {
+interface InvestigationInfo extends SymptomsExistenceInfo {
     comment: string | null;
     startTime: Date;
     lastUpdateTime: Date;

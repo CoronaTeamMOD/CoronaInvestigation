@@ -1,13 +1,16 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Collapse, Grid, Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
+import StoreStateType from 'redux/storeStateType';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import { getMinimalSymptomsStartDate } from 'Utils/ClinicalDetails/symptomsUtils';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import { ClinicalDetailsClasses } from '../ClinicalDetailsStyles';
@@ -18,6 +21,8 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
     const { classes, watchDoesHaveSymptoms, watchSymptoms, watchIsSymptomsDateUnknown, handleSymptomCheck, symptoms, didSymptomsDateChangeOccur, setDidSymptomsDateChangeOccur } = props;
     const { control, errors } = useFormContext();
     const { wasInvestigationReopend } = useStatusUtils();
+
+    const validationDate = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
 
     const handleDidSymptomsDateChangeOccur = () => {
         !didSymptomsDateChangeOccur &&
@@ -85,6 +90,9 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                 disabled={wasInvestigationReopend}
                                                 onBlur={props.onBlur}
                                                 maxDate={new Date()}
+                                                minDate={getMinimalSymptomsStartDate(validationDate)}
+                                                maxDateMessage=''
+                                                minDateMessage=''
                                                 testId='symptomsStartDate'
                                                 value={props.value}
                                                 labelText={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE]?.message || '* תאריך התחלת תסמינים'}
