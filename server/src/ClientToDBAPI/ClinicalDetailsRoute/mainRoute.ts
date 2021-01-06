@@ -8,12 +8,11 @@ import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import ClinicalDetails from '../../Models/ClinicalDetails/ClinicalDetails';
 import { formatToInsertAndGetAddressIdInput } from '../../Utils/addressUtils';
 import InsertAndGetAddressIdInput from '../../Models/Address/InsertAndGetAddressIdInput';
-import CoronaTestDateQueryResult from '../../Models/ClinicalDetails/CoronaTestDateQueryResult';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { calculateInvestigationComplexity } from '../../Utils/InvestigationComplexity/InvestigationComplexity';
 import {
     GET_ALL_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER,
-    GET_CORONA_TEST_DATE_OF_PATIENT, UPDATE_IS_DECEASED, UPDATE_IS_CURRENTLY_HOSPITIALIZED, GET_ISOLATION_SOURCES
+    UPDATE_IS_DECEASED, UPDATE_IS_CURRENTLY_HOSPITIALIZED, GET_ISOLATION_SOURCES
 } from '../../DBService/ClinicalDetails/Query';
 import {
     ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, UPDATE_INVESTIGATION
