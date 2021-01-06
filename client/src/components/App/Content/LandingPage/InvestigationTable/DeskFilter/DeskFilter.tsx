@@ -24,6 +24,8 @@ const DeskFilter = ({ desks, filteredDesks, onFilterChange }: Props) => {
                 renderInput={(params) =>
                     <TextField
                         {...params}
+                        size='small'
+                        className={classes.textfield}
                     />
                 }
                 renderOption={(option, { selected }) => (
@@ -34,7 +36,7 @@ const DeskFilter = ({ desks, filteredDesks, onFilterChange }: Props) => {
                             className={classes.optionCheckbox}
                             checked={selected}
                         />
-                        {option.deskName}
+                        <Typography variant='body2'>{option.deskName}</Typography>
                     </>
                 )}
                 limitTags={1}

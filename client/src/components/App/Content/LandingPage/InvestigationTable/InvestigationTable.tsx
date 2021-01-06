@@ -266,7 +266,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     return (
         <div onClick={closeDropdowns} >
-            <Grid className={classes.title} container alignItems='center' justify='space-between'>
+            <Grid className={classes.title} container alignItems='center'>
                 {
                     (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) &&
                     <Tooltip title={returnToAdminLandingPage}>
@@ -280,7 +280,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         {tableTitle}
                     </Typography>
                 </Grid>
-                <Grid item xs={2} >
+                <Grid item xs={3} >
                     <DeskFilter
                         desks={allDesks}
                         filteredDesks={deskFilter}
@@ -337,7 +337,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     </Box>
                 </div>
                 <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={6}>
                         <Collapse in={showFilterRow}>
                             <TableFilter
                                 statuses={allStatuses}

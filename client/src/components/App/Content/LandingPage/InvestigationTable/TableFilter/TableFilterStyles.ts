@@ -7,14 +7,28 @@ const useStyles = makeStyles((theme: Theme) => ({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: theme.spacing(1),
-        marginBottom: theme.spacing(1)
+        marginBottom: theme.spacing(1),
+        borderRadius: 16,
     },
     autocomplete: {
-        width: '60%'
+        width: '45%',
     },
     optionCheckbox: {
+        height: '0.5vh',
         marginLeft: theme.spacing(1),
         flip: false
+    }, 
+    title: {
+        fontSize: '14px',
+    },
+    option: {
+        fontSize: '1.2vw',
+    },
+    chip: {
+        maxWidth: '50%',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
     }
 }));
 
