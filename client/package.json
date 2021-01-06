@@ -5,7 +5,7 @@
     "devDependencies": {
         "@material-ui/types": "^5.1.0",
         "@types/axios-mock-adapter": "^1.10.0",
-        "@types/enzyme": "^3.10.5",
+        "@types/enzyme": "^3.10.8",
         "@types/enzyme-adapter-react-16": "^1.0.6",
         "@types/googlemaps": "^3.43.0",
         "@types/http-proxy-middleware": "^0.19.3",
