@@ -63,6 +63,7 @@ const AddressForm: React.FC<Props> = ({
                     <Controller
                         name={cityField.name}
                         control={methods.control}
+                        defaultValue={cityField.defaultValue}
                         render={(props) => (
                             <Autocomplete
                                 options={Array.from(cities, ([id, value]) => ({ id, value }))}
@@ -102,6 +103,7 @@ const AddressForm: React.FC<Props> = ({
                     <Controller
                         name={streetField.name}
                         control={methods.control}
+                        defaultValue={streetField.defaultValue}
                         render={(props) => (
                             <Autocomplete
                                 options={Array.from(streetsInCity, ([id, value]) => ({ id, value }))}
@@ -148,6 +150,7 @@ const AddressForm: React.FC<Props> = ({
                     <Controller
                         name={houseNumberField.name}
                         control={methods.control}
+                        defaultValue={houseNumberField.defaultValue}
                         render={(props) => (
                             <AlphanumericTextField
                                 testId={houseNumberField.testId || ''}
@@ -182,9 +185,10 @@ const AddressForm: React.FC<Props> = ({
                     <Controller
                         name={floorField.name}
                         control={methods.control}
+                        defaultValue={floorField.defaultValue}
                         render={(props) => (
                             <AlphanumericTextField
-                                testId={cityField.testId || ''}
+                                testId={floorField.testId || ''}
                                 name={floorFieldNameSplitted[floorFieldNameSplitted.length - 1]}
                                 value={props.value}
                                 onChange={props.onChange}
@@ -204,6 +208,7 @@ interface FormField {
     name: string;
     className?: string;
     testId?: string;
+    defaultValue?: any;
 }
 
 interface Props {

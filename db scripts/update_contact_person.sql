@@ -80,8 +80,8 @@ begin
 	   		if (involvedContactId is not null) then
 				INSERT INTO public.contacted_person
 				(person_info, contact_event, contact_type, contact_status, creation_time, isolation_address, involved_contact_id, family_relationship)
-				select person_id, contact_event_id, contactType, 1, now(), isolation_address, involvedContactId, familyRelationship
-				from public.involved_contact
+				select person_id, contact_event_id, contactType, 1, now(), ic.isolation_address, involvedContactId, familyRelationship
+				from public.involved_contact ic
 				where id = involvedContactId;
 				
 				UPDATE public.involved_contact
