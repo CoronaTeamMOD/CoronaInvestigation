@@ -1,5 +1,5 @@
 import React from 'react';
-import { CardActions, CardContent, Typography } from '@material-ui/core';
+import { Box, CardActions, CardContent, Typography } from '@material-ui/core';
 
 import Desk from 'models/Desk';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
@@ -29,7 +29,8 @@ const DesksFilterCard = (props : Props): JSX.Element => {
 
     return (
         <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.desksCard}>
-            <CardContent className={classes.desksCardContent}>
+            <CardContent>
+                <Box display='flex' flexDirection='column' className={classes.desksCardContent}>
                 <Typography variant='h6' className={classes.cardTitle}>
                     <b>הדסקים בהם הינך צופה</b>
                 </Typography>
@@ -55,12 +56,13 @@ const DesksFilterCard = (props : Props): JSX.Element => {
                         ))
                     }
                 </div>
+                <div className={classes.desksCardActions}>
+                    <UpdateButton
+                        onClick={onUpdateButtonCLicked}
+                    />
+                </div>
+                </Box>
             </CardContent>
-            <CardActions className={classes.desksCardActions}>
-                <UpdateButton
-                    onClick={onUpdateButtonCLicked}
-                />
-            </CardActions>
         </LoadingCard>
     )
 };
