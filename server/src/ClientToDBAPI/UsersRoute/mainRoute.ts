@@ -233,7 +233,6 @@ usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response)
         .then(result => {
             groupLogger.info(validDBResponseLog, Severity.LOW);
             const resData = JSON.parse(result.data.getInvestigatorListByCountyFunction.json);
-            resData.map((user: any) => (console.log('languages',user.languages)));
             const users: User[] = resData.map((user: any) => ({
                 ...user,
                 languages: user.languages.map((language: any) => language),
