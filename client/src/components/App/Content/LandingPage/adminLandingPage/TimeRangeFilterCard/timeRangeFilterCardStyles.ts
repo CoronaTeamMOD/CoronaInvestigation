@@ -43,6 +43,9 @@ const useStyles = makeStyles({
     timeRangeMenuItem: {
         width: '10vw',
         height: '2vw'
+    },
+    timeRangeError: {
+        fontSize: '1vw',
     }
 });
 

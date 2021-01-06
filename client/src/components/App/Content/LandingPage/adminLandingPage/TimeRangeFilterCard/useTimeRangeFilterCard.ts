@@ -1,43 +1,60 @@
-import { useState } from 'react';
-import { format } from 'date-fns';
+import { useEffect, useState } from 'react';
+import { format, parse } from 'date-fns';
 
 import { TimeRange } from 'models/TimeRange';
 import timeRanges from 'models/enums/timeRanges';
 
 import AdminLandingPageFilters from '../AdminLandingPageFilters';
 
+const dateMissingError = 'יש לבחור תאריך תחילה וסיום';
+const rangeError = 'טווח תאריכים צריך להיות תקין';
+
 const useTimeRangeFilterCard = (props : Props) => {
     
-    const defaultTimeRange = timeRanges[0];
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [startDate, setStartDate] = useState<Date | null>(null);
-    const [endDate, setEndDate] = useState<Date | null>(null);
-
     const {timeRangeFilter , setTimeRangeFilter, investigationInfoFilter, setInvestigationInfoFilter} = props;
 
+    const defaultTimeRange = timeRanges[0];
+    const customTimeRange = timeRanges[4];
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [errorMes, setErrorMes] = useState<string>('');
+    
     const onTimeRangeChange = (timeRangeId: number) => {
         const selectedTimeRange = timeRanges.find(timeRange => timeRange.id === timeRangeId) as TimeRange;
         setTimeRangeFilter(selectedTimeRange)
     }
 
     const onStartDateSelect = (startDateInput: Date) => {
-        setStartDate(startDateInput)
-        const selectedTimeRange = {...timeRanges[4], startDate: format(startDateInput,'yyyy-MM-dd'),}
-        setTimeRangeFilter(selectedTimeRange)
+        setTimeRangeFilter((timeRangeFilter) => {
+            return {...timeRangeFilter, startDate: format(startDateInput,'yyyy-MM-dd')};
+        });
     }
 
     const onEndDateSelect = (endDateInput :Date) => {
-        setEndDate(endDateInput)
-        const selectedTimeRange = {...timeRanges[4], endDate: format(endDateInput,'yyyy-MM-dd'),}
-        setTimeRangeFilter(selectedTimeRange)
+        setTimeRangeFilter((timeRangeFilter) => {
+            return {...timeRangeFilter, endDate: format(endDateInput,'yyyy-MM-dd')};
+        });        
     }
 
     const onUpdateButtonCLicked = () => {
         if(timeRangeFilter.id !== defaultTimeRange.id) {
-            setInvestigationInfoFilter({
-                ...investigationInfoFilter,
-                timeRange : {startDate: timeRangeFilter.startDate, endDate: timeRangeFilter.endDate}
-            })
+            if (timeRangeFilter.id == customTimeRange.id) {
+                if (timeRangeFilter.startDate === null || timeRangeFilter.endDate === null) {
+                    setErrorMes(dateMissingError);
+                } else if (timeRangeFilter.startDate > timeRangeFilter.endDate) {
+                    setErrorMes(rangeError);
+                } else {                   
+                    setErrorMes('');
+                    setInvestigationInfoFilter({
+                        ...investigationInfoFilter,
+                        timeRange : {startDate: timeRangeFilter.startDate, endDate: timeRangeFilter.endDate}
+                    })
+                }
+            } else {
+                setInvestigationInfoFilter({
+                    ...investigationInfoFilter,
+                    timeRange : {startDate: timeRangeFilter.startDate, endDate: timeRangeFilter.endDate}
+                })
+            }
         } else {
             delete investigationInfoFilter.timeRange
             setInvestigationInfoFilter({
@@ -50,10 +67,9 @@ const useTimeRangeFilterCard = (props : Props) => {
         isLoading,
         onUpdateButtonCLicked,
         onTimeRangeChange,
-        startDate,
         onStartDateSelect,
-        endDate,
-        onEndDateSelect
+        onEndDateSelect,
+        errorMes
     }
 };
 

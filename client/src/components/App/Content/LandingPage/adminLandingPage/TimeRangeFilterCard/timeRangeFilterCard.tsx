@@ -14,13 +14,13 @@ import AdminLandingPageFilters from '../AdminLandingPageFilters';
 
 const filterTimeRangeLabel = 'טווח זמנים';
 const customTimeRangeId = -1;
-const timeRangeMinDate = new Date(2020, 1, 9)
+const timeRangeMinDate = new Date(2020, 9, 1);
 
 const TimeRangeCard = (props : Props): JSX.Element => {
 
     const classes = useStyles();
     const { timeRangeFilter, setTimeRangeFilter, investigationInfoFilter, setInvestigationInfoFilter } = props;
-    const { isLoading, onTimeRangeChange, onUpdateButtonCLicked, startDate, onStartDateSelect, endDate, onEndDateSelect} = useTimeRangeFilterCard({
+    const { isLoading, onTimeRangeChange, onUpdateButtonCLicked, onStartDateSelect, onEndDateSelect, errorMes} = useTimeRangeFilterCard({
         timeRangeFilter,
         setTimeRangeFilter,
         investigationInfoFilter,
@@ -42,21 +42,25 @@ const TimeRangeCard = (props : Props): JSX.Element => {
                     
                 </FormControl>
             </CardContent>
-            <Collapse in={timeRangeFilter.id === customTimeRangeId} className={classes.collapse}>
+            <Collapse in={timeRangeFilter.id === customTimeRangeId} unmountOnExit className={classes.collapse}>
                 <CardContent className={classes.dateRangeCardContent}>
                     <DateRangePick
-                        startDate={startDate}
+                        startDate={timeRangeFilter.startDate}
                         onStartDateChange={onStartDateSelect}
-                        endDate={endDate}
+                        endDate={timeRangeFilter.endDate}
                         onEndDateChange={onEndDateSelect}
-                        // minDate={timeRangeMinDate}
+                        minDate={timeRangeMinDate}
+                        maxDate={new Date()}
                     />   
+                    {errorMes !== '' && 
+                        <Typography className={classes.timeRangeError}>{errorMes}</Typography>
+                    }
                 </CardContent>
             </Collapse>
             <CardActions className={classes.timeCardActions}>
                 <UpdateButton
                     onClick={onUpdateButtonCLicked}
-                />
+                />        
             </CardActions>
         </LoadingCard>
     )
