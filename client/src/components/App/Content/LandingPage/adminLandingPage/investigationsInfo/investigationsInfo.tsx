@@ -47,7 +47,7 @@ const InvestigationsInfo: React.FC<Props> = (props: Props): JSX.Element => {
     }, [investigationsStatistics])
 
     return (
-        <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.filtersCard}>
+        <LoadingCard isLoading={isLoading} height={cardHeight} className={classes.filtersCard}>
             <CardContent>
                 <Grid container>
                     <Grid item xs={12} className={classes.investigationInfoButtonWrapper}>
