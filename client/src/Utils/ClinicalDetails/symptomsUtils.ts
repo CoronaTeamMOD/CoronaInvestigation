@@ -1,4 +1,4 @@
-import { compareDesc, eachDayOfInterval, subDays } from 'date-fns';
+import { compareDesc, eachDayOfInterval, startOfDay, subDays } from 'date-fns';
 
 export const symptomsWithKnownStartDate: number = 4;
 export const nonSymptomaticPatient: number = 7;
@@ -11,14 +11,14 @@ export const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDa
         let startInvestigationDate= new Date();
         if (doesHaveSymptoms === true) {
             if (symptomsStartDate)
-                startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
+                startInvestigationDate = subDays(new Date(symptomsStartDate), symptomsWithKnownStartDate);
             else
                 startInvestigationDate = subDays(new Date(validationDate), symptomsWithUnknownStartDate)
         } else {
             startInvestigationDate = subDays(new Date(validationDate), nonSymptomaticPatient)
         }
         try {
-            return eachDayOfInterval({ start: startInvestigationDate, end: endInvestigationDate }).sort(compareDesc);
+            return eachDayOfInterval({ start: startOfDay(startInvestigationDate), end: endInvestigationDate }).sort(compareDesc);
         } catch (e) {
             return []
         }

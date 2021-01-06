@@ -38,19 +38,18 @@ const investigationReducer = (state = initialState, action: Actions.Investigatio
         case Actions.SET_IS_CURRENTLY_LOADING: return { ...state, isCurrentlyLoading: action.payload.isCurrentlyLoading }
         case Actions.SET_LAST_OPENED_EPIDEMIOLOGY_NUM: return { ...state, lastOpenedEpidemiologyNumber: action.payload.lastOpenedEpidemiologyNumber }
         case Actions.SET_INVESTIGATION_STATUS: return { ...state, investigationStatus: action.payload.investigationStatus }
-        case Actions.SET_SYMPTOMS_EXISTENCE_INFO: {
-            const { symptomsStartDate, doesHaveSymptoms } = action.payload.symptomsExistenceInfo;
+        case Actions.SET_DATES_TO_INVESTIGATE_PARAMS: {
+            const { validationDate: newValidationDate, symptomsExistenceInfo } = action.payload;
+            const validationDate = newValidationDate || state.validationDate;
+            const doesHaveSymptoms = symptomsExistenceInfo ? symptomsExistenceInfo.doesHaveSymptoms : state.doesHaveSymptoms;
+            const symptomsStartDate = symptomsExistenceInfo ? symptomsExistenceInfo.symptomsStartDate : state.symptomsStartDate;
             return { 
                 ...state,
+                validationDate,
                 doesHaveSymptoms,
                 symptomsStartDate,
-                datesToInvestigate: getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, state.validationDate) 
+                datesToInvestigate: getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, validationDate) 
             }
-        }
-        case Actions.SET_VALIDATION_DATE: return { 
-            ...state, 
-            validationDate: action.payload.validationDate,
-            datesToInvestigate: getDatesToInvestigate(state.doesHaveSymptoms, state.symptomsStartDate, action.payload.validationDate) 
         }
         case Actions.SET_END_TIME: return { ...state, endTime: action.payload.endTime }
         case Actions.SET_CREATOR: return  { ...state, creator: action.payload.creator }

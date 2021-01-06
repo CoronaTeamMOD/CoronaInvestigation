@@ -14,7 +14,7 @@ import FlattenedDBAddress, { initDBAddress } from 'models/DBAddress';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { getDatesToInvestigate } from 'Utils/ClinicalDetails/symptomsUtils';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
-import { setSymptomsExistenceInfo } from 'redux/Investigation/investigationActionCreators';
+import { setDatesToInvestigateParams } from 'redux/Investigation/investigationActionCreators';
 
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
 import {useClinicalDetailsIncome, useClinicalDetailsOutcome} from './useClinicalDetailsInterfaces';
@@ -221,7 +221,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         }))
         .then(() => {
             saveClinicalDetailsLogger.info('saved clinical details successfully', Severity.LOW);
-            setSymptomsExistenceInfo({doesHaveSymptoms: clinicalDetails.doesHaveSymptoms, symptomsStartDate: clinicalDetails.symptomsStartDate});
+            setDatesToInvestigateParams({doesHaveSymptoms: clinicalDetails.doesHaveSymptoms, symptomsStartDate: clinicalDetails.symptomsStartDate});
         })
         .catch((error) => {
             saveClinicalDetailsLogger.error(`got error from server: ${error}`, Severity.HIGH);

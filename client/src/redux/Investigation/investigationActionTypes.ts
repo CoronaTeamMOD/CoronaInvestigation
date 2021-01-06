@@ -9,10 +9,9 @@ export const SET_LAST_OPENED_EPIDEMIOLOGY_NUM = 'SET_LAST_OPENED_EPIDEMIOLOGY_NU
 export const SET_IS_CURRENTLY_LOADING = 'SET_IS_CURRENTLY_LOADING';
 export const SET_AXIOS_INTERCEPTOR_ID = 'SET_AXIOS_INTERCEPTOR_ID';
 export const SET_INVESTIGATION_STATUS = 'SET_INVESTIGATION_STATUS';
-export const SET_VALIDATION_DATE = 'SET_VALIDATION_DATE';
 export const SET_END_TIME = 'SET_END_TIME';
 export const SET_CREATOR = 'SET_CREATOR';
-export const SET_SYMPTOMS_EXISTENCE_INFO = 'SET_SYMPTOMS_EXISTENCE_INFO';
+export const SET_DATES_TO_INVESTIGATE_PARAMS = 'SET_DATES_TO_INVESTIGATE_PARAMS';
 
 interface SetEpidemiologyNum {
     type: typeof SET_EPIDEMIOLOGY_NUM,
@@ -54,11 +53,6 @@ interface SetInvestigationStatus {
     payload: {investigationStatus: InvestigationStatus}
 }
 
-interface SetValidationStatus {
-    type: typeof SET_VALIDATION_DATE,
-    payload: {validationDate: Date}
-}
-
 interface SetEndTime {
     type: typeof SET_END_TIME,
     payload: {endTime: Date | null}
@@ -69,11 +63,11 @@ interface SetCreator {
     payload: {creator: string}
 }
 
-interface SetSymptomsExistenceInfo {
-    type: typeof SET_SYMPTOMS_EXISTENCE_INFO,
-    payload: {symptomsExistenceInfo: SymptomsExistenceInfo}
+interface SetDatesToInvestigateParams {
+    type: typeof SET_DATES_TO_INVESTIGATE_PARAMS,
+    payload: {symptomsExistenceInfo?: SymptomsExistenceInfo, validationDate?: Date}
 }
 
 export type InvestigationAction = SetEpidemiologyNum | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId
- | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetValidationStatus
- | SetEndTime | SetCreator | SetSymptomsExistenceInfo;
+ | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetEndTime 
+ | SetCreator | SetDatesToInvestigateParams;

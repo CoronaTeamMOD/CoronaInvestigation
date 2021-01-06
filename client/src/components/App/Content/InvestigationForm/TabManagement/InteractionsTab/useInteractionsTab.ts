@@ -152,8 +152,8 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     }).catch((error) => {
                         deletingInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                         alertError(eventDeleteFailedMsg);
+                        setIsLoading(false);
                     })
-                    .finally(() => setIsLoading(false));
                 }
             });
     }
@@ -180,8 +180,8 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 }).catch((error) => {
                     deleteContactedPersonLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                     alertError(contactDeleteFailedMsg);
-                })
-                .finally(() => setIsLoading(false));
+                    setIsLoading(false);
+                });
             }
             ;
         });

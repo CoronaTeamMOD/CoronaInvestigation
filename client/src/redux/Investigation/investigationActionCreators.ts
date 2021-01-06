@@ -60,13 +60,6 @@ export const setInvestigationStatus = (investigationStatus: InvestigationStatus)
     })
 }
 
-export const setValidationDate = (validationDate: Date) => {
-    store.dispatch({
-        type: actionTypes.SET_VALIDATION_DATE,
-        payload: { validationDate }
-    })
-}
-
 export const setEndTime = (endTime: Date | null) => {
     store.dispatch({
         type: actionTypes.SET_END_TIME,
@@ -81,9 +74,9 @@ export const setCreator = (creator: string) => {
     })
 }
 
-export const setSymptomsExistenceInfo = (symptomsExistenceInfo: SymptomsExistenceInfo) => {
+export const setDatesToInvestigateParams = (symptomsExistenceInfo?: SymptomsExistenceInfo, validationDate?: Date) => {
     store.dispatch({
-        type: actionTypes.SET_SYMPTOMS_EXISTENCE_INFO,
-        payload: { symptomsExistenceInfo }
+        type: actionTypes.SET_DATES_TO_INVESTIGATE_PARAMS,
+        payload: { symptomsExistenceInfo, validationDate }
     })
 };

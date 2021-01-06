@@ -48,9 +48,8 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 .catch((error) => {
                     updateInteractionsLogger.error(`got error from server: ${error}`, Severity.HIGH);
                     alertError('לא ניתן היה לשמור את השינויים');
-                    }
-                )
-                .finally(() => setIsLoading(false));
+                    setIsLoading(false);
+                })
             } else {
                 const createInteractionsLogger = logger.setup('Create Interaction');
                 createInteractionsLogger.info('launching create interaction request', Severity.LOW);
@@ -67,8 +66,8 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                     createInteractionsLogger.error(`got error from server: ${error}`, Severity.LOW);
                     onDialogClose();
                     alertError('לא ניתן היה ליצור אירוע חדש');
+                    setIsLoading(false);
                 })
-                .finally(() => setIsLoading(false));
             }
         }
 

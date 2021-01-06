@@ -14,8 +14,8 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setGender } from 'redux/Gender/GenderActionCreators';
 import { CommentContextProvider } from './Context/CommentContext';
 import { landingPageRoute, adminLandingPageRoute } from 'Utils/Routes/Routes';
-import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setSymptomsExistenceInfo } from 'redux/Investigation/investigationActionCreators';
-import { setInvestigatedPatientId, setValidationDate , setIsCurrentlyHospitialized, setIsDeceased, setEndTime } from 'redux/Investigation/investigationActionCreators';
+import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setDatesToInvestigateParams } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigatedPatientId , setIsCurrentlyHospitialized, setIsDeceased, setEndTime } from 'redux/Investigation/investigationActionCreators';
 
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
@@ -93,8 +93,11 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                     setIsCurrentlyHospitialized(investigationInfo.investigatedPatient.isCurrentlyHospitalized);
                     const gender = investigationInfo.investigatedPatient.gender;
                     setGender(gender ? gender : '');
-                    setValidationDate(investigationInfo.coronaTestDate);
-                    setSymptomsExistenceInfo({symptomsStartDate: investigationInfo.symptomsStartDate, doesHaveSymptoms: investigationInfo.doesHaveSymptoms})
+                    setDatesToInvestigateParams({
+                        symptomsStartDate: investigationInfo.symptomsStartDate, 
+                        doesHaveSymptoms: investigationInfo.doesHaveSymptoms,
+                        }, investigationInfo.coronaTestDate
+                    )
                     setEndTime(investigationInfo.endTime);
                     setInvestigationStaticInfo(investigationInfo);
                 }

@@ -1,7 +1,6 @@
 import axios  from 'axios';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
-import { differenceInCalendarDays } from 'date-fns';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
@@ -146,14 +145,14 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             Severity.LOW
         );
         setIsLoading(true);
-        axios.get(`/contactedPeople/allContacts/${epidemiologyNumber}`)
+        const minimalDate = datesToInvestigate.slice(-1)[0];
+        axios.get(`/contactedPeople/allContacts/${epidemiologyNumber}/${new Date(minimalDate)}`)
             .then((result: any) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     interactedContactsLogger.info(
                         'got respond from the server that has data',
                         Severity.LOW
                     );
-                    const minimalDate = datesToInvestigate.slice(-1)[0];
                     const interactedContacts: InteractedContact[] = result.data.map((contact: any) =>
                         ({
                             id: contact.id,
@@ -207,13 +206,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             involvedContactId: contact.involvedContactId,
                         })
                     )
-                    .filter(
-                        (contactedPerson: InteractedContact) =>
-                            differenceInCalendarDays(
-                                new Date(contactedPerson.contactDate),
-                                new Date(minimalDate)
-                            ) >= 0
-                    );
 
                     setAllContactedInteractions(interactedContacts);
                 } else {
