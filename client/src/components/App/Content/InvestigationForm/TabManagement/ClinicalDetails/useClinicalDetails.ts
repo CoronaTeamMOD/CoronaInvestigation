@@ -259,7 +259,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     }
                 })
             )
-            .catch(() => alertError('לא ניתן לעבור טאב עם תאריך תסמינים לא חוקי'));
+            .catch(() => alertError('לא ניתן להשלים את הטאב עם תאריך תסמינים לא חוקי'));
         } else {
             saveClinicalDetailsToDB(clinicalDetails, id);
         }
