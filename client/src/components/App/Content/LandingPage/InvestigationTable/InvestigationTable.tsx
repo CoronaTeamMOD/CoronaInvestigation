@@ -273,7 +273,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         {tableTitle}
                     </Typography>
                 </Grid>
-                <Grid item xs={2} style={{marginRight : 'auto'}}>
+                <Grid item xs={2} className={classes.deskFilterCard}>
                     <DeskFilter
                         desks={allDesks}
                         filteredDesks={deskFilter}

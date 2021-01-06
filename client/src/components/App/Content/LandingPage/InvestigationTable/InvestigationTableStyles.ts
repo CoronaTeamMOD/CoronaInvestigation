@@ -72,6 +72,9 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     sortResetButton: {
         fontWeight: 600
     },
+    deskFilterCard: {
+        marginRight : 'auto'
+    },
     filterTableRow: {
         width: tableWidth,
     },
