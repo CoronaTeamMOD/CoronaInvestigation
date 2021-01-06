@@ -15,7 +15,7 @@ import AdminLandingPageFilters from './AdminLandingPageFilters';
 import LastUpdateMessage from './LastUpdateMessage/LastUpdateMessage';
 import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
-import TimeRangeFilterCard from './TimeRangeFilterCard/timeRangeFilterCard';
+import TimeRangeFilterCard from './TimeRangeFilterCard/TimeRangeFilterCard';
 
 const AdminLandingPage: React.FC = (): JSX.Element => {
 

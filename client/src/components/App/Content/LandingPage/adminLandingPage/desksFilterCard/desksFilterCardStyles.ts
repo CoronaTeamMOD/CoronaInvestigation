@@ -1,11 +1,11 @@
 import { makeStyles } from '@material-ui/styles';
 
-export const cardWidth = '15vw';
+export const cardWidth = '20vw';
 export const cardHeight = '35vh';
 
 const useStyles = makeStyles({
     desksCard: {
-        width: '15vw',
+        width: '20vw',
         height: '35vh',
         borderRadius: '1vw',
     },
