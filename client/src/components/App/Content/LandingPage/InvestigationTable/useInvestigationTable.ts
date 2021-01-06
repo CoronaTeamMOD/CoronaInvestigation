@@ -196,6 +196,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setCurrentPage(defaultPage);
     };
 
+    const changeTimeRangeFilter = (timeRangeFilter: TimeRange) => {
+        updateFilterHistory('timeRangeFilter', timeRangeFilter);
+        setTimeRangeFilter(timeRangeFilter);
+        handleFilterChange(filterCreators.TIME_RANGE(timeRangeFilter))
+        setCurrentPage(defaultPage);
+    };
+
     const changeSearchFilter = (searchQuery: string) => {
         handleFilterChange(filterCreators.SEARCH_BAR(searchQuery)) 
     }
@@ -945,7 +952,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchAllCountyUsers,
         tableTitle, 
         timeRangeFilter,
-        isBadgeInVisible
+        isBadgeInVisible,
         changeTimeRangeFilter
     };
 };

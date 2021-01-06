@@ -11,6 +11,7 @@ import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
 import useStyles from './TableFilterStyles';
 import { StatusFilter as StatusFilterType } from '../InvestigationTableInterfaces';
+import useTableFilter from './useTableFilter';
 
 const filterTimeRangeLabel = 'ת. הגעת חקירה';
 const customTimeRangeId = -1;
@@ -26,6 +27,12 @@ const TableFilter = (props: Props) => {
         changeUnassginedUserFilter, unassignedUserFilter, 
         timeRangeFilter, onTimeRangeFilterChange
     } = props;
+
+    const {onUpdateButtonCLicked,
+        onTimeRangeChange,
+        onStartDateSelect,
+        onEndDateSelect,
+        errorMes} = useTableFilter({timeRangeFilter, onTimeRangeFilterChange});
 
     return (
         <Card className={classes.card}>
@@ -70,7 +77,7 @@ const TableFilter = (props: Props) => {
                 />
             </FormControl>
             <Collapse in={timeRangeFilter.id === customTimeRangeId} unmountOnExit>
-                {/* <DateRangePick
+                <DateRangePick
                     startDate={timeRangeFilter.startDate}
                     onStartDateChange={onStartDateSelect}
                     endDate={timeRangeFilter.endDate}
@@ -78,10 +85,9 @@ const TableFilter = (props: Props) => {
                     minDate={timeRangeMinDate}
                     maxDate={new Date()}
                 />   
-                {errorMes !== '' && 
+                {/* {errorMes !== '' && 
                     <Typography className={classes.timeRangeError}>{errorMes}</Typography>
                 } */}
-                <Typography>ssss</Typography>
             </Collapse>
             <Checkbox
                 onChange={(event) => changeUnassginedUserFilter(event.target.checked)}
