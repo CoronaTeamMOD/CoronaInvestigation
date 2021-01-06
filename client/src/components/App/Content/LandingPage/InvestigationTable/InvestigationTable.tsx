@@ -312,7 +312,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 inactiveUserFilter={inactiveUserFilter}
                                 unassignedUserFilter={unassignedUserFilter}
                                 timeRangeFilter={timeRangeFilter}
-                                onTimeRangeFilterChange={(event, value) => changeTimeRangeFilter(value)} 
+                                onTimeRangeFilterChange={changeTimeRangeFilter} 
                             />
                         </Collapse>
                     </Grid>

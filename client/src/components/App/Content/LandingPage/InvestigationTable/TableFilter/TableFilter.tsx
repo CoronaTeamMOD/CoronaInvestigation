@@ -1,14 +1,20 @@
 import React from 'react'
 import { Close } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import { Card, Checkbox, IconButton, TextField, Typography } from '@material-ui/core';
+import { Card, Checkbox, Collapse, FormControl, IconButton, TextField, Typography } from '@material-ui/core';
 
+import { TimeRange } from 'models/TimeRange';
+import timeRanges from 'models/enums/timeRanges';
+import DateRangePick from 'commons/DatePick/DateRangePick';
+import SelectDropdown from 'commons/Select/SelectDropdown';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
 import useStyles from './TableFilterStyles';
 import { StatusFilter as StatusFilterType } from '../InvestigationTableInterfaces';
-import { TimeRange } from 'models/TimeRange';
 
+const filterTimeRangeLabel = 'ת. הגעת חקירה';
+const customTimeRangeId = -1;
+const timeRangeMinDate = new Date(2020, 9, 1);
 
 const TableFilter = (props: Props) => {
     const classes = useStyles();
@@ -53,6 +59,30 @@ const TableFilter = (props: Props) => {
                 )}
                 limitTags={1}
             />
+            <Typography className={classes.title}>
+                    <b>{filterTimeRangeLabel}</b>
+            </Typography>
+            <FormControl variant='outlined'>
+                <SelectDropdown
+                    onChange={onTimeRangeFilterChange}
+                    items={timeRanges}
+                    value={timeRangeFilter.id}
+                />
+            </FormControl>
+            <Collapse in={timeRangeFilter.id === customTimeRangeId} unmountOnExit>
+                {/* <DateRangePick
+                    startDate={timeRangeFilter.startDate}
+                    onStartDateChange={onStartDateSelect}
+                    endDate={timeRangeFilter.endDate}
+                    onEndDateChange={onEndDateSelect}
+                    minDate={timeRangeMinDate}
+                    maxDate={new Date()}
+                />   
+                {errorMes !== '' && 
+                    <Typography className={classes.timeRangeError}>{errorMes}</Typography>
+                } */}
+                <Typography>ssss</Typography>
+            </Collapse>
             <Checkbox
                 onChange={(event) => changeUnassginedUserFilter(event.target.checked)}
                 color='primary'
@@ -84,7 +114,7 @@ interface Props {
     onFilterChange: (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => void;
     onClose: () => void;
     timeRangeFilter: TimeRange;
-    onTimeRangeFilterChange: (event: React.ChangeEvent<{}>, timeRangeFilter: TimeRange) => void;
+    onTimeRangeFilterChange: (timeRangeFilter: TimeRange) => void;
 };
 
 export default TableFilter
