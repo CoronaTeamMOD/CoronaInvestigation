@@ -11,6 +11,7 @@ import { useDateUtils } from 'Utils/DateUtils/useDateUtils';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setFormState } from 'redux/Form/formActionCreators';
 import FlattenedDBAddress, { initDBAddress } from 'models/DBAddress';
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { getDatesToInvestigate } from 'Utils/ClinicalDetails/symptomsUtils';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
@@ -221,7 +222,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         }))
         .then(() => {
             saveClinicalDetailsLogger.info('saved clinical details successfully', Severity.LOW);
-            setDatesToInvestigateParams({doesHaveSymptoms: clinicalDetails.doesHaveSymptoms, symptomsStartDate: clinicalDetails.symptomsStartDate});
+            didSymptomsDateChangeOccur && setDatesToInvestigateParams({doesHaveSymptoms: clinicalDetails.doesHaveSymptoms, symptomsStartDate: clinicalDetails.symptomsStartDate});
         })
         .catch((error) => {
             saveClinicalDetailsLogger.error(`got error from server: ${error}`, Severity.HIGH);
@@ -246,13 +247,19 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
 
     const saveClinicalDetailsAndDeleteContactEvents = (clinicalDetails: ClinicalDetailsData, id: number): void => {
         if(didSymptomsDateChangeOccur) {
-            alertSymptomsDatesChange().then(result => {
-                if(result.isConfirmed) {
-                    deleteIrrelevantContactEvents(clinicalDetails.symptomsStartDate, clinicalDetails.doesHaveSymptoms);
-                    didDeletingContactEventsSucceed &&
-                        saveClinicalDetailsToDB(clinicalDetails, id);
-                }
-            })
+            const { symptomsStartDate, doesHaveSymptoms } = clinicalDetails;
+            ClinicalDetailsSchema(validationDate)
+            .validateAt(ClinicalDetailsFields.SYMPTOMS_START_DATE, clinicalDetails as any)
+            .then(() => 
+                alertSymptomsDatesChange().then(result => {
+                    if(result.isConfirmed) {
+                        deleteIrrelevantContactEvents(symptomsStartDate, doesHaveSymptoms);
+                        didDeletingContactEventsSucceed &&
+                            saveClinicalDetailsToDB(clinicalDetails, id);
+                    }
+                })
+            )
+            .catch(() => alertError('לא ניתן לעבור טאב עם תאריך תסמינים לא חוקי'));
         } else {
             saveClinicalDetailsToDB(clinicalDetails, id);
         }
