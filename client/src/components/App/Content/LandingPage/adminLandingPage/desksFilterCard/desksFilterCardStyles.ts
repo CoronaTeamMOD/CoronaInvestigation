@@ -10,8 +10,7 @@ const useStyles = makeStyles({
         borderRadius: '1vw',
     },
     desksCardContent: {
-        height: '70%',
-        width: '13.6vw',
+        height: '30vh',
     },
     cardTitle: {
         fontSize: '0.9vw',
@@ -23,7 +22,6 @@ const useStyles = makeStyles({
     },
     desksWrapper: {
         overflowY: 'auto',
-        height: '95%',
     }
 });
 
