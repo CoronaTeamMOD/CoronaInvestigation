@@ -6,7 +6,7 @@ import timeRanges from 'models/enums/timeRanges';
 import SelectDropdown from 'commons/Select/SelectDropdown';
 import DateRangePick from 'commons/DatePick/DateRangePick';
 
-import useStyles from './timeRangeFilterCardStyles';
+import useStyles from './TimeRangeFilterCardStyles';
 import LoadingCard from '../LoadingCard/LoadingCard';
 import UpdateButton from '../UpdateButton/UpdateButton';
 import useTimeRangeFilterCard from './useTimeRangeFilterCard';

@@ -17,7 +17,7 @@ const useStyles = makeStyles({
     dateRangeCardContent: {
         paddingTop: 0,
         paddingBottom: 0,
-        
+        width: '18vw'
     },
     collapse: {
         height: '36%',
@@ -31,7 +31,7 @@ const useStyles = makeStyles({
         flip: false
     },
     timeRangeSelect: {
-        width: '10vw',
+        width: '17.5vw',
         height: '2vw',
         '& .MuiSelect-select': {
             fontSize: '1vw'
