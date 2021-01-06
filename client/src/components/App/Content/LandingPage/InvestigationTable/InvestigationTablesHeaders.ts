@@ -28,7 +28,10 @@ export enum TableHeadersNames {
     otherReason = 'otherReason',
     reasonId = 'reasonId',
     canFetchGroup = 'canFetchGroup',
-    settings = 'settings'
+    settings = 'settings',
+    isSelfInvestigated = 'isSelfInvestigated',
+    selfInvestigationStatus = 'selfInvestigationStatus',
+    selfInvestigationUpdateTime = 'selfInvestigationUpdateTime'
 }
 
 export type IndexedInvestigation = { [T in keyof typeof TableHeadersNames]: string | number | boolean | InvestigationMainStatus };
@@ -62,7 +65,10 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.groupReason]: '',
     [TableHeadersNames.otherReason]: '',
     [TableHeadersNames.reasonId]: '',
-    [TableHeadersNames.settings]: ''
+    [TableHeadersNames.settings]: '',
+    [TableHeadersNames.isSelfInvestigated]: '',
+    [TableHeadersNames.selfInvestigationStatus]: '',
+    [TableHeadersNames.selfInvestigationUpdateTime]: '',
 }
 
 export const adminCols: string[] = [
@@ -122,5 +128,8 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.groupReason]: false,
     [TableHeadersNames.otherReason]: false,
     [TableHeadersNames.reasonId]: false,
-    [TableHeadersNames.settings]: false
+    [TableHeadersNames.settings]: false,
+    [TableHeadersNames.isSelfInvestigated]: false,
+    [TableHeadersNames.selfInvestigationStatus]: false,
+    [TableHeadersNames.selfInvestigationUpdateTime]: false,
 }
