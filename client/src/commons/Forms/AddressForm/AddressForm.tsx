@@ -92,7 +92,7 @@ const AddressForm: React.FC<Props> = ({
                         render={(props) => (
                             <TextField 
                                 test-id={streetField.testId || ''} 
-                                value={props.value || UNKNOWN} 
+                                value={streetsInCity.get(props.value)?.displayName || UNKNOWN} 
                                 label={STREET_LABEL} 
                                 InputLabelProps={{ shrink: true }}
                                 disabled 

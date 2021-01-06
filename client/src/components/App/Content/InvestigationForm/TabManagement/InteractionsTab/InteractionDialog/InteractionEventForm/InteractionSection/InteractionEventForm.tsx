@@ -35,7 +35,7 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     const patientAddress = useSelector<StoreStateType, FlattenedDBAddress>(state => state.address);
     
     
-    const { city, floor, houseNum, streetName: street } = patientAddress;
+    const { city, floor, houseNum, street } = patientAddress;
 
     const placeType = watch(InteractionEventDialogFields.PLACE_TYPE);
     const placeSubType = watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
