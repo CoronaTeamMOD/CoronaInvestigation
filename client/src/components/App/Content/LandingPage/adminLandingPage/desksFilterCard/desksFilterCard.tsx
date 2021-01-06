@@ -7,25 +7,17 @@ import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import LoadingCard from '../LoadingCard/LoadingCard';
 import useDesksFilterCard from './useDesksFilterCard';
 import UpdateButton from '../UpdateButton/UpdateButton';
-import AdminLandingPageFilters from '../AdminLandingPageFilters';
 import useStyles, { cardHeight, cardWidth } from './desksFilterCardStyles';
+
 interface Props {
-    filteredDesks: number[];
-    setFilteredDesks: React.Dispatch<React.SetStateAction<number[]>>;
-    investigationInfoFilter: AdminLandingPageFilters;
-    setInvestigationInfoFilter: React.Dispatch<React.SetStateAction<AdminLandingPageFilters>>;
+    onUpdateButtonClicked: (filteredDesks: number[]) => void;
 }
 
 const DesksFilterCard = (props : Props): JSX.Element => {
 
     const classes = useStyles();
-    const { filteredDesks, setFilteredDesks, investigationInfoFilter, setInvestigationInfoFilter } = props;
-    const { desks, isLoading, clearAllDesks, onDeskClicked, onUpdateButtonCLicked } = useDesksFilterCard({
-        filteredDesks,
-        setFilteredDesks,
-        investigationInfoFilter,
-        setInvestigationInfoFilter,
-    });
+    const { onUpdateButtonClicked } = props;
+    const { desks, isLoading, filteredDesks, clearAllDesks, onDeskClicked } = useDesksFilterCard();
 
     return (
         <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.desksCard}>
@@ -58,7 +50,7 @@ const DesksFilterCard = (props : Props): JSX.Element => {
                 </div>
                 <div className={classes.desksCardActions}>
                     <UpdateButton
-                        onClick={onUpdateButtonCLicked}
+                        onClick={() => onUpdateButtonClicked(filteredDesks)}
                     />
                 </div>
                 </Box>
