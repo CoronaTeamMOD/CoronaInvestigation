@@ -1,56 +1,62 @@
 const filterCreators = {
-    USER_NAME_OR_ID: {
-        create(value: string) {
-            return value.length > 0 ?
-            {
+    SEARCH_BAR: (value: string) => {
+        return value.length > 0 ?
+        {
+            search: {
                 or: [
                     { userName: { includes: value } },
                     { id: { includes: value } }
                 ]
-            } : { or: null };
-        }
+            }
+        } 
+        : 
+        { search: null };
     },
-    SOURCE_ORGANIZATION: {
-        create(values: string[]) {
-            return values.length > 0 ?
-            {
-                sourceOrganizationBySourceOrganization: { displayName: { in: values } }
-            } : { sourceOrganizationBySourceOrganization: null };
+    SOURCE_ORGANIZATION: (values: string[]) => {
+        return values.length > 0 ?
+        { 
+            sourceOrganization: {
+                sourceOrganizationBySourceOrganization: { displayName: { in: values } } 
+            } 
         }
+        : 
+        { sourceOrganization: null };
     },
-    LANGUAGES: {
-        create(values: string[]) {
-            return values.length > 0 ?
-            {
+    LANGUAGES: (values: string[]) => {
+        return values.length > 0 ?
+        {
+            languages: {
                 userLanguagesByUserId: {
                     some: { languageByLanguage: { displayName: { in: values } } }
-                  }
-            } : { userLanguagesByUserId: null };
-        }
+                }
+            }
+        } 
+        :
+        { languages: null };
     },
-    COUNTY: {
-        create(values: string[]) {
-            return values.length > 0 ? 
-            {
+    COUNTY: (values: string[]) => {
+        return values.length > 0 ? 
+        {
+            county: {
                 investigationGroup: { in: values }
-            } : { investigationGroup: null };
-        }
+            }
+        } 
+        : 
+        { county: null };
     },
-    USER_TYPE: {
-        create(values: string[]) {
-            return values.length > 0 ? 
-            {
-                userType: { in: values }
-            } : { userType: null };
-        }
+    USER_TYPE: (values: string[]) => {
+        return values.length > 0 ? 
+        { userType: { userType: { in: values } } }
+        : 
+        { userType: null };  
     },
-    USER_STATUS: {
-        create(values: string[]) {
-            return values.length > 0 ? 
-            {
-                isActive: { in: values }
-            } : { isActive: null };
-        }
+    USER_STATUS: (values: string[]) => {
+        return values.length > 0 ? 
+        {
+            userStatus: { isActive: { in: values } }
+        } 
+        :
+        { userStatus: null };
     }
 }
 

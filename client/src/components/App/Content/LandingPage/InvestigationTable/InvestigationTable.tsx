@@ -4,13 +4,13 @@ import { Pagination } from '@material-ui/lab';
 import React, { useMemo, useState, useRef, useEffect } from 'react';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
-    TableHead, TableContainer, TextField, TableSortLabel, Button,
+    TableHead, TableContainer, TableSortLabel, Button,
     useMediaQuery, Collapse, IconButton, Badge, Grid,
-    Slide, Box, InputAdornment, useTheme, Popover, Tooltip
+    Slide, Box, useTheme, Popover, Tooltip
 } from '@material-ui/core';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Refresh, Close, Search, ArrowForward } from '@material-ui/icons';
+import { Refresh, ArrowForward } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
@@ -18,6 +18,7 @@ import County from 'models/County';
 import userType from 'models/enums/UserType';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
+import SearchBar from 'commons/SearchBar/SearchBar';
 import InvestigatorOption from 'models/InvestigatorOption';
 import { adminLandingPageRoute } from 'Utils/Routes/Routes';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
@@ -39,7 +40,6 @@ export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
 const resetSortButtonText = 'סידור לפי תעדוף';
 const searchBarLabel = 'הכנס מס\' אפידימיולוגי, ת\"ז, שם מלא או טלפון...';
-const searchBarError = 'יש להכניס רק אותיות ומספרים';
 const returnToAdminLandingPage = 'חזרה לדף הנחיתה';
 
 export const rowsPerPage = 100;
@@ -93,9 +93,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         getNestedCellStyle, getRegularCellStyle,
         moveToTheInvestigationForm, totalCount, unassignedInvestigationsCount,
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
-        statusFilter, changeStatusFilter, deskFilter, changeDeskFilter, searchQuery, changeSearchQuery, isSearchQueryValid,
+        statusFilter, changeStatusFilter, deskFilter, changeDeskFilter, changeSearchFilter,
         changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers,
-        tableTitle, timeRangeFilter
+        tableTitle, timeRangeFilter, isBadgeInVisible
     } = useInvestigationTable({
         setSelectedRow, allGroupedInvestigations, setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations,
         investigationColor
@@ -162,14 +162,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const toggleFilterRow = () => setShowFilterRow(!showFilterRow);
 
-    const clearSearchBarQuery = () => {
-        changeSearchQuery('');
-    }
-
-    const onSearchBarType = (newSearchQuery: string) => {
-        changeSearchQuery(newSearchQuery);
-    }
-
     const markRow = async (indexedRow: IndexedInvestigation) => {
         const epidemiologyNumberIndex = checkedIndexedRows.findIndex(checkedRow => indexedRow.epidemiologyNumber === checkedRow.epidemiologyNumber);
         if (epidemiologyNumberIndex !== -1) {
@@ -203,22 +195,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         checkGroupedInvestigationOpen.includes(epidemiologyNumber) ?
             setCheckGroupedInvestigationOpen(checkGroupedInvestigationOpen.filter(rowId => rowId !== epidemiologyNumber)) :
             setCheckGroupedInvestigationOpen([...checkGroupedInvestigationOpen, epidemiologyNumber])
-    }
-
-    const onSearchClick = () => {
-        if (currentPage !== defaultPage) {
-            setCurrentPage(defaultPage);
-        } else {
-            fetchTableData();
-        }
-    }
-
-    const filterIconByToggle = () => {
-        const filterIcon = <FontAwesomeIcon icon={faFilter} style={{ fontSize: '15px' }} />;
-        if (showFilterRow) return <Badge
-            anchorOrigin={{ vertical: 'top', horizontal: 'left', }} variant='dot' badgeContent='' color='error'>{filterIcon}
-        </Badge>
-        return filterIcon
     }
 
     const isInvestigationRowClickable = (investigationStatus: InvestigationMainStatus) =>
@@ -293,39 +269,25 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         {counterDescription}
                     </Typography>
                     <Box justifyContent='flex-end'>
-                        <TextField
-                            className={classes.searchBar}
-                            value={searchQuery}
-                            onChange={event => onSearchBarType(event.target.value)}
-                            onKeyPress={event => {
-                                event.key === 'Enter' &&
-                                    onSearchClick();
-                            }}
-                            label={isSearchQueryValid ? searchBarLabel : searchBarError}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position='end'>
-                                        {
-                                            searchQuery.length > 0 &&
-                                            <IconButton className={classes.searchBarIcons} onClick={clearSearchBarQuery}>
-                                                <Close />
-                                            </IconButton>
-                                        }
-                                        <IconButton className={classes.searchBarIcons} onClick={onSearchClick}>
-                                            <Search />
-                                        </IconButton>
-                                    </InputAdornment>
-
-                                ),
-                            }}
-                            error={!isSearchQueryValid}
+                        <SearchBar 
+                            searchBarLabel={searchBarLabel}
+                            onClick={(value: string) => changeSearchFilter(value)}
                         />
-                        <Button
-                            color='primary'
-                            className={classes.filterButton}
-                            startIcon={filterIconByToggle()}
-                            onClick={toggleFilterRow}
-                        />
+                        <Tooltip title='סינון'>
+                            <IconButton 
+                                color='primary'
+                                onClick={toggleFilterRow} 
+                            >
+                                <Badge
+                                    invisible={isBadgeInVisible}
+                                    color='error'
+                                    variant='dot'
+                                    anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+                                >
+                                    <FontAwesomeIcon icon={faFilter} style={{ fontSize: '15px' }} />
+                                </Badge>
+                            </IconButton>
+                        </Tooltip>
                         <Button
                             color='primary'
                             className={classes.sortResetButton}

@@ -6,12 +6,11 @@ import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextFi
 
 import useStyles from './SearchBarStyles';
 
-const searchBarLabel = 'הכנס שם או שם משתמש...';
 const searchBarError = 'יש להכניס רק אותיות ומספרים';
 
 const SearchBar: React.FC<Props> = (props: Props) => {
 
-    const { onClick } = props;
+    const { searchBarLabel, onClick } = props;
 
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [isQueryValid, setIsQueryValid] = useState<boolean>(true);
@@ -70,6 +69,7 @@ const SearchBar: React.FC<Props> = (props: Props) => {
 }
 
 interface Props {
+    searchBarLabel: string;
     onClick: (value: string) => void;
 }
 
