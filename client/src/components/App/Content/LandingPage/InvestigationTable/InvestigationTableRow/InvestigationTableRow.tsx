@@ -9,6 +9,7 @@ import { Checkbox, IconButton, TableCell, TableRow, TextField, Tooltip } from '@
 import Desk from 'models/Desk';
 import User from 'models/User';
 import UserType from 'models/enums/UserType';
+import formatDate from 'Utils/DateUtils/formatDate';
 import InvestigationTableRowType from 'models/InvestigationTableRow';
 
 import useStyles from './InvestigationTableRowStyles';
@@ -34,7 +35,6 @@ const RowTooltip = (props: RowTooltipProps) => {
     const { creationDate, startTime, titleOverride } = props;
     const tooltipClasses = useTooltipStyles();
 
-    const formatDate = (date: Date): string => date ? format(new Date(date), 'dd/MM/yyyy') : 'אין מידע';
     const creationDateLabel = useMemo(() => formatDate(creationDate), [creationDate]);
     const startTimeLabel = useMemo(() => formatDate(startTime), [startTime]);
 

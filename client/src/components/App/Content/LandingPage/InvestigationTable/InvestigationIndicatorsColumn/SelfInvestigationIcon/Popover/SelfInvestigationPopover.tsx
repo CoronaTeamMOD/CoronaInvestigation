@@ -1,6 +1,7 @@
 import React from 'react'
 import { Grid } from '@material-ui/core';
 
+import formatDate from 'Utils/DateUtils/formatDate';
 import SelfInvestigaionStatuses , {statusNames} from 'models/enums/selfInvestigationStatus';
 
 interface Props {
@@ -16,7 +17,7 @@ const SelfInvestigationPopover = (props: Props) => {
 
     return (
         <div>
-            <div><b>{lastUpdatedTime} : </b>{date.toLocaleDateString()}</div>
+            <div><b>{lastUpdatedTime} : </b>{formatDate(date)}</div>
             <Grid item container>
                 <Grid item xs={6} style={{textAlign : 'right'}}><b>{statusTitle} : </b></Grid>
                 <Grid item xs={6} style={{textAlign : 'left'}}>{Boolean(statusNames[status]) ? statusNames[status] : 'לא ידוע' }</Grid>
