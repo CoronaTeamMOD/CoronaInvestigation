@@ -259,7 +259,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) =>
                 event.key === 'Escape' && closeDropdowns()}
         >
-            <Grid className={classes.title} container alignItems='center' justify='space-between'>
+            <Grid className={classes.title} container alignItems='center'>
                 {
                     (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) &&
                     <Tooltip title={returnToAdminLandingPage}>
@@ -273,7 +273,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         {tableTitle}
                     </Typography>
                 </Grid>
-                <Grid item xs={2} >
+                <Grid item xs={2} className={classes.deskFilterCard}>
                     <DeskFilter
                         desks={allDesks}
                         filteredDesks={deskFilter}
