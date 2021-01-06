@@ -154,7 +154,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         'got respond from the server that has data',
                         Severity.LOW
                     );
-                    const minimalDate = datesToInvestigate[0];
+                    const minimalDate = datesToInvestigate.slice(-1)[0];
                     const interactedContacts: InteractedContact[] = result.data.map((contact: any) =>
                         ({
                             id: contact.id,

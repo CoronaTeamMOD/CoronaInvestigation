@@ -184,11 +184,12 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
 
     const deleteIrrelevantContactEvents = (symptomsStartDate: Date | null, doesHaveSymptoms: boolean) => {
         const deleteIrrelevantEventsLogger = logger.setup('Deleting irrelevant contact events');
-        const allDatesToInvestigate = getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, validationDate);
-        if(allDatesToInvestigate.length > 0) {
+        const earliestDateToInvestigate = getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, validationDate).slice(-1)[0];
+        if(earliestDateToInvestigate) {
             deleteIrrelevantEventsLogger.info('Sending to server date to delete contact events by', Severity.LOW);
             setIsLoading(true);
-            axios.delete('/intersections/deleteContactEventsByDate', {params: {earliestDateToInvestigate: allDatesToInvestigate[0]}}).then((result) => {
+            axios.delete('/intersections/deleteContactEventsByDate', {params: {earliestDateToInvestigate}})
+            .then((result) => {
                 if(result.data?.data?.deleteContactEventsBeforeDate) {
                     deleteIrrelevantEventsLogger.info('Deleting contact events finished with success', Severity.LOW);
                 } else {
