@@ -226,15 +226,16 @@ usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response)
         user: response.locals.user.id,
     });
 
-    const parameters = { investigationGroup: +response.locals.user.investigationGroup };
+    const parameters = { inputCountyId: +response.locals.user.investigationGroup };
     groupLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_ACTIVE_GROUP_USERS, response.locals, parameters)
         .then(result => {
             groupLogger.info(validDBResponseLog, Severity.LOW);
-            const users: User[] = result.data.allUsers.nodes.map((user: any) => ({
+            const resData = JSON.parse(result.data.getInvestigatorListByCountyFunction.json);
+            const users: User[] = resData.map((user: any) => ({
                 ...user,
-                languages: user.languages.nodes.map((language: any) => language?.language),
+                languages: user.languages.map((language: any) => language),
                 token: ''
             }));
             response.send(users);
