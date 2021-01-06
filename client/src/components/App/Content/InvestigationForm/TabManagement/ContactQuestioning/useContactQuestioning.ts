@@ -139,7 +139,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         });
     };
 
-    // TODO - GRAPHQL QUERY BY CALENDAR DATES
     const loadInteractedContacts = () => {
         const interactedContactsLogger = logger.setup('Getting contacts');
         interactedContactsLogger.info(

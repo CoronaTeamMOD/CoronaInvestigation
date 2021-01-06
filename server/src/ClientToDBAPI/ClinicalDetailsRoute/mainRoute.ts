@@ -243,24 +243,6 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
     }
 });
 
-clinicalDetailsRoute.get('/coronaTestDate', (request: Request, response: Response) => {
-    const coronaTestDateLogger = logger.setup({
-        workflow: 'query test date and symptoms data of patient',
-        investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
-    });
-    const parameters = {currInvestigation: +response.locals.epidemiologynumber};
-    coronaTestDateLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-    graphqlRequest(GET_CORONA_TEST_DATE_OF_PATIENT, response.locals, parameters)
-    .then((result: CoronaTestDateQueryResult) => {
-        coronaTestDateLogger.info(validDBResponseLog, Severity.LOW);
-        response.send(result.data.allInvestigations.nodes[0]);
-    }).catch(error => {
-        coronaTestDateLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-        response.status(errorStatusCode).send(error);
-    });
-});
-
 clinicalDetailsRoute.get('/isDeceased/:investigatedPatientId/:isDeceased', (request: Request, response: Response) => {
     const logData = {
         workflow: 'update whether the pateint is deceased',
