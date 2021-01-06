@@ -6,7 +6,7 @@ import theme from 'styles/theme';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
-import InvestigatorOption from 'models/InvestigatorOption';
+import {FetchedInvestigatorOption} from 'models/InvestigatorOption';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
@@ -79,7 +79,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         onDialogClose();
     }
 
-    const handleConfirmInvestigatorsDialog = async (updatedIvestigator: InvestigatorOption, transferReason: string) => {
+    const handleConfirmInvestigatorsDialog = async (updatedIvestigator: FetchedInvestigatorOption, transferReason: string) => {
         const { uniqueGroupIds, epidemiologyNumbers } = 
         checkedIndexedRows.reduce<{
             uniqueGroupIds: string[],

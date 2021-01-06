@@ -13,7 +13,22 @@ interface User {
     sourceOrganization: string;
     deskName: string;
     countyByInvestigationGroup: CountyByInvestigationGroup;
-    deskByDeskId?: Desk;
+    deskByDeskId?: Desk;   
+};
+
+export interface FetchedUser {
+    id: string;
+    isactive: boolean;
+    investigationgroup: number;
+    phonenumber: string;
+    serialnumber: number;
+    username: string;
+    newinvestigationscount: number;
+    activeinvestigationscount: number;
+    usertype: number;
+    sourceorganization: string;
+    deskname?: string;
+    deskid?: number;   
 };
 
 interface CountyByInvestigationGroup {

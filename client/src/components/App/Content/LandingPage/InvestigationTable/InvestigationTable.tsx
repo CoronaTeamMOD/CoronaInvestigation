@@ -14,12 +14,13 @@ import { Refresh, Warning, Close, KeyboardArrowDown, KeyboardArrowLeft, Search }
 
 import Desk from 'models/Desk';
 import User from 'models/User';
+import {FetchedUser} from 'models/User';
 import County from 'models/County';
 import userType from 'models/enums/UserType';
 import Investigator from 'models/Investigator';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
-import InvestigatorOption from 'models/InvestigatorOption';
+import InvestigatorOption,{FetchedInvestigatorOption} from 'models/InvestigatorOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
@@ -102,7 +103,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [countyAutoCompleteClicked, setCountyAutoCompleteClicked] = useState<boolean>(false);
     const [deskAutoCompleteClicked, setDeskAutoCompleteClicked] = useState<boolean>(false);
     const [currCounty, setCurrCounty] = useState<County>(defaultCounty);
-    const [allUsersOfCurrCounty, setAllUsersOfCurrCounty] = useState<Map<string, User>>(new Map());
+    const [allUsersOfCurrCounty, setAllUsersOfCurrCounty] = useState<Map<string, FetchedUser>>(new Map());
     const [allCounties, setAllCounties] = useState<Map<number, County>>(new Map());
     const [order, setOrder] = useState<Order>(SortOrder.asc);
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
@@ -191,15 +192,15 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         </Tooltip>
     )
 
-    const getFilteredUsersOfCurrentCounty = (): InvestigatorOption[] => {
+    const getFilteredUsersOfCurrentCounty = (): FetchedInvestigatorOption[] => {
         const allUsersOfCountyArray = Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }));
         return filterByDesks.length === 0 ?
             allUsersOfCountyArray :
             allUsersOfCountyArray.filter(({ id, value }) => {
-                if (!value.deskByDeskId) {
+                if (!value.deskid) {
                     return false;
                 }
-                return filterByDesks.includes(value.deskByDeskId.id);
+                return filterByDesks.includes(value.deskid);
             });
     }
 
@@ -231,7 +232,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 PopperComponent={CustomPopper}
                                 test-id='currentInvetigationUser'
                                 options={getFilteredUsersOfCurrentCounty()}
-                                getOptionLabel={(option) => option.value.userName}
+                                getOptionLabel={(option) => option.value.username}
                                 renderOption={(option, { selected }) => (
                                     option.value ?
                                         <>
@@ -240,13 +241,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                     <a>
                                                         {investigatorNameMsg} :
                                                     <b>
-                                                            {option.value.userName}
+                                                            {option.value.username}
                                                         </b>
                                                         &nbsp;&nbsp;
                                                         {
-                                                            (option.value.sourceOrganization || option.value.deskName) ?
-                                                                `${option.value.sourceOrganization ? option.value.sourceOrganization : hasNoSourceOrganization},
-                                                                ${option.value.deskByDeskId?.deskName ? option.value.deskByDeskId?.deskName : hasNoDesk}` : `${hasNoSourceOrganization}, ${hasNoDesk}`
+                                                            (option.value.sourceorganization || option.value.deskname) ?
+                                                                `${option.value.sourceorganization ? option.value.sourceorganization : hasNoSourceOrganization},
+                                                                ${option.value.deskname ? option.value.deskname : hasNoDesk}` : `${hasNoSourceOrganization}, ${hasNoDesk}`
                                                         }
                                                     </a>
                                                     <br></br>
@@ -255,14 +256,14 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                     <a>
                                                         {newInvestigationsMsg} :
                                                     <b>
-                                                            {option.value.newInvestigationsCount}
+                                                            {option.value.newinvestigationscount}
                                                         </b>
                                                     </a>
                                                 &nbsp;&nbsp;
                                                 <a>
                                                         {activeInvestigationsMsg} :
                                                     <b>
-                                                            {option.value.activeInvestigationsCount}
+                                                            {option.value.activeinvestigationscount}
                                                         </b>
                                                     </a>
                                                 </Typography>
@@ -274,7 +275,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 inputValue={selectedInvestigator.userName}
                                 onChange={async (event, newSelectedInvestigator) => {
                                     const result = await alertWarning(
-                                        `<p> האם אתה בטוח שאתה רוצה להחליף את החוקר <b>${indexedRow.investigatorName}</b> בחוקר <b>${newSelectedInvestigator?.value.userName}</b>?</p>`, {
+                                        `<p> האם אתה בטוח שאתה רוצה להחליף את החוקר <b>${indexedRow.investigatorName}</b> בחוקר <b>${newSelectedInvestigator?.value.username}</b>?</p>`, {
                                         showCancelButton: true,
                                         cancelButtonText: 'לא',
                                         cancelButtonColor: theme.palette.error.main,

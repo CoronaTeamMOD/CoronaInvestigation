@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers';
 import { TextField, Typography } from '@material-ui/core';
 import { useForm, FormProvider, Controller } from 'react-hook-form';
 
-import InvestigatorOption from 'models/InvestigatorOption';
+import {FetchedInvestigatorOption} from 'models/InvestigatorOption';
 
 import useStyles from './TransferDialogsStyles';
 import validationSchema from './TransferInvestigationInvestigatorSchema';
@@ -98,9 +98,9 @@ const TransferInvestigationDesk = (props: Props) => {
 
 interface Props {
     open: boolean;
-    allInvestigators: InvestigatorOption[];
+    allInvestigators: FetchedInvestigatorOption[];
     onClose: () => void;
-    onConfirm: (updatedIvestigator: InvestigatorOption, transferReason: string) => void;
+    onConfirm: (updatedIvestigator: FetchedInvestigatorOption, transferReason: string) => void;
 }
 
 export default TransferInvestigationDesk;
