@@ -16,6 +16,9 @@ query GetAllInvestigationsByGroupId($groupId: UUID!) {
   allInvestigations(filter: {groupId: {equalTo: $groupId}}) {
     nodes {
       comment
+      isSelfInvestigated
+      selfInvestigationStatus
+      selfInvestigationUpdateTime
       epidemiologyNumber
       coronaTestDate
       complexityCode
