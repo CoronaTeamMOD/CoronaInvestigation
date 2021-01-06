@@ -41,7 +41,8 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
                             { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { identityNumber: { includes: value } } } }
                         ]
                     }
-                } :
+                } 
+                :
                 { 
                     [InvestigationsFilterByFields.SEARCH_BAR]: {
                         investigatedPatientByInvestigatedPatientId: {
@@ -95,9 +96,9 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
             return { [InvestigationsFilterByFields.TIME_RANGE]: { 
                 creationDate: { 
                     greaterThanOrEqualTo: timeRangeFilter.startDate,
-                    lessThanOrEqualTo: timeRangeFilter.endDate } 
-                }
-            } ;
+                    lessThanOrEqualTo: timeRangeFilter.endDate 
+                } 
+            } } ;
         } else {
             return { [InvestigationsFilterByFields.TIME_RANGE]: null }
         }

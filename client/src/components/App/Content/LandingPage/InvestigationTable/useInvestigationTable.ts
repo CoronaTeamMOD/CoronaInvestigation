@@ -29,6 +29,7 @@ import { setInvestigationStatus, setCreator } from 'redux/Investigation/investig
 import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
+import { allTimeRangeId } from '../adminLandingPage/useAdminLandingPage';
 import { filterCreators } from './FilterCreators';
 import { defaultOrderBy, rowsPerPage, defaultPage } from './InvestigationTable';
 import {
@@ -166,7 +167,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     useEffect(() => {
         const statusFilterToSet = statusFilter.length > 0 ? filterCreators.STATUS(statusFilter) : null;
         const deskFilterToSet = deskFilter.length > 0 ? filterCreators.DESK_ID(deskFilter) : null;
-        const timeRangeFilterToSet = timeRangeFilter.id !== 10 ? filterCreators.TIME_RANGE(timeRangeFilter) : null;
+        const timeRangeFilterToSet = timeRangeFilter.id !== allTimeRangeId ? filterCreators.TIME_RANGE(timeRangeFilter) : null;
         const unAssignedFilterToSet = (unassignedUserFilter && !inactiveUserFilter) ? filterCreators.UNASSIGNED_USER(unassignedUserFilter) : null;
         const inActiveToSet = (inactiveUserFilter && !unassignedUserFilter) ? filterCreators.INACTIVE_USER(unassignedUserFilter) : null;
         const unAllocatedToSet = (unassignedUserFilter && unassignedUserFilter) ? filterCreators.UNALLOCATED_USER(unassignedUserFilter) : null;

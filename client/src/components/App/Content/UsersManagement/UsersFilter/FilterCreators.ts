@@ -8,7 +8,9 @@ const filterCreators = {
                     { id: { includes: value } }
                 ]
             }
-        } : { search: null };
+        } 
+        : 
+        { search: null };
     },
     SOURCE_ORGANIZATION: (values: string[]) => {
         return values.length > 0 ?
@@ -17,7 +19,8 @@ const filterCreators = {
                 sourceOrganizationBySourceOrganization: { displayName: { in: values } } 
             } 
         }
-        : { sourceOrganization: null };
+        : 
+        { sourceOrganization: null };
     },
     LANGUAGES: (values: string[]) => {
         return values.length > 0 ?
@@ -27,7 +30,9 @@ const filterCreators = {
                     some: { languageByLanguage: { displayName: { in: values } } }
                 }
             }
-        } : { languages: null };
+        } 
+        :
+        { languages: null };
     },
     COUNTY: (values: string[]) => {
         return values.length > 0 ? 
@@ -35,18 +40,23 @@ const filterCreators = {
             county: {
                 investigationGroup: { in: values }
             }
-        } : { county: null };
+        } 
+        : 
+        { county: null };
     },
     USER_TYPE: (values: string[]) => {
         return values.length > 0 ? 
         { userType: { userType: { in: values } } }
-        : { userType: null };  
+        : 
+        { userType: null };  
     },
     USER_STATUS: (values: string[]) => {
         return values.length > 0 ? 
         {
             userStatus: { isActive: { in: values } }
-        } : { userStatus: null };
+        } 
+        :
+        { userStatus: null };
     }
 }
 
