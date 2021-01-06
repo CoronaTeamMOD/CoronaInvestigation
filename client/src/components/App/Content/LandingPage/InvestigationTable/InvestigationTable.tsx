@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Pagination } from '@material-ui/lab';
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button,
@@ -253,12 +253,19 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             }
         }
 
+    useEffect(() => {
+        window.addEventListener("keydown", handleEscKey);
+        return () => {
+            window.removeEventListener("keydown", handleEscKey);
+        };
+    }, []);
+
+    const handleEscKey = (e: KeyboardEvent) => {
+        e.key === 'Escape' && closeDropdowns()
+    }
+
     return (
-        <div tabIndex={0}
-            onClick={closeDropdowns}
-            onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) =>
-                event.key === 'Escape' && closeDropdowns()}
-        >
+        <div onClick={closeDropdowns} >
             <Grid className={classes.title} container alignItems='center'>
                 {
                     (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) &&
