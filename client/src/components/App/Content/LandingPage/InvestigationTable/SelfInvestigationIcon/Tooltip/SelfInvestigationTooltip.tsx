@@ -17,7 +17,7 @@ const SelfInvestigationTooltip = (props: Props) => {
 
     return (
         <div>
-            <div><b>{lastUpdatedTime} : </b>{format(date, "hh:mm:ss dd/MM/yy")}</div>
+            <div><b>{lastUpdatedTime} : </b>{format(date, "HH:mm:ss dd/MM/yy")}</div>
             <Grid item container>
                 <Grid item xs={6} style={{textAlign : 'right'}}><b>{statusTitle} : </b></Grid>
                 <Grid item xs={6} style={{textAlign : 'left'}}>{Boolean(statusNames[status]) ? statusNames[status] : 'לא ידוע' }</Grid>
