@@ -8,4 +8,12 @@ const formatDate = (date: Date): string => {
     ) 
 }
 
+export const formatDateTime = (date: Date): string => {
+    return (
+        date 
+        ? format(new Date(date), 'HH:mm:ss dd/MM/yyyy')
+        : 'אין מידע'
+    ) 
+}
+
 export default formatDate;
