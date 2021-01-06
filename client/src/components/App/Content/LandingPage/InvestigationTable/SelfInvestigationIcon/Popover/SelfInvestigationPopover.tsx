@@ -1,7 +1,7 @@
 import React from 'react'
 import { Grid } from '@material-ui/core';
 
-import SelfInvestigaionStatuses , {statusNames} from 'models/enums/selfInvestigationStatuses';
+import SelfInvestigaionStatuses , {statusNames} from 'models/enums/selfInvestigationStatus';
 
 interface Props {
     status : SelfInvestigaionStatuses;

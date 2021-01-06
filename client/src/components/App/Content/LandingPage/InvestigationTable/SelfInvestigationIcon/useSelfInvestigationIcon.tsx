@@ -1,7 +1,7 @@
 import React from 'react'
 import { AssignmentInd, AssignmentTurnedIn, AssignmentReturned , AssignmentLate} from '@material-ui/icons';
 
-import SelfInvestigaionStatuses from 'models/enums/selfInvestigationStatuses';
+import SelfInvestigaionStatuses from 'models/enums/selfInvestigationStatus';
 
 import useStyles from './selfInvestigationIconStyles';
 interface Props {
