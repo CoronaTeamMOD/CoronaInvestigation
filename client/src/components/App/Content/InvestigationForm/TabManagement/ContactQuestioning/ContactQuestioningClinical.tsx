@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { addDays, format } from 'date-fns';
 import { Controller, useFormContext } from 'react-hook-form';
-import { Avatar, FormControl, Grid, MenuItem, Select, TextField, Typography } from '@material-ui/core';
+import { Avatar, FormControl, Grid, MenuItem, Select, Typography } from '@material-ui/core';
 
 import theme from 'styles/theme';
 import Toggle from 'commons/Toggle/Toggle';
@@ -24,7 +24,7 @@ const emptyFamilyRelationship: FamilyRelationship = {
 };
 
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
-    const {control , getValues , errors} = useFormContext();
+    const { control , getValues , errors, setValue } = useFormContext();
     const { index, familyRelationships, interactedContact, isFamilyContact } = props;
 
     const classes = useStyles();
@@ -37,10 +37,24 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const formValues = getValues().form ? getValues().form[index] : interactedContact;
     const { isFieldDisabled, validateContact } = useContactFields(formValues.contactStatus);
-
+    
     const daysToIsolate = 14;
     const isolationEndDate = addDays(new Date(interactedContact.contactDate), daysToIsolate);
     const formattedIsolationEndDate = format(new Date(isolationEndDate), 'dd/MM/yyyy');
+    
+    useEffect(() => {
+        if (isFieldDisabled) {
+            setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`, interactedContact.isolationAddress?.city?.id);
+            setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`, interactedContact.isolationAddress?.street?.id);
+            setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`, interactedContact.isolationAddress?.houseNum);
+            setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`, interactedContact.isolationAddress?.apartment);
+        } else {
+            setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`, null);
+            setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`, null);
+            setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`, null);
+            setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`, null);
+        }
+    }, [isFieldDisabled])
 
     const formatContactToValidate = () => {
         return {
@@ -158,6 +172,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         <Grid container item xs={7}>
                             <AddressForm
                                 unsized={true}
+                                disabled={isFieldDisabled}
                                 cityField={{name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`, 
                                 className: classes.addressTextField, 
                                 testId: 'contactedPersonCity',
