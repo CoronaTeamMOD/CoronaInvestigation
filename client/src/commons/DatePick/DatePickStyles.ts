@@ -18,5 +18,4 @@ export const useStyles = makeStyles({
         display: 'flex',
         justifyContent: 'flex-end'
     },
-    
 });

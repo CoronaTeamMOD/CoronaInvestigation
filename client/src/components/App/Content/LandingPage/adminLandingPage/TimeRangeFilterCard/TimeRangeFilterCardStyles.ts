@@ -33,9 +33,6 @@ const useStyles = makeStyles({
     timeRangeSelect: {
         width: '17.5vw',
         height: '2vw',
-        '& .MuiSelect-select': {
-            fontSize: '1vw'
-        },
     },
     timeRangeSelectDropdown: {
         height: '20px'

@@ -5,10 +5,10 @@ import DatePick from './DatePick'
 
 const DateRangePick: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { startDate, onStartDateChange, endDate, onEndDateChange, minDate, maxDate, ...rest } = props;
+    const { startDate, onStartDateChange, endDate, onEndDateChange, minDate, maxDate } = props;
 
     return (
-        <Grid container direction={'row'} alignItems={'center'} xs={12} spacing={1}>
+        <Grid container alignItems='center' xs={12} spacing={1}>
             <Grid item xs={5}>
                 <DatePick
                     minDate={minDate}
@@ -36,8 +36,8 @@ export default DateRangePick;
 interface Props {
   minDate?: Date,
   maxDate?: Date,
-  startDate: any;
+  startDate: string | Date;
   onStartDateChange: any;
-  endDate: any;
+  endDate: string | Date;
   onEndDateChange: any;
 };

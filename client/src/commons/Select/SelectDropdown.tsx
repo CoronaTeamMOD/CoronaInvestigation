@@ -10,6 +10,7 @@ const SelectDropdown: React.FC<Props> = (props: Props): JSX.Element => {
 
     return (
         <Select
+            classes={{ select: classes.muiSelect}}
             MenuProps={{
                 anchorOrigin: {
                     vertical: "bottom",
