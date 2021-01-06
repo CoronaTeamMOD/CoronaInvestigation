@@ -54,7 +54,7 @@ const TransferInvestigationDesk = (props: Props) => {
                                 <Autocomplete
                                     className={classes.input}
                                     options={allInvestigators}
-                                    getOptionLabel={(option) => option ? option.value.userName : option}
+                                    getOptionLabel={(option) => option ? option.value.username : option}
                                     value={props.value}
                                     onChange={(event, selectedInvestigator) => 
                                         props.onChange(selectedInvestigator ? selectedInvestigator : null)
