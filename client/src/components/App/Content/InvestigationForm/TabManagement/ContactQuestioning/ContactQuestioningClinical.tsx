@@ -1,28 +1,22 @@
-import React, {useEffect} from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
 import { addDays, format } from 'date-fns';
-import { Autocomplete } from '@material-ui/lab';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Avatar, FormControl, Grid, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 
-import City from 'models/City';
 import theme from 'styles/theme';
 import Toggle from 'commons/Toggle/Toggle';
-import StoreStateType from 'redux/storeStateType';
 import FieldName from 'commons/FieldName/FieldName';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
-import {getStreetByCity} from 'Utils/Address/AddressUtils';
-import Street from 'models/Street';
+import AddressForm from 'commons/Forms/AddressForm/AddressForm';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import HebrewTextField from 'commons/HebrewTextField/HebrewTextField';
 import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFields';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './ContactQuestioningStyles';
-import AddressForm from 'commons/Forms/AddressForm/AddressForm';
 
 const emptyFamilyRelationship: FamilyRelationship = {
     id: null as any,
@@ -30,7 +24,7 @@ const emptyFamilyRelationship: FamilyRelationship = {
 };
 
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
-    const {control , getValues , watch , errors} = useFormContext();
+    const {control , getValues , errors} = useFormContext();
     const { index, familyRelationships, interactedContact, isFamilyContact } = props;
 
     const classes = useStyles();
@@ -174,6 +168,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                 houseNumberField={{name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`,
                                 defaultValue: interactedContact.isolationAddress?.houseNum}}
                                 floorField={{name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`,
+                                className: classes.appartmentNumber,
                                 defaultValue: interactedContact.isolationAddress?.apartment}}
                             />
                         </Grid>
