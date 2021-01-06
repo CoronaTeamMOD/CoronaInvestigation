@@ -36,7 +36,7 @@ const useTimeRangeFilterCard = (props : Props) => {
 
     const onUpdateButtonCLicked = () => {
         if(timeRangeFilter.id !== defaultTimeRange.id) {
-            if (timeRangeFilter.id == customTimeRange.id) {
+            if (timeRangeFilter.id === customTimeRange.id) {
                 if (timeRangeFilter.startDate === null || timeRangeFilter.endDate === null) {
                     setErrorMes(dateMissingError);
                 } else if (timeRangeFilter.startDate > timeRangeFilter.endDate) {
