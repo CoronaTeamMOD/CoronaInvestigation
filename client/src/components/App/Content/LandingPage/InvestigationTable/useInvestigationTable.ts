@@ -946,6 +946,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         tableTitle, 
         timeRangeFilter,
         isBadgeInVisible
+        changeTimeRangeFilter
     };
 };
 

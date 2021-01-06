@@ -73,4 +73,5 @@ export interface useInvestigationTableOutcome {
     tableTitle: string;
     timeRangeFilter: TimeRange;
     isBadgeInVisible: boolean;
+    changeTimeRangeFilter: (timeRange: TimeRange) => void;
 };

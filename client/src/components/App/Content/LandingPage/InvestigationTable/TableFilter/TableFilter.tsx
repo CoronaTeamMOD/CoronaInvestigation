@@ -7,22 +7,19 @@ import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
 import useStyles from './TableFilterStyles';
 import { StatusFilter as StatusFilterType } from '../InvestigationTableInterfaces';
+import { TimeRange } from 'models/TimeRange';
 
-interface Props {
-    statuses: InvestigationMainStatus[];
-    filteredStatuses: StatusFilterType;
-    unassignedUserFilter: boolean;
-    inactiveUserFilter: boolean;
-    changeUnassginedUserFilter: (isFilterOn: boolean) => void;
-    changeInactiveUserFilter: (isFilterOn: boolean) => void;
-    onFilterChange: (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => void;
-    onClose: () => void;
-}
 
 const TableFilter = (props: Props) => {
     const classes = useStyles();
 
-    const { statuses, filteredStatuses, onFilterChange, onClose, changeInactiveUserFilter, changeUnassginedUserFilter, inactiveUserFilter, unassignedUserFilter } = props;
+    const { 
+        statuses, filteredStatuses, 
+        onFilterChange, onClose, 
+        changeInactiveUserFilter, inactiveUserFilter, 
+        changeUnassginedUserFilter, unassignedUserFilter, 
+        timeRangeFilter, onTimeRangeFilterChange
+    } = props;
 
     return (
         <Card className={classes.card}>
@@ -76,5 +73,18 @@ const TableFilter = (props: Props) => {
         </Card>
     )
 }
+
+interface Props {
+    statuses: InvestigationMainStatus[];
+    filteredStatuses: StatusFilterType;
+    unassignedUserFilter: boolean;
+    inactiveUserFilter: boolean;
+    changeUnassginedUserFilter: (isFilterOn: boolean) => void;
+    changeInactiveUserFilter: (isFilterOn: boolean) => void;
+    onFilterChange: (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => void;
+    onClose: () => void;
+    timeRangeFilter: TimeRange;
+    onTimeRangeFilterChange: (event: React.ChangeEvent<{}>, timeRangeFilter: TimeRange) => void;
+};
 
 export default TableFilter
