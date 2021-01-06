@@ -7,15 +7,22 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: 16,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     autocomplete: {
-        width: '100%',
+        marginTop: theme.spacing(1),
+        width: '80%',
+        height: '60%',
+        marginBottom: theme.spacing(1),
     },
     optionCheckbox: {
+        height: '0.5vh',
         marginLeft: theme.spacing(1),
-        flip: false
-    }
+        flip: false,
+    },
+    textfield: {
+        fontsize: '0.7vw'
+    },
 }));
 
 export default useStyles;

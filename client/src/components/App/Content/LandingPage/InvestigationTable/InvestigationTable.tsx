@@ -273,7 +273,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         {tableTitle}
                     </Typography>
                 </Grid>
-                <Grid item xs={2} className={classes.deskFilterCard}>
+                <Grid item xs={3} >
                     <DeskFilter
                         desks={allDesks}
                         filteredDesks={deskFilter}
@@ -330,7 +330,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     </Box>
                 </div>
                 <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={6}>
                         <Collapse in={showFilterRow}>
                             <TableFilter
                                 statuses={allStatuses}
