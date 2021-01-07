@@ -52,7 +52,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
             <div className={classes.navButtons}>
               <StatePersistentNavLink exact to={indexRoute} 
                 isActive={(match, location) => 
-                {return location.pathname === adminLandingPageRoute || location.pathname  === landingPageRoute;}}>
+                  (location.pathname === adminLandingPageRoute || location.pathname  === landingPageRoute)}>
                 <Home className={classes.menuIcon} />
                 <Typography className={classes.menuTypo}> עמוד הבית</Typography>
               </StatePersistentNavLink>
