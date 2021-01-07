@@ -33,7 +33,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     titleText: {
         display: 'flex',
-        alignItems: 'center'
     },
     tableContainer: {
         width: tableWidth,

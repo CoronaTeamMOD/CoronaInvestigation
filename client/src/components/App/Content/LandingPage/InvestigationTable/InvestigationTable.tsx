@@ -243,7 +243,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     return (
         <div onClick={closeDropdowns} >
             <Grid className={classes.title} container alignItems='center'>
-                <Grid item xs={9} className={classes.titleText}>
+                <Grid item xs={9} className={classes.titleText} alignItems='center'>
                     {
                         (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) &&
                         <Tooltip title={returnToAdminLandingPage}>
