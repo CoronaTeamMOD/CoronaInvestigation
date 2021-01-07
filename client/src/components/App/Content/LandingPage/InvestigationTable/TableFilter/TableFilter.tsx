@@ -18,6 +18,7 @@ const customTimeRangeId = -1;
 const timeRangeMinDate = new Date(2020, 9, 1);
 
 const TableFilter = (props: Props) => {
+
     const classes = useStyles();
 
     const { 
@@ -28,14 +29,42 @@ const TableFilter = (props: Props) => {
         timeRangeFilter, onTimeRangeFilterChange
     } = props;
 
-    const {onUpdateButtonCLicked,
-        onTimeRangeChange,
-        onStartDateSelect,
-        onEndDateSelect,
-        errorMes} = useTableFilter({timeRangeFilter, onTimeRangeFilterChange});
+    const { displayTimeRange, onSelectTimeRangeChange, onStartDateSelect, onEndDateSelect, errorMes} = useTableFilter({
+        timeRangeFilter, 
+        onTimeRangeFilterChange
+    });
 
     return (
         <Card className={classes.card}>
+            <Typography className={classes.title} >
+                <b>סינון לפי </b>
+            </Typography>
+            <Typography className={classes.title}>
+                <b>{filterTimeRangeLabel}</b>
+            </Typography>
+            <FormControl variant='outlined'>
+                <SelectDropdown
+                    onChange={onSelectTimeRangeChange}
+                    items={timeRanges}
+                    value={displayTimeRange.id}
+                />
+            </FormControl>
+            <Collapse in={timeRangeFilter.id === customTimeRangeId} unmountOnExit>
+                <DateRangePick
+                    startDate={displayTimeRange.startDate}
+                    onStartDateChange={onStartDateSelect}
+                    endDate={displayTimeRange.endDate}
+                    onEndDateChange={onEndDateSelect}
+                    minDate={timeRangeMinDate}
+                    maxDate={new Date()}
+                />   
+                {errorMes !== '' && 
+                    <Typography className={classes.timeRangeError}>{errorMes}</Typography>
+                }
+            </Collapse>
+            <Typography className={classes.title} >
+                <b>סטטוס</b>
+            </Typography>
             <Autocomplete
                 ChipProps={{className:classes.chip}}
                 className={classes.autocomplete}
@@ -66,29 +95,6 @@ const TableFilter = (props: Props) => {
                 )}
                 limitTags={1}
             />
-            <Typography className={classes.title}>
-                    <b>{filterTimeRangeLabel}</b>
-            </Typography>
-            <FormControl variant='outlined'>
-                <SelectDropdown
-                    onChange={onTimeRangeFilterChange}
-                    items={timeRanges}
-                    value={timeRangeFilter.id}
-                />
-            </FormControl>
-            <Collapse in={timeRangeFilter.id === customTimeRangeId} unmountOnExit>
-                <DateRangePick
-                    startDate={timeRangeFilter.startDate}
-                    onStartDateChange={onStartDateSelect}
-                    endDate={timeRangeFilter.endDate}
-                    onEndDateChange={onEndDateSelect}
-                    minDate={timeRangeMinDate}
-                    maxDate={new Date()}
-                />   
-                {/* {errorMes !== '' && 
-                    <Typography className={classes.timeRangeError}>{errorMes}</Typography>
-                } */}
-            </Collapse>
             <Checkbox
                 onChange={(event) => changeUnassginedUserFilter(event.target.checked)}
                 color='primary'

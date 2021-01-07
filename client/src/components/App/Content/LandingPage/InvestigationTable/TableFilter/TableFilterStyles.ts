@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         whiteSpace: 'nowrap',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
+    },
+    timeRangeError: {
+        fontSize: '1vw',
     }
 }));
 
