@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 import { passportValidation, passportMaxIdentificationLength , idLength , idBasicValidation} from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
-const errorMessage = 'הוכנס תו לא וולידי';
+const errorMessage = 'הוכנס תו לא חוקי';
 const passportMaxLengthErrorMessage = `השדה יכול להכיל ${passportMaxIdentificationLength} תווים בלבד`;
 const idMaxLengthErrorMessage = `השדה יכול להכיל ${idLength} תווים בלבד`;
 
