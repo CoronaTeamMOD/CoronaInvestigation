@@ -27,6 +27,7 @@ import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/Person
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
 import personalInfoValidationSchema from './PersonalInfoValidationSchema';
+import AddressForm from 'commons/Forms/AddressForm/AddressForm';
 
 export const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
 export const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
@@ -221,9 +222,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
         }
     }, [occupation]);
 
-    useEffect(() => {
-        cityId && getStreetsByCity(cityId);
-    }, [cityId]);
+    // useEffect(() => {
+    //     cityId && getStreetsByCity(cityId);
+    // }, [cityId]);
 
     const subOccupationsPlaceHolderByOccupation = () => {
         if (occupation === Occupations.GOVERNMENT_OFFICE) return INSERT_OFFICE_NAME;
@@ -369,7 +370,13 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     </FormRowWithInput>
                     <FormRowWithInput fieldName={ADDRESS_LABEL}>
                         <>
-                            <Grid item xs={3} className={classes.personalInfoItem}>
+                            <AddressForm
+                                cityField={{name: PersonalInfoDataContextFields.CITY, className: classes.spacedOutAddress}}
+                                streetField={{name: PersonalInfoDataContextFields.STREET}}
+                                houseNumberField={{name: PersonalInfoDataContextFields.HOUSE_NUMBER, className: classes.houseNumInput}}
+                                floorField={{name: PersonalInfoDataContextFields.FLOOR, className: classes.floorInput}}
+                            />
+                            {/* <Grid item xs={3} className={classes.personalInfoItem}>
                                 <Controller
                                     name={PersonalInfoDataContextFields.CITY}
                                     control={methods.control}
@@ -489,7 +496,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                         />
                                     )}
                                 />
-                            </Grid>
+                            </Grid> */}
                         </>
                     </FormRowWithInput>
 
