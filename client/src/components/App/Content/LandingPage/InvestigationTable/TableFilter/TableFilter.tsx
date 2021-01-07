@@ -26,9 +26,6 @@ const TableFilter = (props: Props) => {
 
     return (
         <Card className={classes.card}>
-            <Typography className={classes.title} >
-                <b>סינון לפי סטטוס</b>
-            </Typography>
             <Autocomplete
                 ChipProps={{className:classes.chip}}
                 className={classes.autocomplete}
@@ -42,6 +39,7 @@ const TableFilter = (props: Props) => {
                 renderInput={(params) =>
                     <TextField
                         size='small'
+                        label='סינון לפי סטטוס'
                         {...params}
                     />
                 }
@@ -64,7 +62,7 @@ const TableFilter = (props: Props) => {
                 checked={unassignedUserFilter}
             />
             <Typography className={classes.title} >
-                <b>חקירות לא משויכות</b>
+                חקירות לא משויכות
             </Typography>
             <Checkbox
                 onChange={(event) => changeInactiveUserFilter(event.target.checked)}
@@ -72,7 +70,7 @@ const TableFilter = (props: Props) => {
                 checked={inactiveUserFilter}
             />
             <Typography className={classes.title} >
-                <b>חקירות משויכות לחוקרים לא פעילים</b>
+                חקירות משויכות לחוקרים לא פעילים
             </Typography>
             <IconButton onClick={() => onClose()} size='small'><Close /></IconButton>
         </Card>
