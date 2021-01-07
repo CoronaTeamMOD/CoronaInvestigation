@@ -29,6 +29,10 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         paddingTop: theme.spacing(1),
         paddingBottom: theme.spacing(1),
         width: tableWidth,
+        justifyContent: 'space-between'
+    },
+    titleText: {
+        display: 'flex'
     },
     tableContainer: {
         width: tableWidth,

@@ -243,15 +243,15 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     return (
         <div onClick={closeDropdowns} >
             <Grid className={classes.title} container alignItems='center'>
-                {
-                    (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) &&
-                    <Tooltip title={returnToAdminLandingPage}>
-                        <IconButton color='primary' onClick={() => history.push(adminLandingPageRoute , { deskFilter, timeRangeFilter })}>
-                            <ArrowForward />
-                        </IconButton>
-                    </Tooltip>
-                }
-                <Grid item xs={8}>
+                <Grid item xs={9} className={classes.titleText}>
+                    {
+                        (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) &&
+                        <Tooltip title={returnToAdminLandingPage}>
+                            <IconButton color='primary' onClick={() => history.push(adminLandingPageRoute , { deskFilter, timeRangeFilter })}>
+                                <ArrowForward />
+                            </IconButton>
+                        </Tooltip>
+                    }
                     <Typography color='textPrimary' className={classes.welcomeMessage}>
                         {tableTitle}
                     </Typography>

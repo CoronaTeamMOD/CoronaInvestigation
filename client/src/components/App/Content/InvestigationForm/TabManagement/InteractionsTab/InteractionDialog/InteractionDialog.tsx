@@ -1,8 +1,8 @@
-import React, { useContext, useState } from 'react';
-import { ChevronLeft, ChevronRight } from '@material-ui/icons';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Tooltip } from '@material-ui/core';
-import { FormProvider, useForm, UseFormMethods } from 'react-hook-form';
+import { ChevronRight } from '@material-ui/icons';
 import { yupResolver } from '@hookform/resolvers';
+import React, { useContext, useState } from 'react';
+import { FormProvider, useForm, } from 'react-hook-form';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Tooltip } from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import InvolvedContact from 'models/InvolvedContact';
@@ -206,7 +206,7 @@ const InteractionDialog = (props: Props) => {
                             type='submit'
                             id='createContact'
                         >
-                            צור מקום ומגעים
+                            {`${isNewInteraction ? 'צור' : 'ערוך'} מקום ומגעים`}
                     </PrimaryButton>
                     </div>
                 </DialogActions>
