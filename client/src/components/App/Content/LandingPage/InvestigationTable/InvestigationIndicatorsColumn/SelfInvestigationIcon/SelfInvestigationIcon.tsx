@@ -34,7 +34,7 @@ const SelfInvestigationIcon = (props: Props) => {
         <>
             <ClickAwayListener onClickAway={handleTooltipClose}>
                 <Tooltip title={contactTitle} arrow placement={'top'}>
-                    <IconButton style={{padding : 0}} onClick={handleButtonClick}>{getIconByStatus()}</IconButton>
+                    <IconButton className={classes.icon} onClick={handleButtonClick}>{getIconByStatus()}</IconButton>
                 </Tooltip>
             </ClickAwayListener>
             <Popover

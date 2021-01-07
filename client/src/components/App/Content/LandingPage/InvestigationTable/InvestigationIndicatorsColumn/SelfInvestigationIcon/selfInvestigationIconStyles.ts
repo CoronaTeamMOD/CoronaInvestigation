@@ -5,6 +5,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     completed: {
         color: theme.palette.success.dark
     },
+    icon: {
+        padding : 0
+    },
     popover: {
         backgroundColor: theme.palette.common.white,
         color: 'rgba(0, 0, 0, 0.87)',
