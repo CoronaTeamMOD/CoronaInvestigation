@@ -50,7 +50,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
             navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
             navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&
             <div className={classes.navButtons}>
-              <StatePersistentNavLink exact to={indexRoute}>
+              <StatePersistentNavLink exact to={adminLandingPageRoute}>
                 <Home className={classes.menuIcon} />
                 <Typography className={classes.menuTypo}> עמוד הבית</Typography>
               </StatePersistentNavLink>
