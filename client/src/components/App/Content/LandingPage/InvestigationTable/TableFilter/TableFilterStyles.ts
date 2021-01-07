@@ -8,7 +8,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: theme.spacing(1),
         marginBottom: theme.spacing(1),
         borderRadius: 16,
-        maxHeight: '80%'
+        maxHeight: '80%',
+        justifyContent: 'space-between'
     },
     startCard: {
         display: 'flex',
