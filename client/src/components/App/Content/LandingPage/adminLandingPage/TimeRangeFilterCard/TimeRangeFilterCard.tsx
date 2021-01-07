@@ -2,7 +2,7 @@ import React from 'react';
 import { CardActions, CardContent, Typography, FormControl, Collapse, Card } from '@material-ui/core';
 
 import { TimeRange } from 'models/TimeRange';
-import timeRanges from 'models/enums/timeRanges';
+import timeRanges, { customTimeRange, timeRangeMinDate } from 'models/enums/timeRanges';
 import SelectDropdown from 'commons/Select/SelectDropdown';
 import DateRangePick from 'commons/DatePick/DateRangePick';
 
@@ -11,8 +11,6 @@ import UpdateButton from '../UpdateButton/UpdateButton';
 import useTimeRangeFilterCard from './useTimeRangeFilterCard';
 
 const filterTimeRangeLabel = 'טווח זמנים';
-const customTimeRangeId = -1;
-const timeRangeMinDate = new Date(2020, 9, 1);
 
 const TimeRangeCard = (props : Props): JSX.Element => {
 
@@ -35,7 +33,7 @@ const TimeRangeCard = (props : Props): JSX.Element => {
                     
                 </FormControl>
             </CardContent>
-            <Collapse in={timeRangeFilter.id === customTimeRangeId} unmountOnExit className={classes.collapse}>
+            <Collapse in={timeRangeFilter.id === customTimeRange.id} unmountOnExit className={classes.collapse}>
                 <CardContent className={classes.dateRangeCardContent}>
                     <DateRangePick
                         startDate={timeRangeFilter.startDate}

@@ -2,14 +2,14 @@ import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 
 import { TimeRange } from 'models/TimeRange';
-import timeRanges from 'models/enums/timeRanges';
+import timeRanges, { customTimeRange } from 'models/enums/timeRanges';
 
 const rangeError = 'טווח תאריכים צריך להיות תקין';
 
 const useTableFilter = (props : Props) => {
     
     const {timeRangeFilter , onTimeRangeFilterChange} = props;
-    const customTimeRange = timeRanges[4];
+    
     const [errorMes, setErrorMes] = useState<string>('');
     const [displayTimeRange, setDisplayTimeRange] = useState<TimeRange>(timeRangeFilter);
 

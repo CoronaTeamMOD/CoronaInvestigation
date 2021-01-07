@@ -4,7 +4,7 @@ import { Autocomplete } from '@material-ui/lab';
 import { Card, Checkbox, Collapse, FormControl, Grid, IconButton, TextField, Typography } from '@material-ui/core';
 
 import { TimeRange } from 'models/TimeRange';
-import timeRanges from 'models/enums/timeRanges';
+import timeRanges, { customTimeRange, timeRangeMinDate } from 'models/enums/timeRanges';
 import DateRangePick from 'commons/DatePick/DateRangePick';
 import SelectDropdown from 'commons/Select/SelectDropdown';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
@@ -12,9 +12,6 @@ import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import useStyles from './TableFilterStyles';
 import useTableFilter from './useTableFilter';
 import { StatusFilter as StatusFilterType } from '../InvestigationTableInterfaces';
-
-const customTimeRangeId = -1;
-const timeRangeMinDate = new Date(2020, 9, 1);
 
 const TableFilter = (props: Props) => {
 
@@ -49,7 +46,7 @@ const TableFilter = (props: Props) => {
                         value={displayTimeRange.id}
                     />
                 </FormControl>
-                <Collapse in={timeRangeFilter.id === customTimeRangeId} unmountOnExit classes={{container: classes.collapse}}>
+                <Collapse in={timeRangeFilter.id === customTimeRange.id} unmountOnExit classes={{container: classes.collapse}}>
                     <DateRangePick
                         startDate={displayTimeRange.startDate}
                         onStartDateChange={onStartDateSelect}
