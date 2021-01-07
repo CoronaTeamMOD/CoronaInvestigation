@@ -33,13 +33,13 @@ const DateRangePick: React.FC<Props> = (props: Props): JSX.Element => {
     );
 };
 
-export default DateRangePick;
-
 interface Props {
-  minDate?: Date,
-  maxDate?: Date,
-  startDate: string | Date;
-  onStartDateChange: any;
-  endDate: string | Date;
-  onEndDateChange: any;
+    minDate?: Date,
+    maxDate?: Date,
+    startDate: string | Date;
+    onStartDateChange: any;
+    endDate: string | Date;
+    onEndDateChange: any;
 };
+
+export default DateRangePick;

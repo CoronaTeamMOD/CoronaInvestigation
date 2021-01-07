@@ -1,7 +1,7 @@
 import React from 'react'
 import { Close } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import { Box, Card, Checkbox, Collapse, FormControl, Grid, IconButton, TextField, Typography } from '@material-ui/core';
+import { Card, Checkbox, Collapse, FormControl, Grid, IconButton, TextField, Typography } from '@material-ui/core';
 
 import { TimeRange } from 'models/TimeRange';
 import timeRanges from 'models/enums/timeRanges';
@@ -10,8 +10,8 @@ import SelectDropdown from 'commons/Select/SelectDropdown';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
 import useStyles from './TableFilterStyles';
-import { StatusFilter as StatusFilterType } from '../InvestigationTableInterfaces';
 import useTableFilter from './useTableFilter';
+import { StatusFilter as StatusFilterType } from '../InvestigationTableInterfaces';
 
 const customTimeRangeId = -1;
 const timeRangeMinDate = new Date(2020, 9, 1);
@@ -67,7 +67,6 @@ const TableFilter = (props: Props) => {
                 </Typography>
                 <Autocomplete
                     ChipProps={{className:classes.chip}}
-                    // className={classes.autocomplete}
                     classes={{inputRoot: classes.autocompleteInput}}
                     size='small'
                     disableCloseOnSelect
