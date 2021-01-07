@@ -82,6 +82,30 @@ usersRoute.post('/updateDesk', adminMiddleWare, (request: Request, response: Res
         })
 })
 
+usersRoute.post('/updateCounty', adminMiddleWare, (request: Request, response: Response) => {
+    const updateCountyLogger = logger.setup({
+        workflow: 'update user county',
+        user: response.locals.user.id,
+    });
+
+    const updateCountyVariables = {
+        id: request.body.userId,
+        investigationGroup: request.body.investigationGroup
+    };
+
+    updateCountyLogger.info(launchingDBRequestLog(updateCountyVariables), Severity.LOW);
+
+    graphqlRequest(UPDATE_DESK, response.locals, updateCountyVariables)
+        .then(result => {
+            updateCountyLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data.updateUserById.user);
+        })
+        .catch(error => {
+            updateCountyLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.sendStatus(errorStatusCode).send(error);
+        })
+})
+
 const updateIsUserActive = (response: Response, id: string, isActive: Boolean) => {
     const updateIsActiveStatusVariables = {
         id,
@@ -414,7 +438,7 @@ const convertToUser = (user: any) => ({
     languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
     userType: user.userTypeByUserType.displayName,
     desk: { id: user.deskByDeskId?.id, deskName: user.deskByDeskId?.deskName},
-    investigationGroup: user.countyByInvestigationGroup?.displayName,
+    investigationGroup: {id: user.countyByInvestigationGroup?.id ,displayName: user.countyByInvestigationGroup?.displayName},
     sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
 });
 

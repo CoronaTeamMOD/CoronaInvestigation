@@ -275,6 +275,25 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         .finally(() => setIsLoading(false));
     }
 
+    const setUserCounty = (countyId: number, userId: string) => {
+        const setUpdateCountyLogger = logger.setup('Updating user county');
+        setUpdateCountyLogger.info(`send request to server for updating user county to ${countyId}`, Severity.LOW);
+        setIsLoading(true);
+
+        axios.post('users/updateCounty', {
+            investigationGroup: countyId,
+            userId
+        }).then((result) => {
+            if(result.data)
+            setUpdateCountyLogger.info('updated user county successfully', Severity.LOW);
+                fetchUsers();
+        }).catch((error) => {
+            alertError('לא הצלחנו לעדכן את הדסק של המשתמש');
+            setUpdateCountyLogger.error(`error in updating user county due to ${error}`, Severity.HIGH);
+        })
+        .finally(() => setIsLoading(false));
+    }
+
     return {
         users,
         counties,
@@ -290,7 +309,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         handleFilterChange,
         setUserActivityStatus,
         setUserSourceOrganization,
-        setUserDesk
+        setUserDesk,
+        setUserCounty
     }
 }
 
@@ -317,6 +337,7 @@ interface useUsersManagementOutCome {
     setUserActivityStatus: (isActive: boolean, userId: string) => Promise<any>;
     setUserSourceOrganization: (sourceOrganization: string, userId: string) => void;
     setUserDesk: (deskId: number, userId: string) => void;
+    setUserCounty: (countyId: number, userId: string) => void;
 }
 
 export default useUsersManagement;
