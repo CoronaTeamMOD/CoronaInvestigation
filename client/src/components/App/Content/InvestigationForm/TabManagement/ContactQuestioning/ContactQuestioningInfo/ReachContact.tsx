@@ -69,6 +69,7 @@ const ReachContact = (props: Props) => {
                                             props.onChange
                                         )
                                     }
+                                    closeIcon={false}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
@@ -76,6 +77,7 @@ const ReachContact = (props: Props) => {
                                             onClick={(event) =>
                                                 event.stopPropagation()
                                             }
+                                            InputProps={{...params.InputProps, className: classes.statusAutocompleteRoot}}
                                         />
                                     )}
                                 />

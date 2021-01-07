@@ -55,6 +55,15 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: 'flex',
         flexDirection: 'row',
     },
+    statusAutocompleteRoot: {
+        '& div': {
+            paddingRight: 'unset',
+        },
+        '& input': {
+            fontSize: '15px',
+            textAlign: 'end',
+        }
+    },
 }));
 
 export default useStyles;
