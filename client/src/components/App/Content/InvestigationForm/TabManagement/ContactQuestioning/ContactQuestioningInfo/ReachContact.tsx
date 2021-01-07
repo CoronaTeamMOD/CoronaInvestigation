@@ -73,9 +73,9 @@ const ReachContact = (props: Props) => {
                                         <TextField
                                             {...params}
                                             placeholder='סטטוס'
-                                            onClick={(event) => {
+                                            onClick={(event) => 
                                                 event.stopPropagation()
-                                            }}
+                                            }
                                             InputProps={{
                                                 ...params.InputProps,
                                                 value: currentValue?.displayName,
