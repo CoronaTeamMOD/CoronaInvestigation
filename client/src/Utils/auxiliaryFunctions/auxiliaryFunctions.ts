@@ -37,15 +37,15 @@ const isIdValid = (id: string | null | undefined) => {
     }
 };
 
-export const generalIdentificationValidation = /^[a-zA-Z0-9\u0590-\u05fe\/\s():&\-\\]*$/;
-export const maxIdentificationLength = 15;
+export const passportValidation = /^[a-zA-Z0-9\u0590-\u05fe\/\s():&\-\\]*$/;
+export const passportMaxIdentificationLength = 15;
 const isPassportValid = (id: string | null | undefined): boolean => {
     /*
      *  note : this is a funcion and not a constant because the logic
      *        will most likely be changed to something more complicated (like id)
      */
     if (Boolean(id)) {
-        return generalIdentificationValidation.test(String(id));
+        return passportValidation.test(String(id));
     }
     return true;
 };

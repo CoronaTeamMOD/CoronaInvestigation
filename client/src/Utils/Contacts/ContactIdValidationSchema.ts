@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
-import { isIdValid , isPassportValid, idLength, maxIdentificationLength, idBasicValidation } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { isIdValid , isPassportValid, idLength, passportMaxIdentificationLength, idBasicValidation } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 const ContactIdValidationSchema = yup
   .string()
@@ -11,7 +11,7 @@ const ContactIdValidationSchema = yup
       then: yup
         .string()
         .nullable()
-        .max(maxIdentificationLength, `דרכון מכיל ${maxIdentificationLength} ספרות בלבד`)
+        .max(passportMaxIdentificationLength, `דרכון מכיל ${passportMaxIdentificationLength} ספרות בלבד`)
         .test('isValid', 'דרכון לא תקין', (id) => isPassportValid(id)) ,
       otherwise: 
         yup

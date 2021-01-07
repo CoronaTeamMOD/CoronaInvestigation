@@ -1,23 +1,19 @@
 import React from 'react';
-import * as yup from 'yup';
 
-import { generalIdentificationValidation, maxIdentificationLength } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import {passportSchema , idSchema} from 'Utils/Schemas/identification';
 import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
 
-const errorMessage = 'הוכנס תו לא וולידי';
-const maxLengthErrorMessage = `השדה יכול להכיל ${maxIdentificationLength} תווים בלבד`;
-
-export const stringAlphanum = yup
-  .string()
-  .matches(generalIdentificationValidation, errorMessage)
-  .max(maxIdentificationLength, maxLengthErrorMessage);
-
 const IdentificationTextField = (props : Props) => {
+  const { isPassport } = props;
+  
+  const schema = isPassport 
+    ? passportSchema
+    : idSchema;  
   return (
     <TypePreventiveTextField
         {...props}
         value={props.value || ''}
-        validationSchema={stringAlphanum}
+        validationSchema={schema}
     />
   );
 };
@@ -32,6 +28,7 @@ interface Props{
     placeholder?: string,
     label?: string,
     className?: string,
+    isPassport: boolean
 }
 
 
