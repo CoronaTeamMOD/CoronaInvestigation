@@ -11,8 +11,9 @@ const DeskFilter = ({ desks, filteredDesks, onFilterChange }: Props) => {
 
     return (
         <Card className={classes.card}>
-            <Typography variant='body2'>הדסקים בהם הנך צופה כעת:</Typography>
+            <Typography>הדסקים בהם הנך צופה כעת:</Typography>
             <Autocomplete
+                ChipProps={{className:classes.chip}}
                 className={classes.autocomplete}
                 disableCloseOnSelect
                 multiple
@@ -25,7 +26,6 @@ const DeskFilter = ({ desks, filteredDesks, onFilterChange }: Props) => {
                     <TextField
                         {...params}
                         size='small'
-                        className={classes.textfield}
                     />
                 }
                 renderOption={(option, { selected }) => (
