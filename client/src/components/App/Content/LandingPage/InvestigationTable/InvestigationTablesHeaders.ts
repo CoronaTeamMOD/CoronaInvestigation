@@ -30,6 +30,9 @@ export enum TableHeadersNames {
     canFetchGroup = 'canFetchGroup',
     settings = 'settings',
     subOccupation = 'subOccupation',
+    isSelfInvestigated = 'isSelfInvestigated',
+    selfInvestigationStatus = 'selfInvestigationStatus',
+    selfInvestigationUpdateTime = 'selfInvestigationUpdateTime'
 }
 
 export enum HiddenTableKeys {
@@ -70,7 +73,10 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.groupReason]: '',
     [TableHeadersNames.otherReason]: '',
     [TableHeadersNames.reasonId]: '',
-    [TableHeadersNames.settings]: ''
+    [TableHeadersNames.settings]: '',
+    [TableHeadersNames.isSelfInvestigated]: '',
+    [TableHeadersNames.selfInvestigationStatus]: '',
+    [TableHeadersNames.selfInvestigationUpdateTime]: ''
 }
 
 export const adminCols: string[] = [
@@ -132,5 +138,8 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.otherReason]: false,
     [TableHeadersNames.reasonId]: false,
     [TableHeadersNames.settings]: false,
-    [TableHeadersNames.subOccupation]: false
+    [TableHeadersNames.subOccupation]: false,
+    [TableHeadersNames.isSelfInvestigated]: false,
+    [TableHeadersNames.selfInvestigationStatus]: false,
+    [TableHeadersNames.selfInvestigationUpdateTime]: false,
 }
