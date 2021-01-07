@@ -10,12 +10,12 @@ import Street from 'models/Street';
 import Gender from 'models/enums/Gender';
 import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
-import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import {getStreetByCity} from 'Utils/Address/AddressUtils';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+
+import AddressForm, { AddressFormFields } from 'commons/Forms/AddressForm/AddressForm';
 
 import { useStyles } from './ClinicalDetailsStyles';
 import IsolationDatesFields from './IsolationDatesFields';
@@ -24,7 +24,6 @@ import IsolationProblemFields from './IsolationProblemFields';
 import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields/SymptomsFields';
 import useClinicalDetails, { initialClinicalDetails } from './useClinicalDetails';
 import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
-import AddressForm from 'commons/Forms/AddressForm/AddressForm';
 
 const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles();
@@ -39,11 +38,9 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     
     const [symptoms, setSymptoms] = useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = useState<string[]>([]);
-    const [streetsInCity, setStreetsInCity] = React.useState<Map<string, Street>>(new Map());
     const [didSymptomsDateChangeOccur, setDidSymptomsDateChangeOccur] = useState<boolean>(false);
 
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
-    const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const { fetchClinicalDetails, saveClinicalDetailsAndDeleteContactEvents, isolationSources } =
         useClinicalDetails({ id, setSymptoms, setBackgroundDiseases, didSymptomsDateChangeOccur });
@@ -88,17 +85,30 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const watchDoesHaveBackgroundDiseases = methods.watch(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES);
     const watchBackgroundDiseases = methods.watch(ClinicalDetailsFields.BACKGROUND_DESEASSES);
     const watchWasHospitalized = methods.watch(ClinicalDetailsFields.WAS_HOPITALIZED);
-    const watchAddress = methods.watch(ClinicalDetailsFields.ISOLATION_ADDRESS);
+
+    const addressFormFields: AddressFormFields = {
+        cityField: {
+            name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`, 
+            testId: 'currentQuarantineCity'
+        },
+        streetField: {
+            name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, 
+            testId: 'currentQuarantineStreet'
+        },
+        houseNumberField: {
+            name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`, 
+            testId: 'currentQuarantineHomeNumber'
+        },
+        floorField: {
+            name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`, 
+            testId: 'currentQuarantineFloor', 
+            className: classes.cancelWhiteSpace
+        }
+    }
 
     useEffect(() => {
         fetchClinicalDetails(methods.reset, methods.trigger);
     }, []);
-
-    useEffect(() => {
-        if (watchAddress.city) {
-            getStreetByCity(watchAddress.city, setStreetsInCity);
-        }
-    }, [watchAddress?.city]);
 
     useEffect(() => {
         if (watchIsInIsolation === false) {
@@ -171,10 +181,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                         <Grid item xs={12}>
                             <FormRowWithInput fieldName='כתובת לבידוד:'>
                                 <AddressForm
-                                    cityField={{ name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`, testId: 'currentQuarantineCity' }}
-                                    streetField={{ name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, testId: 'currentQuarantineStreet' }}
-                                    houseNumberField={{ name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`, testId: 'currentQuarantineHomeNumber' }}
-                                    floorField={{ name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`, testId: 'currentQuarantineFloor', className: classes.cancelWhiteSpace }}
+                                    {...addressFormFields}
                                 />
                             </FormRowWithInput>
                         </Grid>

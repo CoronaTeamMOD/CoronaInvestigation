@@ -11,7 +11,7 @@ import StoreStateType from 'redux/storeStateType';
 import FlattenedDBAddress from 'models/DBAddress';
 import FormInput from 'commons/FormInput/FormInput';
 import {get} from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-import AddressForm from 'commons/Forms/AddressForm/AddressForm';
+import AddressForm, { AddressFormFields } from 'commons/Forms/AddressForm/AddressForm';
 import placeTypesCodesHierarchy from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCodesHierarchy';
@@ -130,6 +130,25 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
         extraFields = [],
     } = formConfig;
 
+    const addressFormFields: AddressFormFields = {
+        cityField: {
+            name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_CITY}`, 
+            testId: 'currentQuarantineCity'
+        },
+        streetField: {
+            name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_STREET}`, 
+            testId: 'currentQuarantineStreet'
+        },
+        houseNumberField: {
+            name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_HOUSE_NUMBER}`, 
+            testId: 'currentQuarantineHomeNumber'
+        },
+        floorField: {
+            name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_FLOOR}`, 
+            testId: 'currentQuarantineFloor'
+        }
+    }
+
     return (
         <Grid className={isVisible ? formClasses.form : formClasses.hidden} container justify='space-between'>
             <PlacesTypesAndSubTypes size='Dialog'
@@ -206,10 +225,7 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                 <FormRowWithInput labelLength={2} fieldName={ADDRESS_LABEL}>
                     <AddressForm
                         disabled={true}
-                        cityField={{ name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_CITY}`, testId: 'currentQuarantineCity' }}
-                        streetField={{ name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_STREET}`, testId: 'currentQuarantineStreet' }}
-                        houseNumberField={{ name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_HOUSE_NUMBER}`, testId: 'currentQuarantineHomeNumber' }}
-                        floorField={{ name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_FLOOR}`, testId: 'currentQuarantineFloor' }}
+                        {...addressFormFields}
                     />
                 </FormRowWithInput>
             </Collapse>

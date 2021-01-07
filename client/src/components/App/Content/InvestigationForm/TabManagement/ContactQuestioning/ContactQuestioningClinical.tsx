@@ -10,9 +10,9 @@ import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
-import AddressForm from 'commons/Forms/AddressForm/AddressForm';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import HebrewTextField from 'commons/HebrewTextField/HebrewTextField';
+import AddressForm, { AddressFormFields } from 'commons/Forms/AddressForm/AddressForm';
 import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFields';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
@@ -41,7 +41,30 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const daysToIsolate = 14;
     const isolationEndDate = addDays(new Date(interactedContact.contactDate), daysToIsolate);
     const formattedIsolationEndDate = format(new Date(isolationEndDate), 'dd/MM/yyyy');
-    
+  
+    const addressFormFields: AddressFormFields = {
+        cityField: {
+            name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`, 
+            className: classes.addressTextField, 
+            testId: 'contactedPersonCity',
+            defaultValue: interactedContact.isolationAddress?.city?.id
+        },
+        streetField: {
+            name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`, 
+            className: classes.addressTextField,
+            defaultValue: interactedContact.isolationAddress?.street?.id
+        },
+        houseNumberField: {
+            name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`,
+            defaultValue: interactedContact.isolationAddress?.houseNum
+        },
+        floorField: {
+            name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`,
+            className: classes.appartmentNumber,
+            defaultValue: interactedContact.isolationAddress?.apartment
+        }
+    }
+
     useEffect(() => {
         if (isFieldDisabled) {
             setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`, interactedContact.isolationAddress?.city?.id);
@@ -173,18 +196,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                             <AddressForm
                                 unsized={true}
                                 disabled={isFieldDisabled}
-                                cityField={{name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`, 
-                                className: classes.addressTextField, 
-                                testId: 'contactedPersonCity',
-                                defaultValue: interactedContact.isolationAddress?.city?.id}}
-                                streetField={{name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`, 
-                                className: classes.addressTextField,
-                                defaultValue: interactedContact.isolationAddress?.street?.id}}
-                                houseNumberField={{name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`,
-                                defaultValue: interactedContact.isolationAddress?.houseNum}}
-                                floorField={{name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`,
-                                className: classes.appartmentNumber,
-                                defaultValue: interactedContact.isolationAddress?.apartment}}
+                                {...addressFormFields}
                             />
                         </Grid>
                     </Grid>

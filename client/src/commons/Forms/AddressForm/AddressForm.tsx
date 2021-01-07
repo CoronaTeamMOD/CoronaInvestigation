@@ -220,4 +220,6 @@ interface Props {
     floorField: FormField;
 }
 
+export type AddressFormFields = Pick<Props, 'cityField' | 'streetField' | 'houseNumberField' | 'floorField'>
+
 export default AddressForm;
