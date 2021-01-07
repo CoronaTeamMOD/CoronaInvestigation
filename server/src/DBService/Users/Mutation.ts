@@ -34,8 +34,8 @@ mutation updateDesk($id: String!, $desk: Int!) {
 `;
 
 export const UPDATE_COUNTY = gql`
-mutation updateCounty($id: String!, $county: Int!) {
-  updateUserById(input: {userPatch: {deskId: $desk}, id: $id}) {
+mutation updateCounty($id: String!, $investigationGroup: Int!) {
+  updateUserById(input: {userPatch: {investigationGroup: $investigationGroup}, id: $id}) {
     user {
       id
       investigationGroup

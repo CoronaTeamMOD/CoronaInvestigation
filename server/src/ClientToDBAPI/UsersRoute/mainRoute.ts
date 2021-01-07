@@ -10,7 +10,7 @@ import { adminMiddleWare, superAdminMiddleWare } from '../../middlewares/Authent
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, UPDATE_INVESTIGATOR_BY_GROUP_ID,
-         UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK } from '../../DBService/Users/Mutation';
+         UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY } from '../../DBService/Users/Mutation';
 import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
     GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_USERS_BY_DISTRICT_ID, GET_ALL_USER_TYPES, GET_USERS_BY_COUNTY_ID
@@ -95,7 +95,7 @@ usersRoute.post('/updateCounty', adminMiddleWare, (request: Request, response: R
 
     updateCountyLogger.info(launchingDBRequestLog(updateCountyVariables), Severity.LOW);
 
-    graphqlRequest(UPDATE_DESK, response.locals, updateCountyVariables)
+    graphqlRequest(UPDATE_COUNTY, response.locals, updateCountyVariables)
         .then(result => {
             updateCountyLogger.info(validDBResponseLog, Severity.LOW);
             response.send(result.data.updateUserById.user);
