@@ -16,7 +16,7 @@ const customTimeRange = timeRanges[4];
 const useTimeRangeFilterCard = () => {
     
     const [errorMes, setErrorMes] = useState<string>('');
-    const [timeRangeFilter, setTimeRangeFilter] = useState<TimeRange>(timeRanges[0]);
+    const [timeRangeFilter, setTimeRangeFilter] = useState<TimeRange>(defaultTimeRange);
 
     const history = useHistory<HistoryState>();    
 
