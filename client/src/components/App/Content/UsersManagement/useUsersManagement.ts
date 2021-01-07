@@ -276,7 +276,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     }
 
     const setUserCounty = (countyId: number, userId: string) => {
-
         if(userId != user.id){
             const setUpdateCountyLogger = logger.setup('Updating user county');
             setUpdateCountyLogger.info(`send request to server for updating user county to ${countyId}`, Severity.LOW);
@@ -288,7 +287,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             }).then((result) => {
                 if(result.data)
                 setUpdateCountyLogger.info('updated user county successfully', Severity.LOW);
-                    fetchUsers();
+                fetchUsers();
             }).catch((error) => {
                 alertError('לא הצלחנו לעדכן את הנפה של המשתמש');
                 setUpdateCountyLogger.error(`error in updating user county due to ${error}`, Severity.HIGH);
@@ -297,7 +296,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         } else {
             alertWarning('אין אפשרות להעביר את עצמך לנפה אחרת', {text: 'אם זו עדיין הפעולה שהתכוונת לבצע, ניתן לפנות לתמיכה!'})
         }
-        
     }
 
     return {
