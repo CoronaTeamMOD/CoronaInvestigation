@@ -8,20 +8,29 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        fontSize: '0.7vw'
+    },
+    chip: {
+        maxWidth: '50%',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
     },
     autocomplete: {
         marginTop: theme.spacing(1),
         width: '80%',
         height: '60%',
         marginBottom: theme.spacing(1),
+
+        '& .MuiInputBase-root': {
+            fontSize: '0.7vw'
+        }
     },
     optionCheckbox: {
         height: '0.5vh',
+        fontSize: '0.7vw',
         marginLeft: theme.spacing(1),
         flip: false,
-    },
-    textfield: {
-        fontsize: '0.7vw'
     },
 }));
 
