@@ -10,6 +10,17 @@ const requiredText = 'שגיאה: שדה חובה';
 const numberValidationText = 'שגיאה: מספר אינו תקין';
 const requiredSelectionText = 'שגיאה: יש לבחור מבין האפשרויות הקיימות';
 
+
+interface PersonalInfoTabSchema {
+    [PersonalInfoDataContextFields.PHONE_NUMBER]: string;
+    [PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]: string;
+    [PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]: string;
+    [PersonalInfoDataContextFields.INSURANCE_COMPANY]: string;
+    [PersonalInfoDataContextFields.CITY]: string;
+    [PersonalInfoDataContextFields.CONTACT_INFO]: string;
+    [PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]: string;
+}
+
 const schema = yup.object().shape({
     [PersonalInfoDataContextFields.PHONE_NUMBER]: yup.string().nullable().required(requiredText).matches(phoneNumberRegex, numberValidationText),
     [PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]: yup.string().nullable().matches(notRequiredPhoneNumberRegex, numberValidationText),
