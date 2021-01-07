@@ -27,6 +27,7 @@ const StatePersistentNavLink = (props: NavLinkProps) => {
 
   return (
     <NavLink {...props} location={history.location}
+      isActive = {props.isActive}
       onClick={handleNavClick}
       activeClassName={classes.activeItem} className={classes.menuItem}>
       {props.children}
@@ -50,7 +51,9 @@ const AppToolbar: React.FC = (): JSX.Element => {
             navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
             navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&
             <div className={classes.navButtons}>
-              <StatePersistentNavLink exact to={adminLandingPageRoute}>
+              <StatePersistentNavLink exact to={indexRoute} 
+                isActive={(match, location) => 
+                {return location.pathname == adminLandingPageRoute || location.pathname  == landingPageRoute;}}>
                 <Home className={classes.menuIcon} />
                 <Typography className={classes.menuTypo}> עמוד הבית</Typography>
               </StatePersistentNavLink>
