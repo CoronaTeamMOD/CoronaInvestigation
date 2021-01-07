@@ -295,7 +295,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             })
             .finally(() => setIsLoading(false));
         } else {
-            alertWarning('אין אפשרות להעביר את עצמך לנפה אחרת')
+            alertWarning('אין אפשרות להעביר את עצמך לנפה אחרת', {text: 'אם זו עדיין הפעולה שהתכוונת לבצע, ניתן לפנות לתמיכה!'})
         }
         
     }
