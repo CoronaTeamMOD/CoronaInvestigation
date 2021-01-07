@@ -27,7 +27,6 @@ const StatePersistentNavLink = (props: NavLinkProps) => {
 
   return (
     <NavLink {...props} location={history.location}
-      isActive = {props.isActive}
       onClick={handleNavClick}
       activeClassName={classes.activeItem} className={classes.menuItem}>
       {props.children}
