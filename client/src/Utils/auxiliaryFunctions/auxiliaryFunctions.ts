@@ -37,7 +37,7 @@ const isIdValid = (id: string | null | undefined) => {
     }
 };
 
-export const passportValidation = /^[a-zA-Z0-9\u0590-\u05fe\/\s():&\-\\]*$/;
+export const passportValidation = /^[a-zA-Z0-9/]*$/;
 export const passportMaxIdentificationLength = 15;
 const isPassportValid = (id: string | null | undefined): boolean => {
     /*
