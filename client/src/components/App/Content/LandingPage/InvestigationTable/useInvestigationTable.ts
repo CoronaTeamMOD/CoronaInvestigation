@@ -511,7 +511,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             fetchTableData();
         }
         setIsBadgeInVisible(!Boolean(Object.values(filterRules).find(item => item !== null)))
-    }, [isLoggedIn, filterRules]);
+    }, [isLoggedIn, filterRules, orderBy]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const investigationClickLogger = logger.setupVerbose({
