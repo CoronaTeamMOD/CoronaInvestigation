@@ -106,10 +106,10 @@ const useStyles = makeStyles({
     },
     floorInput: {
         minWidth: '15vw',
+        marginLeft: '8vw'
     },
     houseNumInput: {
         minWidth: '15vw',
-        marginLeft: '8vw'
     },
     markComplexity: {
         border: 'solid #FFC90E',

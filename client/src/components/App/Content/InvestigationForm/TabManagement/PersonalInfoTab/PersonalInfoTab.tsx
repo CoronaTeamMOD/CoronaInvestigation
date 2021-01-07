@@ -456,24 +456,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                             </Grid>
                             <Grid item xs={1} className={classes.homeAddressItem}>
                                 <Controller
-                                    name={PersonalInfoDataContextFields.FLOOR}
-                                    control={methods.control}
-                                    render={(props: any) => (
-                                        <AlphanumericTextField
-                                            testId='personalDetailsFloor'
-                                            name={PersonalInfoDataContextFields.FLOOR}
-                                            value={props.value}
-                                            onChange={(newValue: string) => props.onChange(newValue)}
-                                            onBlur={props.onBlur}
-                                            placeholder='קומה'
-                                            label='קומה'
-                                            className={classes.floorInput}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={1} className={classes.homeAddressItem}>
-                                <Controller
                                     name={PersonalInfoDataContextFields.HOUSE_NUMBER}
                                     control={methods.control}
                                     render={(props: any) => (
@@ -486,6 +468,24 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                             placeholder='מספר בית'
                                             label='מספר בית'
                                             className={classes.houseNumInput}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={1} className={classes.homeAddressItem}>
+                                <Controller
+                                    name={PersonalInfoDataContextFields.FLOOR}
+                                    control={methods.control}
+                                    render={(props: any) => (
+                                        <AlphanumericTextField
+                                            testId='personalDetailsFloor'
+                                            name={PersonalInfoDataContextFields.FLOOR}
+                                            value={props.value}
+                                            onChange={(newValue: string) => props.onChange(newValue)}
+                                            onBlur={props.onBlur}
+                                            placeholder='קומה'
+                                            label='קומה'
+                                            className={classes.floorInput}
                                         />
                                     )}
                                 />
