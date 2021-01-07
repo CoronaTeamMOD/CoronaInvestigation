@@ -2,14 +2,16 @@ import React from 'react';
 import { Grid, Typography } from '@material-ui/core';
 
 import DatePick from './DatePick'
+import useStyles from './DateRangePickStyles';
 
 const DateRangePick: React.FC<Props> = (props: Props): JSX.Element => {
 
     const { startDate, onStartDateChange, endDate, onEndDateChange, minDate, maxDate } = props;
+    const classes = useStyles();
 
     return (
-        <Grid container alignItems='center' xs={12} spacing={1}>
-            <Grid item xs={5}>
+        <Grid container alignItems='center' xs={12} justify='space-between'>
+            <Grid item xs={5} className={classes.dateItem}>
                 <DatePick
                     minDate={minDate}
                     maxDate={maxDate}
@@ -17,10 +19,10 @@ const DateRangePick: React.FC<Props> = (props: Props): JSX.Element => {
                     onChange={onStartDateChange}
                 />
             </Grid>
-            <Grid item xs={2}>
-                <Typography>עד</Typography>
+            <Grid item xs={1}>
+                <Typography className={classes.text}>עד</Typography>
             </Grid>
-            <Grid item xs={5}>
+            <Grid item xs={5} className={classes.dateItem}>
                 <DatePick
                     maxDate={maxDate}
                     value={endDate}
