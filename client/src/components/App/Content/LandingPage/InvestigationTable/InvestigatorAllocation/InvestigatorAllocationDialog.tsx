@@ -5,11 +5,13 @@ import { Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, To
 import theme from 'styles/theme';
 import InvestigatorOption from 'models/InvestigatorOption';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import useStyles from './InvestigatorAllocationDialogStyles';
 import InvestigatorsTable from './InvestigatorsTable/InvestigatorsTable';
 import TransferInvestigationDialogNote from '../InvestigationTableFooter/TransferInvestigationsDialogs/TransferInvestigationDialogNote';
+import { TableHeadersNames } from './InvestigatorsTable/InvestigatorsTableHeaders';
 
 const title = 'הקצאת חקירה';
 const unSelectedRow = -1;
@@ -34,7 +36,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
         } else if (epidemiologyNumbers.length === 1) {
             message += `את חקירה מספר <b>${epidemiologyNumbers[0]}</b> `;
         }
-        message += allInvestigators && `לחוקר <b>${allInvestigators[investigatorToAllocateIndex].value.userName}</b>?</p>`;
+        message += allInvestigators && `לחוקר <b>${get(allInvestigators[investigatorToAllocateIndex].value, TableHeadersNames.userName)}</b>?</p>`;
         return message;
     }
 
