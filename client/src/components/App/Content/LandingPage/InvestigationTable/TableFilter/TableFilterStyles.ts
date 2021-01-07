@@ -8,28 +8,56 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: theme.spacing(1),
         marginBottom: theme.spacing(1),
         borderRadius: 16,
-        maxHeight: '80%'
+        maxHeight: '80%',
+        justifyContent: 'space-between'
+    },
+    startCard: {
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+    },
+    endCard: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
     },
     autocomplete: {
-        width: '33%',
+        maxWidth: '35%',
+    },
+    autocompleteInput: {
+        fontSize: '1vw'
     },
     optionCheckbox: {
         height: '0.5vh',
         marginLeft: theme.spacing(1),
         flip: false
     }, 
+    headTitle: {
+        fontSize: '1.2vw',
+        paddingRight: '1vw'
+    },
     title: {
-        fontSize: '14px',
+        fontSize: '1vw',
+        padding: '0 0.4vw'
+    },
+    formControl: {
+        padding: '0 0.4vw'
+    },
+    collapse: {
+        maxWidth: '30%'
     },
     option: {
-        fontSize: '1.2vw',
+        fontSize: '1vw',
     },
     chip: {
         maxWidth: '50%',
         whiteSpace: 'nowrap',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
-    }
+    },
+    timeRangeError: {
+        fontSize: '1vw',
+    },
 }));
 
 export default useStyles;

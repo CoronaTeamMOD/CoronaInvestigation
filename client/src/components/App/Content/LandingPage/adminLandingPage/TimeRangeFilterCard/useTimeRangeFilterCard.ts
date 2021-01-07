@@ -3,15 +3,13 @@ import { format } from 'date-fns';
 import { useHistory } from 'react-router-dom';
 
 import { TimeRange } from 'models/TimeRange';
-import timeRanges from 'models/enums/timeRanges';
+import timeRanges, { customTimeRange, defaultTimeRange } from 'models/enums/timeRanges';
 
 import { HistoryState } from '../../InvestigationTable/InvestigationTableInterfaces';
 
 const dateMissingError = 'יש לבחור תאריך תחילה וסיום';
 const dateInvalid = 'תאריך לא תקין';
 const rangeError = 'טווח תאריכים צריך להיות תקין';
-export const defaultTimeRange = timeRanges[0];
-const customTimeRange = timeRanges[4];
 
 const useTimeRangeFilterCard = () => {
     

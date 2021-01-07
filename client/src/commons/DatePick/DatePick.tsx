@@ -6,8 +6,8 @@ import { KeyboardDatePicker, KeyboardDatePickerProps } from '@material-ui/picker
 import { useStyles } from './DatePickStyles';
 
 const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
-  const classes = useStyles({});
 
+  const classes = useStyles({});
   const { labelText, value, onChange, onBlur, error, useBigCalender, maxDate, disabled, ...rest } = props;
 
   return (
@@ -39,8 +39,6 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
   );
 };
 
-export default DatePick;
-
 interface Props extends KeyboardDatePickerProps {
   labelText?: string;
   labelTextVariant?: Variant;
@@ -52,3 +50,5 @@ interface Props extends KeyboardDatePickerProps {
   onBlur?: React.EventHandler<any>;
   error?: boolean;
 }
+
+export default DatePick;

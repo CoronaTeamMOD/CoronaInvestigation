@@ -17,6 +17,7 @@ import StoreStateType from 'redux/storeStateType';
 import { BC_TABS_NAME } from 'models/BroadcastMessage';
 import usePageRefresh from 'Utils/vendor/usePageRefresh';
 import InvestigatorOption from 'models/InvestigatorOption';
+import { defaultTimeRange } from 'models/enums/timeRanges';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
@@ -39,7 +40,6 @@ import {
     HiddenTableKeys
 } from './InvestigationTablesHeaders';
 import { DeskFilter, HistoryState, StatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
-import { defaultTimeRange } from '../adminLandingPage/TimeRangeFilterCard/useTimeRangeFilterCard';
 
 const investigationURL = '/investigation';
 const getFlooredRandomNumber = (min: number, max: number): number => (
@@ -193,6 +193,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         updateFilterHistory('deskFilter', desksIds);
         setDeskFilter(desksIds);
         handleFilterChange(filterCreators.DESK_ID(desksIds))
+        setCurrentPage(defaultPage);
+    };
+
+    const changeTimeRangeFilter = (timeRangeFilter: TimeRange) => {
+        updateFilterHistory('timeRangeFilter', timeRangeFilter);
+        setTimeRangeFilter(timeRangeFilter);
+        handleFilterChange(filterCreators.TIME_RANGE(timeRangeFilter))
         setCurrentPage(defaultPage);
     };
 
@@ -939,6 +946,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeDeskFilter,
         changeSearchFilter,
         changeUnassginedUserFilter,
+        changeTimeRangeFilter,
         unassignedUserFilter,
         changeInactiveUserFilter,
         inactiveUserFilter,

@@ -4,14 +4,15 @@ import { useHistory } from 'react-router-dom';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
-import { TimeRange, TimeRangeDates } from 'models/TimeRange';
 import { landingPageRoute } from 'Utils/Routes/Routes';
+import { defaultTimeRange } from 'models/enums/timeRanges'
+import { TimeRange, TimeRangeDates } from 'models/TimeRange';
 import FilterRulesVariables from 'models/FilterRulesVariables';
 import InvesitgationStatistics from 'models/InvestigationStatistics';
 import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 
-import { defaultTimeRange } from './TimeRangeFilterCard/useTimeRangeFilterCard';
 import { HistoryState } from '../InvestigationTable/InvestigationTableInterfaces';
+
 export const allTimeRangeId = 10;
 
 const useAdminLandingPage = (parameters: Parameters) => {

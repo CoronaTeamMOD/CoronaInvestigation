@@ -35,4 +35,10 @@ const timeRanges: TimeRange[] = [
     }
 ];
 
+export const defaultTimeRange = timeRanges[0];
+
+export const customTimeRange = timeRanges[4];
+
+export const timeRangeMinDate = new Date(2020, 9, 1);
+
 export default timeRanges;

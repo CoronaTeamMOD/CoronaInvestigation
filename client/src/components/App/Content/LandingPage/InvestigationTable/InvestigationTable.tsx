@@ -95,7 +95,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
         statusFilter, changeStatusFilter, deskFilter, changeDeskFilter, changeSearchFilter,
         changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers,
-        tableTitle, timeRangeFilter, isBadgeInVisible
+        tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter
     } = useInvestigationTable({
         setSelectedRow, allGroupedInvestigations, setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations,
         investigationColor
@@ -260,7 +260,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     <DeskFilter
                         desks={allDesks}
                         filteredDesks={deskFilter}
-                        onFilterChange={(event, value) => changeDeskFilter(value)} />
+                        onFilterChange={(event, value) => changeDeskFilter(value)} 
+                    />
                 </Grid>
             </Grid>
             <Grid className={classes.content}>
@@ -298,8 +299,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         </Button>
                     </Box>
                 </div>
-                <Grid container justify="flex-end" className={classes.filterTableRow}>
-                    <Grid item xs={5}>
+                <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
+                    <Grid item xs={12}>
                         <Collapse in={showFilterRow}>
                             <TableFilter
                                 statuses={allStatuses}
@@ -310,6 +311,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 changeUnassginedUserFilter={changeUnassginedUserFilter}
                                 inactiveUserFilter={inactiveUserFilter}
                                 unassignedUserFilter={unassignedUserFilter}
+                                timeRangeFilter={timeRangeFilter}
+                                onTimeRangeFilterChange={changeTimeRangeFilter} 
                             />
                         </Collapse>
                     </Grid>
