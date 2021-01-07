@@ -1,23 +1,33 @@
 import React from 'react';
 import * as yup from 'yup';
 
-import { generalIdentificationValidation, maxIdentificationLength } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { passportValidation, passportMaxIdentificationLength , idLength , idBasicValidation} from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
 
 const errorMessage = 'הוכנס תו לא וולידי';
-const maxLengthErrorMessage = `השדה יכול להכיל ${maxIdentificationLength} תווים בלבד`;
+const passportMaxLengthErrorMessage = `השדה יכול להכיל ${passportMaxIdentificationLength} תווים בלבד`;
+const idMaxLengthErrorMessage = `השדה יכול להכיל ${idLength} תווים בלבד`;
 
-export const stringAlphanum = yup
+export const passportSchema = yup
   .string()
-  .matches(generalIdentificationValidation, errorMessage)
-  .max(maxIdentificationLength, maxLengthErrorMessage);
+  .matches(passportValidation, errorMessage)
+  .max(passportMaxIdentificationLength, passportMaxLengthErrorMessage);
+
+export const idSchema = yup
+  .string()
+  .matches(idBasicValidation, errorMessage)
+  .max(idLength, idMaxLengthErrorMessage);
 
 const IdentificationTextField = (props : Props) => {
+  const { isPassport } = props; 
+  const schema = isPassport 
+    ? passportSchema
+    : idSchema;  
   return (
     <TypePreventiveTextField
         {...props}
         value={props.value || ''}
-        validationSchema={stringAlphanum}
+        validationSchema={schema}
     />
   );
 };
@@ -32,6 +42,7 @@ interface Props{
     placeholder?: string,
     label?: string,
     className?: string,
+    isPassport: boolean
 }
 
 

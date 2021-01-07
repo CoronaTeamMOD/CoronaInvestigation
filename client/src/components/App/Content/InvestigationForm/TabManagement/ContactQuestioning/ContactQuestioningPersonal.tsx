@@ -109,10 +109,13 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                             defaultValue={
                                 interactedContact.identificationNumber
                             }
+                            max={9}
                             render={(props) => {
+                                console.log(props);
                                 return (
                                     <IdentificationTextField
                                         {...props}
+                                        isPassport={isPassport}
                                         disabled={shouldIdDisable}
                                         testId="identificationNumber"
                                         onChange={(newValue: string) => {

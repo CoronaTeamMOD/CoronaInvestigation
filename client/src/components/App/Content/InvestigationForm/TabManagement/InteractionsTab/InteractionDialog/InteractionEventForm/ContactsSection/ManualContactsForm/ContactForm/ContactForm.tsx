@@ -142,6 +142,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                         control={control}
                         render={(props) => (
                             <IdentificationTextField
+                                isPassport={isPassport}
                                 disabled={isFieldDisabled || (contactCreationTime ? shouldDisableContact(contactCreationTime) : false)}
                                 name={props.name}
                                 value={props.value}
