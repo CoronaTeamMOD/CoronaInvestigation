@@ -111,13 +111,12 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                             }
                             max={9}
                             render={(props) => {
-                                console.log(props);
                                 return (
                                     <IdentificationTextField
                                         {...props}
                                         isPassport={isPassport}
                                         disabled={shouldIdDisable}
-                                        testId="identificationNumber"
+                                        testId='identificationNumber'
                                         onChange={(newValue: string) => {
                                             props.onChange(newValue);
                                         }}

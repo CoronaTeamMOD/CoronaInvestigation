@@ -4,7 +4,8 @@ import {passportSchema , idSchema} from 'Utils/Schemas/identification';
 import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
 
 const IdentificationTextField = (props : Props) => {
-  const { isPassport } = props; 
+  const { isPassport } = props;
+  
   const schema = isPassport 
     ? passportSchema
     : idSchema;  
