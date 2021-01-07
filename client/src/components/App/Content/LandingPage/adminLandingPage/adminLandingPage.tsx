@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 
-import { TimeRange } from 'models/TimeRange';
-import timeRanges from 'models/enums/timeRanges';
-import FilterRulesVariables from 'models/FilterRulesVariables';
+import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
 import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 import InvestigationStatistics, { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 
@@ -11,17 +9,16 @@ import useStyles from './adminLandingPageStyles';
 import useAdminLandingPage from './useAdminLandingPage';
 import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
-import AdminLandingPageFilters from './AdminLandingPageFilters';
 import LastUpdateMessage from './LastUpdateMessage/LastUpdateMessage';
-import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
 import TimeRangeFilterCard from './TimeRangeFilterCard/TimeRangeFilterCard';
+import { HistoryState } from '../InvestigationTable/InvestigationTableInterfaces';
 
 const AdminLandingPage: React.FC = (): JSX.Element => {
 
     const classes = useStyles();
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [investigationInfoFilter, setInvestigationInfoFilter] = useState<AdminLandingPageFilters>({});
+    const [investigationInfoFilter, setInvestigationInfoFilter] = useState<HistoryState>({});
     const [investigationsStatistics, setInvestigationsStatistics] = useState<InvestigationStatistics>({
         allInvestigations: 0,
         inProcessInvestigations: 0,
@@ -30,20 +27,16 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
         unassignedInvestigations: 0,
         unallocatedInvestigations: 0,
     });
-    const [filteredDesks, setFilteredDesks] = useState<number[]>([]);
     const [lastUpdated , setLastUpdated] = useState<Date>(new Date());
-    const [timeRangeFilter, setTimeRangeFilter] = useState<TimeRange>(timeRanges[0]);
+
     const { countyDisplayName } = useAppToolbar();
-    const { redirectToInvestigationTable , fetchInvestigationStatistics} = useAdminLandingPage({
+    const { redirectToInvestigationTable , fetchInvestigationStatistics, 
+            updateInvestigationFilterByDesks, updateInvestigationFilterByTime} = useAdminLandingPage({
         setIsLoading,
         investigationInfoFilter,
         setInvestigationInfoFilter,
         setInvestigationsStatistics,
-        filteredDesks,
-        setFilteredDesks,
         setLastUpdated,
-        timeRangeFilter,
-        setTimeRangeFilter
     });
 
     return (
@@ -58,11 +51,8 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                     <LastUpdateMessage lastUpdated={lastUpdated} fetchInvestigationStatistics={fetchInvestigationStatistics}/>
                 </Grid>
                 <Grid item xs={3}>
-                    <DesksFilterCard 
-                        filteredDesks={filteredDesks}
-                        setFilteredDesks={setFilteredDesks}
-                        investigationInfoFilter={investigationInfoFilter}
-                        setInvestigationInfoFilter={setInvestigationInfoFilter}
+                    <DesksFilterCard
+                        onUpdateButtonClicked={updateInvestigationFilterByDesks}
                     />
                 </Grid>
                 <Grid item xs={9}>
@@ -74,10 +64,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={3}>
                     <TimeRangeFilterCard 
-                        timeRangeFilter={timeRangeFilter}
-                        setTimeRangeFilter={setTimeRangeFilter}
-                        investigationInfoFilter={investigationInfoFilter}
-                        setInvestigationInfoFilter={setInvestigationInfoFilter}
+                        onUpdateButtonClicked={updateInvestigationFilterByTime}
                     />
                 </Grid>
                 <Grid item xs={3}>

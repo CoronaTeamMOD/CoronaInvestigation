@@ -13,7 +13,6 @@ import { setIsActive } from 'redux/User/userActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { UserState } from 'redux/User/userReducer';
 
-
 export interface useTopToolbarOutcome  {
     logout: () => void;
     setUserActivityStatus: (isActive: boolean) => Promise<any>;

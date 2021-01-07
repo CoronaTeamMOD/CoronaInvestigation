@@ -22,7 +22,7 @@ export interface HistoryState {
     timeRangeFilter?: TimeRange;
     unassignedUserFilter?: boolean;
     inactiveUserFilter?: boolean;
-    isAdminLandingRedirect: boolean;
+    isAdminLandingRedirect?: boolean;
     filterTitle?: string;
 }
 

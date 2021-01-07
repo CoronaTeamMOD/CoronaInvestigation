@@ -169,8 +169,8 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
         user: response.locals.user.id,
     });
 
-    const desks = request.body.desks;
-    const timeRange = request.body.timeRange; 
+    const desks = request.body.deskFilter;
+    const timeRange = request.body.timeRangeFilter; 
 
     const desksFilter = desks
                         ? { deskId : { in : desks}} 

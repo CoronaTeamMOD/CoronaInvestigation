@@ -13,7 +13,6 @@ import { Severity } from 'models/Logger';
 import { TimeRange } from 'models/TimeRange';
 import userType from 'models/enums/UserType';
 import Investigator from 'models/Investigator';
-import timeRanges from 'models/enums/timeRanges';
 import StoreStateType from 'redux/storeStateType';
 import { BC_TABS_NAME } from 'models/BroadcastMessage';
 import usePageRefresh from 'Utils/vendor/usePageRefresh';
@@ -40,6 +39,7 @@ import {
     HiddenTableKeys
 } from './InvestigationTablesHeaders';
 import { DeskFilter, HistoryState, StatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
+import { defaultTimeRange } from '../adminLandingPage/TimeRangeFilterCard/useTimeRangeFilterCard';
 
 const investigationURL = '/investigation';
 const getFlooredRandomNumber = (min: number, max: number): number => (
@@ -134,7 +134,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const { statusFilter: historyStatusFilter = [], 
             deskFilter: historyDeskFilter = [], 
-            timeRangeFilter: historyTimeRange = timeRanges[0],
+            timeRangeFilter: historyTimeRange = defaultTimeRange,
             inactiveUserFilter : historyInactiveUserFilter = false, 
             unassignedUserFilter : historyUnassignedUserFilter = false,
             isAdminLandingRedirect : historyisAdminLandingRedirect = false,

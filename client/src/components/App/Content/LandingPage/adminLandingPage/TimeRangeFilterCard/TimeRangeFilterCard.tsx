@@ -1,5 +1,5 @@
-import React, { ChangeEvent, useState } from 'react';
-import { Card, CardActions, CardContent, Typography, FormControl, Select, MenuItem, Collapse } from '@material-ui/core';
+import React from 'react';
+import { CardActions, CardContent, Typography, FormControl, Collapse, Card } from '@material-ui/core';
 
 import { TimeRange } from 'models/TimeRange';
 import timeRanges from 'models/enums/timeRanges';
@@ -7,10 +7,8 @@ import SelectDropdown from 'commons/Select/SelectDropdown';
 import DateRangePick from 'commons/DatePick/DateRangePick';
 
 import useStyles from './TimeRangeFilterCardStyles';
-import LoadingCard from '../LoadingCard/LoadingCard';
 import UpdateButton from '../UpdateButton/UpdateButton';
 import useTimeRangeFilterCard from './useTimeRangeFilterCard';
-import AdminLandingPageFilters from '../AdminLandingPageFilters';
 
 const filterTimeRangeLabel = 'טווח זמנים';
 const customTimeRangeId = -1;
@@ -19,16 +17,11 @@ const timeRangeMinDate = new Date(2020, 9, 1);
 const TimeRangeCard = (props : Props): JSX.Element => {
 
     const classes = useStyles();
-    const { timeRangeFilter, setTimeRangeFilter, investigationInfoFilter, setInvestigationInfoFilter } = props;
-    const { isLoading, onTimeRangeChange, onUpdateButtonCLicked, onStartDateSelect, onEndDateSelect, errorMes} = useTimeRangeFilterCard({
-        timeRangeFilter,
-        setTimeRangeFilter,
-        investigationInfoFilter,
-        setInvestigationInfoFilter,
-    });
+    const { onUpdateButtonClicked } = props;
+    const { onTimeRangeChange, onStartDateSelect, onEndDateSelect, validateTimeRange, errorMes, timeRangeFilter} = useTimeRangeFilterCard();
 
     return (
-        <LoadingCard isLoading={isLoading} className={classes.timeRangeCard}>
+        <Card className={classes.timeRangeCard}>
             <CardContent className={classes.timeRangeCardContent}>
                 <Typography className={classes.cardTitle}>
                     <b>{filterTimeRangeLabel}</b>
@@ -52,25 +45,20 @@ const TimeRangeCard = (props : Props): JSX.Element => {
                         minDate={timeRangeMinDate}
                         maxDate={new Date()}
                     />   
-                    {errorMes !== '' && 
-                        <Typography className={classes.timeRangeError}>{errorMes}</Typography>
-                    }
+                    {errorMes && <Typography className={classes.timeRangeError}>{errorMes}</Typography>}
                 </CardContent>
             </Collapse>
             <CardActions className={classes.timeCardActions}>
                 <UpdateButton
-                    onClick={onUpdateButtonCLicked}
+                    onClick={() => validateTimeRange() && onUpdateButtonClicked(timeRangeFilter)}
                 />        
             </CardActions>
-        </LoadingCard>
+        </Card>
     )
 };
 
 interface Props {
-    timeRangeFilter: TimeRange;
-    setTimeRangeFilter: React.Dispatch<React.SetStateAction<TimeRange>>;
-    investigationInfoFilter: AdminLandingPageFilters;
-    setInvestigationInfoFilter: React.Dispatch<React.SetStateAction<AdminLandingPageFilters>>;
+    onUpdateButtonClicked: (timeRangeFilter: TimeRange) => void;
 }
 
 export default TimeRangeCard;

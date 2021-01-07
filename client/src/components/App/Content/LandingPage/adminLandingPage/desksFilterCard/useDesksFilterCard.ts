@@ -1,24 +1,20 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import Desk from 'models/Desk';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 
-import AdminLandingPageFilters from '../AdminLandingPageFilters';
+import { HistoryState } from '../../InvestigationTable/InvestigationTableInterfaces';
 
-interface Props {
-    filteredDesks: number[];
-    setFilteredDesks: React.Dispatch<React.SetStateAction<number[]>>;
-    investigationInfoFilter: AdminLandingPageFilters;
-    setInvestigationInfoFilter: React.Dispatch<React.SetStateAction<AdminLandingPageFilters>>;
-}
-
-const useDesksFilterCard = (props : Props) => {
+const useDesksFilterCard = () => {
     
     const [desks, setDesks] = useState<Desk[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const {filteredDesks, setFilteredDesks, investigationInfoFilter, setInvestigationInfoFilter} = props;
+    const [filteredDesks, setFilteredDesks] = useState<number[]>([]);
+    
+    const history = useHistory<HistoryState>();    
 
     const fetchDesks = () => {
         const fetchDesksLogger = logger.setup('Getting desks');
@@ -34,9 +30,16 @@ const useDesksFilterCard = (props : Props) => {
             setIsLoading(false);
         })
     }
+
+    const getHistoryData = () => {
+        const { location: { state } } = history;
+        const deskFilter = state?.deskFilter;
+        setFilteredDesks(deskFilter || []);
+    }
     
     useEffect(() => {
         fetchDesks();
+        getHistoryData();
     }, []);
 
     const onDeskClicked = (checkedDesk: number) => {
@@ -47,20 +50,6 @@ const useDesksFilterCard = (props : Props) => {
         }
     }
 
-    const onUpdateButtonCLicked = () => {
-        if(filteredDesks.length > 0) {
-            setInvestigationInfoFilter({
-                ...investigationInfoFilter,
-                desks : filteredDesks
-            })
-        } else {
-            delete investigationInfoFilter.desks
-            setInvestigationInfoFilter({
-                ...investigationInfoFilter
-            })
-        }
-    }
-
     const clearAllDesks = () => {
         setFilteredDesks([])
     }
@@ -68,9 +57,9 @@ const useDesksFilterCard = (props : Props) => {
     return {
         desks,
         isLoading,
+        filteredDesks,
         clearAllDesks,
-        onUpdateButtonCLicked,
-        onDeskClicked
+        onDeskClicked,
     }
 };
 
