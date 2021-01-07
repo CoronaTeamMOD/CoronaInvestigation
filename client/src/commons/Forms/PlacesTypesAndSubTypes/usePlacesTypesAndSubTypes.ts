@@ -24,7 +24,7 @@ const usePlacesTypesAndSubTypes = (parameters: usePlacesTypesAndSubTypesIncome) 
                 if (result?.data) {
                     const sortedResult : PlacesSubTypesByTypes = {};
                     Object.keys(result.data).forEach((placeTypes)=>{
-                        sortedResult[placeTypes] = moveOtherValueLocationToLast(result.data[placeTypes]);
+                        sortedResult[placeTypes] = result.data[placeTypes].sort(sortAndMoveOtherValueToLast);
                     })
 
                     getPlacesSubTypesByTypesLogger.info('places and sub types by types request was successful', Severity.LOW);
@@ -38,10 +38,16 @@ const usePlacesTypesAndSubTypes = (parameters: usePlacesTypesAndSubTypesIncome) 
         }).finally(() => setIsLoading(false))
     };
 
-    const moveOtherValueLocationToLast = (placetypes: PlaceSubType[] ) => {
-        const otherIndex : number = placetypes.findIndex(source => source.displayName === OTHER);
-        const otherPlaceType : {id:number,displayName:string}[] = placetypes.splice(otherIndex, 1);
-        return placetypes.concat(otherPlaceType);
+    const sortAndMoveOtherValueToLast = (firstPlaceType : PlaceSubType, secondPlaceType : PlaceSubType) => {
+        if(firstPlaceType.displayName === OTHER){
+            return 1;
+        }
+
+        if(secondPlaceType.displayName === OTHER){
+            return -1;
+        }
+
+        return firstPlaceType.displayName < secondPlaceType.displayName ? -1 : 1;
     }
 
     React.useEffect(() => {
