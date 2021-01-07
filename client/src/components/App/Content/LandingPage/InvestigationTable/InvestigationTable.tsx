@@ -298,8 +298,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         </Button>
                     </Box>
                 </div>
-                <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
-                    <Grid item xs={6}>
+                <Grid container justify="flex-end" className={classes.filterTableRow}>
+                    <Grid item xs={5}>
                         <Collapse in={showFilterRow}>
                             <TableFilter
                                 statuses={allStatuses}
