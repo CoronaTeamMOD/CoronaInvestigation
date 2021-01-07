@@ -60,7 +60,6 @@ const ReachContact = (props: Props) => {
                                     getOptionLabel={(option) =>
                                         option.displayName
                                     }
-                                    inputValue={currentValue?.displayName}
                                     value={currentValue}
                                     onChange={(e, data) =>
                                         changeContactStatus(
@@ -74,10 +73,14 @@ const ReachContact = (props: Props) => {
                                         <TextField
                                             {...params}
                                             placeholder='סטטוס'
-                                            onClick={(event) =>
+                                            onClick={(event) => 
                                                 event.stopPropagation()
                                             }
-                                            InputProps={{...params.InputProps, className: classes.statusAutocompleteRoot}}
+                                            InputProps={{
+                                                ...params.InputProps,
+                                                value: currentValue?.displayName,
+                                                className: classes.statusAutocompleteRoot
+                                            }}
                                         />
                                     )}
                                 />
