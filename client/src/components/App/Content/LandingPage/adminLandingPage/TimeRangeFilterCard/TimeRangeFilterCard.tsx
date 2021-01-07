@@ -1,5 +1,5 @@
 import React from 'react';
-import { CardActions, CardContent, Typography, FormControl, Collapse } from '@material-ui/core';
+import { CardActions, CardContent, Typography, FormControl, Collapse, Card } from '@material-ui/core';
 
 import { TimeRange } from 'models/TimeRange';
 import timeRanges from 'models/enums/timeRanges';
@@ -21,7 +21,7 @@ const TimeRangeCard = (props : Props): JSX.Element => {
     const { onTimeRangeChange, onStartDateSelect, onEndDateSelect, validateTimeRange, errorMes, timeRangeFilter} = useTimeRangeFilterCard();
 
     return (
-        <>
+        <Card className={classes.timeRangeCard}>
             <CardContent className={classes.timeRangeCardContent}>
                 <Typography className={classes.cardTitle}>
                     <b>{filterTimeRangeLabel}</b>
@@ -53,7 +53,7 @@ const TimeRangeCard = (props : Props): JSX.Element => {
                     onClick={() => validateTimeRange() && onUpdateButtonClicked(timeRangeFilter)}
                 />        
             </CardActions>
-        </>
+        </Card>
     )
 };
 
