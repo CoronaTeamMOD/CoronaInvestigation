@@ -8,12 +8,12 @@ import { Tab as TabObj } from 'models/Tab';
 import StoreStateType from 'redux/storeStateType';
 
 import useStyles from './TabManagementStyles';
-import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
+import { orderedTabsNames } from './useTabManagement';
 import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
+import PersonalInfoTab from './NewPersonalInfoTab/PersonalInfoTab';
 import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
-import { orderedTabsNames } from './useTabManagement'
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
 
