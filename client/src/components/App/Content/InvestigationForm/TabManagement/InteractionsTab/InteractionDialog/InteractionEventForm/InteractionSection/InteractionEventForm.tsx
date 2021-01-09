@@ -11,9 +11,11 @@ import StoreStateType from 'redux/storeStateType';
 import FlattenedDBAddress from 'models/DBAddress';
 import FormInput from 'commons/FormInput/FormInput';
 import {get} from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-import AddressForm, { AddressFormFields } from 'commons/Forms/AddressForm/AddressForm';
+import useContactEvent from 'Utils/ContactEvent/useContactEvent';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import placeTypesCodesHierarchy from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import AddressForm, { AddressFormFields } from 'commons/Forms/AddressForm/AddressForm';
 import {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import PlacesTypesAndSubTypes, {PlacesTypesAndSubTypesProps} from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
@@ -21,10 +23,7 @@ import PlacesTypesAndSubTypes, {PlacesTypesAndSubTypesProps} from 'commons/Forms
 import useStyles from './InteractionEventFormStyles';
 import GoogleAddressForm from './AddressForm/AddressForm';
 import PlaceNameForm from './PlaceNameForm/PlaceNameForm';
-import useContactEvent from 'Utils/ContactEvent/useContactEvent';
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import BusinessContactForm from './BusinessContactForm/BusinessContactForm';
-
 
 const ADDRESS_LABEL = 'כתובת';
 
@@ -33,7 +32,6 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     
     const {control, watch, clearErrors, setValue, errors, setError} = useFormContext();
     const patientAddress = useSelector<StoreStateType, FlattenedDBAddress>(state => state.address);
-    
     
     const { city, floor, houseNum, street } = patientAddress;
 
