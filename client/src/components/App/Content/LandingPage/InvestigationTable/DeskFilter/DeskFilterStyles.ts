@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) => ({
          marginBottom: theme.spacing(1),
 
         '& .MuiInputBase-root': {
-            fontSize: '0.5vw'
+            fontSize: '0.7vw'
         }
     },
     optionCheckbox: {
