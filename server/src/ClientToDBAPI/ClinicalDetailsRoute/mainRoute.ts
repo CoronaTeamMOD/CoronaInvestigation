@@ -229,7 +229,6 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
         
         const parameters = {id: isolationAddressId, addressPatch: isolationAddress};
         updateAddressLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-        console.log(parameters);
         graphqlRequest(UPDATE_ADDRESS, response.locals, parameters)
         .then(result => {
             updateAddressLogger.info(validDBResponseLog, Severity.LOW);
