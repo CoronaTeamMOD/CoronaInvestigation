@@ -167,7 +167,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const deskFilterToSet = historyDeskFilter.length > 0 ? filterCreators.DESK_ID(historyDeskFilter) : null;
         const timeRangeFilterToSet = historyTimeRange.id !== allTimeRangeId ? filterCreators.TIME_RANGE(historyTimeRange) : null;
         const unAssignedFilterToSet = (historyUnassignedUserFilter && !inactiveUserFilter) ? filterCreators.UNASSIGNED_USER(historyUnassignedUserFilter) : null;
-        const inActiveToSet = (historyInactiveUserFilter && !historyUnassignedUserFilter) ? filterCreators.INACTIVE_USER(historyUnassignedUserFilter) : null;
+        const inActiveToSet = (historyInactiveUserFilter && !historyUnassignedUserFilter) ? filterCreators.INACTIVE_USER(historyInactiveUserFilter) : null;
         const unAllocatedToSet = (historyInactiveUserFilter && historyUnassignedUserFilter) ? filterCreators.UNALLOCATED_USER(historyUnassignedUserFilter) : null;
         return {
             [InvestigationsFilterByFields.STATUS]: statusFilterToSet && Object.values(statusFilterToSet)[0],
