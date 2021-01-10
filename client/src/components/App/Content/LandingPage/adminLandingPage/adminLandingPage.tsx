@@ -12,13 +12,11 @@ import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import LastUpdateMessage from './LastUpdateMessage/LastUpdateMessage';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
 import TimeRangeFilterCard from './TimeRangeFilterCard/TimeRangeFilterCard';
-import { HistoryState } from '../InvestigationTable/InvestigationTableInterfaces';
 
 const AdminLandingPage: React.FC = (): JSX.Element => {
 
     const classes = useStyles();
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [investigationInfoFilter, setInvestigationInfoFilter] = useState<HistoryState>({});
     const [investigationsStatistics, setInvestigationsStatistics] = useState<InvestigationStatistics>({
         allInvestigations: 0,
         inProcessInvestigations: 0,
@@ -33,8 +31,6 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
     const { redirectToInvestigationTable , fetchInvestigationStatistics, 
             updateInvestigationFilterByDesks, updateInvestigationFilterByTime} = useAdminLandingPage({
         setIsLoading,
-        investigationInfoFilter,
-        setInvestigationInfoFilter,
         setInvestigationsStatistics,
         setLastUpdated,
     });

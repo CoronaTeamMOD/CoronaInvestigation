@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import logger from 'logger/logger';
@@ -17,22 +17,24 @@ export const allTimeRangeId = 10;
 
 const useAdminLandingPage = (parameters: Parameters) => {
 
-    const { 
-        setIsLoading, setInvestigationsStatistics, 
-        investigationInfoFilter , setInvestigationInfoFilter,
-        setLastUpdated
-    } = parameters;    
     const history = useHistory<HistoryState>();
 
-    useEffect(() => {
+    const getInvestigationInfoFilter = () => {
         const { location: { state } } = history;
         const deskFilter = state?.deskFilter;
         const timeRange = state?.timeRangeFilter;
         const investigationInfo : HistoryState = {};
         if (deskFilter && deskFilter.length > 0) investigationInfo.deskFilter = deskFilter;
         if (timeRange && timeRange.id !== defaultTimeRange.id) investigationInfo.timeRangeFilter = timeRange;
-        setInvestigationInfoFilter(investigationInfo);
-    }, [])
+        return investigationInfo;
+    }
+
+    const [investigationInfoFilter, setInvestigationInfoFilter] = useState<HistoryState>(getInvestigationInfoFilter());
+
+    const { 
+        setIsLoading, setInvestigationsStatistics, 
+        setLastUpdated
+    } = parameters;    
 
     const updateInvestigationFilterByDesks =  (deskFilter: number[]) => {
         if (deskFilter.length === 0) {
@@ -103,9 +105,7 @@ const useAdminLandingPage = (parameters: Parameters) => {
 
 interface Parameters {
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-    setInvestigationInfoFilter: React.Dispatch<React.SetStateAction<HistoryState>>;
     setInvestigationsStatistics: React.Dispatch<React.SetStateAction<InvesitgationStatistics>>;
-    investigationInfoFilter: HistoryState;
     setLastUpdated:  React.Dispatch<React.SetStateAction<Date>>;
 };
 
