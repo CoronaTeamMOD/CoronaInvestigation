@@ -10,9 +10,9 @@ export const formatToInsertAndGetAddressIdInput = (address: Address) :  InsertAn
 
 export const formatToNullable = (address : Address): Address => {
     return {
-        city : address.city !== '' ? address.city : null,
-        street : address.street !== '' ? address.street : null, 
-        houseNum : address.houseNum !== '' ? address.houseNum : null, 
-        floor : address.floor !== '' ? address.floor : null, 
+        city : address.city || null,
+        street : address.street || null, 
+        houseNum : address.houseNum || null, 
+        floor : address.floor || null, 
     }
 } 
