@@ -1,8 +1,11 @@
 import React from 'react';
-import InteractedContact from 'models/InteractedContact';
+
 import Contact from 'models/Contact';
+import InteractedContact from 'models/InteractedContact';
+import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import {ContactedPersonFieldMapper} from 'models/enums/contactQuestioningExcelFields';
+import { isIdValid , isPassportValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import ContactType from 'models/enums/ContactType';
 import {get} from '../auxiliaryFunctions/auxiliaryFunctions';
 
@@ -45,6 +48,13 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         : contactType !== ContactType.TIGHT;
 
     const validateContact = (contact: InteractedContact, validationReason: ValidationReason): validValidation | invalidValidation => {
+        const isIdentificationValid = contact.identificationType === IdentificationTypes.ID
+            ? isIdValid(contact.identificationNumber)
+            : isPassportValid(contact.identificationNumber)
+        if(!isIdentificationValid) {
+            return { valid: false, error: 'שדה ת.ז. אינו תקין' };
+        }
+        
         if(!contact.doesNeedIsolation) {
             return { valid: true };
         } else {
