@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(() => ({
     searchBar: {
-        height: '5vh',
+        height: 'fit-content',
         margin: '1vh',
         width: '22vw',
         backgroundColor: 'white',
