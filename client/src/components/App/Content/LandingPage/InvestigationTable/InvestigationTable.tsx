@@ -269,7 +269,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     <Typography color='primary' className={classes.counterLabel} >
                         {counterDescription}
                     </Typography>
-                    <Box justifyContent='flex-end' className={classes.headerFilter}>
+                    <Box justifyContent='flex-end' display='flex'>
                         <SearchBar 
                             searchBarLabel={searchBarLabel}
                             onClick={(value: string) => changeSearchFilter(value)}
