@@ -8,12 +8,13 @@ import { Severity } from 'models/Logger';
 import UserType from 'models/enums/UserType';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
-import InvestigationInfo , { InvestigationInfoData } from 'models/InvestigationInfo';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
+import { truncateDate } from 'Utils/DateUtils/formatDate';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setGender } from 'redux/Gender/GenderActionCreators';
 import { CommentContextProvider } from './Context/CommentContext';
 import { landingPageRoute, adminLandingPageRoute } from 'Utils/Routes/Routes';
+import InvestigationInfo , { InvestigationInfoData } from 'models/InvestigationInfo';
 import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setDatesToInvestigateParams } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigatedPatientId , setIsCurrentlyHospitialized, setIsDeceased, setEndTime } from 'redux/Investigation/investigationActionCreators';
 
@@ -93,8 +94,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                     setIsCurrentlyHospitialized(investigationInfo.investigatedPatient.isCurrentlyHospitalized);
                     const gender = investigationInfo.investigatedPatient.gender;
                     setGender(gender ? gender : '');
-                    const { coronaTestDate } = investigationInfo;
-                    const formattedTestDate = new Date(coronaTestDate.split('T')[0])
+                    const formattedTestDate = truncateDate(investigationInfo.coronaTestDate)
                     const formattedInvestigationInfo = {
                         ...investigationInfo,
                         coronaTestDate : formattedTestDate

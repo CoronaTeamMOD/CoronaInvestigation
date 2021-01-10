@@ -16,6 +16,7 @@ import Investigator from 'models/Investigator';
 import StoreStateType from 'redux/storeStateType';
 import { BC_TABS_NAME } from 'models/BroadcastMessage';
 import usePageRefresh from 'Utils/vendor/usePageRefresh';
+import { truncateDate } from 'Utils/DateUtils/formatDate';
 import InvestigatorOption from 'models/InvestigatorOption';
 import { defaultTimeRange } from 'models/enums/timeRanges';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
@@ -395,7 +396,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const getFormattedDate = (date: string) => {
-        return format(new Date(date.split('T')[0]), 'dd/MM')
+        return format(truncateDate(date), 'dd/MM')
     };
 
     const fetchTableData = async () => {
