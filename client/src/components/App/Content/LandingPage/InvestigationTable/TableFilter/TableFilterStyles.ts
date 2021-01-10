@@ -22,10 +22,13 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: 'center',
     },
     autocomplete: {
-        maxWidth: '35%',
+        width: '20vw'
     },
     autocompleteInput: {
-        fontSize: '1vw'
+        paddingRight: 'unset'
+    },
+    autocompleteInputText: {
+        width: 'unset'
     },
     optionCheckbox: {
         height: '0.5vh',

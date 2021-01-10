@@ -64,7 +64,8 @@ const TableFilter = (props: Props) => {
                 </Typography>
                 <Autocomplete
                     ChipProps={{className:classes.chip}}
-                    classes={{inputRoot: classes.autocompleteInput}}
+                    className={classes.autocomplete}
+                    classes={{inputFocused: classes.autocompleteInputText}}
                     size='small'
                     disableCloseOnSelect
                     multiple
@@ -76,6 +77,7 @@ const TableFilter = (props: Props) => {
                         <TextField
                             size='small'
                             {...params}
+                            InputProps={{...params.InputProps, className: classes.autocompleteInput}}
                         />
                     }
                     renderOption={(option, { selected }) => (
