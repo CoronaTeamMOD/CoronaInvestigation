@@ -43,6 +43,7 @@ const defaultRole = { id: -1, displayName: '' };
 
 // TODO: Remove stubs
 const insuranceCompanies = ['מכבי', 'צהל', 'כללית'].concat(NO_INSURANCE);
+const occupations = Object.values(Occupations) as string[];
 
 const PersonalInfoTab: React.FC<Props> = ({ id }) => {
     
@@ -52,7 +53,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
     });
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
-    const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
+    // const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
 
     const occupation = methods.watch(PersonalInfoDataContextFields.RELEVANT_OCCUPATION);
     const insuranceCompany = methods.watch(PersonalInfoDataContextFields.INSURANCE_COMPANY);
@@ -199,6 +200,53 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                             {...addressFormFields}
                         />
                     </FormRowWithInput>
+                    <FormRowWithInput gridProps={{ alignItems: 'baseline' }} fieldName={RELEVANT_OCCUPATION_LABEL}>
+                        <>
+                        <Grid item xs={2}>
+                                <FormControl component='fieldset'>
+                                    <Controller
+                                        name={PersonalInfoDataContextFields.RELEVANT_OCCUPATION}
+                                        control={methods.control}
+                                        render={(props) => (
+                                            <RadioGroup
+                                                aria-label={OCCUPATION_LABEL}
+                                                name={OCCUPATION_LABEL}
+                                                value={props.value ? props.value : Occupations.OTHER}
+                                                >
+                                                <FormLabel component='legend'><b>{OCCUPATION_LABEL}</b></FormLabel>
+                                                {
+                                                    occupations.map((occupationOption) => {
+                                                        return (
+                                                            <div>
+                                                                <FormControlLabel
+                                                                    value={occupationOption}
+                                                                    key={occupationOption}
+                                                                    control={<Radio
+                                                                        color='primary'
+                                                                        onChange={handleChangeOccupation}
+                                                                    />}
+                                                                    label={<span style={{ fontSize: '15px' }}>{occupationOption}</span>}
+                                                                />
+                                                                {
+                                                                    (
+                                                                        (occupationOption === Occupations.EDUCATION_SYSTEM && occupation === Occupations.EDUCATION_SYSTEM) ||
+                                                                        (occupationOption === Occupations.HEALTH_SYSTEM && occupation === Occupations.HEALTH_SYSTEM)
+                                                                    ) && <div>
+                                                                        <ComplexityIcon tooltipText='עובד במשרד הבריאות/החינוך' />
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
+                                            </RadioGroup>
+                                        )}
+                                    />
+                                </FormControl>
+                            </Grid>
+                        </>
+                    </FormRowWithInput>
+                    {/* !!!!!!!!!!!!!!!!!!!!! */}
                     {/* <FormRowWithInput gridProps={{ alignItems: 'baseline' }} fieldName={RELEVANT_OCCUPATION_LABEL}>
                         <>
                             <Grid item xs={2}>
@@ -243,6 +291,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                     />
                                 </FormControl>
                             </Grid>
+                            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                             {
                                 occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ?
                                     <>
