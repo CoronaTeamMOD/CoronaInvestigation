@@ -84,14 +84,14 @@ const convertDBEvent = (event: ContactEvent) => {
     };
 }
 
-intersectionsRoute.get('/contactEvent/:investigationId', (request: Request, response: Response) => {
+intersectionsRoute.get('/contactEvent/:investigationId/:minimalDateToFilter', (request: Request, response: Response) => {
     const contactEventLogger = logger.setup({
         workflow: `query investigation's contact events`,
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
 
-    const parameters = {currInvestigation: Number(request.params.investigationId)};
+    const parameters = {currInvestigation: Number(request.params.investigationId), minimalDateToFilter: new Date(request.params.minimalDateToFilter)};
     contactEventLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, response.locals, parameters)
