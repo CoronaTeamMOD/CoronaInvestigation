@@ -10,7 +10,7 @@ import { adminMiddleWare, superAdminMiddleWare } from '../../middlewares/Authent
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, UPDATE_INVESTIGATOR_BY_GROUP_ID,
-         UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK } from '../../DBService/Users/Mutation';
+         UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY } from '../../DBService/Users/Mutation';
 import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
     GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_USERS_BY_DISTRICT_ID, GET_ALL_USER_TYPES, GET_USERS_BY_COUNTY_ID
@@ -78,6 +78,30 @@ usersRoute.post('/updateDesk', adminMiddleWare, (request: Request, response: Res
         })
         .catch(error => {
             updateDeskLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.sendStatus(errorStatusCode).send(error);
+        })
+})
+
+usersRoute.post('/updateCounty', adminMiddleWare, (request: Request, response: Response) => {
+    const updateCountyLogger = logger.setup({
+        workflow: 'update user county',
+        user: response.locals.user.id,
+    });
+
+    const updateCountyVariables = {
+        id: request.body.userId,
+        investigationGroup: request.body.investigationGroup
+    };
+
+    updateCountyLogger.info(launchingDBRequestLog(updateCountyVariables), Severity.LOW);
+
+    graphqlRequest(UPDATE_COUNTY, response.locals, updateCountyVariables)
+        .then(result => {
+            updateCountyLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data.updateUserById.user);
+        })
+        .catch(error => {
+            updateCountyLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.sendStatus(errorStatusCode).send(error);
         })
 })
@@ -414,7 +438,7 @@ const convertToUser = (user: any) => ({
     languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
     userType: user.userTypeByUserType.displayName,
     desk: { id: user.deskByDeskId?.id, deskName: user.deskByDeskId?.deskName},
-    investigationGroup: user.countyByInvestigationGroup?.displayName,
+    investigationGroup: {id: user.countyByInvestigationGroup?.id ,displayName: user.countyByInvestigationGroup?.displayName},
     sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
 });
 

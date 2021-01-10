@@ -91,6 +91,7 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter:
         displayName
       }
       countyByInvestigationGroup {
+        id,
         displayName
       }
       sourceOrganizationBySourceOrganization {
@@ -135,6 +136,7 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter:
         displayName
       }
       countyByInvestigationGroup {
+        id,
         displayName
       }
       sourceOrganizationBySourceOrganization {

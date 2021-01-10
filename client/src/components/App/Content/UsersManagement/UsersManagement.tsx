@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
 import Desk from 'models/Desk';
+import County from 'models/County';
 import SortOrder from 'models/enums/SortOrder';
 import SearchBar from 'commons/SearchBar/SearchBar';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
@@ -44,7 +45,7 @@ const UsersManagement: React.FC = () => {
 
     const { users, counties, desks, sourcesOrganization, userTypes, languages,
             totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange, setUserActivityStatus,
-            setUserSourceOrganization, setUserDesk } =
+            setUserSourceOrganization, setUserDesk, setUserCounty } =
             useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
@@ -141,6 +142,37 @@ const UsersManagement: React.FC = () => {
                                     key={sourceOrganization.displayName}
                                     value={sourceOrganization.displayName}>
                                     {sourceOrganization.displayName}
+                                </MenuItem>
+                            ))
+                        }
+                    </Select>
+                )
+            }
+            case UsersManagementTableHeadersNames.COUNTY : {
+                return (
+                    <Select
+                        MenuProps={{
+                            anchorOrigin: {
+                                vertical: 'bottom',
+                                horizontal: 'left'
+                            },
+                            transformOrigin: {
+                                vertical: 'top',
+                                horizontal: 'left'
+                            },
+                            getContentAnchorEl: null
+                        }}
+                        value={row[cellName]?.id || ''}
+                        onChange={(event: React.ChangeEvent<any>) => setUserCounty(event.target.value as number, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
+                        className={classes.desks}
+                        variant='outlined'
+                    >
+                        {
+                            counties.map((county: County) => (
+                                <MenuItem
+                                    key={county.id}
+                                    value={county.id}>
+                                    {county.displayName}
                                 </MenuItem>
                             ))
                         }
