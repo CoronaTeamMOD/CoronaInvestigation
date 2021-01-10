@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useMemo} from 'react';
+import {useSelector} from 'react-redux';
 import axios  from 'axios';
 
 import logger from 'logger/logger';
@@ -7,15 +8,23 @@ import PlaceSubType from 'models/PlaceSubType';
 import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
-import { usePlacesTypesAndSubTypesIncome } from './usePlacesTypesAndSubTypesInterfaces';
+
+import StoreStateType from 'redux/storeStateType';
+import {setPlaceTypes} from 'redux/PlaceTypes/placetypeActionCreators';
 
 const OTHER = 'אחר';
 
-const usePlacesTypesAndSubTypes = (parameters: usePlacesTypesAndSubTypesIncome) => {
+const usePlacesTypesAndSubTypes = () => {
+    const placesSubTypesByTypes = useSelector<StoreStateType,PlacesSubTypesByTypes>(state => state.placeSubTypesByTypes);
 
-    const { setPlacesSubTypesByTypes } = parameters;
+
+    const subtypesFetched = useMemo(() => Object.keys(placesSubTypesByTypes).length > 0, [placesSubTypesByTypes]);
 
     const getPlacesSubTypesByTypes = () => {
+        if (Object.keys(placesSubTypesByTypes).length > 0) {
+            return;
+        }
+
         const getPlacesSubTypesByTypesLogger = logger.setup('Fetching Places And Sub Types By Types');
         getPlacesSubTypesByTypesLogger.info('launching places and sub types by types request', Severity.LOW);
         setIsLoading(true)
@@ -28,7 +37,7 @@ const usePlacesTypesAndSubTypes = (parameters: usePlacesTypesAndSubTypesIncome) 
                     })
 
                     getPlacesSubTypesByTypesLogger.info('places and sub types by types request was successful', Severity.LOW);
-                    setPlacesSubTypesByTypes(sortedResult)
+                    setPlaceTypes(sortedResult);
                 } else {
                     getPlacesSubTypesByTypesLogger.warn('got status 200 but wrong data', Severity.HIGH);
                 }
@@ -53,6 +62,11 @@ const usePlacesTypesAndSubTypes = (parameters: usePlacesTypesAndSubTypesIncome) 
     React.useEffect(() => {
         getPlacesSubTypesByTypes();
     }, []);
+
+    return {
+        subtypesFetched,
+        placesSubTypesByTypes
+    }
 };
 
 export default usePlacesTypesAndSubTypes;

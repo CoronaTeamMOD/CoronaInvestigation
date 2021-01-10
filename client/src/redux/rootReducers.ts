@@ -15,6 +15,7 @@ import occupationsReducer from './Occupations/occupationsReducer';
 import investigationReducer from './Investigation/investigationReducer';
 import isInInvestigationReducer from './IsInInvestigations/isInInvestigationReducer';
 import educationGradeReducer from './EducationGrade/educationGradeReducer';
+import placetypeReducer from './PlaceTypes/placetypeReducer';
 
 export default combineReducers<StoreStateType>({
      occupations: occupationsReducer,
@@ -31,4 +32,5 @@ export default combineReducers<StoreStateType>({
      formsValidations: formReducer,
      address: addressReducer,
      educationGrades: educationGradeReducer,
+     placeSubTypesByTypes: placetypeReducer
 }) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;

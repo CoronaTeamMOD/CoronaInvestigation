@@ -185,15 +185,12 @@ const ExposureForm = (props: Props) => {
 				size='Tab'
 				placeTypeName={`exposures[${index}].${fieldsNames.placeType}`}
 				placeSubTypeName={`exposures[${index}].${fieldsNames.placeSubType}`}
-				placeType={exposureAndFlightsData[fieldsNames.placeType]}
-				placeSubType={exposureAndFlightsData[fieldsNames.placeSubType]}
 				onPlaceTypeChange={(value) => {
 					setValue(`exposures[${index}].${fieldsNames.placeType}`, value);
 				}}
 				onPlaceSubTypeChange={(placeSubType: PlaceSubType | null) => {
-					setValue(`exposures[${index}].${fieldsNames.placeSubType}`, placeSubType);
-				}
-				}
+					setValue(`exposures[${index}].${fieldsNames.placeSubType}`, placeSubType?.id || null);
+				}}
 			/>
 		</Grid>
 	);
