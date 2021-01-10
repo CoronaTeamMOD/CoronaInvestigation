@@ -37,15 +37,28 @@ const isIdValid = (id: string | null | undefined) => {
     }
 };
 
-export const passportValidation = /^[a-zA-Z0-9/]*$/;
-export const passportMaxIdentificationLength = 15;
+export const passportValidationWithDash = /^([a-zA-Z0-9/])*$/;
+const passportValidation = /^([a-zA-Z0-9])*$/;
+export const visaValidation = /^([0-9\/])*$/;
+export const passportLength = 10;
+export const visaLength = 15;
 const isPassportValid = (id: string | null | undefined): boolean => {
     /*
      *  note : this is a funcion and not a constant because the logic
      *        will most likely be changed to something more complicated (like id)
      */
-    if (Boolean(id)) {
-        return passportValidation.test(String(id));
+    if(id) {
+        if (id.length === passportLength) {
+            return passportValidation.test(String(id));
+        } else if (id.length === visaLength) {
+            if(id.split('/').length < 3) {
+                return visaValidation.test(String(id));
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
     return true;
 };
