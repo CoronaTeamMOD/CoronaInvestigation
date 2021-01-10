@@ -7,3 +7,12 @@ export const formatToInsertAndGetAddressIdInput = (address: Address) :  InsertAn
     floorValue: address.floor || null,
     houseNumValue: address.houseNum || null,
 });
+
+export const formatToNullable = (address : Address): Address => {
+    return {
+        city : address.city !== '' ? address.city : null,
+        street : address.street !== '' ? address.street : null, 
+        houseNum : address.houseNum !== '' ? address.houseNum : null, 
+        floor : address.floor !== '' ? address.floor : null, 
+    }
+} 
