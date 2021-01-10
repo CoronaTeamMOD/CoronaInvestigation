@@ -256,7 +256,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         {tableTitle}
                     </Typography>
                 </Grid>
-                <Grid item xs={3} >
+                <Grid item xs={2} >
                     <DeskFilter
                         desks={allDesks}
                         filteredDesks={deskFilter}
