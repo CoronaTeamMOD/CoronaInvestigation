@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
     card: {
-        padding: theme.spacing(1),
+        // padding: theme.spacing(1),
         borderRadius: 16,
         display: 'flex',
         flexDirection: 'column',
@@ -17,13 +17,13 @@ const useStyles = makeStyles((theme: Theme) => ({
         textOverflow: 'ellipsis',
     },
     autocomplete: {
-        marginTop: theme.spacing(1),
-        width: '80%',
+        // marginTop: theme.spacing(1),
+        width: '70%',
         height: '60%',
-        marginBottom: theme.spacing(1),
+         marginBottom: theme.spacing(1),
 
         '& .MuiInputBase-root': {
-            fontSize: '0.7vw'
+            fontSize: '0.5vw'
         }
     },
     optionCheckbox: {
