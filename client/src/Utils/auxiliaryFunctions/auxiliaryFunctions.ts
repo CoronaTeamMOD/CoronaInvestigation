@@ -2,6 +2,7 @@
 export const phoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/;
 export const notRequiredPhoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$|^$/;
 export const mailValidation = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const moreThanOneSlashIndicator = 3;
 
 const get = (obj: any, path: string, defaultValue = undefined) => {
     const travel = (regexp: RegExp) =>
@@ -51,7 +52,7 @@ const isPassportValid = (id: string | null | undefined): boolean => {
         if (id.length === passportLength) {
             return passportValidation.test(String(id));
         } else if (id.length === visaLength) {
-            if(id.split('/').length < 3) {
+            if(doesStringHasMoreThanOneSlash(id)) {
                 return visaValidation.test(String(id));
             } else {
                 return false;
@@ -62,5 +63,9 @@ const isPassportValid = (id: string | null | undefined): boolean => {
     }
     return true;
 };
+
+const doesStringHasMoreThanOneSlash = (givenStr: string) => {
+    return givenStr.split('/').length < moreThanOneSlashIndicator;
+}
 
 export { get, isIdValid, isPassportValid };
