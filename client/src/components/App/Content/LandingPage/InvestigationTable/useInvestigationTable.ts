@@ -30,7 +30,7 @@ import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCr
 
 import useStyle from './InvestigationTableStyles';
 import { allTimeRangeId } from '../adminLandingPage/useAdminLandingPage';
-import { filterCreators } from './FilterCreators';
+import { FilterRulesType, filterCreators } from './FilterCreators';
 import { defaultOrderBy, rowsPerPage, defaultPage } from './InvestigationTable';
 import {
     TableHeadersNames,
@@ -160,7 +160,25 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [unassignedUserFilter, setUnassignedUserFilter] = useState<boolean>(historyUnassignedUserFilter);
     const [inactiveUserFilter, setInactiveUserFilter] = useState<boolean>(historyInactiveUserFilter);
     const [isAdminLandingRedirect, setIsAdminLandingRedirect] = useState<boolean>(historyisAdminLandingRedirect);
-    const [filterRules, setFitlerRules] = useState<any>({});
+
+    const getFilterRules = () => {
+        const statusFilterToSet = historyStatusFilter.length > 0 ? filterCreators.STATUS(historyStatusFilter) : null;
+        const deskFilterToSet = historyDeskFilter.length > 0 ? filterCreators.DESK_ID(historyDeskFilter) : null;
+        const timeRangeFilterToSet = historyTimeRange.id !== allTimeRangeId ? filterCreators.TIME_RANGE(historyTimeRange) : null;
+        const unAssignedFilterToSet = (historyUnassignedUserFilter && !inactiveUserFilter) ? filterCreators.UNASSIGNED_USER(historyUnassignedUserFilter) : null;
+        const inActiveToSet = (historyInactiveUserFilter && !historyUnassignedUserFilter) ? filterCreators.INACTIVE_USER(historyUnassignedUserFilter) : null;
+        const unAllocatedToSet = (historyInactiveUserFilter && historyUnassignedUserFilter) ? filterCreators.UNALLOCATED_USER(historyUnassignedUserFilter) : null;
+        return {
+            [InvestigationsFilterByFields.STATUS]: statusFilterToSet && Object.values(statusFilterToSet)[0],
+            [InvestigationsFilterByFields.DESK_ID]: deskFilterToSet && Object.values(deskFilterToSet)[0],
+            [InvestigationsFilterByFields.TIME_RANGE]: timeRangeFilterToSet && Object.values(timeRangeFilterToSet)[0],
+            [InvestigationsFilterByFields.UNASSIGNED_USER]: unAssignedFilterToSet && Object.values(unAssignedFilterToSet)[0],
+            [InvestigationsFilterByFields.INACTIVE_USER]: inActiveToSet && Object.values(inActiveToSet)[0],
+            [InvestigationsFilterByFields.UNALLOCATED_USER]: unAllocatedToSet && Object.values(unAllocatedToSet)[0],
+        }
+    }
+    
+    const [filterRules, setFitlerRules] = useState<any>(getFilterRules());
     const [isBadgeInVisible, setIsBadgeInVisible] = useState<boolean>(true);
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
@@ -169,24 +187,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
     const windowTabsBroadcastChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
-
-    useEffect(() => {
-        const statusFilterToSet = statusFilter.length > 0 ? filterCreators.STATUS(statusFilter) : null;
-        const deskFilterToSet = deskFilter.length > 0 ? filterCreators.DESK_ID(deskFilter) : null;
-        const timeRangeFilterToSet = timeRangeFilter.id !== allTimeRangeId ? filterCreators.TIME_RANGE(timeRangeFilter) : null;
-        const unAssignedFilterToSet = (unassignedUserFilter && !inactiveUserFilter) ? filterCreators.UNASSIGNED_USER(unassignedUserFilter) : null;
-        const inActiveToSet = (inactiveUserFilter && !unassignedUserFilter) ? filterCreators.INACTIVE_USER(unassignedUserFilter) : null;
-        const unAllocatedToSet = (unassignedUserFilter && unassignedUserFilter) ? filterCreators.UNALLOCATED_USER(unassignedUserFilter) : null;
-        setFitlerRules({
-            ...filterRules,
-            [InvestigationsFilterByFields.STATUS]: statusFilterToSet && Object.values(statusFilterToSet)[0],
-            [InvestigationsFilterByFields.DESK_ID]: deskFilterToSet && Object.values(deskFilterToSet)[0],
-            [InvestigationsFilterByFields.TIME_RANGE]: timeRangeFilterToSet && Object.values(timeRangeFilterToSet)[0],
-            [InvestigationsFilterByFields.UNASSIGNED_USER]: unAssignedFilterToSet && Object.values(unAssignedFilterToSet)[0],
-            [InvestigationsFilterByFields.INACTIVE_USER]: inActiveToSet && Object.values(inActiveToSet)[0],
-            [InvestigationsFilterByFields.UNALLOCATED_USER]: unAllocatedToSet && Object.values(unAllocatedToSet)[0],
-        }) 
-    }, [])
 
     const changeDeskFilter = (desks: Desk[]) => {
         const desksIds = desks.map(desk => desk.id);

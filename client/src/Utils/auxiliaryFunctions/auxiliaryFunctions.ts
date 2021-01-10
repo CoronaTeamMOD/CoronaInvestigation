@@ -17,7 +17,7 @@ const get = (obj: any, path: string, defaultValue = undefined) => {
     return result === undefined || result === obj ? defaultValue : result;
 };
 
-export const idBasicValidation = /^\d+|^$/;
+export const idBasicValidation = /^[0-9/]*$/;
 export const idLength = 9;
 const isIdValid = (id: string | null | undefined) => {
     let sum = 0;
