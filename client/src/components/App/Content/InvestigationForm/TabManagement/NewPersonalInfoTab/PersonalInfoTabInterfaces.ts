@@ -6,4 +6,6 @@ export interface PersonalInfoTabState {
     [PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]: string;
     [PersonalInfoDataContextFields.CONTACT_INFO]: string;
     [PersonalInfoDataContextFields.INSURANCE_COMPANY]: string;
+    [PersonalInfoDataContextFields.RELEVANT_OCCUPATION]: string;
+    [PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?: string;
 }
