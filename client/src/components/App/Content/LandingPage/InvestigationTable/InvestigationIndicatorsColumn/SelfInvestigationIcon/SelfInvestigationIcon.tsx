@@ -18,7 +18,7 @@ const SelfInvestigationIcon = (props: Props) => {
 	const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
 	const classes = useStyles();
-	const handleTooltipClose = (e : React.MouseEvent<Document, MouseEvent>) => {
+	const handleTooltipClose = (e: any) => {
 		e.stopPropagation();
 		setIsTooltipOpen(false);
 		setAnchorEl(null);
@@ -41,6 +41,7 @@ const SelfInvestigationIcon = (props: Props) => {
                 anchorEl={anchorEl}
                 open={isTooltipOpen}
                 onClose={handleTooltipClose}
+                onClick={handleTooltipClose}
                 anchorOrigin={{
                     vertical: 'bottom',
                     horizontal: 'right',
