@@ -52,7 +52,7 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
             ? isIdValid(contact.identificationNumber)
             : isPassportValid(contact.identificationNumber)
         if(!isIdentificationValid) {
-            return { valid: false, error: `שדה ת.ז. אינו ולידי` };
+            return { valid: false, error: 'שדה ת.ז. אינו תקין' };
         }
         
         if(!contact.doesNeedIsolation) {
