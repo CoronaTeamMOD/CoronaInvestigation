@@ -10,7 +10,7 @@ import useStyles from './TimeRangeFilterCardStyles';
 import UpdateButton from '../UpdateButton/UpdateButton';
 import useTimeRangeFilterCard from './useTimeRangeFilterCard';
 
-const filterTimeRangeLabel = 'טווח זמנים';
+const filterTimeRangeLabel = 'תאריך הגעת חקירה';
 
 const TimeRangeCard = (props : Props): JSX.Element => {
 
