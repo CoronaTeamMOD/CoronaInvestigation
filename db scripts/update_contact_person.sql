@@ -1,17 +1,7 @@
--- FUNCTION: public.update_contact_person(json, integer, integer)
-
--- DROP FUNCTION public.update_contact_person(json, integer, integer);
-
-CREATE OR REPLACE FUNCTION public.update_contact_person(
-	contacts json,
-	contact_event_id integer,
-	investigationid integer)
-    RETURNS void
-    LANGUAGE 'plpgsql'
-
-    COST 100
-    VOLATILE 
-AS $BODY$
+CREATE OR REPLACE FUNCTION public.update_contact_person(contacts json, contact_event_id integer, investigationid integer)
+ RETURNS void
+ LANGUAGE plpgsql
+AS $function$
 declare
 /*Update or insert  contacted persons  assigned to specified contacted_event*/
 --Event variables:
@@ -30,6 +20,8 @@ personId int4;
 contactType int4;
 involvedContactId int4;
 familyRelationship int4;
+doesInvovledContactExist boolean;
+
 
 begin 
 	if contact_event_id is null then
@@ -57,6 +49,9 @@ begin
 		select trim(nullif((person->'involvedContactId')::text,'null'),'"')::int4 into involvedContactId;
 		select trim(nullif((person->'familyRelationship')::text,'null'),'"')::int4 into familyRelationship;
 
+		doesInvovledContactExist = EXISTS (select  from contacted_person 
+		where involvedContactId is not null and involved_contact_id =involvedContactId)::boolean;
+
 	    if contacted_person_id is not null then
 	    	raise notice 'UPDATE contacted person';
 			/*update person and contacted person */
@@ -70,24 +65,26 @@ begin
 	    	last_name  = LastName,
 	    	phone_number = phoneNumber,
 	    	identification_Number = identificationNumber,
-	    	identification_type = (case when identificationNumber is null then null
+	    	identification_type = (case  when identificationNumber is null then null
 				 				  	     when identificationType is null then 'ת"ז' 
-				 				  	   else identificationType end)
+				 				  	   	 else identificationType end)
 	   	from contacted_person 
 	    where person.id= contacted_person.person_info and contacted_person.id = contacted_person_id;
 	
 	   else 
-	   		if (involvedContactId is not null) then
-				INSERT INTO public.contacted_person
-				(person_info, contact_event, contact_type, contact_status, creation_time, isolation_address, involved_contact_id, family_relationship)
-				select person_id, contact_event_id, contactType, 1, now(), ic.isolation_address, involvedContactId, familyRelationship
-				from public.involved_contact ic
-				where id = involvedContactId;
-				
-				UPDATE public.involved_contact
-				SET contact_type = 1,
-				is_contacted_person = true
-				where id = involvedContactId;
+	   		if (involvedContactId is not null)  then
+	   			if not doesInvovledContactExist then  
+					INSERT INTO public.contacted_person
+					(person_info, contact_event, contact_type, contact_status, creation_time, isolation_address, involved_contact_id, family_relationship)
+					select person_id, contact_event_id, contactType, 1, now(), ic.isolation_address, involvedContactId, familyRelationship
+					from public.involved_contact ic
+					where id = involvedContactId  ;
+					
+					UPDATE public.involved_contact
+					SET contact_type = 1,
+					is_contacted_person = true
+					where id = involvedContactId and not EXISTS(select 1 from contacted_person where involved_contact_id =involvedContactId);
+				end if;
 			else
 				raise notice 'insert contacted person';
 				INSERT INTO public.person(
@@ -105,14 +102,10 @@ begin
 				INSERT INTO public.contacted_person
 				(person_info, contact_event,extra_info, contact_type, contact_status, creation_time)
 				VALUES(personId, contact_event_id,extraInfo, contactType, 1, now());
+			
 			end if;
 	    end if;
 	end loop;
 end;
-$BODY$;
-
-ALTER FUNCTION public.update_contact_person(json, integer, integer)
-    OWNER TO coronai;
-
-COMMENT ON FUNCTION public.update_contact_person(json, integer, integer)
-    IS 'Update or insert  contacted persons  assigned to specified contacted_event';
+$function$
+;
