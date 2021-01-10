@@ -1,5 +1,6 @@
 import React from 'react';
 import axios  from 'axios';
+import { addDays } from 'date-fns';
 import { useSelector } from 'react-redux';
 
 import logger from 'logger/logger';
@@ -20,7 +21,7 @@ const useExposureForm = (props: Props) => {
     const { alertError } = useCustomSwal();
 
     const validationDate = useSelector<StoreStateType, Date>((state) => state.investigation.validationDate);
-
+    const formattedValidationDate = addDays(validationDate , 1).toISOString() // the date is rounded down so we need to ceil it 
     const { exposureAndFlightsData, exposureSourceSearchString , setOptionalPatientsLoading} = props;
 
     const minSourceSearchLengthToSearch: number = 2;
@@ -32,11 +33,11 @@ const useExposureForm = (props: Props) => {
             const confirmedExposuresLogger = logger.setup('Fetching list of confirmed exposures');
             setOptionalPatientsLoading(true);
             confirmedExposuresLogger.info(
-                `launching request with parameters ${exposureSourceSearchString} and ${validationDate}`,
+                `launching request with parameters ${exposureSourceSearchString} and ${formattedValidationDate}`,
                 Severity.LOW
             );
             const optionalCovidPatients = await axios
-                .get(`/exposure/optionalExposureSources/${exposureSourceSearchString}/${validationDate}`)
+                .get(`/exposure/optionalExposureSources/${exposureSourceSearchString}/${formattedValidationDate}`)
                 .then((result) => {
                     if (result?.data && result.headers['content-type'].includes('application/json')) {
                         confirmedExposuresLogger.info('got results back from the server', Severity.LOW);
