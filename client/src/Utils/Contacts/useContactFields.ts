@@ -2,6 +2,7 @@ import React from 'react';
 
 import Contact from 'models/Contact';
 import InteractedContact from 'models/InteractedContact';
+import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import {ContactedPersonFieldMapper} from 'models/enums/contactQuestioningExcelFields';
 import { isIdValid , isPassportValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
@@ -47,7 +48,7 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         : contactType !== ContactType.TIGHT;
 
     const validateContact = (contact: InteractedContact, validationReason: ValidationReason): validValidation | invalidValidation => {
-        const isIdentificationValid = contact.identificationType === 'ת"ז'
+        const isIdentificationValid = contact.identificationType === IdentificationTypes.ID
             ? isIdValid(contact.identificationNumber)
             : isPassportValid(contact.identificationNumber)
         if(!isIdentificationValid) {
