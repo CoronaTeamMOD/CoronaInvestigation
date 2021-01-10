@@ -2,6 +2,7 @@ import axios  from 'axios';
 import * as redux from 'react-redux'
 import MockAdapter from 'axios-mock-adapter';
 import { testHooksFunction } from 'TestHooks';
+import configureMockStore from 'redux-mock-store';
 import { subDays, eachDayOfInterval, compareDesc } from 'date-fns';
 
 import Interaction from 'models/Contexts/InteractionEventDialogData';
@@ -10,9 +11,6 @@ import { getDatesToInvestigate } from 'Utils/ClinicalDetails/symptomsUtils';
 import useInteractionsTab from './useInteractionsTab';
 import { useInteractionsTabOutcome as useInteactionsTabsOutcomeInterface,
     useInteractionsTabParameters as useInteactionsTabsInputInterface } from './useInteractionsTabInterfaces';
-
-const spy = jest.spyOn(redux, 'useSelector');
-spy.mockReturnValue({});
 
 let useInteractionsTabOutcome: useInteactionsTabsOutcomeInterface;
 let interactionsForTests: Interaction[] = [];
@@ -29,7 +27,21 @@ let useInteractionsTabInput: useInteactionsTabsInputInterface = {
 
 const mockAdapter = new MockAdapter(axios);
 
+const mockSelectors = () => {
+    const mockStore = configureMockStore()({
+      investigation: {
+        datesToInvestigate: []
+      },
+    });
+    jest
+      .spyOn(redux, 'useSelector')
+      .mockImplementation(state => state(mockStore.getState()));
+};
+
 describe('useInteractionsTab tests', () => {
+    beforeEach(() => {
+        mockSelectors();
+    })
     afterEach(() => {
         jest.resetAllMocks()
         mockAdapter.reset();
