@@ -16,4 +16,9 @@ export const formatDateTime = (date: Date): string => {
     ) 
 }
 
+const ISOformatDateIndicator = 'T';
+export const truncateDate = (dateInISO : string): Date => {
+    return new Date(dateInISO.split(ISOformatDateIndicator)[0])
+}
+
 export default formatDate;

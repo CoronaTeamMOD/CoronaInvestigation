@@ -276,7 +276,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <Divider />
                     <InfoItemWithIcon testId='examinationDate' name='תאריך תחילת מחלה' value=
                         {
-                            format(new Date(props.coronaTestDate), displayDateFormat)
+                            format(props.coronaTestDate, displayDateFormat)
                         }
                         icon={EventOutlined}
                     />
