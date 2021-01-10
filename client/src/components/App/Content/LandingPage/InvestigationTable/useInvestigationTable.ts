@@ -30,7 +30,7 @@ import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCr
 
 import useStyle from './InvestigationTableStyles';
 import { allTimeRangeId } from '../adminLandingPage/useAdminLandingPage';
-import { FilterRulesType, filterCreators } from './FilterCreators';
+import { filterCreators } from './FilterCreators';
 import { defaultOrderBy, rowsPerPage, defaultPage } from './InvestigationTable';
 import {
     TableHeadersNames,

@@ -11,7 +11,6 @@ const ContactIdValidationSchema = yup
       then: yup
         .string()
         .nullable()
-        .matches(idBasicValidation, 'דרכון חייב להכיל ספרות בלבד')
         .max(passportMaxIdentificationLength, `דרכון מכיל ${passportMaxIdentificationLength} ספרות בלבד`)
         .test('isValid', 'דרכון לא תקין', (id) => isPassportValid(id)),
       otherwise:
