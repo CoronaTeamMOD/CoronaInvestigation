@@ -6,7 +6,7 @@ import Investigation from '../../Models/ClinicalDetails/Investigation';
 import CreateAddressResponse from '../../Models/Address/CreateAddress';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import ClinicalDetails from '../../Models/ClinicalDetails/ClinicalDetails';
-import { formatToInsertAndGetAddressIdInput } from '../../Utils/addressUtils';
+import { formatToInsertAndGetAddressIdInput, formatToNullable} from '../../Utils/addressUtils';
 import InsertAndGetAddressIdInput from '../../Models/Address/InsertAndGetAddressIdInput';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { calculateInvestigationComplexity } from '../../Utils/InvestigationComplexity/InvestigationComplexity';
@@ -203,15 +203,14 @@ const saveClinicalDetails = (request: Request, response: Response, baseLog: Init
 
 clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: Response) => {
     const isolationAddressId = request.body.clinicalDetails?.isolationAddressId;
-    const isolationAddress = request.body.clinicalDetails?.isolationAddress;
     const logData = {
         workflow: `saving clinical details tab`,
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     };
-
-    const requestAddress: InsertAndGetAddressIdInput = formatToInsertAndGetAddressIdInput(isolationAddress);
+    const isolationAddress = formatToNullable(request.body.clinicalDetails?.isolationAddress);
     if (!isolationAddressId) {
+        const requestAddress: InsertAndGetAddressIdInput = formatToInsertAndGetAddressIdInput(isolationAddress);
         const createAddressLogger = logger.setup({...logData, workflow: `${logData.workflow}: create isolation address`})
 
         const parameters = {input: requestAddress};
@@ -227,10 +226,9 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
         });
     } else {
         const updateAddressLogger = logger.setup({...logData, workflow: `${logData.workflow}: update isolation address`})
-
+        
         const parameters = {id: isolationAddressId, addressPatch: isolationAddress};
         updateAddressLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-
         graphqlRequest(UPDATE_ADDRESS, response.locals, parameters)
         .then(result => {
             updateAddressLogger.info(validDBResponseLog, Severity.LOW);
