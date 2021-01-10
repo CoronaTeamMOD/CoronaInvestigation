@@ -2,6 +2,7 @@
 export const phoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/;
 export const notRequiredPhoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$|^$/;
 export const mailValidation = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const moreThanOneSlashIndicator = 3;
 
 const get = (obj: any, path: string, defaultValue = undefined) => {
     const travel = (regexp: RegExp) =>
@@ -37,17 +38,34 @@ const isIdValid = (id: string | null | undefined) => {
     }
 };
 
-export const passportValidation = /^[a-zA-Z0-9/]*$/;
-export const passportMaxIdentificationLength = 15;
+export const passportValidationWithDash = /^([a-zA-Z0-9/])*$/;
+const passportValidation = /^([a-zA-Z0-9])*$/;
+export const visaValidation = /^([0-9\/])*$/;
+export const passportLength = 10;
+export const visaLength = 15;
 const isPassportValid = (id: string | null | undefined): boolean => {
     /*
      *  note : this is a funcion and not a constant because the logic
      *        will most likely be changed to something more complicated (like id)
      */
-    if (Boolean(id)) {
-        return passportValidation.test(String(id));
+    if(id) {
+        if (id.length === passportLength) {
+            return passportValidation.test(String(id));
+        } else if (id.length === visaLength) {
+            if(doesStringHasMoreThanOneSlash(id)) {
+                return visaValidation.test(String(id));
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
     return true;
 };
+
+const doesStringHasMoreThanOneSlash = (givenStr: string) => {
+    return givenStr.split('/').length < moreThanOneSlashIndicator;
+}
 
 export { get, isIdValid, isPassportValid };

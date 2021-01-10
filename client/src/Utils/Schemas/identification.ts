@@ -1,15 +1,15 @@
 import * as yup from 'yup';
 
-import { passportValidation, passportMaxIdentificationLength , idLength , idBasicValidation} from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { passportValidationWithDash, visaLength , idLength , idBasicValidation} from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 const errorMessage = 'הוכנס תו לא חוקי';
-const passportMaxLengthErrorMessage = `השדה יכול להכיל ${passportMaxIdentificationLength} תווים בלבד`;
+const passportMaxLengthErrorMessage = `השדה יכול להכיל ${visaLength} תווים בלבד`;
 const idMaxLengthErrorMessage = `השדה יכול להכיל ${idLength} תווים בלבד`;
 
 export const passportSchema = yup
   .string()
-  .matches(passportValidation, errorMessage)
-  .max(passportMaxIdentificationLength, passportMaxLengthErrorMessage);
+  .matches(passportValidationWithDash, errorMessage)
+  .max(visaLength, passportMaxLengthErrorMessage);
 
 export const idSchema = yup
   .string()
