@@ -1,4 +1,5 @@
 import {isValid} from 'date-fns';
+import { useSelector } from 'react-redux';
 import React, {useEffect, useMemo, useState} from 'react';
 import {useFormContext, Controller } from 'react-hook-form';
 import {Grid, Typography, Divider, Collapse, Checkbox, FormControlLabel} from '@material-ui/core';
@@ -6,24 +7,33 @@ import {Grid, Typography, Divider, Collapse, Checkbox, FormControlLabel} from '@
 import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
 import TimePick from 'commons/DatePick/TimePick';
+import StoreStateType from 'redux/storeStateType';
+import FlattenedDBAddress from 'models/DBAddress';
 import FormInput from 'commons/FormInput/FormInput';
 import {get} from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import useContactEvent from 'Utils/ContactEvent/useContactEvent';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import placeTypesCodesHierarchy from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import AddressForm, { AddressFormFields } from 'commons/Forms/AddressForm/AddressForm';
 import {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCodesHierarchy';
-import PlacesTypesAndSubTypes, {PlacesTypesAndSubTypesProps} from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import PlacesTypesAndSubTypes, {PlacesTypesAndSubTypesProps} from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
-import PatientAddress from './PatientAddress';
-import AddressForm from './AddressForm/AddressForm';
 import useStyles from './InteractionEventFormStyles';
+import GoogleAddressForm from './AddressForm/AddressForm';
 import PlaceNameForm from './PlaceNameForm/PlaceNameForm';
 import BusinessContactForm from './BusinessContactForm/BusinessContactForm';
-import useContactEvent from 'Utils/ContactEvent/useContactEvent';
+
+const ADDRESS_LABEL = 'כתובת';
 
 const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     { onPlaceSubTypeChange, isVisible, interactionData, isNewInteraction }: InteractionEventFormProps): JSX.Element => {
+    
     const {control, watch, clearErrors, setValue, errors, setError} = useFormContext();
+    const patientAddress = useSelector<StoreStateType, FlattenedDBAddress>(state => state.address);
+    
+    const { city, floor, houseNum, street } = patientAddress;
 
     const placeType = watch(InteractionEventDialogFields.PLACE_TYPE);
     const placeSubType = watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
@@ -44,6 +54,20 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
 
     const classes = useStyles();
     const formClasses = useFormStyles();
+
+    useEffect(() => {
+        if (isSubTypePatientHouse) {
+            setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_CITY}`, city);
+            setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_STREET}`, street);
+            setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_HOUSE_NUMBER}`, houseNum);
+            setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_FLOOR}`, floor);
+        } else {
+            setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_CITY}`, '');
+            setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_STREET}`, '');
+            setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_HOUSE_NUMBER}`, '');
+            setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_FLOOR}`, '');
+        }
+    }, [isSubTypePatientHouse]);
 
     const handleTimeChange = (currentTime: Date, interactionDate: Date, fieldName: string) => {
         if (isValid(currentTime)) {
@@ -103,6 +127,25 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
         nameFieldLabel = undefined,
         extraFields = [],
     } = formConfig;
+
+    const addressFormFields: AddressFormFields = {
+        cityField: {
+            name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_CITY}`, 
+            testId: 'currentQuarantineCity'
+        },
+        streetField: {
+            name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_STREET}`, 
+            testId: 'currentQuarantineStreet'
+        },
+        houseNumberField: {
+            name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_HOUSE_NUMBER}`, 
+            testId: 'currentQuarantineHomeNumber'
+        },
+        floorField: {
+            name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_FLOOR}`, 
+            testId: 'currentQuarantineFloor'
+        }
+    }
 
     return (
         <Grid className={isVisible ? formClasses.form : formClasses.hidden} container justify='space-between'>
@@ -174,10 +217,15 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                 </FormInput>
             </Grid>
             <Collapse in={hasAddress && !isSubTypePatientHouse}>
-                <AddressForm/>
+                <GoogleAddressForm/>
             </Collapse>
             <Collapse in={isSubTypePatientHouse}>
-                <PatientAddress/>
+                <FormRowWithInput labelLength={2} fieldName={ADDRESS_LABEL}>
+                    <AddressForm
+                        disabled={true}
+                        {...addressFormFields}
+                    />
+                </FormRowWithInput>
             </Collapse>
             <Collapse in={isNamedLocation}>
                 <PlaceNameForm nameFieldLabel={nameFieldLabel} />

@@ -30,6 +30,11 @@ enum InteractionEventDialogFields {
     FLIGHT_ORIGIN_AIRPORT = 'flightOriginAirport',
     FLIGHT_ORIGIN_CITY = 'flightOriginCity',
     FLIGHT_ORIGIN_COUNTRY = 'flightOriginCountry',
+    PRIVATE_HOUSE_ADDRESS = 'privateHouseAddress',
+    PRIVATE_HOUSE_CITY = 'privateHouseCity',
+    PRIVATE_HOUSE_STREET = 'privateHouseStreet',
+    PRIVATE_HOUSE_HOUSE_NUMBER = 'privateHouseHouseNumber',
+    PRIVATE_HOUSE_FLOOR = 'privateHouseFloor',
 }
 
 export default InteractionEventDialogFields;

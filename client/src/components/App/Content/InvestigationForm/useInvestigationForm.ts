@@ -166,7 +166,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     }, [epidemiologyNumber, userId]);
 
     useEffect(() => {
-        datesToInvestigate.length > 0 && checkAreThereContacts();
+        datesToInvestigate?.length > 0 && checkAreThereContacts();
     }, [datesToInvestigate]);
 
     useEffect(() => {

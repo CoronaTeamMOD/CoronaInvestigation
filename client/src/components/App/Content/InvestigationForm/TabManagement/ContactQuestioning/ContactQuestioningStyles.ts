@@ -64,6 +64,9 @@ const useStyles = makeStyles((theme: Theme) => ({
             textAlign: 'end',
         }
     },
+    appartmentNumber: {
+        marginTop: '1vh'
+    }
 }));
 
 export default useStyles;

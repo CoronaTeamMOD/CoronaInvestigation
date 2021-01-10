@@ -60,7 +60,7 @@ const interactionEventSchema = yup.object().shape({
         [InteractionEventContactFields.PHONE_NUMBER]: yup.string().nullable()
           .matches(phoneNumberMatchValidation, 'מספר טלפון לא תקין'),
         [InteractionEventContactFields.IDENTIFICATION_NUMBER]: ContactIdValidationSchema
-        })),
+    }))
   });
 
 export default interactionEventSchema;
