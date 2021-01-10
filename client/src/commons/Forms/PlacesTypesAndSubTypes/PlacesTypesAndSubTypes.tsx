@@ -1,5 +1,5 @@
 import { Autocomplete } from '@material-ui/lab';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Grid, FormControl, TextField, Collapse } from '@material-ui/core';
 
@@ -7,7 +7,6 @@ import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import useFormStyles from 'styles/formStyles';
 import PlaceSubType from 'models/PlaceSubType';
 import FormInput from 'commons/FormInput/FormInput';
-import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
 
 import usePlacesTypesAndSubTypes from './usePlacesTypesAndSubTypes';
 
@@ -18,29 +17,45 @@ const defaultSubType = { displayName: '', id: -1 };
 
 const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: PlacesTypesAndSubTypesProps): JSX.Element => {
 
-    const { placeTypeName, placeSubTypeName, placeType, placeSubType, onPlaceTypeChange, onPlaceSubTypeChange } = props;
-    const { control, errors } = useFormContext();
+    const { placeTypeName, placeSubTypeName, onPlaceTypeChange, onPlaceSubTypeChange } = props;
+    const { control, errors, watch } = useFormContext();
 
     const formClasses = useFormStyles();
 
-    const [placesSubTypesByTypes, setPlacesSubTypesByTypes] = useState<PlacesSubTypesByTypes>({});
+    const placeType = watch(placeTypeName);
+    const placeSubType = watch(placeSubTypeName);
+
     const [placeTypeInput, setPlaceTypeInput] = useState<string>('');
     const [placeSubTypeInput, setPlaceSubTypeInput] = useState<string>('');
+    const {placesSubTypesByTypes, subtypesFetched} = usePlacesTypesAndSubTypes();
 
-    const placeSubTypeById = (placeSubTypeId: number): PlaceSubType => {
-        return placesSubTypesByTypes[placeType]?.filter((placeSubType: PlaceSubType) => placeSubType.id === placeSubTypeId)[0];
+    const placeSubTypeById = (placeSubTypeId: number): PlaceSubType | undefined => {
+        return placesSubTypesByTypes[placeType]?.find((placeSubType: PlaceSubType) => placeSubType.id === placeSubTypeId);
     };
 
-    const placeSubTypeObj: PlaceSubType = placeSubTypeById(placeSubType);
+    const placeSubTypeObj: PlaceSubType | null = useMemo(
+        () => (
+            placeSubType
+                ? (placeSubTypeById(placeSubType.id || placeSubType) || null)
+                : defaultSubType)
+        , [placeSubType, placesSubTypesByTypes]
+    );
 
     useEffect(() => {
-        if (placesSubTypesByTypes[placeType]) {
-            const defaultPlaceSubType = placesSubTypesByTypes[placeType][0];
-            if (defaultPlaceSubType && !placesSubTypesByTypes[placeType].map(type => type.id).includes(placeSubType)) {
-                onPlaceSubTypeChange(defaultPlaceSubType);
+        setPlaceTypeInput(placeType || '');
+        if (subtypesFetched) {
+            if (placesSubTypesByTypes[placeType]) {
+                const defaultPlaceSubType = placesSubTypesByTypes[placeType][0];
+                const wasTypeSelected = placesSubTypesByTypes[placeType].map(subtype => subtype.id).includes(placeSubType);
+
+                if (defaultPlaceSubType && !wasTypeSelected) {
+                    onPlaceSubTypeChange(defaultPlaceSubType);
+                }
+            } else {
+                onPlaceSubTypeChange(null);
             }
         }
-    }, [placeType]);
+    }, [placeType, placesSubTypesByTypes]);
 
     useEffect(() => {
         if (placeSubType !== null && placeSubTypeObj) {
@@ -62,8 +77,6 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
         }
     };
 
-    usePlacesTypesAndSubTypes({ setPlacesSubTypesByTypes });
-
     const isTabForm = props.size === 'Tab';
     const InputWrapperComp = isTabForm ? FormRowWithInput : FormInput;
 
@@ -73,7 +86,7 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                 <InputWrapperComp fieldName={placeTypeDisplayName}>
                     <Grid item xs={7}>
                         <FormControl
-                            disabled={Object.keys(placesSubTypesByTypes).length === 0}
+                            disabled={!subtypesFetched}
                             fullWidth
                         >
                             <Controller
@@ -84,9 +97,8 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                                         options={Object.keys(placesSubTypesByTypes)}
                                         getOptionLabel={(option) => option}
                                         inputValue={placeTypeInput}
-                                        value={placeType}
+                                        value={props.value}
                                         onBlur={props.onBlur}
-                                        getOptionSelected={(option) => option === placeType}
                                         onChange={(event, chosenPlaceType) => {
                                             onPlaceTypeChange(chosenPlaceType as string)
                                         }}
@@ -126,7 +138,7 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                                             placesSubTypesByTypes[placeType] ? <Autocomplete
                                                 options={placesSubTypesByTypes[placeType]}
                                                 getOptionLabel={(option) => option ? option.displayName : option}
-                                                value={placeSubType === null ? defaultSubType : placeSubTypeObj}
+                                                value={placeSubTypeObj}
                                                 inputValue={placeSubTypeInput}
                                                 getOptionSelected={(option) => option.id === placeSubType}
                                                 onChange={(event, chosenPlaceSubType) =>
@@ -171,8 +183,6 @@ type FormSize = 'Dialog' | 'Tab';
 export interface PlacesTypesAndSubTypesProps {
     placeTypeName: string;
     placeSubTypeName: string;
-    placeType: string;
-    placeSubType: number;
     onPlaceTypeChange: (newPlaceType: string) => void;
     onPlaceSubTypeChange: (placeSubType: PlaceSubType | null) => void;
     size: FormSize;

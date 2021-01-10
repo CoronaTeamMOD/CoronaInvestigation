@@ -23,8 +23,9 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
   const methods = useForm<FormData>({
     mode: 'all',
-    resolver: yupResolver(ExposureSchema(validationDate))
+    resolver: yupResolver(ExposureSchema(validationDate)),
   });
+
   const {reset , trigger} = methods;
 
   const {

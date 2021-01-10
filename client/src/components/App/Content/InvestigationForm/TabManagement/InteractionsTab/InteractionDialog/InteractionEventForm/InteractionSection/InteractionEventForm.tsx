@@ -117,7 +117,6 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     const onPlaceTypeChange = (newPlaceType: string) => {
         setValue(InteractionEventDialogFields.PLACE_TYPE, newPlaceType, {shouldValidate: true});
         Boolean(placeName) && setValue(InteractionEventDialogFields.PLACE_NAME, '');
-        (!newPlaceType) && onPlaceSubTypeChange(null);
     };
 
     const {
@@ -152,8 +151,6 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
             <PlacesTypesAndSubTypes size='Dialog'
                                     placeTypeName={InteractionEventDialogFields.PLACE_TYPE}
                                     placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
-                                    placeType={placeType}
-                                    placeSubType={placeSubType}
                                     onPlaceTypeChange={onPlaceTypeChange}
                                     onPlaceSubTypeChange={onPlaceSubTypeChange}
             />
