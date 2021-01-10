@@ -395,7 +395,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const getFormattedDate = (date: string) => {
-        return format(new Date(date), 'dd/MM')
+        return format(new Date(date.split('T')[0]), 'dd/MM')
     };
 
     const fetchTableData = async () => {
