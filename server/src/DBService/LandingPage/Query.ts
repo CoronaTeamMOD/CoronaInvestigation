@@ -56,6 +56,10 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         id
         userName
         isActive
+        countyByInvestigationGroup {
+          displayName
+          id
+        }
       }
       investigationGroupByGroupId {
         investigationGroupReasonByReason {

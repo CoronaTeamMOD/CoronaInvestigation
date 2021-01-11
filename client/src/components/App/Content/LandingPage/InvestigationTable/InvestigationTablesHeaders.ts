@@ -109,6 +109,7 @@ export const userCols: string[] = [
     TableHeadersNames.phoneNumber,
     TableHeadersNames.investigationDesk,
     TableHeadersNames.comment,
+    TableHeadersNames.settings
 ]
 
 export const sortableCols: sortableHeaders = {
