@@ -14,9 +14,8 @@ const InvestigationMetadata = (props: Props) => {
 
     return (
         <Paper className={classes.metadata}>
-            <InfoItem testId='investigationStartDate' name='תאריך תחילת החקירה' value={
-                format(new Date(investigationMetaData.startTime), 'dd/MM/yyyy')
-            }
+            <InfoItem testId='investigationStartDate' name='תאריך תחילת החקירה'
+                value={investigationMetaData.startTime !== null ? format(new Date(investigationMetaData.startTime), 'dd/MM/yyyy') : 'אין תאריך'}
             />
             <InfoItem testId='investigationLastUpdatedDate' name='תאריך עדכון אחרון' value={
                 format(new Date(investigationMetaData.lastUpdateTime), 'dd/MM/yyyy')
