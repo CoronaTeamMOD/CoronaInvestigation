@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import { Grid, TextField } from '@material-ui/core';
 import { useFormContext, Controller } from 'react-hook-form';
+import { Grid, TextField, GridSize } from '@material-ui/core';
 
 import City from 'models/City';
 import Street from 'models/Street';
@@ -24,7 +24,8 @@ const AddressForm: React.FC<Props> = ({
     cityField, 
     streetField,
     floorField, 
-    houseNumberField
+    houseNumberField,
+    houseGridSize = 1
 }) => {
     const methods = useFormContext();
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
@@ -130,7 +131,7 @@ const AddressForm: React.FC<Props> = ({
                     />
                 }
             </Grid>
-            <Grid item xs={unsized ? undefined : GRID_ITEM_SIZE} className={houseNumberField.className}>
+            <Grid item xs={unsized ? undefined : houseGridSize} className={houseNumberField.className}>
                 {
                     disabled ?
                     <Controller
@@ -165,7 +166,7 @@ const AddressForm: React.FC<Props> = ({
                     />
                 }
             </Grid>
-            <Grid item xs={unsized ? undefined : GRID_ITEM_SIZE} className={floorField.className}>
+            <Grid item xs={unsized ? undefined : houseGridSize} className={floorField.className}>
                 {
                     disabled ?
                     <Controller
@@ -218,6 +219,7 @@ interface Props {
     streetField: FormField;
     houseNumberField: FormField;
     floorField: FormField;
+    houseGridSize?: GridSize;
 }
 
 export type AddressFormFields = Pick<Props, 'cityField' | 'streetField' | 'houseNumberField' | 'floorField'>
