@@ -188,7 +188,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     investigatedPatientRole.id === data.role) ?? defaultRole
             );
         }
-        methods.trigger()
     }, [investigatedPatientRoles, data.role]);
 
 
@@ -202,6 +201,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     useEffect(() => {
         setRoleInput(roleObj.displayName);
     }, [roleObj]);
+  
+    useEffect(() => {
+        methods.trigger()
+    }, [roleInput]);
+    
     useEffect(() => {
         if (personalInfoState.city) {
             setCityId(personalInfoState.city);
@@ -211,7 +215,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
             getEducationSubOccupations(personalInfoState.educationOccupationCity);
         }
     }, [personalInfoState]);
-
+  
     useEffect(() => {
         if (occupation === Occupations.DEFENSE_FORCES ||
             occupation === Occupations.HEALTH_SYSTEM) {
