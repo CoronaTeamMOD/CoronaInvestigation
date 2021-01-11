@@ -30,4 +30,3 @@ export const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDa
 export const getMinimalSymptomsStartDate = (validationDate: Date) => subDays(new Date(validationDate), maxInvestigatedDays);
 
 export const getMinimalStartIsolationDate = (validationDate: Date) => subDays(new Date(validationDate), maxIsolationDays);
-
