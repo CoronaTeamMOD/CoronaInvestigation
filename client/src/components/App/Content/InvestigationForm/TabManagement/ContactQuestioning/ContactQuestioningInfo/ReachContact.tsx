@@ -29,11 +29,11 @@ const ReachContact = (props: Props) => {
 
     const watchContactStatus = watch(`form[${index}].contactStatus`)
     const currentContactStatus = watchContactStatus ? watchContactStatus : formValues.contactStatus;
-
-    const currentValue = contactStatuses.find(
+    const foundValue = contactStatuses.find(
         (contactStatus: ContactStatus) =>
             contactStatus.id === currentContactStatus
     );
+    const currentValue = foundValue || { id : -1 , displayName : "..."}
     const { isFieldDisabled } = useContactFields(formValues.contactStatus);
 
     const { changeContactStatus } = useReachContact({
