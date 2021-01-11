@@ -25,6 +25,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS];
 
         const saveInteractions = async (interactionsDataToSave: InteractionEventDialogData) => {
+            // setIsLoading(true) // 🙏 plz work
             const locationAddress = shouldParseLocation(interactionsDataToSave) ?
                 await parseLocation(interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS]) : null;
             const parsedData = {
@@ -32,7 +33,6 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
                 [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber
             };
-            setIsLoading(true)
             if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
                 const updateInteractionsLogger = logger.setup('Update Interaction')
                 updateInteractionsLogger.info('launching update interaction request', Severity.LOW);
@@ -60,7 +60,9 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                         loadInteractions();
                         loadInvolvedContacts();
                         onDialogClose();
-                    } 
+                    } else {
+                        createInteractionsLogger.info(`got debugging data from the server data : ${JSON.stringify(response)}`, Severity.LOW);
+                    }
                 })
                 .catch((error) => {
                     createInteractionsLogger.error(`got error from server: ${error}`, Severity.LOW);
