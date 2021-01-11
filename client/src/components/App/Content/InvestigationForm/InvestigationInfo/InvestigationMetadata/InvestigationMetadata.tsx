@@ -7,6 +7,8 @@ import InvestigationMetaData from 'models/InvestigationMetadata';
 import InfoItem from '../InfoItem';
 import useStyles from './InvestigationMetadataStyles';
 
+const noStartDate = 'אין תאריך';
+
 const InvestigationMetadata = (props: Props) => {
 
     const classes = useStyles();
@@ -15,7 +17,7 @@ const InvestigationMetadata = (props: Props) => {
     return (
         <Paper className={classes.metadata}>
             <InfoItem testId='investigationStartDate' name='תאריך תחילת החקירה'
-                value={investigationMetaData.startTime !== null ? format(new Date(investigationMetaData.startTime), 'dd/MM/yyyy') : 'אין תאריך'}
+                value={investigationMetaData.startTime ? format(new Date(investigationMetaData.startTime), 'dd/MM/yyyy') : noStartDate}
             />
             <InfoItem testId='investigationLastUpdatedDate' name='תאריך עדכון אחרון' value={
                 format(new Date(investigationMetaData.lastUpdateTime), 'dd/MM/yyyy')
