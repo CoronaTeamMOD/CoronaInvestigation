@@ -44,12 +44,6 @@ export const useStyles = makeStyles({
         marginLeft: '1vw',
         width: '15vw',
     },
-    cancelWhiteSpace: {
-        marginLeft: '-4vw',
-        '@media screen and (max-width: 1750px)': {
-            marginLeft: '-2vw'
-        },
-    },
     otherTextField: {
         marginTop: '1vh',
         marginLeft: '-22vw',
@@ -91,7 +85,6 @@ export interface ClinicalDetailsClasses {
     hospitalizationDates: string;
     smallGrid: string;
     isolationProblemTextField: string;
-    cancelWhiteSpace: string;
     otherTextField: string;
     symptomsDateCheckBox: string;
     spacedDates: string;

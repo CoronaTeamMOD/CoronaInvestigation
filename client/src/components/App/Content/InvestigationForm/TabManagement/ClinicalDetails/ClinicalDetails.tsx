@@ -101,8 +101,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
         },
         floorField: {
             name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`, 
-            testId: 'currentQuarantineFloor', 
-            className: classes.cancelWhiteSpace
+            testId: 'currentQuarantineFloor'
         }
     }
 
