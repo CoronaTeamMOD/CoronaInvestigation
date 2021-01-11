@@ -66,8 +66,8 @@ subOccupationByInstitutionName {
 `;
 
 export const GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID = gql`
-query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
-  allContactEvents(condition: {investigationId: $currInvestigation}) {
+query getEventAndPeopleByInvestigationID($currInvestigation: Int!, $minimalDateToFilter: Datetime!) {
+  allContactEvents(filter: {investigationId: {equalTo: $currInvestigation}, startTime: {greaterThanOrEqualTo: $minimalDateToFilter}}) {
     nodes {
       id
       unknownTime

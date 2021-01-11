@@ -44,7 +44,8 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     const checkAreThereContacts = () => {
         const tabShowLogger = logger.setup('Getting Amount Of Contacts');
         tabShowLogger.info('launching amount of contacts request', Severity.LOW);
-        axios.get(`/contactedPeople/allContacts/${epidemiologyNumber}/${new Date(datesToInvestigate.slice(-1)[0])}`)
+        const minimalDateToFilter = datesToInvestigate.slice(-1)[0];
+        axios.get(`/contactedPeople/allContacts/${epidemiologyNumber}/${minimalDateToFilter}`)
         .then((result: any) => {
             tabShowLogger.info('amount of contacts request was successful', Severity.LOW);
             setAreThereContacts(result?.data.length > 0);

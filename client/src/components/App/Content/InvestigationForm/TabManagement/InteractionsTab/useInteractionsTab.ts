@@ -36,6 +36,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const { alertError, alertWarning } = useCustomSwal();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
 
     const groupInvolvedContacts = (involvedContacts: InvolvedContact[]): GroupedInvolvedGroups => {
         return involvedContacts.reduce<GroupedInvolvedGroups>((previous, contact) => {
@@ -100,8 +101,9 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const loadInteractions = () => {
         const loadInteractionsLogger = logger.setup('Fetching Interactions');
         loadInteractionsLogger.info('launching interactions request', Severity.LOW);
+        const minimalDateToFilter = datesToInvestigate.slice(-1)[0];
         setIsLoading(true);
-        axios.get(`/intersections/contactEvent/${epidemiologyNumber}`).then((result) => {
+        axios.get(`/intersections/contactEvent/${epidemiologyNumber}/${minimalDateToFilter}`).then((result) => {
                 loadInteractionsLogger.info('got results back from the server', Severity.LOW);
                 const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
                 const numberOfContactedPeople = allInteractions.reduce((currentValue: number, interaction: InteractionEventDialogData) => {
