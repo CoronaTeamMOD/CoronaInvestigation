@@ -61,7 +61,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                         loadInvolvedContacts();
                         onDialogClose();
                     } else {
-                        createInteractionsLogger.info(`got debugging data from the server data : ${JSON.stringify(response}`, Severity.LOW);
+                        createInteractionsLogger.info(`response data is not valid data : ${JSON.stringify(response)}`, Severity.LOW);
                     }
                 })
                 .catch((error) => {
