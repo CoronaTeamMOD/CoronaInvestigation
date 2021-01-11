@@ -156,7 +156,9 @@ const InteractionDialog = (props: Props) => {
                 }
             }
             if (Boolean(interactionStartTime && interactionEndTime) || isUnknownTime) {
-                onSubmit(methods.getValues())
+                const data = methods.getValues();
+                delete data.privateHouseAddress;
+                onSubmit(data);
             }
         })
 

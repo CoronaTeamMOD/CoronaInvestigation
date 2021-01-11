@@ -1,5 +1,6 @@
 import Contact from 'models/Contact';
 import Address from 'models/Address';
+import { DBAddress } from 'models/DBAddress';
 
 interface InteractionEventDialogData {
     id?: number;
@@ -34,6 +35,7 @@ interface InteractionEventDialogData {
     flightOriginCity?: string;
     flightOriginCountry?: string;
     creationTime: Date;
-}
+    privateHouseAddress?: DBAddress;
+};
 
 export default InteractionEventDialogData;
