@@ -25,7 +25,6 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS];
 
         const saveInteractions = async (interactionsDataToSave: InteractionEventDialogData) => {
-            // setIsLoading(true) // 🙏 plz work
             const locationAddress = shouldParseLocation(interactionsDataToSave) ?
                 await parseLocation(interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS]) : null;
             const parsedData = {
