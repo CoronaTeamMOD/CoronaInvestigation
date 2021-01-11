@@ -188,7 +188,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     investigatedPatientRole.id === data.role) ?? defaultRole
             );
         }
-
+        methods.trigger()
     }, [investigatedPatientRoles, data.role]);
 
 
