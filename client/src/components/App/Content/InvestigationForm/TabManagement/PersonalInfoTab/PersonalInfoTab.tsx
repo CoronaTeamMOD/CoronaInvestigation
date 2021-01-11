@@ -188,7 +188,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     investigatedPatientRole.id === data.role) ?? defaultRole
             );
         }
-
     }, [investigatedPatientRoles, data.role]);
 
 
@@ -202,6 +201,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     useEffect(() => {
         setRoleInput(roleObj.displayName);
     }, [roleObj]);
+  
+    useEffect(() => {
+        methods.trigger()
+    }, [roleInput]);
+    
     useEffect(() => {
         if (personalInfoState.city) {
             setCityId(personalInfoState.city);
@@ -211,7 +215,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
             getEducationSubOccupations(personalInfoState.educationOccupationCity);
         }
     }, [personalInfoState]);
-
+  
     useEffect(() => {
         if (occupation === Occupations.DEFENSE_FORCES ||
             occupation === Occupations.HEALTH_SYSTEM) {
@@ -640,8 +644,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                 </Grid>
                                                 <Grid item xs={1}>
                                                     <Controller
-                                                        name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
                                                         control={methods.control}
+                                                        name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
                                                         render={(props) => (
                                                             <NumericTextField
                                                                 name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
@@ -649,7 +653,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                                 value={props.value}
                                                                 onChange={(newValue) => props.onChange(newValue)}
                                                                 onBlur={props.onBlur}
-                                                                label='מס כיתה'
+                                                                error={methods.errors[PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER]}
+                                                                label={(methods.errors[PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER]?.message) || 'מס כיתה'}
                                                             />
                                                         )}
                                                     />
