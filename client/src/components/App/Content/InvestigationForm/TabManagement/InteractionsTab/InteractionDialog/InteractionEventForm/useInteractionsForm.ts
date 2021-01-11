@@ -25,6 +25,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS];
 
         const saveInteractions = async (interactionsDataToSave: InteractionEventDialogData) => {
+            setIsLoading(true)
             const locationAddress = shouldParseLocation(interactionsDataToSave) ?
                 await parseLocation(interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS]) : null;
             const parsedData = {
@@ -60,7 +61,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                         loadInvolvedContacts();
                         onDialogClose();
                     } else {
-                        createInteractionsLogger.info(`got debugging data from the server data : ${JSON.stringify(response)}`, Severity.LOW);
+                        createInteractionsLogger.info(`got debugging data from the server data : ${JSON.stringify(response}`, Severity.LOW);
                     }
                 })
                 .catch((error) => {
