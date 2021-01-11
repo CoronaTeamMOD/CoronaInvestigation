@@ -41,7 +41,7 @@ const schema = yup.object().shape({
             schema.nullable()
     }),
     [PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER]: yup.number().transform((value: any) => 
-        ((value === '' || isNaN(value)) ? null : value)).nullable().max(50, 'ניתן להזין עד המספר 50')
+        ((value === '' || isNaN(value)) ? null : value)).nullable().max(49, 'ניתן להזין עד המספר 50')
 });
 
 export default schema;
