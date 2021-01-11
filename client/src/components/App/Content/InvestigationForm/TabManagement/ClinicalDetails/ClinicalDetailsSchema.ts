@@ -10,7 +10,7 @@ const EndDateBeforeStartDateText = 'תאריך הסיום צריך להיות מ
 const futureDateText = 'לא ניתן להכניס תאריך עתידי';
 const endDateBeforeValidationDateText = 'לא ניתן להכניס תאריך אחרי תאריך תחילת מחלה';
 const symptomsStartDateIsTooEarlyText = `לא ניתן להכניס תאריך יותר מ${maxInvestigatedDays} ימים לפני תאריך תחילת מחלה`;
-const isolationStartDateIsTooEarlyText = `לא ניתן להכניס תאריך יותר מ${maxIsolationDays} ימים לפני תאריך תחילת מחלה`
+const isolationStartDateIsTooEarlyText = `לא ניתן להכניס תאריך יותר מ${maxIsolationDays} ימים לפני תאריך תחילת מחלה`;
 
 const isInIsolationStartDateSchema = (validationDate: Date) => yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
