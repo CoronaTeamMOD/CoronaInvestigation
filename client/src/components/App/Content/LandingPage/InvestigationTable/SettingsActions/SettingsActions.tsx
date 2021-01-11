@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Typography, IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
 import { SvgIconComponent, MoreVert, CallSplit, LockOpen } from '@material-ui/icons';
 
+import UserType from 'models/enums/UserType';
+import StoreStateType from 'redux/storeStateType';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
@@ -15,9 +18,12 @@ interface settingsAction {
     disabledMessage: string;
     displayTitle: string;
     onClick: () => void;
+    show: boolean;
 }
     
 const SettingsActions = (props: Props) => {
+
+    const userType = useSelector<StoreStateType, UserType>(state => state.user.data.userType);
 
     const { epidemiologyNumber, investigationStatus, groupId, allGroupedInvestigations, checkGroupedInvestigationOpen,
             fetchTableData, fetchInvestigationsByGroupId, moveToTheInvestigationForm } = props;
@@ -42,7 +48,8 @@ const SettingsActions = (props: Props) => {
             disabled: shouldExcludeDisabled(),
             disabledMessage: shouldExcludeDisabled() ? 'לחקירה אין קבוצה או שהקבוצה אינה נפתחה': '',
             displayTitle: 'הוצא חקירה מקבוצה',
-            onClick: () => excludeInvestigationFromGroup(epidemiologyNumber, groupId)
+            onClick: () => excludeInvestigationFromGroup(epidemiologyNumber, groupId),
+            show: userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN
         },
         {
             key: 2,
@@ -50,7 +57,8 @@ const SettingsActions = (props: Props) => {
             disabled: !shouldReopenInvestigation(),
             disabledMessage: !shouldReopenInvestigation() ? 'החקירה עדיין לא הושלמה' : '',
             displayTitle: 'פתיחה מחודשת',
-            onClick: () => reopenInvestigation(epidemiologyNumber)
+            onClick: () => reopenInvestigation(epidemiologyNumber),
+            show: true
         }
     ]
 
@@ -78,7 +86,7 @@ const SettingsActions = (props: Props) => {
                 {
                     settingsAction.map((action: settingsAction, index: number) => {
                         return (
-                            <Tooltip title={action.disabledMessage} placement='top-end'>
+                            action.show && <Tooltip title={action.disabledMessage} placement='top-end'>
                                 <div onClick={(event) => action.disabled ? event.stopPropagation() : ''}>                                
                                     <MenuItem
                                         key={action.key}
