@@ -22,7 +22,7 @@ query getAllSymptoms {
 
 export const GET_ISOLATION_SOURCES = gql`
 query getAllIsolationSources {
-  allIsolationSources {
+  allIsolationSources(orderBy: DESCRIPTION_ASC) {
     nodes {
       id
       description
