@@ -2,24 +2,27 @@ import * as yup from 'yup';
 import { startOfTomorrow, subDays } from 'date-fns';
 
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import { getMinimalSymptomsStartDate, maxInvestigatedDays } from 'Utils/ClinicalDetails/symptomsUtils';
+import { getMinimalSymptomsStartDate, getMinimalStartIsolationDate, maxInvestigatedDays, maxIsolationDays } from 'Utils/ClinicalDetails/symptomsUtils';
 
 const requiredText = 'שדה זה הוא חובה';
 const StartDateAfterEndDateText = 'תאריך ההתחלה צריך להיות מוקדם יותר מתאריך הסיום';
 const EndDateBeforeStartDateText = 'תאריך הסיום צריך להיות מאוחר יותר מתאריך ההתחלה';
 const futureDateText = 'לא ניתן להכניס תאריך עתידי';
 const endDateBeforeValidationDateText = 'לא ניתן להכניס תאריך אחרי תאריך תחילת מחלה';
-const symptomsStartDateIsTooEarlyText = `לא ניתן להכניס תאריך יותר מ${maxInvestigatedDays} ימים לפני תאריך תחילת מחלה`
+const symptomsStartDateIsTooEarlyText = `לא ניתן להכניס תאריך יותר מ${maxInvestigatedDays} ימים לפני תאריך תחילת מחלה`;
+const isolationStartDateIsTooEarlyText = `לא ניתן להכניס תאריך יותר מ${maxIsolationDays} ימים לפני תאריך תחילת מחלה`
 
 const isInIsolationStartDateSchema = (validationDate: Date) => yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
         is: true,
         then: yup.date().when(ClinicalDetailsFields.ISOLATION_START_DATE, (isolationStartDate: Date) => {
             const startOfTomorrowDate = startOfTomorrow();
-            return new Date(validationDate) > isolationStartDate ?
-                isolationStartDate < startOfTomorrowDate ?
-                yup.date().max(yup.ref(ClinicalDetailsFields.ISOLATION_END_DATE), StartDateAfterEndDateText).required(requiredText).typeError(requiredText) :
-                yup.date().max(startOfTomorrowDate, futureDateText).required(requiredText).typeError(requiredText) :
+            return validationDate > isolationStartDate ?
+                    isolationStartDate < startOfTomorrowDate ?
+                        isolationStartDate < getMinimalStartIsolationDate(validationDate) ?
+                            yup.date().min(getMinimalStartIsolationDate(validationDate), isolationStartDateIsTooEarlyText).required(requiredText).typeError(requiredText) :
+                            yup.date().max(yup.ref(ClinicalDetailsFields.ISOLATION_END_DATE), StartDateAfterEndDateText).required(requiredText).typeError(requiredText) :
+                    yup.date().max(startOfTomorrowDate, futureDateText).required(requiredText).typeError(requiredText) :
                 yup.date().max(validationDate, endDateBeforeValidationDateText).required(requiredText).typeError(requiredText)
         }),
         otherwise: yup.date().nullable()

@@ -4,6 +4,7 @@ export const symptomsWithKnownStartDate: number = 4;
 export const nonSymptomaticPatient: number = 7;
 export const symptomsWithUnknownStartDate: number = 7;
 export const maxInvestigatedDays: number = 21;
+export const maxIsolationDays: number = 14;
 
 export const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, validationDate: Date | null): Date[] => {
     if (validationDate) {
@@ -26,4 +27,7 @@ export const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDa
     return [];
 }
 
-export const getMinimalSymptomsStartDate = (validationDate: Date) => subDays(new Date(validationDate), maxInvestigatedDays)
+export const getMinimalSymptomsStartDate = (validationDate: Date) => subDays(new Date(validationDate), maxInvestigatedDays);
+
+export const getMinimalStartIsolationDate = (validationDate: Date) => subDays(new Date(validationDate), maxIsolationDays);
+
