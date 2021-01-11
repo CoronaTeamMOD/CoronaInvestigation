@@ -67,15 +67,15 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     useEffect(() => {
         if (isFieldDisabled) {
-            setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`, interactedContact.isolationAddress?.city?.id);
-            setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`, interactedContact.isolationAddress?.street?.id);
-            setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`, interactedContact.isolationAddress?.houseNum);
-            setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`, interactedContact.isolationAddress?.apartment);
-        } else {
-            setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`, null);
-            setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`, null);
-            setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`, null);
-            setValue(`form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`, null);
+            setValue(
+                `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}`, 
+                {
+                    [InteractedContactFields.CONTACTED_PERSON_CITY] : interactedContact.isolationAddress?.city?.id,
+                    [InteractedContactFields.CONTACTED_PERSON_STREET] : interactedContact.isolationAddress?.street?.id,
+                    [InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER] : interactedContact.isolationAddress?.houseNum,
+                    [InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER] : interactedContact.isolationAddress?.apartment,
+                }
+            )
         }
     }, [isFieldDisabled])
 
