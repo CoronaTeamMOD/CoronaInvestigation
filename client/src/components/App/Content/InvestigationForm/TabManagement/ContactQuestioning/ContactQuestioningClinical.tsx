@@ -47,12 +47,12 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
             name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`, 
             className: classes.addressTextField, 
             testId: 'contactedPersonCity',
-            defaultValue: interactedContact.isolationAddress?.city?.id
+            defaultValue: interactedContact.isolationAddress?.city?.id || null
         },
         streetField: {
             name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`, 
             className: classes.addressTextField,
-            defaultValue: interactedContact.isolationAddress?.street?.id
+            defaultValue: interactedContact.isolationAddress?.street?.id  || null
         },
         houseNumberField: {
             name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`,

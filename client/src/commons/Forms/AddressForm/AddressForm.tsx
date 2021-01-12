@@ -70,7 +70,7 @@ const AddressForm: React.FC<Props> = ({
                                 options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                 getOptionLabel={(option) => option ? option.value.displayName : option}
                                 value={props.value && {id: props.value as string, value: cities.get(props.value) as City}}
-                                onChange={(event, selectedCity) => props.onChange(selectedCity ? selectedCity.id : '')}
+                                onChange={(event, selectedCity) => props.onChange(selectedCity ? selectedCity.id : null)}
                                 renderInput={(params) =>
                                     <TextField
                                         test-id={cityField.testId || ''}
