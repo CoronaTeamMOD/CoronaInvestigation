@@ -43,7 +43,7 @@ const ExposureSourceOption = (props: Props) => {
                 </Typography>
             )}
             {Boolean(epidemiologyNumber) && (
-                <Typography className={classes.optionField}>
+                <Typography className={[classes.optionField, epidemiologyNumber === parseInt(exposureSourceSearchString) && classes.searchedField].join(' ')}>
                     {allCovidPatientFields.epidemiologyNumber + ': ' + epidemiologyNumber}
                 </Typography>
             )}
