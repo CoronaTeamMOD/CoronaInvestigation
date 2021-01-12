@@ -6,6 +6,7 @@ import { fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 const endDateBeforeValidationDateText = 'תאריך לא יכול להיות יותר גדול מתאריך תחילת מחלה';
 const twoWeeksBeforeValidationDateText = 'תאריך לא יכול להיות יותר קטן משבועיים מתאריך תחילת מחלה';
 const requiredErrorMessage = 'שדה חובה';
+const EndDateBeforeStartDateText = 'תאריך טיסת חזור צריך להיות מאוחר יותר מתאריך טיסת הלוך';
 
 const flightValidation = (validationDate: Date): yup.Schema<any, object> => {
     return yup.object().shape({
@@ -20,18 +21,20 @@ const flightValidation = (validationDate: Date): yup.Schema<any, object> => {
         [fieldsNames.originAirport]: yup.string().nullable().required(requiredErrorMessage),
         [fieldsNames.originCity]: yup.string().nullable(),
         [fieldsNames.originCountry]: yup.string().nullable().required(requiredErrorMessage),
-        [fieldsNames.flightEndDate]: yup
-            .date()
-            .nullable()
-            .required(requiredErrorMessage)
-            .max(validationDate, endDateBeforeValidationDateText)
-            .min(subDays(new Date(validationDate), 14), twoWeeksBeforeValidationDateText),
         [fieldsNames.flightStartDate]: yup
             .date()
             .nullable()
             .required(requiredErrorMessage)
             .max(validationDate, endDateBeforeValidationDateText)
             .min(subDays(new Date(validationDate), 14), twoWeeksBeforeValidationDateText),
+        [fieldsNames.flightEndDate]: yup
+            .date()
+            .nullable()
+            .required(requiredErrorMessage)
+            .max(validationDate, endDateBeforeValidationDateText)
+            .min(subDays(new Date(validationDate), 14), twoWeeksBeforeValidationDateText)
+            .min(yup.ref(fieldsNames.flightStartDate), EndDateBeforeStartDateText),
+
     });
 };
 
