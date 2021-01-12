@@ -471,7 +471,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                             onBlur={props.onBlur}
                                             placeholder='מספר בית'
                                             label='מספר בית'
-                                            className={classes.houseNumInput}
                                         />
                                     )}
                                 />
@@ -489,7 +488,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                             onBlur={props.onBlur}
                                             placeholder='קומה'
                                             label='קומה'
-                                            className={classes.floorInput}
                                         />
                                     )}
                                 />
