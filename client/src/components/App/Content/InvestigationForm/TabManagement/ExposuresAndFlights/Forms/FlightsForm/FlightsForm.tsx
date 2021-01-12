@@ -26,7 +26,7 @@ const FlightsForm = (props: any) => {
 			}
 			return dateError.message;
 		}
-		return 'תאריך'
+		return '*תאריך'
 	}
 
   const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
@@ -81,6 +81,7 @@ const FlightsForm = (props: any) => {
 										error={Boolean(startDateError)}
 										onChange={(newDate: Date) => {
 											props.onChange(newDate);
+											handleChangeExposureDataAndFlightsField(fieldsNames.flightStartDate, newDate);
 										}}
 									/>
 								);
@@ -105,6 +106,7 @@ const FlightsForm = (props: any) => {
 										error={Boolean(endDateError)}
 										onChange={(newDate: Date) => {
 											props.onChange(newDate);
+											handleChangeExposureDataAndFlightsField(fieldsNames.flightEndDate, newDate);
 										}}
 									/>
 								);
@@ -146,8 +148,9 @@ const FlightsForm = (props: any) => {
 								testId='airlineNumber'
 								onChange={(value) => {
 									props.onChange(value);
-									}
-								}
+                                    handleChangeExposureDataAndFlightsField(fieldsNames.flightNumber, value);
+								}}
+								label='מספר טיסה*'
 								placeholder='הזן מספר טיסה'
 							/>
 						);
