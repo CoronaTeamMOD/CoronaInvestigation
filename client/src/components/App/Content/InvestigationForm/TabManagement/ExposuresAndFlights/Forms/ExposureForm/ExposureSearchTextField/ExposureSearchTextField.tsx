@@ -10,7 +10,7 @@ import useStyles from './ExposureSearchTextFieldStyles';
 
 const errorMessage = 'השדה יכול להכיל רק אותיות, מספרים, מקף ורווח';
 const maxLengthErrorMessage = 'השדה יכול להכיל 100 תווים בלבד';
-const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
+const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן מספר אפידמיולוגי, שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
 
 interface Props extends AlphabetTextFieldProps<string> {
   value: string | null;

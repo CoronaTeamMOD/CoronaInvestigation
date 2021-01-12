@@ -17,8 +17,6 @@ import useStyles from './ExposureFormStyles';
 import useExposureForm from './useExposureForm';
 import ExposureSourceOption from './ExposureSourceOption';
 
-const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
-
 const ExposureForm = (props: Props) => {
 	const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index } = props;
 
@@ -86,7 +84,6 @@ const ExposureForm = (props: Props) => {
 								}}
 								value={exposureSourceSearchString}
 								test-id='exposureSource'
-								placeholder={INSERT_EXPOSURE_SOURCE_SEARCH}
 								onSearchClick={setOptionalCovidPatientsAsync}
 								onKeyDown={(e: React.KeyboardEvent) => {
 									if (e.key === 'Enter') {
