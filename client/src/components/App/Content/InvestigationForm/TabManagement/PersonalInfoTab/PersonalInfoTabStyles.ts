@@ -12,7 +12,10 @@ const useStyles = makeStyles({
         },
     },
     spacedOutAddress: {
-        marginRight: '5vw'
+        marginRight: '4vw',
+        '@media screen and (max-width: 1700px)': {
+            marginRight: '2vw',
+        },
     },
     homeAddressItem: {
         '@media screen and (max-width: 1700px)': {
@@ -102,13 +105,6 @@ const useStyles = makeStyles({
         marginRight: '-7vw'
     },
     phoneInput: {
-        minWidth: '15vw',
-    },
-    floorInput: {
-        minWidth: '15vw',
-        marginLeft: '8vw'
-    },
-    houseNumInput: {
         minWidth: '15vw',
     },
     markComplexity: {
