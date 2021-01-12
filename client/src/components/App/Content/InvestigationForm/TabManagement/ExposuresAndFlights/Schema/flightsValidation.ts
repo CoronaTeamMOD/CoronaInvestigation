@@ -27,15 +27,11 @@ const flightValidation = (validationDate: Date): yup.Schema<any, object> => {
             .required(requiredErrorMessage)
             .max(validationDate, endDateBeforeValidationDateText)
             .min(subDays(new Date(validationDate), 14), twoWeeksBeforeValidationDateText),
-        [fieldsNames.flightEndDate]: yup.date().when([fieldsNames.flightEndDate], {
-            is: true,
-            then: yup.date().when(fieldsNames.flightEndDate, (flightEndDate: Date) => {
-                return new Date(subDays(new Date(validationDate), 14)) > flightEndDate ?
-                yup.date().min(subDays(new Date(validationDate), 14), twoWeeksBeforeValidationDateText).required(requiredErrorMessage) :
-                yup.date().min(yup.ref(fieldsNames.flightStartDate), EndDateBeforeStartDateText).max(validationDate, endDateBeforeValidationDateText)
-            }),
-            otherwise: yup.date().nullable()
-        })        
+        [fieldsNames.flightEndDate]: yup.date().when(fieldsNames.flightStartDate, (flightStartDate: Date) => {
+            return new Date(subDays(new Date(validationDate), 14)) > flightStartDate ?
+            yup.date().min(subDays(new Date(validationDate), 14), twoWeeksBeforeValidationDateText).required(requiredErrorMessage) :
+            yup.date().min(flightStartDate, EndDateBeforeStartDateText).max(validationDate, endDateBeforeValidationDateText).required(requiredErrorMessage)
+        }),
     });
 };
 
