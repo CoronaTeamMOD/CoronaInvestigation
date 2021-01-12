@@ -97,7 +97,7 @@ const ExposureForm = (props: Props) => {
 				/>
 			</FormRowWithInput>
 
-			{(isOptionalPatientsLoading || optionalCovidPatients?.length > 0) && (
+			{((isOptionalPatientsLoading || optionalCovidPatients?.length > 0) && exposureSourceSearchString !== "") && (
 				<FormRowWithInput fieldName=''>
 					<div className={classes.optionalExposureSources}>
 						{isOptionalPatientsLoading ? (
