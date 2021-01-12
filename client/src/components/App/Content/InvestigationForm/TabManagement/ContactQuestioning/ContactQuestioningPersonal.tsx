@@ -154,7 +154,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                 <Grid container item>
                     <FieldName xs={5} fieldName="גיל:" />
                     <AlphanumericTextField
-                        disabled={isFieldDisabled}
+                        disabled={true}
                         name="age"
                         testId="contactAge"
                         value={age}
