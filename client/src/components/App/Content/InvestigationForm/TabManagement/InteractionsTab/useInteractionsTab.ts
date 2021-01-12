@@ -103,19 +103,20 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         loadInteractionsLogger.info('launching interactions request', Severity.LOW);
         const minimalDateToFilter = datesToInvestigate.slice(-1)[0];
         setIsLoading(true);
-        axios.get(`/intersections/contactEvent/${epidemiologyNumber}/${minimalDateToFilter}`).then((result) => {
-                loadInteractionsLogger.info('got results back from the server', Severity.LOW);
-                const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
-                const numberOfContactedPeople = allInteractions.reduce((currentValue: number, interaction: InteractionEventDialogData) => {
-                    return currentValue + interaction.contacts.length
-                }, 0);
-                setAreThereContacts(numberOfContactedPeople > 0);
-                setInteractions(allInteractions);
-            }).catch((error) => {
-                loadInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-                alertError('הייתה שגיאה בטעינת האירועים והמגעים');
-            })
-            .finally(() => setIsLoading(false));
+        axios.get(`/intersections/contactEvent/${epidemiologyNumber}/${minimalDateToFilter}`)
+        .then((result) => {
+            loadInteractionsLogger.info('got results back from the server', Severity.LOW);
+            const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
+            const numberOfContactedPeople = allInteractions.reduce((currentValue: number, interaction: InteractionEventDialogData) => {
+                return currentValue + interaction.contacts.length
+            }, 0);
+            setAreThereContacts(numberOfContactedPeople > 0);
+            setInteractions(allInteractions);
+        }).catch((error) => {
+            loadInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+            alertError('הייתה שגיאה בטעינת האירועים והמגעים');
+        })
+        .finally(() => setIsLoading(false));
     }
 
     useEffect(() => {

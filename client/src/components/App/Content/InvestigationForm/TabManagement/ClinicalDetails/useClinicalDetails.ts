@@ -144,7 +144,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                             isolationAddressId: patientAddress.id
                         }
                     }
-                    setIsolationAddressId(patientAddress.isolationAddressId ? patientAddress.isolationAddressId : null);
+                    setIsolationAddressId(patientAddress.isolationAddressId || null);
                     const initialDBClinicalDetailsToSet = {
                         ...initialClinicalDetails,
                         isPregnant: Boolean(patientClinicalDetails.isPregnant),
