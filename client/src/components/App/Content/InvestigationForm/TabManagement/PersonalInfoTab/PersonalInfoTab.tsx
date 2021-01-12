@@ -661,7 +661,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                         }
                                     </>
                                     : occupation === Occupations.DEFENSE_FORCES ?
-                                        <Grid item xs={3}>{institutionComponent}</Grid>
+                                        <Grid item xs={2}>{institutionComponent}</Grid>
                                         :
                                         <Grid item xs={2}>
                                             <Collapse in={occupation !== Occupations.UNEMPLOYED}>
