@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Autocomplete } from '@material-ui/lab';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Tooltip, TextField} from '@material-ui/core'; 
 
@@ -7,14 +7,30 @@ import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 import useStyles from './InvestigatorsTableStyles';
 import { TableHeadersNames, TableHeaders } from './InvestigatorsTableHeaders';
+import SearchBar from 'commons/SearchBar/SearchBar';
 
 const pauseInvestigationsCountTitle = 'חקירות הממתינות להשלמת מידע/העברה';
+const searchBarLabel = 'הכנס שם של חוקר...';
 
 const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSelectedRow }) => {
 
     const classes = useStyles();
     const [investigatorInput, setInvestigatorInput] = useState<string>('');
     const [investigator, setInvestigator] = useState<User | null>(null);
+    const [filteredInvestigators, setFilteredInvestigators] = useState<User[]>(investigators);
+
+    useEffect(() => {
+        setFilteredInvestigators(investigators)
+    }, [investigators]);
+    
+    useEffect(() => {
+        if(investigatorInput !== '') {
+            const filteredArray = investigators.filter(investigator => investigator.userName.includes(investigatorInput))
+            setFilteredInvestigators(filteredArray)   
+        } else {
+            setFilteredInvestigators(investigators)
+        }
+    }, [investigatorInput]);
 
     const getTableCell = (investigator: User, cellName: string) => {
         switch(cellName) {
@@ -41,25 +57,9 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
 
     return (
         <>
-            <Autocomplete
-                options={investigators.map(investigator => ({ id: investigator.id, userName: investigator.userName }))}
-                getOptionLabel={(option) => option.userName ? option.userName : ''}
-                //inputValue={investigatorInput}
-                //value={investigator.id}
-                // onChange={(event, selectedInvestigator) => {
-                //     setInvestigator(selectedInvestigator)
-                // }}
-                // onInputChange={(event, newInvestigatorInput) => {
-                //     if (event?.type !== 'blur') {
-                //         setInvestigatorInput(newInvestigatorInput);
-                //     }
-                // }}
-                renderInput={(params) =>
-                    <TextField
-                        {...params}
-                        placeholder='חוקר'
-                    />
-                }
+            <SearchBar
+                searchBarLabel={searchBarLabel}
+                onClick={(value: string) => setInvestigatorInput(value)}
             />
             <TableContainer component={Paper}>
                 <Table stickyHeader>
@@ -80,7 +80,7 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
                     </TableHead>
                     <TableBody>
                         {
-                            investigators.map((investigator: User, index: number) => (
+                            filteredInvestigators.map((investigator: User, index: number) => (
                                 <TableRow 
                                     key={investigator.id}
                                     selected={selectedRow === index}

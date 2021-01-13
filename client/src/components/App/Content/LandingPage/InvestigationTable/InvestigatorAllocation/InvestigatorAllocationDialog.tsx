@@ -73,7 +73,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
     return (
         <Dialog open={isOpen} maxWidth='md' classes={{ paper: classes.dialog }}
             onClose={() => closeDialog()}
-            onEnter={() =>  loadInvestigators()}
+            onEnter={() => loadInvestigators()}
         >
             <DialogTitle>
                 <b>
