@@ -52,6 +52,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     onBlur={props.onBlur}
                                     testId='quarantinedFromDate'
                                     labelText={errors[ClinicalDetailsFields.ISOLATION_START_DATE] ? errors[ClinicalDetailsFields.ISOLATION_START_DATE].message : '* מתאריך'}
+                                    helperText={null}
                                     value={props.value}
                                     onChange={(newDate: Date) => {
                                         props.onChange(newDate);
@@ -69,6 +70,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 onBlur={props.onBlur}
                                 testId='quarantinedUntilDate'
                                 labelText={errors[ClinicalDetailsFields.ISOLATION_END_DATE] ? errors[ClinicalDetailsFields.ISOLATION_END_DATE].message : '* עד'}
+                                helperText={null}
                                 value={props.value}
                                 onChange={(newDate: Date) => {
                                     props.onChange(newDate);
