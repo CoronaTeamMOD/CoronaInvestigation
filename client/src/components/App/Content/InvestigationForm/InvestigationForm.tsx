@@ -92,7 +92,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             </ExposureAndFlightsContextProvider>
 
             <Snackbar open={showSnackbar} autoHideDuration={6000} onClose={() => setShowSnackbar(false)}>
-                <MuiAlert onClose={() => setShowSnackbar(false)} severity="warning" elevation={6} variant="filled">
+                <MuiAlert onClose={() => setShowSnackbar(false)} severity='warning' elevation={6} variant='filled'>
                     חלק מן השדות אינם תקניים, נא מלא אותם מחדש ונסה שוב.
                 </MuiAlert>
             </Snackbar>

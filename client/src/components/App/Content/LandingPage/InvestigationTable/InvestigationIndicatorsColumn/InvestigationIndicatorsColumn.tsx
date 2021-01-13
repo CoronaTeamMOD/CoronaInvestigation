@@ -1,6 +1,6 @@
 import React from 'react';
-import { Tooltip , Box } from '@material-ui/core';
 import { ReplyAll } from '@material-ui/icons';
+import { Tooltip , Box } from '@material-ui/core';
 
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 
@@ -15,7 +15,7 @@ const InvestigationIndicatorsColumn = (props: Props) => {
     const classes = useStyles();
 
     return (
-        <Box display='flex' alignItems='center' flexWrap="nowrap">
+        <Box display='flex' alignItems='center' flexWrap='nowrap'>
             <Box flex={1} marginX={0.5}>
                 {
                     isSelfInvestigated &&
@@ -48,7 +48,7 @@ interface Props {
     transferReason: string;
     isSelfInvestigated : boolean;
     selfInvestigationStatus : number;
-    selfInvestigationUpdateTime : Date
+    selfInvestigationUpdateTime : Date;
 };
 
 export default InvestigationIndicatorsColumn;

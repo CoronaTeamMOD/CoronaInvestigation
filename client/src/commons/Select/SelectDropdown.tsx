@@ -12,12 +12,12 @@ const SelectDropdown: React.FC<Props> = (props: Props): JSX.Element => {
         <Select
             MenuProps={{
                 anchorOrigin: {
-                    vertical: "bottom",
-                    horizontal: "left"
+                    vertical: 'bottom',
+                    horizontal: 'left'
                 },
                 transformOrigin: {
-                    vertical: "top",
-                    horizontal: "left"
+                    vertical: 'top',
+                    horizontal: 'left'
                 },
                 getContentAnchorEl: null
             }}

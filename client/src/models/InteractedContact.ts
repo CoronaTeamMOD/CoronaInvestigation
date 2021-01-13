@@ -1,7 +1,7 @@
 import Person from './Person';
+import {DBAddress} from './DBAddress';
 import ContactType from './enums/ContactType';
 import Occupations from './enums/Occupations';
-import {DBAddress} from "./DBAddress";
 
 interface InteractedContact extends Person {
     id: number;
