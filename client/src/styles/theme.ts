@@ -65,7 +65,8 @@ const theme = createMuiTheme({
         MuiSelect: {
             select: {
                 '&:focus': {
-                    borderRadius: '14px'
+                    borderRadius: '14px',
+                    backgroundColor: 'transperant'
                 }
             }
         },
