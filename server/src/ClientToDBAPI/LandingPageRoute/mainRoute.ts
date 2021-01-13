@@ -188,7 +188,14 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
         },
         ...desksFilter,
         ...timeRangeFilter
-    }
+    };
+
+    const lastUpdateDateFilter = {
+        lastUpdateTime: {
+            lessThan: new Date(Date.now() - (4 * 60 * 60 * 1000)).toLocaleString()
+        }
+    };
+
     const parameters = { userFilters, allInvesitgationsFilter: userFilters };
     investigationsStatisticsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 

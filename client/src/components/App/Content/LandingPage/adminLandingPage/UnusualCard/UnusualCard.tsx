@@ -12,13 +12,13 @@ import LoadingCard from '../LoadingCard/LoadingCard';
 import useStyles, { cardHeight, cardWidth } from './UnusualCardStyles';
 
 const unusualCompletesInvestigationsText = 'חקירות אשר הושלמו ללא מגעים';
-const unusualTreatmentInvestigationsText = 'חקירות בטיפול מעל 4 שעות';
+const unusualInProcessInvestigationsText = 'חקירות בטיפול מעל 4 שעות';
 
 const UnusualCard: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
     const hoverClasses = useHoverStyles();
 
-    const { onCompleteClick, onTreatmentClick, isLoading, unusualInvestigationsCount } = props;
+    const { onCompleteClick, onInProcessClick, isLoading, unusualInvestigationsCount } = props;
 
     return (
         <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.unusualCard}>
@@ -39,14 +39,14 @@ const UnusualCard: React.FC<Props> = (props: Props): JSX.Element => {
                 </div>
             </Tooltip>
             <Divider></Divider>
-            <Tooltip className={[classes.unusualTreatment, hoverClasses.whiteButtons].join(' ')} title={unusualTreatmentInvestigationsText}>
+            <Tooltip className={[classes.unusualInProcess, hoverClasses.whiteButtons].join(' ')} title={unusualInProcessInvestigationsText}>
                 <div>
                     <div className={classes.investigationAmount}>
                         <Typography className={classes.investigationNumberText}><b>{unusualInvestigationsCount}</b></Typography>
                         <Typography className={classes.investigationAmountText}><b>חקירות</b></Typography>
                     </div>
-                    <div onClick={() => onTreatmentClick(statusToFilterConvertor[FilterRulesDescription.UNALLOCATED])} className={classes.unusualInvestigations}>
-                        <Typography className={classes.unusualInvestigationsText}><b>{FilterRulesDescription.UNUSUAL_IN_TREATMENT}</b></Typography>
+                    <div onClick={() => onInProcessClick(statusToFilterConvertor[FilterRulesDescription.UNALLOCATED])} className={classes.unusualInvestigations}>
+                        <Typography className={classes.unusualInvestigationsText}><b>{FilterRulesDescription.UNUSUAL_IN_PROCESS}</b></Typography>
                         <NavigateBeforeIcon className={classes.navigateIcon} />
                     </div>
                 </div>
@@ -59,7 +59,7 @@ export default UnusualCard;
 
 interface Props {
     onCompleteClick: (infoFilter: FilterRulesVariables) => void;
-    onTreatmentClick: (infoFilter: FilterRulesVariables) => void;
+    onInProcessClick: (infoFilter: FilterRulesVariables) => void;
     isLoading: boolean;
     unusualInvestigationsCount: number;
 }

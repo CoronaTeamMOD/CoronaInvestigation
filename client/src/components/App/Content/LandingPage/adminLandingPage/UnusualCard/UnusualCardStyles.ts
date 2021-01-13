@@ -15,7 +15,7 @@ const useStyles = makeStyles({
         marginBottom:'1vw',
         marginTop:'1vw'
     },
-    unusualTreatment: {
+    unusualInProcess: {
         marginTop:'1vw'
     },
     investigationAmount: {
