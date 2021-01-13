@@ -39,8 +39,8 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
 
     const { checkedIndexedRows, allDesks, allCounties, fetchInvestigators,
             onDialogClose, tableRows, allGroupedInvestigations, onDeskChange,
-            onDeskGroupChange, onCountyChange, onCountyGroupChange, 
-            fetchTableData, fetchInvestigationsByGroupId, allocateInvestigationToInvestigator } = props;
+            onDeskGroupChange, onCountyChange, onCountyGroupChange, fetchTableData, 
+            fetchInvestigationsByGroupId, allocateInvestigationToInvestigator } = props;
 
     const { alertSuccess } = useCustomSwal();
     const onTransferSuccess = () => alertSuccess('החקירות הועברו בהצלחה');

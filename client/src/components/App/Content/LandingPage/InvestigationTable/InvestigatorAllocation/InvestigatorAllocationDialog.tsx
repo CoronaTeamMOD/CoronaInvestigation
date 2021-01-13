@@ -10,8 +10,8 @@ import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import useStyles from './InvestigatorAllocationDialogStyles';
 import InvestigatorsTable from './InvestigatorsTable/InvestigatorsTable';
-import TransferInvestigationDialogNote from '../InvestigationTableFooter/TransferInvestigationsDialogs/TransferInvestigationDialogNote';
 import { TableHeadersNames } from './InvestigatorsTable/InvestigatorsTableHeaders';
+import TransferInvestigationDialogNote from '../InvestigationTableFooter/TransferInvestigationsDialogs/TransferInvestigationDialogNote';
 
 const title = 'הקצאת חקירה';
 const unSelectedRow = '';
@@ -29,13 +29,13 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
 
     const shouldButtonDisabled: boolean = useMemo(() => {
         return investigatorToAllocateId === unSelectedRow;
-    }, [investigatorToAllocateId])
+    }, [investigatorToAllocateId]);
 
     useEffect(() => {
         if (investigatorToAllocateId !== unSelectedRow && allInvestigators){
             setSelectedInvestigator(allInvestigators.find(investigator => investigator.id === investigatorToAllocateId))
         }
-    }, [investigatorToAllocateId])
+    }, [investigatorToAllocateId]);
 
     const createAlertMessage = () => {
         let message = '<p>האם אתה בטוח שתרצה להעביר ';
@@ -46,19 +46,19 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
         }
         message += allInvestigators && `לחוקר <b>${selectedInvestigator ? get(selectedInvestigator.value, TableHeadersNames.userName) : ''}</b>?</p>`;
         return message;
-    }
+    };
 
     const closeDialog = () => {
         setInvestigatorToAllocateId(unSelectedRow);
         handleCloseDialog();
-    }
+    };
 
     const loadInvestigators = () => {
         setIsLoading(true);
         fetchInvestigators().then((investigators) => {
             setAllInvestigators(investigators)
         }).finally(() => setIsLoading(false))
-    }
+    };
 
     const handleClick = () => {
         const alertMessage = createAlertMessage();
@@ -76,7 +76,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
                     closeDialog();
                 }
             })
-    }
+    };
 
     return (
         <Dialog open={isOpen} fullWidth={true} maxWidth='md' classes={{ paper: classes.dialog }}

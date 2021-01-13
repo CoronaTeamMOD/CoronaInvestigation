@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { TextField, InputAdornment, IconButton } from '@material-ui/core';
 import { Close, Search } from '@material-ui/icons';
+import { TextField, InputAdornment, IconButton } from '@material-ui/core';
 
 import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
 

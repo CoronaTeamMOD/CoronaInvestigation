@@ -1,5 +1,6 @@
-import County from 'models/County';
 import Desk from 'models/Desk';
+import County from 'models/County';
+
 import { IndexedInvestigation } from '../InvestigationTablesHeaders';
 
 export interface InvestigationTableFooterParameters {

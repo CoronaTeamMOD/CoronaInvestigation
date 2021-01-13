@@ -3,9 +3,8 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import Desk from 'models/Desk';
-import County from 'models/County';
-
 import theme from 'styles/theme';
+import County from 'models/County';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
@@ -37,15 +36,14 @@ const toUniqueIdsAndEpidemiologyNumbers = (
 
 const useInvestigationTableFooter = (parameters: InvestigationTableFooterParameters): InvestigationTableFooterOutcome => {
 
-    const { setOpenDesksDialog, setOpenGroupedInvestigations,
-            checkedIndexedRows, onDialogClose, fetchTableData, onDeskChange, onDeskGroupChange,
+    const { setOpenDesksDialog, setOpenGroupedInvestigations,checkedIndexedRows, 
+            onDialogClose, fetchTableData, onDeskChange, onDeskGroupChange,
             onCountyChange, onCountyGroupChange } = parameters;
             
-    const [isInvestigatorAllocationFooterDialogOpen, setIsInvestigatorAllocationFooterDialogOpen] = useState<boolean>(false);
 
     const { alertError, alertWarning } = useCustomSwal();
-
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
+    const [isInvestigatorAllocationFooterDialogOpen, setIsInvestigatorAllocationFooterDialogOpen] = useState<boolean>(false);
 
     const handleOpenDesksDialog = () => setOpenDesksDialog(true);
 

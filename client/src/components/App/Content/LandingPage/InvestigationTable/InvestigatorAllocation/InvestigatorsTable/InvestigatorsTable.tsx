@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Tooltip, TextField} from '@material-ui/core'; 
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Tooltip} from '@material-ui/core'; 
 
 import User from 'models/User';
+import SearchBar from 'commons/SearchBar/SearchBar';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 import useStyles from './InvestigatorsTableStyles';
 import { TableHeadersNames, TableHeaders } from './InvestigatorsTableHeaders';
-import SearchBar from 'commons/SearchBar/SearchBar';
 
 const pauseInvestigationsCountTitle = 'חקירות הממתינות להשלמת מידע/העברה';
 const searchBarLabel = 'הכנס שם של חוקר...';
@@ -52,7 +52,7 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
             default: 
                 return get(investigator, cellName);
         }
-    }
+    };
 
     return (
         <>
