@@ -38,32 +38,32 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
     return (
         <div className={classes.content}>
             <Grid container spacing={5} className={classes.gridContainer}>
-                <Grid item xs={3}>
-                    <Typography color='textPrimary' className={classes.countyDisplayName}>
+                <Grid item xs={6} md={3}>
+                    <Typography color='textPrimary'>
                         <b>{'נפת ' + countyDisplayName}</b>
                     </Typography>
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={6} md={9}>
                     <LastUpdateMessage lastUpdated={lastUpdated} fetchInvestigationStatistics={fetchInvestigationStatistics}/>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={12} md={3}>
                     <DesksFilterCard
                         onUpdateButtonClicked={updateInvestigationFilterByDesks}
                     />
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={12} md={9}>
                     <InvestigationsInfo
                         isLoading={isLoading}
                         allInvestigationsCount={investigationsStatistics.allInvestigations}
                         investigationsStatistics={investigationsStatistics as InvesitgationInfoStatistics}
                         onInfoButtonClick={(infoFilter, filterType) => redirectToInvestigationTable(infoFilter, filterType)} />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={6} md={3}>
                     <TimeRangeFilterCard 
                         onUpdateButtonClicked={updateInvestigationFilterByTime}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={6} md={3}>
                     <UnallocatedCard
                         isLoading={isLoading}
                         onClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNALLOCATED)} 

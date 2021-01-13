@@ -23,7 +23,7 @@ const DesksFilterCard = (props: Props): JSX.Element => {
         <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.desksCard}>
             <CardContent>
                 <Box display='flex' flexDirection='column' className={classes.desksCardContent}>
-                    <Typography variant='h6' className={classes.cardTitle}>
+                    <Typography variant='h6'>
                         <b>הדסקים בהם הינך צופה</b>
                     </Typography>
                     <CustomCheckbox
