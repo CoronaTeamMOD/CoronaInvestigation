@@ -1,16 +1,16 @@
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Pagination } from '@material-ui/lab';
-import React, { useMemo, useState, useRef, useEffect } from 'react';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TableSortLabel, Button,
     useMediaQuery, Collapse, IconButton, Badge, Grid,
     Slide, Box, useTheme, Popover, Tooltip
 } from '@material-ui/core';
+import { Refresh, ArrowForward } from '@material-ui/icons';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Refresh, ArrowForward } from '@material-ui/icons';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
@@ -461,8 +461,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     onCountyGroupChange={changeGroupsCounty}
                     allGroupedInvestigations={allGroupedInvestigations}
                     fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
-                    isInvestigatorAllocationDialogOpen={isInvestigatorAllocationDialogOpen}
-                    setIsInvestigatorAllocationDialogOpen={setIsInvestigatorAllocationDialogOpen}
                     fetchInvestigators={getFilteredUsersOfCurrentCounty}
                     allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
                 />

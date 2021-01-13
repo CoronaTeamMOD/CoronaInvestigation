@@ -355,6 +355,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 result.data.forEach((user: any) => {
                     countyUsers.set(user.id, {
                         ...user,
+                        userName: user.username,
                         newInvestigationsCount: user.newInvestigationsCount,
                         activeInvestigationsCount: user.activeInvestigationsCount,
                         pauseInvestigationsCount: user.pauseInvestigationsCount
