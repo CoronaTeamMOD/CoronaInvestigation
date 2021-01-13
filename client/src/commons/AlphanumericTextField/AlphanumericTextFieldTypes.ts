@@ -1,4 +1,5 @@
 import React from 'react';
+import { TextFieldProps } from '@material-ui/core';
 
 export interface AlphanumericTextFieldProps<T> {
     testId?: string,
@@ -11,6 +12,7 @@ export interface AlphanumericTextFieldProps<T> {
     error? : boolean,
     className?: string,
     disabled?: boolean,
+    InputProps?: TextFieldProps['InputProps'];
 }
 
 type AlphanumericTextFieldType = <T>(props: AlphanumericTextFieldProps<T>) => JSX.Element;

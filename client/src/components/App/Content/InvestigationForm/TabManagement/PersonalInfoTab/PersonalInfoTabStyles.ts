@@ -122,7 +122,11 @@ const useStyles = makeStyles({
         width: '7vw'
     },
     heightendTextField: {
-        
+        height: '4vh',
+        marginTop: '0.25vh',
+        '@media screen and (max-height: 950px)': {
+            height: '6.25vh'
+        }
     }
 });
 
