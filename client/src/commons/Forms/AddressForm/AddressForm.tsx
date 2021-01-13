@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
+import React, { useEffect, useState } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { Grid, TextField, GridSize } from '@material-ui/core';
 
@@ -10,6 +10,8 @@ import StoreStateType from 'redux/storeStateType';
 import { getStreetByCity } from 'Utils/Address/AddressUtils';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+
+import useStyles from './AddressFormStyles';
 
 const CITY_LABEL = 'עיר';
 const STREET_LABEL = 'רחוב';
@@ -27,10 +29,12 @@ const AddressForm: React.FC<Props> = ({
     houseNumberField,
     houseGridSize = 1
 }) => {
+    const classes = useStyles();
+
     const methods = useFormContext();
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
-    const [streetsInCity, setStreetsInCity] = React.useState<Map<string, Street>>(new Map());
+    const [streetsInCity, setStreetsInCity] = useState<Map<string, Street>>(new Map());
 
     const cityWatcher = methods.watch(cityField.name);
 
@@ -154,6 +158,7 @@ const AddressForm: React.FC<Props> = ({
                         defaultValue={houseNumberField.defaultValue}
                         render={(props) => (
                             <AlphanumericTextField
+                                InputProps={{className: classes.heightendTextField}}
                                 testId={houseNumberField.testId || ''}
                                 name={houseNumberFieldNameSplitted[houseNumberFieldNameSplitted.length - 1]}
                                 value={props.value}
@@ -189,6 +194,7 @@ const AddressForm: React.FC<Props> = ({
                         defaultValue={floorField.defaultValue}
                         render={(props) => (
                             <AlphanumericTextField
+                                InputProps={{className: classes.heightendTextField}}
                                 testId={floorField.testId || ''}
                                 name={floorFieldNameSplitted[floorFieldNameSplitted.length - 1]}
                                 value={props.value}
