@@ -165,7 +165,7 @@ query GetUserById($userId: String!) {
 
 export const GET_ALL_INVESTIGATION_STATUS = gql`
 query allInvestigationStatuses {
-  allInvestigationStatuses {
+  allInvestigationStatuses(orderBy: DISPLAY_NAME_ASC) {
     nodes {
       id
       displayName
