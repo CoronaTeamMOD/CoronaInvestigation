@@ -14,7 +14,6 @@ export const useTooltipStyles = makeStyles(({
 
 const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     content: {
-        height: '80vh',
         backgroundColor: '#F3F6FB',
         display: 'flex',
         justifyContent: 'flex-start',
@@ -37,7 +36,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         marginBottom: '2vh'
     },
     welcomeMessage: {
-        fontSize: '4vh',
+        fontSize: '2vw',
     },
     errorAlertTitle: {
         fontFamily: 'Assistant'

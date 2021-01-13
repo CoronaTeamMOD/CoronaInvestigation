@@ -6,8 +6,6 @@ const useStyles = makeStyles({
         flexDirection: 'column',
         padding: '0 3vw',
     },
-    countyDisplayName: {
-    },
     gridContainer: {
         paddingTop: '3vh',
     }
