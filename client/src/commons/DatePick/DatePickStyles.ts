@@ -9,9 +9,6 @@ export const useStyles = makeStyles({
         '& .MuiSvgIcon-root': {
             fontSize: 'small'
         },
-        '& .MuiInputBase-input': {
-            fontSize: '1vw'
-        },
     },
     label: {
         width: '40vw',

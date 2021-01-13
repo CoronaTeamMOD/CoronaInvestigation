@@ -1,35 +1,23 @@
 import { makeStyles } from '@material-ui/styles';
 
-export const cardWidth = '14vw';
 export const cardHeight = '8vh';
 
 const useStyles = makeStyles({
     unallocatedCard: {
-        width: cardWidth,
         height: cardHeight,
         borderRadius: '1vw',
-        padding: '1vw',
+        padding: '1vh 1vw',
         cursor: 'pointer',
     },
     investigationAmount: {
+        fontSize: '1.2vw',
         display: 'flex',
     },
     investigationNumberText: {
-        fontSize: '1.2vw',
         color: '#F95959',
         marginRight: '0.8vw',
     },
     investigationAmountText: {
-        fontSize: '1.2vw',
-    },
-    unallocatedInvestigations: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '13vw',
-    },
-    unallocatedInvestigationsText: {
-        fontSize: '1.2vw',
     },
     navigateIcon: {
         backgroundColor: 'WhiteSmoke',

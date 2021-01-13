@@ -26,12 +26,8 @@ const useStyles = makeStyles({
         flip: false,
     },
     investigationAmountText: {
-        fontSize: '1.5vw',
         marginLeft: '0.3vw',
         flip: false
-    },
-    allInvestigationsText: {
-        fontSize: '1.3vw',
     },
     navigateIcon: {
         backgroundColor: 'WhiteSmoke',

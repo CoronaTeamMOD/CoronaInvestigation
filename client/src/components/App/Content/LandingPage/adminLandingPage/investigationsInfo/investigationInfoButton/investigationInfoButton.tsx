@@ -19,8 +19,8 @@ const InvestigationInfoButton: React.FC<Props> = (props: Props): JSX.Element => 
                 size='large'
             >
                 <div>
-                    <Typography className={classes.amountOfInvestigations}><b>{amountOfInvestigations}</b></Typography>
-                    <Typography className={classes.text}><b>{text}</b></Typography>
+                    <Typography><b>{amountOfInvestigations}</b></Typography>
+                    <Typography><b>{text}</b></Typography>
                 </div>
             </Button>
         </>
