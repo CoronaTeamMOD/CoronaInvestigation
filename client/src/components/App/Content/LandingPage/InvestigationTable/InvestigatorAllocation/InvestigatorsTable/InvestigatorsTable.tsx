@@ -15,8 +15,8 @@ const searchBarLabel = 'הכנס שם של חוקר...';
 const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSelectedRow }) => {
 
     const classes = useStyles();
+    
     const [investigatorInput, setInvestigatorInput] = useState<string>('');
-    const [investigator, setInvestigator] = useState<User | null>(null);
     const [filteredInvestigators, setFilteredInvestigators] = useState<User[]>(investigators);
 
     useEffect(() => {
@@ -60,6 +60,7 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
             <SearchBar
                 searchBarLabel={searchBarLabel}
                 onClick={(value: string) => setInvestigatorInput(value)}
+                onChange={(value: string) => setInvestigatorInput(value)}
             />
             <TableContainer component={Paper}>
                 <Table stickyHeader>

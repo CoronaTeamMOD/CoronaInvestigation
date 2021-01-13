@@ -10,7 +10,7 @@ const searchBarError = 'יש להכניס רק אותיות ומספרים';
 
 const SearchBar: React.FC<Props> = (props: Props) => {
 
-    const { searchBarLabel, onClick } = props;
+    const { searchBarLabel, onClick, onChange } = props;
 
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [isQueryValid, setIsQueryValid] = useState<boolean>(true);
@@ -21,6 +21,7 @@ const SearchBar: React.FC<Props> = (props: Props) => {
         if (stringAlphanum.isValidSync(value)) {
             setSearchQuery(value);
             !isQueryValid && setIsQueryValid(true);
+            onChange !== undefined && onChange(value);
         } else {
             setIsQueryValid(false);
         }
@@ -71,6 +72,7 @@ const SearchBar: React.FC<Props> = (props: Props) => {
 interface Props {
     searchBarLabel: string;
     onClick: (value: string) => void;
+    onChange?: (value: string) => void;
 }
 
 export default SearchBar;
