@@ -48,6 +48,12 @@ const ExposureForm = (props: Props) => {
 	}, [exposureAndFlightsData.exposureSource]);
 
 	useEffect(() => {
+		if(exposureSourceSearchString === "") {
+			setOptionalCovidPatients([]);
+		}
+	}, [exposureSourceSearchString])
+
+	useEffect(() => {
 		setValue(`exposures[${index}].${fieldsNames.placeType}`, exposureAndFlightsData[fieldsNames.placeType])
 		setValue(`exposures[${index}].${fieldsNames.placeSubType}`, exposureAndFlightsData[fieldsNames.placeSubType])
 	}, []);
@@ -97,7 +103,7 @@ const ExposureForm = (props: Props) => {
 				/>
 			</FormRowWithInput>
 
-			{((isOptionalPatientsLoading || optionalCovidPatients?.length > 0) && exposureSourceSearchString !== '') && (
+			{(isOptionalPatientsLoading || optionalCovidPatients?.length > 0) && (
 				<FormRowWithInput fieldName=''>
 					<div className={classes.optionalExposureSources}>
 						{isOptionalPatientsLoading ? (
