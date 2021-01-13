@@ -93,6 +93,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
         methods.setValue(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, '');
         methods.setValue(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, '');
         methods.setValue(PersonalInfoDataContextFields.ROLE, null);
+        methods.clearErrors(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO);
         if (newOccupation === Occupations.EDUCATION_SYSTEM && personalInfoState.educationOccupationCity) {
             getEducationSubOccupations(personalInfoState.educationOccupationCity);
         }
@@ -669,23 +670,21 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                         :
                                         <Grid item xs={2}>
                                             <Collapse in={occupation !== Occupations.UNEMPLOYED}>
-                                                {
-                                                    <Controller
-                                                        name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
-                                                        control={methods.control}
-                                                        render={(props) => (
-                                                            <AlphanumericTextField
-                                                                testId='institutionName'
-                                                                name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
-                                                                value={props.value}
-                                                                onChange={(newValue: string) => props.onChange(newValue)}
-                                                                onBlur={props.onBlur}
-                                                                placeholder={subOccupationsPlaceHolderByOccupation()}
-                                                                label={subOccupationsLabelByOccupation()}
-                                                            />
-                                                        )}
-                                                    />
-                                                }
+                                                <Controller
+                                                    name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
+                                                    control={methods.control}
+                                                    render={(props) => (
+                                                        <AlphanumericTextField
+                                                            testId='institutionName'
+                                                            name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
+                                                            value={props.value}
+                                                            onChange={(newValue: string) => props.onChange(newValue)}
+                                                            onBlur={props.onBlur}
+                                                            placeholder={subOccupationsPlaceHolderByOccupation()}
+                                                            label={subOccupationsLabelByOccupation()}
+                                                        />
+                                                    )}
+                                                />
                                             </Collapse>
                                         </Grid>
                             }
