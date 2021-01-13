@@ -37,10 +37,10 @@ const multipleAssignments = 'הקצאות';
 
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
 
-    const { checkedIndexedRows, allDesks, allCounties, fetchInvestigators, isInvestigatorAllocationDialogOpen,
+    const { checkedIndexedRows, allDesks, allCounties, fetchInvestigators,
             onDialogClose, tableRows, allGroupedInvestigations, onDeskChange,
             onDeskGroupChange, onCountyChange, onCountyGroupChange, 
-            fetchTableData, fetchInvestigationsByGroupId, setIsInvestigatorAllocationDialogOpen, allocateInvestigationToInvestigator } = props;
+            fetchTableData, fetchInvestigationsByGroupId, allocateInvestigationToInvestigator } = props;
 
     const { alertSuccess } = useCustomSwal();
     const onTransferSuccess = () => alertSuccess('החקירות הועברו בהצלחה');
@@ -55,15 +55,15 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         handleCloseDesksDialog,
         handleOpenGroupedInvestigations,
         handleCloseGroupedInvestigations,
-        handleOpenInvesigatorAllocationDialog,
-        handleCloseInvesigatorAllocationDialog,
+        isInvestigatorAllocationFooterDialogOpen,
+        handleOpenInvesigatorAllocationFooterDialog,
+        handleCloseInvesigatorAllocationFooterDialog,
         handleConfirmDesksDialog,
         handleConfirmCountiesDialog,
         handleDisbandGroupedInvestigations
     } = useInvestigationTableFooter({
         setOpenDesksDialog,
         setOpenGroupedInvestigations,
-        setIsInvestigatorAllocationDialogOpen,
         checkedIndexedRows,
         fetchTableData,
         onDialogClose,
@@ -134,7 +134,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
             icon: PersonPin,
             displayTitle: `${isSingleInvestigation ? singleAssignment : multipleAssignments} לחוקר`,
             errorMessage: '',
-            onClick: handleOpenInvesigatorAllocationDialog
+            onClick: handleOpenInvesigatorAllocationFooterDialog
         }
     ]
 
@@ -167,8 +167,8 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                 onSuccess={onTransferSuccess}
             />
             <InvestigatorAllocationDialog
-                isOpen={isInvestigatorAllocationDialogOpen}
-                handleCloseDialog={handleCloseInvesigatorAllocationDialog}
+                isOpen={isInvestigatorAllocationFooterDialogOpen}
+                handleCloseDialog={handleCloseInvesigatorAllocationFooterDialog}
                 fetchInvestigators={fetchInvestigators}
                 allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
                 groupIds={trimmedGroup.uniqueGroupIds}
@@ -197,13 +197,11 @@ interface Props {
     fetchInvestigators: () => Promise<InvestigatorOption[]>;
     tableRows: InvestigationTableRow[];
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
-    isInvestigatorAllocationDialogOpen: boolean;
     fetchTableData: () => void;
     fetchInvestigationsByGroupId: (groupId: string) => void;
     onDeskGroupChange: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
     onDeskChange: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
     onCountyGroupChange: (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => void;
     onCountyChange: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => void;
-    setIsInvestigatorAllocationDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
     allocateInvestigationToInvestigator: (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => void;
 }

@@ -1,9 +1,10 @@
+import axios from 'axios';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import Desk from 'models/Desk';
 import County from 'models/County';
 
-import axios from 'axios';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
@@ -36,9 +37,11 @@ const toUniqueIdsAndEpidemiologyNumbers = (
 
 const useInvestigationTableFooter = (parameters: InvestigationTableFooterParameters): InvestigationTableFooterOutcome => {
 
-    const { setOpenDesksDialog, setOpenGroupedInvestigations, setIsInvestigatorAllocationDialogOpen,
+    const { setOpenDesksDialog, setOpenGroupedInvestigations,
             checkedIndexedRows, onDialogClose, fetchTableData, onDeskChange, onDeskGroupChange,
             onCountyChange, onCountyGroupChange } = parameters;
+            
+    const [isInvestigatorAllocationFooterDialogOpen, setIsInvestigatorAllocationFooterDialogOpen] = useState<boolean>(false);
 
     const { alertError, alertWarning } = useCustomSwal();
 
@@ -51,10 +54,10 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         onDialogClose();
     }
 
-    const handleOpenInvesigatorAllocationDialog = () => setIsInvestigatorAllocationDialogOpen(true);
+    const handleOpenInvesigatorAllocationFooterDialog = () => setIsInvestigatorAllocationFooterDialogOpen(true);
 
-    const handleCloseInvesigatorAllocationDialog = () => {
-        setIsInvestigatorAllocationDialogOpen(false);
+    const handleCloseInvesigatorAllocationFooterDialog = () => {
+        setIsInvestigatorAllocationFooterDialogOpen(false);
         onDialogClose();
     }
 
@@ -102,8 +105,10 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         fetchTableData();
     }
 
-    const handleOpenGroupedInvestigations = () => setOpenGroupedInvestigations(true);
-
+    const handleOpenGroupedInvestigations = () => {
+        setOpenGroupedInvestigations(true);
+    }
+    
     const handleCloseGroupedInvestigations = () => {
         setOpenGroupedInvestigations(false);
         onDialogClose();
@@ -146,8 +151,9 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     return {
         handleOpenDesksDialog,
         handleCloseDesksDialog,
-        handleOpenInvesigatorAllocationDialog,
-        handleCloseInvesigatorAllocationDialog,
+        isInvestigatorAllocationFooterDialogOpen,
+        handleOpenInvesigatorAllocationFooterDialog,
+        handleCloseInvesigatorAllocationFooterDialog,
         handleOpenGroupedInvestigations,
         handleCloseGroupedInvestigations,
         handleConfirmDesksDialog,

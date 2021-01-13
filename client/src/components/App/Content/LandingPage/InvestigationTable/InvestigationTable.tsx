@@ -461,8 +461,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     onCountyGroupChange={changeGroupsCounty}
                     allGroupedInvestigations={allGroupedInvestigations}
                     fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
-                    isInvestigatorAllocationDialogOpen={isInvestigatorAllocationDialogOpen}
-                    setIsInvestigatorAllocationDialogOpen={setIsInvestigatorAllocationDialogOpen}
                     fetchInvestigators={getFilteredUsersOfCurrentCounty}
                     allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
                 />
