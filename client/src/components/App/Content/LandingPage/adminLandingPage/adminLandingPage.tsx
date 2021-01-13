@@ -8,6 +8,7 @@ import InvestigationStatistics, { InvesitgationInfoStatistics } from 'models/Inv
 import useStyles from './adminLandingPageStyles';
 import useAdminLandingPage from './useAdminLandingPage';
 import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
+import UnusualCard from './UnusualCard/UnusualCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import LastUpdateMessage from './LastUpdateMessage/LastUpdateMessage';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
@@ -68,6 +69,14 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                         isLoading={isLoading}
                         onClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNALLOCATED)} 
                         unallocatedInvestigationsCount={investigationsStatistics.unallocatedInvestigations}
+                    />
+                </Grid>
+                <Grid item xs={3}>
+                    <UnusualCard
+                        isLoading={isLoading}
+                        onCompleteClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNUSUAL_COMPLETED)} 
+                        onTreatmentClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNUSUAL_IN_TREATMENT)} 
+                        unusualInvestigationsCount={investigationsStatistics.unallocatedInvestigations}
                     />
                 </Grid>
             </Grid>
