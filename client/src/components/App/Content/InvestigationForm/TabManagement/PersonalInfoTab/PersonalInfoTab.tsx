@@ -465,7 +465,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                     control={methods.control}
                                     render={(props: any) => (
                                         <AlphanumericTextField
-                                            className={classes.centerLabel}
                                             InputProps={{className: classes.heightendTextField}}
                                             testId='personalDetailsHouseNumber'
                                             name={PersonalInfoDataContextFields.HOUSE_NUMBER}
@@ -484,7 +483,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                     control={methods.control}
                                     render={(props: any) => (
                                         <AlphanumericTextField
-                                            className={classes.centerLabel}
                                             InputProps={{className: classes.heightendTextField}}
                                             testId='personalDetailsFloor'
                                             name={PersonalInfoDataContextFields.FLOOR}
