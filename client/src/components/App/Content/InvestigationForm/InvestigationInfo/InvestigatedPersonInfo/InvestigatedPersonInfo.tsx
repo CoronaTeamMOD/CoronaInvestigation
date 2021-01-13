@@ -68,8 +68,14 @@ const InvestigatedPersonInfo = (props: Props) => {
         }
     }, [investigationStatus.subStatus]);
 
+    const prependInProcess = () => {
+        let newSubStatuses = subStatuses;
+        newSubStatuses.unshift(inProcess);
+        return newSubStatuses;
+    }
+
     const updatedSubStatuses = useMemo(() =>
-        investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ? subStatuses.concat(inProcess) : subStatuses,
+        investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ? prependInProcess() : subStatuses,
         [subStatuses, investigationStatus]);
 
     const permittedStatuses = statuses.filter(status => status.id !== InvestigationMainStatusCodes.DONE);
