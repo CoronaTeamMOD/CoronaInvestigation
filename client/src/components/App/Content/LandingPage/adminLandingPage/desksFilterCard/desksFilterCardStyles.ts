@@ -11,9 +11,6 @@ const useStyles = makeStyles({
     desksCardContent: {
         height: '30vh',
     },
-    cardTitle: {
-
-    },
     desksCardActions: {
         direction: 'ltr', 
         paddingLeft: '1vw',
