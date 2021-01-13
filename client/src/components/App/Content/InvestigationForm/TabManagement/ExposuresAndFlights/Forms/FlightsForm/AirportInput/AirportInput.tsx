@@ -53,7 +53,7 @@ const AirportInput = (props: any) => {
         if (countryError) {
             return countryError.message;
         }
-        return 'מדינה';
+        return 'מדינה*';
     };
 
     const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
@@ -119,9 +119,10 @@ const AirportInput = (props: any) => {
                                 {...props}
                                 onChange={(value) => {
                                     props.onChange(value);
+                                    handleChangeExposureDataAndFlightsField(airportFieldName, value);
                                 }}
                                 placeholder='שדה תעופה'
-                                label='שדה תעופה'
+                                label='שדה תעופה*'
                                 className={classes.airportTextField}
                             />
                         );

@@ -78,10 +78,13 @@ export const isConfirmedExposureInvalid = (exposure: Exposure) =>
     (!exposure.exposureAddress || !exposure.exposureAddress.place_id)
 
 export const isFlightInvalid = (exposure: Exposure) =>
-    !exposure.flightDestinationCity || 
+    !exposure.flightOriginAirport || 
+    !exposure.flightOriginCountry ||
+    !exposure.flightDestinationAirport ||
     !exposure.flightDestinationCountry || 
-    !exposure.flightOriginCity || 
-    !exposure.flightOriginCountry
+    !exposure.flightStartDate ||
+    !exposure.flightEndDate ||
+    !exposure.flightNum
 
 const initialContextValues: ExposureAndFlightsDetailsAndSet = {
     exposureAndFlightsData: initialExposuresAndFlightsData,
