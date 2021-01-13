@@ -1,4 +1,4 @@
-import Desk from "./Desk";
+import Desk from './Desk';
 
 interface FilterTableOption {
     mainStatus: string[];

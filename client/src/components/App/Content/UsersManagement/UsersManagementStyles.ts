@@ -1,5 +1,6 @@
-import { makeStyles } from '@material-ui/styles';
 import { Theme } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
+
 import { primaryBackgroundColor } from 'styles/theme';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         '&$active': {
             '&& $icon': {
                 color: theme.palette.primary.dark,
-                fontSize: "x-large"
+                fontSize: 'x-large'
             }
         }
     },

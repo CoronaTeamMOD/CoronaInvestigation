@@ -88,7 +88,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         '&$active': {
             '&& $icon': {
                 color: theme.palette.primary.dark,
-                fontSize: "x-large"
+                fontSize: 'x-large'
             }
         }
     },
