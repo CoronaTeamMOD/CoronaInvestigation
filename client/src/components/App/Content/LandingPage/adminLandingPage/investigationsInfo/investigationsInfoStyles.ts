@@ -1,7 +1,5 @@
 import { makeStyles } from '@material-ui/styles';
 
-import theme from 'styles/theme';
-
 export const cardWidth = '67vw';
 export const cardHeight = '35vh';
 

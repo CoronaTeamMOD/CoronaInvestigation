@@ -10,7 +10,7 @@ import { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 
 import useHoverStyles from '../useHoverStyles';
 import LoadingCard from '../LoadingCard/LoadingCard';
-import useStyles, { cardWidth, cardHeight } from './investigationsInfoStyles';
+import useStyles, { cardHeight } from './investigationsInfoStyles';
 import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart';
 import InvestigationInfoButton from './investigationInfoButton/investigationInfoButton';
 

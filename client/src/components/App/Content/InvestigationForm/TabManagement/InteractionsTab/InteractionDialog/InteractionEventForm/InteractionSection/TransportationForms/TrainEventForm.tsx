@@ -2,7 +2,7 @@ import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import { Grid, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 
 import City from 'models/City';
 import useFormStyles from 'styles/formStyles';

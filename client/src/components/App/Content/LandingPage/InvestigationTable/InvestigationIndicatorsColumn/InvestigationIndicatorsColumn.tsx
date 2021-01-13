@@ -4,15 +4,12 @@ import { Tooltip , Box } from '@material-ui/core';
 
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 
-import useStyles from './InvestigationIndicatorsColumnStyles';
 import SelfInvestigationIcon from './SelfInvestigationIcon/SelfInvestigationIcon';
 
 const complexInvestigationMessage = 'חקירה מורכבת';
 
 const InvestigationIndicatorsColumn = (props: Props) => {
     const { isComplex, wasInvestigationTransferred, transferReason , isSelfInvestigated ,selfInvestigationStatus, selfInvestigationUpdateTime} = props;
-
-    const classes = useStyles();
 
     return (
         <Box display='flex' alignItems='center' flexWrap='nowrap'>
