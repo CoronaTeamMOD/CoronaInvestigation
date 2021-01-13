@@ -25,20 +25,16 @@ import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
-import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
-import { allTimeRangeId } from '../adminLandingPage/useAdminLandingPage';
 import { filterCreators } from './FilterCreators';
+import { allTimeRangeId } from '../adminLandingPage/useAdminLandingPage';
 import { defaultOrderBy, rowsPerPage, defaultPage } from './InvestigationTable';
 import {
-    TableHeadersNames,
-    IndexedInvestigationData,
-    investigatorIdPropertyName,
-    TableKeys,
-    HiddenTableKeys
+    TableHeadersNames, IndexedInvestigationData, investigatorIdPropertyName, TableKeys, HiddenTableKeys
 } from './InvestigationTablesHeaders';
 import { DeskFilter, HistoryState, StatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
 
@@ -812,7 +808,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const hasATestDate = Boolean(currentRow?.coronaTestDate);
         const isLastOfDate = (getFormattedDate(currentRow?.coronaTestDate) !== getFormattedDate(Boolean(nextRow) ?
             nextRow.coronaTestDate :
-            "9999/12/31"));
+            '9999/12/31'));
 
         return ((isDefaultOrder && !isLoading) &&
             isNotLastRow &&

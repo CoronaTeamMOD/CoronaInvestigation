@@ -54,7 +54,7 @@ const ExposureForm = (props: Props) => {
 
 	const getDateLabel = (dateError: { message?: string, type?: string }) => {
 		if (dateError) {
-			if (dateError.type === "typeError") {
+			if (dateError.type === 'typeError') {
 				return 'תאריך לא ולידי'
 			}
 			return dateError.message;
@@ -97,7 +97,7 @@ const ExposureForm = (props: Props) => {
 				/>
 			</FormRowWithInput>
 
-			{((isOptionalPatientsLoading || optionalCovidPatients?.length > 0) && exposureSourceSearchString !== "") && (
+			{((isOptionalPatientsLoading || optionalCovidPatients?.length > 0) && exposureSourceSearchString !== '') && (
 				<FormRowWithInput fieldName=''>
 					<div className={classes.optionalExposureSources}>
 						{isOptionalPatientsLoading ? (

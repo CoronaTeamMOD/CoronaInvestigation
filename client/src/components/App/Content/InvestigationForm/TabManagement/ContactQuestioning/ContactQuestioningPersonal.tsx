@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
 import { differenceInYears } from 'date-fns';
+import React, { useState, useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Avatar, Grid, Typography } from '@material-ui/core';
 
@@ -64,15 +64,15 @@ const ContactQuestioningPersonal: React.FC<Props> = (
 
     return (
         <Grid item xs={4}>
-            <Grid container direction="column" spacing={4}>
-                <Grid container item direction="row" alignItems="center">
+            <Grid container direction='column' spacing={4}>
+                <Grid container item direction='row' alignItems='center'>
                     <Avatar className={classes.avatar}>1</Avatar>
                     <Typography>
                         <b>פרטים אישיים נוספים</b>
                     </Typography>
                 </Grid>
                 <Grid item container alignItems='center'>
-                    <FieldName fieldName="תעודה מזהה:" />
+                    <FieldName fieldName='תעודה מזהה:' />
                     <Grid item xs={3}>
                         <Controller
                             control={control}
@@ -82,7 +82,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                 return (
                                     <Toggle
                                         disabled={isFieldDisabled}
-                                        test-id="identificationType"
+                                        test-id='identificationType'
                                         firstOption={IdentificationTypes.ID}
                                         secondOption={IdentificationTypes.PASSPORT}
                                         value={isPassport}
@@ -101,7 +101,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                             }}
                         />
                     </Grid>
-                    <FieldName fieldName="מספר תעודה:" />
+                    <FieldName fieldName='מספר תעודה:' />
                     <Grid item xs={3}>
                         <Controller
                             control={control}
@@ -120,7 +120,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                         onChange={(newValue: string) => {
                                             props.onChange(newValue);
                                         }}
-                                        placeholder="מספר תעודה"
+                                        placeholder='מספר תעודה'
                                         className={classes.idTextField}
                                     />
                                 );
@@ -128,8 +128,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                         />
                     </Grid>
                 </Grid>
-                <Grid container item alignItems="center">
-                    <FieldName xs={5} fieldName="תאריך לידה:" />
+                <Grid container item alignItems='center'>
+                    <FieldName xs={5} fieldName='תאריך לידה:' />
                     <Controller
                         control={control}
                         name={`form[${index}].${InteractedContactFields.BIRTH_DATE}`}
@@ -139,7 +139,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                 <DatePick
                                     {...props}
                                     disabled={isFieldDisabled}
-                                    testId="contactBirthDate"
+                                    testId='contactBirthDate'
                                     maxDate={new Date()}
                                     useBigCalender={false}
                                     onChange={(newDate: Date) => {
@@ -152,14 +152,14 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                     />
                 </Grid>
                 <Grid container item>
-                    <FieldName xs={5} fieldName="גיל:" />
+                    <FieldName xs={5} fieldName='גיל:' />
                     <AlphanumericTextField
                         disabled={true}
-                        name="age"
-                        testId="contactAge"
+                        name='age'
+                        testId='contactAge'
                         value={age}
                         onChange={() => {}}
-                        placeholder="בחר תאריך לידה"
+                        placeholder='בחר תאריך לידה'
                     />
                 </Grid>
                 <Grid container item>
@@ -173,8 +173,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                 <NumericTextField
                                     {...props}
                                     disabled={isFieldDisabled}
-                                    testId="phoneNumber"
-                                    placeholder="הכנס טלפון:"
+                                    testId='phoneNumber'
+                                    placeholder='הכנס טלפון:'
                                 />
                             );
                         }}
@@ -191,11 +191,11 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                 <NumericTextField
                                     {...props}
                                     disabled={isFieldDisabled}
-                                    testId="additionalPhoneNumber"
+                                    testId='additionalPhoneNumber'
                                     onChange={(newValue: string) => {
                                         props.onChange(newValue);
                                     }}
-                                    placeholder="הכנס טלפון נוסף:"
+                                    placeholder='הכנס טלפון נוסף:'
                                 />
                             );
                         }}

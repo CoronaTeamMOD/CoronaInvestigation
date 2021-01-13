@@ -24,7 +24,7 @@ const TabPanel = (props: TabPanelProps) => {
 
     return (
         <div
-            role="tabpanel"
+            role='tabpanel'
             hidden={value !== index}
             id={`wrapped-tabpanel-${index}`}
             {...other}
@@ -95,7 +95,7 @@ interface Props {
     onClose: () => void;
     onDeskTransfer: (updatedDesk: Desk, transferReason: string) => void;
     onCountyTransfer: (updatedCounty: County, transferReason: string) => void;
-    onSuccess: () => Promise<SweetAlertResult<any>>
+    onSuccess: () => Promise<SweetAlertResult<any>>;
 }
 
 export default TransferInvestigationTabs;

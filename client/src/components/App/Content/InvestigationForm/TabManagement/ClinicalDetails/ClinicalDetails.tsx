@@ -1,41 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import { Grid } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import { Autocomplete } from '@material-ui/lab';
+import React, { useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers';
-import { Grid, TextField } from '@material-ui/core';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
 
-import City from 'models/City';
-import Street from 'models/Street';
 import Gender from 'models/enums/Gender';
 import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
-import {getStreetByCity} from 'Utils/Address/AddressUtils';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
-
 import AddressForm, { AddressFormFields } from 'commons/Forms/AddressForm/AddressForm';
 
 import { useStyles } from './ClinicalDetailsStyles';
 import IsolationDatesFields from './IsolationDatesFields';
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
 import IsolationProblemFields from './IsolationProblemFields';
-import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields/SymptomsFields';
 import useClinicalDetails, { initialClinicalDetails } from './useClinicalDetails';
+import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields/SymptomsFields';
 import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
 
 const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles();
 
-    const validationDate : Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
+    const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
 
     const methods = useForm({
         mode: 'all',
         defaultValues: initialClinicalDetails,
         resolver: yupResolver(ClinicalDetailsSchema(validationDate))
     });
-    
+
     const [symptoms, setSymptoms] = useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = useState<string[]>([]);
     const [didSymptomsDateChangeOccur, setDidSymptomsDateChangeOccur] = useState<boolean>(false);
@@ -88,19 +83,19 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
     const addressFormFields: AddressFormFields = {
         cityField: {
-            name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`, 
+            name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`,
             testId: 'currentQuarantineCity'
         },
         streetField: {
-            name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, 
+            name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`,
             testId: 'currentQuarantineStreet'
         },
         houseNumberField: {
-            name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`, 
+            name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`,
             testId: 'currentQuarantineHomeNumber'
         },
         floorField: {
-            name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`, 
+            name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`,
             testId: 'currentQuarantineFloor'
         }
     }
@@ -169,10 +164,10 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                 <form id={`form-${id}`} onSubmit={(e) => saveForm(e)}>
                     <Grid spacing={2} container>
                         <Grid item xs={12}>
-                            <IsolationDatesFields 
-                                classes={classes} 
-                                watchIsInIsolation={watchIsInIsolation} 
-                                watchIsolationStartDate={watchIsolationStartDate} 
+                            <IsolationDatesFields
+                                classes={classes}
+                                watchIsInIsolation={watchIsInIsolation}
+                                watchIsolationStartDate={watchIsolationStartDate}
                                 watchIsolationEndDate={watchIsolationEndDate}
                                 isolationSources={isolationSources}
                             />
@@ -213,7 +208,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                         </Grid>
                         <Grid item xs={12} className={patientGender === Gender.MALE ? classes.hiddenIsPregnant : ''}>
                             <FormRowWithInput fieldName='האם בהריון:'>
-                            <Grid item xs={2}>
+                                <Grid item xs={2}>
                                     <Controller
                                         name={ClinicalDetailsFields.IS_PREGNANT}
                                         control={methods.control}
