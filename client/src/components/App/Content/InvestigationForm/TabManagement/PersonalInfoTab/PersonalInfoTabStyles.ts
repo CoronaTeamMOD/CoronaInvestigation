@@ -120,8 +120,10 @@ const useStyles = makeStyles({
     },
     gradeInput: {
         width: '7vw'
+    },
+    heightendTextField: {
+        
     }
-
 });
 
 export default useStyles;

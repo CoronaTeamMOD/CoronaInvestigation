@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
-import { isIdValid , isPassportValid, idLength, visaLength, idBasicValidation } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { isIdValid , isPassportValid, idLength, idBasicValidation } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 const ContactIdValidationSchema = yup
   .string()
