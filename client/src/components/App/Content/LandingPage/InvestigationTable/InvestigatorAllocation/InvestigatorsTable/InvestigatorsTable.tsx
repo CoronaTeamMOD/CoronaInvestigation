@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Autocomplete } from '@material-ui/lab';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Tooltip, TextField} from '@material-ui/core'; 
 
 import User from 'models/User';
@@ -15,7 +14,7 @@ const searchBarLabel = 'הכנס שם של חוקר...';
 const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSelectedRow }) => {
 
     const classes = useStyles();
-    
+
     const [investigatorInput, setInvestigatorInput] = useState<string>('');
     const [filteredInvestigators, setFilteredInvestigators] = useState<User[]>(investigators);
 
@@ -81,11 +80,11 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
                     </TableHead>
                     <TableBody>
                         {
-                            filteredInvestigators.map((investigator: User, index: number) => (
+                            filteredInvestigators.map((investigator: User) => (
                                 <TableRow 
                                     key={investigator.id}
-                                    selected={selectedRow === index}
-                                    onClick={() => setSelectedRow(index)}
+                                    selected={selectedRow === investigator.id}
+                                    onClick={() => setSelectedRow(investigator.id)}
                                     classes={{ selected: classes.selected }}
                                     className={classes.tableRow}
                                     >
@@ -108,8 +107,8 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
 
 interface Props {
     investigators: User[];
-    selectedRow: number;
-    setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
+    selectedRow: string;
+    setSelectedRow: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default InvestigatorsTable;
