@@ -1,5 +1,6 @@
-import React from 'react';
-import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Tooltip} from '@material-ui/core'; 
+import React, { useState } from 'react';
+import { Autocomplete } from '@material-ui/lab';
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Tooltip, TextField} from '@material-ui/core'; 
 
 import User from 'models/User';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
@@ -12,6 +13,8 @@ const pauseInvestigationsCountTitle = 'חקירות הממתינות להשלמ�
 const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSelectedRow }) => {
 
     const classes = useStyles();
+    const [investigatorInput, setInvestigatorInput] = useState<string>('');
+    const [investigator, setInvestigator] = useState<User | null>(null);
 
     const getTableCell = (investigator: User, cellName: string) => {
         switch(cellName) {
@@ -37,46 +40,68 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
     }
 
     return (
-        <TableContainer component={Paper}>
-            <Table stickyHeader>
-                <TableHead>
-                    <TableRow>
-                        {
-                            Object.keys(TableHeaders).map((cellName: string) => {
-                                return (
-                                    <TableCell key={cellName}>
-                                        <Tooltip title={cellName === TableHeadersNames.pauseInvestigationsCount ? pauseInvestigationsCountTitle: ''}>
-                                            <b>{get(TableHeaders, cellName)}</b>
-                                        </Tooltip>
-                                    </TableCell>
-                                )
-                            })
-                        }
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {
-                        investigators.map((investigator: User, index: number) => (
-                            <TableRow 
-                                key={investigator.id}
-                                selected={selectedRow === index}
-                                onClick={() => setSelectedRow(index)}
-                                classes={{ selected: classes.selected }}
-                                className={classes.tableRow}
-                                >
-                                {
-                                    Object.keys(TableHeaders).map((cellHeader: string) => (
-                                        <TableCell key={cellHeader}>
-                                            { getTableCell(investigator, cellHeader.toLocaleLowerCase()) }
+        <>
+            <Autocomplete
+                options={investigators.map(investigator => ({ id: investigator.id, userName: investigator.userName }))}
+                getOptionLabel={(option) => option.userName ? option.userName : ''}
+                //inputValue={investigatorInput}
+                //value={investigator.id}
+                // onChange={(event, selectedInvestigator) => {
+                //     setInvestigator(selectedInvestigator)
+                // }}
+                // onInputChange={(event, newInvestigatorInput) => {
+                //     if (event?.type !== 'blur') {
+                //         setInvestigatorInput(newInvestigatorInput);
+                //     }
+                // }}
+                renderInput={(params) =>
+                    <TextField
+                        {...params}
+                        placeholder='חוקר'
+                    />
+                }
+            />
+            <TableContainer component={Paper}>
+                <Table stickyHeader>
+                    <TableHead>
+                        <TableRow>
+                            {
+                                Object.keys(TableHeaders).map((cellName: string) => {
+                                    return (
+                                        <TableCell key={cellName}>
+                                            <Tooltip title={cellName === TableHeadersNames.pauseInvestigationsCount ? pauseInvestigationsCountTitle: ''}>
+                                                <b>{get(TableHeaders, cellName)}</b>
+                                            </Tooltip>
                                         </TableCell>
-                                    ))
-                                }
-                            </TableRow>
-                        ))
-                    }
-                </TableBody>
-            </Table>
-        </TableContainer>
+                                    )
+                                })
+                            }
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            investigators.map((investigator: User, index: number) => (
+                                <TableRow 
+                                    key={investigator.id}
+                                    selected={selectedRow === index}
+                                    onClick={() => setSelectedRow(index)}
+                                    classes={{ selected: classes.selected }}
+                                    className={classes.tableRow}
+                                    >
+                                    {
+                                        Object.keys(TableHeaders).map((cellHeader: string) => (
+                                            <TableCell key={cellHeader}>
+                                                { getTableCell(investigator, cellHeader.toLocaleLowerCase()) }
+                                            </TableCell>
+                                        ))
+                                    }
+                                </TableRow>
+                            ))
+                        }
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </>
     );
 };
 
