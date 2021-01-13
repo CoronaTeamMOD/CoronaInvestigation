@@ -125,7 +125,20 @@ const useStyles = makeStyles({
         height: '4vh',
         marginTop: '0.25vh',
         '@media screen and (max-height: 950px)': {
-            height: '6.25vh'
+            height: '6.25vh',
+            '& > label': {
+                marginTop: '0.45vh'
+            },
+        }
+    },
+    centerLabel: {
+        '& > label': {
+            marginTop: '0.2vh'
+        },
+        '@media screen and (max-height: 950px)': {
+            '& > label': {
+                marginTop: '0.45vh'
+            },
         }
     }
 });
