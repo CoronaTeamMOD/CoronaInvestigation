@@ -1,5 +1,5 @@
 import React from 'react';
-import {Grid, Typography} from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 
 import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
@@ -7,7 +7,7 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 import AddressGrid from '../AddressGrid/AddressGrid';
 import BusinessContactGrid from '../BusinessContactGrid/BusinessContactGrid';
 
-const DefaultPlaceEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
+const DefaultPlaceEventGrid: React.FC<Props> = (props: Props): JSX.Element => {
 
     const { interaction } = props;
 
@@ -18,8 +18,8 @@ const DefaultPlaceEventGrid : React.FC<Props> = (props: Props) : JSX.Element => 
                     {interaction.placeName}
                 </Typography>
             </FormInput>
-            <AddressGrid interaction={interaction}/>
-            <BusinessContactGrid interaction={interaction}/>
+            <AddressGrid interaction={interaction} />
+            <BusinessContactGrid interaction={interaction} />
         </>
     );
 };

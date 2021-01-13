@@ -1,7 +1,7 @@
 import React from 'react';
+import { Autocomplete } from '@material-ui/lab';
 import { TextField, Grid } from '@material-ui/core';
 import { Controller, useFormContext } from 'react-hook-form';
-import { Autocomplete } from '@material-ui/lab';
 
 import ContactStatus from 'models/ContactStatus';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
@@ -14,13 +14,7 @@ import useStyles from '../ContactQuestioningStyles';
 
 const ReachContact = (props: Props) => {
     const { control, getValues , watch } = useFormContext();
-    const {
-        interactedContact,
-        index,
-        contactStatuses,
-        saveContact,
-        parsePerson,
-    } = props;
+    const { interactedContact, index, contactStatuses, saveContact, parsePerson } = props;
     const classes = useStyles({});
 
     const formValues = getValues().form
@@ -33,14 +27,11 @@ const ReachContact = (props: Props) => {
         (contactStatus: ContactStatus) =>
             contactStatus.id === currentContactStatus
     );
-    const currentValue = foundValue || { id : -1 , displayName : "..."}
+    const currentValue = foundValue || { id : -1 , displayName : '...'}
     const { isFieldDisabled } = useContactFields(formValues.contactStatus);
 
     const { changeContactStatus } = useReachContact({
-        saveContact,
-        parsePerson,
-        formValues,
-        index,
+        saveContact, parsePerson, formValues, index,
     });
 
     return (

@@ -71,7 +71,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     const updatedSubStatuses = useMemo(() =>
         investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ? subStatuses.concat(inProcess) : subStatuses,
         [subStatuses, investigationStatus]);
-    
+
     const permittedStatuses = statuses.filter(status => status.id !== InvestigationMainStatusCodes.DONE);
 
     const handleLeaveInvestigationClick = (event: React.ChangeEvent<{}>) => {
@@ -144,12 +144,12 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     <Select
                                         MenuProps={{
                                             anchorOrigin: {
-                                              vertical: "bottom",
-                                              horizontal: "left"
+                                                vertical: 'bottom',
+                                                horizontal: 'left'
                                             },
                                             transformOrigin: {
-                                              vertical: "top",
-                                              horizontal: "left"
+                                                vertical: 'top',
+                                                horizontal: 'left'
                                             },
                                             getContentAnchorEl: null
                                         }}
@@ -182,20 +182,20 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     </Select>
                                 </FormControl>
                             </Grid>
-                            <Collapse in={investigationStatus.mainStatus ===  InvestigationMainStatusCodes.CANT_COMPLETE ||
-                                investigationStatus.mainStatus ===  InvestigationMainStatusCodes.IN_PROCESS}>
+                            <Collapse in={investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE ||
+                                investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS}>
                                 <Grid item className={classes.statusSelectGrid}>
                                     <FormControl variant='outlined' className={classes.subStatusSelect}>
                                         <InputLabel className={classes.subStatusLabel} id='sub-status-label'>{subStatusLabel}</InputLabel>
                                         <Select
                                             MenuProps={{
                                                 anchorOrigin: {
-                                                  vertical: "bottom",
-                                                  horizontal: "left"
+                                                    vertical: 'bottom',
+                                                    horizontal: 'left'
                                                 },
                                                 transformOrigin: {
-                                                  vertical: "top",
-                                                  horizontal: "left"
+                                                    vertical: 'top',
+                                                    horizontal: 'left'
                                                 },
                                                 getContentAnchorEl: null
                                             }}
@@ -225,7 +225,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     </FormControl>
                                 </Grid>
                             </Collapse>
-                            <Collapse in={investigationStatus.mainStatus ===  InvestigationMainStatusCodes.IN_PROCESS && investigationStatus.subStatus !== '' && investigationStatus.subStatus !== inProcess}>
+                            <Collapse in={investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS && investigationStatus.subStatus !== '' && investigationStatus.subStatus !== inProcess}>
                                 <Grid item className={classes.statusSelectGrid}>
                                     <TextField
                                         className={classes.subStatusSelect}
@@ -298,7 +298,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                     />
                     {
                         (isDeceased ||
-                            (investigationStatus.mainStatus ===  InvestigationMainStatusCodes.CANT_COMPLETE &&
+                            (investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE &&
                                 investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED)) &&
                         <ComplexityIcon tooltipText='המאומת נפטר' />
                     }
@@ -308,7 +308,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                     />
                     {
                         (isCurrentlyHospitalized ||
-                            (investigationStatus.mainStatus ===  InvestigationMainStatusCodes.CANT_COMPLETE &&
+                            (investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE &&
                                 investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED)) &&
                         <ComplexityIcon tooltipText='המאומת מאושפז' />
                     }

@@ -41,7 +41,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
   const location = useLocation();
 
   return (
-    <AppBar className={classes.appBar} position="static">
+    <AppBar className={classes.appBar} position='static'>
       <Toolbar>
         <div className={classes.rightSection}>
           <img alt='logo' src='./assets/img/logo.png' width={48} height={48} />
