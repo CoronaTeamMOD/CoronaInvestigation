@@ -43,13 +43,17 @@ const CommentDialog = ({ open, handleDialogClose }: Props) => {
                 alertError(errorMessage);
                 sendCommentLogger.error('Error occured in adding comment to investigation', Severity.HIGH);
             })
-            .finally(onDialogClose);
+            .finally(closeDialog);
+    };
+
+    const closeDialog = () => {
+        setIsLoading(false);
+        handleDialogClose();
     };
 
     const onDialogClose = () => {
         resetInput();
-        setIsLoading(false);
-        handleDialogClose();
+        closeDialog();
     };
 
     const handleCommentSave = () => {

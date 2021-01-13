@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/styles';
 const useStyles = makeStyles((theme: Theme) => ({
     toggle: {
         borderRadius: 48,
-        minWidth: '3vw'
+        minWidth: '75px'
     },
     isActiveToggle: {
         cursor: 'pointer',
