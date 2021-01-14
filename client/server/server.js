@@ -3,6 +3,8 @@ const express = require('express');
 const session = require('express-session');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
+const { Severity, logger } = require('./logger');
+
 require('dotenv').config();
 
 const app = express();
@@ -22,8 +24,13 @@ app.use((req, res, next) => {
 
 app.use('/db', (req, res, next) => {
     const { ip, protocol, path, hostname, body, cookies, params, query, headers, sessionID } = req;
-    console.log('got request: ' + JSON.stringify({ ip, protocol, path, hostname, body, cookies, params, query, headers, sessionID }));
-    console.log('*********************************************************************')
+    logger.info({
+        workflow: 'Proxying a request', 
+        step: 'Getting Request', 
+        severity: Severity.LOW, 
+        details: { ip, protocol, path, hostname, body, cookies, params, query, headers },
+        sessionID
+    })
     next();
 });
 
@@ -38,22 +45,42 @@ app.use(
         onProxyReq: (proxyReq, req, res) => {
             const { host, protocol, method, path } = proxyReq
             const { headers, sessionID } = req
-            console.log('got proxy request: ' + JSON.stringify({ host, protocol, method, path, headers, sessionID }))
-            console.log('*********************************************************************')
+            logger.info({
+                workflow: 'Proxying a request', 
+                step: 'Proxy Redirecting (Request)', 
+                severity: Severity.LOW, 
+                details: { host, protocol, method, path, headers },
+                sessionID
+            })
         },
         onProxyRes: (proxyRes, req, res) => {
             const { statusCode, statusMessage } = res;
             const { headers: requestHeaders, sessionID } = req;
             const { httpVersion, headers, method, url, statusCode: proxyStatusCode, statusMessage: proxyStatusMessage, body } = proxyRes
-            console.log('got proxy response: ' + JSON.stringify({ httpVersion, headers, method, url, proxyStatusCode, proxyStatusMessage, body, requestHeaders, sessionID }))
-            console.log('*********************************************************************')
-            console.log('got response: ' + JSON.stringify({ statusCode, statusMessage, requestHeaders, sessionID }));
-            console.log('*********************************************************************')
-            console.log('*********************************************************************')
+            logger.info({
+                workflow: 'Proxying a request', 
+                step: 'Proxy Redirecting (Response)', 
+                severity: Severity.LOW, 
+                details: { httpVersion, headers, method, url, proxyStatusCode, proxyStatusMessage, body, requestHeaders },
+                sessionID
+            })
+            logger.info({
+                workflow: 'Proxying a request', 
+                step: 'Got Response', 
+                severity: Severity.LOW, 
+                details: { statusCode, statusMessage, requestHeaders },
+                sessionID
+            })
         },
         onError: (err, req, res) => {
             const { ip, protocol, path, hostname, body, cookies, params, query, headers, sessionID } = req;
-            console.log('Error: ' + JSON.stringify({...err}) + '\nRequset: ' + JSON.stringify({ ip, protocol, path, hostname, body, cookies, params, query, headers, sessionID }));
+            logger.error({
+                workflow: 'Proxying a request', 
+                step: `Got Error: ${JSON.stringify({...err})}`, 
+                severity: Severity.HIGH, 
+                details: { ip, protocol, path, hostname, body, cookies, params, query, headers },
+                sessionID
+            })
         },
     })
 )
