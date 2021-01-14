@@ -673,6 +673,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                     control={methods.control}
                                                     render={(props) => (
                                                         <AlphanumericTextField
+                                                            className={classes.otherTextField}
+                                                            InputProps={{className: classes.otherTextField}}
                                                             testId='institutionName'
                                                             name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
                                                             value={props.value}

@@ -125,6 +125,12 @@ const useStyles = makeStyles({
         height: '3.99vh',
         '@media screen and (max-height: 950px)': {
             height: '5.9vh'
+        },
+    },
+    otherTextField: {
+        width: '100%',
+        '&.MuiOutlinedInput-root': {
+            height: '42px'
         }
     }
 });
