@@ -17,6 +17,7 @@ const DateRangePick: React.FC<Props> = (props: Props): JSX.Element => {
                     maxDate={maxDate}
                     value={startDate}
                     onChange={onStartDateChange}
+                    helperText={null}
                 />
             </Grid>
             <Grid item xs={2}>
@@ -27,6 +28,7 @@ const DateRangePick: React.FC<Props> = (props: Props): JSX.Element => {
                     maxDate={maxDate}
                     value={endDate}
                     onChange={onEndDateChange}
+                    helperText={null}
                 />
             </Grid>
         </Grid>
