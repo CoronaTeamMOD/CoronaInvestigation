@@ -72,7 +72,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                     </Typography>
                 </Grid>
                 <Grid item container alignItems='center'>
-                    <FieldName fieldName='תעודה מזהה:' />
+                    <FieldName fieldName='סוג תעודה מזהה:' />
                     <Grid item xs={3}>
                         <Controller
                             control={control}
