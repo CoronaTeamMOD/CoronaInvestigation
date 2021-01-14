@@ -1,5 +1,5 @@
-import { makeStyles } from '@material-ui/styles';
 import { Theme } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
     content: {
@@ -9,12 +9,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         flexDirection: 'row',
         alignItems: 'center',
     },
-    autoComplete: {
-       width: '10vw'
-    },
     autocompleteInput: {
         paddingRight: 'unset' + '!important',
-        width: '11vw',
+        width: '13vw',
     },
 }));
 
