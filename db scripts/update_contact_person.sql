@@ -83,7 +83,7 @@ begin
 					UPDATE public.involved_contact
 					SET contact_type = 1,
 					is_contacted_person = true
-					where id = involvedContactId and not EXISTS(select 1 from contacted_person where involved_contact_id =involvedContactId);
+					where id = involvedContactId ;
 				end if;
 			else
 				raise notice 'insert contacted person';
