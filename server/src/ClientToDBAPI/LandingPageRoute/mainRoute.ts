@@ -180,6 +180,12 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
                         ? { creationDate: { greaterThanOrEqualTo: timeRange.startDate, lessThanOrEqualTo: timeRange.endDate }} 
                         : {};
     
+    const lastUpdateDateFilter = {
+        lastUpdateTime: {
+            lessThan: new Date(Date.now() - (4 * 60 * 60 * 1000)).toUTCString()
+        }
+    };
+    
     const userFilters = {
         userByCreator: {
             countyByInvestigationGroup: {
@@ -190,16 +196,10 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
         ...timeRangeFilter
     };
 
-    const lastUpdateDateFilter = {
-        lastUpdateTime: {
-            lessThan: new Date(Date.now() - (4 * 60 * 60 * 1000)).toLocaleString()
-        }
-    };
-
     const parameters = { userFilters, allInvesitgationsFilter: userFilters };
     investigationsStatisticsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
-    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, { userFilters, allInvesitgationsFilter: userFilters })
+    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, { userFilters, allInvesitgationsFilter: userFilters, lastUpdateDateFilter})
     .then((results) => {
         investigationsStatisticsLogger.info(validDBResponseLog, Severity.LOW);
         const {data: preprocessedResults} = results;
