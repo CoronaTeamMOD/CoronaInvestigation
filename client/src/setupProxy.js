@@ -1,4 +1,3 @@
-const session = require('express-session');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = (app) => {
