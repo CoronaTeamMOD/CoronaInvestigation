@@ -32,18 +32,16 @@ const GroupedInvestigations: React.FC<Props> = (props: Props) => {
 
     const investigationsToDisplay: InvestigationTableRow[] = useMemo(() => {
         if (groupedInvestigation) {
-            const investigationsToGroupIds = investigationsToGroup.map(investigation => investigation.epidemiologyNumber);
-            const groupedInvestigations = allGroupedInvestigations.get(groupedInvestigation.groupId)
-                ?.filter((investigation: InvestigationTableRow) => {
-                    return investigation.epidemiologyNumber !== groupedInvestigation.epidemiologyNumber 
-                            && investigationsToGroupIds.indexOf(investigation.epidemiologyNumber) === -1; 
-                });
-            const investigationsToDisplayUpdateMode = groupedInvestigations && investigationsToGroup.concat(groupedInvestigations);
-            return investigationsToDisplayUpdateMode ? investigationsToDisplayUpdateMode: [];
+            const groupedInvestigations = allGroupedInvestigations.get(groupedInvestigation.groupId);
+            const investigationsWithoutGroupIds = investigationsToGroup.filter(
+                (investigation: InvestigationTableRow) => !investigation.groupId
+            );
+            const investigationsToDisplayUpdateMode = groupedInvestigations && groupedInvestigations.concat(investigationsWithoutGroupIds);
+            return investigationsToDisplayUpdateMode ? investigationsToDisplayUpdateMode : [];
         } else {
             return investigationsToGroup;
         }
-    }, [groupedInvestigation, investigationsToGroup, allGroupedInvestigations])
+    }, [groupedInvestigation, investigationsToGroup, allGroupedInvestigations]);
 
     useEffect(() => {
         if (groupedInvestigation) {
