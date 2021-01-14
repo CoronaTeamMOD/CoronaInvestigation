@@ -113,7 +113,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
             control={methods.control}
             render={(props: any) => (
                 <Autocomplete
-                    defaultValue={props.value && props.value}
+                    defaultValue={props.value}
                     options={subOccupations}
                     getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
                     inputValue={subOccupationName}
@@ -427,7 +427,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                     control={methods.control}
                                     render={(props) => (
                                         <Autocomplete
-                                            defaultValue={props.value && props.value}
+                                            defaultValue={props.value}
                                             size='small'
                                             options={streets}
                                             getOptionLabel={(option) => {
