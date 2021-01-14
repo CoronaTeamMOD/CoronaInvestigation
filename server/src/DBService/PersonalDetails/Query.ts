@@ -73,7 +73,7 @@ query getSubOccupationsByOccupation($parentOccupation: String!) {
 
 export const GET_EDUCATION_SUB_OCCUPATION_BY_CITY = gql`
 query getEducationSubOccupationsByCity($city: String!) {
-    allSubOccupations(condition: {parentOccupation: "מערכת החינוך", city: $city}) {
+  allSubOccupations(condition: {parentOccupation: "מערכת החינוך", city: $city}, orderBy: DISPLAY_NAME_ASC) {
       nodes {
         displayName
         street
