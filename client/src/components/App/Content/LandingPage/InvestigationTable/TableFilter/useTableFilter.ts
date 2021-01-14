@@ -23,6 +23,8 @@ const useTableFilter = (props : Props) => {
                     onTimeRangeFilterChange(displayTimeRange);
                 }
             }
+        } else {
+            setErrorMes('');
         }
     }, [displayTimeRange])
 
