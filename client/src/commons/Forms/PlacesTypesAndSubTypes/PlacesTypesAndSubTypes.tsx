@@ -94,18 +94,21 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                                 control={control}
                                 render={(props) => (
                                     <Autocomplete
+                                        defaultValue=''
                                         options={Object.keys(placesSubTypesByTypes)}
-                                        getOptionLabel={(option) => option}
+                                        getOptionLabel={(option) => option ? option : ''}
+                                        getOptionSelected={(option) => option === props.value}
                                         inputValue={placeTypeInput}
-                                        value={props.value}
-                                        onBlur={props.onBlur}
-                                        onChange={(event, chosenPlaceType) => {
-                                            onPlaceTypeChange(chosenPlaceType as string)
-                                        }}
                                         onInputChange={(event, chosenPlaceType: string) => {
                                             if (event?.type !== 'blur') {
                                                 handlePlaceTypeInputChange(chosenPlaceType);
                                             }
+                                        }}
+                                        onBlur={props.onBlur}
+                                        value={props.value}
+                                        onChange={(event, chosenPlaceType) => {
+                                            onPlaceTypeChange(chosenPlaceType as string)
+                                            props.onChange(chosenPlaceType ? chosenPlaceType : '')
                                         }}
                                         placeholder={placeTypeDisplayName}
                                         renderInput={(params) =>

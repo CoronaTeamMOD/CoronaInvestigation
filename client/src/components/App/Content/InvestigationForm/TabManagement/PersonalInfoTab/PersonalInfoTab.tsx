@@ -113,6 +113,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
             control={methods.control}
             render={(props: any) => (
                 <Autocomplete
+                    defaultValue={props.value && props.value}
                     options={subOccupations}
                     getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
                     inputValue={subOccupationName}
@@ -336,6 +337,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                     control={methods.control}
                                     render={(props) => (
                                         <Autocomplete
+                                            defaultValue={insuranceCompany}
                                             options={insuranceCompanies}
                                             getOptionLabel={(option) => option}
                                             inputValue={insuranceCompany}
@@ -380,6 +382,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                     control={methods.control}
                                     render={(props: any) => (
                                         <Autocomplete
+                                            defaultValue={props.value && {id: props.value as string, value: cities.get(props.value) as City}}
                                             className={classes.spacedOutAddress}
                                             options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                             getOptionLabel={(option) => {
@@ -424,6 +427,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                     control={methods.control}
                                     render={(props) => (
                                         <Autocomplete
+                                            defaultValue={props.value && props.value}
                                             size='small'
                                             options={streets}
                                             getOptionLabel={(option) => {
