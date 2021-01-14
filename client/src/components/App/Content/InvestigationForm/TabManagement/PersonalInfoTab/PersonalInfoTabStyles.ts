@@ -130,7 +130,7 @@ const useStyles = makeStyles({
     otherTextField: {
         width: '100%',
         '&.MuiOutlinedInput-root': {
-            height: '42px'
+            minHeight: '43px'
         }
     }
 });
