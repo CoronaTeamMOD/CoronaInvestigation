@@ -16,6 +16,7 @@ import useStyles from './AddressFormStyles';
 const CITY_LABEL = 'עיר';
 const STREET_LABEL = 'רחוב';
 const FLOOR_LABEL = 'קומה';
+const APPARTMENT_LABEL = 'דירה';
 const HOUSE_NUM_LABEL = 'מספר בית';
 const UNKNOWN = 'לא ידוע';
 const GRID_ITEM_SIZE = 2;
@@ -26,6 +27,7 @@ const AddressForm: React.FC<Props> = ({
     cityField, 
     streetField,
     floorField, 
+    appartmentField,
     houseNumberField,
     houseGridSize = 1
 }) => {
@@ -44,8 +46,9 @@ const AddressForm: React.FC<Props> = ({
         }
     }, [cityWatcher]);
 
-    const houseNumberFieldNameSplitted = houseNumberField.name.split('.');
-    const floorFieldNameSplitted = floorField.name.split('.');
+    const houseNumberFieldNameSplitted = houseNumberField?.name.split('.');
+    const floorFieldNameSplitted = floorField?.name.split('.');
+    const appartmentFieldNameSplitted = appartmentField?.name.split('.');
 
     return (
         <>
@@ -171,42 +174,84 @@ const AddressForm: React.FC<Props> = ({
                     />
                 }
             </Grid>
-            <Grid item xs={unsized ? undefined : houseGridSize} className={floorField.className}>
-                {
-                    disabled ?
-                    <Controller
-                        name={floorField.name}
-                        control={methods.control}
-                        render={(props) => (
-                            <TextField 
-                                test-id={floorField.testId || ''} 
-                                value={props.value} 
-                                label={FLOOR_LABEL} 
-                                InputLabelProps={{ shrink: true }}
-                                disabled={true} 
-                            />
-                        )}
-                    />
-                    :
-                    <Controller
-                        name={floorField.name}
-                        control={methods.control}
-                        defaultValue={floorField.defaultValue}
-                        render={(props) => (
-                            <AlphanumericTextField
-                                InputProps={{className: classes.heightendTextField}}
-                                testId={floorField.testId || ''}
-                                name={floorFieldNameSplitted[floorFieldNameSplitted.length - 1]}
-                                value={props.value}
-                                onChange={props.onChange}
-                                onBlur={props.onBlur}
-                                placeholder={FLOOR_LABEL}
-                                label={FLOOR_LABEL}
-                            />
-                        )}
-                    />
-                }
-            </Grid>
+            {
+                floorField &&
+                <Grid item xs={unsized ? undefined : houseGridSize} className={floorField?.className}>
+                    {
+                        disabled ?
+                        <Controller
+                            name={floorField?.name || ''}
+                            control={methods.control}
+                            render={(props) => (
+                                <TextField 
+                                    test-id={floorField?.testId || ''} 
+                                    value={props.value} 
+                                    label={FLOOR_LABEL} 
+                                    InputLabelProps={{ shrink: true }}
+                                    disabled={true} 
+                                />
+                            )}
+                        />
+                        :
+                        <Controller
+                            name={floorField?.name || ''}
+                            control={methods.control}
+                            defaultValue={floorField?.defaultValue}
+                            render={(props) => (
+                                <AlphanumericTextField
+                                    InputProps={{className: classes.heightendTextField}}
+                                    testId={floorField?.testId || ''}
+                                    name={floorFieldNameSplitted ? floorFieldNameSplitted[floorFieldNameSplitted.length - 1] : ''}
+                                    value={props.value}
+                                    onChange={props.onChange}
+                                    onBlur={props.onBlur}
+                                    placeholder={FLOOR_LABEL}
+                                    label={FLOOR_LABEL}
+                                />
+                            )}
+                        />
+                    }
+                </Grid>
+            }
+            {
+                appartmentField &&
+                <Grid item xs={unsized ? undefined : houseGridSize} className={appartmentField?.className}>
+                    {
+                        disabled ?
+                        <Controller
+                            name={appartmentField?.name || ''}
+                            control={methods.control}
+                            render={(props) => (
+                                <TextField 
+                                    test-id={appartmentField?.testId || ''} 
+                                    value={props.value} 
+                                    label={APPARTMENT_LABEL} 
+                                    InputLabelProps={{ shrink: true }}
+                                    disabled={true} 
+                                />
+                            )}
+                        />
+                        :
+                        <Controller
+                            name={appartmentField?.name || ''}
+                            control={methods.control}
+                            defaultValue={appartmentField?.defaultValue}
+                            render={(props) => (
+                                <AlphanumericTextField
+                                    InputProps={{className: classes.heightendTextField}}
+                                    testId={appartmentField?.testId || ''}
+                                    name={appartmentFieldNameSplitted ? appartmentFieldNameSplitted[appartmentFieldNameSplitted.length - 1] : ''}
+                                    value={props.value}
+                                    onChange={props.onChange}
+                                    onBlur={props.onBlur}
+                                    placeholder={APPARTMENT_LABEL}
+                                    label={APPARTMENT_LABEL}
+                                />
+                            )}
+                        />
+                    }
+                </Grid>
+            }
         </>
     )
 };
@@ -224,10 +269,11 @@ interface Props {
     cityField: FormField;
     streetField: FormField;
     houseNumberField: FormField;
-    floorField: FormField;
+    floorField?: FormField;
+    appartmentField?: FormField;
     houseGridSize?: GridSize;
 }
 
-export type AddressFormFields = Pick<Props, 'cityField' | 'streetField' | 'houseNumberField' | 'floorField'>
+export type AddressFormFields = Pick<Props, 'cityField' | 'streetField' | 'houseNumberField'> & Partial<Pick<Props, 'floorField' | 'appartmentField'>>;
 
 export default AddressForm;
