@@ -178,7 +178,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
             <GroupedInvestigations
                 open={openGroupedInvestigations}
                 onClose={handleCloseGroupedInvestigations}
-                invetigationsToGroup={checkedInvestigations}
+                investigationsToGroup={checkedInvestigations}
                 allGroupedInvestigations={allGroupedInvestigations}
                 fetchTableData={fetchTableData}
                 fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
