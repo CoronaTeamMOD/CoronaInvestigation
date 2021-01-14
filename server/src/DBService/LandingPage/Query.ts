@@ -249,3 +249,11 @@ query unallocatedInvestigationsCount($allInvesitgationsFilter: [InvestigationFil
   }
 }
 `;
+
+export const GET_UNUSUAL_INVESTIGATIONS_COUNT = gql`
+mutation {
+  unusualCompletedInvestigations:getCountOfNonContactInvestigation(input: {}) {
+    totalCount:totalcount
+  }
+}
+`;

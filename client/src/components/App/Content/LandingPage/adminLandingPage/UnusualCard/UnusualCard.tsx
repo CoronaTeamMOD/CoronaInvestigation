@@ -18,7 +18,7 @@ const UnusualCard: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
     const hoverClasses = useHoverStyles();
 
-    const { onCompleteClick, onInProcessClick, isLoading, unusualInvestigationsCount } = props;
+    const { onCompleteClick, onInProcessClick, isLoading, unusualInProgressInvestigationsCount, unusualCompletedInvestigationsCount} = props;
 
     return (
         <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.unusualCard}>
@@ -29,7 +29,7 @@ const UnusualCard: React.FC<Props> = (props: Props): JSX.Element => {
             <Tooltip className={[classes.unusualCompleted, hoverClasses.whiteButtons].join(' ')} title={unusualCompletesInvestigationsText}>
                 <div>
                     <div className={classes.investigationAmount}>
-                        <Typography className={classes.investigationNumberText}><b>{unusualInvestigationsCount}</b></Typography>
+                        <Typography className={classes.investigationNumberText}><b>{unusualCompletedInvestigationsCount}</b></Typography>
                         <Typography className={classes.investigationAmountText}><b>חקירות</b></Typography>
                     </div>
                     <div onClick={() => onCompleteClick(statusToFilterConvertor[FilterRulesDescription.UNALLOCATED])} className={classes.unusualInvestigations}>
@@ -42,7 +42,7 @@ const UnusualCard: React.FC<Props> = (props: Props): JSX.Element => {
             <Tooltip className={[classes.unusualInProcess, hoverClasses.whiteButtons].join(' ')} title={unusualInProcessInvestigationsText}>
                 <div>
                     <div className={classes.investigationAmount}>
-                        <Typography className={classes.investigationNumberText}><b>{unusualInvestigationsCount}</b></Typography>
+                        <Typography className={classes.investigationNumberText}><b>{unusualInProgressInvestigationsCount}</b></Typography>
                         <Typography className={classes.investigationAmountText}><b>חקירות</b></Typography>
                     </div>
                     <div onClick={() => onInProcessClick(statusToFilterConvertor[FilterRulesDescription.UNALLOCATED])} className={classes.unusualInvestigations}>
@@ -61,5 +61,7 @@ interface Props {
     onCompleteClick: (infoFilter: FilterRulesVariables) => void;
     onInProcessClick: (infoFilter: FilterRulesVariables) => void;
     isLoading: boolean;
-    unusualInvestigationsCount: number;
+    unusualInProgressInvestigationsCount: number;
+    unusualCompletedInvestigationsCount: number;
+
 }

@@ -26,6 +26,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
         unassignedInvestigations: 0,
         unallocatedInvestigations: 0,
         unusualInProgressInvestigations: 0,
+        unusualCompletedInvestigations:0,
     });
     const [lastUpdated , setLastUpdated] = useState<Date>(new Date());
 
@@ -77,7 +78,8 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                         isLoading={isLoading}
                         onCompleteClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNUSUAL_COMPLETED)} 
                         onInProcessClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNUSUAL_IN_PROCESS)} 
-                        unusualInvestigationsCount={investigationsStatistics.unusualInProgressInvestigations}
+                        unusualInProgressInvestigationsCount={investigationsStatistics.unusualInProgressInvestigations}
+                        unusualCompletedInvestigationsCount={investigationsStatistics.unusualCompletedInvestigations}
                     />
                 </Grid>
             </Grid>

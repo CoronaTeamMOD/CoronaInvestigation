@@ -8,6 +8,7 @@ interface InvesitgationStatistics extends InvesitgationInfoStatistics {
     allInvestigations: number;
     unallocatedInvestigations: number;
     unusualInProgressInvestigations: number;
+    unusualCompletedInvestigations: number;
 }
 
 export default InvesitgationStatistics;
