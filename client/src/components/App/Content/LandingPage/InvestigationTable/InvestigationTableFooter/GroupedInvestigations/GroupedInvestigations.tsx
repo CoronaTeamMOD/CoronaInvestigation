@@ -13,7 +13,7 @@ import GroupedInvestigationsFields from './GroupedInvestigationsForm/GroupedInve
 
 const GroupedInvestigations: React.FC<Props> = (props: Props) => {
 
-    const { open, invetigationsToGroup, allGroupedInvestigations, onClose, fetchTableData, fetchInvestigationsByGroupId } = props
+    const { open, investigationsToGroup, allGroupedInvestigations, onClose, fetchTableData, fetchInvestigationsByGroupId } = props
 
     const methods = useForm<GroupForm>({
         mode: 'all',
@@ -25,21 +25,26 @@ const GroupedInvestigations: React.FC<Props> = (props: Props) => {
     });
     
     const groupedInvestigation = useMemo(() => {
-        return invetigationsToGroup.find((investigation: InvestigationTableRow) => investigation.groupId);
-    }, [invetigationsToGroup]);
+        return investigationsToGroup.find((investigation: InvestigationTableRow) => investigation.groupId);
+    }, [investigationsToGroup]);
     
     const title = groupedInvestigation ? 'הוספת חקירות לקיבוץ' : 'קיבוץ חקירות'
 
     const investigationsToDisplay: InvestigationTableRow[] = useMemo(() => {
         if (groupedInvestigation) {
+            const investigationsToGroupIds = investigationsToGroup.map(investigation => investigation.epidemiologyNumber);
             const groupedInvestigations = allGroupedInvestigations.get(groupedInvestigation.groupId)
-                ?.filter((investigation: InvestigationTableRow) => investigation.epidemiologyNumber !== groupedInvestigation.epidemiologyNumber);
-            const investigationsToDisplayUpdateMode = groupedInvestigations && invetigationsToGroup.concat(groupedInvestigations);
+                ?.filter((investigation: InvestigationTableRow) => {
+                    return investigation.epidemiologyNumber !== groupedInvestigation.epidemiologyNumber 
+                            && investigationsToGroupIds.indexOf(investigation.epidemiologyNumber) === -1; 
+                });
+            const investigationsToDisplayUpdateMode = groupedInvestigations && investigationsToGroup.concat(groupedInvestigations);
+            console.log('aaa' , investigationsToDisplayUpdateMode);
             return investigationsToDisplayUpdateMode ? investigationsToDisplayUpdateMode: [];
         } else {
-            return invetigationsToGroup;
+            return investigationsToGroup;
         }
-    }, [groupedInvestigation, invetigationsToGroup, allGroupedInvestigations])
+    }, [groupedInvestigation, investigationsToGroup, allGroupedInvestigations])
 
     useEffect(() => {
         if (groupedInvestigation) {
@@ -50,7 +55,7 @@ const GroupedInvestigations: React.FC<Props> = (props: Props) => {
         }
     }, [groupedInvestigation])
 
-    const { onSubmit } = useGroupedInvestigations({ invetigationsToGroup, onClose, fetchTableData, fetchInvestigationsByGroupId});
+    const { onSubmit } = useGroupedInvestigations({ investigationsToGroup, onClose, fetchTableData, fetchInvestigationsByGroupId});
 
     return (
         <Dialog open={open}>
@@ -94,7 +99,7 @@ const GroupedInvestigations: React.FC<Props> = (props: Props) => {
 
 interface Props {
     open: boolean;
-    invetigationsToGroup: InvestigationTableRow[];
+    investigationsToGroup: InvestigationTableRow[];
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>
     onClose: () => void;
     fetchTableData: () => void;
