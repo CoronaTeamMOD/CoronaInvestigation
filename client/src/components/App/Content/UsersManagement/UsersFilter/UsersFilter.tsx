@@ -29,12 +29,12 @@ interface GenericAutoCompleteProps {
 
 const activeStatuses: activeStatus[] = [
     {
-        displayName: 'פעיל',
-        value: true
-    },
-    {
         displayName: 'לא פעיל',
         value: false
+    },
+    {
+        displayName: 'פעיל',
+        value: true
     }
 ];
 

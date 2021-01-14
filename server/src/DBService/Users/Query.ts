@@ -154,7 +154,7 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter:
 
 export const GET_ALL_USER_TYPES = gql`
 query allUserTypes {
-  allUserTypes {
+  allUserTypes(orderBy: DISPLAY_NAME_ASC) {
     nodes {
       displayName
     	id
