@@ -3,15 +3,12 @@ import { makeStyles } from '@material-ui/styles';
 const useStyles = makeStyles({
     button: {
         color: 'white',
-        height: '11vh',
-        width: '9.6vw',
         borderRadius: '0.8vw',
-    },
-    amountOfInvestigations: {
-        fontSize: '1.5vw',
-    },
-    text: {
-        fontSize: '0.95vw',
+        padding: '1vw 1vh',
+        margin: '0 1vw',
+        flexBasis: 0,
+        flexGrow: 1,
+        height: '10vh'
     },
 });
 

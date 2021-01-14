@@ -50,10 +50,11 @@ const InvestigationsInfo: React.FC<Props> = (props: Props): JSX.Element => {
         <LoadingCard isLoading={isLoading} height={cardHeight} className={classes.filtersCard}>
             <CardContent>
                 <Grid container>
-                    <Grid item xs={12} className={classes.investigationInfoButtonWrapper}>
-                        <div className={classes.investigationsGraphContainer}>
+                    <Grid item container xs={12} alignItems='flex-end' justify='space-around'>
+                        <Grid item xs={3} className={classes.investigationsGraphContainer}>
                             <InvestigationBarChart investigationsGraphData={investigationsGraphData} />
-                        </div>
+                        </Grid>
+                        <Grid item container alignItems='flex-end' justify='space-around' spacing={1} xs={9}>
                         {
                             investigationsGraphData.map((InvestigationData: InvestigationChart) => (
                                 <InvestigationInfoButton
@@ -64,10 +65,11 @@ const InvestigationsInfo: React.FC<Props> = (props: Props): JSX.Element => {
                                 />
                             ))
                         }
+                        </Grid>
                     </Grid>
                     <Grid item xs={12} className={[classes.investigationAmountContainer, hoverClasses.whiteButtons].join(' ')}>
                         <Typography className={classes.investigationAmountText}><b>{allInvestigationsCount}</b></Typography>
-                        <Typography className={classes.allInvestigationsText}><b>חקירות בסך הכל</b></Typography>
+                        <Typography><b>חקירות בסך הכל</b></Typography>
                         <IconButton onClick={() => onInfoButtonClick({})}>
                             <NavigateBeforeIcon className={classes.navigateIcon} />
                         </IconButton>

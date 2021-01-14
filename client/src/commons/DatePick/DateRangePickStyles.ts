@@ -7,9 +7,6 @@ export const useStyles = makeStyles({
             margin: '0 0.2vw',
         }
     },
-    text: {
-        fontSize: '1vw'
-    }
 });
 
 export default useStyles;

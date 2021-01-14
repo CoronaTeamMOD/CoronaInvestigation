@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format , isValid} from 'date-fns';
 import { useEffect, useState } from 'react';
 
 import { TimeRange } from 'models/TimeRange';
@@ -35,11 +35,15 @@ const useTableFilter = (props : Props) => {
     }
 
     const onStartDateSelect = (startDateInput: Date) => {
-        setDisplayTimeRange({...displayTimeRange, startDate: format(startDateInput,'yyyy-MM-dd')})
+        if(isValid(startDateInput)){
+            setDisplayTimeRange({...displayTimeRange, startDate: format(startDateInput,'yyyy-MM-dd')})
+        }
     }
 
     const onEndDateSelect = (endDateInput :Date) => {
-        setDisplayTimeRange({...displayTimeRange, endDate: format(endDateInput,'yyyy-MM-dd')})       
+        if(isValid(endDateInput)){
+            setDisplayTimeRange({...displayTimeRange, endDate: format(endDateInput,'yyyy-MM-dd')})       
+        }
     }
 
     return {

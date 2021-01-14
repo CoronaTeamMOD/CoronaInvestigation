@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tooltip, Typography } from '@material-ui/core';
+import { Tooltip, Typography, Box } from '@material-ui/core';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
 import FilterRulesVariables from 'models/FilterRulesVariables';
@@ -8,7 +8,7 @@ import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 
 import useHoverStyles from '../useHoverStyles';
 import LoadingCard from '../LoadingCard/LoadingCard';
-import useStyles, { cardHeight, cardWidth } from './UnallocatedCardStyles';
+import useStyles, { cardHeight } from './UnallocatedCardStyles';
 
 const unallocatedInvestigationsText = 'חקירות לא משויכות/ משויכות לחוקרים לא פעילים';
 
@@ -19,17 +19,17 @@ const UnallocatedCard: React.FC<Props> = (props: Props): JSX.Element => {
     const { onClick, isLoading, unallocatedInvestigationsCount } = props;
 
     return (
-        <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={[classes.unallocatedCard, hoverClasses.whiteButtons].join(' ')}>
+        <LoadingCard isLoading={isLoading} height={cardHeight} className={[classes.unallocatedCard, hoverClasses.whiteButtons].join(' ')}>
             <Tooltip title={unallocatedInvestigationsText}>
                 <div onClick={() => onClick(statusToFilterConvertor[FilterRulesDescription.UNALLOCATED])}>
                     <div className={classes.investigationAmount}>
                         <Typography className={classes.investigationNumberText}><b>{unallocatedInvestigationsCount}</b></Typography>
                         <Typography className={classes.investigationAmountText}><b>חקירות</b></Typography>
                     </div>
-                    <div className={classes.unallocatedInvestigations}>
-                        <Typography className={classes.unallocatedInvestigationsText}><b>{FilterRulesDescription.UNALLOCATED}</b></Typography>
+                    <Box display='flex'>
+                        <Typography><b>{FilterRulesDescription.UNALLOCATED}</b></Typography>
                         <NavigateBeforeIcon className={classes.navigateIcon} />
-                    </div>
+                    </Box>
                 </div>
             </Tooltip>
         </LoadingCard>

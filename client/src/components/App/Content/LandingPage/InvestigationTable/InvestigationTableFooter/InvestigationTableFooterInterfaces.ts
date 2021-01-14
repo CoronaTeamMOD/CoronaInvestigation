@@ -1,12 +1,12 @@
-import County from 'models/County';
 import Desk from 'models/Desk';
+import County from 'models/County';
+
 import { IndexedInvestigation } from '../InvestigationTablesHeaders';
 
 export interface InvestigationTableFooterParameters {
     checkedIndexedRows: IndexedInvestigation[];
     setOpenDesksDialog: React.Dispatch<React.SetStateAction<boolean>>;
     setOpenGroupedInvestigations: React.Dispatch<React.SetStateAction<boolean>>;
-    setIsInvestigatorAllocationDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
     fetchTableData: () => void;
     onDialogClose: () => void;
     onDeskGroupChange: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
@@ -20,8 +20,9 @@ export interface InvestigationTableFooterOutcome {
     handleCloseDesksDialog: () => void;
     handleOpenGroupedInvestigations: () => void;
     handleCloseGroupedInvestigations: () => void;
-    handleOpenInvesigatorAllocationDialog: () => void;
-    handleCloseInvesigatorAllocationDialog: () => void;
+    isInvestigatorAllocationFooterDialogOpen: boolean;
+    handleOpenInvesigatorAllocationFooterDialog: () => void;
+    handleCloseInvesigatorAllocationFooterDialog: () => void;
     handleConfirmDesksDialog: (updatedDesk: Desk, transferReason: string) => void;
     handleConfirmCountiesDialog: (updatedCounty: County, transferReason: string) => void;
     handleDisbandGroupedInvestigations: (groupIds: string[]) => void;

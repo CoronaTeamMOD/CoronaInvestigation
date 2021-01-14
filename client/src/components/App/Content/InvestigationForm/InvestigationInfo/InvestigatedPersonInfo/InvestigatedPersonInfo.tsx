@@ -69,7 +69,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     }, [investigationStatus.subStatus]);
 
     const updatedSubStatuses = useMemo(() =>
-        investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ? subStatuses.concat(inProcess) : subStatuses,
+        investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ? [inProcess , ...subStatuses] : subStatuses,
         [subStatuses, investigationStatus]);
 
     const permittedStatuses = statuses.filter(status => status.id !== InvestigationMainStatusCodes.DONE);

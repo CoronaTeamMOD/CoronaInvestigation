@@ -122,23 +122,15 @@ const useStyles = makeStyles({
         width: '7vw'
     },
     heightendTextField: {
-        height: '4vh',
-        marginTop: '0.25vh',
+        height: '3.99vh',
         '@media screen and (max-height: 950px)': {
-            height: '6.25vh',
-            '& > label': {
-                marginTop: '0.45vh'
-            },
-        }
-    },
-    centerLabel: {
-        '& > label': {
-            marginTop: '0.2vh'
+            height: '5.9vh'
         },
-        '@media screen and (max-height: 950px)': {
-            '& > label': {
-                marginTop: '0.45vh'
-            },
+    },
+    otherTextField: {
+        width: '100%',
+        '&.MuiOutlinedInput-root': {
+            minHeight: '43px'
         }
     }
 });

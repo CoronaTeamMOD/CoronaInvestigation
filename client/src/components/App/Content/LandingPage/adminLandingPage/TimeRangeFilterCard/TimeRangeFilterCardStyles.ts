@@ -4,20 +4,17 @@ import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     timeRangeCard: {
-        width: '20vw',
         borderRadius: '1vw',
     },
     cardTitle: {
-        fontSize: '0.9vw',
         marginBottom: theme.spacing(1)
     },
     timeRangeCardContent: {
         height: '36%',
     },
     dateRangeCardContent: {
-        paddingTop: 0,
+        paddingTop: theme.spacing(1),
         paddingBottom: 0,
-        width: '18vw'
     },
     collapse: {
         height: '36%',

@@ -10,23 +10,25 @@ const DateRangePick: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
 
     return (
-        <Grid container alignItems='center' xs={12} justify='space-between'>
+        <Grid container alignItems='center' xs={12} spacing={1}>
             <Grid item xs={5} className={classes.dateItem}>
                 <DatePick
                     minDate={minDate}
                     maxDate={maxDate}
                     value={startDate}
                     onChange={onStartDateChange}
+                    helperText={null}
                 />
             </Grid>
-            <Grid item xs={1}>
-                <Typography className={classes.text}>עד</Typography>
+            <Grid item xs={2}>
+                <Typography align='center'>עד</Typography>
             </Grid>
             <Grid item xs={5} className={classes.dateItem}>
                 <DatePick
                     maxDate={maxDate}
                     value={endDate}
                     onChange={onEndDateChange}
+                    helperText={null}
                 />
             </Grid>
         </Grid>

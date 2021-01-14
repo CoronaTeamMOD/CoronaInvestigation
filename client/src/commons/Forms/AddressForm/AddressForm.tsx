@@ -159,7 +159,6 @@ const AddressForm: React.FC<Props> = ({
                         render={(props) => (
                             <AlphanumericTextField
                                 InputProps={{className: classes.heightendTextField}}
-                                className={classes.centerLabel}
                                 testId={houseNumberField.testId || ''}
                                 name={houseNumberFieldNameSplitted[houseNumberFieldNameSplitted.length - 1]}
                                 value={props.value}
@@ -196,7 +195,6 @@ const AddressForm: React.FC<Props> = ({
                         render={(props) => (
                             <AlphanumericTextField
                                 InputProps={{className: classes.heightendTextField}}
-                                className={classes.centerLabel}
                                 testId={floorField.testId || ''}
                                 name={floorFieldNameSplitted[floorFieldNameSplitted.length - 1]}
                                 value={props.value}
