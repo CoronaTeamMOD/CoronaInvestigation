@@ -39,7 +39,6 @@ const GroupedInvestigations: React.FC<Props> = (props: Props) => {
                             && investigationsToGroupIds.indexOf(investigation.epidemiologyNumber) === -1; 
                 });
             const investigationsToDisplayUpdateMode = groupedInvestigations && investigationsToGroup.concat(groupedInvestigations);
-            console.log('aaa' , investigationsToDisplayUpdateMode);
             return investigationsToDisplayUpdateMode ? investigationsToDisplayUpdateMode: [];
         } else {
             return investigationsToGroup;
