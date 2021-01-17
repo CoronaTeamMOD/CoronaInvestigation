@@ -21,7 +21,7 @@ import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
 const ContactQuestioningPersonal: React.FC<Props> = (
     props: Props
 ): JSX.Element => {
-    const { control, getValues } = useFormContext();
+    const { control, getValues, trigger } = useFormContext();
 
     const { index, interactedContact } = props;
     
@@ -61,6 +61,10 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                 !!interactedContact.identificationNumber);
         setShouldIdDisable(shouldDisable);
     }, [interactedContact.contactStatus]);
+
+    useEffect(() => {
+        trigger(`form[${index}].${InteractedContactFields.IDENTIFICATION_NUMBER}`)
+    }, [isPassport]);
 
     return (
         <Grid item xs={4}>
