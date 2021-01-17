@@ -1,26 +1,25 @@
 import React from 'react';
-import { Typography, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
-import useFormStyles from 'styles/formStyles';
-import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import AddressGrid from '../AddressGrid/AddressGrid';
+import InteractionGridItem from './InteractionGridItem';
 
 const OfficeEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
     
     const { interaction } = props;
-    
-    const formClasses = useFormStyles();
-   
+
     return (
         <>
-            <Grid container justify='flex-start' className={formClasses.formRow}>
-                <FormInput xs={12} fieldName='שם המשרד'>
-                    <Typography variant='caption'>
-                        {interaction.placeName}
-                    </Typography>
-                </FormInput>
+            <Grid container justify='flex-start' alignItems='center'>
+                <InteractionGridItem 
+                    containerSize={12}
+                    labelLengthMD={3}
+                    labelLengthLG={2}
+                    title='שם המשרד'
+                    content={interaction.placeName}
+                />
             </Grid>
             <AddressGrid interaction={interaction}/>
         </>
