@@ -34,7 +34,7 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
     cityId: 'מזהה עיר',
     streetId: 'מזהה רחוב',
     houseNum: 'מספר בית השהייה בבידוד',
-    apartment: 'מספר קומת השהייה בבידוד',
+    apartment: 'מספר דירת השהייה בבידוד',
 };
 
 type AddressNames = {
