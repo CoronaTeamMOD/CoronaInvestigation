@@ -1,35 +1,34 @@
 import React from 'react';
-import {Grid, Typography} from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
-import useFormStyles from 'styles/formStyles';
-import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import AddressGrid from '../AddressGrid/AddressGrid';
+import InteractionGridItem from './InteractionGridItem';
 import BusinessContactGrid from '../BusinessContactGrid/BusinessContactGrid';
 
-
 const SchoolEventGrid: React.FC<Props> = (props: Props): JSX.Element => {
-    
     const { interaction } = props;
-    
-    const formClasses = useFormStyles();
 
     return (
         <>
-            <Grid container justify='flex-start' className={formClasses.formRow}>
-                <FormInput xs={6} fieldName='שם המוסד'>
-                    <Typography variant='caption'>
-                        {interaction.placeName}
-                    </Typography>
-                </FormInput>
+            <Grid container justify='flex-start' alignItems='center'>
+                <InteractionGridItem 
+                    containerSize={6}
+                    labelLengthMD={3}
+                    labelLengthLG={2}
+                    title='שם המוסד'
+                    content={interaction.placeName}
+                />
                     {
                         interaction.grade &&
-                        <FormInput xs={6} fieldName='כיתה'>
-                            <Typography variant='caption'>
-                                {interaction.grade}
-                            </Typography>
-                        </FormInput>
+                        <InteractionGridItem 
+                            containerSize={6}
+                            labelLengthMD={3}
+                            labelLengthLG={2}
+                            title='כיתה'
+                            content={interaction.grade}
+                        />
                     }
             </Grid>
             <AddressGrid interaction={interaction} />
