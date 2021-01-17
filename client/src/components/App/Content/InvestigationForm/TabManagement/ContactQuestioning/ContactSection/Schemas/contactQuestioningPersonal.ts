@@ -16,7 +16,7 @@ export const contactQuestioningPersonal = {
                     : ContactIdValidationSchema;
             }
         ),
-    [InteractedContactFields.BIRTH_DATE]: yup.date().nullable(),
+    [InteractedContactFields.BIRTH_DATE]: yup.date().max(new Date()).nullable(),
     [InteractedContactFields.PHONE_NUMBER]: yup
         .string()
         .when(

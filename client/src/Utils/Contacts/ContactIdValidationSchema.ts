@@ -11,7 +11,7 @@ const ContactIdValidationSchema = yup
       then: yup
         .string()
         .nullable()
-        .test('isValid', 'ניתן להזין בשדה דרכון 10 תווים/ 15 תווים ו-/', (id) => isPassportValid(id)),
+        .test('isValid', 'דרכון לא תקין', (id) => isPassportValid(id)),
       otherwise:
         yup
         .string()
