@@ -8,54 +8,65 @@ import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
+import InteractionGridItem from '../InteractionGridItem';
+
 const BusEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
-    
     const { interaction } = props;
-       
-    const formClasses = useFormStyles();
 
     const cities : Map<string, City> = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     return (
         <>
-            <Grid container justify='flex-start' className={formClasses.formRow}>
-                <FormInput xs={6} fieldName='קו'>
-                    <Typography variant='caption'>
-                        {interaction.busLine}
-                    </Typography>
-                </FormInput>
-
-                <FormInput xs={6} fieldName='חברה'>
-                    <Typography variant='caption'>
-                        {interaction.busCompany}
-                    </Typography>
-                </FormInput>
-            </Grid>
-            <Grid container justify='flex-start' className={formClasses.formRow}>
-                <FormInput xs={6} fieldName='עיר מוצא'>
-                    <Typography>
-                        {cities.get(interaction.cityOrigin as string)?.displayName}
-                    </Typography>
-                </FormInput>
-
-                <FormInput xs={6} fieldName='תחנת עליה'>
-                    <Typography variant='caption'>
-                        {interaction.boardingStation}
-                    </Typography>
-                </FormInput>
-            </Grid>
-            <Grid container justify='flex-start' className={formClasses.formRow}>
-                <FormInput xs={6} fieldName='עיר יעד'>
-                    <Typography>
-                        {cities.get(interaction.cityDestination as string)?.displayName}
-                    </Typography>
-                </FormInput>
-
-                <FormInput xs={6} fieldName='תחנת ירידה'>
-                    <Typography variant='caption'>
-                        {interaction.endStation}
-                    </Typography>
-                </FormInput>
+            <Grid container justify='flex-start' alignItems='center'>
+                <InteractionGridItem 
+                    containerSize={6}
+                    labelLengthMD={3}
+                    labelLengthLG={2}
+                    title='קו'
+                    content={interaction.busLine}
+                />
+                <InteractionGridItem 
+                    containerSize={6}
+                    labelLengthMD={3}
+                    labelLengthLG={2}
+                    title='חברה'
+                    content={interaction.busCompany}
+                />
+                <InteractionGridItem 
+                    containerSize={6}
+                    labelLengthMD={3}
+                    labelLengthLG={2}
+                    title='עיר מוצא'
+                    content={cities.get(interaction.cityOrigin as string)?.displayName}
+                />
+                <InteractionGridItem 
+                    containerSize={6}
+                    labelLengthMD={3}
+                    labelLengthLG={2}
+                    title='עיר מוצא'
+                    content={cities.get(interaction.cityOrigin as string)?.displayName}
+                />
+                <InteractionGridItem 
+                    containerSize={6}
+                    labelLengthMD={3}
+                    labelLengthLG={2}
+                    title='תחנת עליה'
+                    content={interaction.boardingStation}
+                />
+                <InteractionGridItem 
+                    containerSize={6}
+                    labelLengthMD={3}
+                    labelLengthLG={2}
+                    title='עיר יעד'
+                    content={cities.get(interaction.cityDestination as string)?.displayName}
+                />
+                <InteractionGridItem 
+                    containerSize={6}
+                    labelLengthMD={3}
+                    labelLengthLG={2}
+                    title='עיר מוצא'
+                    content={interaction.endStation}
+                />
             </Grid>
         </>
     );
