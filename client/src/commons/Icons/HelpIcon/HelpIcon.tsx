@@ -9,9 +9,9 @@ interface Props {
     isWarning: boolean;
 }
 
-const RefreshIcon = (props : Props) => {
+const HelpIcon = (props : Props) => {
     const classes = useStyles();
-    const { title , isWarning} = props;
+    const { title , isWarning } = props;
     const iconClass = isWarning ? classes.warningIcon : classes.icon;
 
     return (
@@ -21,4 +21,4 @@ const RefreshIcon = (props : Props) => {
     )
 }
 
-export default RefreshIcon;
+export default HelpIcon;
