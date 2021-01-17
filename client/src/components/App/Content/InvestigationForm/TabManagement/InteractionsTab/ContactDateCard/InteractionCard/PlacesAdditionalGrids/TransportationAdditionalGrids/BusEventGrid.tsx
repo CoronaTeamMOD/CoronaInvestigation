@@ -1,11 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import {Grid, Typography} from '@material-ui/core';
+import {Grid} from '@material-ui/core';
 
 import City from 'models/City';
-import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
-import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import InteractionGridItem from '../InteractionGridItem';

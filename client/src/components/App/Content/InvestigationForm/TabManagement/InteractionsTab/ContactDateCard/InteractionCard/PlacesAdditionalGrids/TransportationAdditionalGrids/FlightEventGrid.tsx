@@ -1,76 +1,84 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
 import Country from 'models/Country';
-import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
-import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
+import InteractionGridItem from '../InteractionGridItem';
+
 const FlightEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
-
     const { interaction } = props;
-
-    const formClasses = useFormStyles();
 
     const countries : Map<string, Country> = useSelector<StoreStateType, Map<string, Country>>(state => state.countries);
 
     return (
         <>
-            <Grid container justify='flex-start' className={formClasses.formRow}>
-                    <FormInput xs={6} fieldName='מספר טיסה'>
-                        <Typography variant='caption'>
-                            {interaction.flightNum}
-                        </Typography>
-                    </FormInput>
-
-                    <FormInput xs={6} fieldName='חברת תעופה'>
-                        <Typography variant='caption'>
-                            {interaction.airline}
-                        </Typography>
-                    </FormInput>
-            </Grid>
-            <Grid container justify='flex-start' className={formClasses.formRow}>
-                    <FormInput xs={4} fieldName='ארץ מוצא'>
-                        <Typography>
-                            {countries.get(interaction.flightOriginCountry as string)?.displayName}
-                        </Typography>
-                    </FormInput>
-                    <FormInput xs={4} fieldName='עיר מוצא'>
-                        <Typography variant='caption'>
-                            {interaction.flightOriginCity}
-                        </Typography>
-                    </FormInput>
-                    <FormInput xs={4} fieldName='שדה תעופה מוצא'>
-                        <Typography variant='caption'>
-                            {interaction.flightOriginAirport}
-                        </Typography>
-                    </FormInput>
-            </Grid>
-            <Grid container justify='flex-start' className={formClasses.formRow}>
-                    <FormInput xs={4} fieldName='ארץ יעד'>
-                        <Typography>
-                            {countries.get(interaction.flightDestinationCountry as string)?.displayName}
-                        </Typography>
-                    </FormInput>
-                    <FormInput xs={4} fieldName='עיר יעד'>
-                        <Typography variant='caption'>
-                            {interaction.flightDestinationCity}
-                        </Typography>
-                    </FormInput>
-                    <FormInput xs={4} fieldName='שדה תעופה יעד'>
-                        <Typography variant='caption'>
-                            {interaction.flightDestinationAirport}
-                        </Typography>
-                    </FormInput>
-            </Grid>
-            <Grid container justify='flex-start' className={formClasses.formRow}>
-                <FormInput xs={12} fieldName='מושבים הצריכים להכנס לבידוד - מיועד להחצנה'>
-                    <Typography>
-                        {interaction.placeDescription}
-                    </Typography>
-                </FormInput>
+            <Grid container justify='flex-start' alignItems='center' spacing={1}>
+                <InteractionGridItem 
+                        containerSize={6}
+                        labelLengthMD={4}
+                        labelLengthLG={2}
+                        title='מספר טיסה'
+                        content={interaction.flightNum}
+                />
+                <InteractionGridItem 
+                        containerSize={6}
+                        labelLengthMD={4}
+                        labelLengthLG={2}
+                        title='חברת תעופה'
+                        content={interaction.airline}
+                />
+                <InteractionGridItem 
+                        containerSize={4}
+                        labelLengthMD={4}
+                        labelLengthLG={2}
+                        title='ארץ מוצא'
+                        content={interaction.flightOriginCountry}
+                />
+                <InteractionGridItem 
+                        containerSize={4}
+                        labelLengthMD={4}
+                        labelLengthLG={2}
+                        title='עיר מוצא'
+                        content={interaction.flightOriginCity}
+                />
+                <InteractionGridItem 
+                        containerSize={4}
+                        labelLengthMD={4}
+                        labelLengthLG={2}
+                        title='שדה תעופה מוצא'
+                        content={interaction.flightOriginAirport}
+                />
+                <InteractionGridItem 
+                        containerSize={4}
+                        labelLengthMD={4}
+                        labelLengthLG={2}
+                        title='ארץ יעד'
+                        content={countries.get(interaction.flightDestinationCountry as string)?.displayName}
+                />
+                <InteractionGridItem 
+                        containerSize={4}
+                        labelLengthMD={4}
+                        labelLengthLG={2}
+                        title='עיר יעד'
+                        content={interaction.flightDestinationCity}
+                />
+                <InteractionGridItem 
+                        containerSize={4}
+                        labelLengthMD={4}
+                        labelLengthLG={3}
+                        title='שדה תעופה יעד'
+                        content={interaction.flightDestinationAirport}
+                />
+                <InteractionGridItem 
+                        containerSize={12}
+                        labelLengthMD={4}
+                        labelLengthLG={3}
+                        title='מושבים הצריכים להכנס לבידוד - מיועד להחצנה'
+                        content={interaction.placeDescription}
+                />
             </Grid>
         </>
     );
