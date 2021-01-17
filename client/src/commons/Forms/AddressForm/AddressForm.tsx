@@ -27,7 +27,7 @@ const AddressForm: React.FC<Props> = ({
     cityField, 
     streetField,
     floorField, 
-    appartmentField,
+    apartmentField,
     houseNumberField,
     houseGridSize = 1
 }) => {
@@ -48,7 +48,7 @@ const AddressForm: React.FC<Props> = ({
 
     const houseNumberFieldNameSplitted = houseNumberField?.name.split('.');
     const floorFieldNameSplitted = floorField?.name.split('.');
-    const appartmentFieldNameSplitted = appartmentField?.name.split('.');
+    const apartmentFieldNameSplitted = apartmentField?.name.split('.');
 
     return (
         <>
@@ -214,16 +214,16 @@ const AddressForm: React.FC<Props> = ({
                 </Grid>
             }
             {
-                appartmentField &&
-                <Grid item xs={unsized ? undefined : houseGridSize} className={appartmentField?.className}>
+                apartmentField &&
+                <Grid item xs={unsized ? undefined : houseGridSize} className={apartmentField?.className}>
                     {
                         disabled ?
                         <Controller
-                            name={appartmentField?.name || ''}
+                            name={apartmentField?.name || ''}
                             control={methods.control}
                             render={(props) => (
                                 <TextField 
-                                    test-id={appartmentField?.testId || ''} 
+                                    test-id={apartmentField?.testId || ''} 
                                     value={props.value} 
                                     label={APARTMENT_LABEL} 
                                     InputLabelProps={{ shrink: true }}
@@ -233,14 +233,14 @@ const AddressForm: React.FC<Props> = ({
                         />
                         :
                         <Controller
-                            name={appartmentField?.name || ''}
+                            name={apartmentField?.name || ''}
                             control={methods.control}
-                            defaultValue={appartmentField?.defaultValue}
+                            defaultValue={apartmentField?.defaultValue}
                             render={(props) => (
                                 <AlphanumericTextField
                                     InputProps={{className: classes.heightendTextField}}
-                                    testId={appartmentField?.testId || ''}
-                                    name={appartmentFieldNameSplitted ? appartmentFieldNameSplitted[appartmentFieldNameSplitted.length - 1] : ''}
+                                    testId={apartmentField?.testId || ''}
+                                    name={apartmentFieldNameSplitted ? apartmentFieldNameSplitted[apartmentFieldNameSplitted.length - 1] : ''}
                                     value={props.value}
                                     onChange={props.onChange}
                                     onBlur={props.onBlur}
@@ -270,10 +270,10 @@ interface Props {
     streetField: FormField;
     houseNumberField: FormField;
     floorField?: FormField;
-    appartmentField?: FormField;
+    apartmentField?: FormField;
     houseGridSize?: GridSize;
 }
 
-export type AddressFormFields = Pick<Props, 'cityField' | 'streetField' | 'houseNumberField'> & Partial<Pick<Props, 'floorField' | 'appartmentField'>>;
+export type AddressFormFields = Pick<Props, 'cityField' | 'streetField' | 'houseNumberField'> & Partial<Pick<Props, 'floorField' | 'apartmentField'>>;
 
 export default AddressForm;
