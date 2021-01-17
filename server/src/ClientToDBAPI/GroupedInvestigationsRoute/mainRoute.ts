@@ -70,7 +70,7 @@ groupedInvestigationsRoute.post('/exclude', adminMiddleWare, (request: Request, 
 })
 
 groupedInvestigationsRoute.post('/', adminMiddleWare, (request: Request, response: Response) => {
-    const invetigationsToGroup: number[] = request.body.invetigationsToGroup;
+    const investigationsToGroup: number[] = request.body.investigationsToGroup;
     const group: string | Object = request.body.group;
     if (typeof group === 'object') {
         const groupedInvestigationsLogger = logger.setup({
@@ -78,7 +78,7 @@ groupedInvestigationsRoute.post('/', adminMiddleWare, (request: Request, respons
             user: response.locals.user.id,
             investigation: response.locals.epidemiologynumber
         })
-        const parameters = {input: { ...request.body.group, epidemiologyNumbers: invetigationsToGroup }};
+        const parameters = {input: { ...request.body.group, epidemiologyNumbers: investigationsToGroup }};
         groupedInvestigationsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
         graphqlRequest(CREATE_GROUPED_INVESTIGATIONS, response.locals, parameters)
             .then(result => {
@@ -96,7 +96,7 @@ groupedInvestigationsRoute.post('/', adminMiddleWare, (request: Request, respons
             investigation: response.locals.epidemiologynumber
         })
         const groupId: string = request.body.group;
-        const parameters = {input: { epidemiologyNumbers: invetigationsToGroup, val: groupId }};
+        const parameters = {input: { epidemiologyNumbers: investigationsToGroup, val: groupId }};
         groupedInvestigationsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
         graphqlRequest(UPDATE_GROUPED_INVESTIGATIONS, response.locals, parameters)
             .then(result => {
