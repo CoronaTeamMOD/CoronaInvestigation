@@ -256,7 +256,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             .then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     desksByCountyIdLogger.info('The desks were fetched successfully', Severity.LOW);
-                    setAllDesks([{ id: -1, deskName: 'לא שוייך לדסק' }, ...result.data]);
+                    setAllDesks([{ id: null, deskName: 'לא שוייך לדסק' }, ...result.data]);
                 } else {
                     desksByCountyIdLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
                 }
