@@ -66,6 +66,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     appartmentNumber: {
         marginTop: '1vh'
+    },
+    fieldNameWithIcon: {
+        display: 'flex',
+        alignItems: 'center'
     }
 }));
 

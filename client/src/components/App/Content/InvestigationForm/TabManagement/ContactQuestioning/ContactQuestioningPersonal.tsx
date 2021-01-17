@@ -6,6 +6,7 @@ import { Avatar, Grid, Typography } from '@material-ui/core';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import FieldName from 'commons/FieldName/FieldName';
+import HelpIcon from 'commons/Icons/HelpIcon/HelpIcon';
 import InteractedContact from 'models/InteractedContact';
 import useContactFields from 'Utils/Contacts/useContactFields';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
@@ -17,6 +18,9 @@ import IdentificationTextField from 'commons/IdentificationTextField/Identificat
 
 import useStyles from './ContactQuestioningStyles';
 import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
+
+const passportInfoMessage = 'ניתן להזין בשדה דרכון 10 תווים/ 15 תווים ו-/';
+const idInfoMessage = 'ניתן להזין בשדה תז עד 9 תווים'
 
 const ContactQuestioningPersonal: React.FC<Props> = (
     props: Props
@@ -47,7 +51,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
     );
 
     const classes = useStyles();
-
+    const idTooltipText = isPassport ? passportInfoMessage : idInfoMessage;
     const PHONE_LABEL = 'טלפון';
 
     const { shouldDisableContact } = useStatusUtils();
@@ -102,7 +106,18 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                             }}
                         />
                     </Grid>
-                    <FieldName fieldName='מספר תעודה:' />
+                    <FieldName 
+                        fieldName='מספר תעודה:' 
+                        className={classes.fieldNameWithIcon}
+                        appendantLabelIcon={
+                            <HelpIcon 
+                                title={idTooltipText} 
+                                isWarning={
+                                    currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_NUMBER]
+                                } 
+                            />
+                        }
+                    />
                     <Grid item xs={3}>
                         <Controller
                             control={control}
