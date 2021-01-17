@@ -21,9 +21,10 @@ import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
 const ContactQuestioningPersonal: React.FC<Props> = (
     props: Props
 ): JSX.Element => {
-    const { control, getValues } = useFormContext();
-
+    const { control, getValues , errors} = useFormContext();
     const { index, interactedContact } = props;
+
+    const currentFormErrors = errors?.form && errors?.form[index];
     
     const calcAge = (birthDate: Date) => {
         const newAge: number = differenceInYears(new Date(),new Date(birthDate));
@@ -135,13 +136,17 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                         name={`form[${index}].${InteractedContactFields.BIRTH_DATE}`}
                         defaultValue={interactedContact.birthDate}
                         render={(props) => {
+                            const dateError = currentFormErrors && currentFormErrors[InteractedContactFields.BIRTH_DATE]?.message;
                             return (
                                 <DatePick
                                     {...props}
                                     disabled={isFieldDisabled}
                                     testId='contactBirthDate'
                                     maxDate={new Date()}
+                                    maxDateMessage='תאריך לידה לא יכול להיות יותר גדול מהיום'
                                     useBigCalender={false}
+                                    labelText={dateError ? 'תאריך לא ולידי' : 'תאריך לידה'}
+                                    error={Boolean(dateError)}
                                     onChange={(newDate: Date) => {
                                         props.onChange(newDate);
                                         setAge(calcAge(newDate));

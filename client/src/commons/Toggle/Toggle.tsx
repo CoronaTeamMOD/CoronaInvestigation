@@ -38,4 +38,5 @@ interface Props extends ToggleButtonGroupProps {
     firstOption?: string;
     secondOption?: string;
     disabled?: boolean;
+    value?: boolean;
 };
