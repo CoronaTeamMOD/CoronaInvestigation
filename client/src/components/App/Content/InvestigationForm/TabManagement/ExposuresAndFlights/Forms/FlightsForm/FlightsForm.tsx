@@ -63,7 +63,7 @@ const FlightsForm = (props: any) => {
 
 			<FormRowWithInput fieldName='תאריך טיסה:'>
 				<Grid className={formClasses.inputRow} item container xs={9} justify='flex-start' alignItems='center' spacing={1}>
-					<Grid item xs={5} lg={3} className={classes.flightInputDate}>
+					<Grid item className={classes.flightInputDate}>
 						<Typography variant='caption'>מתאריך</Typography>
 						<Controller
 							control={control}
@@ -88,7 +88,7 @@ const FlightsForm = (props: any) => {
 							}}
 						/>
 					</Grid>
-					<Grid item xs={5} lg={3} className={classes.flightInputDate}>
+					<Grid item className={classes.flightInputDate}>
 					<Typography variant='caption'>עד תאריך</Typography>
 						<Controller
 							control={control}

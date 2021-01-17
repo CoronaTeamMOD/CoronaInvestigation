@@ -61,7 +61,7 @@ const AirportInput = (props: any) => {
 
     return (
         <Grid container item xs={9} className={formStyles.inputRow} justify='flex-start' alignItems='center' spacing={1}>
-            <Grid item xs={4}>
+            <Grid item>
                 <div className={classes.countryAutocomplete}>
                     <Controller
                         control={control}
@@ -88,7 +88,7 @@ const AirportInput = (props: any) => {
                     />
                 </div>
             </Grid>
-            <Grid item xs={4} lg={3}>
+            <Grid item>
                 <Controller
                     control={control}
                     name={`exposures[${index}].${cityFieldName}`}
@@ -96,6 +96,7 @@ const AirportInput = (props: any) => {
                     render={(props) => {
                         return (
                             <InternationalCityTextField
+                                fullwidth
                                 {...props}
                                 onChange={(value) => {
                                     props.onChange(value);
@@ -108,7 +109,7 @@ const AirportInput = (props: any) => {
                     }}
                 />
             </Grid>
-            <Grid item xs={4} lg={3}>
+            <Grid item>
                 <Controller
                     control={control}
                     name={`exposures[${index}].${airportFieldName}`}
@@ -116,6 +117,7 @@ const AirportInput = (props: any) => {
                     render={(props) => {
                         return (
                             <AirportTextField
+                                fullwidth
                                 {...props}
                                 onChange={(value) => {
                                     props.onChange(value);
