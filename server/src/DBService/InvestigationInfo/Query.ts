@@ -16,6 +16,7 @@ query InvestigationStaticDetails($investigationId: Int!) {
         fullName
         primaryPhone
         birthDate
+        validationDate
       }
       identityType
       additionalPhoneNumber
@@ -24,7 +25,6 @@ query InvestigationStaticDetails($investigationId: Int!) {
       isCurrentlyHospitalized
       isInClosedInstitution
     }
-    coronaTestDate
     investigatedPatientId
     userByCreator {
       id

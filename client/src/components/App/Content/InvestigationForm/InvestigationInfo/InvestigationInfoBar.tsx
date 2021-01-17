@@ -37,22 +37,18 @@ const defaultInvestigationStaticInfo : InvestigationInfo = {
     endTime: null,
     symptomsStartDate: null,
     doesHaveSymptoms: false,
-    investigatedPatient: {
-        isDeceased: false,
-        additionalPhoneNumber: '',
-        gender: '',
-        identityType: '',
-        isCurrentlyHospitalized: false,
-        isInClosedInstitution: false,
-        patientInfo: {
-            fullName: '',
-            primaryPhone: '',
-            identityNumber: '',
-            age: '',
-            birthDate: null
-        },
-    },
-    coronaTestDate: new Date(),
+    isDeceased: false,
+    additionalPhoneNumber: '',
+    gender: '',
+    identityType: '',
+    isCurrentlyHospitalized: false,
+    isInClosedInstitution: false,
+    fullName: '',
+    primaryPhone: '',
+    identityNumber: '',
+    age: '',
+    birthDate: null,
+    validationDate: new Date(),
     investigatedPatientId: 0,
     userByCreator: defaultUser,
     userByLastUpdator: defaultUser
@@ -90,19 +86,22 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                     investigationInfoLogger.info('investigation info request was successful', Severity.LOW);
                     const investigationInfo : InvestigationInfoData = result.data;
                     setInvestigatedPatientId(investigationInfo.investigatedPatientId);
-                    setIsDeceased(investigationInfo.investigatedPatient.isDeceased);
-                    setIsCurrentlyHospitialized(investigationInfo.investigatedPatient.isCurrentlyHospitalized);
-                    const gender = investigationInfo.investigatedPatient.gender;
+                    setIsDeceased(investigationInfo.isDeceased);
+                    setIsCurrentlyHospitialized(investigationInfo.isCurrentlyHospitalized);
+                    const gender = investigationInfo.gender;
                     setGender(gender ? gender : '');
-                    const formattedTestDate = truncateDate(investigationInfo.coronaTestDate)
-                    const formattedInvestigationInfo = {
+                    const formattedValidationDate = truncateDate(investigationInfo.validationDate);
+                    const formattedInvestigationInfo : InvestigationInfo = {
                         ...investigationInfo,
-                        coronaTestDate : formattedTestDate
+                        validationDate: formattedValidationDate
                     }
-                    setDatesToInvestigateParams({
+                    setDatesToInvestigateParams(
+                        {
                         symptomsStartDate: investigationInfo.symptomsStartDate, 
                         doesHaveSymptoms: investigationInfo.doesHaveSymptoms,
-                        }, formattedTestDate);
+                        }, 
+                        formattedValidationDate
+                    );
                     setEndTime(investigationInfo.endTime);
                     setInvestigationStaticInfo(formattedInvestigationInfo);
                 }
@@ -132,10 +131,9 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     return (
         <CommentContextProvider value={{comment:investigationStaticInfo.comment, setComment:updateComment}}>
             <InvestigatedPersonInfo
-                investigatedPatientStaticInfo={investigationStaticInfo.investigatedPatient}
+                investigationStaticInfo={investigationStaticInfo}
                 currentTab={currentTab}
                 epedemioligyNumber={epidemiologyNumber}
-                coronaTestDate={investigationStaticInfo.coronaTestDate}
             />
             <InvestigationMetadata
                 investigationMetaData={investigationStaticInfo}

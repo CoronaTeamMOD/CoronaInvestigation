@@ -49,10 +49,10 @@ describe('useInteractionsTab tests', () => {
 
     describe('getDatesToInvestigate tests:', () => {
         const investigationStartDate = new Date();
-        const coronaTestDate = new Date();
+        const validationDate = new Date();
         const symptomsStartDate = new Date();
         beforeEach(async () => {
-            subDays(coronaTestDate, 3);
+            subDays(validationDate, 3);
             subDays(symptomsStartDate, 5);
             await testHooksFunction(() => {
                 useInteractionsTabOutcome = useInteractionsTab(useInteractionsTabInput);
@@ -60,21 +60,21 @@ describe('useInteractionsTab tests', () => {
         });
         describe('symptomatic investigated person tests:', () => {
             it('get dates when symptoms start date is available', async () => {
-                const receivedDates = getDatesToInvestigate(true, symptomsStartDate, coronaTestDate);
+                const receivedDates = getDatesToInvestigate(true, symptomsStartDate, validationDate);
                 expect(receivedDates).toEqual(eachDayOfInterval({start: subDays(symptomsStartDate, 4), end: investigationStartDate}).sort(compareDesc));
             })
 
             it('get dates when symptoms start is not available', async () => {
-                const receivedDates = getDatesToInvestigate(true, null, coronaTestDate);
+                const receivedDates = getDatesToInvestigate(true, null, validationDate);
 
-                expect(receivedDates).toEqual(eachDayOfInterval({start: subDays(coronaTestDate, 7), end: investigationStartDate}).sort(compareDesc));
+                expect(receivedDates).toEqual(eachDayOfInterval({start: subDays(validationDate, 7), end: investigationStartDate}).sort(compareDesc));
             });
         });
 
         describe('asymptomatic investigated person tests:', () => {
             it('get dates when the investigated person is asymptomatic', async () => {
-                const receivedDates = getDatesToInvestigate(false, null, coronaTestDate);
-                expect(receivedDates).toEqual(eachDayOfInterval({start: subDays(coronaTestDate, 7), end: investigationStartDate}).sort(compareDesc));
+                const receivedDates = getDatesToInvestigate(false, null, validationDate);
+                expect(receivedDates).toEqual(eachDayOfInterval({start: subDays(validationDate, 7), end: investigationStartDate}).sort(compareDesc));
             });
         });
     });

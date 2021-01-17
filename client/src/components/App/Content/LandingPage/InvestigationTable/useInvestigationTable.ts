@@ -45,7 +45,7 @@ const getFlooredRandomNumber = (min: number, max: number): number => (
 
 export const createRowData = (
     epidemiologyNumber: number,
-    coronaTestDate: string,
+    validationDate: string,
     isComplex: boolean,
     priority: number,
     mainStatus: InvestigationMainStatus,
@@ -77,7 +77,7 @@ export const createRowData = (
 ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
-    coronaTestDate,
+    validationDate,
     isComplex,
     priority,
     mainStatus,
@@ -449,7 +449,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const isInInstitute  =  investigation.investigatedPatientByInvestigatedPatientId?.investigatedPatientRoleByRole?.displayName === 'שוהה במוסד'
                                 return createRowData(
                                     investigation.epidemiologyNumber,
-                                    investigation.coronaTestDate,
+                                    covidPatient.validationDate,
                                     investigation.isComplex,
                                     investigation.priority,
                                     investigation.investigationStatusByInvestigationStatus,
@@ -591,7 +591,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.rowIndicators]: '',
             [TableHeadersNames.multipleCheck]: row.isChecked,
             [TableHeadersNames.epidemiologyNumber]: row.epidemiologyNumber,
-            [TableHeadersNames.coronaTestDate]: getFormattedDate(row.coronaTestDate),
+            [TableHeadersNames.validationDate]: getFormattedDate(row.validationDate),
             [TableHeadersNames.isComplex]: row.isComplex,
             [TableHeadersNames.priority]: row.priority,
             [TableHeadersNames.fullName]: row.fullName,
@@ -806,9 +806,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const nextRow = rows[rowIndex + 1];
 
         const isNotLastRow = (rows.length - 1 !== rowIndex);
-        const hasATestDate = Boolean(currentRow?.coronaTestDate);
-        const isLastOfDate = (getFormattedDate(currentRow?.coronaTestDate) !== getFormattedDate(Boolean(nextRow) ?
-            nextRow.coronaTestDate :
+        const hasATestDate = Boolean(currentRow?.validationDate);
+        const isLastOfDate = (getFormattedDate(currentRow?.validationDate) !== getFormattedDate(Boolean(nextRow) ?
+            nextRow.validationDate :
             '9999/12/31'));
 
         return ((isDefaultOrder && !isLoading) &&
@@ -858,7 +858,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         const isInInstitute  =  investigation.investigatedPatientByInvestigatedPatientId?.investigatedPatientRoleByRole?.displayName === 'שוהה במוסד'
                         return createRowData(
                             investigation.epidemiologyNumber,
-                            investigation.coronaTestDate,
+                            covidPatient.validationDate,
                             investigation.isComplex,
                             investigation.priority,
                             investigation.investigationStatusByInvestigationStatus,
