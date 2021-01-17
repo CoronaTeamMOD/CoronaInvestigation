@@ -1,6 +1,8 @@
 import React from 'react'
 import { Grid , GridSize , Typography} from '@material-ui/core';
 
+import useStyles from './interactionGridItemStyles';
+
 interface Props {
     containerSize : GridSize;
     title: string;
@@ -10,9 +12,10 @@ interface Props {
 }
 
 const InteractionGridItem = (props: Props) => {
+    const classes = useStyles();
     const { containerSize , title , content , labelLengthMD , labelLengthLG} = props;
     return (
-        <Grid container xs={containerSize} alignItems='center'>
+        <Grid container xs={containerSize} alignItems='center' className={classes.item}>
             <Grid item md={labelLengthMD} lg={labelLengthLG}>
                 <Typography variant='caption'>
                     {<b>{title + ':'}</b>}
