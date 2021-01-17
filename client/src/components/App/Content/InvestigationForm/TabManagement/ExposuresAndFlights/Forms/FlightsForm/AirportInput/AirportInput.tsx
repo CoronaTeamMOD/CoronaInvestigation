@@ -125,7 +125,6 @@ const AirportInput = (props: any) => {
                                 }}
                                 placeholder='שדה תעופה'
                                 label='שדה תעופה*'
-                                className={classes.airportTextField}
                             />
                         );
                     }}

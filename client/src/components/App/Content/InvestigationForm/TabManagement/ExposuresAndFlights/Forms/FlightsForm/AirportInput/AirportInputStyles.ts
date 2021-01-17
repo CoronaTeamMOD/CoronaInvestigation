@@ -8,9 +8,6 @@ const useStyles = makeStyles({
     airportCountryTextField: {
         minWidth: '10vw',
     },
-    airportTextField: {
-        marginLeft: '1vw',
-    },
     countryAutocomplete: {
         width: '19vw',
     }
