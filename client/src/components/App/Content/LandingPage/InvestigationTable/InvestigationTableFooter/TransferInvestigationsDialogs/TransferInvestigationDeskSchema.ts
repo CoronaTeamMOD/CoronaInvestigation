@@ -10,7 +10,7 @@ const maxLengthErrorMessage = 'הסיבה חייבת להיות עד 200 תוו�
 
 const schema = yup.object().shape({
     [TransferInvestigationInputsNames.DESK]: yup.object().shape({
-        id: yup.number(),
+        id: yup.number().nullable(),
         deskName: yup.string()
     }).nullable().required(deskRequiredMessage),
     [TransferInvestigationInputsNames.REASON]: yup.string()
