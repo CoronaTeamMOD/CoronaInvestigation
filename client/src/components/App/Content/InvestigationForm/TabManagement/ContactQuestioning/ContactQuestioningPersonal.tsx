@@ -25,7 +25,7 @@ const idInfoMessage = 'ניתן להזין בשדה תז עד 9 תווים'
 const ContactQuestioningPersonal: React.FC<Props> = (
     props: Props
 ): JSX.Element => {
-    const { control, getValues , errors} = useFormContext();
+    const { control, getValues , errors, trigger} = useFormContext();
     const { index, interactedContact } = props;
 
     const currentFormErrors = errors?.form && errors?.form[index];
@@ -66,6 +66,10 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                 !!interactedContact.identificationNumber);
         setShouldIdDisable(shouldDisable);
     }, [interactedContact.contactStatus]);
+
+    useEffect(() => {
+        trigger(`form[${index}].${InteractedContactFields.IDENTIFICATION_NUMBER}`)
+    }, [isPassport]);
 
     return (
         <Grid item xs={4}>

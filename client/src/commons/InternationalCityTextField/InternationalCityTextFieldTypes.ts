@@ -10,6 +10,7 @@ export interface InternationalCityTextFieldProps<T> {
     placeholder?: string,
     label?: string,
     className?: string,
+    fullwidth?: boolean,
 }
 
 type InternationalCityTextFieldType = <T>(props: InternationalCityTextFieldProps<T>) => JSX.Element;
