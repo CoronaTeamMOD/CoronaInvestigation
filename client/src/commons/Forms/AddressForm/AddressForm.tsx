@@ -16,7 +16,7 @@ import useStyles from './AddressFormStyles';
 const CITY_LABEL = 'עיר';
 const STREET_LABEL = 'רחוב';
 const FLOOR_LABEL = 'קומה';
-const APPARTMENT_LABEL = 'דירה';
+const APARTMENT_LABEL = 'דירה';
 const HOUSE_NUM_LABEL = 'מספר בית';
 const UNKNOWN = 'לא ידוע';
 const GRID_ITEM_SIZE = 2;
@@ -225,7 +225,7 @@ const AddressForm: React.FC<Props> = ({
                                 <TextField 
                                     test-id={appartmentField?.testId || ''} 
                                     value={props.value} 
-                                    label={APPARTMENT_LABEL} 
+                                    label={APARTMENT_LABEL} 
                                     InputLabelProps={{ shrink: true }}
                                     disabled={true} 
                                 />
@@ -244,8 +244,8 @@ const AddressForm: React.FC<Props> = ({
                                     value={props.value}
                                     onChange={props.onChange}
                                     onBlur={props.onBlur}
-                                    placeholder={APPARTMENT_LABEL}
-                                    label={APPARTMENT_LABEL}
+                                    placeholder={APARTMENT_LABEL}
+                                    label={APARTMENT_LABEL}
                                 />
                             )}
                         />
