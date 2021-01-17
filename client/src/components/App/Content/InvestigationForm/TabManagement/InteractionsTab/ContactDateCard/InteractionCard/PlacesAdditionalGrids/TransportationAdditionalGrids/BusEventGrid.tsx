@@ -41,13 +41,6 @@ const BusEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                     containerSize={6}
                     labelLengthMD={3}
                     labelLengthLG={2}
-                    title='עיר מוצא'
-                    content={cities.get(interaction.cityOrigin as string)?.displayName}
-                />
-                <InteractionGridItem 
-                    containerSize={6}
-                    labelLengthMD={3}
-                    labelLengthLG={2}
                     title='תחנת עליה'
                     content={interaction.boardingStation}
                 />
@@ -62,7 +55,7 @@ const BusEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                     containerSize={6}
                     labelLengthMD={3}
                     labelLengthLG={2}
-                    title='עיר מוצא'
+                    title='תחנת ירידה'
                     content={interaction.endStation}
                 />
             </Grid>
