@@ -97,8 +97,8 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
             if (isUnknownTime) {
                 externalizationErrors.push('הזמן אינו ידוע');
             }
-            if (!isTransportationPlace && !(locationAddress && (placeName && placeDescription))) {
-                externalizationErrors.push('חסרה כתובת ובנוסף חסר שם המוסד ופירוט');
+            if (!isTransportationPlace && !(locationAddress && (placeName || placeDescription))) {
+                externalizationErrors.push('חסרה כתובת ובנוסף חסר שם המוסד או פירוט');
             }
         }
         if (externalizationErrors.length === 0) {
