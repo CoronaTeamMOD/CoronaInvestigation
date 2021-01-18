@@ -65,7 +65,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
             (shouldDisableIdByReopen &&
                 !!interactedContact.identificationNumber);
         setShouldIdDisable(shouldDisable);
-    }, [interactedContact.contactStatus]);
+    }, [interactedContact.contactStatus, isFieldDisabled]);
 
     useEffect(() => {
         trigger(`form[${index}].${InteractedContactFields.IDENTIFICATION_NUMBER}`)
