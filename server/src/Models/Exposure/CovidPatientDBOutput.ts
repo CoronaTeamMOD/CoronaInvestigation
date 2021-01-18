@@ -17,7 +17,6 @@ export interface AddressDBOutput {
     }
     floor: string,
     houseNum: string,
-    id: number
 }
 
 export default CovidPatientDBOutput;
