@@ -6,6 +6,7 @@ enum InvestigationsFilterByFields {
     INACTIVE_USER = 'INACTIVE_USER',
     UNALLOCATED_USER = 'UNALLOCATED_USER',
     TIME_RANGE = 'TIME_RANGE',
+    SUB_STATUS = 'SUB_STATUS'
 };
 
 export default InvestigationsFilterByFields;

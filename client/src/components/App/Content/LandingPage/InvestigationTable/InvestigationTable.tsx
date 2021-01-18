@@ -22,6 +22,7 @@ import SearchBar from 'commons/SearchBar/SearchBar';
 import InvestigatorOption from 'models/InvestigatorOption';
 import { adminLandingPageRoute } from 'Utils/Routes/Routes';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import InvestigationSubStatus from 'models/InvestigationSubStatus';
 import InvestigationTableRowType from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
@@ -63,6 +64,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [order, setOrder] = useState<Order>(SortOrder.asc);
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
     const [allStatuses, setAllStatuses] = useState<InvestigationMainStatus[]>([]);
+    const [allSubStatuses, setAllSubStatuses] = useState<InvestigationSubStatus[]>([]);
     const [showFilterRow, setShowFilterRow] = useState<boolean>(false);
     const [allDesks, setAllDesks] = useState<Desk[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(defaultPage);
@@ -93,11 +95,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         getNestedCellStyle, getRegularCellStyle,
         moveToTheInvestigationForm, totalCount, unassignedInvestigationsCount,
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
-        statusFilter, changeStatusFilter, deskFilter, changeDeskFilter, changeSearchFilter,
+        statusFilter, subStatusFilter, changeStatusFilter, changeSubStatusFilter, deskFilter, changeDeskFilter, changeSearchFilter,
         changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers,
         tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter
     } = useInvestigationTable({
-        setSelectedRow, allGroupedInvestigations, setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations,
+        setSelectedRow, allGroupedInvestigations, setAllCounties, setAllStatuses,setAllSubStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations,
         investigationColor
     });
 
@@ -304,9 +306,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         <Collapse in={showFilterRow}>
                             <TableFilter
                                 statuses={allStatuses}
+                                subStatuses={allSubStatuses}
                                 filteredStatuses={statusFilter}
                                 onFilterChange={(event, value) => changeStatusFilter(value)}
                                 onClose={closeFilterRow}
+                                filteredSubStatuses={subStatusFilter}
+                                onSubStatusChange={(event, value) => changeSubStatusFilter(value)}
                                 changeInactiveUserFilter={changeInactiveUserFilter}
                                 changeUnassginedUserFilter={changeUnassginedUserFilter}
                                 inactiveUserFilter={inactiveUserFilter}
