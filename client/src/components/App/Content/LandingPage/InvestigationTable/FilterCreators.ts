@@ -14,11 +14,11 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
             { [InvestigationsFilterByFields.STATUS]: null }
     },
     [InvestigationsFilterByFields.DESK_ID]: (deskIds: number[]) => {
-        if (deskIds.includes(-1)) {
+        if (deskIds.includes(null)) {
             return {
                 [InvestigationsFilterByFields.DESK_ID]: {
                     or: [
-                        { deskId: { in: deskIds.filter(deskId => deskId !== -1) } },
+                        { deskId: { in: deskIds.filter(deskId => deskId !== null) } },
                         { deskId: { isNull: true } }
                     ]
                 }
