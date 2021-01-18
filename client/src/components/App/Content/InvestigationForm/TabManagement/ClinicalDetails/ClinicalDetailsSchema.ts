@@ -114,7 +114,6 @@ const ClinicalDetailsSchema = (validationDate: Date) => yup.object().shape({
                 return schema.nullable();
             }
             return yup.date().required(requiredText).typeError(requiredText)
-            .max(validationDate, endDateBeforeValidationDateText)
             .min(subDays(getMinimalSymptomsStartDate(validationDate), 1), symptomsStartDateIsTooEarlyText);
         }),
     [ClinicalDetailsFields.SYMPTOMS]: yup.array().of(yup.string()).when(
