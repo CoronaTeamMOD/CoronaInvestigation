@@ -60,7 +60,6 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         },
         apartmentField: {
             name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`,
-            className: classes.appartmentNumber,
             defaultValue: interactedContact.isolationAddress?.apartment
         }
     }

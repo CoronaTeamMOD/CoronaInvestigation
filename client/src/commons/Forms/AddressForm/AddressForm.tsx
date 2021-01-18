@@ -19,7 +19,6 @@ const FLOOR_LABEL = 'קומה';
 const APARTMENT_LABEL = 'דירה';
 const HOUSE_NUM_LABEL = 'מספר בית';
 const UNKNOWN = 'לא ידוע';
-const GRID_ITEM_SIZE = 2;
 
 const AddressForm: React.FC<Props> = ({ 
     disabled = false,
@@ -28,8 +27,7 @@ const AddressForm: React.FC<Props> = ({
     streetField,
     floorField, 
     apartmentField,
-    houseNumberField,
-    houseGridSize = 1
+    houseNumberField
 }) => {
     const classes = useStyles();
 
@@ -49,10 +47,11 @@ const AddressForm: React.FC<Props> = ({
     const houseNumberFieldNameSplitted = houseNumberField?.name.split('.');
     const floorFieldNameSplitted = floorField?.name.split('.');
     const apartmentFieldNameSplitted = apartmentField?.name.split('.');
+    const smallFieldsClass = unsized ? [classes.fullHeight , classes.heightendTextField].join(" ") : classes.fullHeight;
 
     return (
-        <>
-            <Grid item xs={unsized ? undefined : GRID_ITEM_SIZE} className={cityField.className}>
+        <Grid item xs={unsized ? 12 : 8} container alignItems='stretch' spacing={2}>
+            <Grid item xs={unsized ? 12 : 3} className={cityField.className}>
                 {
                     disabled ?
                     <Controller
@@ -60,6 +59,8 @@ const AddressForm: React.FC<Props> = ({
                         control={methods.control}
                         render={(props) => (
                             <TextField 
+                                className={smallFieldsClass}
+                                InputProps={{className: smallFieldsClass}}
                                 value={cities.get(props.value)?.displayName || UNKNOWN} 
                                 label={CITY_LABEL}
                                 InputLabelProps={{ shrink: true }}
@@ -91,7 +92,7 @@ const AddressForm: React.FC<Props> = ({
                     />
                 }
             </Grid>
-            <Grid item xs={unsized ? undefined : GRID_ITEM_SIZE} className={streetField.className}>
+            <Grid item xs={unsized ? 12 : 3} className={streetField.className}>
                 {
                     disabled ?
                     <Controller
@@ -99,6 +100,8 @@ const AddressForm: React.FC<Props> = ({
                         control={methods.control}
                         render={(props) => (
                             <TextField 
+                                className={smallFieldsClass}
+                                InputProps={{className: smallFieldsClass}}
                                 test-id={streetField.testId || ''} 
                                 value={streetsInCity.get(props.value)?.displayName || UNKNOWN} 
                                 label={STREET_LABEL} 
@@ -138,7 +141,7 @@ const AddressForm: React.FC<Props> = ({
                     />
                 }
             </Grid>
-            <Grid item xs={unsized ? undefined : houseGridSize} className={houseNumberField.className}>
+            <Grid item xs={unsized ? 12 : 2} className={houseNumberField.className}>
                 {
                     disabled ?
                     <Controller
@@ -146,6 +149,8 @@ const AddressForm: React.FC<Props> = ({
                         control={methods.control}
                         render={(props) => (
                             <TextField 
+                                className={smallFieldsClass}
+                                InputProps={{className: smallFieldsClass}}
                                 test-id={houseNumberField.testId || UNKNOWN} 
                                 value={props.value} 
                                 label={HOUSE_NUM_LABEL} 
@@ -161,7 +166,8 @@ const AddressForm: React.FC<Props> = ({
                         defaultValue={houseNumberField.defaultValue}
                         render={(props) => (
                             <AlphanumericTextField
-                                InputProps={{className: classes.heightendTextField}}
+                                className={smallFieldsClass}
+                                InputProps={{className: smallFieldsClass}}
                                 testId={houseNumberField.testId || ''}
                                 name={houseNumberFieldNameSplitted[houseNumberFieldNameSplitted.length - 1]}
                                 value={props.value}
@@ -176,7 +182,7 @@ const AddressForm: React.FC<Props> = ({
             </Grid>
             {
                 floorField &&
-                <Grid item xs={unsized ? undefined : houseGridSize} className={floorField?.className}>
+                <Grid item xs={unsized ? 12 : 2} className={floorField?.className}>
                     {
                         disabled ?
                         <Controller
@@ -184,6 +190,8 @@ const AddressForm: React.FC<Props> = ({
                             control={methods.control}
                             render={(props) => (
                                 <TextField 
+                                    className={smallFieldsClass}
+                                    InputProps={{className: smallFieldsClass}}
                                     test-id={floorField?.testId || ''} 
                                     value={props.value} 
                                     label={FLOOR_LABEL} 
@@ -199,7 +207,8 @@ const AddressForm: React.FC<Props> = ({
                             defaultValue={floorField?.defaultValue}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    InputProps={{className: classes.heightendTextField}}
+                                    className={smallFieldsClass}
+                                    InputProps={{className: smallFieldsClass}}
                                     testId={floorField?.testId || ''}
                                     name={floorFieldNameSplitted ? floorFieldNameSplitted[floorFieldNameSplitted.length - 1] : ''}
                                     value={props.value}
@@ -215,7 +224,7 @@ const AddressForm: React.FC<Props> = ({
             }
             {
                 apartmentField &&
-                <Grid item xs={unsized ? undefined : houseGridSize} className={apartmentField?.className}>
+                <Grid item xs={unsized ? 12 : 2} className={apartmentField?.className}>
                     {
                         disabled ?
                         <Controller
@@ -223,6 +232,8 @@ const AddressForm: React.FC<Props> = ({
                             control={methods.control}
                             render={(props) => (
                                 <TextField 
+                                    className={smallFieldsClass}
+                                    InputProps={{className: smallFieldsClass}}
                                     test-id={apartmentField?.testId || ''} 
                                     value={props.value} 
                                     label={APARTMENT_LABEL} 
@@ -238,7 +249,8 @@ const AddressForm: React.FC<Props> = ({
                             defaultValue={apartmentField?.defaultValue}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    InputProps={{className: classes.heightendTextField}}
+                                    className={smallFieldsClass}
+                                    InputProps={{className: smallFieldsClass}}
                                     testId={apartmentField?.testId || ''}
                                     name={apartmentFieldNameSplitted ? apartmentFieldNameSplitted[apartmentFieldNameSplitted.length - 1] : ''}
                                     value={props.value}
@@ -252,7 +264,7 @@ const AddressForm: React.FC<Props> = ({
                     }
                 </Grid>
             }
-        </>
+        </Grid>
     )
 };
 
@@ -271,7 +283,6 @@ interface Props {
     houseNumberField: FormField;
     floorField?: FormField;
     apartmentField?: FormField;
-    houseGridSize?: GridSize;
 }
 
 export type AddressFormFields = Pick<Props, 'cityField' | 'streetField' | 'houseNumberField'> & Partial<Pick<Props, 'floorField' | 'apartmentField'>>;
