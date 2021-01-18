@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 
-import { CREATE_ADDRESS, UPDATE_ADDRESS } from '../../DBService/Address/Mutation';
+import { CREATE_ADDRESS } from '../../DBService/Address/Mutation';
 import { InitialLogData, Severity } from '../../Models/Logger/types';
 import Investigation from '../../Models/ClinicalDetails/Investigation';
 import CreateAddressResponse from '../../Models/Address/CreateAddress';
@@ -202,42 +202,27 @@ const saveClinicalDetails = (request: Request, response: Response, baseLog: Init
 }
 
 clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: Response) => {
-    const isolationAddressId = request.body.clinicalDetails?.isolationAddressId;
     const logData = {
         workflow: `saving clinical details tab`,
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     };
     const isolationAddress = formatToNullable(request.body.clinicalDetails?.isolationAddress);
-    if (!isolationAddressId) {
+    if (isolationAddress !== null) {
         const requestAddress: InsertAndGetAddressIdInput = formatToInsertAndGetAddressIdInput(isolationAddress);
         const createAddressLogger = logger.setup({...logData, workflow: `${logData.workflow}: create isolation address`})
-
         const parameters = {input: requestAddress};
         createAddressLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-
-        graphqlRequest(CREATE_ADDRESS, response.locals, parameters)
-        .then((result: CreateAddressResponse) => {
+        graphqlRequest(CREATE_ADDRESS, response.locals, {
+            input: requestAddress
+        }).then((result: CreateAddressResponse) => {
             createAddressLogger.info(validDBResponseLog, Severity.LOW);
             saveClinicalDetails(request, response, logData, result.data.insertAndGetAddressId.integer);
         }).catch(error => {
             createAddressLogger.error(invalidDBResponseLog(error),Severity.HIGH);
             response.status(errorStatusCode).send(error);
         });
-    } else {
-        const updateAddressLogger = logger.setup({...logData, workflow: `${logData.workflow}: update isolation address`})
-        
-        const parameters = {id: isolationAddressId, addressPatch: isolationAddress};
-        updateAddressLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-        graphqlRequest(UPDATE_ADDRESS, response.locals, parameters)
-        .then(result => {
-            updateAddressLogger.info(validDBResponseLog, Severity.LOW);
-            saveClinicalDetails(request, response, logData, result.data.updateAddressById.address.id);
-        }).catch(error => {
-            updateAddressLogger.error(invalidDBResponseLog(error),Severity.HIGH);
-            response.status(errorStatusCode).send(error);
-        });
-    }
+    } 
 });
 
 clinicalDetailsRoute.get('/isDeceased/:investigatedPatientId/:isDeceased', (request: Request, response: Response) => {
