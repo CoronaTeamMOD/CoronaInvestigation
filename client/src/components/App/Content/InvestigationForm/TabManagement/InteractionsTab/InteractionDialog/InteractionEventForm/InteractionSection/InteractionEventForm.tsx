@@ -231,7 +231,6 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                 <FormRowWithInput labelLength={2} fieldName={ADDRESS_LABEL}>
                     <AddressForm
                         disabled={true}
-                        houseGridSize={2}
                         {...addressFormFields}
                     />
                 </FormRowWithInput>

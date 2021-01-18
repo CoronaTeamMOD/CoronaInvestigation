@@ -15,6 +15,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         margin: theme.spacing(2),
         padding: theme.spacing(1)
     },
+    accordionActions: {
+        justifyContent: 'flex-start',
+        padding: '0 1vw'
+    },
     errorAccordion: {
         border: `2px solid ${theme.palette.error.light}`,
     },
@@ -63,9 +67,6 @@ const useStyles = makeStyles((theme: Theme) => ({
             fontSize: '15px',
             textAlign: 'end',
         }
-    },
-    appartmentNumber: {
-        marginTop: '1vh'
     },
     fieldNameWithIcon: {
         display: 'flex',
