@@ -5,10 +5,14 @@ import { usePersonalInfoTabIncome, usePersonalInfoTabOutcome } from './usePerson
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
+import investigatedPatientRole from 'models/investigatedPatientRole';
 
+// TODO: remove stubs
+const rolesStub: investigatedPatientRole[] = [{ id: 1, displayName: 'bla bla' }, { id: 2, displayName: 'bla bla2' }, { id: 3, displayName: 'תלמיד/ה' }]
 
 const usePersonalInfoTab = (parameters: usePersonalInfoTabIncome): usePersonalInfoTabOutcome => {
     const [subOccupations, setSubOccupations] = useState<SubOccupationAndStreet[]>([]);
+    const [investigatedPatientRoles, setInvestigatedPatientRoles] = useState<investigatedPatientRole[]>(rolesStub);
 
     const getSubOccupations = (parentOccupation: string) => {
         const subOccupationsLogger = logger.setup('Fetching Sub Occupation by Parent Occupation');
@@ -50,7 +54,8 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabIncome): usePersonalIn
     return {
         subOccupations, 
         getSubOccupations,
-        getEducationSubOccupations
+        getEducationSubOccupations,
+        investigatedPatientRoles
     };
 }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
@@ -9,6 +9,8 @@ import { Grid, FormControl, TextField, FormLabel, RadioGroup,
 import City from 'models/City';
 import StoreStateType from 'redux/storeStateType';
 import Occupations from 'models/enums/Occupations';
+import EducationGrade from 'models/EducationGrade';
+import investigatedPatientRole from 'models/investigatedPatientRole';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AddressForm, { AddressFormFields } from 'commons/Forms/AddressForm/AddressForm';
@@ -55,19 +57,25 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
     });
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
+    const educationGrades = useSelector<StoreStateType, EducationGrade[]>(state => state.educationGrades)
     // const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
 
-    const { subOccupations, getSubOccupations, getEducationSubOccupations } = usePersonalTabInfo({});
+    const { subOccupations, getSubOccupations, getEducationSubOccupations, investigatedPatientRoles } = usePersonalTabInfo({});
 
     const occupation = methods.watch(PersonalInfoDataContextFields.RELEVANT_OCCUPATION);
     const insuranceCompany = methods.watch(PersonalInfoDataContextFields.INSURANCE_COMPANY);
+    const selectedRoleId = methods.watch(PersonalInfoDataContextFields.ROLE);
+
+    const selectedRole = useMemo<investigatedPatientRole | undefined>(() => (
+        investigatedPatientRoles.find(role => role.id === selectedRoleId)
+    ), [selectedRoleId]);
 
     const handleChangeOccupation = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newOccupation = event.target.value;
         methods.setValue(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, newOccupation);
         methods.setValue(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, '');
         methods.setValue(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, '');
-        methods.setValue(PersonalInfoDataContextFields.ROLE, '');
+        methods.setValue(PersonalInfoDataContextFields.ROLE, defaultRole.id);
         // if (newOccupation === Occupations.EDUCATION_SYSTEM && personalInfoState.educationOccupationCity) {
         //     getEducationSubOccupations(personalInfoState.educationOccupationCity);
         // }
@@ -293,7 +301,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                 fieldName={PersonalInfoDataContextFields.INSTITUTION_NAME} 
                                             />
                                         </Grid>
-                                        {/* <Grid item xs={2}>
+                                        <Grid item xs={2}>
                                             <Controller
                                                 control={methods.control}
                                                 name={PersonalInfoDataContextFields.ROLE}
@@ -301,16 +309,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                     <Autocomplete
                                                         options={investigatedPatientRoles}
                                                         getOptionLabel={(option) => option.displayName}
-                                                        inputValue={roleInput}
-                                                        className={classes.markComplexity}
-                                                        value={roleObj}
+                                                        getOptionSelected={(option, value) => option.id === value}
+                                                        value={props.value}
                                                         onChange={(event, selectedRole) => {
-                                                            props.onChange(selectedRole?.id as number);
-                                                        }}
-                                                        onInputChange={(event, newRoleInput) => {
-                                                            if (event?.type !== 'blur') {
-                                                                setRoleInput(newRoleInput);
-                                                            }
+                                                            props.onChange(selectedRole);
                                                         }}
                                                         renderInput={(params) =>
                                                             <TextField
@@ -323,7 +325,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                             />
                                         </Grid>
                                         {
-                                            roleInput === 'תלמיד/ה' && occupation === Occupations.EDUCATION_SYSTEM &&
+                                            (selectedRole?.displayName === 'תלמיד/ה' && occupation === Occupations.EDUCATION_SYSTEM) &&
                                             <>
                                                 <Grid item xs={1}>
                                                     <FormControl variant='outlined'>
@@ -334,7 +336,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                             render={(props) => (
                                                                 <Select
                                                                     label='שכבה'
-                                                                    className={[classes.gradeInput, props.value && classes.markComplexity].join(' ')}
                                                                     value={props.value}
                                                                     onChange={(event) => props.onChange(event.target.value)}
                                                                 >
@@ -353,7 +354,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                     </FormControl>
                                                 </Grid>
                                                 <Grid item xs={1}>
-                                                    <Controller
+                                                    {/* <Controller
                                                         name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
                                                         control={methods.control}
                                                         render={(props) => (
@@ -366,10 +367,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                                 label='מס כיתה'
                                                             />
                                                         )}
-                                                    />
+                                                    /> */}
                                                 </Grid>
                                             </>
-                                        } */}
+                                        }
+                                        {/* 
+                                        */}
                                     </>
                                     : occupation === Occupations.DEFENSE_FORCES ?
                                         <Grid item xs={3}>
