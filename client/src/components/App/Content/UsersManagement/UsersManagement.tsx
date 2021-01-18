@@ -5,7 +5,7 @@ import {
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Pagination } from '@material-ui/lab';
-import { PersonPin } from '@material-ui/icons';
+import { Edit, PersonPin } from '@material-ui/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
@@ -40,7 +40,7 @@ const searchBarLabel = 'הכנס שם או שם משתמש...';
 
 const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, UsersManagementTableHeadersNames.LANGUAGES,
                                        UsersManagementTableHeadersNames.COUNTY, UsersManagementTableHeadersNames.USER_TYPE,
-                                       UsersManagementTableHeadersNames.DESK];
+                                       UsersManagementTableHeadersNames.DESK, UsersManagementTableHeadersNames.EDIT];
 
 const UsersManagement: React.FC = () => {
     const [page, setPage] = useState<number>(defaultPage);
@@ -88,6 +88,15 @@ const UsersManagement: React.FC = () => {
                     <Tooltip title='צפייה בפרטי המשתמש'>
                         <IconButton onClick={() => watchUserInfo(row)}>
                             <PersonPin />
+                        </IconButton>
+                    </Tooltip>
+                )
+            }
+            case UsersManagementTableHeadersNames.EDIT: {
+                return (
+                    <Tooltip title='עריכת פרטי המשתמש'>
+                        <IconButton>
+                            <Edit />
                         </IconButton>
                     </Tooltip>
                 )
