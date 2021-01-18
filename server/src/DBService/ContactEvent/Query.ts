@@ -140,3 +140,40 @@ query getAllInvolvedContacts($currInvestigation: Int!) {
   }
 }
 `;
+
+export const CONTACTS_BY_GROUP_ID = gql`
+query contactsByGroupId($groupId: UUID!, $epidemiologynumber: Int!) {
+  investigationGroupById(id: $groupId) {
+    investigationsByGroupId(filter: {epidemiologyNumber: {notEqualTo: $epidemiologynumber}}) {
+      nodes {
+        epidemiologyNumber
+        investigatedPatientByInvestigatedPatientId {
+          covidPatientByCovidPatient {
+            fullName
+            identityNumber
+          }
+        }
+        contactEventsByInvestigationId {
+          nodes {
+            contactedPeopleByContactEvent {
+              nodes {
+                personByPersonInfo {
+                  firstName
+                  identificationNumber
+                  lastName
+                  id
+                }
+                addressByIsolationAddress {
+                  cityByCity {
+                    displayName
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`;

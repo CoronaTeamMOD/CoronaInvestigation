@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 
+import NotGroupedMessage from './NotGroupedMessage/NotGroupedMessage';
 import useGroupedInvestigationsTab from './useGroupedInvestigationsTab';
-import NotGroupedMessage from './NotGroupedMessage/NotGroupedMessage'
+import GroupedInvestigationForm from './GroupedInvestigationForm/GroupedInvestigationForm';
 interface Props {
     
 }
@@ -13,7 +14,7 @@ const GroupedInvestigationsTab = (props: Props) => {
     return (
         groupId === ""
             ? <NotGroupedMessage />
-            : <div>helo</div>
+            : <GroupedInvestigationForm groupId={groupId}/>
             
     )
 }

@@ -29,10 +29,6 @@ const useGroupedInvestigationsTab = (props : Props) => {
     useEffect(() => {
         setGroupIdAsync();
     }, [])
-
-    return { 
-        fetchGroupedId
-    };
 }
 
 interface Props {
