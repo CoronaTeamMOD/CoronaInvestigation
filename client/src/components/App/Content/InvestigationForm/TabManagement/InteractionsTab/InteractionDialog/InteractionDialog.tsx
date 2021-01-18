@@ -1,4 +1,4 @@
-import { ChevronRight } from '@material-ui/icons';
+import { ChevronLeft } from '@material-ui/icons';
 import { yupResolver } from '@hookform/resolvers';
 import React, { useContext, useState } from 'react';
 import { FormProvider, useForm, } from 'react-hook-form';
@@ -189,8 +189,8 @@ const InteractionDialog = (props: Props) => {
                                         await methods.trigger()
                                         isContinueToContactsEnable() && setIsAddingContacts(!isAddingContacts)
                                     }}>
-                                    <ChevronRight />
                                     {isAddingContacts ? `חזרה ל${hebrewActionName} מקום` : `המשך ל${hebrewActionName} מגעים`}
+                                    <ChevronLeft />
                                 </Button>
                             </div>
                         </Tooltip>
