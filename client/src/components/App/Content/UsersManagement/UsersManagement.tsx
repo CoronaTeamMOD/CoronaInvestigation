@@ -6,8 +6,8 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Pagination } from '@material-ui/lab';
 import { Edit, PersonPin } from '@material-ui/icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Desk from 'models/Desk';
 import County from 'models/County';
@@ -24,6 +24,7 @@ import UsersFilter from './UsersFilter/UsersFilter';
 import filterCreators from './UsersFilter/FilterCreators';
 import useUsersManagementTable from './useUsersManagement';
 import UserInfoDialog from './UserInfoDialog/UserInfoDialog';
+import EditUserInfoDialog from './EditUserInfoDialog/EditUserInfoDialog';
 import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
 
 const rowsPerPage: number = 100;
@@ -293,6 +294,11 @@ const UsersManagement: React.FC = () => {
                 open={userDialog.isOpen}
                 defaultValues={userDialog.info}
                 handleCloseUserDialog={handleCloseUserDialog}
+            />
+            <EditUserInfoDialog
+                open={editUserDialog.isOpen}
+                defaultValues={editUserDialog.info}
+                handleCloseEditUserDialog={handleCloseEditUserDialog}
             />
         </Grid>
     );
