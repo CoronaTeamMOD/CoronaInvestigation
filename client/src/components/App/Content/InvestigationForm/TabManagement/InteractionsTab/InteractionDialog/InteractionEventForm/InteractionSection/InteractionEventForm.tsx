@@ -71,18 +71,29 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
 
     const handleTimeChange = (currentTime: Date, interactionDate: Date, fieldName: string) => {
         if (isValid(currentTime)) {
-            let newDate = new Date(interactionDate.getTime());
+            if(isEndTimeValid(fieldName , currentTime)) {
+                let newDate = new Date(interactionDate.getTime());
 
-            newDate.setHours(currentTime.getHours());
-            newDate.setMinutes(currentTime.getMinutes());
+                newDate.setHours(currentTime.getHours());
+                newDate.setMinutes(currentTime.getMinutes());
 
-            if (newDate.getTime()) {
-                clearErrors(fieldName);
-                setValue(fieldName, newDate);
+                if (newDate.getTime()) {
+                    clearErrors(fieldName);
+                    setValue(fieldName, newDate);
+                }
+            } else {
+                setError(fieldName, {type: 'manual', message: 'שעת סיום לא תקינה'});
             }
         } else {
             setError(fieldName, {type: 'manual', message: 'שעה לא תקינה'});
         }
+    }
+
+    const isEndTimeValid = (fieldName : string, currentTime : Date ) => {
+        if(fieldName === InteractionEventDialogFields.END_TIME) {
+            return startTime && currentTime.getTime() > startTime.getTime()
+        }
+        return true;
     }
 
     const externalizationErrorMessage = useMemo<string>(() => {

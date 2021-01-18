@@ -24,6 +24,7 @@ const TimePick: React.FC<Props> = (props: Props): JSX.Element => {
       label={labelText}
       value={value}
       onChange={onChange}
+      helperText={null}
       KeyboardButtonProps={{
         'aria-label': 'change date',
       }}
