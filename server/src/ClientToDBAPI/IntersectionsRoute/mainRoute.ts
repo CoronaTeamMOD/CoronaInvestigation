@@ -244,7 +244,7 @@ intersectionsRoute.get('/groupedInvestigationsContacts/:groupId', (request: Requ
     graphqlRequest(CONTACTS_BY_GROUP_ID, response.locals, parameters)
         .then((result) => {
             groupedInvestigationsContacts.info(validDBResponseLog, Severity.LOW);
-            response.send(result.data.investigationGroupById.investigationsByGroupId.nodes);
+            response.send(result.data.investigationGroupById);
         }).catch(error => {
             groupedInvestigationsContacts.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);

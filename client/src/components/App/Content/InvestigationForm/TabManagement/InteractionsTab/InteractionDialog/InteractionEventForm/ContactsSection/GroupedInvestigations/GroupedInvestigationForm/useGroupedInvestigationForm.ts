@@ -1,27 +1,39 @@
 import axios from 'axios';
 import { useEffect } from 'react';
 
+import ConnectedInvestigationContact from './ConnectedInvestigationContact';
+
 const useGroupedInvestigationForm = (props : Props) => {
-    const { groupId } = props;
+    const { groupId, setContacts } = props;
 
     const fetchGroupedInvestigationContacts = () => {
-        axios.get(`/intersections/groupedInvestigationsContacts/${groupId}`)
-            .then((data) => {
-                console.log(data);
+        return axios.get<ConnectedInvestigationContact>(`/intersections/groupedInvestigationsContacts/${groupId}`)
+            .then((response) => {
+                return response.data;
             })
             .catch((error) => {
-                console.log(error);
+                return {
+                    investigationGroupReasonByReason: {
+                        displayName : "טוען..."
+                    },
+                    nodes : []
+                }
             })
+    }
+
+    const setGroupedInvestigationContactsAsync = async () => {
+        const contacts = await fetchGroupedInvestigationContacts();
+        setContacts(contacts);
     }
     
     useEffect(() => {
-        fetchGroupedInvestigationContacts();
+        setGroupedInvestigationContactsAsync();
     }, [])
-
 }
 
 interface Props {
     groupId : string;
+    setContacts : React.Dispatch<React.SetStateAction<ConnectedInvestigationContact>>
 }
 
 export default useGroupedInvestigationForm;
