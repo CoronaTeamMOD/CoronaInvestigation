@@ -213,9 +213,8 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
         const createAddressLogger = logger.setup({...logData, workflow: `${logData.workflow}: create isolation address`})
         const parameters = {input: requestAddress};
         createAddressLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-        graphqlRequest(CREATE_ADDRESS, response.locals, {
-            input: requestAddress
-        }).then((result: CreateAddressResponse) => {
+        graphqlRequest(CREATE_ADDRESS, response.locals, parameters)
+        .then((result: CreateAddressResponse) => {
             createAddressLogger.info(validDBResponseLog, Severity.LOW);
             saveClinicalDetails(request, response, logData, result.data.insertAndGetAddressId.integer);
         }).catch(error => {
