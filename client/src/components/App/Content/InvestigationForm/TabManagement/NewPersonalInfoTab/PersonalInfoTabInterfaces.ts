@@ -11,4 +11,6 @@ export interface PersonalInfoTabState {
     [PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?: string;
     [PersonalInfoDataContextFields.ROLE]?: number;
     [PersonalInfoDataContextFields.EDUCATION_GRADE]?: number;
+    [PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER]?: number;
+    [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]?: string;
 }

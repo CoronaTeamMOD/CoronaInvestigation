@@ -8,7 +8,28 @@ import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import investigatedPatientRole from 'models/investigatedPatientRole';
 
 // TODO: remove stubs
-const rolesStub: investigatedPatientRole[] = [{ id: 1, displayName: 'bla bla' }, { id: 2, displayName: 'bla bla2' }, { id: 3, displayName: 'תלמיד/ה' }]
+const rolesStub: investigatedPatientRole[] = [
+    {
+      "id": 2,
+      "displayName": "צוות אדמיניסטרטיבי"
+    },
+    {
+      "id": 3,
+      "displayName": "צוות חינוכי"
+    },
+    {
+      "id": 5,
+      "displayName": "צוות מטפל"
+    },
+    {
+      "id": 4,
+      "displayName": "שוהה במוסד"
+    },
+    {
+      "id": 1,
+      "displayName": "תלמיד/ה"
+    }
+  ]
 
 const usePersonalInfoTab = (parameters: usePersonalInfoTabIncome): usePersonalInfoTabOutcome => {
     const [subOccupations, setSubOccupations] = useState<SubOccupationAndStreet[]>([]);

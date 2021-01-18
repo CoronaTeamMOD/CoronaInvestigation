@@ -312,7 +312,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                         getOptionSelected={(option, value) => option.id === value}
                                                         value={props.value}
                                                         onChange={(event, selectedRole) => {
-                                                            props.onChange(selectedRole);
+                                                            props.onChange(selectedRole.id);
                                                         }}
                                                         renderInput={(params) =>
                                                             <TextField
@@ -354,25 +354,22 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                     </FormControl>
                                                 </Grid>
                                                 <Grid item xs={1}>
-                                                    {/* <Controller
+                                                    <Controller
                                                         name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
                                                         control={methods.control}
                                                         render={(props) => (
                                                             <NumericTextField
                                                                 name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
-                                                                className={[classes.gradeInput, props.value && classes.markComplexity].join(' ')}
                                                                 value={props.value}
-                                                                onChange={(newValue) => props.onChange(newValue)}
+                                                                onChange={props.onChange}
                                                                 onBlur={props.onBlur}
                                                                 label='מס כיתה'
                                                             />
                                                         )}
-                                                    /> */}
+                                                    />
                                                 </Grid>
                                             </>
                                         }
-                                        {/* 
-                                        */}
                                     </>
                                     : occupation === Occupations.DEFENSE_FORCES ?
                                         <Grid item xs={3}>
@@ -385,23 +382,21 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                         :
                                         <Grid item xs={2}>
                                             <Collapse in={occupation !== Occupations.UNEMPLOYED}>
-                                                {
-                                                    // <Controller
-                                                    //     name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
-                                                    //     control={methods.control}
-                                                    //     render={(props) => (
-                                                    //         <AlphanumericTextField
-                                                    //             testId='institutionName'
-                                                    //             name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
-                                                    //             value={props.value}
-                                                    //             onChange={(newValue: string) => props.onChange(newValue)}
-                                                    //             onBlur={props.onBlur}
-                                                    //             placeholder={subOccupationsPlaceHolderByOccupation()}
-                                                    //             label={subOccupationsLabelByOccupation()}
-                                                    //         />
-                                                    //     )}
-                                                    // />
-                                                }
+                                                    <Controller
+                                                        name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
+                                                        control={methods.control}
+                                                        render={(props) => (
+                                                            <AlphanumericTextField
+                                                                testId='institutionName'
+                                                                name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
+                                                                value={props.value}
+                                                                onChange={(newValue: string) => props.onChange(newValue)}
+                                                                onBlur={props.onBlur}
+                                                                placeholder={subOccupationsPlaceHolderByOccupation()}
+                                                                label={subOccupationsLabelByOccupation()}
+                                                            />
+                                                        )}
+                                                    />
                                             </Collapse>
                                         </Grid>
                             }
