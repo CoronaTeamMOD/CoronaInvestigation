@@ -215,12 +215,16 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const changeUnassginedUserFilter = (value: boolean) => {
         updateFilterHistory('unassignedUserFilter', value);
         setUnassignedUserFilter(value);
-        if (inactiveUserFilter && value) {
-            delete filterRules[InvestigationsFilterByFields.INACTIVE_USER];
-            handleFilterChange(filterCreators.UNALLOCATED_USER(value))
+        if (inactiveUserFilter === true) {
+            if (value === true) {
+                delete filterRules[InvestigationsFilterByFields.INACTIVE_USER];
+                handleFilterChange(filterCreators.UNALLOCATED_USER(value));
+            } else {
+                delete filterRules[InvestigationsFilterByFields.UNALLOCATED_USER];
+                handleFilterChange(filterCreators.INACTIVE_USER(true));
+            }
         } else {
-            delete filterRules[InvestigationsFilterByFields.UNALLOCATED_USER];
-            handleFilterChange(filterCreators.UNASSIGNED_USER(value))
+            handleFilterChange(filterCreators.UNASSIGNED_USER(value));
         }
         setCurrentPage(defaultPage);
     }
@@ -228,11 +232,15 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const changeInactiveUserFilter = (value: boolean) => {
         updateFilterHistory('inactiveUserFilter', value);
         setInactiveUserFilter(value);
-        if (unassignedUserFilter && value) {
-            delete filterRules[InvestigationsFilterByFields.UNASSIGNED_USER];
-            handleFilterChange(filterCreators.UNALLOCATED_USER(value));
+        if (unassignedUserFilter === true) {
+            if (value === true) {
+                delete filterRules[InvestigationsFilterByFields.UNASSIGNED_USER];
+                handleFilterChange(filterCreators.UNALLOCATED_USER(value));
+            } else {
+                delete filterRules[InvestigationsFilterByFields.UNALLOCATED_USER];
+                handleFilterChange(filterCreators.UNASSIGNED_USER(true));
+            }
         } else {
-            delete filterRules[InvestigationsFilterByFields.UNALLOCATED_USER];
             handleFilterChange(filterCreators.INACTIVE_USER(value));
         }
         setCurrentPage(defaultPage);
