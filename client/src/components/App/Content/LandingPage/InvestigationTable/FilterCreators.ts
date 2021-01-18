@@ -13,7 +13,7 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
             : 
             { [InvestigationsFilterByFields.STATUS]: null }
     },
-    [InvestigationsFilterByFields.DESK_ID]: (deskIds: number[]) => {
+    [InvestigationsFilterByFields.DESK_ID]: (deskIds: (number | null)[]) => {
         if (deskIds.includes(null)) {
             return {
                 [InvestigationsFilterByFields.DESK_ID]: {
