@@ -45,7 +45,6 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
         displayName
         id
       }
-      id
     }
     symptomsStartDate: symptomsStartTime
     isolationStartTime
