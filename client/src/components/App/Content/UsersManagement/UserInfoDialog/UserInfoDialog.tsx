@@ -10,7 +10,7 @@ import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import useStyles from '../../SignUp/SignUpStyles';
 import SignUpForm from '../../SignUp/SignUpForm/SignUpForm';
 
-const UserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseDialog }: Props) => {
+const UserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseUserDialog }: Props) => {
     const userInfoTitle = defaultValues[SignUpFields.MABAR_USER_NAME]
 
     const classes = useStyles();
@@ -19,7 +19,7 @@ const UserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseDialo
         <Dialog open={open} maxWidth='sm' fullWidth={true}>
             <DialogTitle>
                 {userInfoTitle}
-                <IconButton test-id='closeUserInfoDialog' aria-label='close' className={classes.closeButton} onClick={handleCloseDialog}>
+                <IconButton test-id='closeUserInfoDialog' aria-label='close' className={classes.closeButton} onClick={handleCloseUserDialog}>
                     <Close />
                 </IconButton>
             </DialogTitle>
@@ -32,7 +32,7 @@ const UserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseDialo
             </DialogContent>
 
             <DialogActions>
-                <PrimaryButton onClick={handleCloseDialog}>
+                <PrimaryButton onClick={handleCloseUserDialog}>
                     סגירה
                 </PrimaryButton>
             </DialogActions>
@@ -45,5 +45,5 @@ export default UserInfoDialog;
 interface Props {
     open: boolean;
     defaultValues: SignUpUser;
-    handleCloseDialog: () => void;
+    handleCloseUserDialog: () => void;
 }

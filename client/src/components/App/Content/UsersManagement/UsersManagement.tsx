@@ -46,11 +46,12 @@ const UsersManagement: React.FC = () => {
     const [page, setPage] = useState<number>(defaultPage);
     const [cellNameSort, setCellNameSort] = useState<CellNameSort>({ name: '', direction: undefined });
     const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
-
     const allCounties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
-
-    const { users, sourcesOrganization, userTypes, languages,
-            totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange, setUserActivityStatus,
+    
+    const { users, counties, desks, sourcesOrganization, userTypes, languages,
+            totalCount, userDialog, editUserDialog, isBadgeInVisible, watchUserInfo, 
+            handleCloseUserDialog, editUserInfo, handleCloseEditUserDialog, 
+            handleFilterChange, setUserActivityStatus,
             setUserSourceOrganization, setUserDesk, setUserCounty } =
             useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
 
@@ -95,7 +96,7 @@ const UsersManagement: React.FC = () => {
             case UsersManagementTableHeadersNames.EDIT: {
                 return (
                     <Tooltip title='עריכת פרטי המשתמש'>
-                        <IconButton>
+                        <IconButton onClick={() => editUserInfo(row)}>
                             <Edit />
                         </IconButton>
                     </Tooltip>
@@ -291,7 +292,7 @@ const UsersManagement: React.FC = () => {
             <UserInfoDialog
                 open={userDialog.isOpen}
                 defaultValues={userDialog.info}
-                handleCloseDialog={handleCloseDialog}
+                handleCloseUserDialog={handleCloseUserDialog}
             />
         </Grid>
     );

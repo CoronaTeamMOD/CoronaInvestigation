@@ -37,6 +37,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     const [languages, setLanguages] = useState<Language[]>([]);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [userDialog, setUserDialog] = useState<UserDialog>({ isOpen: false, info: {} });
+    const [editUserDialog, setEditUserDialog] = useState<UserDialog>({ isOpen: false, info: {} });
     const [filterRules, setFitlerRules] = useState<any>({});
     const [isBadgeInVisible, setIsBadgeInVisible] = useState<boolean>(true);
     
@@ -174,7 +175,24 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         setUserDialog({ isOpen: true, info: userInfoToSet });
     }
 
-    const handleCloseDialog = () => setUserDialog({ isOpen: false, info: {} })
+    const handleCloseUserDialog = () => setUserDialog({ isOpen: false, info: {} })
+
+    const editUserInfo = (row: any) => {
+        const userInfoToSet = {
+            ...row,
+            [SignUpFields.LANGUAGES]: row[SignUpFields.LANGUAGES].map((language: string) => {
+                return { displayName: language }
+            }),
+            [SignUpFields.COUNTY]: { displayName: row[SignUpFields.COUNTY] },
+            [SignUpFields.DESK]: { name: row[SignUpFields.DESK] },
+            [SignUpFields.CITY]: { value: { displayName: row[SignUpFields.CITY] }},
+            [SignUpFields.FULL_NAME]: row[SignUpFields.FULL_NAME] || row[SignUpFields.USER_NAME],
+            [SignUpFields.SOURCE_ORGANIZATION]: { displayName: row[SignUpFields.SOURCE_ORGANIZATION]}
+        };
+        setEditUserDialog({ isOpen: true, info: userInfoToSet });
+    }
+
+    const handleCloseEditUserDialog = () => setEditUserDialog({ isOpen: false, info: {} })
 
     const setUserActivityStatus = (isActive: boolean, userId: string) : Promise<any> => {
         const setUpdateActivityStatusLogger = logger.setup('Updating user activity status');
@@ -260,9 +278,12 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         languages,
         totalCount,
         userDialog,
+        editUserDialog,
         isBadgeInVisible,
         watchUserInfo,
-        handleCloseDialog,
+        handleCloseUserDialog,
+        editUserInfo,
+        handleCloseEditUserDialog,
         handleFilterChange,
         setUserActivityStatus,
         setUserSourceOrganization,
@@ -285,9 +306,12 @@ interface useUsersManagementOutCome {
     languages: Language[];
     totalCount: number;
     userDialog: UserDialog;
+    editUserDialog: UserDialog;
     isBadgeInVisible: boolean;
     watchUserInfo: (row: any) => void;
-    handleCloseDialog: () => void;
+    handleCloseUserDialog: () => void;
+    editUserInfo: (row: any) => void;
+    handleCloseEditUserDialog: () => void;
     handleFilterChange: (filterBy: any) => void;
     setUserActivityStatus: (isActive: boolean, userId: string) => Promise<any>;
     setUserSourceOrganization: (sourceOrganization: string, userId: string) => void;
