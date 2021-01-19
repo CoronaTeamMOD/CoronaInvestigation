@@ -13,6 +13,9 @@ const statusToFilterConvertor = {
         inactiveUserFilter: true,
         unassignedUserFilter: true
     },
+    [FilterRulesDescription.TRANSFER_REQUEST]: {
+        subStatusFilter: ['נדרשת העברה']
+    },
     [FilterRulesDescription.UNASSIGNED]: {
         unassignedUserFilter: true
     },

@@ -12,6 +12,7 @@ import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import LastUpdateMessage from './LastUpdateMessage/LastUpdateMessage';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
 import TimeRangeFilterCard from './TimeRangeFilterCard/TimeRangeFilterCard';
+import PostponedCard from './PostponedCard/PostponedCard';
 
 const AdminLandingPage: React.FC = (): JSX.Element => {
 
@@ -24,6 +25,9 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
         newInvestigations: 0,
         unassignedInvestigations: 0,
         unallocatedInvestigations: 0,
+        transferRequestInvestigations: 0,
+        waitingForDetailsInvestigations: 0,
+
     });
     const [lastUpdated , setLastUpdated] = useState<Date>(new Date());
 
@@ -68,6 +72,13 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                         isLoading={isLoading}
                         onClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNALLOCATED)} 
                         unallocatedInvestigationsCount={investigationsStatistics.unallocatedInvestigations}
+                    />
+                </Grid>
+                <Grid item xs={6} md={3}>
+                    <PostponedCard
+                        isLoading={isLoading}
+                        onClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.TRANSFER_REQUEST)} 
+                        postponedInvestigationsCount={investigationsStatistics.transferRequestInvestigations}
                     />
                 </Grid>
             </Grid>

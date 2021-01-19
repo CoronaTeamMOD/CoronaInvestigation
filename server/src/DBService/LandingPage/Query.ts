@@ -242,6 +242,22 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
     ) {
     totalCount
   }
+  transferRequestInvestigations: allInvestigations(
+    filter: {and: [
+        {investigationSubStatus: {equalTo: "נדרשת העברה"}},
+        $allInvesitgationsFilter
+      ]},
+    ) {
+    totalCount
+  }
+  waitingForDetailsInvestigations: allInvestigations(
+    filter: {and: [
+        {investigationSubStatus: {equalTo: "מחכה להשלמת פרטים"}},
+        $allInvesitgationsFilter
+      ]},
+    ) {
+    totalCount
+  }
 }
 `;
 
