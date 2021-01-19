@@ -22,7 +22,7 @@ const TableFilter = (props: Props) => {
         onFilterChange, onClose, 
         changeInactiveUserFilter, inactiveUserFilter, 
         changeUnassginedUserFilter, unassignedUserFilter, 
-        timeRangeFilter, onTimeRangeFilterChange
+        timeRangeFilter, onTimeRangeFilterChange, updateDateFilter
     } = props;
 
     const { displayTimeRange, onSelectTimeRangeChange, onStartDateSelect, onEndDateSelect, errorMes} = useTableFilter({
@@ -63,6 +63,7 @@ const TableFilter = (props: Props) => {
                     <b>סטטוס</b>
                 </Typography>
                 <Autocomplete
+                    disabled={updateDateFilter !== ""}
                     ChipProps={{className:classes.chip}}
                     className={classes.autocomplete}
                     classes={{inputFocused: classes.autocompleteInputText}}
@@ -128,6 +129,7 @@ interface Props {
     onClose: () => void;
     timeRangeFilter: TimeRange;
     onTimeRangeFilterChange: (timeRangeFilter: TimeRange) => void;
+    updateDateFilter: string;
 };
 
 export default TableFilter

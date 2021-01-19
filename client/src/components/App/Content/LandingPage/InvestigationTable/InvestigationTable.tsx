@@ -95,7 +95,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
         statusFilter, changeStatusFilter, deskFilter, changeDeskFilter, changeSearchFilter,
         changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers,
-        tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter
+        tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter,updateDateFilter
     } = useInvestigationTable({
         setSelectedRow, allGroupedInvestigations, setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations,
         investigationColor
@@ -312,7 +312,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 inactiveUserFilter={inactiveUserFilter}
                                 unassignedUserFilter={unassignedUserFilter}
                                 timeRangeFilter={timeRangeFilter}
-                                onTimeRangeFilterChange={changeTimeRangeFilter} 
+                                onTimeRangeFilterChange={changeTimeRangeFilter}
+                                updateDateFilter={updateDateFilter} 
                             />
                         </Collapse>
                     </Grid>
