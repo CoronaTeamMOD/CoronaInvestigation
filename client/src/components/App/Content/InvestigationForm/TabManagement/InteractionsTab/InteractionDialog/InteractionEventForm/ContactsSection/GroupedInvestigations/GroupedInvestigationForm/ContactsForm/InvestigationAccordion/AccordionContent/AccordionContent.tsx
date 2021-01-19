@@ -6,13 +6,15 @@ import ContactEvent from 'models/GroupedInvestigationContacts/ContactEvent';
 import ContactsTable from './ContactsTable/ContactsTable';
 
 const AccordionContent = (props: Props) => {
-    const { events } = props;
+    const { events, selectedRows, setSelectedRows} = props;
 
     return (
         <AccordionDetails>
             <Grid container>
                 <Grid xs={12}>
-                    <ContactsTable 
+                    <ContactsTable
+                        selectedRows={selectedRows}
+                        setSelectedRows={setSelectedRows}
                         events={events}
                     />
                 </Grid>
@@ -25,7 +27,9 @@ const AccordionContent = (props: Props) => {
 }
 
 interface Props {
-    events : ContactEvent[]
+    selectedRows : number[];
+    setSelectedRows: React.Dispatch<React.SetStateAction<number[]>>;
+    events : ContactEvent[];
 }
 
 export default AccordionContent

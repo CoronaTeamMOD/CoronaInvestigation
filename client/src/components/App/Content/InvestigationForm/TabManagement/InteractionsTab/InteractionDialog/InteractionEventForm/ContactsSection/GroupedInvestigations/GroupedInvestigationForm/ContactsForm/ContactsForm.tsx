@@ -1,5 +1,5 @@
+import React , {useState} from 'react'
 import { Typography } from '@material-ui/core';
-import React from 'react'
 
 import ConnectedInvestigation from 'models/GroupedInvestigationContacts/ConnectedInvestigation';
 
@@ -9,6 +9,8 @@ const formHeadline = 'מאומתים המקובצים לחקירה :';
 
 const ContactsForm = (props: Props) => {
     const { contacts , reason } = props;
+
+    const [selectedRows, setSelectedRows] = useState<number[]>([])
     return (
         <>
             <Typography variant='h5'>{formHeadline}</Typography>
@@ -19,6 +21,8 @@ const ContactsForm = (props: Props) => {
                         <InvestigationAccordion
                             key={index}
                             contact={contact}
+                            selectedRows={selectedRows}
+                            setSelectedRows={setSelectedRows}
                         />
                     )
                 })
