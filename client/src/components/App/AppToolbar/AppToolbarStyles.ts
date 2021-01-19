@@ -53,6 +53,12 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: 'white',
         padding: theme.spacing(1),
         marginLeft: theme.spacing(1)
+    },
+    countySelect: {
+        color: 'white',
+        '&:focus': {
+            opacity: 'unset'
+        }
     }
 }));
 

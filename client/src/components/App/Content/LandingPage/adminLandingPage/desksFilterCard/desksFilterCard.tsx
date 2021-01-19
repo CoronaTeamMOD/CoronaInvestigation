@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { Box, CardContent, Typography } from '@material-ui/core';
 
 import Desk from 'models/Desk';
+import StoreStateType from 'redux/storeStateType';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 
 import LoadingCard from '../LoadingCard/LoadingCard';
@@ -17,10 +19,14 @@ const DesksFilterCard = (props: Props): JSX.Element => {
 
     const classes = useStyles();
     const { onUpdateButtonClicked } = props;
-    const { desks, isLoading, filteredDesks, clearAllDesks, onDeskClicked } = useDesksFilterCard();
+    const { filteredDesks, clearAllDesks, onDeskClicked } = useDesksFilterCard();
+
+    const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
+    const desks = useSelector<StoreStateType, Desk[]>(state => state.desk);
+    const countyDesks = useMemo(() => desks.filter(desk => desk.county === displayedCounty), [desks, displayedCounty]);
 
     return (
-        <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.desksCard}>
+        <LoadingCard isLoading={desks.length === 0} width={cardWidth} height={cardHeight} className={classes.desksCard}>
             <CardContent>
                 <Box display='flex' flexDirection='column' className={classes.desksCardContent}>
                     <Typography variant='h6'>
@@ -35,7 +41,7 @@ const DesksFilterCard = (props: Props): JSX.Element => {
                     />
                     <div className={classes.desksWrapper}>
                         {
-                            desks.map((desk: Desk) => (
+                            countyDesks.map((desk: Desk) => (
                                 <CustomCheckbox
                                     checkboxElements={[{
                                         key: desk.id,

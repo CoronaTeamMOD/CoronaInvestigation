@@ -1,9 +1,11 @@
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
+import StoreStateType from 'redux/storeStateType';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import { defaultTimeRange } from 'models/enums/timeRanges'
 import { TimeRange, TimeRangeDates } from 'models/TimeRange';
@@ -18,6 +20,7 @@ export const allTimeRangeId = 10;
 const useAdminLandingPage = (parameters: Parameters) => {
 
     const history = useHistory<HistoryState>();
+    const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
 
     const getInvestigationInfoFilter = () => {
         const { location: { state } } = history;
@@ -66,7 +69,7 @@ const useAdminLandingPage = (parameters: Parameters) => {
     useEffect(() => {
         fetchInvestigationStatistics();
         updateFilterHistory();
-    }, [investigationInfoFilter])
+    }, [investigationInfoFilter, displayedCounty])
 
     const fetchInvestigationStatistics = () => {
         const unallocatedCountLogger = logger.setup('query investigation statistics');
@@ -74,7 +77,8 @@ const useAdminLandingPage = (parameters: Parameters) => {
         setIsLoading(true);
         axios.post<InvesitgationStatistics>('/landingPage/investigationStatistics', {
             ...investigationInfoFilter,
-            timeRangeFilter: investigationInfoFilter.timeRangeFilter as TimeRangeDates
+            timeRangeFilter: investigationInfoFilter.timeRangeFilter as TimeRangeDates,
+            county: displayedCounty
         })
         .then((response) => {
             unallocatedCountLogger.info('launching db request', Severity.LOW);

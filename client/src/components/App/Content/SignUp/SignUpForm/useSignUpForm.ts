@@ -1,10 +1,8 @@
 import axios  from 'axios';
 import { useState, useEffect } from 'react';
 
-import Desk from 'models/Desk';
 import City from 'models/City';
 import logger from 'logger/logger';
-import County from 'models/County';
 import Language from 'models/Language';
 import { Severity } from 'models/Logger';
 import SignUpUser from 'models/SignUpUser';
@@ -15,9 +13,7 @@ import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCome  => {
 
-    const [counties, setCounties] = useState<County[]>([]);
     const [languages, setLanguages] = useState<Language[]>([]);
-    const [desks, setDesks] = useState<Desk[]>([]);
     const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([]);
 
     const { alertError } = useCustomSwal();
@@ -37,20 +33,6 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
             .catch(() => {
                 alertError('לא ניתן היה לקבל ערים');
                 fetchCitiesLogger.error('didnt get results back from the server', Severity.HIGH);
-            });
-    };
-
-    const fetchCounties = () => {
-        const fetchCountiesLogger = logger.setup('Fetching counties');
-        fetchCountiesLogger.info('launching counties request', Severity.LOW);
-        return axios.get('/counties')
-            .then(result => {
-                result?.data && setCounties(result?.data);
-                fetchCountiesLogger.info('got results back from the server', Severity.LOW);
-            })
-            .catch(() => {
-                alertError('לא ניתן היה לקבל נפות');
-                fetchCountiesLogger.error('didnt get results back from the server', Severity.HIGH);       
             });
     };
 
@@ -81,27 +63,13 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
                 fetchLanguagesLogger.error('didnt get results back from the server', Severity.HIGH);    
             });
     }
-    
-    const fetchDesks = () => {
-        const fetchDesksLogger = logger.setup('Getting desks');
-        fetchDesksLogger.info('launching desks request', Severity.LOW);
-        return axios.get('/desks').then(response => {
-            fetchDesksLogger.info('The desks were fetched successfully', Severity.LOW);
-            const { data } = response;
-            setDesks(data);
-        }).catch(err => {
-            fetchDesksLogger.error(`got error from the server: ${err}`, Severity.HIGH);
-        });
-    }
 
     useEffect(() => {
         setIsLoading(true);
         Promise.all([
         fetchCities(),
-        fetchCounties(),
         fetchSourcesOrganization(),
         fetchLanguages(),
-        fetchDesks(),
         ])
         .finally(() => setIsLoading(false))
     }, [])
@@ -122,9 +90,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     }
 
     return {
-        counties, 
         languages,
-        desks,
         sourcesOrganization,
         createUser
     }
@@ -134,8 +100,6 @@ interface useSignUpFormInCome {
 }
 
 interface useSignUpFormOutCome {
-    desks: Desk[];
-    counties: County[];
     languages: Language[];
     sourcesOrganization: SourceOrganization[];
     createUser: (data: SignUpUser) => void;

@@ -1,26 +1,28 @@
-import React, { useState } from 'react';
 import {
     Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
     IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse, MenuItem, Select
 } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 import { Pagination } from '@material-ui/lab';
 import { PersonPin } from '@material-ui/icons';
+import React, { useState, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
 import Desk from 'models/Desk';
 import County from 'models/County';
 import SortOrder from 'models/enums/SortOrder';
+import StoreStateType from 'redux/storeStateType';
 import SearchBar from 'commons/SearchBar/SearchBar';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
-import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
 import useStyles from './UsersManagementStyles';
-import useUsersManagementTable from './useUsersManagement';
-import UserInfoDialog from './UserInfoDialog/UserInfoDialog';
 import UsersFilter from './UsersFilter/UsersFilter';
 import filterCreators from './UsersFilter/FilterCreators';
+import useUsersManagementTable from './useUsersManagement';
+import UserInfoDialog from './UserInfoDialog/UserInfoDialog';
+import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
 
 const rowsPerPage: number = 100;
 export const defaultPage: number = 1;
@@ -43,7 +45,9 @@ const UsersManagement: React.FC = () => {
     const [cellNameSort, setCellNameSort] = useState<CellNameSort>({ name: '', direction: undefined });
     const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
 
-    const { users, counties, desks, sourcesOrganization, userTypes, languages,
+    const allCounties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
+
+    const { users, sourcesOrganization, userTypes, languages,
             totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange, setUserActivityStatus,
             setUserSourceOrganization, setUserDesk, setUserCounty } =
             useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
@@ -51,6 +55,10 @@ const UsersManagement: React.FC = () => {
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
 
     const classes = useStyles();
+
+    const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
+    const desks = useSelector<StoreStateType, Desk[]>(state => state.desk);
+    const countyDesks = useMemo(() => desks.filter(desk => desk.county === displayedCounty), [desks, displayedCounty]);
 
     const handleSortOrder = (cellName: string) => {
         if (!notActiveSortFields.includes(cellName)) {
@@ -104,7 +112,7 @@ const UsersManagement: React.FC = () => {
                         variant='outlined'
                     >
                         {
-                            desks.map((desk: Desk) => (
+                            countyDesks.map((desk: Desk) => (
                                 <MenuItem
                                     key={desk.id}
                                     value={desk.id}>
@@ -168,7 +176,7 @@ const UsersManagement: React.FC = () => {
                         variant='outlined'
                     >
                         {
-                            counties.map((county: County) => (
+                            allCounties.map((county: County) => (
                                 <MenuItem
                                     key={county.id}
                                     value={county.id}>
@@ -214,7 +222,7 @@ const UsersManagement: React.FC = () => {
                     <UsersFilter
                         sourcesOrganization={sourcesOrganization}
                         languages={languages}
-                        counties={counties}
+                        counties={allCounties}
                         userTypes={userTypes}
                         handleFilterChange={handleFilterChange}
                         handleCloseFitler={() => setIsFilterOpen(false)}

@@ -40,7 +40,7 @@ const TabPanel = (props: TabPanelProps) => {
 
 const TransferInvestigationTabs = (props: Props) => {
 
-    const { allDesks, allCounties, onClose, onDeskTransfer, onCountyTransfer, onSuccess } = props;
+    const { allDesks, onClose, onDeskTransfer, onCountyTransfer, onSuccess } = props;
 
     const [value, setValue] = React.useState(0);
 
@@ -66,7 +66,6 @@ const TransferInvestigationTabs = (props: Props) => {
                 <TransferInvestigationCounty
                     onConfirm={onCountyTransfer}
                     onClose={onClose}
-                    allCounties={allCounties}
                     onSuccess={onSuccess}
                 />
             </TabPanel>
@@ -91,7 +90,6 @@ interface TabPanelProps {
 interface Props {
     open: boolean;
     allDesks: Desk[];
-    allCounties: County[];
     onClose: () => void;
     onDeskTransfer: (updatedDesk: Desk, transferReason: string) => void;
     onCountyTransfer: (updatedCounty: County, transferReason: string) => void;

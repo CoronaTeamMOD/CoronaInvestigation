@@ -60,14 +60,14 @@ landingPageRoute.post('/groupInvestigations', adminMiddleWare, (request: Request
         investigation: response.locals.epidemiologynumber
     })
 
-    const { orderBy, size, currentPage, filterRules } = request.body;
+    const { orderBy, size, currentPage, filterRules, county } = request.body;
     const filterBy = {
         ...filterRules,
         userByCreator: {
             ...filterRules.userByCreator,
             countyByInvestigationGroup: {
                 id: {
-                    equalTo: +response.locals.user.investigationGroup
+                    equalTo: +county
                 }
             }
         },
@@ -81,7 +81,7 @@ landingPageRoute.post('/groupInvestigations', adminMiddleWare, (request: Request
     };
     groupInvestigationsLogger.info(launchingDBRequestLog(getInvestigationsParameters), Severity.LOW);
 
-    graphqlRequest(GROUP_INVESTIGATIONS(+response.locals.user.investigationGroup), response.locals, getInvestigationsParameters)
+    graphqlRequest(GROUP_INVESTIGATIONS(+county), response.locals, getInvestigationsParameters)
         .then(result => {
             groupInvestigationsLogger.info(validDBResponseLog, Severity.LOW);
             response.send({
@@ -165,7 +165,7 @@ landingPageRoute.post('/changeGroupDesk', adminMiddleWare, (request: Request, re
     const parameters = { 
         desk: request.body.desk,
         selectedGroups: request.body.groupIds,
-        userCounty: response.locals.user.investigationGroup, 
+        userCounty: request.body.county, 
         reason:  request.body.reason || ''
     }
     changeGroupDeskLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
@@ -189,6 +189,7 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
 
     const desks = request.body.deskFilter;
     const timeRange = request.body.timeRangeFilter; 
+    const county = request.body.county; 
 
     const desksFilter = desks
                         ? { deskId : { in : desks}} 
@@ -201,7 +202,7 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
     const userFilters = {
         userByCreator: {
             countyByInvestigationGroup: {
-                id: {equalTo: response.locals.user.investigationGroup}
+                id: {equalTo: county}
             }
         },
         ...desksFilter,

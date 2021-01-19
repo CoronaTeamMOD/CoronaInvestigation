@@ -2,10 +2,8 @@ import axios  from 'axios';
 import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 
-import Desk from 'models/Desk';
 import User from 'models/User';
 import logger from 'logger/logger';
-import County from 'models/County';
 import Language from 'models/Language';
 import { Severity } from 'models/Logger';
 import SignUpUser from 'models/SignUpUser';
@@ -34,8 +32,6 @@ interface CellNameSort {
 const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUsersManagementInCome): useUsersManagementOutCome => {
     
     const [users, setUsers] = useState<SignUpUser[]>([]);
-    const [counties, setCounties] = useState<County[]>([]);
-    const [desks, setDesks] = useState<Desk[]>([]);
     const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([])
     const [userTypes, setUserTypes] = useState<UserTypeModel[]>([]);
     const [languages, setLanguages] = useState<Language[]>([]);
@@ -45,24 +41,16 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     const [isBadgeInVisible, setIsBadgeInVisible] = useState<boolean>(true);
     
     const user = useSelector<StoreStateType, User>(state => state.user.data);
+    const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
 
     const { alertError, alertWarning } = useCustomSwal();
-    
-    const getUsersRoute = () => {
-        switch (user.userType) {
-            case UserTypeEnum.ADMIN: return '/users/county';
-            case UserTypeEnum.SUPER_ADMIN: return '/users/district';
-            default: return '';
-        }
-    }
 
     const fetchUsers = () => {
         const fetchUsersLogger = logger.setup('Fetching users');
         fetchUsersLogger.info('launching users request', Severity.LOW);
-        const fetchUsersRoute = getUsersRoute();
         setIsLoading(true);
-        if (fetchUsersRoute !== '') {
-            axios.post(fetchUsersRoute, {
+        if (user.userType === UserTypeEnum.ADMIN || user.userType === UserTypeEnum.SUPER_ADMIN) {
+            axios.post('/users/county', {
                 page: {
                     number: page,
                     size: rowsPerPage
@@ -70,6 +58,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                 orderBy: cellNameSort.direction !== undefined ? 
                          `${get(SortOrderTableHeadersNames, cellNameSort.name)}_${cellNameSort.direction?.toUpperCase()}` : null,
                 filter: Object.values(filterRules).reduce((obj, item) => Object.assign(obj, item) , {}),
+                county: displayedCounty
             })
                 .then(result => {
                     if (result?.data && result.headers['content-type'].includes('application/json')) {
@@ -104,38 +93,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             .catch(() => {
                 alertError('לא ניתן היה לקבל מסגרות');
                 fetchSourcesOrganizationLogger.error('didnt get results back from the server', Severity.HIGH);      
-            });
-    }
-
-    const fetchCounties = () => {
-        const fetchCountiesLogger = logger.setup('Fetching counties');
-        fetchCountiesLogger.info('launching counties request', Severity.LOW);
-        axios.get('/counties')
-            .then(result => {
-                if (result?.data && result.headers['content-type'].includes('application/json')) {
-                    setCounties(result.data);
-                    fetchCountiesLogger.info('got results back from the server', Severity.LOW);
-                }  
-            })
-            .catch(() => {
-                alertError('לא ניתן היה לקבל נפות');
-                fetchCountiesLogger.error('didnt get results back from the server', Severity.HIGH);      
-            });
-    };
-
-    const fetchDesks = () => {
-        const desksLogger = logger.setup('Fetching desks');
-        desksLogger.info('launching desks request', Severity.LOW);
-        axios.get('/desks/county')
-            .then(result => {
-                if (result?.data && result.headers['content-type'].includes('application/json')) {
-                    setDesks(result.data);
-                    desksLogger.info('got results back from the server', Severity.LOW);
-                }  
-            })
-            .catch(() => {
-                alertError('לא ניתן היה לקבל דסקים');
-                desksLogger.error('didnt get results back from the server', Severity.HIGH);      
             });
     }
 
@@ -189,8 +146,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
 
     useEffect(() => {
         fetchSourcesOrganization();
-        fetchCounties();
-        fetchDesks();
         fetchUserTypes();
         fetchLanguages();
     }, [])
@@ -198,7 +153,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     useEffect(() => {
         setPage(defaultPage);
         page === defaultPage && fetchUsers();
-    }, [filterRules, cellNameSort])
+    }, [filterRules, cellNameSort, displayedCounty])
 
     useEffect(() => {
         fetchUsers();
@@ -210,8 +165,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             [SignUpFields.LANGUAGES]: row[SignUpFields.LANGUAGES].map((language: string) => {
                 return { displayName: language }
             }),
-            [SignUpFields.COUNTY]: { displayName: row[SignUpFields.COUNTY] },
-            [SignUpFields.DESK]: { name: row[SignUpFields.DESK] },
+            [SignUpFields.COUNTY]: { displayName: row[SignUpFields.COUNTY].displayName },
+            [SignUpFields.DESK]: { deskName: row[SignUpFields.DESK].deskName },
             [SignUpFields.CITY]: { value: { displayName: row[SignUpFields.CITY] }},
             [SignUpFields.FULL_NAME]: row[SignUpFields.FULL_NAME] || row[SignUpFields.USER_NAME],
             [SignUpFields.SOURCE_ORGANIZATION]: { displayName: row[SignUpFields.SOURCE_ORGANIZATION]}
@@ -300,8 +255,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
 
     return {
         users,
-        counties,
-        desks,
         sourcesOrganization,
         userTypes,
         languages,
@@ -327,8 +280,6 @@ interface useUsersManagementInCome {
 
 interface useUsersManagementOutCome {
     users: SignUpUser[];
-    counties: County[];
-    desks: Desk[];
     sourcesOrganization: SourceOrganization[];
     userTypes: UserTypeModel[];
     languages: Language[];

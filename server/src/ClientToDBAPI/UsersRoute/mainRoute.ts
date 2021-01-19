@@ -1,19 +1,19 @@
 import { Router, Request, Response } from 'express';
 
 import User from '../../Models/User/User';
-import { Service, Severity } from '../../Models/Logger/types';
+import { Severity } from '../../Models/Logger/types';
+import { adminMiddleWare } from '../../middlewares/Authentication';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
 import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
 import GetAllUserTypesResponse from '../../Models/User/GetAllUserTypesResponse';
 import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
-import { adminMiddleWare, superAdminMiddleWare } from '../../middlewares/Authentication';
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, UPDATE_INVESTIGATOR_BY_GROUP_ID,
          UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY } from '../../DBService/Users/Mutation';
 import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
-    GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_USERS_BY_DISTRICT_ID, GET_ALL_USER_TYPES, GET_USERS_BY_COUNTY_ID
+    GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ALL_USER_TYPES, GET_USERS_BY_COUNTY_ID
 } from '../../DBService/Users/Query';
 
 const usersRoute = Router();
@@ -187,7 +187,7 @@ usersRoute.post('/changeGroupInvestigator', adminMiddleWare, (request: Request, 
     const parameters = { 
         newInvestigator: request.body.user,
         selectedGroups: request.body.groupIds,
-        userCounty: response.locals.user.investigationGroup
+        userCounty: request.body.county
     }
     changeGroupInvestigatorLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
@@ -211,7 +211,7 @@ usersRoute.post('/changeGroupCounty', adminMiddleWare, (request: Request, respon
     const parameters = { 
         newInvestigator: `${unassignedUserPrefix}${request.body.county}`,
         selectedGroups: request.body.groupIds,
-        userCounty: response.locals.user.investigationGroup,
+        userCounty: request.body.county,
         wasInvestigationTransferred: true
     }
     changeGroupCountyLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
@@ -244,19 +244,20 @@ usersRoute.get('/userTypes', (request: Request, response: Response) => {
         })
 })
 
-usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response) => {
+usersRoute.get('/group/:county', adminMiddleWare, (request: Request, response: Response) => {
     const groupLogger = logger.setup({
         workflow: `query investigators by county`,
         user: response.locals.user.id,
     });
 
-    const parameters = { inputCountyId: +response.locals.user.investigationGroup };
+    const parameters = { inputCountyId: parseInt(request.params.county) };
     groupLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_ACTIVE_GROUP_USERS, response.locals, parameters)
         .then(result => {
             groupLogger.info(validDBResponseLog, Severity.LOW);
-            const resData = JSON.parse(result.data.getInvestigatorListByCountyFunction.json);
+            const usersJson = result.data.getInvestigatorListByCountyFunction.json;
+            const resData = usersJson ? JSON.parse(usersJson) : [];
             const users: User[] = resData.map((user: any) => ({
                 ...user,
                 languages: user.languages.map((language: any) => language),
@@ -354,42 +355,6 @@ usersRoute.post('', (request: Request, response: Response) => {
         });
 });
 
-usersRoute.post('/district', superAdminMiddleWare, (request: Request, response: Response) => {
-    const districtLogger = logger.setup({
-        workflow: 'query users by current user district',
-        user: response.locals.user.id
-    });
-
-    const { page } = request.body;
-    const parameters = {
-        offset: calculateOffset(page.number, page.size),
-        size: page.size,
-        orderBy: [request.body.orderBy ? request.body.orderBy : 'NATURAL'],
-        filter: {
-            countyByInvestigationGroup: {
-                districtByDistrictId: {
-                    id: {
-                        equalTo: response.locals.user.countyByInvestigationGroup.districtId
-                    }
-                }
-            },
-            ...request.body.filter
-        }
-    }
-    districtLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-    graphqlRequest(GET_USERS_BY_DISTRICT_ID,response.locals,parameters)
-        .then(result => {
-            districtLogger.info(validDBResponseLog, Severity.LOW);
-            const totalCount = result.data.allUsers.totalCount;
-            const users = result.data.allUsers.nodes.map(convertToUser);
-            response.send({ users, totalCount });
-        })
-        .catch(error => {
-            districtLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-            response.sendStatus(errorStatusCode).send(error);
-        })
-});
-
 usersRoute.post('/county', adminMiddleWare, (request: Request, response: Response) => {
     const countyLogger = logger.setup({
         workflow: 'query users by current user\'s county id',
@@ -403,7 +368,7 @@ usersRoute.post('/county', adminMiddleWare, (request: Request, response: Respons
         filter: {
             countyByInvestigationGroup: {
                 id: {
-                    equalTo: +response.locals.user.investigationGroup
+                    equalTo: +request.body.county
                 }
             },
             ...request.body.filter
