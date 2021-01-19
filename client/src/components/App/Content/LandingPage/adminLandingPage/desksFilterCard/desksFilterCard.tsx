@@ -46,9 +46,9 @@ const DesksFilterCard = (props: Props): JSX.Element => {
                                     checkboxElements={[{
                                         key: desk.id,
                                         value: desk.id,
-                                        checked: filteredDesks.includes(desk.id),
+                                        checked: filteredDesks.includes(desk.id as number),
                                         labelText: desk.deskName,
-                                        onChange: () => onDeskClicked(desk.id)
+                                        onChange: () => onDeskClicked(desk.id as number)
                                     }]}
                                 />
                             ))

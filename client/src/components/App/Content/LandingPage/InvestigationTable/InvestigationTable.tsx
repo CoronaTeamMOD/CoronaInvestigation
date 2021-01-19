@@ -105,7 +105,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const desks = useSelector<StoreStateType, Desk[]>(state => state.desk).filter(desk => desk.county === displayedCounty);
 
     const countyDesks : Desk[] = useMemo(() =>
-        [...desks.filter(desk => desk.county === displayedCounty), { id: -1, deskName: 'לא שוייך לדסק', county: displayedCounty}]
+        [...desks.filter(desk => desk.county === displayedCounty), { id: null, deskName: 'לא שוייך לדסק', county: displayedCounty}]
     , [desks, displayedCounty])
 
     const totalPageCount = Math.ceil(totalCount / rowsPerPage);
@@ -135,10 +135,10 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         const allUsersOfCountyArray: InvestigatorOption[] = Array.from(allCountyUsers, ([id, value]) => ({ id, value }));
         if (deskFilter.length > 0) {
             allUsersOfCountyArray.filter(({ value }) => {
-                if (!value.deskByDeskId) {
+                if (!value.deskByDeskId?.id) {
                     return false;
                 }
-                return deskFilter.includes(value.deskByDeskId.id);
+                return deskFilter.includes(value.deskByDeskId.id as number);
             });
         }
         return allUsersOfCountyArray;

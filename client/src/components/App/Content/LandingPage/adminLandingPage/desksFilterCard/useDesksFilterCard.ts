@@ -11,7 +11,7 @@ const useDesksFilterCard = () => {
 
     const getHistoryData = () => {
         const { location: { state } } = history;
-        const deskFilter = state?.deskFilter;
+        const deskFilter = state?.deskFilter as number[];
         setFilteredDesks(deskFilter || []);
     }
     

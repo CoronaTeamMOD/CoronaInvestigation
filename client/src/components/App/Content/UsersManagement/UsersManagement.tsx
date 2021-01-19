@@ -115,7 +115,7 @@ const UsersManagement: React.FC = () => {
                             countyDesks.map((desk: Desk) => (
                                 <MenuItem
                                     key={desk.id}
-                                    value={desk.id}>
+                                    value={desk.id as number}>
                                     {desk.deskName}
                                 </MenuItem>
                             ))

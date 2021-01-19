@@ -15,7 +15,7 @@ import { IndexedInvestigationData } from './InvestigationTablesHeaders';
 
 export type StatusFilter = InvestigationMainStatusCodes[];
 export type SubStatusFilter = string[];
-export type DeskFilter = number[];
+export type DeskFilter = number[] | (number | null)[];
 
 export interface HistoryState {
     filterRules?: any;
