@@ -641,7 +641,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         .map(groupId => `group ${groupId}- investigations:{${getInvestigationsOldValues
             (allGroupedInvestigations.get(groupId) as InvestigationTableRow[], key, key  === HiddenTableKeys.county)}}`)
         .join(', ');
-        console.log(`launching request to transfer the groups investigations ${key} to ${newValue} from their old values: ${investigationsPreviousValues} ${reason ? `due to ${reason}` : ''}`)
         return `launching request to transfer the groups investigations ${key} to ${newValue} from their old values: ${investigationsPreviousValues} ${reason ? `due to ${reason}` : ''}`;
     }
 
