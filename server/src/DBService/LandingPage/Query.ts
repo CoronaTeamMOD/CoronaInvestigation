@@ -174,6 +174,17 @@ query allInvestigationStatuses {
 }
 `;
 
+export const GET_ALL_INVESTIGATION_SUB_STATUS = gql`
+query allInvestigationSubStatuses {
+  allInvestigationSubStatuses(orderBy: DISPLAY_NAME_ASC) {
+    nodes {
+      id
+      displayName
+    }
+  }
+}
+`;
+
 export const GET_ALL_DESKS = gql`
 query allDesks {
   allDesks {

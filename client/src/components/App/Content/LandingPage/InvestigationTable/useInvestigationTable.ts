@@ -36,7 +36,8 @@ import { defaultOrderBy, rowsPerPage, defaultPage } from './InvestigationTable';
 import {
     TableHeadersNames, IndexedInvestigationData, investigatorIdPropertyName, TableKeys, HiddenTableKeys
 } from './InvestigationTablesHeaders';
-import { DeskFilter, HistoryState, StatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
+import { DeskFilter, HistoryState, StatusFilter, SubStatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
+import InvestigationSubStatus from 'models/InvestigationSubStatus';
 
 const investigationURL = '/investigation';
 const getFlooredRandomNumber = (min: number, max: number): number => (
@@ -128,7 +129,7 @@ const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך ה�
 const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
-    const { setSelectedRow, setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations,
+    const { setSelectedRow, setAllCounties, setAllStatuses, setAllSubStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations,
         investigationColor } = parameters;
 
     const classes = useStyle(false);
@@ -136,6 +137,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const history = useHistory<HistoryState>();
 
     const { statusFilter: historyStatusFilter = [], 
+            subStatusFilter: historySubStatusFilter = [],
             deskFilter: historyDeskFilter = [], 
             timeRangeFilter: historyTimeRange = defaultTimeRange,
             inactiveUserFilter : historyInactiveUserFilter = false, 
@@ -153,6 +155,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [totalCount, setTotalCount] = useState<number>(0);
     const [unassignedInvestigationsCount, setUnassignedInvestigationsCount] = useState<number>(0);
     const [statusFilter, setStatusFilter] = useState<StatusFilter>(historyStatusFilter);
+    const [subStatusFilter, setSubStatusFilter] = useState<SubStatusFilter>(historySubStatusFilter);
     const [deskFilter, setDeskFilter] = useState<DeskFilter>(historyDeskFilter);
     const [timeRangeFilter, setTimeRangeFilter] = useState<TimeRange>(historyTimeRange);
     const [updateDateFilter, setUpdateDateFilter] = useState<string>(historyUpdateDateFilter);
@@ -162,6 +165,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const getFilterRules = () => {
         const statusFilterToSet = historyStatusFilter.length > 0 ? filterCreators.STATUS(historyStatusFilter) : null;
+        const subStatusFilterToSet = historySubStatusFilter.length > 0 ? filterCreators.SUB_STATUS(historyStatusFilter) : null;
         const deskFilterToSet = historyDeskFilter.length > 0 ? filterCreators.DESK_ID(historyDeskFilter) : null;
         const timeRangeFilterToSet = historyTimeRange.id !== allTimeRangeId ? filterCreators.TIME_RANGE(historyTimeRange) : null;
         const unAssignedFilterToSet = (historyUnassignedUserFilter && !inactiveUserFilter) ? filterCreators.UNASSIGNED_USER(historyUnassignedUserFilter) : null;
@@ -170,6 +174,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const updateDateFilterToSet = historyUpdateDateFilter ? filterCreators.UNUSUAL_IN_PROGRESS(historyUpdateDateFilter) : null;
         return {
             [InvestigationsFilterByFields.STATUS]: statusFilterToSet && Object.values(statusFilterToSet)[0],
+            [InvestigationsFilterByFields.SUB_STATUS]: subStatusFilterToSet && Object.values(subStatusFilterToSet)[0],
             [InvestigationsFilterByFields.DESK_ID]: deskFilterToSet && Object.values(deskFilterToSet)[0],
             [InvestigationsFilterByFields.TIME_RANGE]: timeRangeFilterToSet && Object.values(timeRangeFilterToSet)[0],
             [InvestigationsFilterByFields.UNASSIGNED_USER]: unAssignedFilterToSet && Object.values(unAssignedFilterToSet)[0],
@@ -223,6 +228,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setCurrentPage(defaultPage);
     };
 
+    const changeSubStatusFilter = (subStatuses: InvestigationSubStatus[]) => {
+        const subStatusesIds = subStatuses.map(subStatuse => subStatuse.displayName);
+        updateFilterHistory('subStatusFilter', subStatusesIds);
+        setSubStatusFilter(subStatusesIds);
+        handleFilterChange(filterCreators.SUB_STATUS(subStatusesIds));
+        setCurrentPage(defaultPage);
+    };
+    
     const changeUnassginedUserFilter = (value: boolean) => {
         updateFilterHistory('unassignedUserFilter', value);
         setUnassignedUserFilter(value);
@@ -309,8 +322,27 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             })
     }
 
+    const fetchAllInvestigationSubStatuses = () => {
+        const subStatusesLogger = logger.setup('GraphQL GET sub statuses request to the DB');
+        axios.get('/landingPage/investigationSubStatuses').
+            then((result) => {
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    subStatusesLogger.info('The investigations statuses were fetched successfully', Severity.LOW);
+                    const allSubStatuses: InvestigationMainStatus[] = result.data;
+                    setAllSubStatuses(allSubStatuses);
+                } else {
+                    subStatusesLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
+                }
+            })
+            .catch((err) => {
+                subStatusesLogger.error(err, Severity.HIGH);
+            })
+    };
+
+
     useEffect(() => {
         fetchAllInvestigationStatuses();
+        fetchAllInvestigationSubStatuses();
         fetchAllDesksByCountyId();
         startWaiting();
     }, []);
@@ -517,7 +549,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     }
                 })
                 .catch((err: any) => {
-                    alertError('אופס... לא הצלחנו לשלוף');
+                    alertError(FETCH_ERROR_TITLE);
                     setIsLoading(false);
                     fetchInvestigationsLogger.error(err, Severity.HIGH);
                 });
@@ -958,6 +990,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeGroupsInvestigator,
         changeInvestigationsInvestigator,
         statusFilter,
+        subStatusFilter,
         changeStatusFilter,
         deskFilter,
         changeDeskFilter,
@@ -973,6 +1006,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         isBadgeInVisible,
         updateDateFilter,
         changeUpdateDateFilter,
+        changeSubStatusFilter
     };
 };
 

@@ -7,20 +7,21 @@ import { TimeRange } from 'models/TimeRange';
 import timeRanges, { customTimeRange, timeRangeMinDate } from 'models/enums/timeRanges';
 import DateRangePick from 'commons/DatePick/DateRangePick';
 import SelectDropdown from 'commons/Select/SelectDropdown';
+import InvestigationSubStatus from 'models/InvestigationSubStatus';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
 import useStyles from './TableFilterStyles';
 import useTableFilter from './useTableFilter';
-import { StatusFilter as StatusFilterType } from '../InvestigationTableInterfaces';
+import { StatusFilter as StatusFilterType, SubStatusFilter as SubStatusFilterType } from '../InvestigationTableInterfaces';
 
 const TableFilter = (props: Props) => {
 
     const classes = useStyles();
 
     const { 
-        statuses, filteredStatuses, 
+        statuses, subStatuses, filteredStatuses, filteredSubStatuses,
         onFilterChange, onClose, 
-        changeInactiveUserFilter, inactiveUserFilter, 
+        changeInactiveUserFilter, onSubStatusChange, inactiveUserFilter, 
         changeUnassginedUserFilter, unassignedUserFilter, 
         timeRangeFilter, onTimeRangeFilterChange, updateDateFilter
     } = props;
@@ -94,6 +95,40 @@ const TableFilter = (props: Props) => {
                     )}
                     limitTags={1}
                 />
+                <Typography className={classes.title} >
+                    <b>תת סטטוס</b>
+                </Typography>
+                <Autocomplete
+                    ChipProps={{className:classes.chip}}
+                    className={classes.autocomplete}
+                    classes={{inputFocused: classes.autocompleteInputText}}
+                    size='small'
+                    disableCloseOnSelect
+                    multiple
+                    options={subStatuses}
+                    value={subStatuses.filter(subStatus => filteredSubStatuses.includes(subStatus.displayName))}
+                    getOptionLabel={(option) => option.displayName}
+                    onChange={onSubStatusChange}
+                    renderInput={(params) =>
+                        <TextField
+                            size='small'
+                            {...params}
+                            InputProps={{...params.InputProps, className: classes.autocompleteInput}}
+                        />
+                    }
+                    renderOption={(option, { selected }) => (
+                        <>
+                            <Checkbox
+                                size='small'
+                                className={classes.optionCheckbox}
+                                checked={selected}
+                                color='primary'
+                            />
+                            <Typography className={classes.option} >{option.displayName}</Typography>
+                        </>
+                    )}
+                    limitTags={1}
+                />
             </Grid>
             <Grid className={classes.endCard} xs={3}>
                 <Checkbox
@@ -120,12 +155,15 @@ const TableFilter = (props: Props) => {
 
 interface Props {
     statuses: InvestigationMainStatus[];
+    subStatuses: InvestigationSubStatus[];
     filteredStatuses: StatusFilterType;
+    filteredSubStatuses: SubStatusFilterType;
     unassignedUserFilter: boolean;
     inactiveUserFilter: boolean;
     changeUnassginedUserFilter: (isFilterOn: boolean) => void;
     changeInactiveUserFilter: (isFilterOn: boolean) => void;
     onFilterChange: (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => void;
+    onSubStatusChange: (event: React.ChangeEvent<{}>, selectedSubStatuses: InvestigationSubStatus[]) => void;
     onClose: () => void;
     timeRangeFilter: TimeRange;
     onTimeRangeFilterChange: (timeRangeFilter: TimeRange) => void;
