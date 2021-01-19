@@ -51,6 +51,8 @@ const insuranceCompanies = ['מכבי', 'צהל', 'כללית'].concat(NO_INSURA
 const occupations = Object.values(Occupations) as string[];
 
 const PersonalInfoTab: React.FC<Props> = ({ id }) => {
+
+    const classes = useStyles();
     
     const methods = useForm<PersonalInfoTabState>({
         mode: 'all',
@@ -99,28 +101,32 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
 
     const addressFormFields: AddressFormFields = {
         cityField: {
-            name: PersonalInfoDataContextFields.CITY
+            name: PersonalInfoDataContextFields.CITY,
+            className: classes.personalInfoItem
         },
         streetField: {
-            name: PersonalInfoDataContextFields.STREET
+            name: PersonalInfoDataContextFields.STREET,
+            // className: classes.homeAddressItem
         },
         houseNumberField: {
-            name: PersonalInfoDataContextFields.HOUSE_NUMBER
+            name: PersonalInfoDataContextFields.HOUSE_NUMBER,
+            // className: classes.homeAddressItem
         },
         floorField: {
-            name: PersonalInfoDataContextFields.FLOOR
+            name: PersonalInfoDataContextFields.FLOOR,
+            // className: classes.personalInfoItem
         }
     }
 
     return (
-        <div>
+        <div className={classes.tabInitialContainer}>
             <FormProvider {...methods}>
                 <form id={`form-${id}`} onSubmit={(event) => {
                     event.preventDefault();
                     // savePersonalData(convertToDBData(), data, id);
                 }}>
                     <FormRowWithInput fieldName={PHONE_LABEL}>
-                        <Grid item xs={2}>
+                        <Grid item xs={2} className={classes.personalInfoItem}>
                             <Controller
                                 control={methods.control}
                                 name={PersonalInfoDataContextFields.PHONE_NUMBER}
@@ -133,13 +139,14 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                         onBlur={props.onBlur}
                                         placeholder={PHONE_LABEL}
                                         label='טלפון*'
+                                        className={classes.phoneInput}
                                     />
                                 )}
                             />
                         </Grid>
                     </FormRowWithInput>
                     <FormRowWithInput fieldName={ADDITIONAL_PHONE_LABEL + ":"}>
-                        <Grid item xs={2}>
+                        <Grid item xs={2} className={classes.personalInfoItem}>
                             <Controller
                                 control={methods.control}
                                 name={PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER}
@@ -152,6 +159,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                         onBlur={props.onBlur}
                                         placeholder={PHONE_LABEL}
                                         label='טלפון'
+                                        className={classes.phoneInput}
                                     />
                                 )}
                             />
@@ -159,7 +167,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                     </FormRowWithInput>
                     <FormRowWithInput fieldName={CONTACT_PHONE_LABEL}>
                         <>
-                            <Grid item xs={2}>
+                            <Grid item xs={2} className={classes.personalInfoItem}>
                                 <Controller
                                     control={methods.control}
                                     name={PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER}
@@ -172,6 +180,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                             onBlur={props.onBlur}
                                             placeholder={PHONE_LABEL}
                                             label='טלפון'
+                                            className={classes.phoneInput}
                                         />
                                     )}
                                 />
@@ -187,13 +196,14 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                         onBlur={props.onBlur}
                                         placeholder={CONTACT_INFO}
                                         label='פרטי איש קשר'
+                                        className={classes.contactDescription}
                                     />
                                 )}
                             />
                         </>
                     </FormRowWithInput>
                     <FormRowWithInput fieldName={INSURANCE_LABEL} appendantLabelIcon={insuranceCompany === NO_INSURANCE ? <ComplexityIcon tooltipText='המאומת חסר מעמד' /> : undefined}>
-                        <Grid item xs={2}>
+                        <Grid item xs={2} className={classes.personalInfoItem}>
                             <FormControl fullWidth>
                                 <Controller
                                     name={PersonalInfoDataContextFields.INSURANCE_COMPANY}
@@ -206,6 +216,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                             onChange={(event, selectedInsuranceCompany) => {
                                                 props.onChange(selectedInsuranceCompany ? selectedInsuranceCompany : '')
                                             }}
+                                            className={props.value === NO_INSURANCE ? classes.markComplexity : ''}
                                             renderInput={(params) =>
                                                 <TextField
                                                     {...params}
@@ -230,7 +241,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                     </FormRowWithInput>
                     <FormRowWithInput gridProps={{ alignItems: 'baseline' }} fieldName={RELEVANT_OCCUPATION_LABEL}>
                         <>
-                        <Grid item xs={2}>
+                            <Grid item xs={2} className={classes.responsiveOccupation}>
                                 <FormControl component='fieldset'>
                                     <Controller
                                         name={PersonalInfoDataContextFields.RELEVANT_OCCUPATION}
@@ -240,12 +251,15 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                 aria-label={OCCUPATION_LABEL}
                                                 name={OCCUPATION_LABEL}
                                                 value={props.value ? props.value : Occupations.OTHER}
+                                                className={classes.relevantOccupationselect}
                                                 >
-                                                <FormLabel component='legend'><b>{OCCUPATION_LABEL}</b></FormLabel>
+                                                <FormLabel component='legend' className={classes.fontSize15}>
+                                                    <b>{OCCUPATION_LABEL}</b>
+                                                </FormLabel>
                                                 {
                                                     occupations.map((occupationOption) => {
                                                         return (
-                                                            <div>
+                                                            <div className={classes.occupation}>
                                                                 <FormControlLabel
                                                                     value={occupationOption}
                                                                     key={occupationOption}
@@ -259,7 +273,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                                     (
                                                                         (occupationOption === Occupations.EDUCATION_SYSTEM && occupation === Occupations.EDUCATION_SYSTEM) ||
                                                                         (occupationOption === Occupations.HEALTH_SYSTEM && occupation === Occupations.HEALTH_SYSTEM)
-                                                                    ) && <div>
+                                                                    ) && <div className={classes.complexIconOnOccupation}>
                                                                         <ComplexityIcon tooltipText='עובד במשרד הבריאות/החינוך' />
                                                                     </div>
                                                                 }
@@ -330,6 +344,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                         onChange={(event, selectedRole) => {
                                                             props.onChange(selectedRole.id);
                                                         }}
+                                                        className={classes.markComplexity}
                                                         renderInput={(params) =>
                                                             <TextField
                                                                 {...params}
@@ -352,6 +367,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                             render={(props) => (
                                                                 <Select
                                                                     label='שכבה'
+                                                                    className={[classes.gradeInput, props.value && classes.markComplexity].join(' ')}
                                                                     value={props.value}
                                                                     onChange={(event) => props.onChange(event.target.value)}
                                                                 >
@@ -376,6 +392,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                         render={(props) => (
                                                             <NumericTextField
                                                                 name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
+                                                                className={[classes.gradeInput, props.value && classes.markComplexity].join(' ')}
                                                                 value={props.value}
                                                                 onChange={props.onChange}
                                                                 onBlur={props.onBlur}
@@ -403,6 +420,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                         control={methods.control}
                                                         render={(props) => (
                                                             <AlphanumericTextField
+                                                                className={classes.otherTextField}
+                                                                InputProps={{className: classes.otherTextField}}
                                                                 testId='institutionName'
                                                                 name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
                                                                 value={props.value}
