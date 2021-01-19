@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         paddingRight: 'unset'
     },
     autocompleteInputText: {
-        width: 'unset'
+        width: '4vw'
     },
     optionCheckbox: {
         height: '0.5vh',
@@ -41,7 +41,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     title: {
         fontSize: '1vw',
-        padding: '0 0.4vw'
+        padding: '0 0.4vw',
+        width: '6vw'
     },
     formControl: {
         padding: '0 0.4vw'
