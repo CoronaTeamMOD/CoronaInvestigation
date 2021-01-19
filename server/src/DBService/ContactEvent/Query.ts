@@ -165,6 +165,10 @@ query contactsByGroupId($groupId: UUID!, $epidemiologynumber: Int!) {
                   identificationNumber
                   lastName
                   id
+                  identificationType
+                  phoneNumber
+                  birthDate
+                  additionalPhoneNumber
                 }
                 addressByIsolationAddress {
                   cityByCity {

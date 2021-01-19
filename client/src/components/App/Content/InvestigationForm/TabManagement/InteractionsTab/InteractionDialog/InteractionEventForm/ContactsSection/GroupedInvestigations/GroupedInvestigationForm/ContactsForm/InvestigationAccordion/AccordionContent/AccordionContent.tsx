@@ -1,19 +1,20 @@
 import React from 'react';
 import { AccordionDetails, Grid } from '@material-ui/core';
 
-import ContactsTable from './ContactsTable/ContactsTable';
 import ContactEvent from 'models/GroupedInvestigationContacts/ContactEvent';
 
-interface Props {
-    events : ContactEvent[]
-}
+import ContactsTable from './ContactsTable/ContactsTable';
 
 const AccordionContent = (props: Props) => {
+    const { events } = props;
+
     return (
         <AccordionDetails>
             <Grid container>
                 <Grid xs={12}>
-                    <ContactsTable />
+                    <ContactsTable 
+                        events={events}
+                    />
                 </Grid>
                 <Grid xs={12}>
                     <div>נבחרו X שורות</div>
@@ -21,6 +22,10 @@ const AccordionContent = (props: Props) => {
             </Grid>
         </AccordionDetails>
     )
+}
+
+interface Props {
+    events : ContactEvent[]
 }
 
 export default AccordionContent

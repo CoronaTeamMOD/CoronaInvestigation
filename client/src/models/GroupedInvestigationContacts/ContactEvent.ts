@@ -1,3 +1,5 @@
+import ContactedPerson from './ContactedPerson';
+
 type ContactEvent = {
     contactedPeopleByContactEvent : {
         nodes: {
@@ -6,12 +8,7 @@ type ContactEvent = {
                     displayName: string;
                 }
             },
-            personByPersonInfo: {
-                firstName : string;
-                lastName : string;
-                id : number;
-                identificationNumber: string;
-            }
+            personByPersonInfo: ContactedPerson
         }[]
     }
 }
