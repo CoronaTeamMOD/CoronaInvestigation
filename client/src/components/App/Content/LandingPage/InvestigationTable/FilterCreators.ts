@@ -9,9 +9,15 @@ const numericRegex: RegExp = /^([\d]+)$/;
 export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => Exclude<any, void>) } = {
     [InvestigationsFilterByFields.STATUS]: (values: string[]) => {
         return values.length > 0 ?
-            { [InvestigationsFilterByFields.STATUS]: { investigationStatus: { in: values } } }    
-            : 
+            { [InvestigationsFilterByFields.STATUS]: { investigationStatus: { in: values } } }
+            :
             { [InvestigationsFilterByFields.STATUS]: null }
+    },
+    [InvestigationsFilterByFields.SUB_STATUS]: (values: string[]) => {
+        return values.length > 0 ?
+            { [InvestigationsFilterByFields.SUB_STATUS]: { investigationSubStatus: { in: values } } }
+            :
+            { [InvestigationsFilterByFields.SUB_STATUS]: null }
     },
     [InvestigationsFilterByFields.DESK_ID]: (deskIds: (number | null)[]) => {
         if (deskIds.includes(null)) {
@@ -41,37 +47,37 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
                             { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { identityNumber: { includes: value } } } }
                         ]
                     }
-                } 
+                }
                 :
-                { 
+                {
                     [InvestigationsFilterByFields.SEARCH_BAR]: {
                         investigatedPatientByInvestigatedPatientId: {
-                            covidPatientByCovidPatient: { fullName: { includes: value } } 
-                        } 
-                    } 
-                } 
+                            covidPatientByCovidPatient: { fullName: { includes: value } }
+                        }
+                    }
+                }
             :
-            { [InvestigationsFilterByFields.SEARCH_BAR]: null  }
+            { [InvestigationsFilterByFields.SEARCH_BAR]: null }
     },
     [InvestigationsFilterByFields.UNASSIGNED_USER]: (isFilterOn: boolean) => {
         return isFilterOn ?
-            { 
+            {
                 [InvestigationsFilterByFields.UNASSIGNED_USER]: {
                     userByCreator: { userName: { equalTo: unassignedUserName } }
-                } 
+                }
             }
             :
             { [InvestigationsFilterByFields.UNASSIGNED_USER]: null };
     },
     [InvestigationsFilterByFields.INACTIVE_USER]: (isFilterOn: boolean) => {
         return isFilterOn ?
-            { 
+            {
                 [InvestigationsFilterByFields.INACTIVE_USER]: {
-                    userByCreator: { 
+                    userByCreator: {
                         isActive: { equalTo: false },
-                        userName: { notEqualTo: unassignedUserName } 
-                    } 
-                } 
+                        userName: { notEqualTo: unassignedUserName }
+                    }
+                }
             }
             :
             { [InvestigationsFilterByFields.INACTIVE_USER]: null };
@@ -93,16 +99,18 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
     },
     [InvestigationsFilterByFields.TIME_RANGE]: (timeRangeFilter: TimeRange) => {
         if (timeRangeFilter.id !== allTimeRangeId) {
-            return { [InvestigationsFilterByFields.TIME_RANGE]: { 
-                creationDate: { 
-                    greaterThanOrEqualTo: timeRangeFilter.startDate,
-                    lessThanOrEqualTo: timeRangeFilter.endDate 
-                } 
-            } } ;
+            return {
+                [InvestigationsFilterByFields.TIME_RANGE]: {
+                    creationDate: {
+                        greaterThanOrEqualTo: timeRangeFilter.startDate,
+                        lessThanOrEqualTo: timeRangeFilter.endDate
+                    }
+                }
+            };
         } else {
             return { [InvestigationsFilterByFields.TIME_RANGE]: null }
         }
-    }  
+    }
 };
 
 export default filterCreators;
