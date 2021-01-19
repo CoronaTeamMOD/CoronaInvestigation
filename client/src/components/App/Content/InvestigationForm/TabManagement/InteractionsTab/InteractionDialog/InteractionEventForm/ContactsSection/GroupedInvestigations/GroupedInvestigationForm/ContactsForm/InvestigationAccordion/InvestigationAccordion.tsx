@@ -3,7 +3,7 @@ import { Accordion } from '@material-ui/core';
 
 import ConnectedInvestigation from 'models/GroupedInvestigationContacts/ConnectedInvestigation';
 
-
+import useStyles from './accordionStyles';
 import AccordionContent from './AccordionContent/AccordionContent';
 import AccordionHeadline from './AccordionHeadline/AccordionHeadline';
 
@@ -12,8 +12,10 @@ const InvestigationAccordion = (props: Props) => {
     const { epidemiologyNumber , contactEventsByInvestigationId , investigatedPatientByInvestigatedPatientId } = contact;
     const { fullName , identityNumber } = investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient;
 
+    const classes = useStyles();
+
     return (
-        <Accordion>
+        <Accordion className={classes.accordion}>
             <AccordionHeadline
                 epidemiologyNumber={epidemiologyNumber}
                 fullName={fullName}

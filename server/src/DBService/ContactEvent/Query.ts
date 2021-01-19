@@ -156,7 +156,7 @@ query contactsByGroupId($groupId: UUID!, $epidemiologynumber: Int!) {
             identityNumber
           }
         }
-        contactEventsByInvestigationId {
+        contactEventsByInvestigationId(filter: {contactedPeopleByContactEventExist: true}) {
           nodes {
             contactedPeopleByContactEvent {
               nodes {

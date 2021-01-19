@@ -17,42 +17,40 @@ const TableRows = (props: Props) => {
                 events.map((event) => {
                     const { nodes } = event.contactedPeopleByContactEvent;
 
-                    if(nodes !== []) {
-                        return nodes.map((person) => {
-                            const {
-                                firstName,
-                                lastName,
-                                identificationType,
-                                identificationNumber,
-                                birthDate,
-                                phoneNumber,
-                                additionalPhoneNumber,
-                                id
-                            } = person.personByPersonInfo;
-                            const isolationCity = person.addressByIsolationAddress?.cityByCity?.displayName;
+                    return nodes.map((person) => {
+                        const {
+                            firstName,
+                            lastName,
+                            identificationType,
+                            identificationNumber,
+                            birthDate,
+                            phoneNumber,
+                            additionalPhoneNumber,
+                            id
+                        } = person.personByPersonInfo;
+                        const isolationCity = person.addressByIsolationAddress?.cityByCity?.displayName;
 
-                            const isRowSelected = selectedRows.indexOf(id) !== -1;
-                            return (
-                                <TableRow key={id} className={isRowSelected ? classes.selected : ''}>
-                                    <TableCell>
-                                        <Checkbox
-                                            color='primary'
-                                            checked={isRowSelected}
-                                            onClick={() => handleCheckboxToggle(id)}
-                                        />
-                                    </TableCell>
-                                    <TableCell>{firstName}</TableCell>
-                                    <TableCell>{lastName}</TableCell>
-                                    <TableCell>{identificationType}</TableCell>
-                                    <TableCell>{identificationNumber}</TableCell>
-                                    <TableCell>{formatDate(new Date(birthDate))}</TableCell>
-                                    <TableCell>{phoneNumber}</TableCell>
-                                    <TableCell>{additionalPhoneNumber}</TableCell>
-                                    <TableCell>{isolationCity}</TableCell>
-                                </TableRow>
-                            )
-                        })
-                    }
+                        const isRowSelected = selectedRows.indexOf(id) !== -1;
+                        return (
+                            <TableRow key={id} className={isRowSelected ? classes.selected : ''}>
+                                <TableCell>
+                                    <Checkbox
+                                        color='primary'
+                                        checked={isRowSelected}
+                                        onClick={() => handleCheckboxToggle(id)}
+                                    />
+                                </TableCell>
+                                <TableCell>{firstName}</TableCell>
+                                <TableCell>{lastName}</TableCell>
+                                <TableCell>{identificationType}</TableCell>
+                                <TableCell>{identificationNumber}</TableCell>
+                                <TableCell>{formatDate(new Date(birthDate))}</TableCell>
+                                <TableCell>{phoneNumber}</TableCell>
+                                <TableCell>{additionalPhoneNumber}</TableCell>
+                                <TableCell>{isolationCity}</TableCell>
+                            </TableRow>
+                        )
+                    })
                 })
             }
         </TableBody>

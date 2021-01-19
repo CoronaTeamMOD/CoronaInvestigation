@@ -3,10 +3,14 @@ import { AccordionDetails, Grid } from '@material-ui/core';
 
 import ContactEvent from 'models/GroupedInvestigationContacts/ContactEvent';
 
+import useAccordionContent from './useAccordionContent';
 import ContactsTable from './ContactsTable/ContactsTable';
+import SelectedRowsMessage from './SelectedRowsMessage/SelectedRowsMessage';
 
 const AccordionContent = (props: Props) => {
     const { events, selectedRows, setSelectedRows} = props;
+
+    const { getCurrentSelectedRowsLength } = useAccordionContent({events , selectedRows});   
 
     return (
         <AccordionDetails>
@@ -19,7 +23,9 @@ const AccordionContent = (props: Props) => {
                     />
                 </Grid>
                 <Grid xs={12}>
-                    <div>נבחרו X שורות</div>
+                    <SelectedRowsMessage
+                        selectedRows={getCurrentSelectedRowsLength()}
+                    />
                 </Grid>
             </Grid>
         </AccordionDetails>

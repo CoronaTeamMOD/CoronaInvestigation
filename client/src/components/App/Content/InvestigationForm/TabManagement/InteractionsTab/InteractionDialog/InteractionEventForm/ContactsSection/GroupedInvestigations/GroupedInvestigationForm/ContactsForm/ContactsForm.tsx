@@ -27,6 +27,7 @@ const ContactsForm = (props: Props) => {
                     )
                 })
             }
+            <Typography variant='h6' align='right'>{`נבחרו ${selectedRows.length} שורות`}</Typography>
         </>
     )
 }
