@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
+import React, { useMemo, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers';
 import { useForm, FormProvider, Controller } from 'react-hook-form';
 import { Grid, FormControl, TextField, FormLabel, RadioGroup, 
@@ -46,10 +46,6 @@ const NO_INSURANCE = 'אף אחד מהנ"ל';
 const defaultInvestigationId = -1;
 const defaultRole = { id: -1, displayName: '' };
 
-// TODO: Remove stubs
-const insuranceCompanies = ['מכבי', 'צהל', 'כללית'].concat(NO_INSURANCE);
-const occupations = Object.values(Occupations) as string[];
-
 const PersonalInfoTab: React.FC<Props> = ({ id }) => {
 
     const classes = useStyles();
@@ -61,9 +57,15 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const educationGrades = useSelector<StoreStateType, EducationGrade[]>(state => state.educationGrades)
-    // const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
+    const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
 
-    const { subOccupations, getSubOccupations, getEducationSubOccupations, investigatedPatientRoles } = usePersonalTabInfo({});
+    const { subOccupations, 
+            getSubOccupations, 
+            getEducationSubOccupations, 
+            investigatedPatientRoles,
+            fetchPersonalInfo,
+            insuranceCompanies,
+            clearSubOccupations } = usePersonalTabInfo({});
 
     const occupation = methods.watch(PersonalInfoDataContextFields.RELEVANT_OCCUPATION);
     const insuranceCompany = methods.watch(PersonalInfoDataContextFields.INSURANCE_COMPANY);
@@ -99,6 +101,19 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
         return INSTITUTION_NAME_LABEL;
     }, [occupation]);
 
+    useEffect(() => {
+        fetchPersonalInfo(methods.reset, methods.trigger);
+    }, []);
+
+    useEffect(() => {
+        if (occupation === Occupations.DEFENSE_FORCES ||
+            occupation === Occupations.HEALTH_SYSTEM) {
+            getSubOccupations(occupation);
+        } else {
+            clearSubOccupations();            
+        }
+    }, [occupation]);
+
     const addressFormFields: AddressFormFields = {
         cityField: {
             name: PersonalInfoDataContextFields.CITY,
@@ -106,15 +121,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
         },
         streetField: {
             name: PersonalInfoDataContextFields.STREET,
-            // className: classes.homeAddressItem
         },
         houseNumberField: {
             name: PersonalInfoDataContextFields.HOUSE_NUMBER,
-            // className: classes.homeAddressItem
         },
         floorField: {
             name: PersonalInfoDataContextFields.FLOOR,
-            // className: classes.personalInfoItem
         }
     }
 
