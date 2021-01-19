@@ -11,6 +11,9 @@ import FlightNumberTextField from 'commons/FlightNumberTextField/FlightNumberTex
 import useStyles from './FlightFormStyles';
 import AirportInput from './AirportInput/AirportInput';
 
+const startDateLabel = '*מתאריך';
+const endDateLabel = '*עד תאריך';
+
 const FlightsForm = (props: any) => {
   const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index } = props;
 
@@ -19,14 +22,14 @@ const FlightsForm = (props: any) => {
   const classes = useStyles();
   const formClasses = useFormStyles();
 
-  const getDateLabel = (dateError : {message? : string , type? : string}) => {
+  const getDateLabel = (dateError : {message? : string , type? : string}, isStart: boolean) => {
 		if(dateError) {
 			if(dateError.type === 'typeError') {
 				return 'תאריך לא ולידי'
 			}
 			return dateError.message;
 		}
-		return '*תאריך'
+		return (isStart ? startDateLabel : endDateLabel)
 	}
 
   const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
@@ -62,9 +65,8 @@ const FlightsForm = (props: any) => {
 			</FormRowWithInput>
 
 			<FormRowWithInput fieldName='תאריך טיסה:'>
-				<Grid className={formClasses.inputRow} item container xs={9} justify='flex-start' alignItems='center' spacing={1}>
-					<Grid item xs={5} lg={3} className={classes.flightInputDate}>
-						<Typography variant='caption'>מתאריך</Typography>
+				<Grid className={classes.inputRow} item container xs={9} justify='flex-start' alignItems='center' spacing={1}>
+					<Grid item>
 						<Controller
 							control={control}
 							name={`exposures[${index}].${fieldsNames.flightStartDate}`}
@@ -77,7 +79,7 @@ const FlightsForm = (props: any) => {
 										invalidDateMessage={''}
 										maxDate={new Date()}
 										testId='flightFromDate'
-										labelText={getDateLabel(startDateError)}
+										labelText={getDateLabel(startDateError, true)}
 										error={Boolean(startDateError)}
 										onChange={(newDate: Date) => {
 											props.onChange(newDate);
@@ -88,8 +90,7 @@ const FlightsForm = (props: any) => {
 							}}
 						/>
 					</Grid>
-					<Grid item xs={5} lg={3} className={classes.flightInputDate}>
-					<Typography variant='caption'>עד תאריך</Typography>
+					<Grid item>
 						<Controller
 							control={control}
 							name={`exposures[${index}].${fieldsNames.flightEndDate}`}
@@ -102,7 +103,7 @@ const FlightsForm = (props: any) => {
 										invalidDateMessage={''}
 										maxDate={new Date()}
 										testId='flightToDate'
-										labelText={getDateLabel(endDateError)}
+										labelText={getDateLabel(endDateError, false)}
 										error={Boolean(endDateError)}
 										onChange={(newDate: Date) => {
 											props.onChange(newDate);

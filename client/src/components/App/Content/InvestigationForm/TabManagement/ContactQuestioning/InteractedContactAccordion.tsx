@@ -5,6 +5,7 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    AccordionActions,
     Divider,
     Grid,
 } from '@material-ui/core';
@@ -103,19 +104,21 @@ const InteractedContactAccordion = (props: Props) => {
                         />
                     </Grid>
                 </AccordionDetails>
-                <PrimaryButton
-                    disabled={shouldDisable(interactedContact.contactStatus)}
-                    test-id='saveContact'
-                    onClick={() => {
-                        const currentParsedPerson = parsePerson(
-                            methods.getValues().form[index],
-                            index
-                        );
-                        saveContact(currentParsedPerson);
-                    }}
-                >
-                    שמור מגע
-                </PrimaryButton>
+                <AccordionActions className={classes.accordionActions}>
+                    <PrimaryButton
+                        disabled={shouldDisable(interactedContact.contactStatus)}
+                        test-id='saveContact'
+                        onClick={() => {
+                            const currentParsedPerson = parsePerson(
+                                methods.getValues().form[index],
+                                index
+                            );
+                            saveContact(currentParsedPerson);
+                        }}
+                    >
+                        שמור מגע
+                    </PrimaryButton>
+                </AccordionActions>
             </Accordion>
         </div>
     );

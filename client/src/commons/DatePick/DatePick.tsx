@@ -31,6 +31,7 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
       KeyboardButtonProps={{
         'aria-label': 'change date',
       }}
+      helperText={null}
       InputLabelProps={{
         shrink: true,
         className: classes.label

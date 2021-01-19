@@ -6,6 +6,7 @@ import { Avatar, Grid, Typography } from '@material-ui/core';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import FieldName from 'commons/FieldName/FieldName';
+import HelpIcon from 'commons/Icons/HelpIcon/HelpIcon';
 import InteractedContact from 'models/InteractedContact';
 import useContactFields from 'Utils/Contacts/useContactFields';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
@@ -18,12 +19,16 @@ import IdentificationTextField from 'commons/IdentificationTextField/Identificat
 import useStyles from './ContactQuestioningStyles';
 import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
 
+const passportInfoMessage = 'ניתן להזין בשדה דרכון 10 תווים/ 15 תווים ו-/';
+const idInfoMessage = 'ניתן להזין בשדה תז עד 9 תווים'
+
 const ContactQuestioningPersonal: React.FC<Props> = (
     props: Props
 ): JSX.Element => {
-    const { control, getValues } = useFormContext();
-
+    const { control, getValues , errors, trigger} = useFormContext();
     const { index, interactedContact } = props;
+
+    const currentFormErrors = errors?.form && errors?.form[index];
     
     const calcAge = (birthDate: Date) => {
         const newAge: number = differenceInYears(new Date(),new Date(birthDate));
@@ -46,7 +51,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
     );
 
     const classes = useStyles();
-
+    const idTooltipText = isPassport ? passportInfoMessage : idInfoMessage;
     const PHONE_LABEL = 'טלפון';
 
     const { shouldDisableContact } = useStatusUtils();
@@ -60,7 +65,11 @@ const ContactQuestioningPersonal: React.FC<Props> = (
             (shouldDisableIdByReopen &&
                 !!interactedContact.identificationNumber);
         setShouldIdDisable(shouldDisable);
-    }, [interactedContact.contactStatus]);
+    }, [interactedContact.contactStatus, isFieldDisabled]);
+
+    useEffect(() => {
+        trigger(`form[${index}].${InteractedContactFields.IDENTIFICATION_NUMBER}`)
+    }, [isPassport]);
 
     return (
         <Grid item xs={4}>
@@ -101,7 +110,18 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                             }}
                         />
                     </Grid>
-                    <FieldName fieldName='מספר תעודה:' />
+                    <FieldName 
+                        fieldName='מספר תעודה:' 
+                        className={classes.fieldNameWithIcon}
+                        appendantLabelIcon={
+                            <HelpIcon 
+                                title={idTooltipText} 
+                                isWarning={
+                                    currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_NUMBER]
+                                } 
+                            />
+                        }
+                    />
                     <Grid item xs={3}>
                         <Controller
                             control={control}
@@ -135,13 +155,17 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                         name={`form[${index}].${InteractedContactFields.BIRTH_DATE}`}
                         defaultValue={interactedContact.birthDate}
                         render={(props) => {
+                            const dateError = currentFormErrors && currentFormErrors[InteractedContactFields.BIRTH_DATE]?.message;
                             return (
                                 <DatePick
                                     {...props}
                                     disabled={isFieldDisabled}
                                     testId='contactBirthDate'
                                     maxDate={new Date()}
+                                    maxDateMessage='תאריך לידה לא יכול להיות יותר גדול מהיום'
                                     useBigCalender={false}
+                                    labelText={dateError ? 'תאריך לא ולידי' : 'תאריך לידה'}
+                                    error={Boolean(dateError)}
                                     onChange={(newDate: Date) => {
                                         props.onChange(newDate);
                                         setAge(calcAge(newDate));

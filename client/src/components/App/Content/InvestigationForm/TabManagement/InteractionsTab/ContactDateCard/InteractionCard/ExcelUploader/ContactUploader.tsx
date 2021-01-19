@@ -99,6 +99,8 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
                             alertError('שגיאה בשמירת הנתונים');
                         })
                         .finally(() => setIsLoading(false));
+                } else {
+                    setIsLoading(false);
                 }
             }
         }

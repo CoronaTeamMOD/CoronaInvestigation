@@ -6,7 +6,6 @@ import { createFilterOptions } from '@material-ui/lab';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import Country from 'models/Country';
-import useFormStyles from 'styles/formStyles';
 import AirportTextField from 'commons/AirportTextField/AirportTextField';
 import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
 import InternationalCityTextField from 'commons/InternationalCityTextField/InternationalCityTextField';
@@ -28,7 +27,6 @@ const AirportInput = (props: any) => {
     const { control, errors } = useFormContext();
 
     const classes = useStyles();
-    const formStyles = useFormStyles();
 
     const countries = useSelector<StoreStateType, Map<string, Country>>((state) => state.countries);
     const options = Array.from(countries).map(([name, value]) => value);
@@ -60,35 +58,33 @@ const AirportInput = (props: any) => {
     const countryFieldError = currentErrors ? currentErrors[countryFieldName] : undefined;
 
     return (
-        <Grid container item xs={9} className={formStyles.inputRow} justify='flex-start' alignItems='center' spacing={1}>
-            <Grid item xs={4}>
-                <div className={classes.countryAutocomplete}>
-                    <Controller
-                        control={control}
-                        name={`exposures[${index}].${countryFieldName}`}
-                        defaultValue={country}
-                        render={(props) => {
-                            return (
-                                <AutocompletedField
-                                    {...props}
-                                    options={options}
-                                    onChange={(event, newValue) => {
-                                        const formattedValue = newValue ? newValue.id : null;
-                                        props.onChange(formattedValue);
-                                        handleCountryChange(newValue);
-                                    }}
-                                    getOptionLabel={(option) => getLabel(option)}
-                                    filterOptions={filterOptions}
-                                    error={Boolean(countryFieldError)}
-                                    label={getCountryLabel(countryFieldError)}
-                                    placeholder='מדינה'
-                                />
-                            );
-                        }}
-                    />
-                </div>
+        <Grid container item xs={9} className={classes.inputRow} justify='flex-start' alignItems='center' spacing={1}>
+            <Grid item className={classes.countryAutocomplete}>
+                <Controller
+                    control={control}
+                    name={`exposures[${index}].${countryFieldName}`}
+                    defaultValue={country}
+                    render={(props) => {
+                        return (
+                            <AutocompletedField
+                                {...props}
+                                options={options}
+                                onChange={(event, newValue) => {
+                                    const formattedValue = newValue ? newValue.id : null;
+                                    props.onChange(formattedValue);
+                                    handleCountryChange(newValue);
+                                }}
+                                getOptionLabel={(option) => getLabel(option)}
+                                filterOptions={filterOptions}
+                                error={Boolean(countryFieldError)}
+                                label={getCountryLabel(countryFieldError)}
+                                placeholder='מדינה'
+                            />
+                        );
+                    }}
+                />
             </Grid>
-            <Grid item xs={4} lg={3}>
+            <Grid item>
                 <Controller
                     control={control}
                     name={`exposures[${index}].${cityFieldName}`}
@@ -96,6 +92,7 @@ const AirportInput = (props: any) => {
                     render={(props) => {
                         return (
                             <InternationalCityTextField
+                                fullwidth
                                 {...props}
                                 onChange={(value) => {
                                     props.onChange(value);
@@ -108,7 +105,7 @@ const AirportInput = (props: any) => {
                     }}
                 />
             </Grid>
-            <Grid item xs={4} lg={3}>
+            <Grid item>
                 <Controller
                     control={control}
                     name={`exposures[${index}].${airportFieldName}`}
@@ -116,6 +113,7 @@ const AirportInput = (props: any) => {
                     render={(props) => {
                         return (
                             <AirportTextField
+                                fullwidth
                                 {...props}
                                 onChange={(value) => {
                                     props.onChange(value);
@@ -123,7 +121,6 @@ const AirportInput = (props: any) => {
                                 }}
                                 placeholder='שדה תעופה'
                                 label='שדה תעופה*'
-                                className={classes.airportTextField}
                             />
                         );
                     }}

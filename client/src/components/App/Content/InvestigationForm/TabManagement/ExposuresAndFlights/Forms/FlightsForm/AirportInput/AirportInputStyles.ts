@@ -8,12 +8,16 @@ const useStyles = makeStyles({
     airportCountryTextField: {
         minWidth: '10vw',
     },
-    airportTextField: {
-        marginLeft: '1vw',
-    },
     countryAutocomplete: {
         width: '19vw',
-    }
+    },
+    inputRow: {
+        alignItems: 'center',
+        minWidth: '45vw',
+        '&.MuiGrid-item': {
+            paddingLeft: 0
+        }
+    },
 });
 
 export default useStyles;

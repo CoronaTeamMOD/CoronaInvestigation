@@ -7,12 +7,3 @@ export const CREATE_ADDRESS = gql`
         }
     }
 `;
-
-export const UPDATE_ADDRESS = gql`
-    mutation updateAddress($id: Int!, $addressPatch: AddressPatch!) {
-        updateAddressById(input: {id: $id, addressPatch: $addressPatch}) {
-            address { id }
-        }
-    }
-`;
-

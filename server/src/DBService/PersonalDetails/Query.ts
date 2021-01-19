@@ -37,7 +37,6 @@ query getInvestigatedPatientDetails($id: Int!) {
               id
               displayName
             }
-            id
           }
           primaryPhone
         }

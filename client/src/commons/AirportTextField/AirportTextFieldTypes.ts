@@ -10,6 +10,7 @@ export interface AirportTextFieldProps<T> {
     placeholder?: string,
     label?: string,
     className?: string,
+    fullwidth?: boolean,
 }
 
 type AirportTextFieldType = <T>(props: AirportTextFieldProps<T>) => JSX.Element;
