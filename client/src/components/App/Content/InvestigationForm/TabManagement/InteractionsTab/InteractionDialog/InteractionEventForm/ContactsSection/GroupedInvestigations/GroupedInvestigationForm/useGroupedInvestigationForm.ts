@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect } from 'react';
 
-import ConnectedInvestigationContact from './ConnectedInvestigationContact';
+import ConnectedInvestigationContact from 'models/GroupedInvestigationContacts/ConnectedInvestigationContact';
 
 const useGroupedInvestigationForm = (props : Props) => {
     const { groupId, setContacts } = props;

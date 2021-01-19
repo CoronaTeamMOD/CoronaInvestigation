@@ -1,9 +1,10 @@
 import React , { useState } from 'react'
 
+import ConnectedInvestigationContact from 'models/GroupedInvestigationContacts/ConnectedInvestigationContact';
+
 import ContactsForm from './ContactsForm/ContactsForm';
 import NoContactsMessage from './NoContactsMessage/NoContactsMessage';
 import useGroupedInvestigationsTab from './useGroupedInvestigationForm';
-import ConnectedInvestigationContact from './ConnectedInvestigationContact';
 interface Props {
     groupId : string;
 }

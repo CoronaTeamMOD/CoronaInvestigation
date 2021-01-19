@@ -1,8 +1,10 @@
 import React from 'react';
-import { Accordion , AccordionSummary , AccordionDetails } from '@material-ui/core';
+import { Accordion } from '@material-ui/core';
+
+import ConnectedInvestigation from 'models/GroupedInvestigationContacts/ConnectedInvestigation';
 
 
-import { ConnectedInvestigation } from '../../ConnectedInvestigationContact';
+import AccordionContent from './AccordionContent/AccordionContent';
 import AccordionHeadline from './AccordionHeadline/AccordionHeadline';
 
 const InvestigationAccordion = (props: Props) => {
@@ -16,9 +18,9 @@ const InvestigationAccordion = (props: Props) => {
                 fullName={fullName}
                 identityNumber={identityNumber}
             />
-            <AccordionDetails>
-                <div>helo</div>
-            </AccordionDetails>
+            <AccordionContent 
+                events={contactEventsByInvestigationId.nodes}
+            />
         </Accordion>
     )
 }

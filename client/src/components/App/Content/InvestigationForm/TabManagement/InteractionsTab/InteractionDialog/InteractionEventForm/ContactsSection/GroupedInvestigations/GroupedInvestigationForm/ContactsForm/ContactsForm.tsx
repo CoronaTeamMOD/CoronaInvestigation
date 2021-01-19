@@ -1,7 +1,8 @@
 import { Typography } from '@material-ui/core';
 import React from 'react'
 
-import { ConnectedInvestigation } from '../ConnectedInvestigationContact';
+import ConnectedInvestigation from 'models/GroupedInvestigationContacts/ConnectedInvestigation';
+
 import InvestigationAccordion from './InvestigationAccordion/InvestigationAccordion';
 
 const formHeadline = 'מאומתים המקובצים לחקירה :';
