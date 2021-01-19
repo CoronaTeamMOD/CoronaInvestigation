@@ -20,6 +20,7 @@ export interface HistoryState {
     statusFilter?: StatusFilter;
     deskFilter?: DeskFilter;
     timeRangeFilter?: TimeRange;
+    updateDateFilter?: string;
     unassignedUserFilter?: boolean;
     inactiveUserFilter?: boolean;
     isAdminLandingRedirect?: boolean;
@@ -72,6 +73,8 @@ export interface useInvestigationTableOutcome {
     fetchAllCountyUsers: () => Promise<Map<string, User>>;
     tableTitle: string;
     timeRangeFilter: TimeRange;
+    updateDateFilter: string;
+    changeUpdateDateFilter: (dateString: string) => void;
     isBadgeInVisible: boolean;
     changeTimeRangeFilter: (timeRange: TimeRange) => void;
 };

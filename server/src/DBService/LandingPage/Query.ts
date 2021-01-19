@@ -185,7 +185,7 @@ query allDesks {
 `;
 
 export const GET_INVESTIGATION_STATISTICS = gql`
-query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitgationsFilter: InvestigationFilter!, $lastUpdateDateFilter: [InvestigationFilter!]){
+query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitgationsFilter: InvestigationFilter!, $lastUpdateDateFilter: InvestigationFilter!){
   allInvestigations(filter: $allInvesitgationsFilter) {
     totalCount
   }
@@ -232,10 +232,10 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
     totalCount
   }
   unusualInProgressInvestigations: allInvestigations(filter: {
-    investigationStatus:{
-      equalTo:${String(InvestigationMainStatusCodes.IN_PROCESS)}
-    },
-    and: $lastUpdateDateFilter
+    and: [
+    {investigationStatus: {equalTo:${String(InvestigationMainStatusCodes.IN_PROCESS)}}},
+    $lastUpdateDateFilter,
+    $allInvesitgationsFilter]
   }) {
     totalCount
   }

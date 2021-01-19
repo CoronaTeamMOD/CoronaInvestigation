@@ -45,7 +45,7 @@ const UnusualCard: React.FC<Props> = (props: Props): JSX.Element => {
                         <Typography className={classes.investigationNumberText}><b>{unusualInProgressInvestigationsCount}</b></Typography>
                         <Typography className={classes.investigationAmountText}><b>חקירות</b></Typography>
                     </div>
-                    <div onClick={() => onInProcessClick(statusToFilterConvertor[FilterRulesDescription.UNALLOCATED])} className={classes.unusualInvestigations}>
+                    <div onClick={() => onInProcessClick(statusToFilterConvertor[FilterRulesDescription.UNUSUAL_IN_PROCESS])} className={classes.unusualInvestigations}>
                         <Typography className={classes.unusualInvestigationsText}><b>{FilterRulesDescription.UNUSUAL_IN_PROCESS}</b></Typography>
                         <NavigateBeforeIcon className={classes.navigateIcon} />
                     </div>

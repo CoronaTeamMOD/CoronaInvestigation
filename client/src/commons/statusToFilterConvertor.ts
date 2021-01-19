@@ -20,6 +20,10 @@ const statusToFilterConvertor = {
         inactiveUserFilter: true,
         unassignedUserFilter: false
     },
+    [FilterRulesDescription.UNUSUAL_IN_PROCESS]: {
+        statusFilter: [InvestigationMainStatusCodes.IN_PROCESS],
+        updateDateFilter: new Date(Date.now() - (4 * 60 * 60 * 1000)).toUTCString()
+    },
 }
 
 export default statusToFilterConvertor;

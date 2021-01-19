@@ -171,6 +171,7 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
 
     const desks = request.body.deskFilter;
     const timeRange = request.body.timeRangeFilter; 
+    const dateFilter = new Date(Date.now() - (4 * 60 * 60 * 1000)).toUTCString();
 
     const desksFilter = desks
                         ? { deskId : { in : desks}} 
@@ -182,7 +183,7 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
     
     const lastUpdateDateFilter = {
         lastUpdateTime: {
-            lessThan: new Date(Date.now() - (4 * 60 * 60 * 1000)).toUTCString()
+            lessThan: dateFilter
         }
     };
     
@@ -199,7 +200,7 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
     const parameters = { userFilters, allInvesitgationsFilter: userFilters };
     investigationsStatisticsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
-    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, { userFilters, allInvesitgationsFilter: userFilters, lastUpdateDateFilter})
+    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, { userFilters, allInvesitgationsFilter: userFilters, lastUpdateDateFilter: lastUpdateDateFilter})
     .then((results) => {
         graphqlRequest(GET_UNUSUAL_INVESTIGATIONS_COUNT, response.locals).then((res)=>{
             investigationsStatisticsLogger.info(validDBResponseLog, Severity.LOW);
