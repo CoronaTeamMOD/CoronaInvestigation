@@ -1,6 +1,7 @@
 import React from 'react';
-import { AccordionDetails } from '@material-ui/core';
+import { AccordionDetails, Grid } from '@material-ui/core';
 
+import ContactsTable from './ContactsTable/ContactsTable';
 import ContactEvent from 'models/GroupedInvestigationContacts/ContactEvent';
 
 interface Props {
@@ -10,7 +11,14 @@ interface Props {
 const AccordionContent = (props: Props) => {
     return (
         <AccordionDetails>
-            <div>helo</div>
+            <Grid container>
+                <Grid xs={12}>
+                    <ContactsTable />
+                </Grid>
+                <Grid xs={12}>
+                    <div>נבחרו X שורות</div>
+                </Grid>
+            </Grid>
         </AccordionDetails>
     )
 }
