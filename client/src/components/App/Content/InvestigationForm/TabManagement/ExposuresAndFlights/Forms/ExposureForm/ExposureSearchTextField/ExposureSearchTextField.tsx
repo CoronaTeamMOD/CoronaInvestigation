@@ -8,8 +8,7 @@ import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPre
 
 import useStyles from './ExposureSearchTextFieldStyles';
 
-const errorMessage = 'השדה יכול להכיל רק אותיות, מספרים, מקף ורווח';
-const maxLengthErrorMessage = 'השדה יכול להכיל 100 תווים בלבד';
+const maxLengthErrorMessage = 'השדה יכול להכיל 50 תווים בלבד';
 const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן מספר אפידמיולוגי, שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
 
 interface Props extends AlphabetTextFieldProps<string> {
@@ -20,7 +19,6 @@ interface Props extends AlphabetTextFieldProps<string> {
 
 const stringAlphabet = yup
   .string()
-  .matches(/^[a-zA-Z\u0590-\u05fe\s0-9-]*$/, errorMessage)
   .max(50, maxLengthErrorMessage);
 
 const ExposureSearchTextField = (props: Props) => {

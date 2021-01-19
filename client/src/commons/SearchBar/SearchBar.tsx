@@ -2,34 +2,23 @@ import React, { useState } from 'react';
 import { Close, Search } from '@material-ui/icons';
 import { TextField, InputAdornment, IconButton } from '@material-ui/core';
 
-import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
-
 import useStyles from './SearchBarStyles';
-
-const searchBarError = 'יש להכניס רק אותיות ומספרים';
 
 const SearchBar: React.FC<Props> = (props: Props) => {
 
     const { searchBarLabel, onClick, onChange } = props;
 
     const [searchQuery, setSearchQuery] = useState<string>('');
-    const [isQueryValid, setIsQueryValid] = useState<boolean>(true);
 
     const classes = useStyles();
 
     const handleChange = (value: string) => {
-        if (stringAlphanum.isValidSync(value)) {
-            setSearchQuery(value);
-            !isQueryValid && setIsQueryValid(true);
-            onChange !== undefined && onChange(value);
-        } else {
-            setIsQueryValid(false);
-        }
+        setSearchQuery(value);
+        onChange !== undefined && onChange(value);
     }
 
     const onClearClick = () => {
         setSearchQuery('');
-        !isQueryValid && setIsQueryValid(true);
         onClick(''); 
     }
 
@@ -42,7 +31,7 @@ const SearchBar: React.FC<Props> = (props: Props) => {
                 event.key === 'Enter' &&
                 onClick(searchQuery);
             }}
-            label={isQueryValid ? searchBarLabel : searchBarError}
+            label={searchBarLabel}
             InputProps={{
                 endAdornment: (
                     <InputAdornment position='end'>
@@ -64,7 +53,6 @@ const SearchBar: React.FC<Props> = (props: Props) => {
                     </InputAdornment>
                 ),
             }}
-            error={!isQueryValid}
         />
     );
 }
