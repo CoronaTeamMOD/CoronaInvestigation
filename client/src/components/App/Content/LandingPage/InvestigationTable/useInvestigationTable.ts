@@ -980,6 +980,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeInvestigationsInvestigator,
         statusFilter,
         subStatusFilter,
+        changeSubStatusFilter,
         changeStatusFilter,
         deskFilter,
         changeDeskFilter,
@@ -992,8 +993,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchAllCountyUsers,
         tableTitle, 
         timeRangeFilter,
-        isBadgeInVisible,
-        changeSubStatusFilter
+        isBadgeInVisible
     };
 };
 

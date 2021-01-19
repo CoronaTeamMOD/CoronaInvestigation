@@ -78,7 +78,8 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                     <PostponedCard
                         isLoading={isLoading}
                         onClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.TRANSFER_REQUEST)} 
-                        postponedInvestigationsCount={investigationsStatistics.transferRequestInvestigations}
+                        transferRequestInvestigationsCount={investigationsStatistics.transferRequestInvestigations}
+                        waitingForDetailsInvestigationsCount={investigationsStatistics.waitingForDetailsInvestigations}
                     />
                 </Grid>
             </Grid>

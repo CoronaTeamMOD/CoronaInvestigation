@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tooltip, Typography, Box } from '@material-ui/core';
+import { Tooltip, Typography, Box, Divider } from '@material-ui/core';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import { Pause } from '@material-ui/icons';
 
@@ -18,7 +18,7 @@ const PostponedCard: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
     const hoverClasses = useHoverStyles();
 
-    const { onClick, isLoading, postponedInvestigationsCount } = props;
+    const { onClick, isLoading, transferRequestInvestigationsCount, waitingForDetailsInvestigationsCount } = props;
 
     return (
         <LoadingCard isLoading={isLoading} height={cardHeight} className={classes.postponedCard}>
@@ -31,8 +31,22 @@ const PostponedCard: React.FC<Props> = (props: Props): JSX.Element => {
                     <Box display='flex'>
                         <Typography>
                             <b>
-                                {postponedInvestigationsCount} 
-                                {FilterRulesDescription.TRANSFER_REQUEST}
+                                {transferRequestInvestigationsCount} 
+                                {'חקירות ממתינות להעברה'}
+                            </b>
+                        </Typography>
+                        <NavigateBeforeIcon className={classes.navigateIcon} />
+                    </Box>
+                </div>
+            </Tooltip>
+            <Divider/>
+            <Tooltip title={postponedInvestigationsText}>
+                <div className={hoverClasses.whiteButtons} onClick={() => onClick(statusToFilterConvertor[FilterRulesDescription.WAITING_FOR_DETAILS])}>
+                    <Box display='flex'>
+                        <Typography>
+                            <b>
+                                {waitingForDetailsInvestigationsCount}
+                                {'חקירות ממתינות להשלמת פרטים'} 
                             </b>
                         </Typography>
                         <NavigateBeforeIcon className={classes.navigateIcon} />
@@ -48,5 +62,6 @@ export default PostponedCard;
 interface Props {
     onClick: (infoFilter: FilterRulesVariables) => void;
     isLoading: boolean;
-    postponedInvestigationsCount: number;
+    transferRequestInvestigationsCount: number;
+    waitingForDetailsInvestigationsCount: number;
 }
