@@ -25,15 +25,18 @@ const EditUserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseE
             </DialogTitle>
 
             <DialogContent>
-                {/* <SignUpForm 
+                <SignUpForm 
                     defaultValues={defaultValues}
-                    mode={FormMode.READ}
-                /> */}
+                    mode={FormMode.EDIT}
+                />
             </DialogContent>
 
             <DialogActions>
                 <PrimaryButton onClick={handleCloseEditUserDialog}>
-                    סגירה
+                    ביטול
+                </PrimaryButton>
+                <PrimaryButton onClick={handleCloseEditUserDialog}>
+                    שמירה
                 </PrimaryButton>
             </DialogActions>
         </Dialog>

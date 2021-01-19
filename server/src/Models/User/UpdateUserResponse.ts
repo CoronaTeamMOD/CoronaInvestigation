@@ -1,12 +1,12 @@
 import ResultError from "../ResultError";
 
-interface CreateUserResponse {
+interface UpdateUserResponse {
     data?: {
-        createNewUser: {
+        updateUserById: {
             clientMutationId: number
         }
     },
     errors?: ResultError[]
 }
 
-export default CreateUserResponse;
+export default UpdateUserResponse;

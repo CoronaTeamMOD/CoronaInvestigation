@@ -4,13 +4,14 @@ import User from '../../Models/User/User';
 import { Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
+import UpdateUserResponse from '../../Models/User/UpdateUserResponse';
 import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
 import GetAllUserTypesResponse from '../../Models/User/GetAllUserTypesResponse';
 import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, UPDATE_INVESTIGATOR_BY_GROUP_ID,
-         UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY } from '../../DBService/Users/Mutation';
+         UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY, UPDATE_USER } from '../../DBService/Users/Mutation';
 import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
     GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ALL_USER_TYPES, GET_USERS_BY_COUNTY_ID
@@ -353,6 +354,61 @@ usersRoute.post('', (request: Request, response: Response) => {
             createUserLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.sendStatus(errorStatusCode).send(error);
         });
+});
+
+usersRoute.put('', (request: Request, response: Response) => {
+    const updateUserLogger = logger.setup({
+        workflow: 'update user',
+    });
+
+    const parameters = {input: convertUserToDB(request.body)};
+    updateUserLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+
+    graphqlRequest(UPDATE_USER, response.locals, parameters)
+        .then((result: UpdateUserResponse) => {
+            updateUserLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data.updateUserById);
+        })
+        .catch((error) => {
+            updateUserLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.sendStatus(errorStatusCode).send(error);
+        });
+});
+
+usersRoute.post('/district', superAdminMiddleWare, (request: Request, response: Response) => {
+    const districtLogger = logger.setup({
+        workflow: 'query users by current user district',
+        user: response.locals.user.id
+    });
+
+    const { page } = request.body;
+    const parameters = {
+        offset: calculateOffset(page.number, page.size),
+        size: page.size,
+        orderBy: [request.body.orderBy ? request.body.orderBy : 'NATURAL'],
+        filter: {
+            countyByInvestigationGroup: {
+                districtByDistrictId: {
+                    id: {
+                        equalTo: response.locals.user.countyByInvestigationGroup.districtId
+                    }
+                }
+            },
+            ...request.body.filter
+        }
+    }
+    districtLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+    graphqlRequest(GET_USERS_BY_DISTRICT_ID,response.locals,parameters)
+        .then(result => {
+            districtLogger.info(validDBResponseLog, Severity.LOW);
+            const totalCount = result.data.allUsers.totalCount;
+            const users = result.data.allUsers.nodes.map(convertToUser);
+            response.send({ users, totalCount });
+        })
+        .catch(error => {
+            districtLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.sendStatus(errorStatusCode).send(error);
+        })
 });
 
 usersRoute.post('/county', adminMiddleWare, (request: Request, response: Response) => {
