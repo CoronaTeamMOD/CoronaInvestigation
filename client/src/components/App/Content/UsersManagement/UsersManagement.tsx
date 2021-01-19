@@ -22,7 +22,7 @@ import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import useStyles from './UsersManagementStyles';
 import UsersFilter from './UsersFilter/UsersFilter';
 import filterCreators from './UsersFilter/FilterCreators';
-import useUsersManagementTable from './useUsersManagement';
+import useUsersManagement from './useUsersManagement';
 import UserInfoDialog from './UserInfoDialog/UserInfoDialog';
 import EditUserInfoDialog from './EditUserInfoDialog/EditUserInfoDialog';
 import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
@@ -54,7 +54,7 @@ const UsersManagement: React.FC = () => {
             handleCloseUserDialog, editUserInfo, handleCloseEditUserDialog, 
             handleFilterChange, setUserActivityStatus,
             setUserSourceOrganization, setUserDesk, setUserCounty } =
-            useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
+            useUsersManagement({ page, rowsPerPage, cellNameSort, setPage });
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
 

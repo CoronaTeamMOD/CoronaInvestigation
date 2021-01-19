@@ -11,8 +11,8 @@ import useStyles from '../../SignUp/SignUpStyles';
 import SignUpForm from '../../SignUp/SignUpForm/SignUpForm';
 
 const EditUserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseEditUserDialog }: Props) => {
+    
     const userInfoTitle = defaultValues[SignUpFields.MABAR_USER_NAME]
-
     const classes = useStyles();
 
     return (
@@ -35,7 +35,10 @@ const EditUserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseE
                 <PrimaryButton onClick={handleCloseEditUserDialog}>
                     ביטול
                 </PrimaryButton>
-                <PrimaryButton onClick={handleCloseEditUserDialog}>
+                <PrimaryButton 
+                    type='submit'
+                    form='signUp'
+                >
                     שמירה
                 </PrimaryButton>
             </DialogActions>

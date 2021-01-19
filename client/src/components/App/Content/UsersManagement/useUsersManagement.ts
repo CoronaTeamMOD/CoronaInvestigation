@@ -178,7 +178,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     const handleCloseUserDialog = () => setUserDialog({ isOpen: false, info: {} })
 
     const editUserInfo = (row: any) => {
-        const userInfoToSet = {
+        const userInfoToEdit = {
             ...row,
             [SignUpFields.LANGUAGES]: row[SignUpFields.LANGUAGES].map((language: string) => {
                 return { displayName: language }
@@ -189,7 +189,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             [SignUpFields.FULL_NAME]: row[SignUpFields.FULL_NAME] || row[SignUpFields.USER_NAME],
             [SignUpFields.SOURCE_ORGANIZATION]: { displayName: row[SignUpFields.SOURCE_ORGANIZATION]}
         };
-        setEditUserDialog({ isOpen: true, info: userInfoToSet });
+        setEditUserDialog({ isOpen: true, info: userInfoToEdit });
     }
 
     const handleCloseEditUserDialog = () => setEditUserDialog({ isOpen: false, info: {} })

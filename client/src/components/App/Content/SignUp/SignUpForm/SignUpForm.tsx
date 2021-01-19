@@ -50,7 +50,7 @@ const GenericAlphabetTextField : React.FC<GenericAlphabetTextFieldProps> =
         />
     )
 
-    const GenericNumericTextField : React.FC<GenericNumericTextFieldProps> =
+const GenericNumericTextField : React.FC<GenericNumericTextFieldProps> =
     ({ props, disabled, label, placeholder, className}: GenericNumericTextFieldProps) => (
             <NumericTextField
                 disabled={disabled}
@@ -70,6 +70,8 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
     
     const { languages, sourcesOrganization, createUser } = useSignUpForm({ handleSaveUser });
 
+    const classes = useStyles();
+    const { counties, languages, sourcesOrganization, desks, createUser, editUser } = useSignUpForm({ handleSaveUser });
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const counties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
     const desks = useSelector<StoreStateType, Desk[]>(state => state.desk);
@@ -87,7 +89,11 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
             ...data,
             desk: data.desk ? data.desk : null
         };
-        createUser(data);
+        if (mode === FormMode.CREATE) {
+            createUser(data);
+        } else if (mode === FormMode.EDIT) {
+            editUser(data);
+        }
     }
     
     return (
