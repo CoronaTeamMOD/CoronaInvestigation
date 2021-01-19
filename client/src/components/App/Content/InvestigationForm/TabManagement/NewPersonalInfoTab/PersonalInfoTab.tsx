@@ -56,8 +56,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
     });
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
-    const educationGrades = useSelector<StoreStateType, EducationGrade[]>(state => state.educationGrades)
     const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
+    const educationGrades = useSelector<StoreStateType, EducationGrade[]>(state => state.educationGrades);
+    const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
     const { subOccupations, 
             getSubOccupations, 
@@ -103,7 +104,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
 
     useEffect(() => {
         fetchPersonalInfo(methods.reset, methods.trigger);
-    }, []);
+    }, [epidemiologyNumber]);
 
     useEffect(() => {
         if (occupation === Occupations.DEFENSE_FORCES ||

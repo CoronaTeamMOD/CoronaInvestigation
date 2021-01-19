@@ -1,44 +1,31 @@
 import axios from 'axios';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { UseFormMethods } from 'react-hook-form';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
+import { initDBAddress } from 'models/DBAddress';
+import StoreStateType from 'redux/storeStateType';
+import Occupations from 'models/enums/Occupations';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import investigatedPatientRole from 'models/investigatedPatientRole';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { setOccupations } from 'redux/Occupations/occupationsActionCreators';
 
 import { PersonalInfoTabState } from '../PersonalInfoTabInterfaces';
 import { usePersonalInfoTabIncome, usePersonalInfoTabOutcome } from './usePersonalInfoTabInterfaces';
 
-// TODO: remove stubs
-const rolesStub: investigatedPatientRole[] = [
-    {
-      "id": 2,
-      "displayName": "צוות אדמיניסטרטיבי"
-    },
-    {
-      "id": 3,
-      "displayName": "צוות חינוכי"
-    },
-    {
-      "id": 5,
-      "displayName": "צוות מטפל"
-    },
-    {
-      "id": 4,
-      "displayName": "שוהה במוסד"
-    },
-    {
-      "id": 1,
-      "displayName": "תלמיד/ה"
-    }
-  ]
-
 const usePersonalInfoTab = (parameters: usePersonalInfoTabIncome): usePersonalInfoTabOutcome => {
+    
     const [subOccupations, setSubOccupations] = useState<SubOccupationAndStreet[]>([]);
     const [investigatedPatientRoles, setInvestigatedPatientRoles] = useState<investigatedPatientRole[]>([]);
     const [insuranceCompanies, setInsuranceCompanies] = useState<string[]>([]);
+
+    const { alertError } = useCustomSwal();
+
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const getSubOccupations = (parentOccupation: string) => {
         const subOccupationsLogger = logger.setup('Fetching Sub Occupation by Parent Occupation');
@@ -97,6 +84,65 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabIncome): usePersonalIn
             investigatedPatientRolesLogger.info('got results back from the server', Severity.LOW);
             setInvestigatedPatientRoles(res?.data);
         });
+
+        const personalDetailsLogger = logger.setup('Fetching Personal Details');
+        personalDetailsLogger.info('launching personal data request', Severity.LOW);
+        setIsLoading(true);
+        axios.get('/personalDetails/investigatedPatientPersonalInfoFields?epidemioligyNumber=' + epidemiologyNumber).then((res: any) => {
+            if (res?.data) {
+                personalDetailsLogger.info('got results back from the server', Severity.LOW);
+                const investigatedPatient = res.data;
+                const patientAddress = investigatedPatient.addressByAddress;
+                let convertedPatientAddress = null;
+                if (patientAddress) {
+                    let city = null;
+                    let street = null;
+                    if (patientAddress.cityByCity !== null) {
+                        city = patientAddress.cityByCity.id;
+                    }
+                    if (patientAddress.streetByStreet !== null) {
+                        street = patientAddress.streetByStreet.id;
+                    }
+                    convertedPatientAddress = {
+                        city,
+                        street,
+                        floor: patientAddress.floor,
+                        houseNum: patientAddress.houseNum,
+                    }
+                } else {
+                    convertedPatientAddress = initDBAddress;
+                }
+                const personalInfo: PersonalInfoTabState = {
+                    phoneNumber: investigatedPatient.primaryPhone,
+                    additionalPhoneNumber: investigatedPatient.additionalPhoneNumber,
+                    contactPhoneNumber: investigatedPatient.patientContactPhoneNumber,
+                    insuranceCompany: investigatedPatient.hmo,
+                    ...convertedPatientAddress,
+                    relevantOccupation: investigatedPatient.occupation,
+                    educationOccupationCity: (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation) ?
+                        investigatedPatient.subOccupationBySubOccupation.city : '',
+                    institutionName: investigatedPatient.subOccupation !== null ? investigatedPatient.subOccupation : '',
+                    otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo !== null ? investigatedPatient.otherOccupationExtraInfo : '',
+                    contactInfo: investigatedPatient.patientContactInfo,
+                    role: investigatedPatient.role,
+                    educationGrade: investigatedPatient.educationGrade,
+                    educationClassNumber: investigatedPatient.educationClassNumber,
+                }
+                reset(personalInfo);
+                trigger();
+                setIsLoading(false);
+            } else {
+                personalDetailsLogger.error(`got errors in server result: ${JSON.stringify(res)}`, Severity.HIGH);
+                setIsLoading(false);
+            }
+        }).catch((error) => {
+            setIsLoading(false);
+
+            if (epidemiologyNumber !== -1) {
+                personalDetailsLogger.error(`got errors in server request ${error}`, Severity.HIGH);
+                alertError('הייתה שגיאה בטעינת הפרטים האישיים');
+            }
+        })
     }
 
     const clearSubOccupations = () => setSubOccupations([]);
