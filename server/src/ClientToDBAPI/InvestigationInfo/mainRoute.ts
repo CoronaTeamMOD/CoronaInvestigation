@@ -23,18 +23,15 @@ const investigationInfo = Router();
 const convertInvestigationInfoFromDB = (investigationInfo: any) => {
     const investigationPatient = investigationInfo.investigatedPatientByInvestigatedPatientId;
 
-    const convertedInvestigationPatient = {
-        ...investigationPatient,
-        patientInfo: {
-            ...investigationPatient.covidPatientByCovidPatient,
-            age: getPatientAge(investigationPatient.covidPatientByCovidPatient.birthDate)
-        }
+    const convertedCovidPatient = {
+        ...investigationPatient.covidPatientByCovidPatient,
+        age: getPatientAge(investigationPatient.covidPatientByCovidPatient.birthDate)
     }
-    delete convertedInvestigationPatient.covidPatientByCovidPatient;
 
     const convertedInvestigation = {
         ...investigationInfo,
-        investigatedPatient: convertedInvestigationPatient
+        ...investigationInfo.investigationPatient,
+        ...convertedCovidPatient,
     }
     delete convertedInvestigation.investigatedPatientByInvestigatedPatientId;
 

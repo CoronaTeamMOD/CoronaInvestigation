@@ -5,7 +5,7 @@ import InvestigationMainStatus from './InvestigationMainStatus';
 interface InvestigationTableRow {
     isChecked: boolean;
     epidemiologyNumber: number;
-    coronaTestDate: string;
+    validationDate: string;
     isComplex: boolean;
     priority: number;
     mainStatus: InvestigationMainStatus;

@@ -13,7 +13,6 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
       selfInvestigationStatus
       selfInvestigationUpdateTime
       epidemiologyNumber
-      coronaTestDate
       startTime
       creationDate
       complexityCode
@@ -43,6 +42,7 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
               displayName
             }
           }
+          validationDate
         }
       }
       investigationStatusByInvestigationStatus {
@@ -83,7 +83,6 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
       selfInvestigationStatus
       selfInvestigationUpdateTime
       epidemiologyNumber
-      coronaTestDate
       startTime
       creationDate
       complexityCode
@@ -113,6 +112,7 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
               displayName
             }
           }
+          validationDate
         }
       }
       investigationStatusByInvestigationStatus {

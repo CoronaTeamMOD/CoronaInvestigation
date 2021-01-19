@@ -67,7 +67,6 @@ export const useExposuresAndFlights = (props : Props) => {
 
     const fetchExposuresAndFlights = () => {
         const fetchExposuresAndFlightsLogger = logger.setup('Fetching Exposures And Flights');
-        const getCoronaTestDateLogger = logger.setup('Getting Corona Test Date');
 
         fetchExposuresAndFlightsLogger.info('launching exposures and flights request', Severity.LOW);
         setIsLoading(true);
@@ -92,7 +91,7 @@ export const useExposuresAndFlights = (props : Props) => {
                 reset(formattedRes);
                 trigger();
             }).catch((error) => {
-                getCoronaTestDateLogger.error(`failed to get resorts response due to ${error}`, Severity.HIGH);
+                fetchExposuresAndFlightsLogger.error(`failed to get resorts response due to ${error}`, Severity.HIGH);
             })
             .finally(() => setIsLoading(false));
             }
