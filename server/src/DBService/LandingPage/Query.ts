@@ -262,9 +262,9 @@ query unallocatedInvestigationsCount($allInvesitgationsFilter: [InvestigationFil
 }
 `;
 
-export const GET_UNUSUAL_INVESTIGATIONS_COUNT = gql`
+export const GET_UNUSUAL_NO_CONTACT_INVESTIGATIONS_COUNT = gql`
 mutation {
-  unusualCompletedInvestigations:getCountOfNonContactInvestigation(input: {}) {
+  unusualCompletedNoContactInvestigations:getCountOfNonContactInvestigation(input: {}) {
     totalCount:totalcount
   }
 }

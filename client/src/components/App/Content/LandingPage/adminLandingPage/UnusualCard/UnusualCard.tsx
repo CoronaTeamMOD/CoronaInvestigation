@@ -18,7 +18,7 @@ const UnusualCard: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
     const hoverClasses = useHoverStyles();
 
-    const { onCompleteClick, onInProcessClick, isLoading, unusualInProgressInvestigationsCount, unusualCompletedInvestigationsCount} = props;
+    const { onCompleteClick, onInProcessClick, isLoading, unusualInProgressInvestigationsCount, unusualCompletedNoContactInvestigationsCount} = props;
 
     return (
         <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.unusualCard}>
@@ -29,11 +29,11 @@ const UnusualCard: React.FC<Props> = (props: Props): JSX.Element => {
             <Tooltip className={[classes.unusualCompleted, hoverClasses.whiteButtons].join(' ')} title={unusualCompletesInvestigationsText}>
                 <div>
                     <div className={classes.investigationAmount}>
-                        <Typography className={classes.investigationNumberText}><b>{unusualCompletedInvestigationsCount}</b></Typography>
+                        <Typography className={classes.investigationNumberText}><b>{unusualCompletedNoContactInvestigationsCount}</b></Typography>
                         <Typography className={classes.investigationAmountText}><b>חקירות</b></Typography>
                     </div>
                     <div onClick={() => onCompleteClick(statusToFilterConvertor[FilterRulesDescription.UNALLOCATED])} className={classes.unusualInvestigations}>
-                        <Typography className={classes.unusualInvestigationsText}><b>{FilterRulesDescription.UNUSUAL_COMPLETED}</b></Typography>
+                        <Typography className={classes.unusualInvestigationsText}><b>{FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT}</b></Typography>
                         <NavigateBeforeIcon className={classes.navigateIcon} />
                     </div>
                 </div>
@@ -62,6 +62,6 @@ interface Props {
     onInProcessClick: (infoFilter: FilterRulesVariables) => void;
     isLoading: boolean;
     unusualInProgressInvestigationsCount: number;
-    unusualCompletedInvestigationsCount: number;
+    unusualCompletedNoContactInvestigationsCount: number;
 
 }

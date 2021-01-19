@@ -99,6 +99,7 @@ const TableFilter = (props: Props) => {
                     <b>תת סטטוס</b>
                 </Typography>
                 <Autocomplete
+                    disabled={updateDateFilter !== ""}
                     ChipProps={{className:classes.chip}}
                     className={classes.autocomplete}
                     classes={{inputFocused: classes.autocompleteInputText}}
