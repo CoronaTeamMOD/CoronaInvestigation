@@ -16,7 +16,9 @@ const useGroupedInvestigationForm = (props : Props) => {
                     investigationGroupReasonByReason: {
                         displayName : "טוען..."
                     },
-                    nodes : []
+                    investigationsByGroupId: {
+                        nodes : []
+                    }
                 }
             })
     }

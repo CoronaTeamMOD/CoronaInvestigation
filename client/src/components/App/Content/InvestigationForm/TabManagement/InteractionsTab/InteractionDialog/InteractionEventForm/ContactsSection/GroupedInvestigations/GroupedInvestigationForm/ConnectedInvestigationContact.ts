@@ -2,7 +2,9 @@ type ConnectedInvestigationContact = {
     investigationGroupReasonByReason: {
         displayName : string;
     }
-    nodes : ConnectedInvestigation[]
+    investigationsByGroupId: {
+        nodes : ConnectedInvestigation[]
+    }
 }
 
 export type ConnectedInvestigation = {

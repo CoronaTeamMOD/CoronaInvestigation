@@ -12,18 +12,24 @@ const initialState = {
     investigationGroupReasonByReason: {
         displayName : "טוען..."
     },
-    nodes : []
+    investigationsByGroupId: {
+        nodes : []
+    }
 }
 
 const GroupedInvestigationForm = (props: Props) => {
-    const [contacts, setContacts] = useState<ConnectedInvestigationContact>(initialState);
     const { groupId } = props;
+
+    const [contacts, setContacts] = useState<ConnectedInvestigationContact>(initialState);
+    const nodes = contacts.investigationsByGroupId.nodes;
+
     useGroupedInvestigationsTab({groupId , setContacts});
+
     return (
-        contacts.nodes === []
+        nodes === []
             ? <NoContactsMessage />
             : <ContactsForm 
-                contacts={contacts.nodes}
+                contacts={nodes}
                 reason={contacts.investigationGroupReasonByReason.displayName}/>
     )
 }
