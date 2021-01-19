@@ -190,6 +190,7 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
     const desks = request.body.deskFilter;
     const timeRange = request.body.timeRangeFilter; 
     const dateFilter = new Date(Date.now() - (4 * 60 * 60 * 1000)).toUTCString();
+    const inProgressSubStatus = ["מחכה להשלמת פרטים","מחכה למענה","נדרשת העברה"];
 
     const desksFilter = desks
                         ? { deskId : { in : desks}} 
@@ -202,6 +203,12 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
     const lastUpdateDateFilter = {
         lastUpdateTime: {
             lessThan: dateFilter
+        }
+    };
+
+    const inProgressSubStatusFilter = {
+        investigationSubStatus: {
+            in: inProgressSubStatus
         }
     };
     
@@ -218,7 +225,10 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
     const parameters = { userFilters, allInvesitgationsFilter: userFilters };
     investigationsStatisticsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
-    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, { userFilters, allInvesitgationsFilter: userFilters, lastUpdateDateFilter: lastUpdateDateFilter})
+    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, { userFilters, 
+                                                                    allInvesitgationsFilter: userFilters, 
+                                                                    lastUpdateDateFilter: lastUpdateDateFilter,
+                                                                    inProgressSubStatusFilter: inProgressSubStatusFilter})
     .then((results) => {
         graphqlRequest(GET_UNUSUAL_INVESTIGATIONS_COUNT, response.locals).then((res)=>{
             investigationsStatisticsLogger.info(validDBResponseLog, Severity.LOW);

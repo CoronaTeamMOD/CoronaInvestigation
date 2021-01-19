@@ -22,7 +22,8 @@ const statusToFilterConvertor = {
     },
     [FilterRulesDescription.UNUSUAL_IN_PROCESS]: {
         statusFilter: [InvestigationMainStatusCodes.IN_PROCESS],
-        updateDateFilter: new Date(Date.now() - (4 * 60 * 60 * 1000)).toUTCString()
+        updateDateFilter: new Date(Date.now() - (4 * 60 * 60 * 1000)).toUTCString(),
+        subStatusFilter: ["מחכה להשלמת פרטים","מחכה למענה","נדרשת העברה"]
     },
 }
 
