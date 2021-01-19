@@ -122,6 +122,7 @@ export const DEFAULT_SELECTED_ROW: SelectedRow = {
 const TABLE_REFRESH_INTERVAL = 30;
 const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את החקירה';
 const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החקירה';
+const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף'
 export const transferredSubStatus = 'נדרשת העברה';
 
 const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך היום. בואו נקטע את שרשראות ההדבקה!';
