@@ -19,13 +19,7 @@ const InstitutionComponent: React.FC<Props> = ({ fieldName, placeholder, options
                 <Autocomplete
                     options={options}
                     getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
-                    // inputValue={subOccupationName}
-                    // onInputChange={(event, newValue) => {
-                    //     if (event && event.type !== 'blur') {
-                    //         setSubOccupationName(newValue)
-                    //     }
-                    // }}
-                    value={props.value?.id}
+                    value={props.value?.id || ''}
                     onChange={(event, newValue) => {
                         props.onChange(newValue ? newValue.id : '')
                     }}

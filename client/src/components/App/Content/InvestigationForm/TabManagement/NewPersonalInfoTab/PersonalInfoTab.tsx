@@ -118,10 +118,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
     const addressFormFields: AddressFormFields = {
         cityField: {
             name: PersonalInfoDataContextFields.CITY,
-            className: classes.personalInfoItem
+            className: classes.personalInfoItem,
+            // defaultValue: {id:'', value: { id: '', displayName: ''}}
         },
         streetField: {
             name: PersonalInfoDataContextFields.STREET,
+            // defaultValue: {id:'', value: { id: '', displayName: ''}}
         },
         houseNumberField: {
             name: PersonalInfoDataContextFields.HOUSE_NUMBER,
@@ -136,6 +138,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
             <FormProvider {...methods}>
                 <form id={`form-${id}`} onSubmit={(event) => {
                     event.preventDefault();
+                    console.log(methods.getValues());
                     // savePersonalData(convertToDBData(), data, id);
                 }}>
                     <FormRowWithInput fieldName={PHONE_LABEL}>
@@ -224,18 +227,16 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                     render={(props) => (
                                         <Autocomplete
                                             options={insuranceCompanies}
-                                            getOptionLabel={(option) => option}
-                                            getOptionSelected={(option) => option === props.value}
                                             onChange={(event, selectedInsuranceCompany) => {
                                                 props.onChange(selectedInsuranceCompany ? selectedInsuranceCompany : '')
                                             }}
+                                            value={props.value || ''}
                                             className={props.value === NO_INSURANCE ? classes.markComplexity : ''}
                                             renderInput={(params) =>
                                                 <TextField
                                                     {...params}
                                                     test-id='personalDetailsInsurer'
-                                                    value={props.value ? props.value : ''}
-                                                    label={methods.errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]?.message || 'גורם מבטח*'}
+                                                    label={methods.errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]?.message || 'גורם מבטח *'}
                                                     error={(methods.errors[PersonalInfoDataContextFields.INSURANCE_COMPANY] as unknown) as boolean}
                                                     id={PersonalInfoDataContextFields.INSURANCE_COMPANY}
                                                     placeholder={INSERT_INSURANCE_COMPANY}
