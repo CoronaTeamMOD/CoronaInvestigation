@@ -1,5 +1,6 @@
-import SignUpFields from './enums/SignUpFields';
+import City from './City';
 import Language from './Language';
+import SignUpFields from './enums/SignUpFields';
 
 interface FullName {
     [SignUpFields.FIRST_NAME]?: string,
@@ -9,7 +10,7 @@ interface FullName {
 interface SignUpUser {
     [SignUpFields.MABAR_USER_NAME]?: string,
     [SignUpFields.FULL_NAME]?: FullName,
-    [SignUpFields.CITY]?: string ,
+    [SignUpFields.CITY]?: City,
     [SignUpFields.PHONE_NUMBER]?: string,
     [SignUpFields.ID]?: string,
     [SignUpFields.MAIL]?: string,

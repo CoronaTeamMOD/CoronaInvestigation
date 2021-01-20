@@ -454,7 +454,7 @@ const convertToUser = (user: any) => ({
     phoneNumber: user.phoneNumber,
     mail: user.mail,
     identityNumber: user.identityNumber,
-    city: user.cityByCity?.displayName,
+    city: user.cityByCity,
     isActive: user.isActive,
     languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
     userType: user.userTypeByUserType.displayName,

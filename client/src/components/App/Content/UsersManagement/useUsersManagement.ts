@@ -166,11 +166,9 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             [SignUpFields.LANGUAGES]: row[SignUpFields.LANGUAGES].map((language: string) => {
                 return { displayName: language }
             }),
-            [SignUpFields.COUNTY]: { displayName: row[SignUpFields.COUNTY].displayName },
-            [SignUpFields.DESK]: { deskName: row[SignUpFields.DESK].deskName },
-            [SignUpFields.CITY]: { value: { displayName: row[SignUpFields.CITY] }},
+            [SignUpFields.COUNTY]: { displayName: row[SignUpFields.COUNTY] },
+            [SignUpFields.DESK]: { name: row[SignUpFields.DESK] },
             [SignUpFields.FULL_NAME]: row[SignUpFields.FULL_NAME] || row[SignUpFields.USER_NAME],
-            [SignUpFields.SOURCE_ORGANIZATION]: { displayName: row[SignUpFields.SOURCE_ORGANIZATION]}
         };
         setUserDialog({ isOpen: true, info: userInfoToSet });
     }
@@ -185,10 +183,9 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             }),
             [SignUpFields.COUNTY]: { displayName: row[SignUpFields.COUNTY] },
             [SignUpFields.DESK]: { name: row[SignUpFields.DESK] },
-            [SignUpFields.CITY]: { value: { displayName: row[SignUpFields.CITY] }},
             [SignUpFields.FULL_NAME]: row[SignUpFields.FULL_NAME] || row[SignUpFields.USER_NAME],
-            [SignUpFields.SOURCE_ORGANIZATION]: { displayName: row[SignUpFields.SOURCE_ORGANIZATION]}
         };
+
         setEditUserDialog({ isOpen: true, info: userInfoToEdit });
     }
 
