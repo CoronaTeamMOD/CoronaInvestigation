@@ -1,4 +1,5 @@
 import FilterRulesDescription from 'models/enums/FilterRulesDescription';
+import InvestigationSubStatusCodes from 'models/enums/InvestigationSubStatusCodes'
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 const statusToFilterConvertor = {
@@ -14,10 +15,10 @@ const statusToFilterConvertor = {
         unassignedUserFilter: true
     },
     [FilterRulesDescription.TRANSFER_REQUEST]: {
-        subStatusFilter: ['נדרשת העברה']
+        subStatusFilter: [InvestigationSubStatusCodes.TRANSFER_REQUEST]
     },
     [FilterRulesDescription.WAITING_FOR_DETAILS]: {
-        subStatusFilter: ['מחכה להשלמת פרטים']
+        subStatusFilter: [InvestigationSubStatusCodes.WAITING_FOR_DETAILS]
     },
     [FilterRulesDescription.UNASSIGNED]: {
         unassignedUserFilter: true

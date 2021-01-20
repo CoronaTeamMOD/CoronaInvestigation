@@ -1,8 +1,7 @@
 import React from 'react';
-import { Tooltip, Typography, Box, Divider } from '@material-ui/core';
-import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import { Pause } from '@material-ui/icons';
-
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+import { Tooltip, Typography, Box, Divider } from '@material-ui/core';
 
 import FilterRulesVariables from 'models/FilterRulesVariables';
 import statusToFilterConvertor from 'commons/statusToFilterConvertor';
