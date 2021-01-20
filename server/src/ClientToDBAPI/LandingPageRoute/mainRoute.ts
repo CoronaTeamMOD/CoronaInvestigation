@@ -191,7 +191,6 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
     const timeRange = request.body.timeRangeFilter; 
     const county = request.body.county; 
     const dateFilter = new Date(Date.now() - (4 * 60 * 60 * 1000)).toUTCString();
-    const inProgressSubStatus = ["מחכה להשלמת פרטים","מחכה למענה","נדרשת העברה"];
 
     const desksFilter = desks
                         ? { deskId : { in : desks}} 
@@ -204,12 +203,6 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
     const lastUpdateDateFilter = {
         lastUpdateTime: {
             lessThan: dateFilter
-        }
-    };
-
-    const inProgressSubStatusFilter = {
-        investigationSubStatus: {
-            in: inProgressSubStatus
         }
     };
     
@@ -228,8 +221,7 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
 
     graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, { userFilters, 
                                                                     allInvesitgationsFilter: userFilters, 
-                                                                    lastUpdateDateFilter: lastUpdateDateFilter,
-                                                                    inProgressSubStatusFilter: inProgressSubStatusFilter})
+                                                                    lastUpdateDateFilter: lastUpdateDateFilter})
     .then((results) => {
         const {data: preprocessedResults} = results;
         const outcome: any = {};
