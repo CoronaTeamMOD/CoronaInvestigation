@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
@@ -67,11 +67,7 @@ const GenericNumericTextField : React.FC<GenericNumericTextFieldProps> =
 
 const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Props) => {
     const classes = useStyles();
-    
-    const { languages, sourcesOrganization, createUser } = useSignUpForm({ handleSaveUser });
-
-    const classes = useStyles();
-    const { counties, languages, sourcesOrganization, desks, createUser, editUser } = useSignUpForm({ handleSaveUser });
+    const { counties, languages, sourcesOrganization, desks, fetchDesks, createUser, editUser } = useSignUpForm({ handleSaveUser });
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const counties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
     const desks = useSelector<StoreStateType, Desk[]>(state => state.desk);
@@ -82,15 +78,21 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
         resolver: yupResolver(SignUpSchema)
     })
 
+    const watchCounty = methods.watch(SignUpFields.COUNTY)
+
+    useEffect(() => {
+        if (watchCounty?.id) {
+            fetchDesks(watchCounty.id)
+        } else if (defaultValues?.investigationGroup?.id) {
+            fetchDesks(defaultValues.investigationGroup.id)
+        }
+    }, [watchCounty])
+
     const shouldDisableFields = mode === FormMode.READ ? true : false;
 
     const shouldDisableEditFields = mode === FormMode.EDIT ? true : false;
     
     const onSubmit = (data: SignUpUser) => {
-        data = {
-            ...data,
-            desk: data.desk ? data.desk : null
-        };
         if (mode === FormMode.CREATE) {
             createUser(data);
         } else if (mode === FormMode.EDIT) {
@@ -263,7 +265,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                             />
                         </FormInput>
                 </Grid>
-                
+
                 <Grid container justify='flex-start' className={classes.formRow}>
                         <FormInput xs={8} fieldName='שיוך ארגוני'>
                             <Controller
@@ -300,12 +302,13 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                             control={methods.control}
                             render={(props) => (
                                 <Autocomplete
+                                    {...props}
                                     options={desks}
                                     disabled={shouldDisableFields}
-                                    value={props.value?.displayName}
-                                    getOptionLabel={(option) => option ? (mode === FormMode.READ ? option.name.deskName: option.name) : option}
+                                    value={props.value}
+                                    getOptionLabel={(option) => option ? option.deskName : 'option'}
                                     onChange={(event, selectedDesk) => {
-                                        props.onChange(selectedDesk ? selectedDesk.id : null)
+                                        props.onChange(selectedDesk ? selectedDesk : null)
                                     }}
                                     onBlur={props.onBlur}
                                     renderInput={(params) =>

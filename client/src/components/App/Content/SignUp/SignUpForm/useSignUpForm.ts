@@ -63,6 +63,30 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
                 fetchLanguagesLogger.error('didnt get results back from the server', Severity.HIGH);    
             });
     }
+    
+    const fetchDesks = (countyId?: number) => {            
+        const fetchDesksLogger = logger.setup('Getting desks');
+        if (!countyId) {
+            fetchDesksLogger.info('launching desks request', Severity.LOW);
+            return axios.get('/desks').then(response => {
+                fetchDesksLogger.info('The desks were fetched successfully', Severity.LOW);
+                const { data } = response;
+                setDesks(data);
+            }).catch(err => {
+                fetchDesksLogger.error(`got error from the server: ${err}`, Severity.HIGH);
+            }); 
+        } else {
+            fetchDesksLogger.info('launching desks request by countyId', Severity.LOW);
+            axios.post('/desks/county', { countyId }).then(result => {
+                if (result?.data) {
+                    setDesks(result.data);
+                    fetchDesksLogger.info('got results back from the server', Severity.LOW);
+                }  
+            }).catch(err => {
+                fetchDesksLogger.error(`got error from the server: ${err}`, Severity.HIGH);
+            });; 
+        }
+    }
 
     useEffect(() => {
         setIsLoading(true);
@@ -81,7 +105,8 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
             ...newUser, 
             languages : newUser.languages || [], 
             city : newUser.city?.id, 
-            investigationGroup : newUser.investigationGroup?.id
+            investigationGroup : newUser.investigationGroup?.id,
+            desk : newUser.desk?.id ? newUser.desk?.id : null,
         })
         .then(() => {
             handleSaveUser && handleSaveUser();
@@ -112,6 +137,8 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
 
     return {
         languages,
+        desks,
+        fetchDesks,
         sourcesOrganization,
         createUser,
         editUser
@@ -122,6 +149,9 @@ interface useSignUpFormInCome {
 }
 
 interface useSignUpFormOutCome {
+    desks: Desk[];
+    fetchDesks: (countiId?: number) => void;
+    counties: County[];
     languages: Language[];
     sourcesOrganization: SourceOrganization[];
     createUser: (data: SignUpUser) => void;
