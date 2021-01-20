@@ -24,6 +24,7 @@ export interface HistoryState {
     deskFilter?: DeskFilter;
     timeRangeFilter?: TimeRange;
     updateDateFilter?: string;
+    nonContactFilter?: boolean;
     unassignedUserFilter?: boolean;
     inactiveUserFilter?: boolean;
     isAdminLandingRedirect?: boolean;
@@ -80,7 +81,9 @@ export interface useInvestigationTableOutcome {
     tableTitle: string;
     timeRangeFilter: TimeRange;
     updateDateFilter: string;
+    nonContactFilter: boolean;
     changeUpdateDateFilter: (dateString: string) => void;
+    changeNonContactFilter: (isNonContact: boolean) => void;
     isBadgeInVisible: boolean;
     changeTimeRangeFilter: (timeRange: TimeRange) => void;
 };

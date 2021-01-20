@@ -27,6 +27,7 @@ const statusToFilterConvertor = {
     },
     [FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT]: {
         statusFilter: [InvestigationMainStatusCodes.DONE],
+        nonContactFilter: true,
     },
 }
 

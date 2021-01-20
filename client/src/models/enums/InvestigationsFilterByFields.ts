@@ -8,6 +8,7 @@ enum InvestigationsFilterByFields {
     TIME_RANGE = 'TIME_RANGE',
     SUB_STATUS = 'SUB_STATUS',
     UNUSUAL_IN_PROGRESS = 'UNUSUAL_IN_PROGRESS',
+    UNUSUAL_COMPLETED_NO_CONTACT = 'UNUSUAL_COMPLETED_NO_CONTACT',
 };
 
 export default InvestigationsFilterByFields;

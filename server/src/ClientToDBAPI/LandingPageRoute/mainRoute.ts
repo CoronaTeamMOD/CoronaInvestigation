@@ -230,16 +230,12 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
                                                                     lastUpdateDateFilter: lastUpdateDateFilter,
                                                                     inProgressSubStatusFilter: inProgressSubStatusFilter})
     .then((results) => {
-        graphqlRequest(GET_UNUSUAL_NO_CONTACT_INVESTIGATIONS_COUNT, response.locals).then((res)=>{
-            investigationsStatisticsLogger.info(validDBResponseLog, Severity.LOW);
-            results.data = {...results.data, ...res.data}
-            const {data: preprocessedResults} = results;
-            const outcome: any = {};
-            Object.keys(preprocessedResults).forEach(preprocessedResult => {
-                outcome[preprocessedResult] = preprocessedResults[preprocessedResult].totalCount;
-            })
-            response.send(outcome);
-        })  
+        const {data: preprocessedResults} = results;
+        const outcome: any = {};
+        Object.keys(preprocessedResults).forEach(preprocessedResult => {
+            outcome[preprocessedResult] = preprocessedResults[preprocessedResult].totalCount;
+        })
+        response.send(outcome); 
     })
     .catch(error => {
         investigationsStatisticsLogger.error(invalidDBResponseLog(error), Severity.HIGH)

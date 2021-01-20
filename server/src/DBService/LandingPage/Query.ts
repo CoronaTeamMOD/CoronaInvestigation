@@ -251,6 +251,23 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
   }) {
     totalCount
   }
+  unusualCompletedNoContactInvestigations: allInvestigations(filter:{
+    and:[{contactEventsByInvestigationId:{
+      every:{
+        contactedPeopleByContactEvent:{
+          every:{
+            contactEvent:{
+              isNull:true
+            }
+          }
+        }
+      }
+    }},
+    {investigationStatus: {equalTo:${String(InvestigationMainStatusCodes.DONE)}}},
+    $allInvesitgationsFilter]
+  }){
+    totalCount
+  }
 }
 `;
 
