@@ -146,7 +146,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         );
         setIsLoading(true);
         const minimalDate = datesToInvestigate.slice(-1)[0];
-        axios.get(`/contactedPeople/allContacts/${epidemiologyNumber}/${new Date(minimalDate)}`)
+        axios.get(`/contactedPeople/allContacts/${epidemiologyNumber}/${minimalDate.toISOString()}`)
             .then((result: any) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     interactedContactsLogger.info(

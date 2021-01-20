@@ -103,7 +103,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         loadInteractionsLogger.info('launching interactions request', Severity.LOW);
         const minimalDateToFilter = datesToInvestigate.slice(-1)[0];
         setIsLoading(true);
-        axios.get(`/intersections/contactEvent/${epidemiologyNumber}/${minimalDateToFilter}`)
+        axios.get(`/intersections/contactEvent/${epidemiologyNumber}/${minimalDateToFilter.toISOString()}`)
         .then((result) => {
             loadInteractionsLogger.info('got results back from the server', Severity.LOW);
             const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
