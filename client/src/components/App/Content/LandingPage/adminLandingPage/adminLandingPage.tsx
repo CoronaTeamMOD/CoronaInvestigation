@@ -7,12 +7,12 @@ import InvestigationStatistics, { InvesitgationInfoStatistics } from 'models/Inv
 
 import useStyles from './adminLandingPageStyles';
 import useAdminLandingPage from './useAdminLandingPage';
+import PostponedCard from './PostponedCard/PostponedCard';
 import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import LastUpdateMessage from './LastUpdateMessage/LastUpdateMessage';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
 import TimeRangeFilterCard from './TimeRangeFilterCard/TimeRangeFilterCard';
-import PostponedCard from './PostponedCard/PostponedCard';
 
 const AdminLandingPage: React.FC = (): JSX.Element => {
 
