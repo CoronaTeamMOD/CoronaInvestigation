@@ -15,7 +15,7 @@ import { IndexedInvestigationData } from './InvestigationTablesHeaders';
 
 export type StatusFilter = InvestigationMainStatusCodes[];
 export type SubStatusFilter = string[];
-export type DeskFilter = number[];
+export type DeskFilter = number[] | (number | null)[];
 
 export interface HistoryState {
     filterRules?: any;
@@ -33,10 +33,8 @@ export interface useInvestigationTableParameters {
     currentPage: number;
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     setSelectedRow: React.Dispatch<React.SetStateAction<SelectedRow>>;
-    setAllCounties: React.Dispatch<React.SetStateAction<County[]>>;
     setAllStatuses: React.Dispatch<React.SetStateAction<InvestigationMainStatus[]>>;
     setAllSubStatuses: React.Dispatch<React.SetStateAction<InvestigationSubStatus[]>>;
-    setAllDesks: React.Dispatch<React.SetStateAction<Desk[]>>;
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
     setAllGroupedInvestigations: React.Dispatch<React.SetStateAction<Map<string, InvestigationTableRow[]>>>;
     investigationColor: MutableRefObject<Map<string, string>>;

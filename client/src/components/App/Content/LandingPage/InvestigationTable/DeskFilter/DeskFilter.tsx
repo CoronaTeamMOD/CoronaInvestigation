@@ -49,6 +49,6 @@ export default DeskFilter;
 
 interface Props {
     desks: Desk[];
-    filteredDesks: number[];
+    filteredDesks: (number | null)[];
     onFilterChange: (event: React.ChangeEvent<{}>, selectedDesks: Desk[]) => void;
 };
