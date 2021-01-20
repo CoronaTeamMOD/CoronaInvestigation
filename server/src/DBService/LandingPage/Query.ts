@@ -152,19 +152,6 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
 }
 `;
 
-export const GET_USER_BY_ID = gql`
-query GetUserById($userId: String!) {
-  userById(id: $userId) {
-    id
-    investigationGroup
-    phoneNumber
-    serialNumber
-    userName
-    userType
-  }
-}
-`;
-
 export const GET_ALL_INVESTIGATION_STATUS = gql`
 query allInvestigationStatuses {
   allInvestigationStatuses(orderBy: DISPLAY_NAME_ASC) {

@@ -7,6 +7,8 @@ import { Grid, TextField } from '@material-ui/core';
 import { useForm, FormProvider, Controller } from 'react-hook-form';
 
 import City from 'models/City';
+import Desk from 'models/Desk';
+import County from 'models/County';
 import SignUpUser from 'models/SignUpUser';
 import FormMode from 'models/enums/FormMode';
 import StoreStateType from 'redux/storeStateType';
@@ -66,9 +68,11 @@ const GenericAlphabetTextField : React.FC<GenericAlphabetTextFieldProps> =
 const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Props) => {
     const classes = useStyles();
     
-    const { counties, languages, sourcesOrganization, desks, createUser } = useSignUpForm({ handleSaveUser });
+    const { languages, sourcesOrganization, createUser } = useSignUpForm({ handleSaveUser });
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
+    const counties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
+    const desks = useSelector<StoreStateType, Desk[]>(state => state.desk);
     
     const methods = useForm<SignUpUser>({
         mode: 'all',
@@ -258,7 +262,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                     <Autocomplete
                                         disabled={shouldDisableFields}
                                         options={counties}
-                                        getOptionLabel={(option) => option ? option.displayName : option}
+                                        getOptionLabel={(option) => option?.displayName}
                                         value={props.value}
                                         onChange={(event, selectedCounty) => {
                                             props.onChange(selectedCounty ? selectedCounty.id : null)
@@ -287,7 +291,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                     options={desks}
                                     disabled={shouldDisableFields}
                                     value={props.value}
-                                    getOptionLabel={(option) => option ? (mode === FormMode.READ ? option.name.deskName: option.name) : option}
+                                    getOptionLabel={(option) => option?.deskName}
                                     onChange={(event, selectedDesk) => {
                                         props.onChange(selectedDesk ? selectedDesk.id : null)
                                     }}

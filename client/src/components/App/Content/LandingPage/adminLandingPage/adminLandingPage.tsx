@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Grid, Typography } from '@material-ui/core';
 
-import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
+import StoreStateType from 'redux/storeStateType';
 import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 import InvestigationStatistics, { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 
@@ -33,13 +34,14 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
     });
     const [lastUpdated , setLastUpdated] = useState<Date>(new Date());
 
-    const { countyDisplayName } = useAppToolbar();
     const { redirectToInvestigationTable , fetchInvestigationStatistics, 
             updateInvestigationFilterByDesks, updateInvestigationFilterByTime} = useAdminLandingPage({
         setIsLoading,
         setInvestigationsStatistics,
         setLastUpdated,
     });
+
+    const countyDisplayName = useSelector<StoreStateType, string>(state => state.user.data.countyByInvestigationGroup.displayName);
 
     return (
         <div className={classes.content}>

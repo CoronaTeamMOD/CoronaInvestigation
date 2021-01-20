@@ -16,3 +16,10 @@ export const setIsActive = (isActive: boolean) => {
         payload: {isActive}
     });
 }
+
+export const setDisplayedCounty = (county: number) => {
+    store.dispatch({
+        type: actionTypes.SET_DISPLAYED_COUNTY,
+        payload: {county}
+    });
+}

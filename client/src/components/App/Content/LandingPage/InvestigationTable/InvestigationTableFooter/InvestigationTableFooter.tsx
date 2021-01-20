@@ -37,7 +37,7 @@ const multipleAssignments = 'הקצאות';
 
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
 
-    const { checkedIndexedRows, allDesks, allCounties, fetchInvestigators,
+    const { checkedIndexedRows, allDesks, fetchInvestigators,
             onDialogClose, tableRows, allGroupedInvestigations, onDeskChange,
             onDeskGroupChange, onCountyChange, onCountyGroupChange, fetchTableData, 
             fetchInvestigationsByGroupId, allocateInvestigationToInvestigator } = props;
@@ -163,7 +163,6 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                 onCountyTransfer={handleConfirmCountiesDialog}
                 onClose={handleCloseDesksDialog}
                 allDesks={allDesks}
-                allCounties={allCounties}
                 onSuccess={onTransferSuccess}
             />
             <InvestigatorAllocationDialog
@@ -193,7 +192,6 @@ interface Props {
     onDialogClose: () => void;
     checkedIndexedRows: IndexedInvestigation[];
     allDesks: Desk[];
-    allCounties: County[];
     fetchInvestigators: () => Promise<InvestigatorOption[]>;
     tableRows: InvestigationTableRow[];
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
