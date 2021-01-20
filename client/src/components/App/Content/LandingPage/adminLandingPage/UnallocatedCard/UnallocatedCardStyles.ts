@@ -4,7 +4,6 @@ export const cardHeight = '8vh';
 
 const useStyles = makeStyles({
     unallocatedCard: {
-        height: cardHeight,
         borderRadius: '1vw',
         padding: '1vh 1vw',
         cursor: 'pointer',
@@ -17,12 +16,14 @@ const useStyles = makeStyles({
         color: '#F95959',
         marginRight: '0.8vw',
     },
-    investigationAmountText: {
-    },
     navigateIcon: {
         backgroundColor: 'WhiteSmoke',
         borderRadius: '2vw',
-    }
+        marginRight: '0.5vw'
+    },
+    investigationText: {
+        flex: 'auto' 
+    },
 });
 
 export default useStyles;
