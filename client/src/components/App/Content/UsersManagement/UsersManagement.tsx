@@ -2,10 +2,10 @@ import {
     Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
     IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse, MenuItem, Select
 } from '@material-ui/core';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Pagination } from '@material-ui/lab';
 import { PersonPin } from '@material-ui/icons';
-import React, { useState, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
@@ -14,6 +14,7 @@ import County from 'models/County';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import SearchBar from 'commons/SearchBar/SearchBar';
+import useDesksUtils from 'Utils/Desk/useDesksUtils';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
@@ -56,9 +57,7 @@ const UsersManagement: React.FC = () => {
 
     const classes = useStyles();
 
-    const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
-    const desks = useSelector<StoreStateType, Desk[]>(state => state.desk);
-    const countyDesks = useMemo(() => desks.filter(desk => desk.county === displayedCounty), [desks, displayedCounty]);
+    const { countyDesks } = useDesksUtils();
 
     const handleSortOrder = (cellName: string) => {
         if (!notActiveSortFields.includes(cellName)) {
@@ -115,7 +114,7 @@ const UsersManagement: React.FC = () => {
                             countyDesks.map((desk: Desk) => (
                                 <MenuItem
                                     key={desk.id}
-                                    value={desk.id as number}>
+                                    value={desk.id!}>
                                     {desk.deskName}
                                 </MenuItem>
                             ))

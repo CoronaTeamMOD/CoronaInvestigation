@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     countySelect: {
         color: 'white',
         '&:focus': {
-            opacity: 'unset'
+            opacity: 1
         }
     }
 }));

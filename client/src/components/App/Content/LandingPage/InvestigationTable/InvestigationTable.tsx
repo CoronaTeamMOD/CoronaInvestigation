@@ -18,6 +18,7 @@ import userType from 'models/enums/UserType';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import SearchBar from 'commons/SearchBar/SearchBar';
+import useDesksUtils from 'Utils/Desk/useDesksUtils';
 import InvestigatorOption from 'models/InvestigatorOption';
 import { adminLandingPageRoute } from 'Utils/Routes/Routes';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
@@ -101,12 +102,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     });
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
-    const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
-    const desks = useSelector<StoreStateType, Desk[]>(state => state.desk).filter(desk => desk.county === displayedCounty);
 
-    const countyDesks : Desk[] = useMemo(() =>
-        [...desks.filter(desk => desk.county === displayedCounty), { id: null, deskName: 'לא שוייך לדסק', county: displayedCounty}]
-    , [desks, displayedCounty])
+    const { countyDesks, displayedCounty } = useDesksUtils();
+
+    const desksToTransfer : Desk[] = useMemo(() =>
+        [...countyDesks, { id: null, deskName: 'לא שוייך לדסק', county: displayedCounty}]
+    , [countyDesks])
 
     const totalPageCount = Math.ceil(totalCount / rowsPerPage);
 
@@ -138,7 +139,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 if (!value.deskByDeskId?.id) {
                     return false;
                 }
-                return deskFilter.includes(value.deskByDeskId.id as number);
+                return deskFilter.includes(value.deskByDeskId.id);
             });
         }
         return allUsersOfCountyArray;
@@ -263,7 +264,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={2} >
                     <DeskFilter
-                        desks={countyDesks}
+                        desks={desksToTransfer}
                         filteredDesks={deskFilter}
                         onFilterChange={(event, value) => changeDeskFilter(value)} 
                     />
@@ -366,7 +367,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             groupColor={investigationColor.current.get(indexedRow.groupId)}
                                             selected={selectedRow.epidemiologyNumber === indexedRow.epidemiologyNumber}
                                             deskAutoCompleteClicked={deskAutoCompleteClicked}
-                                            desks={countyDesks}
+                                            desks={desksToTransfer}
                                             indexedRow={indexedRow}
                                             row={row}
                                             isGroupShown={isGroupShown}
@@ -411,7 +412,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                         groupColor={investigationColor.current.get(indexedRow.groupId)}
                                                         selected={selectedRow.epidemiologyNumber === indexedRow.epidemiologyNumber}
                                                         deskAutoCompleteClicked={deskAutoCompleteClicked}
-                                                        desks={countyDesks}
+                                                        desks={desksToTransfer}
                                                         indexedRow={indexedGroupedInvestigationRow}
                                                         row={row}
                                                         isGroupShown={isGroupShown}
@@ -458,7 +459,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             <Slide direction='up' in={checkedIndexedRows.length > 0} mountOnEnter unmountOnExit>
                 <InvestigationTableFooter
                     checkedIndexedRows={checkedIndexedRows}
-                    allDesks={countyDesks}
+                    allDesks={desksToTransfer}
                     onDialogClose={() => setCheckedIndexedRows([])}
                     tableRows={tableRows}
                     fetchTableData={fetchTableData}

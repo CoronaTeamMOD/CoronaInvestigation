@@ -1,9 +1,8 @@
-import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
 import { Box, CardContent, Typography } from '@material-ui/core';
 
 import Desk from 'models/Desk';
-import StoreStateType from 'redux/storeStateType';
+import useDesksUtils from 'Utils/Desk/useDesksUtils';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 
 import LoadingCard from '../LoadingCard/LoadingCard';
@@ -21,12 +20,10 @@ const DesksFilterCard = (props: Props): JSX.Element => {
     const { onUpdateButtonClicked } = props;
     const { filteredDesks, clearAllDesks, onDeskClicked } = useDesksFilterCard();
 
-    const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
-    const desks = useSelector<StoreStateType, Desk[]>(state => state.desk);
-    const countyDesks = useMemo(() => desks.filter(desk => desk.county === displayedCounty), [desks, displayedCounty]);
+    const { countyDesks } = useDesksUtils();
 
     return (
-        <LoadingCard isLoading={desks.length === 0} width={cardWidth} height={cardHeight} className={classes.desksCard}>
+        <LoadingCard isLoading={countyDesks.length === 0} width={cardWidth} height={cardHeight} className={classes.desksCard}>
             <CardContent>
                 <Box display='flex' flexDirection='column' className={classes.desksCardContent}>
                     <Typography variant='h6'>
@@ -46,9 +43,9 @@ const DesksFilterCard = (props: Props): JSX.Element => {
                                     checkboxElements={[{
                                         key: desk.id,
                                         value: desk.id,
-                                        checked: filteredDesks.includes(desk.id as number),
+                                        checked: filteredDesks.includes(desk.id!),
                                         labelText: desk.deskName,
-                                        onChange: () => onDeskClicked(desk.id as number)
+                                        onChange: () => onDeskClicked(desk.id!)
                                     }]}
                                 />
                             ))
