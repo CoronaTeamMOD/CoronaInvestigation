@@ -263,7 +263,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                             />
                         </FormInput>
                 </Grid>
-
+                
                 <Grid container justify='flex-start' className={classes.formRow}>
                         <FormInput xs={8} fieldName='שיוך ארגוני'>
                             <Controller
@@ -271,12 +271,13 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 control={methods.control}
                                 render={(props) => (
                                     <Autocomplete
+                                        {...props}
                                         disabled={shouldDisableFields}
                                         options={counties}
                                         getOptionLabel={(option) => option?.displayName}
                                         value={props.value}
                                         onChange={(event, selectedCounty) => {
-                                            props.onChange(selectedCounty ? selectedCounty.id : null)
+                                            props.onChange(selectedCounty ? selectedCounty : null)
                                         }}
                                         onBlur={props.onBlur}
                                         renderInput={(params) =>

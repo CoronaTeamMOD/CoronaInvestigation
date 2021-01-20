@@ -77,7 +77,12 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     const createUser = (newUser: SignUpUser) => {
         const createUserLogger = logger.setup('Create user');
         createUserLogger.info('launching createUser request', Severity.LOW);
-        axios.post('/users', {...newUser, languages : newUser.languages || []})
+        axios.post('/users', {
+            ...newUser, 
+            languages : newUser.languages || [], 
+            city : newUser.city?.id, 
+            investigationGroup : newUser.investigationGroup?.id
+        })
         .then(() => {
             handleSaveUser && handleSaveUser();
             createUserLogger.info('user was created successfully', Severity.LOW);

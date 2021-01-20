@@ -1,4 +1,5 @@
 import City from './City';
+import County from './County';
 import Language from './Language';
 import SignUpFields from './enums/SignUpFields';
 
@@ -14,7 +15,7 @@ interface SignUpUser {
     [SignUpFields.PHONE_NUMBER]?: string,
     [SignUpFields.ID]?: string,
     [SignUpFields.MAIL]?: string,
-    [SignUpFields.COUNTY]?: number,
+    [SignUpFields.COUNTY]?: County,
     [SignUpFields.DESK]?: number | null;
     [SignUpFields.SOURCE_ORGANIZATION]?: string,
     [SignUpFields.LANGUAGES]?: Language[]

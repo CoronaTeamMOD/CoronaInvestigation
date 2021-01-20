@@ -166,8 +166,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             [SignUpFields.LANGUAGES]: row[SignUpFields.LANGUAGES].map((language: string) => {
                 return { displayName: language }
             }),
-            [SignUpFields.COUNTY]: { displayName: row[SignUpFields.COUNTY] },
-            [SignUpFields.DESK]: { name: row[SignUpFields.DESK] },
             [SignUpFields.FULL_NAME]: row[SignUpFields.FULL_NAME] || row[SignUpFields.USER_NAME],
         };
         setUserDialog({ isOpen: true, info: userInfoToSet });
@@ -181,8 +179,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             [SignUpFields.LANGUAGES]: row[SignUpFields.LANGUAGES].map((language: string) => {
                 return { displayName: language }
             }),
-            [SignUpFields.COUNTY]: { displayName: row[SignUpFields.COUNTY] },
-            [SignUpFields.DESK]: { name: row[SignUpFields.DESK] },
             [SignUpFields.FULL_NAME]: row[SignUpFields.FULL_NAME] || row[SignUpFields.USER_NAME],
         };
 
