@@ -1002,6 +1002,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeInvestigationsInvestigator,
         statusFilter,
         subStatusFilter,
+        changeSubStatusFilter,
         changeStatusFilter,
         deskFilter,
         changeDeskFilter,
@@ -1019,7 +1020,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeNonContactFilter,
         updateDateFilter,
         changeUpdateDateFilter,
-        changeSubStatusFilter
     };
 };
 

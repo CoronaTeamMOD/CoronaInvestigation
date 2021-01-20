@@ -2,7 +2,9 @@ import { gql } from 'postgraphile';
 
 import InvestigationMainStatusCodes from '../../Models/InvestigationStatus/InvestigationMainStatusCodes';
 
-const unassignedUserName = 'לא משויך';
+const UNASSIGNED_USER_NAME = 'לא משויך';
+const WAITING_FOR_DETAILS = 'מחכה להשלמת פרטים';
+const TRANSFER_REQUEST = 'נדרשת העברה';
 
 export const USER_INVESTIGATIONS = gql`
 query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter) {
@@ -218,7 +220,7 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
   }
   unassignedInvestigations: allInvestigations(filter: {
     userByCreator: {
-      userName: {equalTo: "${unassignedUserName}"}
+      userName: {equalTo: "${UNASSIGNED_USER_NAME}"}
     },
     and: $userFilters
   }) {
@@ -227,7 +229,7 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
   inactiveInvestigations: allInvestigations(filter: {
     userByCreator: {
       isActive: {equalTo: false},
-      userName: {notEqualTo: "${unassignedUserName}"}
+      userName: {notEqualTo: "${UNASSIGNED_USER_NAME}"}
     },
     and: $userFilters
   }) {
@@ -235,7 +237,7 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
   }
   unallocatedInvestigations: allInvestigations(
     filter: {and: [
-        {userByCreator: {or: [{isActive: {equalTo: false}}, {userName: {equalTo: "${unassignedUserName}"}}]}},
+        {userByCreator: {or: [{isActive: {equalTo: false}}, {userName: {equalTo: "${UNASSIGNED_USER_NAME}"}}]}},
         {investigationStatus: {in:[${String(InvestigationMainStatusCodes.NEW)}, ${String(InvestigationMainStatusCodes.IN_PROCESS)}]}},
         $allInvesitgationsFilter
       ]},
@@ -268,21 +270,29 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
   }){
     totalCount
   }
-}
-`;
-
-export const GET_UNALLOCATED_INVESTIGATIONS_COUNT = gql`
-query unallocatedInvestigationsCount($allInvesitgationsFilter: [InvestigationFilter!]) {
-  unassignedInvestigations: allInvestigations(filter: {userByCreator: {or: {userName: {equalTo: "${unassignedUserName}"}, isActive: {equalTo: false}}}, and: $allInvesitgationsFilter}) {
+  transferRequestInvestigations: allInvestigations(
+    filter: {and: [
+        {investigationSubStatus: {equalTo: "${TRANSFER_REQUEST}"}},
+        $allInvesitgationsFilter
+      ]},
+    ) {
+    totalCount
+  }
+  waitingForDetailsInvestigations: allInvestigations(
+    filter: {and: [
+        {investigationSubStatus: {equalTo: "${WAITING_FOR_DETAILS}"}},
+        $allInvesitgationsFilter
+      ]},
+    ) {
     totalCount
   }
 }
 `;
 
-export const GET_UNUSUAL_NO_CONTACT_INVESTIGATIONS_COUNT = gql`
-mutation {
-  unusualCompletedNoContactInvestigations:getCountOfNonContactInvestigation(input: {}) {
-    totalCount:totalcount
+export const GET_UNALLOCATED_INVESTIGATIONS_COUNT = gql`
+query unallocatedInvestigationsCount($allInvesitgationsFilter: [InvestigationFilter!]) {
+  unassignedInvestigations: allInvestigations(filter: {userByCreator: {or: {userName: {equalTo: "${UNASSIGNED_USER_NAME}"}, isActive: {equalTo: false}}}, and: $allInvesitgationsFilter}) {
+    totalCount
   }
 }
 `;

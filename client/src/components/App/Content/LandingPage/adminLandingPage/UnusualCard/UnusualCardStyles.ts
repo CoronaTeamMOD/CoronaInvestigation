@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/styles';
 
 export const cardWidth = '14vw';
-export const cardHeight = '25vh';
+export const cardHeight = '38vh';
 
 const useStyles = makeStyles({
     unusualCard: {
@@ -10,6 +10,7 @@ const useStyles = makeStyles({
         borderRadius: '1vw',
         padding: '1vw',
         cursor: 'pointer',
+        marginLeft: '3vw',
     },
     unusualCompleted: {
         marginBottom:'1vw',
