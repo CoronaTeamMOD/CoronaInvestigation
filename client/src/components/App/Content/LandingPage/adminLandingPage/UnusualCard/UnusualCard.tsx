@@ -32,7 +32,7 @@ const UnusualCard: React.FC<Props> = (props: Props): JSX.Element => {
                         <Typography className={classes.investigationNumberText}><b>{unusualCompletedNoContactInvestigationsCount}</b></Typography>
                         <Typography className={classes.investigationAmountText}><b>חקירות</b></Typography>
                     </div>
-                    <div onClick={() => onCompleteClick(statusToFilterConvertor[FilterRulesDescription.UNALLOCATED])} className={classes.unusualInvestigations}>
+                    <div onClick={() => onCompleteClick(statusToFilterConvertor[FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT])} className={classes.unusualInvestigations}>
                         <Typography className={classes.unusualInvestigationsText}><b>{FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT}</b></Typography>
                         <NavigateBeforeIcon className={classes.navigateIcon} />
                     </div>

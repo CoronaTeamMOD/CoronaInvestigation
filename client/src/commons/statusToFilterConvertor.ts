@@ -25,6 +25,9 @@ const statusToFilterConvertor = {
         updateDateFilter: new Date(Date.now() - (4 * 60 * 60 * 1000)).toUTCString(),
         subStatusFilter: ["מחכה להשלמת פרטים","מחכה למענה","נדרשת העברה"]
     },
+    [FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT]: {
+        statusFilter: [InvestigationMainStatusCodes.DONE],
+    },
 }
 
 export default statusToFilterConvertor;
