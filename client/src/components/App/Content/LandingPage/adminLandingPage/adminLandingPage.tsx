@@ -7,6 +7,7 @@ import InvestigationStatistics, { InvesitgationInfoStatistics } from 'models/Inv
 
 import useStyles from './adminLandingPageStyles';
 import useAdminLandingPage from './useAdminLandingPage';
+import PostponedCard from './PostponedCard/PostponedCard';
 import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import LastUpdateMessage from './LastUpdateMessage/LastUpdateMessage';
@@ -24,6 +25,9 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
         newInvestigations: 0,
         unassignedInvestigations: 0,
         unallocatedInvestigations: 0,
+        transferRequestInvestigations: 0,
+        waitingForDetailsInvestigations: 0,
+
     });
     const [lastUpdated , setLastUpdated] = useState<Date>(new Date());
 
@@ -63,12 +67,22 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                         onUpdateButtonClicked={updateInvestigationFilterByTime}
                     />
                 </Grid>
-                <Grid item xs={6} md={3}>
-                    <UnallocatedCard
-                        isLoading={isLoading}
-                        onClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNALLOCATED)} 
-                        unallocatedInvestigationsCount={investigationsStatistics.unallocatedInvestigations}
-                    />
+                <Grid item xs={12} md={2}>
+                    <div>
+                        <UnallocatedCard
+                            isLoading={isLoading}
+                            onClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNALLOCATED)} 
+                            unallocatedInvestigationsCount={investigationsStatistics.unallocatedInvestigations}
+                        />
+                    </div>
+                    <div className={classes.gridContainer}>
+                        <PostponedCard
+                            isLoading={isLoading}
+                            onClick={(infoFilter, FilterRulesDescription) => redirectToInvestigationTable(infoFilter, FilterRulesDescription)} 
+                            transferRequestInvestigationsCount={investigationsStatistics.transferRequestInvestigations}
+                            waitingForDetailsInvestigationsCount={investigationsStatistics.waitingForDetailsInvestigations}
+                        />
+                    </div>
                 </Grid>
             </Grid>
         </div>

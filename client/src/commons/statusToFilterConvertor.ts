@@ -1,4 +1,5 @@
 import FilterRulesDescription from 'models/enums/FilterRulesDescription';
+import InvestigationSubStatusCodes from 'models/enums/InvestigationSubStatusCodes'
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 const statusToFilterConvertor = {
@@ -12,6 +13,12 @@ const statusToFilterConvertor = {
         statusFilter: [InvestigationMainStatusCodes.NEW,InvestigationMainStatusCodes.IN_PROCESS],
         inactiveUserFilter: true,
         unassignedUserFilter: true
+    },
+    [FilterRulesDescription.TRANSFER_REQUEST]: {
+        subStatusFilter: [InvestigationSubStatusCodes.TRANSFER_REQUEST]
+    },
+    [FilterRulesDescription.WAITING_FOR_DETAILS]: {
+        subStatusFilter: [InvestigationSubStatusCodes.WAITING_FOR_DETAILS]
     },
     [FilterRulesDescription.UNASSIGNED]: {
         unassignedUserFilter: true

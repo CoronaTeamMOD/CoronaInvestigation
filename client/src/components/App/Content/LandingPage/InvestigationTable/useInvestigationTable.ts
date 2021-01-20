@@ -163,7 +163,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const getFilterRules = () => {
         const statusFilterToSet = historyStatusFilter.length > 0 ? filterCreators.STATUS(historyStatusFilter) : null;
-        const subStatusFilterToSet = historySubStatusFilter.length > 0 ? filterCreators.SUB_STATUS(historyStatusFilter) : null;
+        const subStatusFilterToSet = historySubStatusFilter.length > 0 ? filterCreators.SUB_STATUS(historySubStatusFilter) : null;
         const deskFilterToSet = historyDeskFilter.length > 0 ? filterCreators.DESK_ID(historyDeskFilter) : null;
         const timeRangeFilterToSet = historyTimeRange.id !== allTimeRangeId ? filterCreators.TIME_RANGE(historyTimeRange) : null;
         const unAssignedFilterToSet = (historyUnassignedUserFilter && !inactiveUserFilter) ? filterCreators.UNASSIGNED_USER(historyUnassignedUserFilter) : null;
@@ -980,6 +980,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeInvestigationsInvestigator,
         statusFilter,
         subStatusFilter,
+        changeSubStatusFilter,
         changeStatusFilter,
         deskFilter,
         changeDeskFilter,
@@ -992,8 +993,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchAllCountyUsers,
         tableTitle, 
         timeRangeFilter,
-        isBadgeInVisible,
-        changeSubStatusFilter
+        isBadgeInVisible
     };
 };
 
