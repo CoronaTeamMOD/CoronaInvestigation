@@ -59,6 +59,7 @@ query GetAllInvestigationsByGroupId($groupId: UUID!) {
           }
           id
         }
+        isActive
       }
       investigationGroupByGroupId {
         investigationGroupReasonByReason {
