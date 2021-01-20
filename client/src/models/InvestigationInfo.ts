@@ -14,8 +14,8 @@ interface InvestigationInfo extends SymptomsExistenceInfo, InvestigatedPatientSt
     endTime: Date | null;
 }
 
-export interface InvestigationInfoData extends Omit<InvestigationInfo, 'coronaTestDate' | 'symptomsStartDate'> {
-    coronaTestDate: string;
+export interface InvestigationInfoData extends Omit<InvestigationInfo, 'validationDate' | 'symptomsStartDate'> {
+    validationDate: string;
     symptomsStartDate: string;
 }
 

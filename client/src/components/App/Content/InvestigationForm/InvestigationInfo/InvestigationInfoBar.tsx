@@ -90,12 +90,12 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                     setIsCurrentlyHospitialized(investigationInfo.isCurrentlyHospitalized);
                     const gender = investigationInfo.gender;
                     setGender(gender ? gender : '');
-                    const formattedTestDate = truncateDate(investigationInfo.coronaTestDate);
+                    const formattedValidationDate  = truncateDate(investigationInfo.validationDate);
                     const formattedSymptomsDate = truncateDate(investigationInfo.symptomsStartDate);
                     const formattedInvestigationInfo = {
                         ...investigationInfo,
                         symptomsStartDate : formattedSymptomsDate,
-                        coronaTestDate : formattedTestDate
+                        validationDate : formattedValidationDate
                     }
                     setDatesToInvestigateParams({
                         symptomsStartDate: truncateDate(investigationInfo.symptomsStartDate), 
