@@ -19,7 +19,7 @@ describe('investigationTable tests', () => {
             phoneNumber: '053-3486954',
             age: 25,
             city: 'חיפה',
-            coronaTestDate: format(new Date(), 'dd/MM'),
+            validationDate: format(new Date(), 'dd/MM'),
             priority: 1,
             investigator: {
                 id: '1',
@@ -38,7 +38,7 @@ describe('investigationTable tests', () => {
     it('should create correctly tableRow Object', async () => {
         const newRow = createRowData(
             newRowData.epidemiologyNumber,
-            newRowData.coronaTestDate,
+            newRowData.validationDate,
             newRowData.isComplex,
             newRowData.priority,
             newRowData.mainStatus,
@@ -62,7 +62,7 @@ describe('investigationTable tests', () => {
     it('should not create correctly tableRow Object', async () => {
         const newRow = createRowData(
             newRowData.epidemiologyNumber,
-            newRowData.coronaTestDate,
+            newRowData.validationDate,
             newRowData.isComplex,
             newRowData.priority,
             newRowData.fullName,

@@ -107,11 +107,11 @@ const filterCovidPatientsByRegex = (searchValue: string, patientsToFilter: Covid
     return patientsToFilter.filter(patient => complicatedRegex.test(patient.fullName) === true);
 }
 
-exposureRoute.get('/optionalExposureSources/:searchValue/:coronaTestDate', (request: Request, response: Response) => {
+exposureRoute.get('/optionalExposureSources/:searchValue/:validationDate', (request: Request, response: Response) => {
     const searchValue : string = request.params.searchValue || '';
     const searchInt = isNaN(parseInt(searchValue)) ? 0 : parseInt(searchValue);
     const isPhoneOrIdentityNumber = phoneOrIdentityNumberRegex.test(searchValue);
-    const searchEndDate = new Date(request.params.coronaTestDate);
+    const searchEndDate = new Date(request.params.validationDate);
     const searchStartDate = subDays(searchEndDate, searchDaysAmount);
     const parameters = {searchValue, searchInt, searchStartDate, searchEndDate}
     const optionalExposureSourcesLogger = logger.setup({

@@ -4,6 +4,7 @@ interface PersonStaticInfo {
     primaryPhone: string;
     age: string;
     birthDate: Date | null;
+    validationDate: Date;
 }
 
 export default PersonStaticInfo;
