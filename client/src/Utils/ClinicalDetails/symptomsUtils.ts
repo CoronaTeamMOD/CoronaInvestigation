@@ -7,18 +7,20 @@ export const maxInvestigatedDays: number = 21;
 export const maxIsolationDays: number = 14;
 
 export const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, validationDate: Date | null): Date[] => {
+    console.log(validationDate , symptomsStartDate);
     if (validationDate) {
         const endInvestigationDate = new Date();
         let startInvestigationDate= new Date();
         if (doesHaveSymptoms === true) {
-            if (symptomsStartDate  && symptomsStartDate < validationDate)
-                startInvestigationDate = subDays(new Date(symptomsStartDate), symptomsWithKnownStartDate);
+            if (symptomsStartDate && symptomsStartDate < validationDate)
+                startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
             else
-                startInvestigationDate = subDays(new Date(validationDate), symptomsWithUnknownStartDate)
+                startInvestigationDate = subDays(validationDate, symptomsWithUnknownStartDate)
         } else {
-            startInvestigationDate = subDays(new Date(validationDate), nonSymptomaticPatient)
+            startInvestigationDate = subDays(validationDate, nonSymptomaticPatient)
         }
         try {
+            //console.log(startInvestigationDate);
             return eachDayOfInterval({ start: startOfDay(startInvestigationDate), end: endInvestigationDate }).sort(compareDesc);
         } catch (e) {
             return []
