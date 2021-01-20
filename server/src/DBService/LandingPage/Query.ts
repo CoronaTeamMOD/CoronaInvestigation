@@ -246,7 +246,7 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
   }
   transferRequestInvestigations: allInvestigations(
     filter: {and: [
-        {investigationSubStatus: {equalTo: ${TRANSFER_REQUEST}}},
+        {investigationSubStatus: {equalTo: "${TRANSFER_REQUEST}"}},
         $allInvesitgationsFilter
       ]},
     ) {
@@ -254,7 +254,7 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
   }
   waitingForDetailsInvestigations: allInvestigations(
     filter: {and: [
-        {investigationSubStatus: {equalTo: ${WAITING_FOR_DETAILS}}},
+        {investigationSubStatus: {equalTo: "${WAITING_FOR_DETAILS}"}},
         $allInvesitgationsFilter
       ]},
     ) {
