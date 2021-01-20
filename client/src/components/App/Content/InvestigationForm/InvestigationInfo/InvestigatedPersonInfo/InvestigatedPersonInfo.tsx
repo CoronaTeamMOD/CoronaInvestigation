@@ -23,6 +23,7 @@ import useStyles from './InvestigatedPersonInfoStyles';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 import InvestigationMenu from './InvestigationMenu/InvestigationMenu';
+import InvestigationInfo from 'models/InvestigationInfo';
 
 const leaveInvestigationMessage = 'צא מחקירה';
 const displayDateFormat = 'dd/MM/yyyy';
@@ -39,13 +40,13 @@ const excludeSpecialCharsRegex = /^[a-zA-Z\u0590-\u05fe\s0-9-+*!?'"():_,.\/\\]*$
 export const inProcess = 'בטיפול';
 
 const InvestigatedPersonInfo = (props: Props) => {
-    const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
+    const { currentTab, investigationStaticInfo, epedemioligyNumber } = props;
 
     const classes = useStyles();
 
     const [statusReasonError, setStatusReasonError] = React.useState<string[] | null>(null);
-    const { identityType, gender, isDeceased, patientInfo, isCurrentlyHospitalized, isInClosedInstitution } = investigatedPatientStaticInfo;
-    const { age, identityNumber, fullName, primaryPhone, birthDate } = patientInfo;
+    const { identityType, gender, isDeceased, isCurrentlyHospitalized, isInClosedInstitution, age, 
+        identityNumber, fullName, primaryPhone, birthDate, validationDate } = investigationStaticInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
     const { wasInvestigationReopend } = useStatusUtils();
 
@@ -276,7 +277,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <Divider />
                     <InfoItemWithIcon testId='examinationDate' name='תאריך תחילת מחלה' value=
                         {
-                            format(props.coronaTestDate, displayDateFormat)
+                            format(validationDate, displayDateFormat)
                         }
                         icon={EventOutlined}
                     />
@@ -326,9 +327,8 @@ const InvestigatedPersonInfo = (props: Props) => {
 };
 
 interface Props {
-    investigatedPatientStaticInfo: InvestigatedPatientStaticInfo;
+    investigationStaticInfo: InvestigationInfo;
     epedemioligyNumber: number;
-    coronaTestDate: Date;
     currentTab: number;
 };
 
