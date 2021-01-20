@@ -20,7 +20,6 @@ query GetAllInvestigationsByGroupId($groupId: UUID!) {
       selfInvestigationStatus
       selfInvestigationUpdateTime
       epidemiologyNumber
-      coronaTestDate
       complexityCode
       priority
       statusReason
@@ -40,6 +39,7 @@ query GetAllInvestigationsByGroupId($groupId: UUID!) {
               displayName
             }
           }
+          validationDate
         }
       }
       investigationStatusByInvestigationStatus {
@@ -59,6 +59,7 @@ query GetAllInvestigationsByGroupId($groupId: UUID!) {
           }
           id
         }
+        isActive
       }
       investigationGroupByGroupId {
         investigationGroupReasonByReason {

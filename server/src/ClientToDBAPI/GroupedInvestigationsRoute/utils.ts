@@ -6,7 +6,6 @@ interface GroupedInvestigations {
         nodes: [{
             comment: string;
             epidemiologyNumber: number;
-            coronaTestDate: Date;
             complexityCode: number;
             priority: number;
             statusReason: string;
@@ -24,7 +23,8 @@ interface GroupedInvestigations {
                         cityByCity: {
                             displayName: string;
                         } | null
-                    } | null
+                    } | null;
+                    validationDate: Date;
                 }
             };
             investigationStatusByInvestigationStatus: InvestigationMainStatus

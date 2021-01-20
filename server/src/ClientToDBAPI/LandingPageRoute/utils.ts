@@ -8,7 +8,6 @@ interface UserInvestigations {
         nodes: [{
             comment: string;
             epidemiologyNumber: number;
-            coronaTestDate: Date;
             complexityCode: number;
             priority: number;
             statusReason: string;
@@ -34,7 +33,8 @@ interface UserInvestigations {
                         cityByCity: {
                             displayName: string;
                         } | null
-                    } | null
+                    } | null,
+                    validationDate: Date
                 }
             };
             investigationStatusByInvestigationStatus: InvestigationMainStatus;
@@ -62,7 +62,6 @@ interface GroupIvestigations {
         nodes: [{
             comment: string;
             epidemiologyNumber: number;
-            coronaTestDate: Date;
             complexityCode: number;
             priority: number;
             statusReason: string;
@@ -88,7 +87,8 @@ interface GroupIvestigations {
                         cityByCity: {
                             displayName: string;
                         } | null
-                    } | null
+                    } | null;
+                    validationDate: Date;
                 }
             };
             investigationStatusByInvestigationStatus: InvestigationMainStatus,
