@@ -177,7 +177,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
             street: data.street || null,
             floor: data.floor || null,
             houseNum: data.houseNum || null,
-            streetName
+            // streetName
         }
 
         setAddress(address);

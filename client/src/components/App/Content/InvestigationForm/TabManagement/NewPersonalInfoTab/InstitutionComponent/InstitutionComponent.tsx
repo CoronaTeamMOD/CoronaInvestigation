@@ -25,7 +25,7 @@ const InstitutionComponent: React.FC<Props> = ({ fieldName, placeholder, options
                     defaultValue={props.value}
                     getOptionLabel={(option) => {
                         if (options.length > 0) {
-                            return option.subOccupation + (option.street ? ('/' + option.street) : '')
+                            return option ? (option.subOccupation + (option.street ? ('/' + option.street) : '')): option
                         }
                         return '';
                     }}

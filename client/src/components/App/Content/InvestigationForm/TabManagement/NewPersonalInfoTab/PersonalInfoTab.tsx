@@ -7,9 +7,12 @@ import { Grid, FormControl, TextField, FormLabel, RadioGroup,
         InputLabel, FormControlLabel, Radio, Select, MenuItem, Collapse } from '@material-ui/core';
 
 import City from 'models/City';
+import FlattenedDBAddress from 'models/DBAddress';
 import StoreStateType from 'redux/storeStateType';
 import Occupations from 'models/enums/Occupations';
 import EducationGrade from 'models/EducationGrade';
+import { defaultEpidemiologyNumber } from 'Utils/consts';
+import { setAddress } from 'redux/Address/AddressActionCreators';
 import investigatedPatientRole from 'models/investigatedPatientRole';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
@@ -17,6 +20,7 @@ import { PersonalInfoDbData } from 'models/Contexts/PersonalInfoContextData';
 import AddressForm, { AddressFormFields } from 'commons/Forms/AddressForm/AddressForm';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import { setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 
 import useStyles from './PersonalInfoTabStyles';
@@ -73,6 +77,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
     const insuranceCompany = methods.watch(PersonalInfoDataContextFields.INSURANCE_COMPANY);
     const selectedRoleId = methods.watch(PersonalInfoDataContextFields.ROLE);
     const educationOccupationCity = methods.watch(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY);
+    const city = methods.watch(PersonalInfoDataContextFields.CITY);
+    const street = methods.watch(PersonalInfoDataContextFields.STREET);
+    const houseNumber = methods.watch(PersonalInfoDataContextFields.HOUSE_NUMBER);
+    const floor = methods.watch(PersonalInfoDataContextFields.FLOOR);
 
     const selectedRole = useMemo<investigatedPatientRole | undefined>(() => (
         investigatedPatientRoles.find(role => role.id === selectedRoleId)
@@ -83,7 +91,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
         methods.setValue(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, newOccupation);
         methods.setValue(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, '');
         methods.setValue(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, '');
-        methods.setValue(PersonalInfoDataContextFields.ROLE, defaultRole.id);
+        methods.setValue(PersonalInfoDataContextFields.ROLE, null);
+        methods.setValue(PersonalInfoDataContextFields.INSTITUTION_NAME, '');            
+        methods.clearErrors(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO);
     }
 
     const subOccupationsPlaceHolderByOccupation = useMemo<string>(() => {
@@ -102,11 +112,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
 
     const parseDataValue = (key: keyof PersonalInfoTabState, value: any) => {
         type DataKey = typeof key;
-        const specialConvertors: Map<DataKey, (value: any) => any> = new Map<DataKey, (value: any) => any>([
+        type DataParser = (value: any) => any;
+        const specialConvertors: Map<DataKey, DataParser> = new Map<DataKey, DataParser>([
             [PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER, (value) => parseInt(value)]
         ]);
         return (specialConvertors.has(key)) ? 
-                    (specialConvertors.get(key) as (value: any) => any)(value)
+                    (specialConvertors.get(key) as DataParser)(value)
                 :
                     value;
     }
@@ -140,16 +151,18 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
     }
 
     useEffect(() => {
-        fetchPersonalInfo(methods.reset, methods.trigger);
+        if (epidemiologyNumber !== defaultEpidemiologyNumber) {
+            fetchPersonalInfo(methods.reset, methods.trigger);
+            setIsCurrentlyLoading(false);
+        }
     }, [epidemiologyNumber]);
 
     useEffect(() => {
         if (occupation === Occupations.DEFENSE_FORCES ||
             occupation === Occupations.HEALTH_SYSTEM) {
             getSubOccupations(occupation);
-        } else {
-            clearSubOccupations();            
         }
+        clearSubOccupations();
     }, [occupation]);
 
     useEffect(() => {
@@ -157,6 +170,17 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
             getEducationSubOccupations(educationOccupationCity)
         }
     }, [occupation, educationOccupationCity])
+
+    useEffect(() => {
+        const address: FlattenedDBAddress = {
+            city: (city as any) || null,
+            street: (street as any) || null,
+            floor: (floor as any) || null,
+            houseNum: (houseNumber as any) || null,
+        }
+
+        setAddress(address);
+    }, [city, street, floor, houseNumber]);
 
     const addressFormFields: AddressFormFields = {
         cityField: {
@@ -398,7 +422,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                         getOptionSelected={(option) => {
                                                             return option.id === props.value
                                                         }}
-                                                        value={props.value ? {id: props.value, displayName: (selectedRole?.displayName as string)} : {id: -1, displayName: ''}}
+                                                        value={props.value ? {id: props.value, displayName: (selectedRole?.displayName as string)} : null}
                                                         onChange={(event, selectedRole) => {
                                                             props.onChange(selectedRole?.id);
                                                         }}
