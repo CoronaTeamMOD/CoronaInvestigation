@@ -15,8 +15,9 @@ import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import SearchBar from 'commons/SearchBar/SearchBar';
 import useDesksUtils from 'Utils/Desk/useDesksUtils';
-import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { userValidationSchema } from 'Utils/UsersUtils/userUtils'; 
+import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 
 import useStyles from './UsersManagementStyles';
 import UsersFilter from './UsersFilter/UsersFilter';
@@ -202,6 +203,7 @@ const UsersManagement: React.FC = () => {
                 <SearchBar 
                     searchBarLabel={searchBarLabel}
                     onClick={(value: string) => handleFilterChange(filterCreators.SEARCH_BAR(value))}
+                    validationSchema={userValidationSchema}
                 />
                 <Tooltip title='סינון'>
                     <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>

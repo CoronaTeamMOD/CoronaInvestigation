@@ -9,6 +9,7 @@ import Country from 'models/Country';
 import { Severity } from 'models/Logger';
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
+import { defaultUser } from 'Utils/UsersUtils/userUtils';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setCities } from 'redux/City/cityActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
@@ -24,7 +25,6 @@ import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCo
 import { setEducationGrade } from 'redux/EducationGrade/educationGradeActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 
-import { defaultUser } from './InvestigationInfo/InvestigationInfoBar';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
