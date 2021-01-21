@@ -187,7 +187,6 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                         disabled={shouldDisableFields}
                                         options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                         getOptionLabel={(option) => option?.displayName ? option.displayName : option.value.displayName}
-                                        //getOptionLabel={(option) => option?.value ? option.value.displayName : option.displayName}
                                         getOptionSelected={(option, value) => option.id === value.id}
                                         onChange={(event, selectedCity) => {
                                             props.onChange(selectedCity ? selectedCity.value : null)
