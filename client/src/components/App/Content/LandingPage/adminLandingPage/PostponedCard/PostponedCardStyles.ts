@@ -1,11 +1,9 @@
 import { makeStyles } from '@material-ui/styles';
 
-export const cardWidth = '14vw';
 export const cardHeight = '16vh';
 
 const useStyles = makeStyles({
     postponedCard: {
-        width: cardWidth,
         borderRadius: '1vw',
         padding: '1vh 1vw',
     },

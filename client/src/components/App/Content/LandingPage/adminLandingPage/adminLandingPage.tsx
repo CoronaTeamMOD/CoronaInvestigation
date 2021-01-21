@@ -71,7 +71,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                         onUpdateButtonClicked={updateInvestigationFilterByTime}
                     />
                 </Grid>
-                <Grid item xs={12} md={2}>
+                <Grid item xs={3} md={2}>
                     <div>
                         <UnallocatedCard
                             isLoading={isLoading}
@@ -88,11 +88,11 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                         />
                     </div>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={3} md={2}>
                     <UnusualCard
                         isLoading={isLoading}
-                        onCompleteClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT)} 
-                        onInProcessClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNUSUAL_IN_PROCESS)} 
+                        onUnusualCompletedNoContactInvestigationsClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT)} 
+                        onUnusualInProgressInvestigationsClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNUSUAL_IN_PROCESS)} 
                         unusualInProgressInvestigationsCount={investigationsStatistics.unusualInProgressInvestigations}
                         unusualCompletedNoContactInvestigationsCount={investigationsStatistics.unusualCompletedNoContactInvestigations}
                     />

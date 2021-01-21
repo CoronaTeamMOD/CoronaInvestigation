@@ -1,16 +1,12 @@
 import { makeStyles } from '@material-ui/styles';
 
 export const cardWidth = '14vw';
-export const cardHeight = '38vh';
+export const cardHeight = '16vh';
 
 const useStyles = makeStyles({
     unusualCard: {
-        width: cardWidth,
-        height: cardHeight,
         borderRadius: '1vw',
-        padding: '1vw',
-        cursor: 'pointer',
-        marginLeft: '3vw',
+        padding: '1vw'
     },
     unusualCompleted: {
         marginBottom:'1vw',
@@ -23,27 +19,16 @@ const useStyles = makeStyles({
         display: 'flex',
     },
     investigationNumberText: {
-        fontSize: '1.2vw',
         marginRight: '0.8vw',
-    },
-    investigationAmountText: {
-        fontSize: '1.2vw',
     },
     unusualInvestigations: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: '13vw',
     },
     unusualTitle: {
         display: 'flex',
         flexDirection: 'row',
-    },
-    unusualTitleText: {
-        fontSize: '1.2vw',
-    },
-    unusualInvestigationsText: {
-        fontSize: '1.2vw',
     },
     navigateIcon: {
         backgroundColor: 'WhiteSmoke',

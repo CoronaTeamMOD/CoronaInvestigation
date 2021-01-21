@@ -18,35 +18,35 @@ const UnusualCard: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
     const hoverClasses = useHoverStyles();
 
-    const { onCompleteClick, onInProcessClick, isLoading, unusualInProgressInvestigationsCount, unusualCompletedNoContactInvestigationsCount} = props;
+    const { onUnusualCompletedNoContactInvestigationsClick, onUnusualInProgressInvestigationsClick, isLoading, unusualInProgressInvestigationsCount, unusualCompletedNoContactInvestigationsCount} = props;
 
     return (
         <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.unusualCard}>
             <div className={classes.unusualTitle}>
                 <WarningIcon className={classes.warningIcon}></WarningIcon>
-                <Typography className={classes.unusualTitleText}><b>לתשומת ליבך</b></Typography>
+                <Typography><b>לתשומת ליבך</b></Typography>
             </div>
             <Tooltip className={[classes.unusualCompleted, hoverClasses.whiteButtons].join(' ')} title={unusualCompletesInvestigationsText}>
                 <div>
                     <div className={classes.investigationAmount}>
                         <Typography className={classes.investigationNumberText}><b>{unusualCompletedNoContactInvestigationsCount}</b></Typography>
-                        <Typography className={classes.investigationAmountText}><b>חקירות</b></Typography>
+                        <Typography><b>חקירות</b></Typography>
                     </div>
-                    <div onClick={() => onCompleteClick(statusToFilterConvertor[FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT])} className={classes.unusualInvestigations}>
-                        <Typography className={classes.unusualInvestigationsText}><b>{FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT}</b></Typography>
+                    <div onClick={() => onUnusualCompletedNoContactInvestigationsClick(statusToFilterConvertor[FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT])} className={classes.unusualInvestigations}>
+                        <Typography ><b>{FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT}</b></Typography>
                         <NavigateBeforeIcon className={classes.navigateIcon} />
                     </div>
                 </div>
             </Tooltip>
-            <Divider></Divider>
+            <Divider/>
             <Tooltip className={[classes.unusualInProcess, hoverClasses.whiteButtons].join(' ')} title={unusualInProcessInvestigationsText}>
                 <div>
                     <div className={classes.investigationAmount}>
                         <Typography className={classes.investigationNumberText}><b>{unusualInProgressInvestigationsCount}</b></Typography>
-                        <Typography className={classes.investigationAmountText}><b>חקירות</b></Typography>
+                        <Typography><b>חקירות</b></Typography>
                     </div>
-                    <div onClick={() => onInProcessClick(statusToFilterConvertor[FilterRulesDescription.UNUSUAL_IN_PROCESS])} className={classes.unusualInvestigations}>
-                        <Typography className={classes.unusualInvestigationsText}><b>{FilterRulesDescription.UNUSUAL_IN_PROCESS}</b></Typography>
+                    <div onClick={() => onUnusualInProgressInvestigationsClick(statusToFilterConvertor[FilterRulesDescription.UNUSUAL_IN_PROCESS])} className={classes.unusualInvestigations}>
+                        <Typography><b>{FilterRulesDescription.UNUSUAL_IN_PROCESS}</b></Typography>
                         <NavigateBeforeIcon className={classes.navigateIcon} />
                     </div>
                 </div>
@@ -58,8 +58,8 @@ const UnusualCard: React.FC<Props> = (props: Props): JSX.Element => {
 export default UnusualCard;
 
 interface Props {
-    onCompleteClick: (infoFilter: FilterRulesVariables) => void;
-    onInProcessClick: (infoFilter: FilterRulesVariables) => void;
+    onUnusualCompletedNoContactInvestigationsClick: (infoFilter: FilterRulesVariables) => void;
+    onUnusualInProgressInvestigationsClick: (infoFilter: FilterRulesVariables) => void;
     isLoading: boolean;
     unusualInProgressInvestigationsCount: number;
     unusualCompletedNoContactInvestigationsCount: number;

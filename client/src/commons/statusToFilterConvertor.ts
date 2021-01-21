@@ -2,6 +2,7 @@ import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 import InvestigationSubStatusCodes from 'models/enums/InvestigationSubStatusCodes'
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
+const FOUR_HOURS_IN_MS = 4 * 60 * 60 * 1000;
 const statusToFilterConvertor = {
     [FilterRulesDescription.NEW]: {
         statusFilter: [InvestigationMainStatusCodes.NEW]
@@ -29,7 +30,7 @@ const statusToFilterConvertor = {
     },
     [FilterRulesDescription.UNUSUAL_IN_PROCESS]: {
         statusFilter: [InvestigationMainStatusCodes.IN_PROCESS],
-        updateDateFilter: new Date(Date.now() - (4 * 60 * 60 * 1000)).toUTCString(),
+        updateDateFilter: new Date(Date.now() - FOUR_HOURS_IN_MS).toUTCString(),
         subStatusFilter: [InvestigationSubStatusCodes.TRANSFER_REQUEST,
                           InvestigationSubStatusCodes.WAITING_FOR_DETAILS,
                           InvestigationSubStatusCodes.WAITING_FOR_RESPONSE]
