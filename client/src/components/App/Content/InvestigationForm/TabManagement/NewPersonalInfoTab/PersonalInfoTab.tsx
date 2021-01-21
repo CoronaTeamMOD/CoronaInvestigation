@@ -13,6 +13,7 @@ import EducationGrade from 'models/EducationGrade';
 import investigatedPatientRole from 'models/investigatedPatientRole';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
+import { PersonalInfoDbData } from 'models/Contexts/PersonalInfoContextData';
 import AddressForm, { AddressFormFields } from 'commons/Forms/AddressForm/AddressForm';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
@@ -43,7 +44,6 @@ const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה*';
 const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
 const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 const NO_INSURANCE = 'אף אחד מהנ"ל';
-const defaultInvestigationId = -1;
 const defaultRole = { id: -1, displayName: '' };
 
 const PersonalInfoTab: React.FC<Props> = ({ id }) => {
@@ -66,11 +66,13 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
             investigatedPatientRoles,
             fetchPersonalInfo,
             insuranceCompanies,
-            clearSubOccupations } = usePersonalTabInfo({});
+            clearSubOccupations,
+            savePersonalData } = usePersonalTabInfo({});
 
     const occupation = methods.watch(PersonalInfoDataContextFields.RELEVANT_OCCUPATION);
     const insuranceCompany = methods.watch(PersonalInfoDataContextFields.INSURANCE_COMPANY);
     const selectedRoleId = methods.watch(PersonalInfoDataContextFields.ROLE);
+    const educationOccupationCity = methods.watch(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY);
 
     const selectedRole = useMemo<investigatedPatientRole | undefined>(() => (
         investigatedPatientRoles.find(role => role.id === selectedRoleId)
@@ -78,14 +80,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
 
     const handleChangeOccupation = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newOccupation = event.target.value;
-        const educationOccupationCity = methods.getValues(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY);
         methods.setValue(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, newOccupation);
         methods.setValue(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, '');
         methods.setValue(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, '');
         methods.setValue(PersonalInfoDataContextFields.ROLE, defaultRole.id);
-        if (newOccupation === Occupations.EDUCATION_SYSTEM && educationOccupationCity) {
-            getEducationSubOccupations(educationOccupationCity);
-        }
     }
 
     const subOccupationsPlaceHolderByOccupation = useMemo<string>(() => {
@@ -102,6 +100,37 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
         return INSTITUTION_NAME_LABEL;
     }, [occupation]);
 
+    const convertToDBData = (): PersonalInfoDbData => {
+        const data = methods.getValues();
+        type DataKey = keyof typeof data;
+        const specialConvertors: Map<DataKey, (value: any) => any> = new Map<DataKey, (value: any) => any>([
+            [PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER, (value) => parseInt(value)]
+        ]);
+        const parsedData = Object.values(data)
+                                .map(value => value || null)
+                                .reduce((obj, item, index) => (
+                                    Object.assign(obj, {
+                                        [Object.keys(data)[index]]: (specialConvertors.has(Object.keys(data)[index] as DataKey) ? 
+                                                                        (specialConvertors.get(Object.keys(data)[index] as DataKey) as (value: any) => any)(item) 
+                                                                        : 
+                                                                        item)
+                                    })
+                                ), {})
+        parsedData.address = {
+            city: parsedData.city,
+            street: parsedData.street,
+            floor: parsedData.floor,
+            houseNum: parsedData.houseNum
+        }
+
+        delete parsedData.city;
+        delete parsedData.street;
+        delete parsedData.floor;
+        delete parsedData.houseNum;
+
+        return parsedData;
+    }
+
     useEffect(() => {
         fetchPersonalInfo(methods.reset, methods.trigger);
     }, [epidemiologyNumber]);
@@ -115,15 +144,19 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
         }
     }, [occupation]);
 
+    useEffect(() => {
+        if (occupation === Occupations.EDUCATION_SYSTEM && educationOccupationCity) {
+            getEducationSubOccupations(educationOccupationCity)
+        }
+    }, [occupation, educationOccupationCity])
+
     const addressFormFields: AddressFormFields = {
         cityField: {
             name: PersonalInfoDataContextFields.CITY,
             className: classes.personalInfoItem,
-            // defaultValue: {id:'', value: { id: '', displayName: ''}}
         },
         streetField: {
             name: PersonalInfoDataContextFields.STREET,
-            // defaultValue: {id:'', value: { id: '', displayName: ''}}
         },
         houseNumberField: {
             name: PersonalInfoDataContextFields.HOUSE_NUMBER,
@@ -138,8 +171,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
             <FormProvider {...methods}>
                 <form id={`form-${id}`} onSubmit={(event) => {
                     event.preventDefault();
-                    console.log(methods.getValues());
-                    // savePersonalData(convertToDBData(), data, id);
+                    // console.log(methods.getValues());
+                    // convertToDBData();
+                    savePersonalData(convertToDBData(), methods.getValues(), id);
                 }}>
                     <FormRowWithInput fieldName={PHONE_LABEL}>
                         <Grid item xs={2} className={classes.personalInfoItem}>

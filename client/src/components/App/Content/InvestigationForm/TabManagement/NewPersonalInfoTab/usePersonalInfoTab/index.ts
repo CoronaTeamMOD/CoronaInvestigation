@@ -8,24 +8,33 @@ import { Severity } from 'models/Logger';
 import { initDBAddress } from 'models/DBAddress';
 import StoreStateType from 'redux/storeStateType';
 import Occupations from 'models/enums/Occupations';
+import { setFormState } from 'redux/Form/formActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import { InvestigationStatus } from 'models/InvestigationStatus';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import investigatedPatientRole from 'models/investigatedPatientRole';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { PersonalInfoDbData } from 'models/Contexts/PersonalInfoContextData';
 import { setOccupations } from 'redux/Occupations/occupationsActionCreators';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
 
 import { PersonalInfoTabState } from '../PersonalInfoTabInterfaces';
+import personalInfoTabValidationSchema from '../PersonalInfoTabValidationSchema';
 import { usePersonalInfoTabIncome, usePersonalInfoTabOutcome } from './usePersonalInfoTabInterfaces';
 
 const usePersonalInfoTab = (parameters: usePersonalInfoTabIncome): usePersonalInfoTabOutcome => {
     
+    const [insuranceCompanies, setInsuranceCompanies] = useState<string[]>([]);
     const [subOccupations, setSubOccupations] = useState<SubOccupationAndStreet[]>([]);
     const [investigatedPatientRoles, setInvestigatedPatientRoles] = useState<investigatedPatientRole[]>([]);
-    const [insuranceCompanies, setInsuranceCompanies] = useState<string[]>([]);
 
     const { alertError } = useCustomSwal();
+    const { complexityErrorAlert } = useComplexitySwal();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const investigationStatus = useSelector<StoreStateType, InvestigationStatus>((state) => state.investigation.investigationStatus);
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
 
     const getSubOccupations = (parentOccupation: string) => {
         const subOccupationsLogger = logger.setup('Fetching Sub Occupation by Parent Occupation');
@@ -147,6 +156,30 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabIncome): usePersonalIn
 
     const clearSubOccupations = () => setSubOccupations([]);
 
+    const savePersonalData = (personalInfoData: PersonalInfoDbData, data: { [x: string]: any }, id: number) => {
+        const savePersonalDataLogger = logger.setup('Saving personal details tab');
+        savePersonalDataLogger.info('launching the server request', Severity.LOW);
+        setIsLoading(true);
+        axios.post('/personalDetails/updatePersonalDetails', {
+            id: investigatedPatientId,
+            personalInfoData,
+        }).then(() => {
+            const isInvestigationNew = investigationStatus.mainStatus === InvestigationMainStatusCodes.NEW;
+            savePersonalDataLogger.info(
+                `saved personal details successfully${isInvestigationNew ? ' and updating status to "in progress"' : ''}`,
+                Severity.LOW
+            );
+        }).catch((error) => {
+            savePersonalDataLogger.error(`got error from server: ${error}`, Severity.HIGH);
+            complexityErrorAlert(error);
+        }).finally(() => {
+            setIsLoading(false);
+            personalInfoTabValidationSchema.isValid(data).then(valid => {
+                setFormState(epidemiologyNumber, id, valid);
+            })
+        })
+    }
+
     return {
         subOccupations, 
         getSubOccupations,
@@ -154,7 +187,8 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabIncome): usePersonalIn
         investigatedPatientRoles,
         fetchPersonalInfo,
         insuranceCompanies,
-        clearSubOccupations
+        clearSubOccupations,
+        savePersonalData
     };
 }
 

@@ -11,13 +11,9 @@ const InstitutionComponent: React.FC<Props> = ({ fieldName, placeholder, options
 
     const methods = useFormContext<PersonalInfoTabState>();
 
-    const selectedInstitution = methods.watch(fieldName);
+    const selectedInstitutionId = methods.watch(fieldName);
 
-    const inputValue = options.find(option => option.id === selectedInstitution)?.subOccupation;
-
-    // const inputValue = useMemo<string | undefined>(() => {
-    //     return options.find(option => option.id === selectedInstitution)?.subOccupation;
-    // }, [selectedInstitution])
+    const selectedInstitution = options.find(option => option.id === selectedInstitutionId);
 
     return (
         <Controller
@@ -28,18 +24,18 @@ const InstitutionComponent: React.FC<Props> = ({ fieldName, placeholder, options
                     options={options}
                     defaultValue={props.value}
                     getOptionLabel={(option) => {
-                        console.log('option: ',option, '\noptions: ', options)
-                        return option.subOccupation ? (option.subOccupation + (option.street ? ('/' + option.street) : '')) : inputValue as string;
+                        if (options.length > 0) {
+                            return option.subOccupation + (option.street ? ('/' + option.street) : '')
+                        }
+                        return '';
                     }}
-                    getOptionSelected={(option, value) => {
-                        return option.id === value;
+                    getOptionSelected={(option) => {
+                        return option.id === props.value;
                     }}
-                    value={props.value || ''}
+                    value={props.value ? {id: props.value, ...selectedInstitution}: {id: -1, subOccupation: ''}}
                     onChange={(event, newValue) => {
                         props.onChange(newValue ? newValue.id : '')
                     }}
-                    inputValue={inputValue}
-                    loading={options.length === 0}
                     renderInput={(params) =>
                         <TextField
                             {...params}
