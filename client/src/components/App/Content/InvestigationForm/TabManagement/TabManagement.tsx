@@ -11,7 +11,7 @@ import useStyles from './TabManagementStyles';
 import { orderedTabsNames } from './useTabManagement';
 import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
-import PersonalInfoTab from './NewPersonalInfoTab/PersonalInfoTab';
+import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
 

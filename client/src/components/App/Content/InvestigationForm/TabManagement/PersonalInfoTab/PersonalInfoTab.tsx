@@ -1,32 +1,33 @@
 import { useSelector } from 'react-redux';
-import StoreStateType from 'redux/storeStateType';
+import { Autocomplete } from '@material-ui/lab';
+import React, { useMemo, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers';
-import React, { useEffect, useState } from 'react';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Controller, useForm, FormProvider } from 'react-hook-form';
-import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, FormControl, Collapse, Select, MenuItem, InputLabel } from '@material-ui/core';
+import { useForm, FormProvider, Controller } from 'react-hook-form';
+import { Grid, FormControl, TextField, FormLabel, RadioGroup, 
+        InputLabel, FormControlLabel, Radio, Select, MenuItem, Collapse } from '@material-ui/core';
 
 import City from 'models/City';
-import Street from 'models/Street';
 import FlattenedDBAddress from 'models/DBAddress';
+import StoreStateType from 'redux/storeStateType';
 import Occupations from 'models/enums/Occupations';
 import EducationGrade from 'models/EducationGrade';
+import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setAddress } from 'redux/Address/AddressActionCreators';
-import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import investigatedPatientRole from 'models/investigatedPatientRole';
-import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
+import NumericTextField from 'commons/NumericTextField/NumericTextField';
+import { PersonalInfoDbData } from 'models/Contexts/PersonalInfoContextData';
+import AddressForm, { AddressFormFields } from 'commons/Forms/AddressForm/AddressForm';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
-import { setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import { setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
-import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
-import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
 
 import useStyles from './PersonalInfoTabStyles';
-import usePersonalInfoTab from './usePersonalInfoTab';
-import personalInfoValidationSchema from './PersonalInfoValidationSchema';
+import usePersonalTabInfo from './usePersonalInfoTab';
+import validationSchema from './PersonalInfoTabValidationSchema';
+import { PersonalInfoTabState } from './PersonalInfoTabInterfaces';
+import InstitutionComponent from './InstitutionComponent/InstitutionComponent';
 
 export const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
 export const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
@@ -47,202 +48,154 @@ const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה*';
 const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
 const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 const NO_INSURANCE = 'אף אחד מהנ"ל';
-const defaultInvestigationId = -1;
 const defaultRole = { id: -1, displayName: '' };
 
-const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
-    const classes = useStyles({});
+const PersonalInfoTab: React.FC<Props> = ({ id }) => {
 
-    const [subOccupationName, setSubOccupationName] = useState<string>('');
-    const [insuranceCompanies, setInsuranceCompanies] = useState<string[]>(['']);
-    const [subOccupations, setSubOccupations] = useState<SubOccupationAndStreet[]>([]);
-    const [cityName, setCityName] = useState<string>('');
-    const [streetName, setStreetName] = useState<string>('');
-    const [streets, setStreets] = useState<Street[]>([]);
-    const [cityId, setCityId] = useState<string>('');
-    const [occupation, setOccupation] = useState<string>('');
-    const [personalInfoState, setPersonalInfoData] = useState<PersonalInfoFormData>(initialPersonalInfo);
-    const [insuranceCompany, setInsuranceCompany] = useState<string>('');
-    const [roleInput, setRoleInput] = useState<string>('');
-    const [roleObj, setRoleObj] = useState<investigatedPatientRole>(defaultRole);
-
-    const [investigatedPatientRoles, setInvestigatedPatientRoles] = useState<investigatedPatientRole[]>([]);
+    const classes = useStyles();
+    
+    const methods = useForm<PersonalInfoTabState>({
+        mode: 'all',
+        resolver: yupResolver(validationSchema)
+    });
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
-    const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    const educationGrades = useSelector<StoreStateType, EducationGrade[]>((state) => state.educationGrades);
+    const educationGrades = useSelector<StoreStateType, EducationGrade[]>(state => state.educationGrades);
+    const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
-    const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity, savePersonalData } = usePersonalInfoTab({
-        setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName,
-        setStreets, setInsuranceCompany, setInvestigatedPatientRoles,
-    });
+    const { subOccupations, 
+            getSubOccupations, 
+            getEducationSubOccupations, 
+            investigatedPatientRoles,
+            fetchPersonalInfo,
+            insuranceCompanies,
+            clearSubOccupations,
+            savePersonalData } = usePersonalTabInfo({});
 
-    const methods = useForm({
-        mode: 'all',
-        defaultValues: initialPersonalInfo,
-        resolver: yupResolver(personalInfoValidationSchema),
-    });
+    const occupation = methods.watch(PersonalInfoDataContextFields.RELEVANT_OCCUPATION);
+    const insuranceCompany = methods.watch(PersonalInfoDataContextFields.INSURANCE_COMPANY);
+    const selectedRoleId = methods.watch(PersonalInfoDataContextFields.ROLE);
+    const educationOccupationCity = methods.watch(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY);
+    const city = methods.watch(PersonalInfoDataContextFields.CITY);
+    const street = methods.watch(PersonalInfoDataContextFields.STREET);
+    const houseNumber = methods.watch(PersonalInfoDataContextFields.HOUSE_NUMBER);
+    const floor = methods.watch(PersonalInfoDataContextFields.FLOOR);
+
+    const selectedRole = useMemo<investigatedPatientRole | undefined>(() => (
+        investigatedPatientRoles.find(role => role.id === selectedRoleId)
+    ), [selectedRoleId]);
 
     const handleChangeOccupation = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newOccupation = event.target.value;
-        setOccupation(newOccupation);
-        setSubOccupationName('');
-        setRoleObj(defaultRole);
         methods.setValue(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, newOccupation);
         methods.setValue(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, '');
         methods.setValue(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, '');
         methods.setValue(PersonalInfoDataContextFields.ROLE, null);
+        methods.setValue(PersonalInfoDataContextFields.INSTITUTION_NAME, '');            
         methods.clearErrors(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO);
-        if (newOccupation === Occupations.EDUCATION_SYSTEM && personalInfoState.educationOccupationCity) {
-            getEducationSubOccupations(personalInfoState.educationOccupationCity);
-        }
     }
 
-    useEffect(() => {
-        if (!Boolean(subOccupationName)) {
-            methods.setValue(PersonalInfoDataContextFields.INSTITUTION_NAME, '');
-        }
-    }, [subOccupationName]);
-
-    const data = methods.getValues();
-
-    const institutionComponent = (
-        <Controller
-            name={PersonalInfoDataContextFields.INSTITUTION_NAME}
-            control={methods.control}
-            render={(props: any) => (
-                <Autocomplete
-                    defaultValue={props.value}
-                    options={subOccupations}
-                    getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
-                    inputValue={subOccupationName}
-                    onInputChange={(event, newValue) => {
-                        if (event && event.type !== 'blur') {
-                            setSubOccupationName(newValue)
-                        }
-                    }}
-                    value={props.value?.id}
-                    onChange={(event, newValue) => {
-                        props.onChange(newValue ? newValue.id : '')
-                    }}
-                    renderInput={(params) =>
-                        <TextField
-                            {...params}
-                            error={methods.errors[PersonalInfoDataContextFields.INSTITUTION_NAME] && subOccupations.length !== 0}
-                            label={(methods.errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message && subOccupations.length !== 0)
-                                ?
-                                methods.errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message
-                                :
-                                'שם מוסד*'
-                            }
-                            onBlur={props.onBlur}
-                            test-id='insertInstitutionName'
-                            disabled={subOccupations.length === 0}
-                            id={PersonalInfoDataContextFields.INSTITUTION_NAME}
-                            placeholder={INSERT_INSTITUTION_NAME}
-                        />}
-                />
-            )}
-        />
-    )
-
-    const convertToDBData = (): PersonalInfoDbData => {
-        const data = methods.getValues();
-        return {
-            phoneNumber: data.phoneNumber || null,
-            additionalPhoneNumber: data.additionalPhoneNumber || null,
-            contactPhoneNumber: data.contactPhoneNumber || null,
-            contactInfo: data.contactInfo || null,
-            insuranceCompany: data.insuranceCompany || null,
-            address: {
-                city: data.city || null,
-                street: data.street || null,
-                floor: data.floor || null,
-                houseNum: data.houseNum || null
-            },
-            relevantOccupation: data.relevantOccupation || null,
-            educationOccupationCity: data.educationOccupationCity || null,
-            institutionName: data.institutionName || null,
-            otherOccupationExtraInfo: data.otherOccupationExtraInfo || null,
-            role: data.role || null,
-            educationGrade: data.educationGrade || null,
-            educationClassNumber: data.educationClassNumber ? +data.educationClassNumber : null,
-        }
-    }
-
-    useEffect(() => {
-        const address: FlattenedDBAddress = {
-            city: data.city || null,
-            street: data.street || null,
-            floor: data.floor || null,
-            houseNum: data.houseNum || null,
-            // streetName
-        }
-
-        setAddress(address);
-    }, [data.city, data.street, data.floor, data.houseNum]);
-
-    useEffect(() => {
-        if (data.role) {
-            setRoleObj(
-                investigatedPatientRoles.find((investigatedPatientRole: investigatedPatientRole) =>
-                    investigatedPatientRole.id === data.role) ?? defaultRole
-            );
-        }
-    }, [investigatedPatientRoles, data.role]);
-
-
-    useEffect(() => {
-        if (investigationId !== defaultInvestigationId) {
-            fetchPersonalInfo(methods.reset, methods.trigger);
-            setIsCurrentlyLoading(false);
-        }
-    }, [investigationId]);
-
-    useEffect(() => {
-        setRoleInput(roleObj.displayName);
-    }, [roleObj]);
-  
-    useEffect(() => {
-        methods.trigger()
-    }, [roleInput]);
-    
-    useEffect(() => {
-        if (personalInfoState.city) {
-            setCityId(personalInfoState.city);
-        }
-        setOccupation(personalInfoState.relevantOccupation)
-        if (personalInfoState.educationOccupationCity) {
-            getEducationSubOccupations(personalInfoState.educationOccupationCity);
-        }
-    }, [personalInfoState]);
-  
-    useEffect(() => {
-        if (occupation === Occupations.DEFENSE_FORCES ||
-            occupation === Occupations.HEALTH_SYSTEM) {
-            getSubOccupations(occupation);
-        } else {
-            setSubOccupations([]);
-        }
-    }, [occupation]);
-
-    useEffect(() => {
-        cityId && getStreetsByCity(cityId);
-    }, [cityId]);
-
-    const subOccupationsPlaceHolderByOccupation = () => {
+    const subOccupationsPlaceHolderByOccupation = useMemo<string>(() => {
         if (occupation === Occupations.GOVERNMENT_OFFICE) return INSERT_OFFICE_NAME;
         if (occupation === Occupations.TRANSPORTATION) return INSERT_TRANSPORTATION_COMPANY_NAME;
         if (occupation === Occupations.INDUSTRY) return INSERT_INDUSTRY_NAME;
         return INSERT_INSTITUTION_NAME;
-    }
+    }, [occupation]);
 
-    const subOccupationsLabelByOccupation = () => {
+    const subOccupationsLabelByOccupation = useMemo<string>(() => {
         if (occupation === Occupations.GOVERNMENT_OFFICE) return OFFICE_NAME_LABEL;
         if (occupation === Occupations.TRANSPORTATION) return TRANSPORTATION_COMPANY_NAME_LABEL;
         if (occupation === Occupations.INDUSTRY) return INDUSTRY_NAME_LABEL;
         return INSTITUTION_NAME_LABEL;
+    }, [occupation]);
+
+    const parseDataValue = (key: keyof PersonalInfoTabState, value: any) => {
+        type DataKey = typeof key;
+        type DataParser = (value: any) => any;
+        const specialConvertors: Map<DataKey, DataParser> = new Map<DataKey, DataParser>([
+            [PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER, (value) => parseInt(value)]
+        ]);
+        return (specialConvertors.has(key)) ? 
+                    (specialConvertors.get(key) as DataParser)(value)
+                :
+                    value;
+    }
+
+    const convertToDBData = (): PersonalInfoDbData => {
+        const data = methods.getValues();
+        const dataKeys = Object.keys(data);
+
+        const parsedData = Object.values(data)
+                                .map(value => value || null)
+                                .reduce((obj, value, index) => {
+                                    const key = dataKeys[index] as keyof PersonalInfoTabState;
+                                    return Object.assign(obj, {
+                                        [key]: parseDataValue(key, value)
+                                    })
+                                }, {})
+
+        parsedData.address = {
+            city: parsedData.city,
+            street: parsedData.street,
+            floor: parsedData.floor,
+            houseNum: parsedData.houseNum
+        }
+
+        delete parsedData.city;
+        delete parsedData.street;
+        delete parsedData.floor;
+        delete parsedData.houseNum;
+
+        return parsedData;
+    }
+
+    useEffect(() => {
+        if (epidemiologyNumber !== defaultEpidemiologyNumber) {
+            fetchPersonalInfo(methods.reset, methods.trigger);
+            setIsCurrentlyLoading(false);
+        }
+    }, [epidemiologyNumber]);
+
+    useEffect(() => {
+        if (occupation === Occupations.DEFENSE_FORCES ||
+            occupation === Occupations.HEALTH_SYSTEM) {
+            getSubOccupations(occupation);
+        }
+        clearSubOccupations();
+    }, [occupation]);
+
+    useEffect(() => {
+        if (occupation === Occupations.EDUCATION_SYSTEM && educationOccupationCity) {
+            getEducationSubOccupations(educationOccupationCity)
+        }
+    }, [occupation, educationOccupationCity])
+
+    useEffect(() => {
+        const address: FlattenedDBAddress = {
+            city: (city as any) || null,
+            street: (street as any) || null,
+            floor: (floor as any) || null,
+            houseNum: (houseNumber as any) || null,
+        }
+
+        setAddress(address);
+    }, [city, street, floor, houseNumber]);
+
+    const addressFormFields: AddressFormFields = {
+        cityField: {
+            name: PersonalInfoDataContextFields.CITY,
+            className: classes.personalInfoItem,
+        },
+        streetField: {
+            name: PersonalInfoDataContextFields.STREET,
+        },
+        houseNumberField: {
+            name: PersonalInfoDataContextFields.HOUSE_NUMBER,
+        },
+        floorField: {
+            name: PersonalInfoDataContextFields.FLOOR,
+        }
     }
 
     return (
@@ -250,7 +203,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
             <FormProvider {...methods}>
                 <form id={`form-${id}`} onSubmit={(event) => {
                     event.preventDefault();
-                    savePersonalData(convertToDBData(), data, id);
+                    savePersonalData(convertToDBData(), methods.getValues(), id);
                 }}>
                     <FormRowWithInput fieldName={PHONE_LABEL}>
                         <Grid item xs={2} className={classes.personalInfoItem}>
@@ -272,7 +225,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                             />
                         </Grid>
                     </FormRowWithInput>
-                    <FormRowWithInput fieldName={ADDITIONAL_PHONE_LABEL}>
+                    <FormRowWithInput fieldName={ADDITIONAL_PHONE_LABEL + ":"}>
                         <Grid item xs={2} className={classes.personalInfoItem}>
                             <Controller
                                 control={methods.control}
@@ -337,33 +290,18 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                     control={methods.control}
                                     render={(props) => (
                                         <Autocomplete
-                                            defaultValue={insuranceCompany}
                                             options={insuranceCompanies}
-                                            getOptionLabel={(option) => option}
-                                            inputValue={insuranceCompany}
-                                            getOptionSelected={(option) => option === props.value}
                                             onChange={(event, selectedInsuranceCompany) => {
-                                                setInsuranceCompany(selectedInsuranceCompany ? selectedInsuranceCompany : '')
                                                 props.onChange(selectedInsuranceCompany ? selectedInsuranceCompany : '')
                                             }}
-                                            onInputChange={(event, selectedInsuranceCompany) => {
-                                                if (event?.type !== 'blur') {
-                                                    setInsuranceCompany(selectedInsuranceCompany);
-                                                    if (selectedInsuranceCompany === '') {
-                                                        props.onChange('');
-                                                        methods.setValue(PersonalInfoDataContextFields.INSURANCE_COMPANY, '');
-                                                    }
-                                                }
-                                            }}
+                                            value={props.value || ''}
                                             className={props.value === NO_INSURANCE ? classes.markComplexity : ''}
                                             renderInput={(params) =>
                                                 <TextField
                                                     {...params}
                                                     test-id='personalDetailsInsurer'
-                                                    value={props.value ? props.value : ''}
-                                                    label={methods.errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]?.message || 'גורם מבטח*'}
-                                                    error={methods.errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]}
-                                                    onBlur={props.onBlur}
+                                                    label={methods.errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]?.message || 'גורם מבטח *'}
+                                                    error={(methods.errors[PersonalInfoDataContextFields.INSURANCE_COMPANY] as unknown) as boolean}
                                                     id={PersonalInfoDataContextFields.INSURANCE_COMPANY}
                                                     placeholder={INSERT_INSURANCE_COMPANY}
                                                 />
@@ -375,133 +313,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                         </Grid>
                     </FormRowWithInput>
                     <FormRowWithInput fieldName={ADDRESS_LABEL}>
-                        <>
-                            <Grid item xs={3} className={classes.personalInfoItem}>
-                                <Controller
-                                    name={PersonalInfoDataContextFields.CITY}
-                                    control={methods.control}
-                                    render={(props: any) => (
-                                        <Autocomplete
-                                            defaultValue={props.value && {id: props.value as string, value: cities.get(props.value) as City}}
-                                            className={classes.spacedOutAddress}
-                                            options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                                            getOptionLabel={(option) => {
-                                                return option?.value?.displayName ? option.value.displayName : cityName
-                                            }}
-                                            getOptionSelected={(option) => option.value.id === props.value}
-                                            inputValue={cityName}
-                                            filterOptions={cityFilterOptions}
-                                            onInputChange={(event, newInputValue) => {
-                                                if (event?.type !== 'blur') {
-                                                    methods.setValue(PersonalInfoDataContextFields.STREET, '')
-                                                    setStreetName('')
-                                                    setCityName(newInputValue);
-                                                    if (!newInputValue) {
-                                                        methods.setValue(PersonalInfoDataContextFields.CITY, '')
-                                                    }
-                                                }
-                                            }}
-                                            onChange={(event, newValue) => {
-                                                setCityId(newValue ? newValue.id : '');
-                                                props.onChange(newValue ? newValue.id : '');
-                                            }}
-                                            renderInput={(params) =>
-                                                <TextField
-                                                    {...params}
-                                                    test-id='insertCityName'
-                                                    value={props.value ? props.value : ''}
-                                                    label={methods.errors[PersonalInfoDataContextFields.CITY]?.message || 'עיר*'}
-                                                    error={methods.errors[PersonalInfoDataContextFields.CITY]}
-                                                    onBlur={props.onBlur}
-                                                    id={PersonalInfoDataContextFields.CITY}
-                                                    placeholder={INSERT_INSTITUTION_NAME}
-                                                />
-                                            }
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={2} className={classes.personalInfoItem}>
-                                <Controller
-                                    name={PersonalInfoDataContextFields.STREET}
-                                    control={methods.control}
-                                    render={(props) => (
-                                        <Autocomplete
-                                            defaultValue={props.value}
-                                            size='small'
-                                            options={streets}
-                                            getOptionLabel={(option) => {
-                                                return option?.displayName ? option.displayName : streetName
-                                            }}
-                                            filterOptions={streetFilterOptions}
-                                            getOptionSelected={(option) => option.id === props.value}
-                                            inputValue={streetName}
-                                            onInputChange={(event, newInputValue) => {
-                                                if (event?.type !== 'blur') {
-                                                    setStreetName(newInputValue);
-                                                    if (newInputValue === '') {
-                                                        methods.setValue(PersonalInfoDataContextFields.STREET, '')
-                                                    }
-                                                }
-                                            }}
-                                            onChange={(event, newValue) => {
-                                                props.onChange(newValue?.id)
-                                            }}
-                                            renderInput={(params) => {
-                                                return <TextField
-                                                    test-id='personalDetailsStreet'
-                                                    value={props.value ? props.value : ''}
-                                                    {...params}
-                                                    error={methods.errors[PersonalInfoDataContextFields.STREET]}
-                                                    label={methods.errors[PersonalInfoDataContextFields.STREET]?.message || 'רחוב'}
-                                                    onBlur={props.onBlur}
-                                                    id={PersonalInfoDataContextFields.STREET}
-                                                    placeholder={'רחוב'}
-                                                />
-                                            }}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={1} className={classes.homeAddressItem}>
-                                <Controller
-                                    name={PersonalInfoDataContextFields.HOUSE_NUMBER}
-                                    control={methods.control}
-                                    render={(props: any) => (
-                                        <AlphanumericTextField
-                                            InputProps={{className: classes.heightendTextField}}
-                                            testId='personalDetailsHouseNumber'
-                                            name={PersonalInfoDataContextFields.HOUSE_NUMBER}
-                                            value={props.value}
-                                            onChange={(newValue: string) => props.onChange(newValue)}
-                                            onBlur={props.onBlur}
-                                            placeholder='מספר בית'
-                                            label='מספר בית'
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={1} className={classes.homeAddressItem}>
-                                <Controller
-                                    name={PersonalInfoDataContextFields.FLOOR}
-                                    control={methods.control}
-                                    render={(props: any) => (
-                                        <AlphanumericTextField
-                                            InputProps={{className: classes.heightendTextField}}
-                                            testId='personalDetailsFloor'
-                                            name={PersonalInfoDataContextFields.FLOOR}
-                                            value={props.value}
-                                            onChange={(newValue: string) => props.onChange(newValue)}
-                                            onBlur={props.onBlur}
-                                            placeholder='קומה'
-                                            label='קומה'
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                        </>
+                        <AddressForm
+                            {...addressFormFields}
+                        />
                     </FormRowWithInput>
-
                     <FormRowWithInput gridProps={{ alignItems: 'baseline' }} fieldName={RELEVANT_OCCUPATION_LABEL}>
                         <>
                             <Grid item xs={2} className={classes.responsiveOccupation}>
@@ -514,9 +329,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                 aria-label={OCCUPATION_LABEL}
                                                 name={OCCUPATION_LABEL}
                                                 value={props.value ? props.value : Occupations.OTHER}
-                                                className={classes.relevantOccupationselect}>
-                                                <FormLabel component='legend'
-                                                    className={classes.fontSize15}><b>{OCCUPATION_LABEL}</b></FormLabel>
+                                                className={classes.relevantOccupationselect}
+                                                >
+                                                <FormLabel component='legend' className={classes.fontSize15}>
+                                                    <b>{OCCUPATION_LABEL}</b>
+                                                </FormLabel>
                                                 {
                                                     occupations.map((occupationOption) => {
                                                         return (
@@ -566,13 +383,13 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                             value={props.value}
                                                             onChange={(event, newValue) => {
                                                                 newValue && getEducationSubOccupations(newValue.value.displayName);
-                                                                setSubOccupationName('');
+                                                                methods.setValue(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, '');
                                                                 props.onChange(newValue ? newValue.value.displayName : '')
                                                             }}
                                                             renderInput={(params) =>
                                                                 <TextField
                                                                     {...params}
-                                                                    error={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]}
+                                                                    error={(methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY] as unknown) as boolean}
                                                                     label={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message
                                                                         || 'עיר המצאות המוסד*'}
                                                                     onBlur={props.onBlur}
@@ -586,7 +403,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                             </Grid>
                                         }
                                         <Grid item xs={2}>
-                                            {institutionComponent}
+                                            <InstitutionComponent 
+                                                options={subOccupations} 
+                                                placeholder={INSERT_INSTITUTION_NAME} 
+                                                fieldName={PersonalInfoDataContextFields.INSTITUTION_NAME} 
+                                            />
                                         </Grid>
                                         <Grid item xs={2}>
                                             <Controller
@@ -595,18 +416,17 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                 render={(props) => (
                                                     <Autocomplete
                                                         options={investigatedPatientRoles}
-                                                        getOptionLabel={(option) => option.displayName}
-                                                        inputValue={roleInput}
-                                                        className={classes.markComplexity}
-                                                        value={roleObj}
+                                                        getOptionLabel={(option) => {
+                                                            return option.displayName
+                                                        }}
+                                                        getOptionSelected={(option) => {
+                                                            return option.id === props.value
+                                                        }}
+                                                        value={props.value ? {id: props.value, displayName: (selectedRole?.displayName as string)} : null}
                                                         onChange={(event, selectedRole) => {
-                                                            props.onChange(selectedRole?.id as number);
+                                                            props.onChange(selectedRole?.id);
                                                         }}
-                                                        onInputChange={(event, newRoleInput) => {
-                                                            if (event?.type !== 'blur') {
-                                                                setRoleInput(newRoleInput);
-                                                            }
-                                                        }}
+                                                        className={classes.markComplexity}
                                                         renderInput={(params) =>
                                                             <TextField
                                                                 {...params}
@@ -618,7 +438,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                             />
                                         </Grid>
                                         {
-                                            roleInput === 'תלמיד/ה' && occupation === Occupations.EDUCATION_SYSTEM &&
+                                            (selectedRole?.displayName === 'תלמיד/ה' && occupation === Occupations.EDUCATION_SYSTEM) &&
                                             <>
                                                 <Grid item xs={1}>
                                                     <FormControl variant='outlined'>
@@ -649,17 +469,16 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                 </Grid>
                                                 <Grid item xs={1}>
                                                     <Controller
-                                                        control={methods.control}
                                                         name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
+                                                        control={methods.control}
                                                         render={(props) => (
                                                             <NumericTextField
                                                                 name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
                                                                 className={[classes.gradeInput, props.value && classes.markComplexity].join(' ')}
                                                                 value={props.value}
-                                                                onChange={(newValue) => props.onChange(newValue)}
+                                                                onChange={props.onChange}
                                                                 onBlur={props.onBlur}
-                                                                error={methods.errors[PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER]}
-                                                                label={(methods.errors[PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER]?.message) || 'מס כיתה'}
+                                                                label='מס כיתה'
                                                             />
                                                         )}
                                                     />
@@ -668,40 +487,46 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                         }
                                     </>
                                     : occupation === Occupations.DEFENSE_FORCES ?
-                                        <Grid item xs={2}>{institutionComponent}</Grid>
+                                        <Grid item xs={3}>
+                                            <InstitutionComponent 
+                                                options={subOccupations} 
+                                                placeholder={INSERT_INSTITUTION_NAME} 
+                                                fieldName={PersonalInfoDataContextFields.INSTITUTION_NAME} 
+                                            />
+                                        </Grid>
                                         :
                                         <Grid item xs={2}>
                                             <Collapse in={occupation !== Occupations.UNEMPLOYED}>
-                                                <Controller
-                                                    name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
-                                                    control={methods.control}
-                                                    render={(props) => (
-                                                        <AlphanumericTextField
-                                                            className={classes.otherTextField}
-                                                            InputProps={{className: classes.otherTextField}}
-                                                            testId='institutionName'
-                                                            name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
-                                                            value={props.value}
-                                                            onChange={(newValue: string) => props.onChange(newValue)}
-                                                            onBlur={props.onBlur}
-                                                            placeholder={subOccupationsPlaceHolderByOccupation()}
-                                                            label={subOccupationsLabelByOccupation()}
-                                                        />
-                                                    )}
-                                                />
+                                                    <Controller
+                                                        name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
+                                                        control={methods.control}
+                                                        render={(props) => (
+                                                            <AlphanumericTextField
+                                                                className={classes.otherTextField}
+                                                                InputProps={{className: classes.otherTextField}}
+                                                                testId='institutionName'
+                                                                name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
+                                                                value={props.value}
+                                                                onChange={props.onChange}
+                                                                onBlur={props.onBlur}
+                                                                placeholder={subOccupationsPlaceHolderByOccupation}
+                                                                label={subOccupationsLabelByOccupation}
+                                                            />
+                                                        )}
+                                                    />
                                             </Collapse>
                                         </Grid>
                             }
                         </>
                     </FormRowWithInput>
                 </form>
-            </FormProvider>
+            </FormProvider>     
         </div>
     );
 };
 
 interface Props {
     id: number;
-};
+}
 
 export default PersonalInfoTab;
