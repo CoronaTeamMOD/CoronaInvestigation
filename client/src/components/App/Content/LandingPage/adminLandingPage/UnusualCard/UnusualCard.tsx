@@ -1,6 +1,6 @@
 import React from 'react';
-import { Tooltip, Typography, Divider } from '@material-ui/core';
 import WarningIcon from '@material-ui/icons/Warning';
+import { Tooltip, Typography, Divider } from '@material-ui/core';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
 import FilterRulesVariables from 'models/FilterRulesVariables';
@@ -63,5 +63,4 @@ interface Props {
     isLoading: boolean;
     unusualInProgressInvestigationsCount: number;
     unusualCompletedNoContactInvestigationsCount: number;
-
 }

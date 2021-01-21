@@ -7,10 +7,10 @@ import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 import InvestigationStatistics, { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 
 import useStyles from './adminLandingPageStyles';
+import UnusualCard from './UnusualCard/UnusualCard';
 import useAdminLandingPage from './useAdminLandingPage';
 import PostponedCard from './PostponedCard/PostponedCard';
 import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
-import UnusualCard from './UnusualCard/UnusualCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import LastUpdateMessage from './LastUpdateMessage/LastUpdateMessage';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';

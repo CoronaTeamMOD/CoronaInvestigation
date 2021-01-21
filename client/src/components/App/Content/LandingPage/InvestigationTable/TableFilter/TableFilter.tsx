@@ -23,7 +23,8 @@ const TableFilter = (props: Props) => {
         onFilterChange, onClose, 
         changeInactiveUserFilter, onSubStatusChange, inactiveUserFilter, 
         changeUnassginedUserFilter, unassignedUserFilter, 
-        timeRangeFilter, onTimeRangeFilterChange, updateDateFilter, nonContactFilter
+        timeRangeFilter, onTimeRangeFilterChange, 
+        updateDateFilter, nonContactFilter
     } = props;
 
     const { displayTimeRange, onSelectTimeRangeChange, onStartDateSelect, onEndDateSelect, errorMes} = useTableFilter({
