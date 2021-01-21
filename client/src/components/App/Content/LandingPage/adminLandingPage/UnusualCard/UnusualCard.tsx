@@ -27,12 +27,12 @@ const UnusualCard: React.FC<Props> = (props: Props): JSX.Element => {
                 <Typography><b>לתשומת ליבך</b></Typography>
             </div>
             <Tooltip className={[classes.unusualCompleted, hoverClasses.whiteButtons].join(' ')} title={unusualCompletesInvestigationsText}>
-                <div>
+                <div onClick={() => onUnusualCompletedNoContactInvestigationsClick(statusToFilterConvertor[FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT])}>
                     <div className={classes.investigationAmount}>
                         <Typography className={classes.investigationNumberText}><b>{unusualCompletedNoContactInvestigationsCount}</b></Typography>
                         <Typography><b>חקירות</b></Typography>
                     </div>
-                    <div onClick={() => onUnusualCompletedNoContactInvestigationsClick(statusToFilterConvertor[FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT])} className={classes.unusualInvestigations}>
+                    <div className={classes.unusualInvestigations}>
                         <Typography ><b>{FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT}</b></Typography>
                         <NavigateBeforeIcon className={classes.navigateIcon} />
                     </div>
@@ -40,12 +40,12 @@ const UnusualCard: React.FC<Props> = (props: Props): JSX.Element => {
             </Tooltip>
             <Divider/>
             <Tooltip className={[classes.unusualInProcess, hoverClasses.whiteButtons].join(' ')} title={unusualInProcessInvestigationsText}>
-                <div>
+                <div  onClick={() => onUnusualInProgressInvestigationsClick(statusToFilterConvertor[FilterRulesDescription.UNUSUAL_IN_PROCESS])} >
                     <div className={classes.investigationAmount}>
                         <Typography className={classes.investigationNumberText}><b>{unusualInProgressInvestigationsCount}</b></Typography>
                         <Typography><b>חקירות</b></Typography>
                     </div>
-                    <div onClick={() => onUnusualInProgressInvestigationsClick(statusToFilterConvertor[FilterRulesDescription.UNUSUAL_IN_PROCESS])} className={classes.unusualInvestigations}>
+                    <div className={classes.unusualInvestigations}>
                         <Typography><b>{FilterRulesDescription.UNUSUAL_IN_PROCESS}</b></Typography>
                         <NavigateBeforeIcon className={classes.navigateIcon} />
                     </div>
