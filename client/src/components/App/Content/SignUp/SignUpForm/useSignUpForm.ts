@@ -1,6 +1,7 @@
 import axios  from 'axios';
 import { useState, useEffect } from 'react';
 
+import Desk from 'models/Desk';
 import City from 'models/City';
 import logger from 'logger/logger';
 import Language from 'models/Language';
@@ -14,6 +15,7 @@ import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCome  => {
 
     const [languages, setLanguages] = useState<Language[]>([]);
+    const [desks, setDesks] = useState<Desk[]>([]);
     const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([]);
 
     const { alertError } = useCustomSwal();
@@ -94,6 +96,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
         fetchCities(),
         fetchSourcesOrganization(),
         fetchLanguages(),
+        fetchDesks(),
         ])
         .finally(() => setIsLoading(false))
     }, [])
@@ -155,7 +158,6 @@ interface useSignUpFormInCome {
 interface useSignUpFormOutCome {
     desks: Desk[];
     fetchDesks: (countiId?: number) => void;
-    counties: County[];
     languages: Language[];
     sourcesOrganization: SourceOrganization[];
     createUser: (data: SignUpUser) => void;

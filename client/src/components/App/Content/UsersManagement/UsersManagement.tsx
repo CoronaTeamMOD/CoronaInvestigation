@@ -49,7 +49,7 @@ const UsersManagement: React.FC = () => {
     const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
     const allCounties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
     
-    const { users, counties, desks, sourcesOrganization, userTypes, languages,
+    const { users, sourcesOrganization, userTypes, languages,
             totalCount, userDialog, editUserDialog, isBadgeInVisible, watchUserInfo, 
             handleCloseUserDialog, editUserInfo, handleCloseEditUserDialog, 
             handleFilterChange, setUserActivityStatus,

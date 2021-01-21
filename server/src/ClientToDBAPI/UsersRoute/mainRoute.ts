@@ -2,7 +2,8 @@ import { Router, Request, Response } from 'express';
 
 import User from '../../Models/User/User';
 import UserPatch from '../../Models/User/UserPatch';
-import { Service, Severity } from '../../Models/Logger/types';
+import { Severity } from '../../Models/Logger/types';
+import { adminMiddleWare } from '../../middlewares/Authentication';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
 import UpdateUserResponse from '../../Models/User/UpdateUserResponse';
 import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
@@ -386,42 +387,6 @@ usersRoute.put('', (request: Request, response: Response) => {
             updateUserLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.sendStatus(errorStatusCode).send(error);
         });
-});
-
-usersRoute.post('/district', superAdminMiddleWare, (request: Request, response: Response) => {
-    const districtLogger = logger.setup({
-        workflow: 'query users by current user district',
-        user: response.locals.user.id
-    });
-
-    const { page } = request.body;
-    const parameters = {
-        offset: calculateOffset(page.number, page.size),
-        size: page.size,
-        orderBy: [request.body.orderBy ? request.body.orderBy : 'NATURAL'],
-        filter: {
-            countyByInvestigationGroup: {
-                districtByDistrictId: {
-                    id: {
-                        equalTo: response.locals.user.countyByInvestigationGroup.districtId
-                    }
-                }
-            },
-            ...request.body.filter
-        }
-    }
-    districtLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-    graphqlRequest(GET_USERS_BY_DISTRICT_ID,response.locals,parameters)
-        .then(result => {
-            districtLogger.info(validDBResponseLog, Severity.LOW);
-            const totalCount = result.data.allUsers.totalCount;
-            const users = result.data.allUsers.nodes.map(convertToUser);
-            response.send({ users, totalCount });
-        })
-        .catch(error => {
-            districtLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-            response.sendStatus(errorStatusCode).send(error);
-        })
 });
 
 usersRoute.post('/county', adminMiddleWare, (request: Request, response: Response) => {

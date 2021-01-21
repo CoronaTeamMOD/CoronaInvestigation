@@ -66,11 +66,11 @@ const GenericNumericTextField : React.FC<GenericNumericTextFieldProps> =
     )
 
 const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Props) => {
+
     const classes = useStyles();
-    const { counties, languages, sourcesOrganization, desks, fetchDesks, createUser, editUser } = useSignUpForm({ handleSaveUser });
+    const { languages, sourcesOrganization, desks, fetchDesks, createUser, editUser } = useSignUpForm({ handleSaveUser });
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const counties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
-    const desks = useSelector<StoreStateType, Desk[]>(state => state.desk);
     
     const methods = useForm<SignUpUser>({
         mode: 'all',
@@ -175,7 +175,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                         </FormInput>
                     </Grid>
                 }
- 
+
                 <Grid container justify='flex-start' className={classes.formRow}>
                         <FormInput xs={8} fieldName='עיר מגורים'>
                             <Controller
@@ -187,6 +187,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                         disabled={shouldDisableFields}
                                         options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                         getOptionLabel={(option) => option?.displayName ? option.displayName : option.value.displayName}
+                                        //getOptionLabel={(option) => option?.value ? option.value.displayName : option.displayName}
                                         getOptionSelected={(option, value) => option.id === value.id}
                                         onChange={(event, selectedCity) => {
                                             props.onChange(selectedCity ? selectedCity.value : null)
@@ -205,7 +206,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 )}
                             />
                         </FormInput>
-                </Grid>   
+                </Grid> 
                 
                 <Grid container justify='flex-start' className={classes.formRow}>
                         <FormInput xs={8} fieldName='טלפון'>
@@ -305,7 +306,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                     options={desks}
                                     disabled={shouldDisableFields}
                                     value={props.value}
-                                    getOptionLabel={(option) => option ? option.deskName : 'option'}
+                                    getOptionLabel={(option) => option ? option.deskName : ''}
                                     onChange={(event, selectedDesk) => {
                                         props.onChange(selectedDesk ? selectedDesk : null)
                                     }}
