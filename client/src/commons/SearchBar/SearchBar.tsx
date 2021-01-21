@@ -1,35 +1,33 @@
+import * as yup from 'yup';
 import React, { useState } from 'react';
 import { Close, Search } from '@material-ui/icons';
 import { TextField, InputAdornment, IconButton } from '@material-ui/core';
 
-import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
-
 import useStyles from './SearchBarStyles';
-
-const searchBarError = 'יש להכניס רק אותיות ומספרים';
 
 const SearchBar: React.FC<Props> = (props: Props) => {
 
-    const { searchBarLabel, onClick, onChange } = props;
+    const { searchBarLabel, onClick, onChange, validationSchema } = props;
 
     const [searchQuery, setSearchQuery] = useState<string>('');
-    const [isQueryValid, setIsQueryValid] = useState<boolean>(true);
+    const [queryValidationError, setQueryValidationError] = useState<string>('');
 
     const classes = useStyles();
 
     const handleChange = (value: string) => {
-        if (stringAlphanum.isValidSync(value)) {
+        try {
+            validationSchema.validateSync(value);
             setSearchQuery(value);
-            !isQueryValid && setIsQueryValid(true);
+            setQueryValidationError('');
             onChange !== undefined && onChange(value);
-        } else {
-            setIsQueryValid(false);
+        } catch(error) {
+            setQueryValidationError(error.errors[0]);
         }
     }
 
     const onClearClick = () => {
         setSearchQuery('');
-        !isQueryValid && setIsQueryValid(true);
+        setQueryValidationError('');
         onClick(''); 
     }
 
@@ -42,7 +40,7 @@ const SearchBar: React.FC<Props> = (props: Props) => {
                 event.key === 'Enter' &&
                 onClick(searchQuery);
             }}
-            label={isQueryValid ? searchBarLabel : searchBarError}
+            label={queryValidationError || searchBarLabel}
             InputProps={{
                 endAdornment: (
                     <InputAdornment position='end'>
@@ -64,7 +62,7 @@ const SearchBar: React.FC<Props> = (props: Props) => {
                     </InputAdornment>
                 ),
             }}
-            error={!isQueryValid}
+            error={Boolean(queryValidationError)}
         />
     );
 }
@@ -73,6 +71,7 @@ interface Props {
     searchBarLabel: string;
     onClick: (value: string) => void;
     onChange?: (value: string) => void;
+    validationSchema: yup.StringSchema<string | undefined, object>;
 }
 
 export default SearchBar;

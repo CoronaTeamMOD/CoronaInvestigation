@@ -9,6 +9,7 @@ import Country from 'models/Country';
 import { Severity } from 'models/Logger';
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
+import { defaultUser } from 'Utils/UsersUtils/userUtils';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setCities } from 'redux/City/cityActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
@@ -24,7 +25,6 @@ import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCo
 import { setEducationGrade } from 'redux/EducationGrade/educationGradeActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 
-import { defaultUser } from './InvestigationInfo/InvestigationInfoBar';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
@@ -45,7 +45,8 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         const tabShowLogger = logger.setup('Getting Amount Of Contacts');
         tabShowLogger.info('launching amount of contacts request', Severity.LOW);
         const minimalDateToFilter = datesToInvestigate.slice(-1)[0];
-        axios.get(`/contactedPeople/allContacts/${epidemiologyNumber}/${minimalDateToFilter}`)
+        const formattedMinimalDate = typeof minimalDateToFilter !== 'string' ? minimalDateToFilter.toISOString() : minimalDateToFilter;
+        axios.get(`/contactedPeople/allContacts/${epidemiologyNumber}/${formattedMinimalDate}`)
         .then((result: any) => {
             tabShowLogger.info('amount of contacts request was successful', Severity.LOW);
             setAreThereContacts(result?.data.length > 0);

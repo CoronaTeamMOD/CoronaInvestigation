@@ -1,15 +1,16 @@
 import React from 'react';
 
 import Contact from 'models/Contact';
+import ContactType from 'models/enums/ContactType';
 import InteractedContact from 'models/InteractedContact';
+import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import {ContactedPersonFieldMapper} from 'models/enums/contactQuestioningExcelFields';
 import { isIdValid , isPassportValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-import ContactType from 'models/enums/ContactType';
+
 import {get} from '../auxiliaryFunctions/auxiliaryFunctions';
 
-export const COMPLETE_STATUS = 5;
 export const STRICT_CONTACT_TYPE = 1;
 const isolationErrorMessageEnd = ' ולכן לא ניתן להקים דיווח בידוד';
 
@@ -35,7 +36,7 @@ const mandatoryQuarantineFields = [InteractedContactFields.IDENTIFICATION_NUMBER
     InteractedContactFields.LAST_NAME];
 
 const useContactFields = (contactStatus?: InteractedContact['contactStatus']) => {
-    const shouldDisable = (status?: InteractedContact['contactStatus']) => status === COMPLETE_STATUS;
+    const shouldDisable = (status?: InteractedContact['contactStatus']) => status === ContactStatusCodes.COMPLETED;
 
     const isFieldDisabled = React.useMemo(() => shouldDisable(contactStatus), [contactStatus]);
 
@@ -56,6 +57,9 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         }
         
         if(!contact.doesNeedIsolation) {
+            if (contact.contactType === ContactType.TIGHT) {
+                return { valid: false, error: 'המגע סומן כהדוק אך לא הוקם לו בידוד'};
+            }
             return { valid: true };
         } else {
             const emptyFieldNames = mandatoryQuarantineFields.filter(mandatoryField =>

@@ -9,6 +9,7 @@ import UserType from 'models/enums/UserType';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
+import { defaultUser } from 'Utils/UsersUtils/userUtils';
 import { truncateDate } from 'Utils/DateUtils/formatDate';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setGender } from 'redux/Gender/GenderActionCreators';
@@ -20,14 +21,6 @@ import { setInvestigatedPatientId , setIsCurrentlyHospitialized, setIsDeceased, 
 
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
-
-export const defaultUser = {
-    id: '',
-    userName: '',
-    phoneNumber: '',
-    serialNumber: '',
-    investigationGroup: -1
-}
 
 const defaultInvestigationStaticInfo : InvestigationInfo = {
     comment: '',
@@ -90,14 +83,15 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                     setIsCurrentlyHospitialized(investigationInfo.isCurrentlyHospitalized);
                     const gender = investigationInfo.gender;
                     setGender(gender ? gender : '');
-                    const formattedValidationDate = truncateDate(investigationInfo.validationDate);
-                    const formattedInvestigationInfo : InvestigationInfo = {
+                    const formattedValidationDate  = truncateDate(investigationInfo.validationDate);
+                    const formattedSymptomsDate = truncateDate(investigationInfo.symptomsStartDate);
+                    const formattedInvestigationInfo = {
                         ...investigationInfo,
-                        validationDate: formattedValidationDate
+                        symptomsStartDate : formattedSymptomsDate,
+                        validationDate : formattedValidationDate
                     }
-                    setDatesToInvestigateParams(
-                        {
-                        symptomsStartDate: investigationInfo.symptomsStartDate, 
+                    setDatesToInvestigateParams({
+                        symptomsStartDate: truncateDate(investigationInfo.symptomsStartDate), 
                         doesHaveSymptoms: investigationInfo.doesHaveSymptoms,
                         }, 
                         formattedValidationDate

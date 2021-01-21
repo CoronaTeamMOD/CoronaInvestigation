@@ -27,6 +27,7 @@ import InvestigationTableRowType from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import DeskFilter from './DeskFilter/DeskFilter';
 import useStyles from './InvestigationTableStyles';
@@ -277,6 +278,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     </Typography>
                     <Box justifyContent='flex-end' display='flex'>
                         <SearchBar 
+                            validationSchema={stringAlphanum}
                             searchBarLabel={searchBarLabel}
                             onClick={(value: string) => changeSearchFilter(value)}
                         />

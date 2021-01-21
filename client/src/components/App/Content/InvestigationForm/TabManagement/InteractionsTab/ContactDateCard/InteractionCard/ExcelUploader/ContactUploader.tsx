@@ -5,6 +5,7 @@ import { Button, Typography } from '@material-ui/core';
 import logger from 'logger/logger';
 import Contact from 'models/Contact';
 import { Severity } from 'models/Logger';
+import ContactStatus from 'models/enums/ContactStatus';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
@@ -85,7 +86,7 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
             } else {
                 const contactsData = contacts.map(contact => {
                     const { rowNum, ...contactData } = contact;
-                    return contactData;
+                    return {...contactData, contactStatus: contactData.contactStatus || ContactStatus.NEW};
                 });
                 setIsLoading(true);
                 if (!checkExcelDuplicateKeys(contacts, existingContacts)) {
