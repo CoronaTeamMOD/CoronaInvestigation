@@ -120,19 +120,23 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     }
 
     const editUser = (updatedUser: SignUpUser) => {
-        console.log(updatedUser)
-        // const createUserLogger = logger.setup('Create user');
-        // createUserLogger.info('launching createUser request', Severity.LOW);
-        // axios.post('/users', {...updatedUser, languages : updatedUser.languages || []})
-        // .then(() => {
-        //     // handleSaveUser && handleSaveUser();
-        //     createUserLogger.info('user was created successfully', Severity.LOW);
-        // })
-        // .catch(() => {
-        //     alertError('לא ניתן היה ליצור משתמש חדש');
-        //     createUserLogger.error('create user was failed', Severity.CRITICAL);        
-        // })
-        // .finally(() => setIsLoading(false));
+        const updateUserLogger = logger.setup('Update user');
+        updateUserLogger.info('launching updateUser request', Severity.LOW);
+        axios.put('/users', {
+            ...updatedUser, 
+            languages : updatedUser.languages || [], 
+            city : updatedUser.city?.id, 
+            investigationGroup : updatedUser.investigationGroup?.id,
+            desk : updatedUser.desk?.id ? updatedUser.desk?.id : null,
+        })
+        .then(() => {
+            updateUserLogger.info('user was updated successfully', Severity.LOW);
+        })
+        .catch(() => {
+            alertError('לא ניתן היה לעדכן משתמש ');
+            updateUserLogger.error('update user was failed', Severity.CRITICAL);        
+        })
+        .finally(() => setIsLoading(false));
     }
 
     return {

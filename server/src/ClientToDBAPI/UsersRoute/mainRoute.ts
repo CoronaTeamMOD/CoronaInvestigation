@@ -1,8 +1,8 @@
 import { Router, Request, Response } from 'express';
 
 import User from '../../Models/User/User';
-import { Severity } from '../../Models/Logger/types';
-import { adminMiddleWare } from '../../middlewares/Authentication';
+import UserPatch from '../../Models/User/UserPatch';
+import { Service, Severity } from '../../Models/Logger/types';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
 import UpdateUserResponse from '../../Models/User/UpdateUserResponse';
 import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
@@ -356,12 +356,25 @@ usersRoute.post('', (request: Request, response: Response) => {
         });
 });
 
+const convertUpdateUserToDB = (clientUserInput: any): UserPatch => {
+    return {
+        idInput: clientUserInput.id,
+        cityInput: clientUserInput.city,
+        phoneNumberInput: clientUserInput.phoneNumber,
+        investigationGroupInput: +clientUserInput.investigationGroup,
+        sourceOrganizationInput: clientUserInput.sourceOrganization,
+        mailInput: clientUserInput.mail,
+        deskInput: clientUserInput.desk,
+        languagesInput: clientUserInput.languages?.map((language: Language) => language.displayName)
+    }
+}
+
 usersRoute.put('', (request: Request, response: Response) => {
     const updateUserLogger = logger.setup({
         workflow: 'update user',
     });
 
-    const parameters = {input: convertUserToDB(request.body)};
+    const parameters = {input: convertUpdateUserToDB(request.body)};
     updateUserLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(UPDATE_USER, response.locals, parameters)

@@ -82,9 +82,9 @@ mutation CreateUser($input: CreateNewUserInput!) {
 `;
 
 export const UPDATE_USER = gql`
-mutation UpdateUser($input: CreateNewUserInput!) {
-    createNewUser(input: $input) {
+mutation UpdateUserByForm($input: UpdateUserByFormInput!) {
+    updateUserByForm(input: $input) {
       clientMutationId
     }
-  }  
+  }
 `;

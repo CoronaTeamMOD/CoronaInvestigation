@@ -92,13 +92,12 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
 
     const shouldDisableEditFields = mode === FormMode.EDIT ? true : false;
     
-    const onSubmit = (data: SignUpUser) => {
+    const onSubmit = () => {
+        const data = methods.getValues();
         if (mode === FormMode.CREATE) {
             createUser(data);
         } else if (mode === FormMode.EDIT) {
-            console.log(data)
-            console.log(methods.getValues())
-            // editUser(data)
+            editUser(data)
         }
     }
     
