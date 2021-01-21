@@ -100,22 +100,30 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
         return INSTITUTION_NAME_LABEL;
     }, [occupation]);
 
-    const convertToDBData = (): PersonalInfoDbData => {
-        const data = methods.getValues();
-        type DataKey = keyof typeof data;
+    const parseDataValue = (key: keyof PersonalInfoTabState, value: any) => {
+        type DataKey = typeof key;
         const specialConvertors: Map<DataKey, (value: any) => any> = new Map<DataKey, (value: any) => any>([
             [PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER, (value) => parseInt(value)]
         ]);
+        return (specialConvertors.has(key)) ? 
+                    (specialConvertors.get(key) as (value: any) => any)(value)
+                :
+                    value;
+    }
+
+    const convertToDBData = (): PersonalInfoDbData => {
+        const data = methods.getValues();
+        const dataKeys = Object.keys(data);
+
         const parsedData = Object.values(data)
                                 .map(value => value || null)
-                                .reduce((obj, item, index) => (
-                                    Object.assign(obj, {
-                                        [Object.keys(data)[index]]: (specialConvertors.has(Object.keys(data)[index] as DataKey) ? 
-                                                                        (specialConvertors.get(Object.keys(data)[index] as DataKey) as (value: any) => any)(item) 
-                                                                        : 
-                                                                        item)
+                                .reduce((obj, value, index) => {
+                                    const key = dataKeys[index] as keyof PersonalInfoTabState;
+                                    return Object.assign(obj, {
+                                        [key]: parseDataValue(key, value)
                                     })
-                                ), {})
+                                }, {})
+
         parsedData.address = {
             city: parsedData.city,
             street: parsedData.street,
@@ -171,8 +179,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
             <FormProvider {...methods}>
                 <form id={`form-${id}`} onSubmit={(event) => {
                     event.preventDefault();
-                    // console.log(methods.getValues());
-                    // convertToDBData();
                     savePersonalData(convertToDBData(), methods.getValues(), id);
                 }}>
                     <FormRowWithInput fieldName={PHONE_LABEL}>
