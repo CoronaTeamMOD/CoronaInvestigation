@@ -352,11 +352,15 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                 render={(props) => (
                                                     <Autocomplete
                                                         options={investigatedPatientRoles}
-                                                        getOptionLabel={(option) => option.displayName}
-                                                        getOptionSelected={(option, value) => option.id === value}
-                                                        value={props.value}
+                                                        getOptionLabel={(option) => {
+                                                            return option.displayName
+                                                        }}
+                                                        getOptionSelected={(option) => {
+                                                            return option.id === props.value
+                                                        }}
+                                                        value={props.value ? {id: props.value, displayName: (selectedRole?.displayName as string)} : {id: -1, displayName: ''}}
                                                         onChange={(event, selectedRole) => {
-                                                            props.onChange(selectedRole.id);
+                                                            props.onChange(selectedRole?.id);
                                                         }}
                                                         className={classes.markComplexity}
                                                         renderInput={(params) =>
