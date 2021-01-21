@@ -3,6 +3,7 @@ import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody
 
 import User from 'models/User';
 import SearchBar from 'commons/SearchBar/SearchBar';
+import { userValidationSchema } from 'Utils/UsersUtils/userUtils';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 import useStyles from './InvestigatorsTableStyles';
@@ -60,6 +61,7 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
                 searchBarLabel={searchBarLabel}
                 onClick={(value: string) => setInvestigatorInput(value)}
                 onChange={(value: string) => setInvestigatorInput(value)}
+                validationSchema={userValidationSchema}
             />
             <TableContainer component={Paper}>
                 <Table stickyHeader>

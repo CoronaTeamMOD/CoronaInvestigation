@@ -9,6 +9,7 @@ import UserType from 'models/enums/UserType';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
+import { defaultUser } from 'Utils/UsersUtils/userUtils';
 import { truncateDate } from 'Utils/DateUtils/formatDate';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setGender } from 'redux/Gender/GenderActionCreators';
@@ -20,14 +21,6 @@ import { setInvestigatedPatientId , setIsCurrentlyHospitialized, setIsDeceased, 
 
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
-
-export const defaultUser = {
-    id: '',
-    userName: '',
-    phoneNumber: '',
-    serialNumber: '',
-    investigationGroup: -1
-}
 
 const defaultInvestigationStaticInfo : InvestigationInfo = {
     comment: '',
