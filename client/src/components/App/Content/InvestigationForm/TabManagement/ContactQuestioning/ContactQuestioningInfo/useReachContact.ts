@@ -3,8 +3,8 @@ import { useFormContext } from 'react-hook-form';
 import theme from 'styles/theme';
 import ContactStatus from 'models/ContactStatus';
 import InteractedContact from 'models/InteractedContact';
+import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import { COMPLETE_STATUS } from 'Utils/Contacts/useContactFields';
 
 const useReachContact = (props: Props) => {
     const { errors } = useFormContext();
@@ -20,7 +20,7 @@ const useReachContact = (props: Props) => {
     ) => {
         event.stopPropagation();
 
-        if (selectedStatus?.id === COMPLETE_STATUS) {
+        if (selectedStatus?.id === ContactStatusCodes.COMPLETED) {
             if(!formHasErrors){
                 alertWarning('האם אתה בטוח שתרצה להעביר את המגע לסטטוס הושלם?', {
                     text: 'לאחר העברת המגע, לא תהיה אפשרות לערוך שינויים',
