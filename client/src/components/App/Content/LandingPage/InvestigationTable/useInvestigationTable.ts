@@ -224,7 +224,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const changeNonContactFilter = (isNonContact: boolean) => {
         updateFilterHistory('nonContactFilter', isNonContact);
         setNonContactFilter(isNonContact);
-        handleFilterChange(filterCreators.UNUSUAL_IN_PROGRESS(isNonContact))
+        handleFilterChange(filterCreators.UNUSUAL_COMPLETED_NO_CONTACT(isNonContact))
         setCurrentPage(defaultPage);
     };
 
