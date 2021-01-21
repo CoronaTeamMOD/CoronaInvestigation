@@ -142,6 +142,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             timeRangeFilter: historyTimeRange = defaultTimeRange,
             inactiveUserFilter : historyInactiveUserFilter = false, 
             unassignedUserFilter : historyUnassignedUserFilter = false,
+            updateDateFilter : historyUpdateDateFilter = "",
+            nonContactFilter : historyNonContactFilter = false,
             isAdminLandingRedirect : historyisAdminLandingRedirect = false,
             filterTitle} = useMemo(() => {
         const { location: { state } } = history;
@@ -157,6 +159,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [subStatusFilter, setSubStatusFilter] = useState<SubStatusFilter>(historySubStatusFilter);
     const [deskFilter, setDeskFilter] = useState<DeskFilter>(historyDeskFilter);
     const [timeRangeFilter, setTimeRangeFilter] = useState<TimeRange>(historyTimeRange);
+    const [updateDateFilter, setUpdateDateFilter] = useState<string>(historyUpdateDateFilter);
+    const [nonContactFilter, setNonContactFilter] = useState<boolean>(historyNonContactFilter);
     const [unassignedUserFilter, setUnassignedUserFilter] = useState<boolean>(historyUnassignedUserFilter);
     const [inactiveUserFilter, setInactiveUserFilter] = useState<boolean>(historyInactiveUserFilter);
     const [isAdminLandingRedirect, setIsAdminLandingRedirect] = useState<boolean>(historyisAdminLandingRedirect);
@@ -169,6 +173,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const unAssignedFilterToSet = (historyUnassignedUserFilter && !inactiveUserFilter) ? filterCreators.UNASSIGNED_USER(historyUnassignedUserFilter) : null;
         const inActiveToSet = (historyInactiveUserFilter && !historyUnassignedUserFilter) ? filterCreators.INACTIVE_USER(historyInactiveUserFilter) : null;
         const unAllocatedToSet = (historyInactiveUserFilter && historyUnassignedUserFilter) ? filterCreators.UNALLOCATED_USER(historyUnassignedUserFilter) : null;
+        const updateDateFilterToSet = historyUpdateDateFilter ? filterCreators.UNUSUAL_IN_PROGRESS(historyUpdateDateFilter) : null;
+        const nonContactFilterToSet = historyNonContactFilter ? filterCreators.UNUSUAL_COMPLETED_NO_CONTACT(historyNonContactFilter) : null;
         return {
             [InvestigationsFilterByFields.STATUS]: statusFilterToSet && Object.values(statusFilterToSet)[0],
             [InvestigationsFilterByFields.SUB_STATUS]: subStatusFilterToSet && Object.values(subStatusFilterToSet)[0],
@@ -177,6 +183,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [InvestigationsFilterByFields.UNASSIGNED_USER]: unAssignedFilterToSet && Object.values(unAssignedFilterToSet)[0],
             [InvestigationsFilterByFields.INACTIVE_USER]: inActiveToSet && Object.values(inActiveToSet)[0],
             [InvestigationsFilterByFields.UNALLOCATED_USER]: unAllocatedToSet && Object.values(unAllocatedToSet)[0],
+            [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: updateDateFilterToSet && Object.values(updateDateFilterToSet)[0],
+            [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: nonContactFilterToSet && Object.values(nonContactFilterToSet)[0],
         }
     }
     
@@ -203,6 +211,20 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         updateFilterHistory('timeRangeFilter', timeRangeFilter);
         setTimeRangeFilter(timeRangeFilter);
         handleFilterChange(filterCreators.TIME_RANGE(timeRangeFilter))
+        setCurrentPage(defaultPage);
+    };
+    
+    const changeUpdateDateFilter = (dateStringFilter: string) => {
+        updateFilterHistory('updateDateFilter', dateStringFilter);
+        setUpdateDateFilter(dateStringFilter);
+        handleFilterChange(filterCreators.UNUSUAL_IN_PROGRESS(dateStringFilter))
+        setCurrentPage(defaultPage);
+    };
+
+    const changeNonContactFilter = (isNonContact: boolean) => {
+        updateFilterHistory('nonContactFilter', isNonContact);
+        setNonContactFilter(isNonContact);
+        handleFilterChange(filterCreators.UNUSUAL_COMPLETED_NO_CONTACT(isNonContact))
         setCurrentPage(defaultPage);
     };
 
@@ -956,7 +978,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchAllCountyUsers,
         tableTitle, 
         timeRangeFilter,
-        isBadgeInVisible
+        isBadgeInVisible,
+        nonContactFilter,
+        changeNonContactFilter,
+        updateDateFilter,
+        changeUpdateDateFilter,
     };
 };
 

@@ -5,6 +5,7 @@ import InvestigationMainStatusCodes from '../../Models/InvestigationStatus/Inves
 const UNASSIGNED_USER_NAME = 'לא משויך';
 const WAITING_FOR_DETAILS = 'מחכה להשלמת פרטים';
 const TRANSFER_REQUEST = 'נדרשת העברה';
+const WAITING_FOR_RESPONSE = 'מחכה למענה';
 
 export const USER_INVESTIGATIONS = gql`
 query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter) {
@@ -185,7 +186,7 @@ query allDesks {
 `;
 
 export const GET_INVESTIGATION_STATISTICS = gql`
-query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitgationsFilter: InvestigationFilter!){
+query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitgationsFilter: InvestigationFilter!, $lastUpdateDateFilter: InvestigationFilter!){
   allInvestigations(filter: $allInvesitgationsFilter) {
     totalCount
   }
@@ -229,6 +230,32 @@ query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitg
         $allInvesitgationsFilter
       ]},
     ) {
+    totalCount
+  }
+  unusualInProgressInvestigations: allInvestigations(filter: {
+    and: [
+    {investigationStatus: {equalTo:${String(InvestigationMainStatusCodes.IN_PROCESS)}}},
+    $lastUpdateDateFilter,
+    {investigationSubStatus: {in:["${TRANSFER_REQUEST}", "${WAITING_FOR_DETAILS}", "${WAITING_FOR_RESPONSE}"]}},
+    $allInvesitgationsFilter]
+  }) {
+    totalCount
+  }
+  unusualCompletedNoContactInvestigations: allInvestigations(filter:{
+    and:[{contactEventsByInvestigationId:{
+      every:{
+        contactedPeopleByContactEvent:{
+          every:{
+            contactEvent:{
+              isNull:true
+            }
+          }
+        }
+      }
+    }},
+    {investigationStatus: {equalTo:${String(InvestigationMainStatusCodes.DONE)}}},
+    $allInvesitgationsFilter]
+  }){
     totalCount
   }
   transferRequestInvestigations: allInvestigations(

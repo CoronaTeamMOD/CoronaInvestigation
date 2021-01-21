@@ -110,7 +110,29 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
         } else {
             return { [InvestigationsFilterByFields.TIME_RANGE]: null }
         }
-    }
+    },
+    [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: (dateFilter: string) => {
+        return dateFilter ? { [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: { 
+            lastUpdateTime: {
+                lessThan: dateFilter
+            }
+        } } :  { [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: null };
+    },
+    [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: (isNonContact: boolean) => {
+        return isNonContact ? { [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: { 
+            contactEventsByInvestigationId: {
+                every: {
+                  contactedPeopleByContactEvent: {
+                    every: {
+                      contactEvent:{
+                        isNull:true
+                      }
+                    }
+                  }
+                }
+              }
+        } } :  { [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: null };
+    }, 
 };
 
 export default filterCreators;

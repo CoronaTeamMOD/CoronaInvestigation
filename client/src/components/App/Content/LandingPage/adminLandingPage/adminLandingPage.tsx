@@ -7,6 +7,7 @@ import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 import InvestigationStatistics, { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 
 import useStyles from './adminLandingPageStyles';
+import UnusualCard from './UnusualCard/UnusualCard';
 import useAdminLandingPage from './useAdminLandingPage';
 import PostponedCard from './PostponedCard/PostponedCard';
 import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
@@ -26,9 +27,10 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
         newInvestigations: 0,
         unassignedInvestigations: 0,
         unallocatedInvestigations: 0,
+        unusualInProgressInvestigations: 0,
+        unusualCompletedNoContactInvestigations: 0,
         transferRequestInvestigations: 0,
         waitingForDetailsInvestigations: 0,
-
     });
     const [lastUpdated , setLastUpdated] = useState<Date>(new Date());
 
@@ -69,7 +71,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                         onUpdateButtonClicked={updateInvestigationFilterByTime}
                     />
                 </Grid>
-                <Grid item xs={12} md={2}>
+                <Grid item xs={3} md={2}>
                     <div>
                         <UnallocatedCard
                             isLoading={isLoading}
@@ -85,6 +87,15 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                             waitingForDetailsInvestigationsCount={investigationsStatistics.waitingForDetailsInvestigations}
                         />
                     </div>
+                </Grid>
+                <Grid item xs={3} md={2}>
+                    <UnusualCard
+                        isLoading={isLoading}
+                        onUnusualCompletedNoContactInvestigationsClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT)} 
+                        onUnusualInProgressInvestigationsClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNUSUAL_IN_PROCESS)} 
+                        unusualInProgressInvestigationsCount={investigationsStatistics.unusualInProgressInvestigations}
+                        unusualCompletedNoContactInvestigationsCount={investigationsStatistics.unusualCompletedNoContactInvestigations}
+                    />
                 </Grid>
             </Grid>
         </div>

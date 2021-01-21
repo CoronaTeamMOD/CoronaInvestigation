@@ -8,6 +8,8 @@ interface FilterRulesVariables {
     inactiveUserFilter?: boolean,
     searchQuery?: string,
     timeRangeFilter?: TimeRange,
+    updateDateFilter?: string,
+    nonContactFilter?: boolean,
 }
 
 export default FilterRulesVariables;
