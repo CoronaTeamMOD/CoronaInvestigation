@@ -57,6 +57,9 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         }
         
         if(!contact.doesNeedIsolation) {
+            if (contact.contactType === ContactType.TIGHT) {
+                return { valid: false, error: 'המגע סומן כהדוק אך לא הוקם לו בידוד'};
+            }
             return { valid: true };
         } else {
             const emptyFieldNames = mandatoryQuarantineFields.filter(mandatoryField =>
