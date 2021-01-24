@@ -70,7 +70,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
         }
 
         const saveGroupedInvestigations = (eventId : number) => {
-            console.log(eventId , groupedInvestigationContacts);
+            const groupedInvestigationsLogger = logger.setup('save grouped investigations contacts')
             const params = {
                 eventId ,
                 contacts : groupedInvestigationContacts
@@ -78,9 +78,14 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
             if(groupedInvestigationContacts.length !== 0) {
                 axios.post('/intersections/groupedInvestigationContacts' , params)
                     .then((response) => {
-                        console.log(response)
+                        groupedInvestigationsLogger.info('added contacts successfully', Severity.LOW);
+                        loadInteractions();
+                        loadInvolvedContacts();
+                        onDialogClose();
+                        setIsLoading(false);
                     })
                     .catch((error) => {
+                        groupedInvestigationsLogger.error(`got error from server: ${error}`, Severity.HIGH);
                         console.log(error);
                     })
             } else {

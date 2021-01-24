@@ -39,3 +39,11 @@ export const DELETE_CONTACT_EVENTS_BY_DATE = gql`
         }
     }
 `;
+
+export const CREATE_CONTACTED_PERSON = gql`
+    mutation MyMutation($params: ContactedPersonInput!) {
+        createContactedPerson(input: {contactedPerson: $params}) {
+            clientMutationId
+        }
+    }
+`;
