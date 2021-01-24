@@ -117,7 +117,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
         type DataKey = typeof key;
         type DataParser = (value: any) => any;
         const specialConvertors: Map<DataKey, DataParser> = new Map<DataKey, DataParser>([
-            [PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER, (value) => parseInt(value)]
+            [PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER, (value) => parseInt(value)],
+            [PersonalInfoDataContextFields.ADDRESS, (value) => {
+                Object.keys(value).forEach(key => (value[key] = value[key] || null));
+                return value;
+            }]
         ]);
         return (specialConvertors.has(key)) ? 
                     (specialConvertors.get(key) as DataParser)(value)
@@ -137,18 +141,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                         [key]: parseDataValue(key, value)
                                     })
                                 }, {})
-
-        parsedData.address = {
-            city: parsedData.city,
-            street: parsedData.street,
-            floor: parsedData.floor,
-            houseNum: parsedData.houseNum
-        }
-
-        delete parsedData.city;
-        delete parsedData.street;
-        delete parsedData.floor;
-        delete parsedData.houseNum;
 
         return parsedData;
     }
@@ -187,17 +179,17 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
 
     const addressFormFields: AddressFormFields = {
         cityField: {
-            name: PersonalInfoDataContextFields.CITY,
+            name: 'address.' + PersonalInfoDataContextFields.CITY,
             className: classes.personalInfoItem,
         },
         streetField: {
-            name: PersonalInfoDataContextFields.STREET,
+            name: 'address.' + PersonalInfoDataContextFields.STREET,
         },
         houseNumberField: {
-            name: PersonalInfoDataContextFields.HOUSE_NUMBER,
+            name: 'address.' + PersonalInfoDataContextFields.HOUSE_NUMBER,
         },
         floorField: {
-            name: PersonalInfoDataContextFields.FLOOR,
+            name: 'address.' + PersonalInfoDataContextFields.FLOOR,
         }
     }
 

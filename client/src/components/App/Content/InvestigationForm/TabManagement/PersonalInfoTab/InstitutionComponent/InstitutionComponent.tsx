@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller, FieldError, useFormContext } from 'react-hook-form';
 
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 
@@ -42,9 +42,9 @@ const InstitutionComponent: React.FC<Props> = ({ fieldName, placeholder, options
                         <TextField
                             {...params}
                             error={errors[fieldName] && options.length !== 0}
-                            label={(errors[fieldName]?.message && options.length !== 0)
+                            label={((errors[fieldName] as FieldError)?.message && options.length !== 0)
                                 ?
-                                errors[fieldName]?.message
+                                (errors[fieldName] as FieldError)?.message
                                 :
                                 INSTITUTION_NAME
                             }

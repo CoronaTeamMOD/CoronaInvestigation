@@ -16,7 +16,9 @@ const schema = yup.object().shape({
     [PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]: yup.string().nullable().matches(notRequiredPhoneNumberRegex, numberValidationText),
     [PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]: yup.string().nullable().matches(notRequiredPhoneNumberRegex, numberValidationText),
     [PersonalInfoDataContextFields.INSURANCE_COMPANY]: yup.string().nullable().required(requiredText),
-    [PersonalInfoDataContextFields.CITY]: yup.string().nullable().required(requiredText),
+    address: yup.object().shape({
+        [PersonalInfoDataContextFields.CITY]: yup.string().nullable().required(requiredText),
+    }),
     [PersonalInfoDataContextFields.CONTACT_INFO]: yup.string().nullable(),
     [PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]: yup.string().when(
         PersonalInfoDataContextFields.RELEVANT_OCCUPATION, 

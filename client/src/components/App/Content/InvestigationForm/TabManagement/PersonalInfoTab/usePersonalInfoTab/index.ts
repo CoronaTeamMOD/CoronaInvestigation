@@ -126,7 +126,7 @@ const usePersonalInfoTab = (): usePersonalInfoTabOutcome => {
                     additionalPhoneNumber: investigatedPatient.additionalPhoneNumber,
                     contactPhoneNumber: investigatedPatient.patientContactPhoneNumber,
                     insuranceCompany: investigatedPatient.hmo,
-                    ...convertedPatientAddress,
+                    address: convertedPatientAddress,
                     relevantOccupation: investigatedPatient.occupation,
                     educationOccupationCity: (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation) ?
                         investigatedPatient.subOccupationBySubOccupation.city : '',
