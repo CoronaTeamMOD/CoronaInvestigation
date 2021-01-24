@@ -78,13 +78,15 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
         resolver: yupResolver(mode === FormMode.CREATE ? SignUpSchema : EditSchema)
     })
 
-    const watchCounty = methods.watch(SignUpFields.COUNTY)
+    const watchCounty = methods.watch(SignUpFields.COUNTY);
 
     useEffect(() => {
         if (watchCounty?.id) {
             fetchDesks(watchCounty.id)
         } else if (defaultValues?.investigationGroup?.id) {
             fetchDesks(defaultValues.investigationGroup.id)
+        } else {
+            fetchDesks()
         }
     }, [watchCounty])
 
@@ -269,7 +271,8 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                         <FormInput xs={8} fieldName='שיוך ארגוני'>
                             <Controller
                                 name={SignUpFields.COUNTY}
-                                control={methods.control}
+                                control={methods.control}                                        
+                                defaultValue={defaultValues.investigationGroup ? defaultValues.investigationGroup : null}
                                 render={(props) => (
                                     <Autocomplete
                                         {...props}
@@ -299,14 +302,16 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                     <Grid item xs={4}>
                         <Controller
                             name={SignUpFields.DESK}
-                            control={methods.control}
+                            control={methods.control}                                    
+                            defaultValue={defaultValues.desk ? defaultValues.desk : null}
                             render={(props) => (
                                 <Autocomplete
                                     {...props}
                                     options={desks}
                                     disabled={shouldDisableFields}
+                                    getOptionLabel={(option) => option ? option.deskName : ''}                                    
                                     value={props.value}
-                                    getOptionLabel={(option) => option ? option.deskName : ''}
+                                    getOptionSelected={(option, value) => option.id === value.id}
                                     onChange={(event, selectedDesk) => {
                                         props.onChange(selectedDesk ? selectedDesk : null)
                                     }}

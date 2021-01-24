@@ -17,7 +17,7 @@ interface SignUpUser {
     [SignUpFields.ID]?: string,
     [SignUpFields.MAIL]?: string,
     [SignUpFields.COUNTY]?: County,
-    [SignUpFields.DESK]?: Desk;
+    [SignUpFields.DESK]?: Desk,
     [SignUpFields.SOURCE_ORGANIZATION]?: string,
     [SignUpFields.LANGUAGES]?: Language[]
 }
