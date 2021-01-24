@@ -6,11 +6,13 @@ import { phoneNumberRegex, mailValidation } from 'Utils/auxiliaryFunctions/auxil
 
 const requiredMessage = 'שדה חובה'
 
-const SignUpSchema = yup.object().shape({
+export const SignUpSchema = yup.object().shape({
     [SignUpFields.MABAR_USER_NAME]: yup.string().nullable().required(requiredMessage)
         .matches(/^((?!@).)*$/, 'שם משתמש לא אמור להכיל @'),
-    [SignUpFields.FIRST_NAME]: yup.string().nullable().required(requiredMessage),
-    [SignUpFields.LAST_NAME]: yup.string().nullable().required(requiredMessage),
+    [SignUpFields.FULL_NAME]: yup.object().shape({
+        [SignUpFields.FIRST_NAME]: yup.string().nullable().required(requiredMessage),
+        [SignUpFields.LAST_NAME]: yup.string().nullable().required(requiredMessage)
+    }),
     [SignUpFields.CITY]: yup.string().nullable().required(requiredMessage),
     [SignUpFields.PHONE_NUMBER]: yup.string().nullable().required(requiredMessage)
         .matches(phoneNumberRegex, 'מספר טלפון לא תקין'),
@@ -20,6 +22,13 @@ const SignUpSchema = yup.object().shape({
     [SignUpFields.MAIL]: yup.string().nullable().required(requiredMessage).matches(mailValidation, 'מייל לא תקין'),
     [SignUpFields.COUNTY]: yup.string().nullable().required(requiredMessage),
     [SignUpFields.SOURCE_ORGANIZATION]: yup.string().nullable().required(requiredMessage),
-})
+});
 
-export default SignUpSchema;
+export const EditSchema = yup.object().shape({
+    [SignUpFields.CITY]: yup.string().nullable().required(requiredMessage),
+    [SignUpFields.PHONE_NUMBER]: yup.string().nullable().required(requiredMessage)
+        .matches(phoneNumberRegex, 'מספר טלפון לא תקין'),
+    [SignUpFields.MAIL]: yup.string().nullable().required(requiredMessage).matches(mailValidation, 'מייל לא תקין'),
+    [SignUpFields.COUNTY]: yup.string().nullable().required(requiredMessage),
+    [SignUpFields.SOURCE_ORGANIZATION]: yup.string().nullable().required(requiredMessage),
+});

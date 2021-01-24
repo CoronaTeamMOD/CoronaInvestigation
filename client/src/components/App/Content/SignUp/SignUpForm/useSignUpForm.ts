@@ -18,7 +18,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     const [desks, setDesks] = useState<Desk[]>([]);
     const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([]);
 
-    const { alertError } = useCustomSwal();
+    const { alertError, alertSuccess } = useCustomSwal();
 
     const fetchCities = () => {
         const fetchCitiesLogger = logger.setup('Fetching cities');
@@ -134,6 +134,8 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
         })
         .then(() => {
             updateUserLogger.info('user was updated successfully', Severity.LOW);
+            alertSuccess('משתמש עודכן')
+            handleSaveUser && handleSaveUser();
         })
         .catch(() => {
             alertError('לא ניתן היה לעדכן משתמש ');

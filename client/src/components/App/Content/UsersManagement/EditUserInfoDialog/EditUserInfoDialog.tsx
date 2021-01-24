@@ -28,6 +28,7 @@ const EditUserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseE
                 <SignUpForm 
                     defaultValues={defaultValues}
                     mode={FormMode.EDIT}
+                    handleSaveUser={handleCloseEditUserDialog}
                 />
             </DialogContent>
 

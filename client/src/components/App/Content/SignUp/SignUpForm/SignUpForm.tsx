@@ -18,9 +18,9 @@ import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 
-import SignUpSchema from './SignUpSchema';
 import useStyles from './SignUpFormStyles';
 import useSignUpForm from './useSignUpForm';
+import { SignUpSchema, EditSchema } from './SignUpSchema';
 
 
 const MABAR_USER_NAME = 'שם משתמש מב"ר';
@@ -75,7 +75,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
     const methods = useForm<SignUpUser>({
         mode: 'all',
         defaultValues: defaultValues,
-        resolver: yupResolver(SignUpSchema)
+        resolver: yupResolver(mode === FormMode.CREATE ? SignUpSchema : EditSchema)
     })
 
     const watchCounty = methods.watch(SignUpFields.COUNTY)
