@@ -9,6 +9,7 @@ const occupationsWithoutExtraInfo = ['מערכת הבריאות', 'מערכת ה
 const requiredText = 'שגיאה: שדה חובה';
 const numberValidationText = 'שגיאה: מספר אינו תקין';
 const requiredSelectionText = 'שגיאה: יש לבחור מבין האפשרויות הקיימות';
+const maxClassNumberError = 'ניתן להזין עד המספר 50';
 
 const schema = yup.object().shape({
     [PersonalInfoDataContextFields.PHONE_NUMBER]: yup.string().nullable().required(requiredText).matches(phoneNumberRegex, numberValidationText),
@@ -41,7 +42,7 @@ const schema = yup.object().shape({
             schema.nullable()
     }),
     [PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER]: yup.number().transform((value: any) => 
-        ((value === '' || isNaN(value)) ? null : value)).nullable().max(50, 'ניתן להזין עד המספר 50')
+        (Boolean(value)) ? value : null).nullable().max(50, maxClassNumberError)
 });
 
 export default schema;

@@ -109,7 +109,7 @@ personalDetailsRoute.get('/subOccupations', (request: Request, response: Respons
     graphqlRequest(GET_SUB_OCCUPATIONS_BY_OCCUPATION, response.locals, parameters)
     .then(result => {
         subOccupationsLogger.info(validDBResponseLog, Severity.LOW);
-        response.send(result)
+        response.send({ subOccupations: result.data.allSubOccupations.nodes })
     }).catch(error => {
         subOccupationsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.sendStatus(errorStatusCode).send(error);

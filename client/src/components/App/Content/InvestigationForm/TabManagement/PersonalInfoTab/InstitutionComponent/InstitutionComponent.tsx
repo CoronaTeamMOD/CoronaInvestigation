@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -7,18 +7,20 @@ import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 
 import { PersonalInfoTabState } from '../PersonalInfoTabInterfaces';
 
+const INSTITUTION_NAME = 'שם מוסד*';
+
 const InstitutionComponent: React.FC<Props> = ({ fieldName, placeholder, options }) => {
 
-    const methods = useFormContext<PersonalInfoTabState>();
+    const { control, errors, watch } = useFormContext<PersonalInfoTabState>();
 
-    const selectedInstitutionId = methods.watch(fieldName);
+    const selectedInstitutionId = watch(fieldName);
 
     const selectedInstitution = options.find(option => option.id === selectedInstitutionId);
 
     return (
         <Controller
             name={fieldName}
-            control={methods.control}
+            control={control}
             render={(props) => (
                 <Autocomplete
                     options={options}
@@ -39,12 +41,12 @@ const InstitutionComponent: React.FC<Props> = ({ fieldName, placeholder, options
                     renderInput={(params) =>
                         <TextField
                             {...params}
-                            error={methods.errors[fieldName] && options.length !== 0}
-                            label={(methods.errors[fieldName]?.message && options.length !== 0)
+                            error={errors[fieldName] && options.length !== 0}
+                            label={(errors[fieldName]?.message && options.length !== 0)
                                 ?
-                                methods.errors[fieldName]?.message
+                                errors[fieldName]?.message
                                 :
-                                'שם מוסד*'
+                                INSTITUTION_NAME
                             }
                             onBlur={props.onBlur}
                             test-id='insertInstitutionName'

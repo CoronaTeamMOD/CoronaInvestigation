@@ -6,10 +6,6 @@ import { PersonalInfoDbData } from 'models/Contexts/PersonalInfoContextData';
 
 import { PersonalInfoTabState } from '../PersonalInfoTabInterfaces';
 
-export interface usePersonalInfoTabIncome {
-
-}
-
 export interface usePersonalInfoTabOutcome {
     subOccupations: SubOccupationAndStreet[];
     getEducationSubOccupations: (city: string) => void;

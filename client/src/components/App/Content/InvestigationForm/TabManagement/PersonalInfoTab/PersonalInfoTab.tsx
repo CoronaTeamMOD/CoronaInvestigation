@@ -48,7 +48,10 @@ const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה*';
 const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
 const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 const NO_INSURANCE = 'אף אחד מהנ"ל';
-const defaultRole = { id: -1, displayName: '' };
+const INSURANCE_COMPANY = 'גורם מבטח *';
+const INSTITUTION_CITY = 'עיר המצאות המוסד';
+const STUDENT = 'תלמיד/ה';
+const CLASS_NUMBER = 'מס כיתה';
 
 const PersonalInfoTab: React.FC<Props> = ({ id }) => {
 
@@ -71,7 +74,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
             fetchPersonalInfo,
             insuranceCompanies,
             clearSubOccupations,
-            savePersonalData } = usePersonalTabInfo({});
+            savePersonalData } = usePersonalTabInfo();
 
     const occupation = methods.watch(PersonalInfoDataContextFields.RELEVANT_OCCUPATION);
     const insuranceCompany = methods.watch(PersonalInfoDataContextFields.INSURANCE_COMPANY);
@@ -300,8 +303,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                 <TextField
                                                     {...params}
                                                     test-id='personalDetailsInsurer'
-                                                    label={methods.errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]?.message || 'גורם מבטח *'}
-                                                    error={(methods.errors[PersonalInfoDataContextFields.INSURANCE_COMPANY] as unknown) as boolean}
+                                                    label={methods.errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]?.message || INSURANCE_COMPANY}
+                                                    error={Boolean(methods.errors[PersonalInfoDataContextFields.INSURANCE_COMPANY])}
                                                     id={PersonalInfoDataContextFields.INSURANCE_COMPANY}
                                                     placeholder={INSERT_INSURANCE_COMPANY}
                                                 />
@@ -389,13 +392,13 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                             renderInput={(params) =>
                                                                 <TextField
                                                                     {...params}
-                                                                    error={(methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY] as unknown) as boolean}
+                                                                    error={Boolean(methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY])}
                                                                     label={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message
-                                                                        || 'עיר המצאות המוסד*'}
+                                                                        || `${INSTITUTION_CITY} *`}
                                                                     onBlur={props.onBlur}
                                                                     test-id='institutionCity'
                                                                     id={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
-                                                                    placeholder='עיר המצאות המוסד'
+                                                                    placeholder={INSTITUTION_CITY}
                                                                 />}
                                                         />
                                                     )}
@@ -416,16 +419,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                 render={(props) => (
                                                     <Autocomplete
                                                         options={investigatedPatientRoles}
-                                                        getOptionLabel={(option) => {
-                                                            return option.displayName
-                                                        }}
-                                                        getOptionSelected={(option) => {
-                                                            return option.id === props.value
-                                                        }}
+                                                        getOptionLabel={(option) => option.displayName}
+                                                        getOptionSelected={(option) => option.id === props.value}
                                                         value={props.value ? {id: props.value, displayName: (selectedRole?.displayName as string)} : null}
-                                                        onChange={(event, selectedRole) => {
-                                                            props.onChange(selectedRole?.id);
-                                                        }}
+                                                        onChange={(event, selectedRole) => props.onChange(selectedRole?.id)}
                                                         className={classes.markComplexity}
                                                         renderInput={(params) =>
                                                             <TextField
@@ -438,7 +435,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                             />
                                         </Grid>
                                         {
-                                            (selectedRole?.displayName === 'תלמיד/ה' && occupation === Occupations.EDUCATION_SYSTEM) &&
+                                            (selectedRole?.displayName === STUDENT && occupation === Occupations.EDUCATION_SYSTEM) &&
                                             <>
                                                 <Grid item xs={1}>
                                                     <FormControl variant='outlined'>
@@ -478,7 +475,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                                 value={props.value}
                                                                 onChange={props.onChange}
                                                                 onBlur={props.onBlur}
-                                                                label='מס כיתה'
+                                                                label={CLASS_NUMBER}
                                                             />
                                                         )}
                                                     />
