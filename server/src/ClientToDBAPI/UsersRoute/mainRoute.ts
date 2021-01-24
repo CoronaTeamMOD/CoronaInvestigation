@@ -11,8 +11,10 @@ import GetAllUserTypesResponse from '../../Models/User/GetAllUserTypesResponse';
 import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
-import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, UPDATE_INVESTIGATOR_BY_GROUP_ID,
-         UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY, UPDATE_USER } from '../../DBService/Users/Mutation';
+import { 
+    UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, 
+    UPDATE_INVESTIGATOR_BY_GROUP_ID, UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY, UPDATE_USER 
+} from '../../DBService/Users/Mutation';
 import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
     GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ALL_USER_TYPES, GET_USERS_BY_COUNTY_ID
@@ -336,16 +338,14 @@ const convertUserToDB = (clientUserInput: any): User => {
         fullName: clientUserInput.fullName.firstName + ' ' + clientUserInput.fullName.lastName,
         languages: clientUserInput.languages?.map((language: Language) => language.displayName)
     }
-}
+};
 
 usersRoute.post('', (request: Request, response: Response) => {
     const createUserLogger = logger.setup({
         workflow: 'create user',
     });
-
     const parameters = {input: convertUserToDB(request.body)};
     createUserLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-
     graphqlRequest(CREATE_USER, response.locals, parameters)
         .then((result: CreateUserResponse) => {
             createUserLogger.info(validDBResponseLog, Severity.LOW);
@@ -368,16 +368,14 @@ const convertUpdateUserToDB = (clientUserInput: any): UserPatch => {
         deskInput: clientUserInput.desk,
         languagesInput: clientUserInput.languages?.map((language: Language) => language.displayName)
     }
-}
+};
 
 usersRoute.put('', (request: Request, response: Response) => {
     const updateUserLogger = logger.setup({
         workflow: 'update user',
     });
-
     const parameters = {input: convertUpdateUserToDB(request.body)};
     updateUserLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-
     graphqlRequest(UPDATE_USER, response.locals, parameters)
         .then((result: UpdateUserResponse) => {
             updateUserLogger.info(validDBResponseLog, Severity.LOW);

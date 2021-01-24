@@ -11,8 +11,8 @@ import useStyles from '../../SignUp/SignUpStyles';
 import SignUpForm from '../../SignUp/SignUpForm/SignUpForm';
 
 const UserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseUserDialog }: Props) => {
-    const userInfoTitle = defaultValues[SignUpFields.MABAR_USER_NAME]
 
+    const userInfoTitle = defaultValues[SignUpFields.MABAR_USER_NAME]
     const classes = useStyles();
 
     return (
@@ -38,7 +38,7 @@ const UserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseUserD
             </DialogActions>
         </Dialog>
     )
-}
+};
 
 export default UserInfoDialog;
 
@@ -46,4 +46,4 @@ interface Props {
     open: boolean;
     defaultValues: SignUpUser;
     handleCloseUserDialog: () => void;
-}
+};

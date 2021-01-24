@@ -1,4 +1,4 @@
-import ResultError from "../ResultError";
+import ResultError from '../ResultError';
 
 interface UpdateUserResponse {
     data?: {
@@ -7,6 +7,6 @@ interface UpdateUserResponse {
         }
     },
     errors?: ResultError[]
-}
+};
 
 export default UpdateUserResponse;

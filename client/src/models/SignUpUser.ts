@@ -7,7 +7,7 @@ import SignUpFields from './enums/SignUpFields';
 interface FullName {
     [SignUpFields.FIRST_NAME]?: string,
     [SignUpFields.LAST_NAME]?: string,
-}
+};
 
 interface SignUpUser {
     [SignUpFields.MABAR_USER_NAME]?: string,
@@ -20,6 +20,6 @@ interface SignUpUser {
     [SignUpFields.DESK]?: Desk,
     [SignUpFields.SOURCE_ORGANIZATION]?: string,
     [SignUpFields.LANGUAGES]?: Language[]
-}
+};
 
 export default SignUpUser;

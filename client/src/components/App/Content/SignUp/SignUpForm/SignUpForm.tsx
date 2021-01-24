@@ -7,7 +7,6 @@ import { Grid, TextField } from '@material-ui/core';
 import { useForm, FormProvider, Controller } from 'react-hook-form';
 
 import City from 'models/City';
-import Desk from 'models/Desk';
 import County from 'models/County';
 import SignUpUser from 'models/SignUpUser';
 import FormMode from 'models/enums/FormMode';
@@ -48,7 +47,7 @@ const GenericAlphabetTextField : React.FC<GenericAlphabetTextFieldProps> =
             label={label}
             className={className}
         />
-    )
+    );
 
 const GenericNumericTextField : React.FC<GenericNumericTextFieldProps> =
     ({ props, disabled, label, placeholder, className}: GenericNumericTextFieldProps) => (
@@ -63,7 +62,7 @@ const GenericNumericTextField : React.FC<GenericNumericTextFieldProps> =
                 label={label}
                 className={className}
             />
-    )
+    );
 
 const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Props) => {
 
@@ -76,7 +75,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
         mode: 'all',
         defaultValues: defaultValues,
         resolver: yupResolver(mode === FormMode.CREATE ? SignUpSchema : EditSchema)
-    })
+    });
 
     const watchCounty = methods.watch(SignUpFields.COUNTY);
 
@@ -88,7 +87,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
         } else {
             fetchDesks()
         }
-    }, [watchCounty])
+    }, [watchCounty]);
 
     const shouldDisableFields = mode === FormMode.READ ? true : false;
 
@@ -101,7 +100,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
         } else if (mode === FormMode.EDIT) {
             editUser(data)
         }
-    }
+    };
     
     return (
         <FormProvider {...methods}>
@@ -117,7 +116,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                         test-id={props.name}
                                         value={props.value}
                                         onChange={(event) => props.onChange(event.target.value as string)}
-                                        placeholder='itay.benmoshe'
+                                        placeholder='הכנס שם משתמש...'
                                         onBlur={props.onBlur}
                                         error={get(methods.errors, props.name)}
                                         label={get(methods.errors, props.name)?.message || MABAR_USER_NAME}
@@ -397,14 +396,13 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
             </form>
         </FormProvider>
     )
-
-}
+};
 
 interface Props {
     defaultValues: SignUpUser;
     handleSaveUser?: () => void;
     mode: FormMode;
-}
+};
 
 interface GenericAlphabetTextFieldProps {
     props: any;
@@ -412,7 +410,7 @@ interface GenericAlphabetTextFieldProps {
     label: string;
     placeholder?: string;
     className?: string;
-}
+};
 
 interface GenericNumericTextFieldProps {
     props: any;
@@ -420,6 +418,6 @@ interface GenericNumericTextFieldProps {
     label: string;
     placeholder: string;
     className: string;
-}
+};
 
 export default SignUpForm;

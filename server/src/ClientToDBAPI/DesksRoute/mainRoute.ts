@@ -2,8 +2,8 @@ import { Router, Request, Response } from 'express';
 
 import { Severity } from '../../Models/Logger/types';
 import GetAllDesks from '../../Models/Desk/GetAllDesks';
-import { ALL_DESKS_QUERY, DESKS_BY_COUNTY_ID } from '../../DBService/Desk/Query';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
+import { ALL_DESKS_QUERY, DESKS_BY_COUNTY_ID } from '../../DBService/Desk/Query';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 
 const router = Router();
@@ -32,7 +32,6 @@ router.post('/county', (request: Request, response: Response) => {
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    
     const parameters = { countyId: request.body.countyId };
     countyLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     graphqlRequest(DESKS_BY_COUNTY_ID, response.locals, parameters)

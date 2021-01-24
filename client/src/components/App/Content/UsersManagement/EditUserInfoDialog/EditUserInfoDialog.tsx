@@ -45,7 +45,7 @@ const EditUserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseE
             </DialogActions>
         </Dialog>
     )
-}
+};
 
 export default EditUserInfoDialog;
 
@@ -53,4 +53,4 @@ interface Props {
     open: boolean;
     defaultValues: SignUpUser;
     handleCloseEditUserDialog: () => void;
-}
+};

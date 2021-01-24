@@ -1,10 +1,10 @@
 import * as yup from 'yup';
 
-import SignUpFields from 'models/enums/SignUpFields'
-import { isIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import SignUpFields from 'models/enums/SignUpFields';
+import { isIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import { phoneNumberRegex, mailValidation } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
-const requiredMessage = 'שדה חובה'
+const requiredMessage = 'שדה חובה';
 
 export const SignUpSchema = yup.object().shape({
     [SignUpFields.MABAR_USER_NAME]: yup.string().nullable().required(requiredMessage)

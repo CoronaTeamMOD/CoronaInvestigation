@@ -21,8 +21,8 @@ import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 
 import useStyles from './UsersManagementStyles';
 import UsersFilter from './UsersFilter/UsersFilter';
-import filterCreators from './UsersFilter/FilterCreators';
 import useUsersManagement from './useUsersManagement';
+import filterCreators from './UsersFilter/FilterCreators';
 import UserInfoDialog from './UserInfoDialog/UserInfoDialog';
 import EditUserInfoDialog from './EditUserInfoDialog/EditUserInfoDialog';
 import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
@@ -33,7 +33,7 @@ export const defaultPage: number = 1;
 interface CellNameSort {
     name: string;
     direction: SortOrder | undefined;
-}
+};
 
 const usersManagementTitle = 'ניהול משתמשים';
 const sourceOrganizationLabel = 'מסגרת';
@@ -70,7 +70,7 @@ const UsersManagement: React.FC = () => {
                     cellNameSort.direction === SortOrder.asc ? SortOrder.desc : SortOrder.asc
             });
         }
-    }
+    };
 
     const getTableCell = (row: any, cellName: string) => {
         switch (cellName) {
@@ -201,7 +201,7 @@ const UsersManagement: React.FC = () => {
             default:
                 return row[cellName]
         }
-    }
+    };
 
     return (
         <Grid className={classes.content}>

@@ -10,7 +10,7 @@ query AllDesks {
     }
   }
 }
-`
+`;
 
 export const DESKS_BY_COUNTY_ID = gql`
 query DesksByCounty($countyId: Int!) {
@@ -21,4 +21,4 @@ query DesksByCounty($countyId: Int!) {
       }
   }
 }
-`
+`;
