@@ -1,13 +1,13 @@
 import BusEventForm
-    from '../../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionDialog/InteractionEventForm/InteractionSection/TransportationForms/BusEventForm';
+    from '../../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionDialog/InteractionEventForm/InteractionSection/InteractionLocationFields/TransportationForms/BusEventForm';
 import TrainEventForm
-    from '../../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionDialog/InteractionEventForm/InteractionSection/TransportationForms/TrainEventForm';
+    from '../../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionDialog/InteractionEventForm/InteractionSection/InteractionLocationFields/TransportationForms/TrainEventForm';
 import FlightEventForm
-    from '../../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionDialog/InteractionEventForm/InteractionSection/TransportationForms/FlightEventForm';
+    from '../../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionDialog/InteractionEventForm/InteractionSection/InteractionLocationFields/TransportationForms/FlightEventForm';
 import SchoolEventForm
-    from '../../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionDialog/InteractionEventForm/InteractionSection/SchoolEventForm/SchoolEventForm';
+    from '../../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionDialog/InteractionEventForm/InteractionSection/InteractionLocationFields/SchoolEventForm/SchoolEventForm';
 import HospitalEventForm
-    from '../../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionDialog/InteractionEventForm/InteractionSection/HospitalEventForm/HospitalEventForm';
+    from '../../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionDialog/InteractionEventForm/InteractionSection/InteractionLocationFields/HospitalEventForm/HospitalEventForm';
 
 export interface FormOptions {
     code: number | string;

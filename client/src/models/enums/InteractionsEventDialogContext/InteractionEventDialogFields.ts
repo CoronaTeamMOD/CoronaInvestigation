@@ -35,6 +35,7 @@ enum InteractionEventDialogFields {
     PRIVATE_HOUSE_STREET = 'privateHouseStreet',
     PRIVATE_HOUSE_HOUSE_NUMBER = 'privateHouseHouseNumber',
     PRIVATE_HOUSE_FLOOR = 'privateHouseFloor',
+    IS_REPETITIVE = 'isRepetitive'
 }
 
 export default InteractionEventDialogFields;
