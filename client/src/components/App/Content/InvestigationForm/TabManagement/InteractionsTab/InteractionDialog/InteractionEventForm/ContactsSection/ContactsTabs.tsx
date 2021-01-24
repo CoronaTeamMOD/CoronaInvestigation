@@ -9,7 +9,9 @@ import useFormStyles from 'styles/formStyles';
 import Forms from './Forms';
 import useStyles from './ContactsTabsStyles';
 
-const ContactsTabs = ({ isVisible }: { isVisible: boolean }) => {
+const ContactsTabs = (props : Props) => {
+    const {isVisible , groupedInvestigationContacts , setGroupedInvestigationContacts} = props;
+
     const [currentTab, setTab] = React.useState<number>(0);
     const formClasses = useFormStyles();
     const classes = useStyles();
@@ -30,22 +32,24 @@ const ContactsTabs = ({ isVisible }: { isVisible: boolean }) => {
                 value={currentTab}
                 onChange={handleChange}
             >
-                <Tab classes={tabClasses}
-                    icon={<FontAwesomeIcon color={active} icon={faUserEdit} />}
-                    label='הוספת מגע ידנית' />
-                <Tab
-                    classes={tabClasses}
-                    icon={<GroupOutlined color='action' />}
-                    label='בני משפחה' />
-                <Tab
-                    classes={tabClasses}
-                    icon={<CallMerge color='action' />}
-                    label='חקירות מקובצות' />
+                <Tab classes={tabClasses} icon={<FontAwesomeIcon color={active} icon={faUserEdit} />} label='הוספת מגע ידנית' />
+                <Tab classes={tabClasses} icon={<GroupOutlined color='action' />} label='בני משפחה' />
+                <Tab classes={tabClasses} icon={<CallMerge color='action' />} label='חקירות מקובצות' />
             </Tabs>
             <Divider orientation='vertical' variant='fullWidth' light={true} />
-            <Forms currentTab={currentTab} />
+            <Forms
+                currentTab={currentTab}
+                groupedInvestigationContacts={groupedInvestigationContacts}
+                setGroupedInvestigationContacts={setGroupedInvestigationContacts}
+            />
         </div>
     );
 };
+
+interface Props {
+    isVisible: boolean; 
+    groupedInvestigationContacts: number[]; 
+    setGroupedInvestigationContacts:  React.Dispatch<React.SetStateAction<number[]>>;
+}
 
 export default ContactsTabs;

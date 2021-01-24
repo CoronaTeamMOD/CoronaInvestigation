@@ -12,7 +12,7 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFormOutcome => {
-        const { loadInteractions, loadInvolvedContacts, onDialogClose} = props;
+        const { loadInteractions, loadInvolvedContacts, onDialogClose, groupedInvestigationContacts} = props;
         
         const { parseLocation } = useDBParser();
         const { alertError } = useCustomSwal();
@@ -40,9 +40,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 .then((response) => {
                     if (response.data?.data?.updateContactEventFunction) {
                         updateInteractionsLogger.info('updated interaction successfully', Severity.LOW);
-                        loadInteractions();
-                        loadInvolvedContacts();
-                        onDialogClose();
+                        saveGroupedInvestigations(response.data.data.updateContactEventFunction.integer);
                     }
                 })
                 .catch((error) => {
@@ -57,9 +55,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 .then((response) => {
                     if (response.data?.data?.updateContactEventFunction) {
                         createInteractionsLogger.info('created interaction successfully', Severity.LOW);
-                        loadInteractions();
-                        loadInvolvedContacts();
-                        onDialogClose();
+                        saveGroupedInvestigations(response.data.data.updateContactEventFunction.integer);
                     } else {
                         createInteractionsLogger.info(`response data is not valid data : ${JSON.stringify(response)}`, Severity.LOW);
                     }
@@ -73,6 +69,28 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
             }
         }
 
+        const saveGroupedInvestigations = (eventId : number) => {
+            console.log(eventId , groupedInvestigationContacts);
+            const params = {
+                eventId ,
+                contacts : groupedInvestigationContacts
+            }
+            if(groupedInvestigationContacts.length !== 0) {
+                axios.post('/intersections/groupedInvestigationContacts' , params)
+                    .then((response) => {
+                        console.log(response)
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            } else {
+                loadInteractions();
+                loadInvolvedContacts();
+                onDialogClose();
+                setIsLoading(false);
+            }
+        } 
+
         return {
             saveInteractions
         }
@@ -83,6 +101,7 @@ interface useInteractionFormIncome {
     loadInteractions: () => void;
     loadInvolvedContacts:() => void;
     onDialogClose: () => void;
+    groupedInvestigationContacts: number[];
 }
 
 interface useInteractionFormOutcome {

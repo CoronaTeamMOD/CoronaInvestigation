@@ -6,14 +6,21 @@ import FamilyMembersForm from './FamilyMembers/FamilyMembersForm';
 import ManualContactsForm from './ManualContactsForm/ManualContactsForm';
 import GroupedInvestigationsTab from './GroupedInvestigations/GroupedInvestigationsTab';
 
-const contactFormTabs = [
-    { id: 0, Component: <ManualContactsForm /> },
-    { id: 1, Component: <FamilyMembersForm /> },
-    { id: 2, Component: <GroupedInvestigationsTab />}
-];
-
-const Forms = ({ currentTab }: { currentTab: number }) => {
+const Forms = (props: Props) => {
+    const { currentTab,  groupedInvestigationContacts, setGroupedInvestigationContacts} = props;
     const formClasses = useFormStyles();
+
+    const contactFormTabs = [
+        { id: 0, Component: <ManualContactsForm /> },
+        { id: 1, Component: <FamilyMembersForm /> },
+        { 
+            id: 2, 
+            Component: <GroupedInvestigationsTab 
+                            groupedInvestigationContacts={groupedInvestigationContacts}
+                            setGroupedInvestigationContacts={setGroupedInvestigationContacts}
+                        />
+        }
+    ];
 
     return (
         <>
@@ -25,5 +32,11 @@ const Forms = ({ currentTab }: { currentTab: number }) => {
         </>
     )
 };
+
+interface Props {
+    currentTab: number;
+    groupedInvestigationContacts: number[]; 
+    setGroupedInvestigationContacts:  React.Dispatch<React.SetStateAction<number[]>>;
+}
 
 export default Forms;

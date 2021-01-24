@@ -15,6 +15,7 @@ import {
     GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_ALL_CONTACT_TYPES,
     GET_ALL_INVOLVED_CONTACTS, CONTACTS_BY_GROUP_ID
 } from '../../DBService/ContactEvent/Query';
+import request from 'request';
 
 const intersectionsRoute = Router();
         
@@ -149,6 +150,19 @@ intersectionsRoute.post('/updateContactEvent', (request: Request, response: Resp
             updateContactEventLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         });
+});
+
+intersectionsRoute.post('/groupedInvestigationContacts' , async (request : Request, response: Response) => {
+    const {epidemiologynumber} = response.locals;
+    const {eventId , contacts} = request.body;
+    
+    const createGroupedContactLogger = logger.setup({
+        workflow: 'add grouped investigations contacts',
+        user: response.locals.user.id,
+        investigation: epidemiologynumber
+    });
+
+    console.log(epidemiologynumber, eventId, contacts);
 });
 
 intersectionsRoute.delete('/deleteContactEvent', (request: Request, response: Response) => {

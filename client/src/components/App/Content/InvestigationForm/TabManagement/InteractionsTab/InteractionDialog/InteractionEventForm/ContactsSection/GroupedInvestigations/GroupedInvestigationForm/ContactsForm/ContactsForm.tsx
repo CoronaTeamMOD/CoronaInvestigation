@@ -8,9 +8,8 @@ import InvestigationAccordion from './InvestigationAccordion/InvestigationAccord
 const formHeadline = 'מאומתים המקובצים לחקירה :';
 
 const ContactsForm = (props: Props) => {
-    const { contacts , reason } = props;
+    const { contacts , reason ,groupedInvestigationContacts, setGroupedInvestigationContacts} = props;
 
-    const [selectedRows, setSelectedRows] = useState<number[]>([])
     return (
         <>
             <Typography variant='h5'>{formHeadline}</Typography>
@@ -21,13 +20,13 @@ const ContactsForm = (props: Props) => {
                         <InvestigationAccordion
                             key={index}
                             contact={contact}
-                            selectedRows={selectedRows}
-                            setSelectedRows={setSelectedRows}
+                            selectedRows={groupedInvestigationContacts}
+                            setSelectedRows={setGroupedInvestigationContacts}
                         />
                     )
                 })
             }
-            <Typography variant='h6' align='right'>{`נבחרו ${selectedRows.length} שורות`}</Typography>
+            <Typography variant='h6' align='right'>{`נבחרו ${groupedInvestigationContacts.length} שורות`}</Typography>
         </>
     )
 }
@@ -35,6 +34,8 @@ const ContactsForm = (props: Props) => {
 interface Props {
     reason : string;
     contacts : ConnectedInvestigation[];
+    groupedInvestigationContacts: number[]; 
+    setGroupedInvestigationContacts:  React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 export default ContactsForm

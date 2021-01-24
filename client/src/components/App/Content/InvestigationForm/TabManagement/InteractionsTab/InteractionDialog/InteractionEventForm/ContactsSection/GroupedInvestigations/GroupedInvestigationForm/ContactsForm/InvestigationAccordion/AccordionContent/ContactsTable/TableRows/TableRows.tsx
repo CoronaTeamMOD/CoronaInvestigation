@@ -18,6 +18,7 @@ const TableRows = (props: Props) => {
                     const { nodes } = event.contactedPeopleByContactEvent;
 
                     return nodes.map((person) => {
+                        const {id} = person;
                         const {
                             firstName,
                             lastName,
@@ -25,8 +26,7 @@ const TableRows = (props: Props) => {
                             identificationNumber,
                             birthDate,
                             phoneNumber,
-                            additionalPhoneNumber,
-                            id
+                            additionalPhoneNumber
                         } = person.personByPersonInfo;
                         const isolationCity = person.addressByIsolationAddress?.cityByCity?.displayName;
 

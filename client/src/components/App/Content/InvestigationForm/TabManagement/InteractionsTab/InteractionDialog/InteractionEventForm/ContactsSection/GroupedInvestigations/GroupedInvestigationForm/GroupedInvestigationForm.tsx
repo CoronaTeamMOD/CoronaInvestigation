@@ -5,9 +5,6 @@ import ConnectedInvestigationContact from 'models/GroupedInvestigationContacts/C
 import ContactsForm from './ContactsForm/ContactsForm';
 import NoContactsMessage from './NoContactsMessage/NoContactsMessage';
 import useGroupedInvestigationsTab from './useGroupedInvestigationForm';
-interface Props {
-    groupId : string;
-}
 
 const initialState = {
     investigationGroupReasonByReason: {
@@ -19,7 +16,7 @@ const initialState = {
 }
 
 const GroupedInvestigationForm = (props: Props) => {
-    const { groupId } = props;
+    const { groupId, groupedInvestigationContacts, setGroupedInvestigationContacts} = props;
 
     const [contacts, setContacts] = useState<ConnectedInvestigationContact>(initialState);
     const nodes = contacts.investigationsByGroupId.nodes;
@@ -31,8 +28,18 @@ const GroupedInvestigationForm = (props: Props) => {
             ? <NoContactsMessage />
             : <ContactsForm 
                 contacts={nodes}
-                reason={contacts.investigationGroupReasonByReason.displayName}/>
+                reason={contacts.investigationGroupReasonByReason.displayName}
+                groupedInvestigationContacts={groupedInvestigationContacts}
+                setGroupedInvestigationContacts={setGroupedInvestigationContacts}
+            />
     )
 }
+
+interface Props {
+    groupId : string;
+    groupedInvestigationContacts: number[]; 
+    setGroupedInvestigationContacts:  React.Dispatch<React.SetStateAction<number[]>>;
+}
+
 
 export default GroupedInvestigationForm

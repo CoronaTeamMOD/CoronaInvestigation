@@ -160,6 +160,7 @@ query contactsByGroupId($groupId: UUID!, $epidemiologynumber: Int!) {
           nodes {
             contactedPeopleByContactEvent {
               nodes {
+                id
                 personByPersonInfo {
                   firstName
                   identificationNumber
