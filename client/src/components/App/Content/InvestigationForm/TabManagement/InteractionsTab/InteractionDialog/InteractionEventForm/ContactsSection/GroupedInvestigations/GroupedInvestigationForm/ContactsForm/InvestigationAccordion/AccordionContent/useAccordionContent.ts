@@ -4,7 +4,6 @@ const useAccordionContent = (props: Props) => {
     const { selectedRows , events } = props;
     const getCurrentSelectedRowsLength = () => {
         let count = 0;
-        console.log(events);
         events.forEach(
             event => event.contactedPeopleByContactEvent.nodes.forEach(
                 person => {

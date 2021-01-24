@@ -86,7 +86,9 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                     })
                     .catch((error) => {
                         groupedInvestigationsLogger.error(`got error from server: ${error}`, Severity.HIGH);
-                        console.log(error);
+                        onDialogClose();
+                        alertError('לא ניתן היה לקשר חשיפות');
+                        setIsLoading(false);
                     })
             } else {
                 loadInteractions();
