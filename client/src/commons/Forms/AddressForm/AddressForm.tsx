@@ -76,8 +76,8 @@ const AddressForm: React.FC<Props> = ({
                         render={(props) => (
                             <Autocomplete
                                 options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                                getOptionLabel={(option) => option ? option.value.displayName : option}
-                                value={props.value && {id: props.value as string, value: cities.get(props.value) as City}}
+                                getOptionLabel={(option) => option ? option.value?.displayName : option}
+                                value={props.value ? {id: props.value as string, value: cities.get(props.value) as City} : {id: '', value: {id: '', displayName: ''}}}
                                 onChange={(event, selectedCity) => props.onChange(selectedCity ? selectedCity.id : null)}
                                 renderInput={(params) =>
                                     <TextField
@@ -124,7 +124,7 @@ const AddressForm: React.FC<Props> = ({
                                         else return '';
                                     } else return option
                                 }}
-                                value={props.value && {id: props.value as string, value: streetsInCity.get(props.value) as Street}}
+                                value={props.value ? {id: props.value as string, value: streetsInCity.get(props.value) as Street} : {id: '', value: {id: '', displayName: ''}}}
                                 onChange={(event, selectedStreet) => {
                                     props.onChange(selectedStreet ? selectedStreet.id : '')
                                 }}
