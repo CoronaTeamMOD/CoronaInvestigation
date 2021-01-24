@@ -141,7 +141,7 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                                 render={(props) => (
                                     <Toggle
                                         disabled={true} // disabled until logic is implemented
-                                        value={false} // value={props.value}
+                                        value={props.value}
                                         onChange={(event, value) => value !== null && props.onChange(value)}
                                         className={formClasses.formToggle}
                                     />

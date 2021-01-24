@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers';
 import React, { useContext, useState } from 'react';
 import { FormProvider, useForm, } from 'react-hook-form';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Tooltip } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import InvolvedContact from 'models/InvolvedContact';
@@ -17,9 +17,9 @@ import useStyles from './InteractionDialogStyles';
 import useInteractionsForm from './InteractionEventForm/useInteractionsForm';
 import ContactsTabs from './InteractionEventForm/ContactsSection/ContactsTabs';
 import InteractionEventSchema from './InteractionEventForm/InteractionSection/InteractionEventSchema';
+import ContactTypeKeys from './InteractionEventForm/ContactsSection/ManualContactsForm/ContactForm/ContactTypeKeys';
 import InteractionEventForm, { InteractionEventFormProps } from './InteractionEventForm/InteractionSection/InteractionEventForm';
 import InteractionFormTabSwitchButton from './InteractionFormTabSwitchButton';
-import ContactTypeKeys from "./InteractionEventForm/ContactsSection/ManualContactsForm/ContactForm/ContactTypeKeys";
 
 
 const InteractionDialog = (props: Props) => {
