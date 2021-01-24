@@ -233,7 +233,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 render={(props) => (
                                     <GenericNumericTextField 
                                         props={props}
-                                        disabled={shouldDisableFields}
+                                        disabled={shouldDisableEditFields || shouldDisableFields}
                                         placeholder='הכנס מספר תעודת זהות...'
                                         label={ID_LABEL}
                                         className={classes.textField}
@@ -279,6 +279,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                         value={props.value}
                                         onChange={(event, selectedCounty) => {
                                             props.onChange(selectedCounty ? selectedCounty : null)
+                                            methods.setValue(SignUpFields.DESK, null)
                                         }}
                                         onBlur={props.onBlur}
                                         renderInput={(params) =>
@@ -388,7 +389,6 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                             />
                         </FormInput>
                 </Grid>
-                                        
             </form>
         </FormProvider>
     )
