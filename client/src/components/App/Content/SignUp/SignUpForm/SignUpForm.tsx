@@ -89,9 +89,9 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
         }
     }, [watchCounty]);
 
-    const shouldDisableFields = mode === FormMode.READ ? true : false;
+    const shouldDisableFields = mode === FormMode.READ;
 
-    const shouldDisableEditFields = mode === FormMode.EDIT ? true : false;
+    const shouldDisableEditFields = mode === FormMode.EDIT;
     
     const onSubmit = () => {
         const data = methods.getValues();
@@ -271,7 +271,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                             <Controller
                                 name={SignUpFields.COUNTY}
                                 control={methods.control}                                        
-                                defaultValue={defaultValues.investigationGroup ? defaultValues.investigationGroup : null}
+                                defaultValue={defaultValues.investigationGroup || null}
                                 render={(props) => (
                                     <Autocomplete
                                         {...props}
@@ -280,7 +280,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                         getOptionLabel={(option) => option?.displayName}
                                         value={props.value}
                                         onChange={(event, selectedCounty) => {
-                                            props.onChange(selectedCounty ? selectedCounty : null)
+                                            props.onChange(selectedCounty || null)
                                             methods.setValue(SignUpFields.DESK, null)
                                         }}
                                         onBlur={props.onBlur}
@@ -312,7 +312,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                     value={props.value}
                                     getOptionSelected={(option, value) => option.id === value.id}
                                     onChange={(event, selectedDesk) => {
-                                        props.onChange(selectedDesk ? selectedDesk : null)
+                                        props.onChange(selectedDesk || null)
                                     }}
                                     onBlur={props.onBlur}
                                     renderInput={(params) =>

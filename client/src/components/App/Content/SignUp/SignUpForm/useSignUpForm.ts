@@ -79,6 +79,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
         } else {
             fetchDesksLogger.info('launching desks request by countyId', Severity.LOW);
             axios.post('/desks/county', { countyId }).then(result => {
+                console.log(countyId)
                 if (result?.data) {
                     setDesks(result.data);
                     fetchDesksLogger.info('got results back from the server', Severity.LOW);
@@ -100,16 +101,21 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
         .finally(() => setIsLoading(false))
     }, []);
 
+    const parseUserToSend = (user: SignUpUser) => {
+        return {
+            ...user,
+            languages : user.languages || [], 
+            city : user.city?.id, 
+            investigationGroup : user.investigationGroup?.id,
+            desk : user.desk?.id ? user.desk?.id : null,
+        }
+    }
+
     const createUser = (newUser: SignUpUser) => {
         const createUserLogger = logger.setup('Create user');
         createUserLogger.info('launching createUser request', Severity.LOW);
-        axios.post('/users', {
-            ...newUser, 
-            languages : newUser.languages || [], 
-            city : newUser.city?.id, 
-            investigationGroup : newUser.investigationGroup?.id,
-            desk : newUser.desk?.id ? newUser.desk?.id : null,
-        })
+        const userToSend = parseUserToSend(newUser);
+        axios.post('/users', userToSend)
         .then(() => {
             handleSaveUser && handleSaveUser();
             createUserLogger.info('user was created successfully', Severity.LOW);
@@ -124,13 +130,8 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     const editUser = (updatedUser: SignUpUser) => {
         const updateUserLogger = logger.setup('Update user');
         updateUserLogger.info('launching updateUser request', Severity.LOW);
-        axios.put('/users', {
-            ...updatedUser, 
-            languages : updatedUser.languages || [], 
-            city : updatedUser.city?.id, 
-            investigationGroup : updatedUser.investigationGroup?.id,
-            desk : updatedUser.desk?.id ? updatedUser.desk?.id : null,
-        })
+        const userToSend = parseUserToSend(updatedUser);
+        axios.put('/users', userToSend)
         .then(() => {
             updateUserLogger.info('user was updated successfully', Severity.LOW);                
             alertSuccess('משתמש עודכן').then(() => {
