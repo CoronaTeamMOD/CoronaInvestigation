@@ -28,7 +28,7 @@ const GroupedInvestigationForm = (props: Props) => {
             ? <NoContactsMessage />
             : <ContactsForm 
                 contacts={nodes}
-                reason={contacts.investigationGroupReasonByReason.displayName}
+                reason={contacts.otherReason||contacts.investigationGroupReasonByReason.displayName}
                 groupedInvestigationContacts={groupedInvestigationContacts}
                 setGroupedInvestigationContacts={setGroupedInvestigationContacts}
             />

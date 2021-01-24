@@ -144,6 +144,7 @@ query getAllInvolvedContacts($currInvestigation: Int!) {
 export const CONTACTS_BY_GROUP_ID = gql`
 query contactsByGroupId($groupId: UUID!, $epidemiologynumber: Int!) {
   investigationGroupById(id: $groupId) {
+    otherReason
     investigationGroupReasonByReason {
       displayName
     }
