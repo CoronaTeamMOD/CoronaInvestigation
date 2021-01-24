@@ -133,10 +133,10 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
         })
         .then(() => {
             updateUserLogger.info('user was updated successfully', Severity.LOW);                
-            handleSaveUser && handleSaveUser();
             alertSuccess('משתמש עודכן').then(() => {
                 window.location.reload(false);  
-            })
+            })            
+            handleSaveUser && handleSaveUser();
         })
         .catch(() => {
             alertError('לא ניתן היה לעדכן משתמש ');
