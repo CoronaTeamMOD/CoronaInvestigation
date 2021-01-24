@@ -133,9 +133,11 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
             desk : updatedUser.desk?.id ? updatedUser.desk?.id : null,
         })
         .then(() => {
-            updateUserLogger.info('user was updated successfully', Severity.LOW);
-            alertSuccess('משתמש עודכן')
+            updateUserLogger.info('user was updated successfully', Severity.LOW);                
             handleSaveUser && handleSaveUser();
+            alertSuccess('משתמש עודכן').then(() => {
+                window.location.reload(false);  
+            })
         })
         .catch(() => {
             alertError('לא ניתן היה לעדכן משתמש ');
