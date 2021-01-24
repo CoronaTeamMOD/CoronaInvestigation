@@ -79,7 +79,6 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
         } else {
             fetchDesksLogger.info('launching desks request by countyId', Severity.LOW);
             axios.post('/desks/county', { countyId }).then(result => {
-                console.log(countyId)
                 if (result?.data) {
                     setDesks(result.data);
                     fetchDesksLogger.info('got results back from the server', Severity.LOW);
