@@ -9,10 +9,8 @@ const requiredMessage = 'שדה חובה'
 const SignUpSchema = yup.object().shape({
     [SignUpFields.MABAR_USER_NAME]: yup.string().nullable().required(requiredMessage)
         .matches(/^((?!@).)*$/, 'שם משתמש לא אמור להכיל @'),
-    // [SignUpFields.FULL_NAME]: yup.object().shape({
-    //     [SignUpFields.FIRST_NAME]: yup.string().nullable().required(requiredMessage),
-    //     [SignUpFields.LAST_NAME]: yup.string().nullable().required(requiredMessage)
-    // }),
+    [SignUpFields.FIRST_NAME]: yup.string().nullable().required(requiredMessage),
+    [SignUpFields.LAST_NAME]: yup.string().nullable().required(requiredMessage),
     [SignUpFields.CITY]: yup.string().nullable().required(requiredMessage),
     [SignUpFields.PHONE_NUMBER]: yup.string().nullable().required(requiredMessage)
         .matches(phoneNumberRegex, 'מספר טלפון לא תקין'),
