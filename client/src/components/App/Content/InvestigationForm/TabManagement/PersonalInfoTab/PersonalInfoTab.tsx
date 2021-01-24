@@ -179,17 +179,17 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
 
     const addressFormFields: AddressFormFields = {
         cityField: {
-            name: 'address.' + PersonalInfoDataContextFields.CITY,
+            name: `${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.CITY}`,
             className: classes.personalInfoItem,
         },
         streetField: {
-            name: 'address.' + PersonalInfoDataContextFields.STREET,
+            name: `${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.STREET}`,
         },
         houseNumberField: {
-            name: 'address.' + PersonalInfoDataContextFields.HOUSE_NUMBER,
+            name: `${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.HOUSE_NUMBER}`,
         },
         floorField: {
-            name: 'address.' + PersonalInfoDataContextFields.FLOOR,
+            name: `${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.FLOOR}`,
         }
     }
 
