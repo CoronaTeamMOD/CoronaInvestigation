@@ -70,7 +70,7 @@ export const useExposuresAndFlights = (props : Props) => {
 
         fetchExposuresAndFlightsLogger.info('launching exposures and flights request', Severity.LOW);
         setIsLoading(true);
-        axios.get(`/exposure/exposures/${investigationId}`)
+        axios.get(`/exposure/exposures/`)
         .then(result => {
             fetchExposuresAndFlightsLogger.info('got results back from the server', Severity.LOW);
             const data: Exposure[] = result?.data;

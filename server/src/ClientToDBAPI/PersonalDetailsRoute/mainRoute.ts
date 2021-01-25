@@ -6,6 +6,7 @@ import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import { formatToInsertAndGetAddressIdInput } from '../../Utils/addressUtils';
 import { CREATE_ADDRESS } from '../../DBService/Address/Mutation';
 import InsertAndGetAddressIdInput from '../../Models/Address/InsertAndGetAddressIdInput';
+import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { calculateInvestigationComplexity } from '../../Utils/InvestigationComplexity/InvestigationComplexity';
 import GetInvestigatedPatientDetails, { PersonalInfoDbData } from '../../Models/PersonalInfo/GetInvestigatedPatientDetails';
@@ -75,7 +76,7 @@ const convertPatientDetailsFromDB = (investigatedPatientDetails: PersonalInfoDbD
     return convertedInvestigatedPatientDetails;
 }
 
-personalDetailsRoute.get('/investigatedPatientPersonalInfoFields', (request: Request, response: Response) => {
+personalDetailsRoute.get('/investigatedPatientPersonalInfoFields', handleInvestigationRequest, (request: Request, response: Response) => {
     const investigatedPatientPersonalInfoFieldsLogger = logger.setup({
         workflow: 'query investigation personal info tab',
         user: response.locals.user.id,
@@ -180,7 +181,7 @@ const savePersonalDetails = (request: Request, response: Response, baseLog: Init
     });
 }
 
-personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response: Response) => {
+personalDetailsRoute.post('/updatePersonalDetails', handleInvestigationRequest, (request: Request, response: Response) => {
     const address = request.body.personalInfoData.address;
     const logData = {
         workflow: 'saving personal details tab',

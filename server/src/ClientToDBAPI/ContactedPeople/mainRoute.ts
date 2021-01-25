@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 
 import { Severity } from '../../Models/Logger/types';
 import { UPDATE_LIST_OF_CONTACTS } from '../../DBService/ContactedPeople/Mutation';
+import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { errorStatusCode, graphqlRequest, validStatusCode } from '../../GraphqlHTTPRequest';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import {
@@ -49,13 +50,14 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
     });
 });
 
-ContactedPeopleRoute.get('/allContacts/:investigationId/:minimalDateToFilter', (request: Request, response: Response) => {
+ContactedPeopleRoute.get('/allContacts/:minimalDateToFilter', handleInvestigationRequest, (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const allContactsLogger = logger.setup({
         workflow: `query all investigation's contacts`,
-        investigation: response.locals.epidemiologynumber,
+        investigation: epidemiologyNumber,
         user: response.locals.user.id
     });
-    const parameters = { investigationId: parseInt(request.params.investigationId), minimalDateToFilter: new Date(request.params.minimalDateToFilter)}
+    const parameters = { investigationId: epidemiologyNumber, minimalDateToFilter: new Date(request.params.minimalDateToFilter)}
     allContactsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     graphqlRequest(GET_CONTACTED_PEOPLE, response.locals, parameters)
         .then(result => {
@@ -70,7 +72,7 @@ ContactedPeopleRoute.get('/allContacts/:investigationId/:minimalDateToFilter', (
         })
 });
 
-ContactedPeopleRoute.post('/interactedContacts',  (request: Request, response: Response) => {
+ContactedPeopleRoute.post('/interactedContacts',  handleInvestigationRequest,  (request: Request, response: Response) => {
     const requestData = request.body;
 
     const epidemiologyNumber = +response.locals.epidemiologynumber;
@@ -104,7 +106,7 @@ ContactedPeopleRoute.post('/interactedContacts',  (request: Request, response: R
         })
 });
 
-ContactedPeopleRoute.post('/excel', async (request: Request, response: Response) => {
+ContactedPeopleRoute.post('/excel',  handleInvestigationRequest, async (request: Request, response: Response) => {
     const excelLogger = logger.setup({
         workflow: `saving contacts execl`,
         investigation: response.locals.epidemiologynumber,

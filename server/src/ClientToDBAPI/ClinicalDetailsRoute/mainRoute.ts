@@ -8,6 +8,7 @@ import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import ClinicalDetails from '../../Models/ClinicalDetails/ClinicalDetails';
 import { formatToInsertAndGetAddressIdInput, formatToNullable} from '../../Utils/addressUtils';
 import InsertAndGetAddressIdInput from '../../Models/Address/InsertAndGetAddressIdInput';
+import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { calculateInvestigationComplexity } from '../../Utils/InvestigationComplexity/InvestigationComplexity';
 import {
@@ -92,15 +93,15 @@ const convertClinicalDetailsFromDB = (result: GetInvestigatedPatientClinicalDeta
     return convertedClincalDetails;
 }
 
-clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields', (request: Request, response: Response) => {
-    
+clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields', handleInvestigationRequest, (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const fetchClinicalDetailsFieldsLogger = logger.setup({
         workflow: 'qurey investigation clinical details',
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     })
 
-    const parameters = { epidemiologyNumber: parseInt(request.query.epidemiologyNumber as string) };
+    const parameters = { epidemiologyNumber };
     fetchClinicalDetailsFieldsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, response.locals, parameters).then(
@@ -201,7 +202,7 @@ const saveClinicalDetails = (request: Request, response: Response, baseLog: Init
     });
 }
 
-clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: Response) => {
+clinicalDetailsRoute.post('/saveClinicalDetails', handleInvestigationRequest, (request: Request, response: Response) => {
     const logData = {
         workflow: `saving clinical details tab`,
         investigation: response.locals.epidemiologynumber,
@@ -224,7 +225,7 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
     }
 });
 
-clinicalDetailsRoute.get('/isDeceased/:investigatedPatientId/:isDeceased', (request: Request, response: Response) => {
+clinicalDetailsRoute.get('/isDeceased/:investigatedPatientId/:isDeceased', handleInvestigationRequest, (request: Request, response: Response) => {
     const logData = {
         workflow: 'update whether the pateint is deceased',
         investigation: response.locals.epidemiologynumber,
@@ -248,7 +249,7 @@ clinicalDetailsRoute.get('/isDeceased/:investigatedPatientId/:isDeceased', (requ
     });
 });
 
-clinicalDetailsRoute.get('/isCurrentlyHospitialized/:investigatedPatientId/:isCurrentlyHospitalized', (request: Request, response: Response) => {
+clinicalDetailsRoute.get('/isCurrentlyHospitialized/:investigatedPatientId/:isCurrentlyHospitalized', handleInvestigationRequest, (request: Request, response: Response) => {
     const logData = {
         workflow: 'update whether the pateint is currently hospitialized',
         investigation: response.locals.epidemiologynumber,
