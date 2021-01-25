@@ -77,7 +77,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const getInteractionsTabSettings = () => {
         const interactionsTabSettingsLogger = logger.setup('fetching interactions tab settings data');
         interactionsTabSettingsLogger.info('launching db request', Severity.LOW);
-        axios.get(`/investigationInfo/interactionsTabSettings/${epidemiologyNumber}`).then((result) => {
+        axios.get(`/investigationInfo/interactionsTabSettings`).then((result) => {
             if (result?.data) {
                 interactionsTabSettingsLogger.info('got response successfully', Severity.LOW);
                 setInteractionsTabSettings(result?.data);
@@ -194,7 +194,6 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         const saveInvestigaionSettingsLogger = logger.setup('Saving investigaion settings family data');
         setIsLoading(true);
         axios.post('/investigationInfo/investigationSettingsFamily', {
-            id: epidemiologyNumber,
             allowUncontactedFamily: true,
         }).then(() => {
             saveInvestigaionSettingsLogger.info('saved to db successfully', Severity.LOW);
