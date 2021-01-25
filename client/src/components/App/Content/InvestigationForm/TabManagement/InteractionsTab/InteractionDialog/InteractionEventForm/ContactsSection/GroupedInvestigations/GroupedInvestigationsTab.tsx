@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 
 import useStyles from './groupedInvestigationFormStyles'; 
-import NotGroupedMessage from './NotGroupedMessage/NotGroupedMessage';
+import ErrorMessage from './ErrorMessage/ErrorMessage';
 import useGroupedInvestigationsTab from './useGroupedInvestigationsTab';
 import GroupedInvestigationForm from './GroupedInvestigationForm/GroupedInvestigationForm';
+
+const notGroupedText = 'החקירה אינה מקובצת';
 
 const GroupedInvestigationsTab = (props: Props) => {
     const { groupedInvestigationContacts, setGroupedInvestigationContacts} = props;
@@ -14,7 +16,9 @@ const GroupedInvestigationsTab = (props: Props) => {
     return (
         <div className={classes.wrapper}>
             {groupId === ""
-                ?   <NotGroupedMessage />
+                ?   <ErrorMessage 
+                        text={notGroupedText}
+                    />
                 :   <GroupedInvestigationForm 
                         groupId={groupId}
                         groupedInvestigationContacts={groupedInvestigationContacts}

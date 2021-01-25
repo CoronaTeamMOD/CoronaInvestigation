@@ -3,9 +3,10 @@ import React , { useState } from 'react'
 import ConnectedInvestigationContact from 'models/GroupedInvestigationContacts/ConnectedInvestigationContact';
 
 import ContactsForm from './ContactsForm/ContactsForm';
-import NoContactsMessage from './NoContactsMessage/NoContactsMessage';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import useGroupedInvestigationsTab from './useGroupedInvestigationForm';
 
+const noContactsText = 'אין מגעים לחקירות המשותפות';
 const initialState = {
     investigationGroupReasonByReason: {
         displayName : "טוען..."
@@ -25,7 +26,9 @@ const GroupedInvestigationForm = (props: Props) => {
 
     return (
         nodes === []
-            ? <NoContactsMessage />
+            ? <ErrorMessage
+                text={noContactsText}
+              />
             : <ContactsForm 
                 contacts={nodes}
                 reason={contacts.otherReason||contacts.investigationGroupReasonByReason.displayName}

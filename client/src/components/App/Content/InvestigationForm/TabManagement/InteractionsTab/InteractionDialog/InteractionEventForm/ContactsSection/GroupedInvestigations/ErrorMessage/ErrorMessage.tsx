@@ -3,12 +3,17 @@ import React from 'react'
 
 const notGroupedText = 'החקירה אינה מקובצת';
 
-const NotGroupedMessage = () => {
+const NotGroupedMessage = (props : Props) => {
+    const { text } = props;
     return (
         <Typography variant='h5'>
-            {notGroupedText}
+            {text}
         </Typography>
     )
+}
+
+interface Props{
+    text : string;
 }
 
 export default NotGroupedMessage;
