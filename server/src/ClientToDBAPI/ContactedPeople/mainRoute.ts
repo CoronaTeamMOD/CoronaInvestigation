@@ -49,13 +49,14 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
     });
 });
 
-ContactedPeopleRoute.get('/allContacts/:investigationId/:minimalDateToFilter', (request: Request, response: Response) => {
+ContactedPeopleRoute.get('/allContacts/:minimalDateToFilter', (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const allContactsLogger = logger.setup({
         workflow: `query all investigation's contacts`,
-        investigation: response.locals.epidemiologynumber,
+        investigation: epidemiologyNumber,
         user: response.locals.user.id
     });
-    const parameters = { investigationId: parseInt(request.params.investigationId), minimalDateToFilter: new Date(request.params.minimalDateToFilter)}
+    const parameters = { investigationId: epidemiologyNumber, minimalDateToFilter: new Date(request.params.minimalDateToFilter)}
     allContactsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     graphqlRequest(GET_CONTACTED_PEOPLE, response.locals, parameters)
         .then(result => {
