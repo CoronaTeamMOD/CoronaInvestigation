@@ -1,5 +1,7 @@
 import * as yup from 'yup';
 
+import { ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX } from 'commons/Regex/Regex';
+
 import GroupedInvestigationsFields from './GroupedInvestigationsFields';
 
 const reasonRequiredMessage = 'יש לבחור סיבה';
@@ -18,7 +20,7 @@ const schema = yup.object().shape({
         [GroupedInvestigationsFields.REASON], {
             is: reasonValue => reasonValue?.id === OTHER,
             then: yup.string().nullable().required(otherRequiredMessage)
-                              .matches( /^[a-zA-Z\u0590-\u05fe\s0-9-+*!?'"():_,.\/\\]*$/, errorMessage)
+                              .matches(ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX , errorMessage)
                               .max(200, maxLengthErrorMessage),
             otherwise: yup.string().nullable()
         }

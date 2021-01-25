@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-import { TRANSFER_REASON_REGEX } from 'commons/Regex/Regex';
+import { ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX } from 'commons/Regex/Regex';
 
 import TransferInvestigationInputsNames from './TransferInvestigationInputsNames';
 
@@ -14,7 +14,7 @@ const schema = yup.object().shape({
         deskName: yup.string()
     }).nullable().required(deskRequiredMessage),
     [TransferInvestigationInputsNames.REASON]: yup.string()
-        .matches(TRANSFER_REASON_REGEX, errorMessage)
+        .matches(ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX, errorMessage)
         .max(200, maxLengthErrorMessage)
 
 });

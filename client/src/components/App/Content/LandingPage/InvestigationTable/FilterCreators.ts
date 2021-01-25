@@ -1,10 +1,10 @@
 import { TimeRange } from 'models/TimeRange';
+import { NUMERIC_REGEX } from 'commons/Regex/Regex';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 
 import { allTimeRangeId } from '../adminLandingPage/useAdminLandingPage';
 
 const unassignedUserName = 'לא משויך';
-const numericRegex: RegExp = /^([\d]+)$/;
 
 export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => Exclude<any, void>) } = {
     [InvestigationsFilterByFields.STATUS]: (values: string[]) => {
@@ -38,7 +38,7 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
     },
     [InvestigationsFilterByFields.SEARCH_BAR]: (value: string) => {
         return Boolean(value) ?
-            numericRegex.test(value) ?
+            NUMERIC_REGEX.test(value) ?
                 {
                     [InvestigationsFilterByFields.SEARCH_BAR]: {
                         or: [

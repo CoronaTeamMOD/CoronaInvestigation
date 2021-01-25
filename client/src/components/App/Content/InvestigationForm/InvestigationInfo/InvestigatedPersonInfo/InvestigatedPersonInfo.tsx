@@ -8,10 +8,12 @@ import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLa
 import UserType from 'models/enums/UserType';
 import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
+import InvestigationInfo from 'models/InvestigationInfo';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import { ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX } from 'commons/Regex/Regex';
 import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
@@ -23,7 +25,6 @@ import useStyles from './InvestigatedPersonInfoStyles';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 import InvestigationMenu from './InvestigationMenu/InvestigationMenu';
-import InvestigationInfo from 'models/InvestigationInfo';
 
 const leaveInvestigationMessage = 'צא מחקירה';
 const displayDateFormat = 'dd/MM/yyyy';
@@ -36,7 +37,6 @@ const statusReasonLabel = 'פירוט'
 const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
 const errorMessage = 'השדה יכול להכניס רק תווים חוקיים';
 const requiredMessage = 'שדה זה הינו שדה חובה';
-const excludeSpecialCharsRegex = /^[a-zA-Z\u0590-\u05fe\s0-9-+*!?'"():_,.\/\\]*$/;
 export const inProcess = 'בטיפול';
 
 const InvestigatedPersonInfo = (props: Props) => {
@@ -58,8 +58,8 @@ const InvestigatedPersonInfo = (props: Props) => {
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
 
     const validationSchema = investigationStatus.subStatus === transferredSubStatus ?
-        yup.string().required(requiredMessage).matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable() :
-        yup.string().matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable();
+        yup.string().required(requiredMessage).matches(ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX, errorMessage).max(50, maxLengthErrorMessage).nullable() :
+        yup.string().matches(ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX, errorMessage).max(50, maxLengthErrorMessage).nullable();
 
     const { confirmExitUnfinishedInvestigation } = useInvestigatedPersonInfo();
 
