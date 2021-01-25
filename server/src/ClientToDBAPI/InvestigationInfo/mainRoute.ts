@@ -4,7 +4,12 @@ import { Severity } from '../../Models/Logger/types';
 import { getPatientAge } from '../../Utils/patientUtils';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
-import { GET_INVESTIGATION_INFO, GET_SUB_STATUSES_BY_STATUS, GET_INVESTIGAION_SETTINGS_FAMILY_DATA } from '../../DBService/InvestigationInfo/Query';
+import { 
+    GET_INVESTIGATION_INFO, 
+    GET_SUB_STATUSES_BY_STATUS, 
+    GET_INVESTIGAION_SETTINGS_FAMILY_DATA,
+    GROUP_ID_BY_EPIDEMIOLOGY_NUMBER 
+} from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
     UPDATE_INVESTIGATION_START_TIME,
@@ -268,6 +273,28 @@ investigationInfo.post('/investigationSettingsFamily', handleInvestigationReques
         })
         .catch(error => {
             settingsFamilyLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        })
+});
+
+investigationInfo.get('/groupedInvestigationsId', handleInvestigationRequest, (request : Request , response : Response) => {
+    const {epidemiologynumber} = response.locals;
+    
+    const groupedInvestigationsIdLogger = logger.setup({
+        workflow: 'save investigation settings family data',
+        user: response.locals.user.id,
+        investigation: epidemiologynumber,
+    });
+    const params = {epidemiologynumber : parseInt(epidemiologynumber)};
+    groupedInvestigationsIdLogger.info(launchingDBRequestLog(params) , Severity.LOW);
+
+    return graphqlRequest(GROUP_ID_BY_EPIDEMIOLOGY_NUMBER, response.locals, params)
+        .then((result) => {
+            groupedInvestigationsIdLogger.info('query from db successfully', Severity.LOW);
+            response.send(result.data.investigationByEpidemiologyNumber.groupId);
+        })
+        .catch(error => {
+            groupedInvestigationsIdLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         })
 });

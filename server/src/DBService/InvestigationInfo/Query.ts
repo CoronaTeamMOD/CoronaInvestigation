@@ -84,3 +84,11 @@ query InvestigationCreator($epidemiologynumber: Int!) {
   }
 }
 `;
+
+export const GROUP_ID_BY_EPIDEMIOLOGY_NUMBER = gql`
+query groupIdByEpidemiologyNumber($epidemiologynumber: Int!) {
+  investigationByEpidemiologyNumber(epidemiologyNumber: $epidemiologynumber) {
+    groupId
+  }
+}
+`;

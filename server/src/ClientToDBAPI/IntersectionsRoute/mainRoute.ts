@@ -1,7 +1,7 @@
 import {Request, Response, Router} from 'express';
 
 import { Severity } from '../../Models/Logger/types';
-import {errorStatusCode, graphqlRequest} from '../../GraphqlHTTPRequest';
+import {errorStatusCode, validStatusCode, graphqlRequest} from '../../GraphqlHTTPRequest';
 import {GetContactTypeResponse} from '../../Models/ContactEvent/GetContactType';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { GetContactEventResponse, ContactEvent } from '../../Models/ContactEvent/GetContactEvent';
@@ -10,11 +10,11 @@ import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog
 import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
 import {
     CREATE_CONTACT_EVENT, DELETE_CONTACT_EVENT, DELETE_CONTACT_EVENTS_BY_DATE, DELETE_CONTACTED_PERSON,
-    EDIT_CONTACT_EVENT
+    EDIT_CONTACT_EVENT, CREATE_CONTACTED_PERSON
 } from '../../DBService/ContactEvent/Mutation';
 import {
     GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_ALL_CONTACT_TYPES,
-    GET_ALL_INVOLVED_CONTACTS
+    GET_ALL_INVOLVED_CONTACTS, CONTACTS_BY_GROUP_ID, CONTACTS_BY_CONTACTS_IDS
 } from '../../DBService/ContactEvent/Query';
 
 const intersectionsRoute = Router();
@@ -155,6 +155,45 @@ intersectionsRoute.post('/updateContactEvent', (request: Request, response: Resp
         });
 });
 
+intersectionsRoute.post('/groupedInvestigationContacts' , async (request : Request, response: Response) => {
+    const {epidemiologynumber} = response.locals;
+    const {eventId , contacts} = request.body;
+    
+    const createGroupedContactLogger = logger.setup({
+        workflow: 'add grouped investigations contacts',
+        user: response.locals.user.id,
+        investigation: epidemiologynumber
+    });
+    const fullContacts = await graphqlRequest(CONTACTS_BY_CONTACTS_IDS , response.locals ,{ids : contacts})
+        .then(result => {
+            createGroupedContactLogger.info(validDBResponseLog, Severity.LOW);
+            return result.data.allContactedPeople.edges
+        })
+        .catch(error => {
+            createGroupedContactLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        })
+
+    await fullContacts.map(async (contact : any) => {
+        const params = {
+            ...contact.node,
+            contactEvent : eventId
+        }
+        await graphqlRequest(CREATE_CONTACTED_PERSON , response.locals , {params})
+            .then(result => {
+                createGroupedContactLogger.info(validDBResponseLog, Severity.LOW);
+                return;
+            })
+            .catch(error => {
+                createGroupedContactLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                response.status(errorStatusCode).send(error);
+                return;
+            })
+            
+    });
+    response.sendStatus(validStatusCode);
+});
+
 intersectionsRoute.delete('/deleteContactEvent', handleInvestigationRequest, (request: Request, response: Response) => {
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const deleteContactEventLogger = logger.setup({
@@ -234,6 +273,26 @@ intersectionsRoute.get('/involvedContacts', handleInvestigationRequest, (request
             response.send(allContactEvents);
         }).catch(error => {
             involvedContacts.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+    });
+});
+
+intersectionsRoute.get('/groupedInvestigationsContacts/:groupId', (request: Request, response : Response) => {
+    const epidemiologynumber = parseInt(response.locals.epidemiologynumber);
+    const { groupId } = request.params;
+    const groupedInvestigationsContacts = logger.setup({
+        workflow: `query groupInvestiagions contacts`,
+        user: response.locals.user.id,
+        investigation: epidemiologynumber
+    });
+
+    const parameters = {epidemiologynumber , groupId }
+    graphqlRequest(CONTACTS_BY_GROUP_ID, response.locals, parameters)
+        .then((result) => {
+            groupedInvestigationsContacts.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data.investigationGroupById);
+        }).catch(error => {
+            groupedInvestigationsContacts.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
     });
 });

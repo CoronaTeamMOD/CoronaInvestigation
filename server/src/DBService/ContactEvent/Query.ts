@@ -140,3 +140,81 @@ query getAllInvolvedContacts($currInvestigation: Int!) {
   }
 }
 `;
+
+export const CONTACTS_BY_GROUP_ID = gql`
+query contactsByGroupId($groupId: UUID!, $epidemiologynumber: Int!) {
+  investigationGroupById(id: $groupId) {
+    otherReason
+    investigationGroupReasonByReason {
+      displayName
+    }
+    investigationsByGroupId(filter: {epidemiologyNumber: {notEqualTo: $epidemiologynumber}}) {
+      nodes {
+        epidemiologyNumber
+        investigatedPatientByInvestigatedPatientId {
+          covidPatientByCovidPatient {
+            fullName
+            identityNumber
+          }
+        }
+        contactEventsByInvestigationId(filter: {contactedPeopleByContactEventExist: true}) {
+          nodes {
+            contactedPeopleByContactEvent {
+              nodes {
+                id
+                personByPersonInfo {
+                  firstName
+                  identificationNumber
+                  lastName
+                  id
+                  identificationType
+                  phoneNumber
+                  birthDate
+                  additionalPhoneNumber
+                }
+                addressByIsolationAddress {
+                  cityByCity {
+                    displayName
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`;
+
+export const CONTACTS_BY_CONTACTS_IDS = gql`
+  query ContactByContactsIds($ids: [Int!]) {
+    allContactedPeople(filter: {id: {in: $ids}}) {
+      edges {
+        node {
+          repeatingOccuranceWithConfirmed
+          relationship
+          personInfo
+          occupation
+          lastUpdateTime
+          isolationAddress
+          involvedContactId
+          extraInfo
+          doesWorkWithCrowd
+          familyRelationship
+          doesNeedIsolation
+          doesNeedHelpInIsolation
+          doesLiveWithConfirmed
+          doesHaveBackgroundDiseases
+          doesFeelGood
+          creationTime
+          contactedPersonCity
+          contactType
+          contactStatus
+          contactEvent
+          completionTime
+        }
+      }
+    }
+  }
+`

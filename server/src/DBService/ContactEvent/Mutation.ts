@@ -3,7 +3,7 @@ import {gql} from 'postgraphile';
 export const EDIT_CONTACT_EVENT = gql`
     mutation editContactEvent ($event: JSON!) {
         updateContactEventFunction(input: {inputData: $event}) {
-            clientMutationId
+            integer
         }
     }
 `;
@@ -35,6 +35,14 @@ export const DELETE_CONTACTED_PERSON = gql`
 export const DELETE_CONTACT_EVENTS_BY_DATE = gql`
     mutation deleteIrrelevantContactEvents($earliestDate: String!, $investigationId: Int!) {
         deleteContactEventsBeforeDate(input: {currInvestigationId: $investigationId, earliestDate: $earliestDate}) {
+            clientMutationId
+        }
+    }
+`;
+
+export const CREATE_CONTACTED_PERSON = gql`
+    mutation MyMutation($params: ContactedPersonInput!) {
+        createContactedPerson(input: {contactedPerson: $params}) {
             clientMutationId
         }
     }

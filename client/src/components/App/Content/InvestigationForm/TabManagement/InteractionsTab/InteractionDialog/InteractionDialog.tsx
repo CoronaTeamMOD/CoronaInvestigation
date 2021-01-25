@@ -25,6 +25,7 @@ import InteractionEventForm, { InteractionEventFormProps } from './InteractionEv
 const InteractionDialog = (props: Props) => {
     const { isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction } = props;
     const [isAddingContacts, setIsAddingContacts] = React.useState(false);
+    const [groupedInvestigationContacts, setGroupedInvestigationContacts] = useState<number[]>([]);
 
     const methods = useForm<InteractionEventDialogData>({
         defaultValues: interactionData,
@@ -41,7 +42,7 @@ const InteractionDialog = (props: Props) => {
     const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
     const interactionEndTime = methods.watch(InteractionEventDialogFields.END_TIME);
     const initialInteractionDate = React.useRef<Date>(new Date(interactionData?.startTime as Date));
-    const { saveInteractions } = useInteractionsForm({ loadInteractions, loadInvolvedContacts, onDialogClose });
+    const { saveInteractions } = useInteractionsForm({ loadInteractions, loadInvolvedContacts, onDialogClose, groupedInvestigationContacts });
     const { checkDuplicateIdsForInteractions } = useDuplicateContactId();
 
     const isContinueToContactsEnable = (): boolean | undefined => {
@@ -177,7 +178,11 @@ const InteractionDialog = (props: Props) => {
                             isNewInteraction={isNewInteraction}
                             onPlaceSubTypeChange={onPlaceSubtypeChange}
                         />
-                        <ContactsTabs isVisible={isAddingContacts} />
+                        <ContactsTabs 
+                            isVisible={isAddingContacts}
+                            groupedInvestigationContacts={groupedInvestigationContacts}
+                            setGroupedInvestigationContacts={setGroupedInvestigationContacts}
+                        />
                     </form>
                 </DialogContent>
                 <DialogActions className={`${classes.dialogFooter}`}   >
