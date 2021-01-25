@@ -1,6 +1,7 @@
 import * as yup from 'yup';
 
-import { passportValidationWithDash, visaLength , idLength , idBasicValidation} from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { ID_BASIC_VALIDATION_REGEX, PASSPORT_DASH_REGEX } from 'commons/Regex/Regex';
+import { visaLength , idLength } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 const errorMessage = 'הוכנס תו לא חוקי';
 const passportMaxLengthErrorMessage = `השדה יכול להכיל ${visaLength} תווים בלבד`;
@@ -8,10 +9,10 @@ const idMaxLengthErrorMessage = `השדה יכול להכיל ${idLength} תוו
 
 export const passportSchema = yup
   .string()
-  .matches(passportValidationWithDash, errorMessage)
+  .matches(PASSPORT_DASH_REGEX, errorMessage)
   .max(visaLength, passportMaxLengthErrorMessage);
 
 export const idSchema = yup
   .string()
-  .matches(idBasicValidation, errorMessage)
+  .matches(ID_BASIC_VALIDATION_REGEX, errorMessage)
   .max(idLength, idMaxLengthErrorMessage);

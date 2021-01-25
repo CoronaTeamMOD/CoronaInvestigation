@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { Search } from '@material-ui/icons';
 import { IconButton, InputAdornment } from '@material-ui/core';
 
+import { ALPHANUMERIC_WHITE_SPACE_TEXT_REGEX } from 'commons/Regex/Regex';
 import { AlphabetTextFieldProps } from 'commons/AlphabetTextField/AlphabetTextFieldTypes';
 import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
 
@@ -20,7 +21,7 @@ interface Props extends AlphabetTextFieldProps<string> {
 
 const stringAlphabet = yup
   .string()
-  .matches(/^[a-zA-Z\u0590-\u05fe\s0-9-]*$/, errorMessage)
+  .matches(ALPHANUMERIC_WHITE_SPACE_TEXT_REGEX, errorMessage)
   .max(50, maxLengthErrorMessage);
 
 const ExposureSearchTextField = (props: Props) => {

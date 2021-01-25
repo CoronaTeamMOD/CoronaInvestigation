@@ -1,11 +1,10 @@
 import * as yup from 'yup';
 
+import { NOT_REQUIRED_PHONE_NUMBER_REGEX } from 'commons/Regex/Regex';
 import ContactIdValidationSchema from 'Utils/Contacts/ContactIdValidationSchema';
 import placeTypesCodesHierarchy from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
-
-const phoneNumberMatchValidation = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$|^$/
 
 const interactionEventSchema = yup.object().shape({
     [InteractionEventDialogFields.PLACE_TYPE]: yup.string().nullable().required('סוג אתר חובה'),
@@ -18,7 +17,7 @@ const interactionEventSchema = yup.object().shape({
       }
     ),
     [InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER]: yup.string().nullable()
-      .matches(phoneNumberMatchValidation, 'מספר טלפון לא תקין'),
+      .matches(NOT_REQUIRED_PHONE_NUMBER_REGEX, 'מספר טלפון לא תקין'),
     [InteractionEventDialogFields.UNKNOWN_TIME]: yup.boolean(),
     [InteractionEventDialogFields.START_TIME]: yup.date().nullable().when(
       InteractionEventDialogFields.UNKNOWN_TIME, {
@@ -58,7 +57,7 @@ const interactionEventSchema = yup.object().shape({
         [InteractionEventContactFields.FIRST_NAME]: yup.string().nullable().required('שם פרטי חובה'),
         [InteractionEventContactFields.LAST_NAME]: yup.string().nullable().required('שם משפחה חובה'),
         [InteractionEventContactFields.PHONE_NUMBER]: yup.string().nullable()
-          .matches(phoneNumberMatchValidation, 'מספר טלפון לא תקין'),
+          .matches(NOT_REQUIRED_PHONE_NUMBER_REGEX, 'מספר טלפון לא תקין'),
         [InteractionEventContactFields.IDENTIFICATION_NUMBER]: ContactIdValidationSchema
     }))
   });

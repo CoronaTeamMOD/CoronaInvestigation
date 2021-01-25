@@ -3,6 +3,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import { ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX } from 'commons/Regex/Regex';
 import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
 
 import { initialComment } from '../../../Context/CommentContext';
@@ -14,7 +15,7 @@ const MAX_CHARS_ALLOWED = 500;
 
 const stringAlphabet = yup
     .string()
-    .matches(/^[a-zA-Z\u0590-\u05fe\s0-9-+*!?'"():_,.\/\\]*$/, errorMessage)
+    .matches(ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX, errorMessage)
     .max(MAX_CHARS_ALLOWED, maxLengthErrorMessage);
 
 const commentFieldName = 'comment';

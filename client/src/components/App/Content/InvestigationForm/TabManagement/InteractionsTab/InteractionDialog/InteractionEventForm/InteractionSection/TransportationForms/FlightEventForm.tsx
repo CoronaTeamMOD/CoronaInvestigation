@@ -9,6 +9,7 @@ import Country from 'models/Country';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
+import { ENGLISH_ALPHANUMERIC_TEXT_REGEX } from 'commons/Regex/Regex';
 import AirportTextField from 'commons/AirportTextField/AirportTextField';
 import AirelineTextField from 'commons/AirelineTextField/AirelineTextField';
 import FlightNumberTextField from 'commons/FlightNumberTextField/FlightNumberTextField';
@@ -23,7 +24,7 @@ const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד
 
 const flighSeatMatch = yup
   .string()
-  .matches(/^[a-zA-Z0-9\s,-]*$/, errorMessage)
+  .matches(ENGLISH_ALPHANUMERIC_TEXT_REGEX, errorMessage)
   .max(50, maxLengthErrorMessage);
 
 const FlightEventForm: React.FC = (): JSX.Element => {

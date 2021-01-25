@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 import Occupations from 'models/enums/Occupations';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
-import { notRequiredPhoneNumberRegex, phoneNumberRegex } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { PHONE_NUMBER_REGEX, NOT_REQUIRED_PHONE_NUMBER_REGEX } from 'commons/Regex/Regex';
 
 const occupationsWithInstitution = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון'];
 const occupationsWithoutExtraInfo = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון', 'לא עובד'];
@@ -12,9 +12,9 @@ const requiredSelectionText = 'שגיאה: יש לבחור מבין האפשרו
 const maxClassNumberError = 'ניתן להזין עד המספר 50';
 
 const schema = yup.object().shape({
-    [PersonalInfoDataContextFields.PHONE_NUMBER]: yup.string().nullable().required(requiredText).matches(phoneNumberRegex, numberValidationText),
-    [PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]: yup.string().nullable().matches(notRequiredPhoneNumberRegex, numberValidationText),
-    [PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]: yup.string().nullable().matches(notRequiredPhoneNumberRegex, numberValidationText),
+    [PersonalInfoDataContextFields.PHONE_NUMBER]: yup.string().nullable().required(requiredText).matches(PHONE_NUMBER_REGEX, numberValidationText),
+    [PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]: yup.string().nullable().matches(NOT_REQUIRED_PHONE_NUMBER_REGEX, numberValidationText),
+    [PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]: yup.string().nullable().matches(NOT_REQUIRED_PHONE_NUMBER_REGEX, numberValidationText),
     [PersonalInfoDataContextFields.INSURANCE_COMPANY]: yup.string().nullable().required(requiredText),
     address: yup.object().shape({
         [PersonalInfoDataContextFields.CITY]: yup.string().nullable().required(requiredText),
