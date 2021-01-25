@@ -18,8 +18,6 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
         const { alertError } = useCustomSwal();
         const { isPatientHouse } = useContactEvent();
 
-        const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-
         const shouldParseLocation = (interactionsDataToSave: InteractionEventDialogData) =>
             !isPatientHouse(interactionsDataToSave[InteractionEventDialogFields.PLACE_SUB_TYPE]) &&
                 interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS];
@@ -31,7 +29,6 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
             const parsedData = {
                 ...interactionsDataToSave,
                 [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
-                [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber
             };
             if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
                 const updateInteractionsLogger = logger.setup('Update Interaction')

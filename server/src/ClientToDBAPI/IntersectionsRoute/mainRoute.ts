@@ -84,14 +84,15 @@ const convertDBEvent = (event: ContactEvent) => {
     };
 }
 
-intersectionsRoute.get('/contactEvent/:investigationId/:minimalDateToFilter', (request: Request, response: Response) => {
+intersectionsRoute.get('/contactEvent/:minimalDateToFilter', (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const contactEventLogger = logger.setup({
         workflow: `query investigation's contact events`,
         user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber
+        investigation: epidemiologyNumber
     });
 
-    const parameters = {currInvestigation: Number(request.params.investigationId), minimalDateToFilter: new Date(request.params.minimalDateToFilter)};
+    const parameters = {currInvestigation: epidemiologyNumber, minimalDateToFilter: new Date(request.params.minimalDateToFilter)};
     contactEventLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, response.locals, parameters)
@@ -106,14 +107,15 @@ intersectionsRoute.get('/contactEvent/:investigationId/:minimalDateToFilter', (r
 });
 
 intersectionsRoute.post('/createContactEvent', (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const createContactEventLogger = logger.setup({
         workflow: 'create contact event',
         user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber
+        investigation: epidemiologyNumber
     });
-
     const parameters = {contactEvent: JSON.stringify({
         ...request.body,
+        investigationId : epidemiologyNumber
     })}
     createContactEventLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     graphqlRequest(CREATE_CONTACT_EVENT, response.locals, parameters)
@@ -128,15 +130,16 @@ intersectionsRoute.post('/createContactEvent', (request: Request, response: Resp
 });
 
 intersectionsRoute.post('/updateContactEvent', (request: Request, response: Response) => {
-
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const updateContactEventLogger = logger.setup({
         workflow: 'update contact event',
         user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber
+        investigation: epidemiologyNumber,
     });
 
     const parameters = {event: JSON.stringify({
         ...request.body,
+        investigationId : epidemiologyNumber
     })}
     updateContactEventLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
@@ -152,14 +155,15 @@ intersectionsRoute.post('/updateContactEvent', (request: Request, response: Resp
 });
 
 intersectionsRoute.delete('/deleteContactEvent', (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const deleteContactEventLogger = logger.setup({
         workflow: 'delete contact event',
         user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber
+        investigation: epidemiologyNumber
     });
     const queryVariables = {
         contactEventId: parseInt(request.query.contactEventId as string),
-        investigationId: parseInt(request.query.investigationId as string)
+        investigationId: epidemiologyNumber
     };
     deleteContactEventLogger.info(launchingDBRequestLog(queryVariables), Severity.LOW);
     graphqlRequest(DELETE_CONTACT_EVENT, response.locals, queryVariables)
@@ -174,15 +178,16 @@ intersectionsRoute.delete('/deleteContactEvent', (request: Request, response: Re
 });
 
 intersectionsRoute.delete('/contactedPerson', (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const contactedPersonLogger = logger.setup({
         workflow: 'delete contacted person',
         user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber
+        investigation: epidemiologyNumber
     });
     const queryVariables = {
         contactedPersonId: parseInt(request.query.contactedPersonId as string),
         involvedContactId: request.query.involvedContactId ? parseInt(request.query.involvedContactId as string) : null,
-        investigationId: parseInt(request.query.investigationId as string),
+        investigationId: epidemiologyNumber,
     }
     contactedPersonLogger.info(launchingDBRequestLog(queryVariables), Severity.LOW);
     graphqlRequest(DELETE_CONTACTED_PERSON, response.locals, queryVariables)
@@ -210,14 +215,15 @@ const convertInvolvedContact = (contact: InvolvedContactDB) => {
     }
 };
 
-intersectionsRoute.get('/involvedContacts/:investigationId', (request: Request, response: Response) => {
+intersectionsRoute.get('/involvedContacts', (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const involvedContacts = logger.setup({
         workflow: `query investigation's involved contacts`,
         user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber
+        investigation: epidemiologyNumber
     });
 
-    const parameters = {currInvestigation: Number(request.params.investigationId)};
+    const parameters = {currInvestigation: epidemiologyNumber};
     involvedContacts.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_ALL_INVOLVED_CONTACTS, response.locals, parameters)

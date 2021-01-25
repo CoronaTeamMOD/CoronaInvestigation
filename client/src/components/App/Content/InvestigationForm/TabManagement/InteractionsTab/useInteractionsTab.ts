@@ -59,7 +59,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         const loadInvolvedContactsLogger = logger.setup('loading involved contacts');
         loadInvolvedContactsLogger.info('launching db request', Severity.LOW);
 
-        axios.get(`/intersections/involvedContacts/${epidemiologyNumber}`).then((result) => {
+        axios.get(`/intersections/involvedContacts`).then((result) => {
             if (result?.data && result.headers['content-type'].includes('application/json')) {
                 loadInvolvedContactsLogger.info('got response successfully', Severity.LOW);
                 const involvedContacts: InvolvedContact[] = result?.data;
@@ -103,7 +103,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         loadInteractionsLogger.info('launching interactions request', Severity.LOW);
         const minimalDateToFilter = datesToInvestigate.slice(-1)[0];
         setIsLoading(true);
-        axios.get(`/intersections/contactEvent/${epidemiologyNumber}/${minimalDateToFilter?.toISOString()}`)
+        axios.get(`/intersections/contactEvent/${minimalDateToFilter?.toISOString()}`)
         .then((result) => {
             loadInteractionsLogger.info('got results back from the server', Severity.LOW);
             const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
@@ -148,7 +148,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     deletingInteractionsLogger.info('launching interaction delete request', Severity.LOW);
                     setIsLoading(true);
                     axios.delete('/intersections/deleteContactEvent', {
-                        params: { contactEventId, investigationId: epidemiologyNumber }
+                        params: { contactEventId }
                     }).then(() => {
                         deletingInteractionsLogger.info('interaction was deleted successfully', Severity.LOW)
                         postDeleteLoading(areThereFamilyContacts);
@@ -176,7 +176,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 deleteContactedPersonLogger.info('launching interaction delete request', Severity.LOW);
                 setIsLoading(true);
                 axios.delete('/intersections/contactedPerson', {
-                    params: { contactedPersonId, involvedContactId, investigationId: epidemiologyNumber }
+                    params: { contactedPersonId, involvedContactId}
                 }).then(() => {
                     deleteContactedPersonLogger.info('interaction was deleted successfully', Severity.LOW);
                     postDeleteLoading(isThisFamilyContact);
