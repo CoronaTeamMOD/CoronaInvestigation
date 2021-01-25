@@ -2,11 +2,12 @@ import React from 'react';
 import {Controller, useFormContext} from 'react-hook-form';
 import {isValid} from 'date-fns';
 import {Checkbox, FormControlLabel, Grid} from '@material-ui/core';
-import FormInput from 'commons/FormInput/FormInput';
-import TimePick from 'commons/DatePick/TimePick';
+
 import InteractionEventDialogFields
     from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import {get} from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import FormInput from 'commons/FormInput/FormInput';
+import TimePick from 'commons/DatePick/TimePick';
 import useFormStyles from 'styles/formStyles';
 
 const TimeForm = () => {

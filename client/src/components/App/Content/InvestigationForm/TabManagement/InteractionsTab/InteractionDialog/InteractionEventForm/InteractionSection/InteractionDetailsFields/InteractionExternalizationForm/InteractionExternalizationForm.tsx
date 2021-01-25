@@ -1,12 +1,14 @@
 import React, {useEffect} from 'react';
 import {Controller, useFormContext} from 'react-hook-form';
 import {Collapse, Grid, Typography} from '@material-ui/core';
+
 import InteractionEventDialogFields
     from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import placeTypesCodesHierarchy from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import FormInput from 'commons/FormInput/FormInput';
 import Toggle from 'commons/Toggle/Toggle';
-import placeTypesCodesHierarchy from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import useFormStyles from 'styles/formStyles';
+
 import useStyles from './InteractionExternalizationFormStyles';
 
 const ExternalizationForm = () => {
@@ -43,7 +45,6 @@ const ExternalizationForm = () => {
             return initialMessage.concat(externalizationErrors.join(', '));
         }
     }, [placeType, isUnknownTime, locationAddress, placeName, placeDescription]);
-
 
     useEffect(() => {
         if (externalizationErrorMessage) {

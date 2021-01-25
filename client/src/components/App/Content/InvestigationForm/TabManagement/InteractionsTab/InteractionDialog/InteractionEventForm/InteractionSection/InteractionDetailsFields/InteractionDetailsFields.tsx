@@ -1,10 +1,12 @@
 import React, {useMemo} from 'react';
 import {Controller, useFormContext} from 'react-hook-form';
-import FormInput from 'commons/FormInput/FormInput';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+
 import InteractionEventDialogFields
     from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCodesHierarchy';
+import FormInput from 'commons/FormInput/FormInput';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+
 import TimeForm from './InteractionTimeForm';
 import ExternalizationForm from './InteractionExternalizationForm/InteractionExternalizationForm';
 
