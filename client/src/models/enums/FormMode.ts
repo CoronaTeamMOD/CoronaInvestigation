@@ -1,6 +1,7 @@
 enum FormMode {
     CREATE,
-    READ
-}
+    READ,
+    EDIT
+};
 
 export default FormMode;

@@ -1,16 +1,20 @@
 import { Router, Request, Response } from 'express';
 
 import User from '../../Models/User/User';
+import UserPatch from '../../Models/User/UserPatch';
 import { Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
+import UpdateUserResponse from '../../Models/User/UpdateUserResponse';
 import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
 import GetAllUserTypesResponse from '../../Models/User/GetAllUserTypesResponse';
 import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
-import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, UPDATE_INVESTIGATOR_BY_GROUP_ID,
-         UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY } from '../../DBService/Users/Mutation';
+import { 
+    UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, 
+    UPDATE_INVESTIGATOR_BY_GROUP_ID, UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY, UPDATE_USER 
+} from '../../DBService/Users/Mutation';
 import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
     GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ALL_USER_TYPES, GET_USERS_BY_COUNTY_ID
@@ -334,16 +338,14 @@ const convertUserToDB = (clientUserInput: any): User => {
         fullName: clientUserInput.fullName.firstName + ' ' + clientUserInput.fullName.lastName,
         languages: clientUserInput.languages?.map((language: Language) => language.displayName)
     }
-}
+};
 
 usersRoute.post('', (request: Request, response: Response) => {
     const createUserLogger = logger.setup({
         workflow: 'create user',
     });
-
     const parameters = {input: convertUserToDB(request.body)};
     createUserLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-
     graphqlRequest(CREATE_USER, response.locals, parameters)
         .then((result: CreateUserResponse) => {
             createUserLogger.info(validDBResponseLog, Severity.LOW);
@@ -351,6 +353,36 @@ usersRoute.post('', (request: Request, response: Response) => {
         })
         .catch((error) => {
             createUserLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.sendStatus(errorStatusCode).send(error);
+        });
+});
+
+const convertUpdateUserToDB = (clientUserInput: any): UserPatch => {
+    return {
+        idInput: clientUserInput.id,
+        cityInput: clientUserInput.city,
+        phoneNumberInput: clientUserInput.phoneNumber,
+        investigationGroupInput: +clientUserInput.investigationGroup,
+        sourceOrganizationInput: clientUserInput.sourceOrganization,
+        mailInput: clientUserInput.mail,
+        deskInput: clientUserInput.desk,
+        languagesInput: clientUserInput.languages?.map((language: Language) => language.displayName)
+    }
+};
+
+usersRoute.put('', (request: Request, response: Response) => {
+    const updateUserLogger = logger.setup({
+        workflow: 'update user',
+    });
+    const parameters = {input: convertUpdateUserToDB(request.body)};
+    updateUserLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+    graphqlRequest(UPDATE_USER, response.locals, parameters)
+        .then((result: UpdateUserResponse) => {
+            updateUserLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data.updateUserById);
+        })
+        .catch((error) => {
+            updateUserLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.sendStatus(errorStatusCode).send(error);
         });
 });
@@ -398,7 +430,7 @@ const convertToUser = (user: any) => ({
     phoneNumber: user.phoneNumber,
     mail: user.mail,
     identityNumber: user.identityNumber,
-    city: user.cityByCity?.displayName,
+    city: user.cityByCity,
     isActive: user.isActive,
     languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
     userType: user.userTypeByUserType.displayName,

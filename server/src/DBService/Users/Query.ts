@@ -80,7 +80,8 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter:
       identityNumber
       isActive
       cityByCity {
-        displayName
+        displayName,
+        id
       }
       isActive
       userLanguagesByUserId {

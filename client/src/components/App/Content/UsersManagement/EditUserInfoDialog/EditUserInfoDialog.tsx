@@ -10,8 +10,8 @@ import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import useStyles from '../../SignUp/SignUpStyles';
 import SignUpForm from '../../SignUp/SignUpForm/SignUpForm';
 
-const UserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseUserDialog }: Props) => {
-
+const EditUserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseEditUserDialog }: Props) => {
+    
     const userInfoTitle = defaultValues[SignUpFields.MABAR_USER_NAME]
     const classes = useStyles();
 
@@ -19,7 +19,7 @@ const UserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseUserD
         <Dialog open={open} maxWidth='sm' fullWidth={true}>
             <DialogTitle>
                 {userInfoTitle}
-                <IconButton test-id='closeUserInfoDialog' aria-label='close' className={classes.closeButton} onClick={handleCloseUserDialog}>
+                <IconButton aria-label='close' className={classes.closeButton} onClick={handleCloseEditUserDialog}>
                     <Close />
                 </IconButton>
             </DialogTitle>
@@ -27,23 +27,30 @@ const UserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseUserD
             <DialogContent>
                 <SignUpForm 
                     defaultValues={defaultValues}
-                    mode={FormMode.READ}
+                    mode={FormMode.EDIT}
+                    handleSaveUser={handleCloseEditUserDialog}
                 />
             </DialogContent>
 
             <DialogActions>
-                <PrimaryButton onClick={handleCloseUserDialog}>
-                    סגירה
+                <PrimaryButton onClick={handleCloseEditUserDialog}>
+                    ביטול
+                </PrimaryButton>
+                <PrimaryButton 
+                    type='submit'
+                    form='signUp'
+                >
+                    שמירה
                 </PrimaryButton>
             </DialogActions>
         </Dialog>
     )
 };
 
-export default UserInfoDialog;
+export default EditUserInfoDialog;
 
 interface Props {
     open: boolean;
     defaultValues: SignUpUser;
-    handleCloseUserDialog: () => void;
+    handleCloseEditUserDialog: () => void;
 };

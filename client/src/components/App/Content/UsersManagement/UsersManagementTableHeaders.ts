@@ -8,8 +8,9 @@ export enum UsersManagementTableHeadersNames {
     DESK = 'desk',
     USER_TYPE = 'userType',
     USER_STATUS = 'isActive',
-    WATCH = 'watch'
-}
+    WATCH = 'watch',
+    EDIT = 'edit'
+};
 
 export const UsersManagementTableHeaders = {
     [UsersManagementTableHeadersNames.USER_NAME]: 'שם',
@@ -20,8 +21,9 @@ export const UsersManagementTableHeaders = {
     [UsersManagementTableHeadersNames.DESK]: 'דסק',
     [UsersManagementTableHeadersNames.USER_TYPE]: 'סוג משתמש',
     [UsersManagementTableHeadersNames.USER_STATUS]: 'פעיל/לא פעיל',
-    [UsersManagementTableHeadersNames.WATCH]: ''
-}
+    [UsersManagementTableHeadersNames.WATCH]: '',
+    [UsersManagementTableHeadersNames.EDIT]: ''
+};
 
 export const SortOrderTableHeadersNames = {
     [UsersManagementTableHeadersNames.USER_NAME]: 'USER_NAME',
@@ -30,4 +32,4 @@ export const SortOrderTableHeadersNames = {
     [UsersManagementTableHeadersNames.COUNTY]: 'INVESTIGATION_GROUP',
     [UsersManagementTableHeadersNames.USER_TYPE]: 'USER_TYPE',
     [UsersManagementTableHeadersNames.USER_STATUS]: 'IS_ACTIVE',
-}
+};
