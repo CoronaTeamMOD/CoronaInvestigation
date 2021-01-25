@@ -7,7 +7,7 @@ const useAccordionContent = (props: Props) => {
         events.forEach(
             event => event.contactedPeopleByContactEvent.nodes.forEach(
                 person => {
-                    const { id } = person.personByPersonInfo;
+                    const { id } = person;
                     selectedRows.includes(id) && count++;
                 }
             )
