@@ -9,6 +9,7 @@ import { UPDATE_EXPOSURES } from '../../DBService/Exposure/Mutation';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import ExposureByInvestigationId from '../../Models/Exposure/ExposureByInvestigationId';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
+import { INVALID_CHARS_REGEX, PHONE_OR_IDENTITY_NUMBER_REGEX } from '../../commons/Regex/Regex';
 import { GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS } from '../../DBService/Exposure/Query';
 import CovidPatientDBOutput, { AddressDBOutput } from '../../Models/Exposure/CovidPatientDBOutput';
 import OptionalExposureSourcesResponse from '../../Models/Exposure/OptionalExposureSourcesResponse';
@@ -16,9 +17,6 @@ import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog
 import { parse } from 'dotenv/types';
 
 const exposureRoute = Router();
-
-const phoneOrIdentityNumberRegex = /^([\da-zA-Z]+)$/;
-const invalidCharsRegex = /[^א-ת\da-zA-Z0-9]/;
 
 const searchDaysAmount = 14;
 
@@ -94,17 +92,17 @@ const convertCovidPatientsFromDB = (dbBCovidPatients: CovidPatientDBOutput[]) : 
 const filterCovidPatientsByRegex = (searchValue: string, patientsToFilter: CovidPatientDBOutput[]) => {
     let trimmedSerachValue = searchValue;
     const lastIndexValue = trimmedSerachValue.length - 1;
-    if (invalidCharsRegex.test(searchValue[lastIndexValue])) {
+    if (INVALID_CHARS_REGEX.test(searchValue[lastIndexValue])) {
         trimmedSerachValue = trimmedSerachValue.slice(0, lastIndexValue);
     }
-    const complicatedRegex = new RegExp(trimmedSerachValue.replace(new RegExp(invalidCharsRegex, 'g'), '[ -]+[^0-9A-Za-z]*') + '*');
+    const complicatedRegex = new RegExp(trimmedSerachValue.replace(new RegExp(INVALID_CHARS_REGEX, 'g'), '[ -]+[^0-9A-Za-z]*') + '*');
     return patientsToFilter.filter(patient => complicatedRegex.test(patient.fullName) === true);
 }
 
 exposureRoute.get('/optionalExposureSources/:searchValue/:validationDate', handleInvestigationRequest, (request: Request, response: Response) => {
     const searchValue : string = request.params.searchValue || '';
     const searchInt = isNaN(parseInt(searchValue)) ? 0 : parseInt(searchValue);
-    const isPhoneOrIdentityNumber = phoneOrIdentityNumberRegex.test(searchValue);
+    const isPhoneOrIdentityNumber = PHONE_OR_IDENTITY_NUMBER_REGEX.test(searchValue);
     const searchEndDate = new Date(request.params.validationDate);
     const searchStartDate = subDays(searchEndDate, searchDaysAmount);
     const parameters = {searchValue, searchInt, searchStartDate, searchEndDate}
