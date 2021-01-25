@@ -50,7 +50,7 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
     });
 });
 
-ContactedPeopleRoute.get('/allContacts/:minimalDateToFilter', (request: Request, response: Response) => {
+ContactedPeopleRoute.get('/allContacts/:minimalDateToFilter', handleInvestigationRequest, (request: Request, response: Response) => {
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const allContactsLogger = logger.setup({
         workflow: `query all investigation's contacts`,
@@ -72,7 +72,7 @@ ContactedPeopleRoute.get('/allContacts/:minimalDateToFilter', (request: Request,
         })
 });
 
-ContactedPeopleRoute.post('/interactedContacts',  (request: Request, response: Response) => {
+ContactedPeopleRoute.post('/interactedContacts',  handleInvestigationRequest,  (request: Request, response: Response) => {
     const requestData = request.body;
 
     const epidemiologyNumber = +response.locals.epidemiologynumber;
@@ -106,7 +106,7 @@ ContactedPeopleRoute.post('/interactedContacts',  (request: Request, response: R
         })
 });
 
-ContactedPeopleRoute.post('/excel', async (request: Request, response: Response) => {
+ContactedPeopleRoute.post('/excel',  handleInvestigationRequest, async (request: Request, response: Response) => {
     const excelLogger = logger.setup({
         workflow: `saving contacts execl`,
         investigation: response.locals.epidemiologynumber,
