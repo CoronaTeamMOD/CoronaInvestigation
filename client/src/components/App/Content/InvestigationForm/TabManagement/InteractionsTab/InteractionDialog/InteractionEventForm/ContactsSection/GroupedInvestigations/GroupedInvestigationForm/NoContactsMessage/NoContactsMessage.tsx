@@ -11,4 +11,4 @@ const NoContactsMessage = () => {
     )
 }
 
-export default NoContactsMessage
+export default NoContactsMessage;

@@ -38,4 +38,4 @@ interface Props {
     events : ContactEvent[];
 }
 
-export default AccordionContent
+export default AccordionContent;

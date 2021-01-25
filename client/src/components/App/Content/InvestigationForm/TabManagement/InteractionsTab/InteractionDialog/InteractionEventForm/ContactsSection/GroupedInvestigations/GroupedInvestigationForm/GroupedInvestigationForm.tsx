@@ -41,5 +41,4 @@ interface Props {
     setGroupedInvestigationContacts:  React.Dispatch<React.SetStateAction<number[]>>;
 }
 
-
 export default GroupedInvestigationForm

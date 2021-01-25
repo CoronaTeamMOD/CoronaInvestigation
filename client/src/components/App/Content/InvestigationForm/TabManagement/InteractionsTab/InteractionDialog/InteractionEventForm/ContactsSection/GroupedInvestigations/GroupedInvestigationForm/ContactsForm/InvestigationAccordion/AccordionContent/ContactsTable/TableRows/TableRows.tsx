@@ -10,7 +10,9 @@ import useTableRows from './useTableRows';
 const TableRows = (props: Props) => {
     const { events , selectedRows , setSelectedRows} = props;
     const classes = useStyles();
+    
     const { handleCheckboxToggle } = useTableRows({selectedRows , setSelectedRows});
+    
     return (
         <TableBody>
             {

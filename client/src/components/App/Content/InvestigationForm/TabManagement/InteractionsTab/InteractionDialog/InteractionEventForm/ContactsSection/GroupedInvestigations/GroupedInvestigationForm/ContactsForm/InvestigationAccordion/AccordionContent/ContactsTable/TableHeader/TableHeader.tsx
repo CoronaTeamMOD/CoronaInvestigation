@@ -3,7 +3,7 @@ import { TableHead, TableRow, TableCell } from '@material-ui/core';
 
 import TableCoulmns from '../tableColumns';
 
-const TableHeader = (props: Props) => {
+const TableHeader = () => {
     return (
         <TableHead>
             <TableRow>
@@ -20,10 +20,5 @@ const TableHeader = (props: Props) => {
         </TableHead>
     )
 }
-
-interface Props {
-    
-}
-
 
 export default TableHeader
