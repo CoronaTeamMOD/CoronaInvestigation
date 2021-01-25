@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 
 import { Severity } from '../../Models/Logger/types';
 import { UPDATE_LIST_OF_CONTACTS } from '../../DBService/ContactedPeople/Mutation';
+import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { errorStatusCode, graphqlRequest, validStatusCode } from '../../GraphqlHTTPRequest';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import {
