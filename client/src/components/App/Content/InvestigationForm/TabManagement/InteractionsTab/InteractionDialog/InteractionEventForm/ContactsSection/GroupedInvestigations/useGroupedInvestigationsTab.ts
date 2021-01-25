@@ -17,7 +17,7 @@ const useGroupedInvestigationsTab = (props : Props) => {
                 return response.data;
             })
             .catch((error) => {
-                groupIdByEpidemiologyNumberLogger.info(`got errors in server result: ${error}`,Severity.HIGH);
+                groupIdByEpidemiologyNumberLogger.error(`got errors in server result: ${error}`,Severity.HIGH);
                 return '';
             });
     }
