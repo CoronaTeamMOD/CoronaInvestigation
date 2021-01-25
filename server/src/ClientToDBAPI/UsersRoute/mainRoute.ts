@@ -4,6 +4,7 @@ import User from '../../Models/User/User';
 import UserPatch from '../../Models/User/UserPatch';
 import { Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
+import handleUsersRequest from '../../middlewares/HandleUsersRequest';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
 import UpdateUserResponse from '../../Models/User/UpdateUserResponse';
 import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
@@ -136,7 +137,7 @@ usersRoute.post('/updateIsUserActive', (request: Request, response: Response) =>
     updateIsUserActive(response, response.locals.user.id, request.body.isActive);
 })
 
-usersRoute.post('/updateIsUserActiveById', adminMiddleWare, (request: Request, response: Response) => {
+usersRoute.post('/updateIsUserActiveById', handleUsersRequest, (request: Request, response: Response) => {
     updateIsUserActive(response, request.body.userId, request.body.isActive);
 })
 
