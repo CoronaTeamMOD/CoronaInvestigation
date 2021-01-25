@@ -8,11 +8,11 @@ import useStyles from './tableRowsStyles';
 import useTableRows from './useTableRows';
 
 const TableRows = (props: Props) => {
-    const { events , selectedRows , setSelectedRows} = props;
+    const { events , selectedRows , setSelectedRows, existingIds} = props;
     const classes = useStyles();
     
     const { handleCheckboxToggle } = useTableRows({selectedRows , setSelectedRows});
-    
+
     return (
         <TableBody>
             {
@@ -21,6 +21,7 @@ const TableRows = (props: Props) => {
 
                     return nodes.map((person) => {
                         const {id} = person;
+                        
                         const {
                             firstName,
                             lastName,
@@ -33,10 +34,18 @@ const TableRows = (props: Props) => {
                         const isolationCity = person.addressByIsolationAddress?.cityByCity?.displayName;
 
                         const isRowSelected = selectedRows.indexOf(id) !== -1;
+                        const isRowDisabled = existingIds.indexOf(identificationNumber) !== -1;
+                        const rowClass = isRowDisabled 
+                                            ? classes.disabled
+                                            : isRowSelected 
+                                                ? classes.selected
+                                                : ''
+
                         return (
-                            <TableRow key={id} className={isRowSelected ? classes.selected : ''}>
+                            <TableRow key={id} className={rowClass}>
                                 <TableCell>
                                     <Checkbox
+                                        disabled={isRowDisabled}
                                         color='primary'
                                         checked={isRowSelected}
                                         onClick={() => handleCheckboxToggle(id)}
@@ -62,7 +71,8 @@ const TableRows = (props: Props) => {
 interface Props {
     selectedRows : number[]
     setSelectedRows: React.Dispatch<React.SetStateAction<number[]>>;
-    events : ContactEvent[]
+    events : ContactEvent[];
+    existingIds: string[];
 }
 
 export default TableRows

@@ -1,5 +1,8 @@
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
 import { AccordionDetails, Grid } from '@material-ui/core';
+
+import Contact from 'models/Contact';
 
 import ContactEvent from 'models/GroupedInvestigationContacts/ContactEvent';
 
@@ -9,7 +12,9 @@ import SelectedRowsMessage from './SelectedRowsMessage/SelectedRowsMessage';
 
 const AccordionContent = (props: Props) => {
     const { events, selectedRows, setSelectedRows} = props;
+    const { getValues } = useFormContext();
 
+    const existingIds = getValues().contacts?.map((contact : Contact)=> contact.identificationNumber) || []; 
     const { getCurrentSelectedRowsLength } = useAccordionContent({events , selectedRows});   
 
     return (
@@ -20,6 +25,7 @@ const AccordionContent = (props: Props) => {
                         selectedRows={selectedRows}
                         setSelectedRows={setSelectedRows}
                         events={events}
+                        existingIds={existingIds}
                     />
                 </Grid>
                 <Grid xs={12}>
