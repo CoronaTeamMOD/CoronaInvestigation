@@ -9,6 +9,10 @@ import useFormStyles from 'styles/formStyles';
 import Forms from './Forms';
 import useStyles from './ContactsTabsStyles';
 
+const mutualContactsLabel = 'הוספת מגע ידנית';
+const familyMembersLabel = 'בני משפחה';
+const groupedInvestigationsLabel = 'חקירות מקובצות';
+
 const ContactsTabs = (props : Props) => {
     const {isVisible , groupedInvestigationContacts , setGroupedInvestigationContacts} = props;
 
@@ -32,9 +36,9 @@ const ContactsTabs = (props : Props) => {
                 value={currentTab}
                 onChange={handleChange}
             >
-                <Tab classes={tabClasses} icon={<FontAwesomeIcon color={active} icon={faUserEdit} />} label='הוספת מגע ידנית' />
-                <Tab classes={tabClasses} icon={<GroupOutlined color='action' />} label='בני משפחה' />
-                <Tab classes={tabClasses} icon={<CallMerge color='action' />} label='חקירות מקובצות' />
+                <Tab classes={tabClasses} icon={<FontAwesomeIcon color={active} icon={faUserEdit} />} label={mutualContactsLabel} />
+                <Tab classes={tabClasses} icon={<GroupOutlined color='action' />} label={familyMembersLabel} />
+                <Tab classes={tabClasses} icon={<CallMerge color='action' />} label={groupedInvestigationsLabel} />
             </Tabs>
             <Divider orientation='vertical' variant='fullWidth' light={true} />
             <Forms
