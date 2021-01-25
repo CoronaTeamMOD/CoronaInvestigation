@@ -3,6 +3,7 @@ import {Request, Response, Router} from 'express';
 import { Severity } from '../../Models/Logger/types';
 import {errorStatusCode, graphqlRequest} from '../../GraphqlHTTPRequest';
 import {GetContactTypeResponse} from '../../Models/ContactEvent/GetContactType';
+import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { GetContactEventResponse, ContactEvent } from '../../Models/ContactEvent/GetContactEvent';
 import { GetInvolvedContactsResponse, InvolvedContactDB} from '../../Models/ContactEvent/GetInvolvedContacts';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
@@ -84,7 +85,7 @@ const convertDBEvent = (event: ContactEvent) => {
     };
 }
 
-intersectionsRoute.get('/contactEvent/:minimalDateToFilter', (request: Request, response: Response) => {
+intersectionsRoute.get('/contactEvent/:minimalDateToFilter', handleInvestigationRequest, (request: Request, response: Response) => {
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const contactEventLogger = logger.setup({
         workflow: `query investigation's contact events`,
@@ -106,7 +107,7 @@ intersectionsRoute.get('/contactEvent/:minimalDateToFilter', (request: Request, 
     });
 });
 
-intersectionsRoute.post('/createContactEvent', (request: Request, response: Response) => {
+intersectionsRoute.post('/createContactEvent', handleInvestigationRequest, (request: Request, response: Response) => {
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const createContactEventLogger = logger.setup({
         workflow: 'create contact event',
@@ -154,7 +155,7 @@ intersectionsRoute.post('/updateContactEvent', (request: Request, response: Resp
         });
 });
 
-intersectionsRoute.delete('/deleteContactEvent', (request: Request, response: Response) => {
+intersectionsRoute.delete('/deleteContactEvent', handleInvestigationRequest, (request: Request, response: Response) => {
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const deleteContactEventLogger = logger.setup({
         workflow: 'delete contact event',
@@ -177,7 +178,7 @@ intersectionsRoute.delete('/deleteContactEvent', (request: Request, response: Re
         });
 });
 
-intersectionsRoute.delete('/contactedPerson', (request: Request, response: Response) => {
+intersectionsRoute.delete('/contactedPerson', handleInvestigationRequest, (request: Request, response: Response) => {
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const contactedPersonLogger = logger.setup({
         workflow: 'delete contacted person',
@@ -215,7 +216,7 @@ const convertInvolvedContact = (contact: InvolvedContactDB) => {
     }
 };
 
-intersectionsRoute.get('/involvedContacts', (request: Request, response: Response) => {
+intersectionsRoute.get('/involvedContacts', handleInvestigationRequest, (request: Request, response: Response) => {
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const involvedContacts = logger.setup({
         workflow: `query investigation's involved contacts`,
