@@ -16,7 +16,6 @@ const handleUsersRequest = async (request: Request, response: Response, next: Ne
     });
 
     const questionedUser = await getUserDistrictCounty(userId, response.locals);
-    console.log(currentUser , questionedUser);
     if (currentUser.userType === UserType.SUPER_ADMIN) {
         if (currentUser.countyByInvestigationGroup.districtId === questionedUser.countyByInvestigationGroup.districtId) {
             usersMiddlewareLogger.info(
