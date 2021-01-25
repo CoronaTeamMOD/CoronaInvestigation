@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, CardContent, Typography } from '@material-ui/core';
 
 import Desk from 'models/Desk';
+import useDesksUtils from 'Utils/Desk/useDesksUtils';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 
 import LoadingCard from '../LoadingCard/LoadingCard';
@@ -17,10 +18,12 @@ const DesksFilterCard = (props: Props): JSX.Element => {
 
     const classes = useStyles();
     const { onUpdateButtonClicked } = props;
-    const { desks, isLoading, filteredDesks, clearAllDesks, onDeskClicked } = useDesksFilterCard();
+    const { filteredDesks, clearAllDesks, onDeskClicked } = useDesksFilterCard();
+
+    const { countyDesks } = useDesksUtils();
 
     return (
-        <LoadingCard isLoading={isLoading} width={cardWidth} height={cardHeight} className={classes.desksCard}>
+        <LoadingCard isLoading={countyDesks.length === 0} width={cardWidth} height={cardHeight} className={classes.desksCard}>
             <CardContent>
                 <Box display='flex' flexDirection='column' className={classes.desksCardContent}>
                     <Typography variant='h6'>
@@ -35,14 +38,14 @@ const DesksFilterCard = (props: Props): JSX.Element => {
                     />
                     <div className={classes.desksWrapper}>
                         {
-                            desks.map((desk: Desk) => (
+                            countyDesks.map((desk: Desk) => (
                                 <CustomCheckbox
                                     checkboxElements={[{
                                         key: desk.id,
                                         value: desk.id,
-                                        checked: filteredDesks.includes(desk.id),
+                                        checked: filteredDesks.includes(desk.id!),
                                         labelText: desk.deskName,
-                                        onChange: () => onDeskClicked(desk.id)
+                                        onChange: () => onDeskClicked(desk.id!)
                                     }]}
                                 />
                             ))

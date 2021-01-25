@@ -4,6 +4,7 @@ import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     whiteButtons: {
+        cursor: 'pointer',
         color: theme.palette.text.secondary,
         '&:hover': {
             color: theme.palette.text.primary

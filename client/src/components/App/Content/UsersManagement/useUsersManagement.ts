@@ -2,10 +2,8 @@ import axios  from 'axios';
 import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 
-import Desk from 'models/Desk';
 import User from 'models/User';
 import logger from 'logger/logger';
-import County from 'models/County';
 import Language from 'models/Language';
 import { Severity } from 'models/Logger';
 import SignUpUser from 'models/SignUpUser';
@@ -25,44 +23,36 @@ import { SortOrderTableHeadersNames } from './UsersManagementTableHeaders'
 interface UserDialog {
     isOpen: boolean,
     info: SignUpUser
-}
+};
+
 interface CellNameSort {
     name: string;
     direction: SortOrder | undefined;
-}
+};
 
 const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUsersManagementInCome): useUsersManagementOutCome => {
     
     const [users, setUsers] = useState<SignUpUser[]>([]);
-    const [counties, setCounties] = useState<County[]>([]);
-    const [desks, setDesks] = useState<Desk[]>([]);
     const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([])
     const [userTypes, setUserTypes] = useState<UserTypeModel[]>([]);
     const [languages, setLanguages] = useState<Language[]>([]);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [userDialog, setUserDialog] = useState<UserDialog>({ isOpen: false, info: {} });
+    const [editUserDialog, setEditUserDialog] = useState<UserDialog>({ isOpen: false, info: {} });
     const [filterRules, setFitlerRules] = useState<any>({});
     const [isBadgeInVisible, setIsBadgeInVisible] = useState<boolean>(true);
     
     const user = useSelector<StoreStateType, User>(state => state.user.data);
+    const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
 
     const { alertError, alertWarning } = useCustomSwal();
-    
-    const getUsersRoute = () => {
-        switch (user.userType) {
-            case UserTypeEnum.ADMIN: return '/users/county';
-            case UserTypeEnum.SUPER_ADMIN: return '/users/district';
-            default: return '';
-        }
-    }
 
     const fetchUsers = () => {
         const fetchUsersLogger = logger.setup('Fetching users');
         fetchUsersLogger.info('launching users request', Severity.LOW);
-        const fetchUsersRoute = getUsersRoute();
         setIsLoading(true);
-        if (fetchUsersRoute !== '') {
-            axios.post(fetchUsersRoute, {
+        if (user.userType === UserTypeEnum.ADMIN || user.userType === UserTypeEnum.SUPER_ADMIN) {
+            axios.post('/users/county', {
                 page: {
                     number: page,
                     size: rowsPerPage
@@ -70,6 +60,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                 orderBy: cellNameSort.direction !== undefined ? 
                          `${get(SortOrderTableHeadersNames, cellNameSort.name)}_${cellNameSort.direction?.toUpperCase()}` : null,
                 filter: Object.values(filterRules).reduce((obj, item) => Object.assign(obj, item) , {}),
+                county: displayedCounty
             })
                 .then(result => {
                     if (result?.data && result.headers['content-type'].includes('application/json')) {
@@ -89,7 +80,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                 })
                 .finally(() => setIsLoading(false));
         }
-    }
+    };
 
     const fetchSourcesOrganization = () => {
         const fetchSourcesOrganizationLogger = logger.setup('Fetching sourcesOrganization');
@@ -105,39 +96,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                 alertError('לא ניתן היה לקבל מסגרות');
                 fetchSourcesOrganizationLogger.error('didnt get results back from the server', Severity.HIGH);      
             });
-    }
-
-    const fetchCounties = () => {
-        const fetchCountiesLogger = logger.setup('Fetching counties');
-        fetchCountiesLogger.info('launching counties request', Severity.LOW);
-        axios.get('/counties')
-            .then(result => {
-                if (result?.data && result.headers['content-type'].includes('application/json')) {
-                    setCounties(result.data);
-                    fetchCountiesLogger.info('got results back from the server', Severity.LOW);
-                }  
-            })
-            .catch(() => {
-                alertError('לא ניתן היה לקבל נפות');
-                fetchCountiesLogger.error('didnt get results back from the server', Severity.HIGH);      
-            });
     };
-
-    const fetchDesks = () => {
-        const desksLogger = logger.setup('Fetching desks');
-        desksLogger.info('launching desks request', Severity.LOW);
-        axios.get('/desks/county')
-            .then(result => {
-                if (result?.data && result.headers['content-type'].includes('application/json')) {
-                    setDesks(result.data);
-                    desksLogger.info('got results back from the server', Severity.LOW);
-                }  
-            })
-            .catch(() => {
-                alertError('לא ניתן היה לקבל דסקים');
-                desksLogger.error('didnt get results back from the server', Severity.HIGH);      
-            });
-    }
 
     const fetchUserTypes = () => {
         const fetchUserTypesLogger = logger.setup('Fetching userTypes');
@@ -154,7 +113,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                 alertError('לא ניתן היה לקבל סוגי משתמשים');
                 fetchUserTypesLogger.error('didnt get results back from the server', Severity.HIGH);       
             });
-    }
+    };
 
     const fetchLanguages = () => {
         const fetchLanguagesLogger = logger.setup('Fetching languages');
@@ -170,7 +129,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                 alertError('לא ניתן היה לקבל שפות');
                 fetchLanguagesLogger.error('didnt get results back from the server', Severity.HIGH);      
             });
-    }
+    };
 
     const handleFilterChange = (filterBy: () => any) => {
         let filterRulesToSet = {...filterRules};
@@ -185,24 +144,22 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         }
         setIsBadgeInVisible(Object.keys(filterRulesToSet).length === 0);
         setFitlerRules(filterRulesToSet);
-    }
+    };
 
     useEffect(() => {
         fetchSourcesOrganization();
-        fetchCounties();
-        fetchDesks();
         fetchUserTypes();
         fetchLanguages();
-    }, [])
+    }, []);
 
     useEffect(() => {
         setPage(defaultPage);
         page === defaultPage && fetchUsers();
-    }, [filterRules, cellNameSort])
+    }, [filterRules, cellNameSort, displayedCounty]);
 
     useEffect(() => {
         fetchUsers();
-    }, [page, user.userType])
+    }, [page, user.userType]);
     
     const watchUserInfo = (row: any) => {
         const userInfoToSet = {
@@ -210,16 +167,25 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             [SignUpFields.LANGUAGES]: row[SignUpFields.LANGUAGES].map((language: string) => {
                 return { displayName: language }
             }),
-            [SignUpFields.COUNTY]: { displayName: row[SignUpFields.COUNTY] },
-            [SignUpFields.DESK]: { name: row[SignUpFields.DESK] },
-            [SignUpFields.CITY]: { value: { displayName: row[SignUpFields.CITY] }},
             [SignUpFields.FULL_NAME]: row[SignUpFields.FULL_NAME] || row[SignUpFields.USER_NAME],
-            [SignUpFields.SOURCE_ORGANIZATION]: { displayName: row[SignUpFields.SOURCE_ORGANIZATION]}
         };
         setUserDialog({ isOpen: true, info: userInfoToSet });
-    }
+    };
 
-    const handleCloseDialog = () => setUserDialog({ isOpen: false, info: {} })
+    const handleCloseUserDialog = () => setUserDialog({ isOpen: false, info: {} });
+
+    const editUserInfo = (row: any) => {
+        const userInfoToEdit = {
+            ...row,
+            [SignUpFields.LANGUAGES]: row[SignUpFields.LANGUAGES].map((language: string) => {
+                return { displayName: language }
+            }),
+            [SignUpFields.FULL_NAME]: row[SignUpFields.FULL_NAME] || row[SignUpFields.USER_NAME],
+        };
+        setEditUserDialog({ isOpen: true, info: userInfoToEdit });
+    };
+
+    const handleCloseEditUserDialog = () => setEditUserDialog({ isOpen: false, info: {} });
 
     const setUserActivityStatus = (isActive: boolean, userId: string) : Promise<any> => {
         const setUpdateActivityStatusLogger = logger.setup('Updating user activity status');
@@ -237,7 +203,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             setUpdateActivityStatusLogger.error(`error in updating user activity status ${error}`, Severity.HIGH);
         })
         .finally(() => setIsLoading(false));
-    }
+    };
 
     const setUserSourceOrganization = (sourceOrganization: string, userId: string) => {
         const setUpdateSourcesOrganizationLogger = logger.setup('Updating user source organization');
@@ -255,7 +221,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             setUpdateSourcesOrganizationLogger.error(`error in updating user source organization ${error}`, Severity.HIGH);
         })
         .finally(() => setIsLoading(false));
-    }
+    };
 
     const setUserDesk = (deskId: number, userId: string) => {
         const setUpdateDeskLogger = logger.setup('Updating user desk');
@@ -273,7 +239,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             setUpdateDeskLogger.error(`error in updating user desk due to ${error}`, Severity.HIGH);
         })
         .finally(() => setIsLoading(false));
-    }
+    };
 
     const setUserCounty = (countyId: number, userId: string) => {
         if(userId != user.id){
@@ -296,26 +262,27 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         } else {
             alertWarning('אין אפשרות להעביר את עצמך לנפה אחרת', {text: 'אם זו עדיין הפעולה שהתכוונת לבצע, ניתן לפנות לתמיכה!'})
         }
-    }
+    };
 
     return {
         users,
-        counties,
-        desks,
         sourcesOrganization,
         userTypes,
         languages,
         totalCount,
         userDialog,
+        editUserDialog,
         isBadgeInVisible,
         watchUserInfo,
-        handleCloseDialog,
+        handleCloseUserDialog,
+        editUserInfo,
+        handleCloseEditUserDialog,
         handleFilterChange,
         setUserActivityStatus,
         setUserSourceOrganization,
         setUserDesk,
         setUserCounty
-    }
+    };
 }
 
 interface useUsersManagementInCome {
@@ -323,25 +290,26 @@ interface useUsersManagementInCome {
     rowsPerPage: number;
     cellNameSort: CellNameSort;
     setPage: React.Dispatch<React.SetStateAction<number>>;
-}
+};
 
 interface useUsersManagementOutCome {
     users: SignUpUser[];
-    counties: County[];
-    desks: Desk[];
     sourcesOrganization: SourceOrganization[];
     userTypes: UserTypeModel[];
     languages: Language[];
     totalCount: number;
     userDialog: UserDialog;
+    editUserDialog: UserDialog;
     isBadgeInVisible: boolean;
     watchUserInfo: (row: any) => void;
-    handleCloseDialog: () => void;
+    handleCloseUserDialog: () => void;
+    editUserInfo: (row: any) => void;
+    handleCloseEditUserDialog: () => void;
     handleFilterChange: (filterBy: any) => void;
     setUserActivityStatus: (isActive: boolean, userId: string) => Promise<any>;
     setUserSourceOrganization: (sourceOrganization: string, userId: string) => void;
     setUserDesk: (deskId: number, userId: string) => void;
     setUserCounty: (countyId: number, userId: string) => void;
-}
+};
 
 export default useUsersManagement;

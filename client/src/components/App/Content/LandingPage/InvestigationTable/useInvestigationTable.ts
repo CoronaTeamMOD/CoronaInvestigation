@@ -120,17 +120,17 @@ export const DEFAULT_SELECTED_ROW: SelectedRow = {
 };
 
 const TABLE_REFRESH_INTERVAL = 30;
-const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף';
 const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את החקירה';
 const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החקירה';
+const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף'
 export const transferredSubStatus = 'נדרשת העברה';
 
 const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך היום. בואו נקטע את שרשראות ההדבקה!';
 const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
-    const { setSelectedRow, setAllCounties, setAllStatuses, setAllSubStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations,
-        investigationColor } = parameters;
+    const { setSelectedRow, setAllStatuses, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations,
+        investigationColor, setAllSubStatuses } = parameters;
 
     const classes = useStyle(false);
     const { alertError } = useCustomSwal();
@@ -142,6 +142,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             timeRangeFilter: historyTimeRange = defaultTimeRange,
             inactiveUserFilter : historyInactiveUserFilter = false, 
             unassignedUserFilter : historyUnassignedUserFilter = false,
+            updateDateFilter : historyUpdateDateFilter = "",
+            nonContactFilter : historyNonContactFilter = false,
             isAdminLandingRedirect : historyisAdminLandingRedirect = false,
             filterTitle} = useMemo(() => {
         const { location: { state } } = history;
@@ -157,18 +159,22 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [subStatusFilter, setSubStatusFilter] = useState<SubStatusFilter>(historySubStatusFilter);
     const [deskFilter, setDeskFilter] = useState<DeskFilter>(historyDeskFilter);
     const [timeRangeFilter, setTimeRangeFilter] = useState<TimeRange>(historyTimeRange);
+    const [updateDateFilter, setUpdateDateFilter] = useState<string>(historyUpdateDateFilter);
+    const [nonContactFilter, setNonContactFilter] = useState<boolean>(historyNonContactFilter);
     const [unassignedUserFilter, setUnassignedUserFilter] = useState<boolean>(historyUnassignedUserFilter);
     const [inactiveUserFilter, setInactiveUserFilter] = useState<boolean>(historyInactiveUserFilter);
     const [isAdminLandingRedirect, setIsAdminLandingRedirect] = useState<boolean>(historyisAdminLandingRedirect);
 
     const getFilterRules = () => {
         const statusFilterToSet = historyStatusFilter.length > 0 ? filterCreators.STATUS(historyStatusFilter) : null;
-        const subStatusFilterToSet = historySubStatusFilter.length > 0 ? filterCreators.SUB_STATUS(historyStatusFilter) : null;
+        const subStatusFilterToSet = historySubStatusFilter.length > 0 ? filterCreators.SUB_STATUS(historySubStatusFilter) : null;
         const deskFilterToSet = historyDeskFilter.length > 0 ? filterCreators.DESK_ID(historyDeskFilter) : null;
         const timeRangeFilterToSet = historyTimeRange.id !== allTimeRangeId ? filterCreators.TIME_RANGE(historyTimeRange) : null;
         const unAssignedFilterToSet = (historyUnassignedUserFilter && !inactiveUserFilter) ? filterCreators.UNASSIGNED_USER(historyUnassignedUserFilter) : null;
         const inActiveToSet = (historyInactiveUserFilter && !historyUnassignedUserFilter) ? filterCreators.INACTIVE_USER(historyInactiveUserFilter) : null;
         const unAllocatedToSet = (historyInactiveUserFilter && historyUnassignedUserFilter) ? filterCreators.UNALLOCATED_USER(historyUnassignedUserFilter) : null;
+        const updateDateFilterToSet = historyUpdateDateFilter ? filterCreators.UNUSUAL_IN_PROGRESS(historyUpdateDateFilter) : null;
+        const nonContactFilterToSet = historyNonContactFilter ? filterCreators.UNUSUAL_COMPLETED_NO_CONTACT(historyNonContactFilter) : null;
         return {
             [InvestigationsFilterByFields.STATUS]: statusFilterToSet && Object.values(statusFilterToSet)[0],
             [InvestigationsFilterByFields.SUB_STATUS]: subStatusFilterToSet && Object.values(subStatusFilterToSet)[0],
@@ -177,6 +183,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [InvestigationsFilterByFields.UNASSIGNED_USER]: unAssignedFilterToSet && Object.values(unAssignedFilterToSet)[0],
             [InvestigationsFilterByFields.INACTIVE_USER]: inActiveToSet && Object.values(inActiveToSet)[0],
             [InvestigationsFilterByFields.UNALLOCATED_USER]: unAllocatedToSet && Object.values(unAllocatedToSet)[0],
+            [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: updateDateFilterToSet && Object.values(updateDateFilterToSet)[0],
+            [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: nonContactFilterToSet && Object.values(nonContactFilterToSet)[0],
         }
     }
     
@@ -186,6 +194,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const isLoggedIn = useSelector<StoreStateType, boolean>(state => state.user.isLoggedIn);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
+    const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
     const windowTabsBroadcastChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
@@ -202,6 +211,20 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         updateFilterHistory('timeRangeFilter', timeRangeFilter);
         setTimeRangeFilter(timeRangeFilter);
         handleFilterChange(filterCreators.TIME_RANGE(timeRangeFilter))
+        setCurrentPage(defaultPage);
+    };
+    
+    const changeUpdateDateFilter = (dateStringFilter: string) => {
+        updateFilterHistory('updateDateFilter', dateStringFilter);
+        setUpdateDateFilter(dateStringFilter);
+        handleFilterChange(filterCreators.UNUSUAL_IN_PROGRESS(dateStringFilter))
+        setCurrentPage(defaultPage);
+    };
+
+    const changeNonContactFilter = (isNonContact: boolean) => {
+        updateFilterHistory('nonContactFilter', isNonContact);
+        setNonContactFilter(isNonContact);
+        handleFilterChange(filterCreators.UNUSUAL_COMPLETED_NO_CONTACT(isNonContact))
         setCurrentPage(defaultPage);
     };
 
@@ -271,23 +294,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setIsAdminLandingRedirect(false);
     };
 
-    const fetchAllDesksByCountyId = () => {
-        const desksByCountyIdLogger = logger.setup('Getting Desks by county id');
-        axios.get('/desks/county')
-            .then((result) => {
-                if (result?.data && result.headers['content-type'].includes('application/json')) {
-                    desksByCountyIdLogger.info('The desks were fetched successfully', Severity.LOW);
-                    setAllDesks([{ id: null, deskName: 'לא שוייך לדסק' }, ...result.data]);
-                } else {
-                    desksByCountyIdLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
-                }
-            })
-            .catch((err) => {
-                alertError('לא הצלחנו לשלוף את כל הדסקים האפשריים לסינון');
-                desksByCountyIdLogger.error(err, Severity.HIGH);
-            })
-    }
-
     const canChangeStatusNewToInProcess = (investigationStatus: Number, investigationInvestigator?: string) => {
         return investigationStatus === InvestigationMainStatusCodes.NEW &&
             (user.userType === userType.INVESTIGATOR || investigationInvestigator === user.id);
@@ -332,7 +338,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     useEffect(() => {
         fetchAllInvestigationStatuses();
         fetchAllInvestigationSubStatuses();
-        fetchAllDesksByCountyId();
         startWaiting();
     }, []);
 
@@ -369,12 +374,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             orderBy,
             size: rowsPerPage,
             currentPage,
-            filterRules: Object.values(filterRules).reduce((obj, item) => Object.assign(obj, item) , {})
+            filterRules: Object.values(filterRules).reduce((obj, item) => Object.assign(obj, item) , {}),
         };
 
         if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
             investigationsLogger.info('user is admin so landingPage/groupInvestigations route is chosen', Severity.LOW);
-            return axios.post('landingPage/groupInvestigations', requestData)
+            return axios.post('landingPage/groupInvestigations', {...requestData, county: displayedCounty})
         }
 
         investigationsLogger.info('user isnt admin so landingPage/investigations route is chosen', Severity.LOW);
@@ -390,7 +395,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         countyUsersLogger.info('requesting the server the connected admin group users', Severity.LOW);
         const countyUsers: Map<string, User> = new Map();
         try {
-            const result = await axios.get('/users/group');
+            const result = await axios.get(`/users/group/${displayedCounty}`);
             if (result && result.data) {
                 result.data.forEach((user: any) => {
                     countyUsers.set(user.id, {
@@ -413,24 +418,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         .sort((fisrtUser, secondUser) => sortUsersByAvailability(fisrtUser[1], secondUser[1])));
         return sortedCountyUsers;
     }
-    
-    const fetchAllCounties = () => {
-        const fetchAllCountiesLogger = logger.setup('GraphQL request to the DB');
-        axios.get('/counties').then((result: any) => {
-            const allCounties: County[] = [];
-            result && result.data && result.data.forEach((county: any) => {
-                allCounties.push({
-                    id: county.id,
-                    displayName: `${county.district} - ${county.displayName}`
-                })
-            });
-            fetchAllCountiesLogger.info('fetched all the counties successfully', Severity.LOW);
-            setAllCounties(allCounties);
-        }).catch(err => {
-            fetchAllCountiesLogger.error(err, Severity.HIGH);
-            alertError(FETCH_ERROR_TITLE);
-        });
-    }
 
     const getFormattedDate = (date: string) => {
         return format(truncateDate(date), 'dd/MM')
@@ -440,9 +427,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const fetchInvestigationsLogger = logger.setup('Getting Investigations');
         if (isLoggedIn) {
             setIsLoading(true);
-            if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
-                fetchAllCounties();
-            }
             fetchInvestigationsLogger.info(`launching the selected request to the DB ordering by ${orderBy}`, Severity.LOW);
             fetchInvestigationsAxiosRequest()
                 .then((response: any) => {
@@ -451,7 +435,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     const { data } = response;
                     let allInvestigationsRawData: any = [];
 
-                    if (user.investigationGroup !== -1) {
+                    if (displayedCounty !== -1) {
                         fetchInvestigationsLogger.info('user investigation group is valid', Severity.LOW);
                         if (data && data.allInvestigations) {
                             fetchInvestigationsLogger.info('got investigations from the DB', Severity.LOW);
@@ -556,7 +540,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             fetchTableData();
         }
         setIsBadgeInVisible(!Boolean(Object.values(filterRules).find(item => item !== null)))
-    }, [isLoggedIn, filterRules, orderBy, currentPage]);
+    }, [isLoggedIn, filterRules, orderBy, currentPage, displayedCounty]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const investigationClickLogger = logger.setupVerbose({
@@ -661,24 +645,23 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const getInvestigationsOldValues = (investigations: InvestigationTableRow[], key: TableKeys, countyValue?: number) => (
+    const getInvestigationsOldValues = (investigations: InvestigationTableRow[], key: TableKeys, isCounty?: boolean) => (
         investigations
-        .map(investigation => `${investigation.epidemiologyNumber}: ${countyValue || convertToIndexedRow(investigation)[key as TableHeadersNames]}`)
+        .map(investigation => `${investigation.epidemiologyNumber}: ${isCounty ? investigation.county.id : convertToIndexedRow(investigation)[key as TableHeadersNames]}`)
         .join(', ')
     )
 
     const logInvestigationTransfer = (epidemiologyNumbers: number[], key: TableKeys, newValue: number | string, reason?: string) => {
-        const countyValue : number | undefined = key  === HiddenTableKeys.county ? user.investigationGroup : undefined;
         const investigations =  rows.filter(investigation => epidemiologyNumbers.includes(investigation.epidemiologyNumber))
-        const investigationsPreviousValues = getInvestigationsOldValues(investigations, key, countyValue);
+        const investigationsPreviousValues = getInvestigationsOldValues(investigations, key, key  === HiddenTableKeys.county);
         return `launching request to transfer the investigations ${key} to ${newValue} from their old values: {${investigationsPreviousValues}} ${reason ? `due to ${reason}` : ''}`;
     }
 
     const logGroupTransfer = (groupIds: string[], key: TableKeys, newValue: number | string, reason?: string) => {
-        const countyValue = key  === HiddenTableKeys.county ? user.investigationGroup : undefined;
         const groups =  Array.from(allGroupedInvestigations.keys()).filter(groupId => groupIds.includes(groupId))
         const investigationsPreviousValues = groups
-        .map(groupId => `group ${groupId}- investigations:{${getInvestigationsOldValues(allGroupedInvestigations.get(groupId) as InvestigationTableRow[], key, countyValue)}}`)
+        .map(groupId => `group ${groupId}- investigations:{${getInvestigationsOldValues
+            (allGroupedInvestigations.get(groupId) as InvestigationTableRow[], key, key  === HiddenTableKeys.county)}}`)
         .join(', ');
         return `launching request to transfer the groups investigations ${key} to ${newValue} from their old values: ${investigationsPreviousValues} ${reason ? `due to ${reason}` : ''}`;
     }
@@ -696,6 +679,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             await axios.post('/users/changeGroupInvestigator', {
                 groupIds,
                 user: investigator?.id,
+                county: displayedCounty
             });
             changeGroupsInvestigatorLogger.info(`the investigator have been changed successfully for groups ${joinedGroupIds}`, Severity.LOW);
         } catch (error) {
@@ -731,7 +715,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             await axios.post('/landingPage/changeGroupDesk', {
                 groupIds,
                 desk: newSelectedDesk?.id,
-                reason: transferReason
+                reason: transferReason,
+                county: displayedCounty
             });
             changeDeskLogger.info(logGroupTransfer(groupIds, TableHeadersNames.investigationDesk, newSelectedDesk?.deskName || '', transferReason), Severity.LOW);
             setSelectedRow(DEFAULT_SELECTED_ROW);
@@ -747,8 +732,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         try {
             axios.post('/users/changeGroupCounty', {
                 groupIds,
-                county: newSelectedCounty?.id,
-                transferReason
+                county: displayedCounty,
+                transferReason,
             });
             changeCountyLogger.info(logGroupTransfer(groupIds, HiddenTableKeys.county, newSelectedCounty?.id || '', transferReason), Severity.LOW);
             setSelectedRow(DEFAULT_SELECTED_ROW);
@@ -980,6 +965,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeInvestigationsInvestigator,
         statusFilter,
         subStatusFilter,
+        changeSubStatusFilter,
         changeStatusFilter,
         deskFilter,
         changeDeskFilter,
@@ -993,7 +979,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         tableTitle, 
         timeRangeFilter,
         isBadgeInVisible,
-        changeSubStatusFilter
+        nonContactFilter,
+        changeNonContactFilter,
+        updateDateFilter,
+        changeUpdateDateFilter,
     };
 };
 

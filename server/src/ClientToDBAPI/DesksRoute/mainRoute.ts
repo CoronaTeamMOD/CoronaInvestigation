@@ -26,14 +26,13 @@ router.get('/', (request: Request, response: Response) => {
     })
 });
 
-router.get('/county', (request: Request, response: Response) => {
+router.post('/county', (request: Request, response: Response) => {
     const countyLogger = logger.setup({
         workflow: 'query desks by county id',
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    
-    const parameters = { countyId: +response.locals.user.investigationGroup };
+    const parameters = { countyId: request.body.countyId };
     countyLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     graphqlRequest(DESKS_BY_COUNTY_ID, response.locals, parameters)
     .then((res: GetAllDesks) => {

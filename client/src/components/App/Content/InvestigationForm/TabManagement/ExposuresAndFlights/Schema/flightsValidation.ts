@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-import { subDays } from 'date-fns';
+import { subDays, addDays } from 'date-fns';
 import { fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 
 const endDateBeforeValidationDateText = 'תאריך לא יכול להיות יותר גדול מתאריך תחילת מחלה';
@@ -8,7 +8,11 @@ const twoWeeksBeforeValidationDateText = 'תאריך לא יכול להיות י
 const requiredErrorMessage = 'שדה חובה';
 const EndDateBeforeStartDateText = 'זמן הנחיתה  צריך להיות לאחר זמן ההמראה';
 
+
 const flightValidation = (validationDate: Date): yup.Schema<any, object> => {
+    const twoWeeksBeforeValidationDate = subDays(new Date(validationDate), 14);
+    const includeValidationDate = addDays(new Date(validationDate), 1);
+
     return yup.object().shape({
         [fieldsNames.airline]: yup.string().nullable(),
         [fieldsNames.destinationAirport]: yup
@@ -25,12 +29,12 @@ const flightValidation = (validationDate: Date): yup.Schema<any, object> => {
             .date()
             .nullable()
             .required(requiredErrorMessage)
-            .max(validationDate, endDateBeforeValidationDateText)
-            .min(subDays(new Date(validationDate), 14), twoWeeksBeforeValidationDateText),
+            .max(includeValidationDate, endDateBeforeValidationDateText)
+            .min(twoWeeksBeforeValidationDate, twoWeeksBeforeValidationDateText),
         [fieldsNames.flightEndDate]: yup.date().when(fieldsNames.flightStartDate, (flightStartDate: Date) => {
-            return new Date(subDays(new Date(validationDate), 14)) > flightStartDate ?
-            yup.date().min(subDays(new Date(validationDate), 14), twoWeeksBeforeValidationDateText).required(requiredErrorMessage) :
-            yup.date().min(flightStartDate, EndDateBeforeStartDateText).max(validationDate, endDateBeforeValidationDateText).required(requiredErrorMessage)
+            return new Date(twoWeeksBeforeValidationDate) > flightStartDate ?
+            yup.date().min(twoWeeksBeforeValidationDate, twoWeeksBeforeValidationDateText).required(requiredErrorMessage) :
+            yup.date().min(flightStartDate, EndDateBeforeStartDateText).max(includeValidationDate, endDateBeforeValidationDateText).required(requiredErrorMessage)
         }),
     });
 };

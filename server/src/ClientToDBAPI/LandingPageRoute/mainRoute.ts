@@ -7,7 +7,7 @@ import { convertUserInvestigationsData, convertGroupInvestigationsData } from '.
 import { CHANGE_DESK_ID, UPDATE_DESK_BY_GROUP_ID } from '../../DBService/LandingPage/Mutation';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
-import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS, GET_INVESTIGATION_STATISTICS, GET_UNALLOCATED_INVESTIGATIONS_COUNT, GET_ALL_INVESTIGATION_SUB_STATUS } from '../../DBService/LandingPage/Query';
+import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS, GET_INVESTIGATION_STATISTICS, GET_ALL_INVESTIGATION_SUB_STATUS } from '../../DBService/LandingPage/Query';
 
 const landingPageRoute = Router();
 
@@ -60,14 +60,14 @@ landingPageRoute.post('/groupInvestigations', adminMiddleWare, (request: Request
         investigation: response.locals.epidemiologynumber
     })
 
-    const { orderBy, size, currentPage, filterRules } = request.body;
+    const { orderBy, size, currentPage, filterRules, county } = request.body;
     const filterBy = {
         ...filterRules,
         userByCreator: {
             ...filterRules.userByCreator,
             countyByInvestigationGroup: {
                 id: {
-                    equalTo: +response.locals.user.investigationGroup
+                    equalTo: +county
                 }
             }
         },
@@ -81,7 +81,7 @@ landingPageRoute.post('/groupInvestigations', adminMiddleWare, (request: Request
     };
     groupInvestigationsLogger.info(launchingDBRequestLog(getInvestigationsParameters), Severity.LOW);
 
-    graphqlRequest(GROUP_INVESTIGATIONS(+response.locals.user.investigationGroup), response.locals, getInvestigationsParameters)
+    graphqlRequest(GROUP_INVESTIGATIONS(+county), response.locals, getInvestigationsParameters)
         .then(result => {
             groupInvestigationsLogger.info(validDBResponseLog, Severity.LOW);
             response.send({
@@ -165,7 +165,7 @@ landingPageRoute.post('/changeGroupDesk', adminMiddleWare, (request: Request, re
     const parameters = { 
         desk: request.body.desk,
         selectedGroups: request.body.groupIds,
-        userCounty: response.locals.user.investigationGroup, 
+        userCounty: request.body.county, 
         reason:  request.body.reason || ''
     }
     changeGroupDeskLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
@@ -189,6 +189,8 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
 
     const desks = request.body.deskFilter;
     const timeRange = request.body.timeRangeFilter; 
+    const county = request.body.county; 
+    const dateFilter = new Date(Date.now() - (4 * 60 * 60 * 1000)).toUTCString();
 
     const desksFilter = desks
                         ? { deskId : { in : desks}} 
@@ -198,27 +200,35 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
                         ? { creationDate: { greaterThanOrEqualTo: timeRange.startDate, lessThanOrEqualTo: timeRange.endDate }} 
                         : {};
     
+    const lastUpdateDateFilter = {
+        lastUpdateTime: {
+            lessThan: dateFilter
+        }
+    };
+    
     const userFilters = {
         userByCreator: {
             countyByInvestigationGroup: {
-                id: {equalTo: response.locals.user.investigationGroup}
+                id: {equalTo: county}
             }
         },
         ...desksFilter,
         ...timeRangeFilter
-    }
+    };
+
     const parameters = { userFilters, allInvesitgationsFilter: userFilters };
     investigationsStatisticsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
-    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, { userFilters, allInvesitgationsFilter: userFilters })
+    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, { userFilters, 
+                                                                    allInvesitgationsFilter: userFilters, 
+                                                                    lastUpdateDateFilter: lastUpdateDateFilter})
     .then((results) => {
-        investigationsStatisticsLogger.info(validDBResponseLog, Severity.LOW);
         const {data: preprocessedResults} = results;
         const outcome: any = {};
         Object.keys(preprocessedResults).forEach(preprocessedResult => {
             outcome[preprocessedResult] = preprocessedResults[preprocessedResult].totalCount;
         })
-        response.send(outcome);
+        response.send(outcome); 
     })
     .catch(error => {
         investigationsStatisticsLogger.error(invalidDBResponseLog(error), Severity.HIGH)

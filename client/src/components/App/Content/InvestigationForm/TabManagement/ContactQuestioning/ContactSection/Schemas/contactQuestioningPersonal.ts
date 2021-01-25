@@ -1,5 +1,6 @@
 import * as yup from 'yup';
 
+import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import ContactIdValidationSchema from 'Utils/Contacts/ContactIdValidationSchema';
 import { notRequiredPhoneNumberRegex, phoneNumberRegex } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
@@ -11,7 +12,7 @@ export const contactQuestioningPersonal = {
         .when(
             [InteractedContactFields.CONTACT_STATUS, InteractedContactFields.DOES_NEED_ISOLATION],
             (contactStatus: number, needIsolation: boolean, schema: any, { originalValue }: { originalValue: string }) => {
-                return contactStatus === 5 || (originalValue === '' && !needIsolation)
+                return contactStatus === ContactStatusCodes.COMPLETED || (originalValue === '' && !needIsolation)
                     ? yup.string().nullable()
                     : ContactIdValidationSchema;
             }
@@ -22,7 +23,7 @@ export const contactQuestioningPersonal = {
         .when(
             [InteractedContactFields.CONTACT_STATUS, InteractedContactFields.DOES_NEED_ISOLATION],
             (contactStatus: number, needIsolation: boolean, schema: any, { originalValue }: { originalValue: string }) => {
-                return contactStatus === 5 || (originalValue === '' && !needIsolation)
+                return contactStatus === ContactStatusCodes.COMPLETED || (originalValue === '' && !needIsolation)
                     ? yup.string().nullable()
                     : yup.string().nullable().matches(phoneNumberRegex, 'מספר טלפון לא תקין');
             }

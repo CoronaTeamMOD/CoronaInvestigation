@@ -12,7 +12,7 @@ const TITLE = 'העברת חקירות';
 
 const TransferInvestigationDialog = (props: Props) => {
 
-    const { allDesks, allCounties, open, onClose, onDeskTransfer, onCountyTransfer, onSuccess } = props;
+    const { allDesks, open, onClose, onDeskTransfer, onCountyTransfer, onSuccess } = props;
 
     const classes = useStyles();
 
@@ -27,7 +27,6 @@ const TransferInvestigationDialog = (props: Props) => {
                 <TransferInvestigationTabs
                     open={open}
                     allDesks={allDesks}
-                    allCounties={allCounties}
                     onDeskTransfer={onDeskTransfer}
                     onCountyTransfer={onCountyTransfer}
                     onClose={onClose}
@@ -44,7 +43,6 @@ interface Props {
     onDeskTransfer: (updatedDesk: Desk, transferReason: string) => void;
     onCountyTransfer: (updatedCounty: County, transferReason: string) => void;
     allDesks: Desk[];
-    allCounties: County[];
     onSuccess: () => Promise<SweetAlertResult<any>>
 
 }

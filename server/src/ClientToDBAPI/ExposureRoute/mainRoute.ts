@@ -8,10 +8,12 @@ import CovidPatient from '../../Models/Exposure/CovidPatient';
 import { UPDATE_EXPOSURES } from '../../DBService/Exposure/Mutation';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import ExposureByInvestigationId from '../../Models/Exposure/ExposureByInvestigationId';
+import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS } from '../../DBService/Exposure/Query';
 import CovidPatientDBOutput, { AddressDBOutput } from '../../Models/Exposure/CovidPatientDBOutput';
 import OptionalExposureSourcesResponse from '../../Models/Exposure/OptionalExposureSourcesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
+import { parse } from 'dotenv/types';
 
 const exposureRoute = Router();
 
@@ -44,14 +46,15 @@ const convertExposuresFromDB = (result: ExposureByInvestigationId) : Exposure[] 
     return convertedExposures
 }
 
-exposureRoute.get('/exposures/:investigationId', (request: Request, response: Response) => {
+exposureRoute.get('/exposures', handleInvestigationRequest, (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const exposuresLogger = logger.setup({
         workflow: 'query all exposures of investigation',
         user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber
+        investigation: epidemiologyNumber
     });
 
-    const parameters = {investigationId: parseInt(request.params.investigationId)};
+    const parameters = {investigationId: epidemiologyNumber};
     exposuresLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_EXPOSURE_INFO, response.locals, parameters)
@@ -65,15 +68,6 @@ exposureRoute.get('/exposures/:investigationId', (request: Request, response: Re
         })
     }
 );
-
-const convertSearchValueToRegex = (searchValue: string, isPhoneOrIdentityNumber: boolean) => {
-    let searchRegexContent : string;
-    if (isPhoneOrIdentityNumber) {
-        searchRegexContent = searchValue;
-    }
-    else searchRegexContent = searchValue.replace(new RegExp(invalidCharsRegex, 'g'), '%');
-    return `%${searchRegexContent}%`
-}
 
 const createAddressString = (address: AddressDBOutput) : string => {
     const addressParts = [];
@@ -107,7 +101,7 @@ const filterCovidPatientsByRegex = (searchValue: string, patientsToFilter: Covid
     return patientsToFilter.filter(patient => complicatedRegex.test(patient.fullName) === true);
 }
 
-exposureRoute.get('/optionalExposureSources/:searchValue/:validationDate', (request: Request, response: Response) => {
+exposureRoute.get('/optionalExposureSources/:searchValue/:validationDate', handleInvestigationRequest, (request: Request, response: Response) => {
     const searchValue : string = request.params.searchValue || '';
     const searchInt = isNaN(parseInt(searchValue)) ? 0 : parseInt(searchValue);
     const isPhoneOrIdentityNumber = phoneOrIdentityNumberRegex.test(searchValue);
@@ -147,7 +141,7 @@ const convertExposuresToDB = (request: Request) => {
     return {...request.body, exposures: convertedExposures}
 }
 
-exposureRoute.post('/updateExposures', (request: Request, response: Response) => {
+exposureRoute.post('/updateExposures',handleInvestigationRequest, (request: Request, response: Response) => {
     const updateExposuresLogger = logger.setup({
         workflow: `saving investigation's exposures`,
         user: response.locals.user.id,

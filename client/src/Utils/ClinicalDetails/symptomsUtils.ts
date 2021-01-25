@@ -11,12 +11,12 @@ export const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDa
         const endInvestigationDate = new Date();
         let startInvestigationDate= new Date();
         if (doesHaveSymptoms === true) {
-            if (symptomsStartDate  && symptomsStartDate < validationDate)
-                startInvestigationDate = subDays(new Date(symptomsStartDate), symptomsWithKnownStartDate);
+            if (symptomsStartDate && symptomsStartDate < validationDate)
+                startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
             else
-                startInvestigationDate = subDays(new Date(validationDate), symptomsWithUnknownStartDate)
+                startInvestigationDate = subDays(validationDate, symptomsWithUnknownStartDate)
         } else {
-            startInvestigationDate = subDays(new Date(validationDate), nonSymptomaticPatient)
+            startInvestigationDate = subDays(validationDate, nonSymptomaticPatient)
         }
         try {
             return eachDayOfInterval({ start: startOfDay(startInvestigationDate), end: endInvestigationDate }).sort(compareDesc);

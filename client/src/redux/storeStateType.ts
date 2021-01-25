@@ -1,14 +1,15 @@
+import Desk from 'models/Desk';
 import City from 'models/City';
 import Country from 'models/Country';
-import FlattenedDBAddress from 'models/DBAddress';
 import ContactType from 'models/ContactType';
+import CountyReducer from 'models/CountyReducer';
+import FlattenedDBAddress from 'models/DBAddress';
+import EducationGrade from 'models/EducationGrade';
 import InvestigationRedux from 'models/InvestigationRedux';
+import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
 import { UserState } from './User/userReducer';
-import EducationGrade from 'models/EducationGrade';
-import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
-
 export default interface StoreStateType {
     user: UserState;
     isLoading: boolean;
@@ -25,4 +26,6 @@ export default interface StoreStateType {
     formsValidations: { [key: number]: (boolean | null)[] };
     address: FlattenedDBAddress;
     educationGrades: EducationGrade[];
+    county: CountyReducer;
+    desk: Desk[]
 };

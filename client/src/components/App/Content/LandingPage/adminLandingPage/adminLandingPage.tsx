@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Grid, Typography } from '@material-ui/core';
 
-import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
+import StoreStateType from 'redux/storeStateType';
 import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 import InvestigationStatistics, { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 
 import useStyles from './adminLandingPageStyles';
+import UnusualCard from './UnusualCard/UnusualCard';
 import useAdminLandingPage from './useAdminLandingPage';
+import PostponedCard from './PostponedCard/PostponedCard';
 import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import LastUpdateMessage from './LastUpdateMessage/LastUpdateMessage';
@@ -24,16 +27,21 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
         newInvestigations: 0,
         unassignedInvestigations: 0,
         unallocatedInvestigations: 0,
+        unusualInProgressInvestigations: 0,
+        unusualCompletedNoContactInvestigations: 0,
+        transferRequestInvestigations: 0,
+        waitingForDetailsInvestigations: 0,
     });
     const [lastUpdated , setLastUpdated] = useState<Date>(new Date());
 
-    const { countyDisplayName } = useAppToolbar();
     const { redirectToInvestigationTable , fetchInvestigationStatistics, 
             updateInvestigationFilterByDesks, updateInvestigationFilterByTime} = useAdminLandingPage({
         setIsLoading,
         setInvestigationsStatistics,
         setLastUpdated,
     });
+
+    const countyDisplayName = useSelector<StoreStateType, string>(state => state.user.data.countyByInvestigationGroup.displayName);
 
     return (
         <div className={classes.content}>
@@ -63,11 +71,30 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                         onUpdateButtonClicked={updateInvestigationFilterByTime}
                     />
                 </Grid>
-                <Grid item xs={6} md={3}>
-                    <UnallocatedCard
+                <Grid item xs={3} md={2}>
+                    <div>
+                        <UnallocatedCard
+                            isLoading={isLoading}
+                            onClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNALLOCATED)} 
+                            unallocatedInvestigationsCount={investigationsStatistics.unallocatedInvestigations}
+                        />
+                    </div>
+                    <div className={classes.gridContainer}>
+                        <PostponedCard
+                            isLoading={isLoading}
+                            onClick={(infoFilter, FilterRulesDescription) => redirectToInvestigationTable(infoFilter, FilterRulesDescription)} 
+                            transferRequestInvestigationsCount={investigationsStatistics.transferRequestInvestigations}
+                            waitingForDetailsInvestigationsCount={investigationsStatistics.waitingForDetailsInvestigations}
+                        />
+                    </div>
+                </Grid>
+                <Grid item xs={3} md={2}>
+                    <UnusualCard
                         isLoading={isLoading}
-                        onClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNALLOCATED)} 
-                        unallocatedInvestigationsCount={investigationsStatistics.unallocatedInvestigations}
+                        onUnusualCompletedNoContactInvestigationsClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT)} 
+                        onUnusualInProgressInvestigationsClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNUSUAL_IN_PROCESS)} 
+                        unusualInProgressInvestigationsCount={investigationsStatistics.unusualInProgressInvestigations}
+                        unusualCompletedNoContactInvestigationsCount={investigationsStatistics.unusualCompletedNoContactInvestigations}
                     />
                 </Grid>
             </Grid>

@@ -1,25 +1,23 @@
+import axios from 'axios';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import axios from 'axios';
-import { persistor } from 'redux/store';
 
 import User from 'models/User';
 import logger from 'logger/logger';
+import { persistor } from 'redux/store';
 import { Severity } from 'models/Logger';
 import { indexRoute } from 'Utils/Routes/Routes';
 import StoreStateType from 'redux/storeStateType';
+import { UserState } from 'redux/User/userReducer';
 import { setIsActive } from 'redux/User/userActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import { UserState } from 'redux/User/userReducer';
 
 export interface useTopToolbarOutcome  {
     logout: () => void;
     setUserActivityStatus: (isActive: boolean) => Promise<any>;
-    getCountyByUser: () => void;
     user: User;
     isActive: boolean | null;
-    countyDisplayName: string;
 }
 
 const useAppToolbar = () :  useTopToolbarOutcome => {
@@ -27,13 +25,10 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     const history = useHistory();
     const { alertError } = useCustomSwal();
     
-    const [countyDisplayName, setCountyDisplayName] = React.useState<string>('');
-
     const getUserActivityStatusLogger = logger.setup('GraphQL request to the DB');
 
     React.useEffect(() => {
         if (user.isLoggedIn) {
-            getCountyByUser();
             getUserActivityStatus();
         }
     }, [user.isLoggedIn]);
@@ -75,27 +70,11 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
         });
     }
 
-    const getCountyByUser = () => {
-        const getCountyByUserLogger = logger.setup('GraphQL request to the DB');
-        getCountyByUserLogger.info('started fetching county display name by user', Severity.LOW);
-        axios.get('counties/county/displayName').then((result) => {
-            if(result.data){
-                setCountyDisplayName(result.data);
-                getCountyByUserLogger.info('fetched county display name by user successfully', Severity.LOW);
-            }
-        }).catch((error) => {
-            alertError('לא הצלחנו לקבל את הלשכה שלך');
-            getCountyByUserLogger.error(`error in fetching county display name by user ${error}`, Severity.HIGH);
-        });
-    }
-
     return {
         user: user.data,
         isActive: user.data.isActive,
         logout,
         setUserActivityStatus,
-        getCountyByUser,
-        countyDisplayName
     }
 };
 

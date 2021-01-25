@@ -14,11 +14,11 @@ import React, { useMemo, useState, useRef, useEffect } from 'react';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
-import County from 'models/County';
 import userType from 'models/enums/UserType';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import SearchBar from 'commons/SearchBar/SearchBar';
+import useDesksUtils from 'Utils/Desk/useDesksUtils';
 import InvestigatorOption from 'models/InvestigatorOption';
 import { adminLandingPageRoute } from 'Utils/Routes/Routes';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
@@ -27,6 +27,7 @@ import InvestigationTableRowType from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import DeskFilter from './DeskFilter/DeskFilter';
 import useStyles from './InvestigationTableStyles';
@@ -60,13 +61,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [checkedIndexedRows, setCheckedIndexedRows] = useState<IndexedInvestigation[]>([]);
     const [selectedRow, setSelectedRow] = useState<SelectedRow>(DEFAULT_SELECTED_ROW);
     const [deskAutoCompleteClicked, setDeskAutoCompleteClicked] = useState<boolean>(false);
-    const [allCounties, setAllCounties] = useState<County[]>([]);
     const [order, setOrder] = useState<Order>(SortOrder.asc);
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
     const [allStatuses, setAllStatuses] = useState<InvestigationMainStatus[]>([]);
     const [allSubStatuses, setAllSubStatuses] = useState<InvestigationSubStatus[]>([]);
     const [showFilterRow, setShowFilterRow] = useState<boolean>(false);
-    const [allDesks, setAllDesks] = useState<Desk[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(defaultPage);
     const [checkGroupedInvestigationOpen, setCheckGroupedInvestigationOpen] = useState<number[]>([])
     const [allGroupedInvestigations, setAllGroupedInvestigations] = useState<Map<string, InvestigationTableRowType[]>>(new Map());
@@ -97,13 +96,19 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
         statusFilter, subStatusFilter, changeStatusFilter, changeSubStatusFilter, deskFilter, changeDeskFilter, changeSearchFilter,
         changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers,
-        tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter
+        tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter,updateDateFilter, nonContactFilter
     } = useInvestigationTable({
-        setSelectedRow, allGroupedInvestigations, setAllCounties, setAllStatuses,setAllSubStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations,
-        investigationColor
+        setSelectedRow, allGroupedInvestigations, setAllStatuses, currentPage, setCurrentPage, setAllGroupedInvestigations,
+        investigationColor, setAllSubStatuses
     });
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
+
+    const { countyDesks, displayedCounty } = useDesksUtils();
+
+    const desksToTransfer : Desk[] = useMemo(() =>
+        [...countyDesks, { id: null, deskName: 'לא שוייך לדסק', county: displayedCounty}]
+    , [countyDesks])
 
     const totalPageCount = Math.ceil(totalCount / rowsPerPage);
 
@@ -132,7 +137,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         const allUsersOfCountyArray: InvestigatorOption[] = Array.from(allCountyUsers, ([id, value]) => ({ id, value }));
         if (deskFilter.length > 0) {
             allUsersOfCountyArray.filter(({ value }) => {
-                if (!value.deskByDeskId) {
+                if (!value.deskByDeskId?.id) {
                     return false;
                 }
                 return deskFilter.includes(value.deskByDeskId.id);
@@ -260,7 +265,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={2} >
                     <DeskFilter
-                        desks={allDesks}
+                        desks={desksToTransfer}
                         filteredDesks={deskFilter}
                         onFilterChange={(event, value) => changeDeskFilter(value)} 
                     />
@@ -273,6 +278,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     </Typography>
                     <Box justifyContent='flex-end' display='flex'>
                         <SearchBar 
+                            validationSchema={stringAlphanum}
                             searchBarLabel={searchBarLabel}
                             onClick={(value: string) => changeSearchFilter(value)}
                         />
@@ -317,7 +323,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 inactiveUserFilter={inactiveUserFilter}
                                 unassignedUserFilter={unassignedUserFilter}
                                 timeRangeFilter={timeRangeFilter}
-                                onTimeRangeFilterChange={changeTimeRangeFilter} 
+                                onTimeRangeFilterChange={changeTimeRangeFilter}
+                                updateDateFilter={updateDateFilter}
+                                nonContactFilter={nonContactFilter} 
                             />
                         </Collapse>
                     </Grid>
@@ -363,7 +371,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             groupColor={investigationColor.current.get(indexedRow.groupId)}
                                             selected={selectedRow.epidemiologyNumber === indexedRow.epidemiologyNumber}
                                             deskAutoCompleteClicked={deskAutoCompleteClicked}
-                                            desks={allDesks}
+                                            desks={desksToTransfer}
                                             indexedRow={indexedRow}
                                             row={row}
                                             isGroupShown={isGroupShown}
@@ -408,13 +416,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                         groupColor={investigationColor.current.get(indexedRow.groupId)}
                                                         selected={selectedRow.epidemiologyNumber === indexedRow.epidemiologyNumber}
                                                         deskAutoCompleteClicked={deskAutoCompleteClicked}
-                                                        desks={allDesks}
+                                                        desks={desksToTransfer}
                                                         indexedRow={indexedGroupedInvestigationRow}
                                                         row={row}
                                                         isGroupShown={isGroupShown}
                                                         checked={isRowSelected(indexedRow.epidemiologyNumber)}
                                                         clickable={isGroupedRowClickable}
-                                                        disabled={user.investigationGroup !== row.county.id}
+                                                        disabled={displayedCounty !== row.county.id}
                                                         tableContainerRef={tableContainerRef}
                                                         allGroupedInvestigations={allGroupedInvestigations}
                                                         checkGroupedInvestigationOpen={checkGroupedInvestigationOpen}
@@ -455,8 +463,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             <Slide direction='up' in={checkedIndexedRows.length > 0} mountOnEnter unmountOnExit>
                 <InvestigationTableFooter
                     checkedIndexedRows={checkedIndexedRows}
-                    allDesks={allDesks}
-                    allCounties={allCounties}
+                    allDesks={desksToTransfer}
                     onDialogClose={() => setCheckedIndexedRows([])}
                     tableRows={tableRows}
                     fetchTableData={fetchTableData}

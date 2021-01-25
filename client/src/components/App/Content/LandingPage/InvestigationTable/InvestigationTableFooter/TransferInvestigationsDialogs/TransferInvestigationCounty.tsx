@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { SweetAlertResult } from 'sweetalert2';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
@@ -6,6 +7,7 @@ import { FormProvider, Controller, useForm } from 'react-hook-form';
 import { Button, DialogActions, TextField, Typography, useTheme } from '@material-ui/core';
 
 import County from 'models/County';
+import StoreStateType from 'redux/storeStateType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useStyles from './TransferDialogsStyles';
@@ -26,13 +28,15 @@ const TransferInvestigationCounty = (props: Props) => {
 
     const theme = useTheme();
 
-    const { allCounties, onClose, onConfirm, onSuccess } = props;
+    const { onClose, onConfirm, onSuccess } = props;
 
     const methods = useForm({
         mode: 'all',
         resolver: yupResolver(validationSchema),
         defaultValues
     })
+
+    const allCounties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
 
     const onDialogConfirm = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -125,7 +129,6 @@ const TransferInvestigationCounty = (props: Props) => {
 }
 
 interface Props {
-    allCounties: County[];
     onClose: () => void;
     onConfirm: (updatedCounty: County, transferReason: string) => void;
     onSuccess: () => Promise<SweetAlertResult<any>>

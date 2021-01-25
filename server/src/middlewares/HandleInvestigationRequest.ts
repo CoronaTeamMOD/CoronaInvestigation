@@ -27,20 +27,27 @@ export const handleInvestigationRequest = async (request: Request, response: Res
     }
 
     investigationMiddlewareLogger.info(launchingDBRequestLog({ epidemiologynumber }), Severity.LOW);
-    const { investigationGroup, id , err } = await fetchInvestigationCreatorDetails(response.locals , epidemiologynumber);
+    const { investigationGroup, id , err, districtId } = await fetchInvestigationCreatorDetails(response.locals , epidemiologynumber);
     if(err) {
         investigationMiddlewareLogger.info(invalidDBResponseLog(err), Severity.HIGH);
         response.sendStatus(errorStatusCode).json({ error: invalidDBResponseLog(err) });
     }
     investigationMiddlewareLogger.info(validDBResponseLog, Severity.LOW);
 
-    if (user.userType === UserType.ADMIN || user.userType === UserType.SUPER_ADMIN) {
+    if (user.userType === UserType.ADMIN) {
         if (user.investigationGroup === investigationGroup) {
             investigationMiddlewareLogger.info('user is admin and investigation is in his county', Severity.LOW);
             return next();
         }
         investigationMiddlewareLogger.info('user is admin but investigation is not in his county , returning 401', Severity.HIGH);
         return response.status(unauthorizedStatusCode).json({ error: "unauthorized user - investigation is not in user's investigation group" });
+    }  else if (user.userType === UserType.SUPER_ADMIN) {
+        if (user.countyByInvestigationGroup.districtId === districtId) {
+            investigationMiddlewareLogger.info('user is  super admin and investigation is in his district', Severity.LOW);
+            return next();
+        }
+        investigationMiddlewareLogger.info('user is super admin but investigation is not in his district , returning 401', Severity.HIGH);
+        return response.status(unauthorizedStatusCode).json({ error: "unauthorized user - investigation is not in user's district" });
     } else {
         if (user.id === id) {
             investigationMiddlewareLogger.info('user is creator of the investigation', Severity.LOW);
@@ -51,10 +58,12 @@ export const handleInvestigationRequest = async (request: Request, response: Res
     }
 };
 
-const fetchInvestigationCreatorDetails = async (locals : any , epidemiologynumber : number) : Promise<{investigationGroup : number , id : string , err? : any}>=> {
+const fetchInvestigationCreatorDetails = async (locals : any , epidemiologynumber : number) : Promise<{investigationGroup : number , id : string, districtId: number, err? : any}>=> {
     return await graphqlRequest(GET_INVESTIGATION_CREATOR, locals, { epidemiologynumber })
     .then(result => {
-        return  result.data.investigationByEpidemiologyNumber?.userByCreator || { err : 'investigation wasnt found' };
+        return  result.data.investigationByEpidemiologyNumber?.userByCreator ?
+        {...result.data.investigationByEpidemiologyNumber?.userByCreator, districtId: result.data.investigationByEpidemiologyNumber?.userByCreator.districtId?.districtId}
+        : { err : 'investigation wasnt found' };
     })
     .catch((err) => {
         return { err }

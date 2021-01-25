@@ -1,10 +1,14 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { ExitToApp, Home, SupervisorAccount } from '@material-ui/icons';
 import { NavLink, NavLinkProps, useLocation, useHistory } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Tooltip, IconButton } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Tooltip, IconButton, Select, MenuItem } from '@material-ui/core';
 
+import County from 'models/County';
 import UserType from 'models/enums/UserType';
+import StoreStateType from 'redux/storeStateType';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
+import { setDisplayedCounty } from 'redux/User/userActionCreators';
 import { adminLandingPageRoute, landingPageRoute, usersManagementRoute, indexRoute } from 'Utils/Routes/Routes';
 
 import useStyles from './AppToolbarStyles';
@@ -35,7 +39,11 @@ const StatePersistentNavLink = (props: NavLinkProps) => {
 };
 
 const AppToolbar: React.FC = (): JSX.Element => {
-  const { user, isActive, logout, setUserActivityStatus, countyDisplayName } = useAppToolbar();
+  const { user, isActive, logout, setUserActivityStatus } = useAppToolbar();
+
+  const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
+  const districtCounties = useSelector<StoreStateType, County[]>(state => state.county.districtCounties);
+  const countyDisplayName = useSelector<StoreStateType, string>(state => state.user.data.countyByInvestigationGroup.displayName);
 
   const classes = useStyles();
   const location = useLocation();
@@ -81,10 +89,42 @@ const AppToolbar: React.FC = (): JSX.Element => {
           <Typography className={classes.greetUserText}>
             שלום, {user.userName}
           </Typography>
-          {countyDisplayName &&
-            <Typography>
-              הינך מחובר/ת לנפת <b>{countyDisplayName}</b>
-            </Typography>
+          {
+            user.userType === UserType.SUPER_ADMIN ?
+              <Select
+                className={classes.countySelect}
+                value={displayedCounty}
+                onChange={(event) => setDisplayedCounty(event.target.value as number)}
+                classes={{icon: classes.countySelect}}
+                disableUnderline
+                MenuProps={{
+                  anchorOrigin: {
+                      vertical: 'bottom',
+                      horizontal: 'left'
+                  },
+                  transformOrigin: {
+                    vertical: 'top',
+                    horizontal: 'left'
+                  },
+                  getContentAnchorEl: null
+                }}
+                renderValue={(value) => 
+                  <Typography>נפת <b>{districtCounties.find(county => county.id === value)?.displayName}</b></Typography>
+                }
+              >
+                {
+                  districtCounties.map(county => 
+                    <MenuItem key={county.id} value={county.id}>
+                        {`נפת  ${county.displayName}`}
+                    </MenuItem>
+                  )
+                }
+              </Select>
+            :
+              countyDisplayName &&
+              <Typography>
+                הינך מחובר/ת לנפת <b>{countyDisplayName}</b>
+              </Typography>
           }
         </div>
       </Toolbar>

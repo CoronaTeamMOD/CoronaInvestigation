@@ -19,6 +19,7 @@ query GetUser($id: String!) {
       userName
       userType
       countyByInvestigationGroup {
+        displayName
         districtId
       }
     }
@@ -62,51 +63,6 @@ query allLanguages {
 }
 `;
 
-export const GET_USERS_BY_DISTRICT_ID = gql`
-query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter: UserFilter!) {
-  allUsers(
-    first: $size, 
-    offset: $offset, 
-    orderBy: $orderBy,
-    filter: $filter
-  ) {
-    nodes {
-      id
-      fullName
-      userName
-      phoneNumber
-      mail
-      identityNumber
-      isActive
-      cityByCity {
-        displayName
-      }
-      isActive
-      userLanguagesByUserId {
-        nodes {
-          language
-        }
-      }
-      userTypeByUserType {
-        displayName
-      }
-      countyByInvestigationGroup {
-        id,
-        displayName
-      }
-      sourceOrganizationBySourceOrganization {
-        displayName
-      }
-      deskByDeskId {
-        id,
-        deskName
-      }
-    }
-    totalCount
-  }
-}
-`;
-
 export const GET_USERS_BY_COUNTY_ID = gql`
 query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter: UserFilter!) {
   allUsers(
@@ -124,7 +80,8 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter:
       identityNumber
       isActive
       cityByCity {
-        displayName
+        displayName,
+        id
       }
       isActive
       userLanguagesByUserId {

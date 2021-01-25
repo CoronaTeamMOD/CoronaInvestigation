@@ -24,10 +24,10 @@ const UnallocatedCard: React.FC<Props> = (props: Props): JSX.Element => {
                 <div onClick={() => onClick(statusToFilterConvertor[FilterRulesDescription.UNALLOCATED])}>
                     <div className={classes.investigationAmount}>
                         <Typography className={classes.investigationNumberText}><b>{unallocatedInvestigationsCount}</b></Typography>
-                        <Typography className={classes.investigationAmountText}><b>חקירות</b></Typography>
+                        <Typography><b>חקירות</b></Typography>
                     </div>
                     <Box display='flex'>
-                        <Typography><b>{FilterRulesDescription.UNALLOCATED}</b></Typography>
+                        <Typography className={classes.investigationText}><b>{FilterRulesDescription.UNALLOCATED}</b></Typography>
                         <NavigateBeforeIcon className={classes.navigateIcon} />
                     </Box>
                 </div>

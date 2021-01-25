@@ -77,6 +77,9 @@ query InvestigationCreator($epidemiologynumber: Int!) {
     userByCreator {
       investigationGroup
       id
+      districtId: countyByInvestigationGroup {
+        districtId
+      }
     }
   }
 }

@@ -234,14 +234,15 @@ investigationInfo.post('/resorts', handleInvestigationRequest, (request: Request
         })
 });
 
-investigationInfo.get('/interactionsTabSettings/:id', handleInvestigationRequest, (request: Request, response: Response) => {
+investigationInfo.get('/interactionsTabSettings', handleInvestigationRequest, (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const settingsFamilyLogger = logger.setup({
         workflow: `query investigation's interactions tab settings`,
         user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber
+        investigation: epidemiologyNumber
     });
 
-    const parameters = {id: parseInt(request.params.id)};
+    const parameters = {id: epidemiologyNumber};
     settingsFamilyLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_INVESTIGAION_SETTINGS_FAMILY_DATA, response.locals, parameters)
@@ -255,13 +256,14 @@ investigationInfo.get('/interactionsTabSettings/:id', handleInvestigationRequest
 });
 
 investigationInfo.post('/investigationSettingsFamily', handleInvestigationRequest, (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const settingsFamilyLogger = logger.setup({
         workflow: 'save investigation settings family data',
         user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber,
+        investigation: epidemiologyNumber,
     });
 
-    const queryVariables = {...request.body};
+    const queryVariables = {...request.body , id : epidemiologyNumber};
     settingsFamilyLogger.info(launchingDBRequestLog(queryVariables), Severity.LOW);
 
     return graphqlRequest(UPDATE_INVESTIGAION_SETTINGS_FAMILY_DATA, response.locals, queryVariables)
