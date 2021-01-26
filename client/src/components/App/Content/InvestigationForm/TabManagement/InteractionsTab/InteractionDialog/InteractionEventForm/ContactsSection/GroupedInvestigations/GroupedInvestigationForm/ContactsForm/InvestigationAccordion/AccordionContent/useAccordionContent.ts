@@ -4,15 +4,15 @@ import ContactEvent from 'models/GroupedInvestigationContacts/ContactEvent';
 import { groupedInvestigationsContext } from 'commons/Contexts/GroupedInvestigationFormContext';
 
 const useAccordionContent = (props: Props) => {
-    const { allContactIds } = useContext(groupedInvestigationsContext);
-    const { selectedRows , events } = props;
+    const { allContactIds , groupedInvestigationContacts } = useContext(groupedInvestigationsContext);
+    const { events } = props;
     const getCurrentSelectedRowsLength = () => {
         let count = 0;
         events.forEach(
             event => event.contactedPeopleByContactEvent.nodes.forEach(
                 person => {
                     const { id } = person;
-                    selectedRows.includes(id) && count++;
+                    groupedInvestigationContacts.includes(id) && count++;
                 }
             )
         );
@@ -34,7 +34,6 @@ const useAccordionContent = (props: Props) => {
 }
 
 interface Props {
-    selectedRows : number[];
     events : ContactEvent[];
 }
 

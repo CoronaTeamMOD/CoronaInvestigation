@@ -28,6 +28,9 @@ const InteractionDialog = (props: Props) => {
     const [isAddingContacts, setIsAddingContacts] = React.useState(false);
     const [groupedInvestigationContacts, setGroupedInvestigationContacts] = useState<number[]>([]);
     const groupedInvestigationsContextState = useContext(groupedInvestigationsContext);
+    groupedInvestigationsContextState.groupedInvestigationContacts = groupedInvestigationContacts;
+    groupedInvestigationsContextState.setGroupedInvestigationContacts = setGroupedInvestigationContacts;
+
     const methods = useForm<InteractionEventDialogData>({
         defaultValues: interactionData,
         mode: 'all',
@@ -182,8 +185,6 @@ const InteractionDialog = (props: Props) => {
                         />
                         <ContactsTabs 
                             isVisible={isAddingContacts}
-                            groupedInvestigationContacts={groupedInvestigationContacts}
-                            setGroupedInvestigationContacts={setGroupedInvestigationContacts}
                         />
                     </form>
                 </DialogContent>

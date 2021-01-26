@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Typography } from '@material-ui/core';
 
-import { IdToCheck } from 'Utils/Contacts/useDuplicateContactId';
+import { groupedInvestigationsContext } from 'commons/Contexts/GroupedInvestigationFormContext';
 import ConnectedInvestigation from 'models/GroupedInvestigationContacts/ConnectedInvestigation';
 
 import InvestigationAccordion from './InvestigationAccordion/InvestigationAccordion';
@@ -9,8 +9,8 @@ import InvestigationAccordion from './InvestigationAccordion/InvestigationAccord
 const formHeadline = 'מאומתים המקובצים לחקירה :';
 
 const ContactsForm = (props: Props) => {
-    const { investigations , reason ,groupedInvestigationContacts, setGroupedInvestigationContacts} = props;
-
+    const { investigations , reason } = props;
+    const { groupedInvestigationContacts } = useContext(groupedInvestigationsContext);
     return (
         <>
             <Typography variant='h5'>{formHeadline}</Typography>
@@ -21,8 +21,6 @@ const ContactsForm = (props: Props) => {
                         <InvestigationAccordion
                             key={index}
                             investigation={investigation}
-                            selectedRows={groupedInvestigationContacts}
-                            setSelectedRows={setGroupedInvestigationContacts}
                         />
                     )
                 })
@@ -35,8 +33,6 @@ const ContactsForm = (props: Props) => {
 interface Props {
     reason : string;
     investigations : ConnectedInvestigation[];
-    groupedInvestigationContacts: number[]; 
-    setGroupedInvestigationContacts:  React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 export default ContactsForm;

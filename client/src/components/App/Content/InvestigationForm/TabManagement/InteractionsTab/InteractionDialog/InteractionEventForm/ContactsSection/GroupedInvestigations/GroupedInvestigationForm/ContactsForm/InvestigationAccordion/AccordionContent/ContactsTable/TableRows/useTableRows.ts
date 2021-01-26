@@ -1,12 +1,15 @@
-const useTableRows = (props : Props) => {
-    const { selectedRows, setSelectedRows } = props;
-    
+import { useContext } from 'react';
+
+import { groupedInvestigationsContext } from 'commons/Contexts/GroupedInvestigationFormContext';
+
+const useTableRows = () => {
+    const groupedInvestigationsContextState = useContext(groupedInvestigationsContext);
     const handleCheckboxToggle = (id : number) => {
-        const rowIndex = selectedRows.indexOf(id);
+        const rowIndex = groupedInvestigationsContextState.groupedInvestigationContacts.indexOf(id);
         if(rowIndex === -1) {
-            setSelectedRows([...selectedRows , id])
+            groupedInvestigationsContextState.setGroupedInvestigationContacts([...groupedInvestigationsContextState.groupedInvestigationContacts , id]);
         } else {
-            setSelectedRows(selectedRows.filter(row => row !== id))
+            groupedInvestigationsContextState.setGroupedInvestigationContacts(groupedInvestigationsContextState.groupedInvestigationContacts.filter(row => row !== id));
         }
     }
 
@@ -15,9 +18,5 @@ const useTableRows = (props : Props) => {
     }
 }
 
-interface Props {
-    selectedRows: number[];
-    setSelectedRows: React.Dispatch<React.SetStateAction<number[]>>;
-}
 
 export default useTableRows;

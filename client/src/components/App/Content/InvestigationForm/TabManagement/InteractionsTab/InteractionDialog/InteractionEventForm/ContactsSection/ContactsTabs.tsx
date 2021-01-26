@@ -14,7 +14,7 @@ const familyMembersLabel = 'בני משפחה';
 const groupedInvestigationsLabel = 'חקירות מקובצות';
 
 const ContactsTabs = (props : Props) => {
-    const {isVisible , groupedInvestigationContacts , setGroupedInvestigationContacts} = props;
+    const {isVisible} = props;
 
     const [currentTab, setTab] = React.useState<number>(0);
     const formClasses = useFormStyles();
@@ -43,8 +43,6 @@ const ContactsTabs = (props : Props) => {
             <Divider orientation='vertical' variant='fullWidth' light={true} />
             <Forms
                 currentTab={currentTab}
-                groupedInvestigationContacts={groupedInvestigationContacts}
-                setGroupedInvestigationContacts={setGroupedInvestigationContacts}
             />
         </div>
     );
@@ -52,8 +50,6 @@ const ContactsTabs = (props : Props) => {
 
 interface Props {
     isVisible: boolean; 
-    groupedInvestigationContacts: number[]; 
-    setGroupedInvestigationContacts:  React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 export default ContactsTabs;

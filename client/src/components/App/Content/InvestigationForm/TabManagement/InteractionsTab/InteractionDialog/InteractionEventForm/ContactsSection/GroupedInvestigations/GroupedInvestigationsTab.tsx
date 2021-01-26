@@ -7,8 +7,7 @@ import GroupedInvestigationForm from './GroupedInvestigationForm/GroupedInvestig
 
 const notGroupedText = 'החקירה אינה מקובצת';
 
-const GroupedInvestigationsTab = (props: Props) => {
-    const { groupedInvestigationContacts, setGroupedInvestigationContacts} = props;
+const GroupedInvestigationsTab = () => {
     const classes = useStyles();
     const [groupId, setGroupId] = useState<string>("");
     useGroupedInvestigationsTab({setGroupId});
@@ -21,17 +20,10 @@ const GroupedInvestigationsTab = (props: Props) => {
                     />
                 :   <GroupedInvestigationForm 
                         groupId={groupId}
-                        groupedInvestigationContacts={groupedInvestigationContacts}
-                        setGroupedInvestigationContacts={setGroupedInvestigationContacts}
                     />
                 }
         </div>
     )
-}
-
-interface Props {
-    groupedInvestigationContacts: number[]; 
-    setGroupedInvestigationContacts:  React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 export default GroupedInvestigationsTab;

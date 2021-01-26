@@ -1,18 +1,20 @@
-import React from 'react'
+import React , { useContext } from 'react'
 import { TableBody , TableRow , TableCell, Checkbox } from '@material-ui/core';
 
 import formatDate from 'Utils/DateUtils/formatDate';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 import ContactEvent from 'models/GroupedInvestigationContacts/ContactEvent';
+import { groupedInvestigationsContext } from 'commons/Contexts/GroupedInvestigationFormContext';
 
 import useStyles from './tableRowsStyles';
 import useTableRows from './useTableRows';
 
 const TableRows = (props: Props) => {
-    const { events , selectedRows , setSelectedRows , existingIds} = props;
+    const { events , existingIds} = props;
+    const groupedInvestigationsContextState = useContext(groupedInvestigationsContext);
     const classes = useStyles();
     const { isInvolvedThroughFamily } = useInvolvedContact();
-    const { handleCheckboxToggle } = useTableRows({selectedRows , setSelectedRows});
+    const { handleCheckboxToggle } = useTableRows();
 
     return (
         <TableBody>
@@ -38,7 +40,7 @@ const TableRows = (props: Props) => {
                             } = person.personByPersonInfo;
                             const isolationCity = person.addressByIsolationAddress?.cityByCity?.displayName;
 
-                            const isRowSelected = selectedRows.indexOf(id) !== -1;
+                            const isRowSelected = groupedInvestigationsContextState.groupedInvestigationContacts.indexOf(id) !== -1;
                             const isRowDisabled = existingIds.indexOf(identificationNumber) !== -1;
                             const rowClass = isRowDisabled 
                                                 ? classes.disabled
@@ -75,8 +77,6 @@ const TableRows = (props: Props) => {
 }
 
 interface Props {
-    selectedRows : number[]
-    setSelectedRows: React.Dispatch<React.SetStateAction<number[]>>;
     events : ContactEvent[];
     existingIds: string[];
 }
