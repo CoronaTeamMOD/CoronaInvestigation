@@ -9,7 +9,7 @@ import { Severity } from '../Models/Logger/types';
 const handleCountyRequest = async (request: Request, response: Response, next: NextFunction) => {
     const currentUser = response.locals.user;
     const county = parseInt(request.body.county);
-    console.log(county , currentUser);
+
     const countyMiddlewareLogger = logger.setup({
         workflow: 'countyMiddleware',
         investigation: currentUser.epidemiologynumber,
