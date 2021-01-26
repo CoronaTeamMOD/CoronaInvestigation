@@ -157,7 +157,7 @@ landingPageRoute.post('/changeDesk', adminMiddleWare, (request: Request, respons
         });
 })
 
-landingPageRoute.post('/changeGroupDesk', adminMiddleWare, (request: Request, response: Response) => {
+landingPageRoute.post('/changeGroupDesk', handleCountyRequest, (request: Request, response: Response) => {
     const changeGroupDeskLogger = logger.setup({
         workflow: 'change desk for grouped investigatios',
         user: response.locals.user.id,
@@ -182,7 +182,7 @@ landingPageRoute.post('/changeGroupDesk', adminMiddleWare, (request: Request, re
         });
 });
 
-landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Request, response: Response) => {
+landingPageRoute.post('/investigationStatistics', handleCountyRequest, (request: Request, response: Response) => {
     const investigationsStatisticsLogger = logger.setup({
         workflow: 'query investigations statistics',
         user: response.locals.user.id,

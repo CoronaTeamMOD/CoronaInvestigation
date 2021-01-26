@@ -9,6 +9,7 @@ import StoreStateType from 'redux/storeStateType';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import { defaultTimeRange } from 'models/enums/timeRanges'
 import { TimeRange, TimeRangeDates } from 'models/TimeRange';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import FilterRulesVariables from 'models/FilterRulesVariables';
 import InvesitgationStatistics from 'models/InvestigationStatistics';
 import FilterRulesDescription from 'models/enums/FilterRulesDescription';
@@ -18,6 +19,7 @@ import { HistoryState } from '../InvestigationTable/InvestigationTableInterfaces
 export const allTimeRangeId = 10;
 
 const useAdminLandingPage = (parameters: Parameters) => {
+    const { alertError } = useCustomSwal();
 
     const history = useHistory<HistoryState>();
     const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
@@ -86,6 +88,7 @@ const useAdminLandingPage = (parameters: Parameters) => {
         })
         .catch(error => {
             unallocatedCountLogger.error(`got error ${error}`, Severity.HIGH);
+            alertError('לא ניתן היה לקבל את הנתונים');
         })
         .finally(() => {
             setIsLoading(false)
