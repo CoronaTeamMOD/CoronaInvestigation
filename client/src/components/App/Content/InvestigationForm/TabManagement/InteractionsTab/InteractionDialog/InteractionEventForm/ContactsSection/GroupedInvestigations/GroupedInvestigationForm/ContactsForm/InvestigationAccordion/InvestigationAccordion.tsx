@@ -8,8 +8,8 @@ import AccordionContent from './AccordionContent/AccordionContent';
 import AccordionHeadline from './AccordionHeadline/AccordionHeadline';
 
 const InvestigationAccordion = (props: Props) => {
-    const { selectedRows , contact , setSelectedRows} = props;
-    const { epidemiologyNumber , contactEventsByInvestigationId , investigatedPatientByInvestigatedPatientId } = contact;
+    const { investigation } = props;
+    const { epidemiologyNumber , contactEventsByInvestigationId , investigatedPatientByInvestigatedPatientId } = investigation;
     const { fullName , identityNumber } = investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient;
 
     const classes = useStyles();
@@ -22,8 +22,6 @@ const InvestigationAccordion = (props: Props) => {
                 identityNumber={identityNumber}
             />
             <AccordionContent 
-                selectedRows={selectedRows}
-                setSelectedRows={setSelectedRows}
                 events={contactEventsByInvestigationId.nodes}
             />
         </Accordion>
@@ -31,9 +29,7 @@ const InvestigationAccordion = (props: Props) => {
 }
 
 interface Props {
-    selectedRows: number[];
-    setSelectedRows: React.Dispatch<React.SetStateAction<number[]>>;
-    contact: ConnectedInvestigation;
+    investigation: ConnectedInvestigation;
 }
 
 export default InvestigationAccordion;

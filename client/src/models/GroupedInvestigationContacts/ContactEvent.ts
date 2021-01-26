@@ -4,6 +4,9 @@ type ContactEvent = {
     contactedPeopleByContactEvent : {
         nodes: {
             id: number;
+            involvedContactByInvolvedContactId?: {
+                involvementReason: number; 
+            }
             addressByIsolationAddress: {
                 cityByCity: {
                     displayName: string;

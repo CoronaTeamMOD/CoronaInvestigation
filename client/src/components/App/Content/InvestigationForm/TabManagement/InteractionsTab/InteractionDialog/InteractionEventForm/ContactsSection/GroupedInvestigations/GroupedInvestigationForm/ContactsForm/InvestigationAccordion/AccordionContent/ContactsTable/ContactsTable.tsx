@@ -7,14 +7,13 @@ import TableRows from './TableRows/TableRows';
 import TableHeader from './TableHeader/TableHeader';
 
 const ContactsTable = (props: Props) => {
-    const { events, selectedRows , setSelectedRows} = props;
-    
+    const { events, existingIds} = props;
+
     return (
         <Table>
             <TableHeader />
             <TableRows 
-                selectedRows={selectedRows}
-                setSelectedRows={setSelectedRows}
+                existingIds={existingIds}
                 events={events}
             />
         </Table>
@@ -22,9 +21,8 @@ const ContactsTable = (props: Props) => {
 }
 
 interface Props {
-    selectedRows : number[];
-    setSelectedRows: React.Dispatch<React.SetStateAction<number[]>>;
     events : ContactEvent[];
+    existingIds: string[];
 }
 
 export default ContactsTable
