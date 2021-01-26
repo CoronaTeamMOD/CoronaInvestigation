@@ -21,7 +21,7 @@ const GroupedInvestigationForm = (props: Props) => {
     const { groupId, groupedInvestigationContacts, setGroupedInvestigationContacts, allContactIds} = props;
 
     const [contacts, setContacts] = useState<ConnectedInvestigationContact>(initialState);
-    const nodes = contacts.investigationsByGroupId.nodes;
+    const {nodes} = contacts.investigationsByGroupId;
 
     useGroupedInvestigationsTab({groupId , setContacts});
 
@@ -31,7 +31,7 @@ const GroupedInvestigationForm = (props: Props) => {
                 text={noContactsText}
               />
             : <ContactsForm 
-                contacts={nodes}
+                investigations={nodes}
                 reason={contacts.otherReason||contacts.investigationGroupReasonByReason.displayName}
                 groupedInvestigationContacts={groupedInvestigationContacts}
                 setGroupedInvestigationContacts={setGroupedInvestigationContacts}

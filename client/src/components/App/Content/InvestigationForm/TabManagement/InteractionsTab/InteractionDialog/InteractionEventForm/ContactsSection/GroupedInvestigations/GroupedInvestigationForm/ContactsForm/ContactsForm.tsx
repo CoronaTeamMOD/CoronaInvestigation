@@ -9,18 +9,18 @@ import InvestigationAccordion from './InvestigationAccordion/InvestigationAccord
 const formHeadline = 'מאומתים המקובצים לחקירה :';
 
 const ContactsForm = (props: Props) => {
-    const { contacts , reason ,groupedInvestigationContacts, setGroupedInvestigationContacts, allContactIds} = props;
+    const { investigations , reason ,groupedInvestigationContacts, setGroupedInvestigationContacts, allContactIds} = props;
 
     return (
         <>
             <Typography variant='h5'>{formHeadline}</Typography>
             <Typography variant='h6'>{`סיבת הקיבוץ: ${reason}`}</Typography>
             {
-                contacts.map((contact , index) => {
+                investigations.map((investigation , index) => {
                     return (
                         <InvestigationAccordion
                             key={index}
-                            contact={contact}
+                            investigation={investigation}
                             allContactIds={allContactIds}
                             selectedRows={groupedInvestigationContacts}
                             setSelectedRows={setGroupedInvestigationContacts}
@@ -35,7 +35,7 @@ const ContactsForm = (props: Props) => {
 
 interface Props {
     reason : string;
-    contacts : ConnectedInvestigation[];
+    investigations : ConnectedInvestigation[];
     groupedInvestigationContacts: number[]; 
     setGroupedInvestigationContacts:  React.Dispatch<React.SetStateAction<number[]>>;
     allContactIds: IdToCheck[];
