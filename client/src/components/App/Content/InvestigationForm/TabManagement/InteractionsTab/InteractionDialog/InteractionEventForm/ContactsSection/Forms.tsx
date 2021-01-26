@@ -1,13 +1,14 @@
 import React from 'react'
 
 import useFormStyles from 'styles/formStyles';
+import { IdToCheck } from 'Utils/Contacts/useDuplicateContactId';
 
 import FamilyMembersForm from './FamilyMembers/FamilyMembersForm';
 import ManualContactsForm from './ManualContactsForm/ManualContactsForm';
 import GroupedInvestigationsTab from './GroupedInvestigations/GroupedInvestigationsTab';
 
 const Forms = (props: Props) => {
-    const { currentTab,  groupedInvestigationContacts, setGroupedInvestigationContacts} = props;
+    const { currentTab,  groupedInvestigationContacts, setGroupedInvestigationContacts, allContactIds} = props;
     const formClasses = useFormStyles();
 
     const contactFormTabs = [
@@ -16,6 +17,7 @@ const Forms = (props: Props) => {
         { 
             id: 2, 
             Component: <GroupedInvestigationsTab 
+                            allContactIds={allContactIds}
                             groupedInvestigationContacts={groupedInvestigationContacts}
                             setGroupedInvestigationContacts={setGroupedInvestigationContacts}
                         />
@@ -37,6 +39,7 @@ interface Props {
     currentTab: number;
     groupedInvestigationContacts: number[]; 
     setGroupedInvestigationContacts:  React.Dispatch<React.SetStateAction<number[]>>;
+    allContactIds: IdToCheck[];
 }
 
 export default Forms;

@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import { AccordionDetails, Grid } from '@material-ui/core';
 
 import Contact from 'models/Contact';
-
+import { IdToCheck } from 'Utils/Contacts/useDuplicateContactId';
 import ContactEvent from 'models/GroupedInvestigationContacts/ContactEvent';
 
 import useAccordionContent from './useAccordionContent';
@@ -11,10 +11,15 @@ import ContactsTable from './ContactsTable/ContactsTable';
 import SelectedRowsMessage from './SelectedRowsMessage/SelectedRowsMessage';
 
 const AccordionContent = (props: Props) => {
-    const { events, selectedRows, setSelectedRows} = props;
+    const { events, selectedRows, setSelectedRows, allContactIds} = props;
     const { getValues } = useFormContext();
 
-    const existingIds = getValues().contacts?.map((contact : Contact)=> contact.identificationNumber) || []; 
+    const existingIds = allContactIds.map(contact => {
+        if(contact.id) { 
+            return contact.id;
+        }
+        return "";
+    })!;
     const { getCurrentSelectedRowsLength } = useAccordionContent({events , selectedRows});   
 
     return (
@@ -42,6 +47,7 @@ interface Props {
     selectedRows : number[];
     setSelectedRows: React.Dispatch<React.SetStateAction<number[]>>;
     events : ContactEvent[];
+    allContactIds: IdToCheck[];
 }
 
 export default AccordionContent;

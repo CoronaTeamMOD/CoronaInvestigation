@@ -1,6 +1,7 @@
 import React from 'react';
 import { Accordion } from '@material-ui/core';
 
+import { IdToCheck } from 'Utils/Contacts/useDuplicateContactId';
 import ConnectedInvestigation from 'models/GroupedInvestigationContacts/ConnectedInvestigation';
 
 import useStyles from './accordionStyles';
@@ -8,7 +9,7 @@ import AccordionContent from './AccordionContent/AccordionContent';
 import AccordionHeadline from './AccordionHeadline/AccordionHeadline';
 
 const InvestigationAccordion = (props: Props) => {
-    const { selectedRows , contact , setSelectedRows} = props;
+    const { selectedRows , contact , setSelectedRows, allContactIds} = props;
     const { epidemiologyNumber , contactEventsByInvestigationId , investigatedPatientByInvestigatedPatientId } = contact;
     const { fullName , identityNumber } = investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient;
 
@@ -25,6 +26,7 @@ const InvestigationAccordion = (props: Props) => {
                 selectedRows={selectedRows}
                 setSelectedRows={setSelectedRows}
                 events={contactEventsByInvestigationId.nodes}
+                allContactIds={allContactIds}
             />
         </Accordion>
     )
@@ -34,6 +36,7 @@ interface Props {
     selectedRows: number[];
     setSelectedRows: React.Dispatch<React.SetStateAction<number[]>>;
     contact: ConnectedInvestigation;
+    allContactIds: IdToCheck[];
 }
 
 export default InvestigationAccordion;

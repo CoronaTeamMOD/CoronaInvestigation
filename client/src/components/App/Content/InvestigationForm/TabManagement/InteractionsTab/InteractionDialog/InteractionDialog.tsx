@@ -103,6 +103,13 @@ const InteractionDialog = (props: Props) => {
         }
     };
 
+    const allContactsIds: IdToCheck[] = interactions.map(interaction => interaction.contacts).flat().map((contact) => {
+        return ({
+            id: contact[InteractionEventContactFields.IDENTIFICATION_NUMBER],
+            serialId: contact[InteractionEventContactFields.ID]
+        })
+    });
+    
     const onSubmit = (data: InteractionEventDialogData) => {
         if (!data.contacts) {
             data.contacts = [];
@@ -110,12 +117,6 @@ const InteractionDialog = (props: Props) => {
         addFamilyMemberContacts(data.contacts);
 
         const interactionDataToSave = convertData(data);
-        const allContactsIds: IdToCheck[] = interactions.map(interaction => interaction.contacts).flat().map((contact) => {
-            return ({
-                id: contact[InteractionEventContactFields.IDENTIFICATION_NUMBER],
-                serialId: contact[InteractionEventContactFields.ID]
-            })
-        });
 
         const newIds: IdToCheck[] = interactionDataToSave[InteractionEventDialogFields.CONTACTS].map((contact: Contact) => {
             return ({
@@ -180,6 +181,7 @@ const InteractionDialog = (props: Props) => {
                         />
                         <ContactsTabs 
                             isVisible={isAddingContacts}
+                            allContactIds={allContactsIds}
                             groupedInvestigationContacts={groupedInvestigationContacts}
                             setGroupedInvestigationContacts={setGroupedInvestigationContacts}
                         />
