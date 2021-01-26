@@ -1,6 +1,10 @@
+import { useContext } from 'react';
 import ContactEvent from 'models/GroupedInvestigationContacts/ContactEvent';
 
+import { groupedInvestigationsContext } from 'commons/Contexts/GroupedInvestigationFormContext';
+
 const useAccordionContent = (props: Props) => {
+    const { allContactIds } = useContext(groupedInvestigationsContext);
     const { selectedRows , events } = props;
     const getCurrentSelectedRowsLength = () => {
         let count = 0;
@@ -15,8 +19,17 @@ const useAccordionContent = (props: Props) => {
 
         return count;
     }
+
+    const existingIds = allContactIds.map(contact => {
+        if(contact.id) { 
+            return contact.id;
+        }
+        return "";
+    })!;
+
     return {
-        getCurrentSelectedRowsLength
+        getCurrentSelectedRowsLength,
+        existingIds
     }
 }
 
