@@ -5,6 +5,7 @@ import ContactEvent from 'models/GroupedInvestigationContacts/ContactEvent';
 
 import useAccordionContent from './useAccordionContent';
 import ContactsTable from './ContactsTable/ContactsTable';
+import TableSearchBar from './TableSearchBar/TableSearchBar';
 import SelectedRowsMessage from './SelectedRowsMessage/SelectedRowsMessage';
 
 const AccordionContent = (props: Props) => {
@@ -15,6 +16,19 @@ const AccordionContent = (props: Props) => {
     return (
         <AccordionDetails>
             <Grid container>
+                <Grid xs={12}>
+                    <TableSearchBar
+                        value={''}
+                        onSearchClick={
+                            () => { console.log('hi!') }
+                        }
+                        onKeyDown={
+                            () => { console.log('keydown') }
+                        }
+                        name={''}
+                        onChange={() => { console.log('hi!') }}
+                    />
+                </Grid>
                 <Grid xs={12}>
                     <ContactsTable
                         events={events}
