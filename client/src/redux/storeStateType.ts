@@ -1,6 +1,7 @@
 import Desk from 'models/Desk';
 import City from 'models/City';
 import Country from 'models/Country';
+import Authority from 'models/Authority';
 import ContactType from 'models/ContactType';
 import CountyReducer from 'models/CountyReducer';
 import FlattenedDBAddress from 'models/DBAddress';
@@ -10,6 +11,7 @@ import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
 import { UserState } from './User/userReducer';
+
 export default interface StoreStateType {
     user: UserState;
     isLoading: boolean;
@@ -27,5 +29,6 @@ export default interface StoreStateType {
     address: FlattenedDBAddress;
     educationGrades: EducationGrade[];
     county: CountyReducer;
-    desk: Desk[]
+    desk: Desk[],
+    authorities: Map<string, Authority>;
 };

@@ -8,6 +8,7 @@ import { useForm, FormProvider, Controller } from 'react-hook-form';
 
 import City from 'models/City';
 import County from 'models/County';
+import Authority from 'models/Authority';
 import SignUpUser from 'models/SignUpUser';
 import FormMode from 'models/enums/FormMode';
 import StoreStateType from 'redux/storeStateType';
@@ -20,6 +21,7 @@ import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import useStyles from './SignUpFormStyles';
 import useSignUpForm from './useSignUpForm';
 import { SignUpSchema, EditSchema } from './SignUpSchema';
+import { PropertiesPlugin } from '@microsoft/applicationinsights-web';
 
 
 const MABAR_USER_NAME = 'שם משתמש מב"ר';
@@ -33,6 +35,7 @@ const COUNTY_LABEL = 'נפה';
 const DESK_LABEL = 'דסק';
 const SOURCE_ORGANIZATION_LABEL = 'מסגרת';
 const LANGUAGE_LABEL = 'שפה';
+const AUTHORITY_LABEL = 'רשות';
 
 const GenericAlphabetTextField : React.FC<GenericAlphabetTextFieldProps> = 
     ({ props, disabled, label, placeholder, className }: GenericAlphabetTextFieldProps) => (
@@ -69,6 +72,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
     const classes = useStyles();
     const { languages, sourcesOrganization, desks, fetchDesks, createUser, editUser } = useSignUpForm({ handleSaveUser });
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
+    const authorities = useSelector<StoreStateType, Map<string, Authority>>(state => state.authorities);
     const counties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
     
     const methods = useForm<SignUpUser>({
@@ -354,6 +358,34 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                                 placeholder='בחר מסגרת...'
                                                 error={get(methods.errors, props.name)}
                                                 label={get(methods.errors, props.name)?.message || SOURCE_ORGANIZATION_LABEL}
+                                            />
+                                        }
+                                    />
+                                )}
+                            />
+                        </FormInput>
+                        <FormInput xs={4}  >
+                            <Controller
+                                name={SignUpFields.AUTHORITY}
+                                control={methods.control}
+                                render={(props) => (
+                                    <Autocomplete
+                                        {...props}
+                                        disabled={shouldDisableFields}
+                                        options={Array.from(authorities, ([id, value]) => ({ id, value }))}
+                                        getOptionLabel={(option) => option?.authorityName ? option.authorityName : option.value.authorityName}
+                                        getOptionSelected={(option, value) => option.id === value.id}
+                                        onChange={(event, selectedAuthority) => {
+                                            props.onChange(selectedAuthority ? selectedAuthority.value : null)
+                                        }}
+                                        onBlur={props.onBlur}
+                                        renderInput={(params) =>
+                                            <TextField
+                                                {...params}
+                                                test-id={props.name}
+                                                placeholder='בחר רשות...'
+                                                error={get(methods.errors, props.name)}
+                                                label={get(methods.errors, props.name)?.message || AUTHORITY_LABEL}
                                             />
                                         }
                                     />
