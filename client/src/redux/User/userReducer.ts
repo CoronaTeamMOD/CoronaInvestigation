@@ -27,6 +27,9 @@ export const initialUserState: UserState = {
         countyByInvestigationGroup: {
             districtId: -1,
             displayName: ''
+        },
+        authorityByAuthorityId: {
+            authorityName: ''
         }
     },
     isLoggedIn: false,

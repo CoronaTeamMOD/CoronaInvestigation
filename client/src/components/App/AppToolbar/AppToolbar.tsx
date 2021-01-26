@@ -87,7 +87,8 @@ const AppToolbar: React.FC = (): JSX.Element => {
             </IconButton>
           </Tooltip>
           <Typography className={classes.greetUserText}>
-            שלום, {user.userName}
+            שלום, {user.authorityByAuthorityId?.authorityName ? 
+                      user.userName +" (" + user.authorityByAuthorityId.authorityName + ")"  : user.userName}
           </Typography>
           {
             user.userType === UserType.SUPER_ADMIN ?

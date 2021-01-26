@@ -22,6 +22,9 @@ query GetUser($id: String!) {
         displayName
         districtId
       }
+      authorityByAuthorityId{
+        authorityName
+      }
     }
   }   
 `;
