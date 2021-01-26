@@ -13,6 +13,8 @@ import StoreStateType from 'redux/storeStateType';
 import {setPlaceTypes} from 'redux/PlaceTypes/placetypeActionCreators';
 
 const OTHER = 'אחר';
+const HOUSE_PLACE_TYPE = 'בית פרטי';
+const DEFAULT_HOUSE_PLACE_SUB_TYPE_ID = 9;
 
 const usePlacesTypesAndSubTypes = () => {
     const placesSubTypesByTypes = useSelector<StoreStateType,PlacesSubTypesByTypes>(state => state.placeSubTypesByTypes);
@@ -33,9 +35,12 @@ const usePlacesTypesAndSubTypes = () => {
                 if (result?.data) {
                     const sortedResult : PlacesSubTypesByTypes = {};
                     Object.keys(result.data).forEach((placeTypes)=>{
-                        sortedResult[placeTypes] = result.data[placeTypes].sort(sortAndMoveOtherValueToLast);
+                        const subPlaceTypes = result.data[placeTypes];
+                        sortedResult[placeTypes] = subPlaceTypes.sort(sortAndMoveOtherValueToLast);
+                        if (placeTypes === HOUSE_PLACE_TYPE){
+                            sortedResult[placeTypes] = subPlaceTypes.sort(sortHousePlaceSubType);
+                        }
                     })
-
                     getPlacesSubTypesByTypesLogger.info('places and sub types by types request was successful', Severity.LOW);
                     setPlaceTypes(sortedResult);
                 } else {
@@ -51,13 +56,20 @@ const usePlacesTypesAndSubTypes = () => {
         if(firstPlaceType.displayName === OTHER){
             return 1;
         }
-
         if(secondPlaceType.displayName === OTHER){
             return -1;
         }
-
         return firstPlaceType.displayName < secondPlaceType.displayName ? -1 : 1;
-    }
+    };
+
+    const sortHousePlaceSubType = (firstPlaceType : PlaceSubType, secondPlaceType : PlaceSubType) => {
+        if(firstPlaceType.id === DEFAULT_HOUSE_PLACE_SUB_TYPE_ID){
+            return -1;
+        }
+        if(secondPlaceType.id === DEFAULT_HOUSE_PLACE_SUB_TYPE_ID){
+            return 1;
+        }
+    };
 
     React.useEffect(() => {
         getPlacesSubTypesByTypes();
