@@ -9,7 +9,7 @@ import InvestigationAccordion from './InvestigationAccordion/InvestigationAccord
 const formHeadline = 'מאומתים המקובצים לחקירה :';
 
 const ContactsForm = (props: Props) => {
-    const { investigations , reason ,groupedInvestigationContacts, setGroupedInvestigationContacts, allContactIds} = props;
+    const { investigations , reason ,groupedInvestigationContacts, setGroupedInvestigationContacts} = props;
 
     return (
         <>
@@ -21,7 +21,6 @@ const ContactsForm = (props: Props) => {
                         <InvestigationAccordion
                             key={index}
                             investigation={investigation}
-                            allContactIds={allContactIds}
                             selectedRows={groupedInvestigationContacts}
                             setSelectedRows={setGroupedInvestigationContacts}
                         />
@@ -38,7 +37,6 @@ interface Props {
     investigations : ConnectedInvestigation[];
     groupedInvestigationContacts: number[]; 
     setGroupedInvestigationContacts:  React.Dispatch<React.SetStateAction<number[]>>;
-    allContactIds: IdToCheck[];
 }
 
 export default ContactsForm;

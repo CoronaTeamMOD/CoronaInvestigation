@@ -7,6 +7,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Tooltip } fr
 import Contact from 'models/Contact';
 import InvolvedContact from 'models/InvolvedContact';
 import PlaceSubType from 'models/PlaceSubType';
+import { groupedInvestigationsContext } from 'commons/Contexts/GroupedInvestigationFormContext';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
@@ -26,7 +27,7 @@ const InteractionDialog = (props: Props) => {
     const { isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction } = props;
     const [isAddingContacts, setIsAddingContacts] = React.useState(false);
     const [groupedInvestigationContacts, setGroupedInvestigationContacts] = useState<number[]>([]);
-
+    const groupedInvestigationsContextState = useContext(groupedInvestigationsContext);
     const methods = useForm<InteractionEventDialogData>({
         defaultValues: interactionData,
         mode: 'all',
@@ -103,7 +104,7 @@ const InteractionDialog = (props: Props) => {
         }
     };
 
-    const allContactsIds: IdToCheck[] = interactions.map(interaction => interaction.contacts).flat().map((contact) => {
+    groupedInvestigationsContextState.allContactIds = interactions.map(interaction => interaction.contacts).flat().map((contact) => {
         return ({
             id: contact[InteractionEventContactFields.IDENTIFICATION_NUMBER],
             serialId: contact[InteractionEventContactFields.ID]
@@ -125,7 +126,7 @@ const InteractionDialog = (props: Props) => {
             })
         });
 
-        const contactsIdsToCheck: IdToCheck[] = allContactsIds.concat(newIds);
+        const contactsIdsToCheck: IdToCheck[] = groupedInvestigationsContextState.allContactIds;
         if (!checkDuplicateIdsForInteractions(contactsIdsToCheck)) {
             saveInteractions(interactionDataToSave);
         }
@@ -181,7 +182,6 @@ const InteractionDialog = (props: Props) => {
                         />
                         <ContactsTabs 
                             isVisible={isAddingContacts}
-                            allContactIds={allContactsIds}
                             groupedInvestigationContacts={groupedInvestigationContacts}
                             setGroupedInvestigationContacts={setGroupedInvestigationContacts}
                         />

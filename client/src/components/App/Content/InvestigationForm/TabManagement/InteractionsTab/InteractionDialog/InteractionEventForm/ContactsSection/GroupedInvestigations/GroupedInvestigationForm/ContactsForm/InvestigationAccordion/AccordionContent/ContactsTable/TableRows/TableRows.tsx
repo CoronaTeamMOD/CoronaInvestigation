@@ -9,10 +9,9 @@ import useStyles from './tableRowsStyles';
 import useTableRows from './useTableRows';
 
 const TableRows = (props: Props) => {
-    const { events , selectedRows , setSelectedRows, existingIds} = props;
+    const { events , selectedRows , setSelectedRows , existingIds} = props;
     const classes = useStyles();
     const { isInvolvedThroughFamily } = useInvolvedContact();
-
     const { handleCheckboxToggle } = useTableRows({selectedRows , setSelectedRows});
 
     return (

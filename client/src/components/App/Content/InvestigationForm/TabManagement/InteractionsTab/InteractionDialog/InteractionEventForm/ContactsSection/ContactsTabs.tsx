@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Tab, Tabs, useTheme } from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
-import { IdToCheck } from 'Utils/Contacts/useDuplicateContactId';
 
 import Forms from './Forms';
 import useStyles from './ContactsTabsStyles';
@@ -15,7 +14,7 @@ const familyMembersLabel = 'בני משפחה';
 const groupedInvestigationsLabel = 'חקירות מקובצות';
 
 const ContactsTabs = (props : Props) => {
-    const {isVisible , groupedInvestigationContacts , setGroupedInvestigationContacts, allContactIds} = props;
+    const {isVisible , groupedInvestigationContacts , setGroupedInvestigationContacts} = props;
 
     const [currentTab, setTab] = React.useState<number>(0);
     const formClasses = useFormStyles();
@@ -46,7 +45,6 @@ const ContactsTabs = (props : Props) => {
                 currentTab={currentTab}
                 groupedInvestigationContacts={groupedInvestigationContacts}
                 setGroupedInvestigationContacts={setGroupedInvestigationContacts}
-                allContactIds={allContactIds}
             />
         </div>
     );
@@ -56,7 +54,6 @@ interface Props {
     isVisible: boolean; 
     groupedInvestigationContacts: number[]; 
     setGroupedInvestigationContacts:  React.Dispatch<React.SetStateAction<number[]>>;
-    allContactIds: IdToCheck[];
 }
 
 export default ContactsTabs;
