@@ -5,6 +5,7 @@ import UserPatch from '../../Models/User/UserPatch';
 import { Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import handleUsersRequest from '../../middlewares/HandleUsersRequest';
+import handleCountyRequest from '../../middlewares/handleCountyRequest';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
 import UpdateUserResponse from '../../Models/User/UpdateUserResponse';
 import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
@@ -388,7 +389,7 @@ usersRoute.put('', (request: Request, response: Response) => {
         });
 });
 
-usersRoute.post('/county', adminMiddleWare, (request: Request, response: Response) => {
+usersRoute.post('/county', handleCountyRequest, (request: Request, response: Response) => {
     const countyLogger = logger.setup({
         workflow: 'query users by current user\'s county id',
         user: response.locals.user.id

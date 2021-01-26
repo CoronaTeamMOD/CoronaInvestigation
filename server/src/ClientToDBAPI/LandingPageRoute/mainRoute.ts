@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 
 import { Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
+import handleCountyRequest from '../../middlewares/HandleCountyRequest';
 import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
 import { convertUserInvestigationsData, convertGroupInvestigationsData } from './utils';
 import { CHANGE_DESK_ID, UPDATE_DESK_BY_GROUP_ID } from '../../DBService/LandingPage/Mutation';
@@ -53,7 +54,7 @@ landingPageRoute.post('/investigations', (request: Request, response: Response) 
         });
 })
 
-landingPageRoute.post('/groupInvestigations', adminMiddleWare, (request: Request, response: Response) => {
+landingPageRoute.post('/groupInvestigations', handleCountyRequest, (request: Request, response: Response) => {
     const groupInvestigationsLogger = logger.setup({
         workflow: `query group's Investigations`,
         user: response.locals.user.id,

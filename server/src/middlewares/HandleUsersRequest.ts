@@ -24,23 +24,23 @@ const handleUsersRequest = async (request: Request, response: Response, next: Ne
             );
             return next();
         }
-        usersMiddlewareLogger.info(
+        usersMiddlewareLogger.warn(
             'requesting user is super admin and questioned user is not in user district , returning auth error',
             Severity.HIGH
         );
         return response.sendStatus(unauthorizedStatusCode);
     } else if (currentUser.userType === UserType.ADMIN) {
         if (currentUser.investigationGroup === questionedUser.investigationGroup) {
-            usersMiddlewareLogger.info('requesting user is admin and questioned user is in user group, redirecting', Severity.HIGH);
+            usersMiddlewareLogger.info('requesting user is admin and questioned user is in user group, redirecting', Severity.LOW);
             return next();
         }
-        usersMiddlewareLogger.info(
+        usersMiddlewareLogger.warn(
             'requesting user is admin and questioned user is not in user group, returning auth error',
             Severity.HIGH
         );
         return response.sendStatus(unauthorizedStatusCode);
     } else {
-        usersMiddlewareLogger.info(
+        usersMiddlewareLogger.warn(
             'user is not admin nor super admin and requested user permitted action, returning auth error',
             Severity.HIGH
         );
