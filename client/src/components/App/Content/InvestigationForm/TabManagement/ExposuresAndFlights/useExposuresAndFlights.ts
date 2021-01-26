@@ -19,17 +19,6 @@ import ExposureSchema from './Schema/exposuresAndFlightsSchema';
 
 const defaultDestinationCountryCode = '900';
 
-interface Props {
-    exposures: Exposure[],
-    wereConfirmedExposures: boolean,
-    wereFlights: boolean,
-    exposureAndFlightsData: ExposureAndFlightsDetails;
-    setExposureDataAndFlights: React.Dispatch<React.SetStateAction<ExposureAndFlightsDetails>>;
-    id: number;
-    reset: (values : FormData) => void;
-    trigger: () => void;
-}
-
 export const useExposuresAndFlights = (props : Props) => {
     const {exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, id, reset, trigger} = props;
     
@@ -129,6 +118,20 @@ export const useExposuresAndFlights = (props : Props) => {
         });
     };
 
+    const onExposureDeleted = async (index: number) => {  
+        const updatedExpousres = [...exposureAndFlightsData.exposures];
+        updatedExpousres.splice(index, 1);
+        setExposureDataAndFlights({
+            ...exposureAndFlightsData,
+            exposures: updatedExpousres,
+        });
+        if (updatedExpousres[index].id){
+            const exposureId = updatedExpousres[index].id;
+            await axios.delete('/exposure/deleteExposure', { params: { exposureId }});        
+            await fetchExposuresAndFlights();
+        }
+    };
+
     const onExposuresStatusChange = (fieldName: any, value: any) => {
         setExposureDataAndFlights({
             ...exposureAndFlightsData,
@@ -174,6 +177,18 @@ export const useExposuresAndFlights = (props : Props) => {
         handleChangeExposureDataAndFlightsField,
         onExposureAdded,
         disableConfirmedExposureAddition,
-        disableFlightAddition
+        disableFlightAddition,
+        onExposureDeleted
     }
-}
+};
+
+interface Props {
+    exposures: Exposure[],
+    wereConfirmedExposures: boolean,
+    wereFlights: boolean,
+    exposureAndFlightsData: ExposureAndFlightsDetails;
+    setExposureDataAndFlights: React.Dispatch<React.SetStateAction<ExposureAndFlightsDetails>>;
+    id: number;
+    reset: (values : FormData) => void;
+    trigger: () => void;
+};

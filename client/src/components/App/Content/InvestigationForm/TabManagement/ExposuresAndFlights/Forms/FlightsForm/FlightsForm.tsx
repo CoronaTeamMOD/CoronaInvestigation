@@ -16,7 +16,7 @@ const startDateLabel = '*מתאריך';
 const endDateLabel = '*עד תאריך';
 
 const FlightsForm = (props: any) => {
-  const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index } = props;
+  const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted } = props;
 
   const {control , errors} = useFormContext();
 
@@ -56,14 +56,14 @@ const FlightsForm = (props: any) => {
 					</FormRowWithInput>
                 </Grid>
                 <Grid item xs={1} alignItems='center' justify='flex-start'>
-					<IconButton onClick={()=>{}}>
+					<IconButton onClick={onExposureDeleted}>
 							<Delete />
 					</IconButton>
                 </Grid>
             </Grid>
 
 			<Grid container justify='space-between' xs={12}>
-                <Grid item xs={11} className={classes.deleteRow}>
+                <Grid item xs={11}>
 					<FormRowWithInput testId='flightDestination' fieldName='יעד:'>
 						<AirportInput
 							country={exposureAndFlightsData[fieldsNames.destinationCountry]}
@@ -80,7 +80,7 @@ const FlightsForm = (props: any) => {
 			</Grid>
 			
 			<Grid container justify='space-between' xs={12}>
-                <Grid item xs={11} className={classes.deleteRow}>
+                <Grid item xs={11}>
 					<FormRowWithInput fieldName='תאריך טיסה:'>
 						<Grid className={classes.inputRow} item container xs={9} justify='flex-start' alignItems='center' spacing={1}>
 							<Grid item>
@@ -137,7 +137,7 @@ const FlightsForm = (props: any) => {
 			</Grid>
 
 			<Grid container justify='space-between' xs={12}>
-                <Grid item xs={11} className={classes.deleteRow}>
+                <Grid item xs={11}>
 					<FormRowWithInput fieldName='חברת תעופה:'>
 						<Controller
 							control={control}
@@ -161,7 +161,7 @@ const FlightsForm = (props: any) => {
 			</Grid>
 
 			<Grid container justify='space-between' xs={12}>
-                <Grid item xs={11} className={classes.deleteRow}>
+                <Grid item xs={11}>
 					<FormRowWithInput fieldName='מספר טיסה:'>
 						<Controller
 							control={control}

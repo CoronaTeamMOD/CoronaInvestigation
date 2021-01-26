@@ -34,7 +34,8 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     handleChangeExposureDataAndFlightsField,
     onExposureAdded,
     disableConfirmedExposureAddition,
-    disableFlightAddition
+    disableFlightAddition,
+    onExposureDeleted
   } = useExposuresAndFlights({exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, id, reset, trigger});
 
   const onSubmit = (e : React.FormEvent) => {
@@ -72,6 +73,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
             handleChangeExposureDataAndFlightsField={handleChangeExposureDataAndFlightsField}
             onExposureAdded={onExposureAdded}
             disableFlightAddition={disableFlightAddition}
+            onExposureDeleted={onExposureDeleted}
           />
           
         </form>
