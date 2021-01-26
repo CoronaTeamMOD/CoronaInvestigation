@@ -21,8 +21,6 @@ import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import useStyles from './SignUpFormStyles';
 import useSignUpForm from './useSignUpForm';
 import { SignUpSchema, EditSchema } from './SignUpSchema';
-import { PropertiesPlugin } from '@microsoft/applicationinsights-web';
-
 
 const MABAR_USER_NAME = 'שם משתמש מב"ר';
 const FIRST_NAME_LABEL = 'שם פרטי';
@@ -364,7 +362,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 )}
                             />
                         </FormInput>
-                        <FormInput xs={4}  >
+                        <FormInput xs={4}>
                             <Controller
                                 name={SignUpFields.AUTHORITY}
                                 control={methods.control}
