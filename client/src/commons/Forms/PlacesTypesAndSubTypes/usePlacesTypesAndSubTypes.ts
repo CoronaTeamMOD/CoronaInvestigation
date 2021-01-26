@@ -35,9 +35,10 @@ const usePlacesTypesAndSubTypes = () => {
                 if (result?.data) {
                     const sortedResult : PlacesSubTypesByTypes = {};
                     Object.keys(result.data).forEach((placeTypes)=>{
-                        sortedResult[placeTypes] = result.data[placeTypes].sort(sortAndMoveOtherValueToLast);
+                        const subPlaceTypes = result.data[placeTypes];
+                        sortedResult[placeTypes] = subPlaceTypes.sort(sortAndMoveOtherValueToLast);
                         if (placeTypes === HOUSE_PLACE_TYPE){
-                            sortedResult[placeTypes] = result.data[placeTypes].sort(sortHousePlaceSubType);
+                            sortedResult[placeTypes] = subPlaceTypes.sort(sortHousePlaceSubType);
                         }
                     })
                     getPlacesSubTypesByTypesLogger.info('places and sub types by types request was successful', Severity.LOW);
