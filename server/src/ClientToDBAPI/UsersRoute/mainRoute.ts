@@ -43,7 +43,7 @@ usersRoute.get('/userActivityStatus', (request: Request, response: Response) => 
         })
 })
 
-usersRoute.post('/updateSourceOrganizationById', adminMiddleWare, (request: Request, response: Response) => {
+usersRoute.post('/updateSourceOrganizationById', handleUsersRequest, (request: Request, response: Response) => {
     const updateSourceOrganizationLogger = logger.setup({
         workflow: 'update user source organization',
         user: response.locals.user.id,
@@ -65,7 +65,7 @@ usersRoute.post('/updateSourceOrganizationById', adminMiddleWare, (request: Requ
         })
 })
 
-usersRoute.post('/updateDesk', adminMiddleWare, (request: Request, response: Response) => {
+usersRoute.post('/updateDesk', handleUsersRequest, (request: Request, response: Response) => {
     const updateDeskLogger = logger.setup({
         workflow: 'update user desk',
         user: response.locals.user.id,
@@ -87,7 +87,7 @@ usersRoute.post('/updateDesk', adminMiddleWare, (request: Request, response: Res
         })
 })
 
-usersRoute.post('/updateCounty', adminMiddleWare, (request: Request, response: Response) => {
+usersRoute.post('/updateCounty', handleUsersRequest, (request: Request, response: Response) => {
     const updateCountyLogger = logger.setup({
         workflow: 'update user county',
         user: response.locals.user.id,
