@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AccordionDetails, Grid } from '@material-ui/core';
 
 import ContactEvent from 'models/GroupedInvestigationContacts/ContactEvent';
@@ -10,23 +10,32 @@ import SelectedRowsMessage from './SelectedRowsMessage/SelectedRowsMessage';
 
 const AccordionContent = (props: Props) => {
     const { events } = props;
-
+    const [searchQuery, setsearchQueries] = useState<string>("")
     const { getCurrentSelectedRowsLength , existingIds } = useAccordionContent({events});   
+
+    const test = () => {
+        console.log(searchQuery);
+    }
 
     return (
         <AccordionDetails>
             <Grid container>
                 <Grid xs={12}>
                     <TableSearchBar
-                        value={''}
-                        onSearchClick={
-                            () => { console.log('hi!') }
-                        }
-                        onKeyDown={
-                            () => { console.log('keydown') }
-                        }
+                        value={searchQuery}
+                        onSearchClick={() => { 
+                            test();
+                        }}
+                        onKeyDown={(e: React.KeyboardEvent) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                test()
+                            }
+                        }}
                         name={''}
-                        onChange={() => { console.log('hi!') }}
+                        onChange={(value) => { 
+                            setsearchQueries(value);
+                        }}
                     />
                 </Grid>
                 <Grid xs={12}>
