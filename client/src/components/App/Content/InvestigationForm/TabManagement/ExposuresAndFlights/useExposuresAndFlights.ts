@@ -7,8 +7,8 @@ import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import ResortData from 'models/ResortData';
 import StoreStateType from 'redux/storeStateType';
-import { setFormState } from 'redux/Form/formActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import { setFormState } from 'redux/Form/formActionCreators';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
 import {ExposureAndFlightsDetails} from 'commons/Contexts/ExposuresAndFlights';
@@ -25,6 +25,7 @@ const flightDeleteFailedMsg = 'לא הצלחנו למחוק את הטיסה, א�
 const flightDeleteWarningTitle = 'האם אתה בטוח שתרצה למחוק את הטיסה?';
 
 export const useExposuresAndFlights = (props : Props) => {
+
     const {exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, id, reset, trigger, onSubmit} = props;
     
     const { saveExposureAndFlightData, saveResortsData } = useExposuresSaving();
@@ -126,36 +127,35 @@ export const useExposuresAndFlights = (props : Props) => {
     const onExposureDeleted = async (index: number) => {  
         const updatedExpousres = [...exposureAndFlightsData.exposures];
         const deletingExposureLogger = logger.setup('Deleting Exposure');
-        alertWarning((updatedExpousres[index].wasAbroad ? flightDeleteWarningTitle : exposureDeleteWarningTitle),
-            {
-                showCancelButton: true,
-                cancelButtonText: 'בטל',
-                cancelButtonColor: theme.palette.error.main,
-                confirmButtonColor: theme.palette.primary.main,
-                confirmButtonText: 'כן, המשך',
-            }).then((result) => {
-                if (result.value) {
-                    deletingExposureLogger.info('launching exposure delete request', Severity.LOW);
-                    setIsLoading(true);
-                    if (updatedExpousres[index].id){
-                        const exposureId = updatedExpousres[index].id;
-                        axios.delete('/exposure/deleteExposure', { params: { exposureId }})
-                            .then(() => {
-                                deletingExposureLogger.info('exposure was deleted successfully', Severity.LOW)
-                            }).catch((error) => {
-                                deletingExposureLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-                                alertError((updatedExpousres[index].wasAbroad ? flightDeleteFailedMsg : exposureDeleteFailedMsg));
-                            }) 
-                    } else {
-                        updatedExpousres.splice(index, 1);
-                        setExposureDataAndFlights({
-                            ...exposureAndFlightsData,
-                            exposures: updatedExpousres,
-                        });
-                    }
-                    onSubmit();
-                }            
-            });
+        alertWarning((updatedExpousres[index].wasAbroad ? flightDeleteWarningTitle : exposureDeleteWarningTitle),{
+            showCancelButton: true,
+            cancelButtonText: 'בטל',
+            cancelButtonColor: theme.palette.error.main,
+            confirmButtonColor: theme.palette.primary.main,
+            confirmButtonText: 'כן, המשך',
+        }).then((result) => {
+            if (result.value) {
+                deletingExposureLogger.info('launching exposure delete request', Severity.LOW);
+                setIsLoading(true);
+                if (updatedExpousres[index].id){
+                    const exposureId = updatedExpousres[index].id;
+                    axios.delete('/exposure/deleteExposure', { params: { exposureId }})
+                        .then(() => {
+                            deletingExposureLogger.info('exposure was deleted successfully', Severity.LOW)
+                        }).catch((error) => {
+                            deletingExposureLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+                            alertError((updatedExpousres[index].wasAbroad ? flightDeleteFailedMsg : exposureDeleteFailedMsg));
+                        }) 
+                } else {
+                    updatedExpousres.splice(index, 1);
+                    setExposureDataAndFlights({
+                        ...exposureAndFlightsData,
+                        exposures: updatedExpousres,
+                    });
+                }
+                onSubmit();
+            }            
+        });
     };
     
     const onExposuresStatusChange = (fieldName: any, value: any) => {
@@ -173,7 +173,7 @@ export const useExposuresAndFlights = (props : Props) => {
             ...exposureAndFlightsData,
             exposures: updatedExposures,
         });
-    }
+    };
 
     const saveExposure = (data : FormData , ids : (number | null)[]) => {
         const saveExposureLogger = logger.setup('Saving Exposures And Flights tab');
@@ -195,7 +195,7 @@ export const useExposuresAndFlights = (props : Props) => {
             })
             setIsLoading(false);
         })
-    }
+    };
 
     return {
         saveExposure,

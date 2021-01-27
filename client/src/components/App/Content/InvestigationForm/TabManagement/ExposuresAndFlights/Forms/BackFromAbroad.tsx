@@ -16,13 +16,13 @@ import useStyles from '../ExposuresAndFlightsStyles';
 const addFlightButton: string = 'הוסף טיסה לחול';
 
 export const BackFromAbroad = (props: Props) => {
+
     const { control, watch } = useFormContext();
     const { fieldContainer } = useFormStyles();
     const { wereFlights, onExposuresStatusChange, exposures, handleChangeExposureDataAndFlightsField,
         onExposureAdded, disableFlightAddition, onExposureDeleted
     } = props;
     const classes = useStyles();
-
     const watchWereFlights = watch(fieldsNames.wereFlights, wereFlights);
 
     return (

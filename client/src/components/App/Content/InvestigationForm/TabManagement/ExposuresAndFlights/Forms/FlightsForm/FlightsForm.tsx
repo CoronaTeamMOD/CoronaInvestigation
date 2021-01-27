@@ -16,14 +16,14 @@ const startDateLabel = '*מתאריך';
 const endDateLabel = '*עד תאריך';
 
 const FlightsForm = (props: Props) => {
-  const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted } = props;
 
-  const {control , errors} = useFormContext();
+    const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted } = props;
 
-  const classes = useStyles();
-  const formClasses = useFormStyles();
+    const {control , errors} = useFormContext();
+    const classes = useStyles();
+    const formClasses = useFormStyles();
 
-  const getDateLabel = (dateError : {message? : string , type? : string}, isStart: boolean) => {
+    const getDateLabel = (dateError : {message? : string , type? : string}, isStart: boolean) => {
 		if(dateError) {
 			if(dateError.type === 'typeError') {
 				return 'תאריך לא ולידי'
@@ -31,13 +31,13 @@ const FlightsForm = (props: Props) => {
 			return dateError.message;
 		}
 		return (isStart ? startDateLabel : endDateLabel)
-	}
+	};
 
-  const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
-  const startDateError = currentErrors ? currentErrors.flightStartDate : undefined;
-  const endDateError = currentErrors ? currentErrors.flightEndDate : undefined;
+    const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
+    const startDateError = currentErrors ? currentErrors.flightStartDate : undefined;
+    const endDateError = currentErrors ? currentErrors.flightEndDate : undefined;
 
-  return (
+    return (
 		<Grid className={formClasses.form} container justify='flex-start'>
 		
 			<Grid container justify='space-between' xs={12}>

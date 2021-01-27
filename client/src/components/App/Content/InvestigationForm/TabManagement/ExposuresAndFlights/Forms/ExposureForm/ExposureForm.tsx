@@ -19,17 +19,16 @@ import useExposureForm from './useExposureForm';
 import ExposureSourceOption from './ExposureSourceOption';
 
 const ExposureForm = (props: Props) => {
+
 	const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted } = props;
 
 	const classes = useStyles();
 	const formClasses = useFormStyles();
-
 	const { control, setValue, errors } = useFormContext();
 
 	const [exposureSourceSearchString, setExposureSourceSearchString] = useState<string>('');
 	const [isOptionalPatientsLoading, setOptionalPatientsLoading] = useState<boolean>(false);
 	const [optionalCovidPatients, setOptionalCovidPatients] = useState<CovidPatient[]>([]);
-
 	const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
 	const { fetchOptionalCovidPatients, selectedExposureSourceDisplay } = useExposureForm({
@@ -37,6 +36,7 @@ const ExposureForm = (props: Props) => {
 		exposureSourceSearchString,
 		setOptionalPatientsLoading
 	});
+
 	const setOptionalCovidPatientsAsync = async () => {
 		const optionalCovidPatients = await fetchOptionalCovidPatients();
 		setOptionalCovidPatients(optionalCovidPatients);
@@ -49,10 +49,10 @@ const ExposureForm = (props: Props) => {
 	}, [exposureAndFlightsData.exposureSource]);
 
 	useEffect(() => {
-		if(exposureSourceSearchString === "") {
+		if(exposureSourceSearchString === '') {
 			setOptionalCovidPatients([]);
 		}
-	}, [exposureSourceSearchString])
+	}, [exposureSourceSearchString]);
 
 	useEffect(() => {
 		setValue(`exposures[${index}].${fieldsNames.placeType}`, exposureAndFlightsData[fieldsNames.placeType])
@@ -67,7 +67,7 @@ const ExposureForm = (props: Props) => {
 			return dateError.message;
 		}
 		return 'תאריך'
-	}
+	};
 
 	const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
 	const dateError = currentErrors ? currentErrors.exposureDate : undefined;
@@ -105,7 +105,6 @@ const ExposureForm = (props: Props) => {
 							}}
 						/>
 					</FormRowWithInput>
-
 				</Grid>
 
 				<Grid item xs={1} alignItems='center' justify='flex-start'>
@@ -223,7 +222,6 @@ const ExposureForm = (props: Props) => {
 		</Grid>
 	);
 };
-
 
 interface Props {
 	exposureAndFlightsData: any;

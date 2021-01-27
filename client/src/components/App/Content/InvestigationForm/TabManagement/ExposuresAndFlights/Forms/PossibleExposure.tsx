@@ -1,12 +1,12 @@
 import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
 import { AddCircle } from '@material-ui/icons';
+import { Controller, useFormContext } from 'react-hook-form';
 import { Collapse, Divider, Typography, IconButton } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import FormTitle from 'commons/FormTitle/FormTitle';
-import { Exposure, fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import { Exposure, fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 
 import useStyles from '../ExposuresAndFlightsStyles';
 import ExposureForm from './ExposureForm/ExposureForm';
@@ -14,6 +14,7 @@ import ExposureForm from './ExposureForm/ExposureForm';
 const addConfirmedExposureButton: string = 'הוסף חשיפה';
 
 const PossibleExposure = (props: Props) => {
+
     const {
         wereConfirmedExposures,
         onExposuresStatusChange,
@@ -23,10 +24,9 @@ const PossibleExposure = (props: Props) => {
         disableConfirmedExposureAddition,
         onExposureDeleted
     } = props;
+
     const classes = useStyles();
-
     const { control, watch } = useFormContext();
-
     const watchWasConfirmedExposure = watch(fieldsNames.wereConfirmedExposures, wereConfirmedExposures);
 
     return (
