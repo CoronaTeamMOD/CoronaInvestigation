@@ -1,12 +1,12 @@
 import ConnectedInvestigationContact from 'models/GroupedInvestigationContacts/ConnectedInvestigationContact';
 
 interface GroupedInvestigationReducerType {
-    groupId : string | null,
+    groupId : string,
     investigations : ConnectedInvestigationContact
 }
 
-export const initialState ={
-    groupId : null,
+export const initialState : GroupedInvestigationReducerType ={
+    groupId : "",
     investigations : {
         investigationGroupReasonByReason: {
             displayName : "טוען..."
