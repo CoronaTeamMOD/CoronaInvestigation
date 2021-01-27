@@ -55,6 +55,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
             handleChangeExposureDataAndFlightsField={handleChangeExposureDataAndFlightsField}
             onExposureAdded={onExposureAdded}
             disableConfirmedExposureAddition={disableConfirmedExposureAddition}
+            onExposureDeleted={onExposureDeleted}
           />
 
           <Divider />

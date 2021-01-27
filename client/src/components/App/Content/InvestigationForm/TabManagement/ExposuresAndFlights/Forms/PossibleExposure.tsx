@@ -11,15 +11,6 @@ import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import useStyles from '../ExposuresAndFlightsStyles';
 import ExposureForm from './ExposureForm/ExposureForm';
 
-interface Props {
-    wereConfirmedExposures: boolean;
-    onExposuresStatusChange: (fieldName: any, value: any) => void;
-    exposures: Exposure[];
-    handleChangeExposureDataAndFlightsField: (index: number, fieldName: string, value: any) => void;
-    disableConfirmedExposureAddition: boolean;
-    onExposureAdded: (wasConfirmedExposure: boolean, wasAbroad: boolean) => void;
-}
-
 const addConfirmedExposureButton: string = 'הוסף חשיפה';
 
 const PossibleExposure = (props: Props) => {
@@ -30,6 +21,7 @@ const PossibleExposure = (props: Props) => {
         handleChangeExposureDataAndFlightsField,
         onExposureAdded,
         disableConfirmedExposureAddition,
+        onExposureDeleted
     } = props;
     const classes = useStyles();
 
@@ -72,6 +64,7 @@ const PossibleExposure = (props: Props) => {
                                         exposureAndFlightsData={exposure}
                                         index={index}
                                         handleChangeExposureDataAndFlightsField={handleChangeExposureDataAndFlightsField}
+                                        onExposureDeleted={() => onExposureDeleted(index)}
                                     />
                                     <Divider />
                                 </>
@@ -89,6 +82,16 @@ const PossibleExposure = (props: Props) => {
             </Collapse>
         </div>
     );
+};
+
+interface Props {
+    wereConfirmedExposures: boolean;
+    onExposuresStatusChange: (fieldName: any, value: any) => void;
+    exposures: Exposure[];
+    handleChangeExposureDataAndFlightsField: (index: number, fieldName: string, value: any) => void;
+    disableConfirmedExposureAddition: boolean;
+    onExposureAdded: (wasConfirmedExposure: boolean, wasAbroad: boolean) => void;
+    onExposureDeleted: (index: number) => void;
 };
 
 export default PossibleExposure;

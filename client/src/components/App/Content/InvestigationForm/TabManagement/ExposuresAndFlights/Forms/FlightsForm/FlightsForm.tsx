@@ -15,7 +15,7 @@ import AirportInput from './AirportInput/AirportInput';
 const startDateLabel = '*מתאריך';
 const endDateLabel = '*עד תאריך';
 
-const FlightsForm = (props: any) => {
+const FlightsForm = (props: Props) => {
   const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted } = props;
 
   const {control , errors} = useFormContext();
@@ -187,6 +187,15 @@ const FlightsForm = (props: any) => {
 			</Grid>
 		</Grid>
   );
+};
+
+interface Props {
+	fieldsNames: any;	
+	key: string;
+	exposureAndFlightsData: any;
+	index: number;
+	handleChangeExposureDataAndFlightsField: (fieldName: string, value: any) => void;
+	onExposureDeleted: () => void;
 };
 
 export default FlightsForm;

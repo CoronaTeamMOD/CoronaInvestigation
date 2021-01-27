@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
+import { Delete } from '@material-ui/icons';
 import React, { useState, useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { CircularProgress, Grid, MenuItem } from '@material-ui/core';
+import { CircularProgress, Grid, IconButton, MenuItem } from '@material-ui/core';
 
 import Map from 'commons/Map/Map';
 import useFormStyles from 'styles/formStyles';
@@ -18,7 +19,7 @@ import useExposureForm from './useExposureForm';
 import ExposureSourceOption from './ExposureSourceOption';
 
 const ExposureForm = (props: Props) => {
-	const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index } = props;
+	const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted } = props;
 
 	const classes = useStyles();
 	const formClasses = useFormStyles();
@@ -73,35 +74,46 @@ const ExposureForm = (props: Props) => {
 
 	return (
 		<Grid className={formClasses.form} container justify='flex-start'>
-			<FormRowWithInput fieldName='פרטי החולה:'>
-				<Controller
-					control={control}
-					name={`exposures[${index}].${fieldsNames.exposureSource}`}
-					defaultValue={exposureAndFlightsData.exposureSource}
-					render={(props) => {
-						return (
-							<ExposureSearchTextField
-								name={`exposures[${index}].${fieldsNames.exposureSource}`}
-								className={classes.exposureSourceTextFied}
-								onChange={(value) => {
-									setExposureSourceSearchString(value);
-									(!value || !value.includes(':')) &&
-										handleChangeExposureDataAndFlightsField(index, fieldsNames.exposureSource, null);
-								}}
-								value={exposureSourceSearchString}
-								test-id='exposureSource'
-								onSearchClick={setOptionalCovidPatientsAsync}
-								onKeyDown={(e: React.KeyboardEvent) => {
-									if (e.key === 'Enter') {
-										e.preventDefault();
-										setOptionalCovidPatientsAsync()
-									}
-								}}
-							/>
-						);
-					}}
-				/>
-			</FormRowWithInput>
+			<Grid container justify='space-between' xs={12}>
+                <Grid item xs={11}>
+					<FormRowWithInput fieldName='פרטי החולה:'>
+						<Controller
+							control={control}
+							name={`exposures[${index}].${fieldsNames.exposureSource}`}
+							defaultValue={exposureAndFlightsData.exposureSource}
+							render={(props) => {
+								return (
+									<ExposureSearchTextField
+										name={`exposures[${index}].${fieldsNames.exposureSource}`}
+										className={classes.exposureSourceTextFied}
+										onChange={(value) => {
+											setExposureSourceSearchString(value);
+											(!value || !value.includes(':')) &&
+												handleChangeExposureDataAndFlightsField(index, fieldsNames.exposureSource, null);
+										}}
+										value={exposureSourceSearchString}
+										test-id='exposureSource'
+										onSearchClick={setOptionalCovidPatientsAsync}
+										onKeyDown={(e: React.KeyboardEvent) => {
+											if (e.key === 'Enter') {
+												e.preventDefault();
+												setOptionalCovidPatientsAsync()
+											}
+										}}
+									/>
+								);
+							}}
+						/>
+					</FormRowWithInput>
+
+				</Grid>
+
+				<Grid item xs={1} alignItems='center' justify='flex-start'>
+					<IconButton onClick={onExposureDeleted}>
+							<Delete />
+					</IconButton>
+				</Grid>
+			</Grid>
 
 			{(isOptionalPatientsLoading || optionalCovidPatients?.length > 0) && (
 				<FormRowWithInput fieldName=''>
@@ -138,7 +150,6 @@ const ExposureForm = (props: Props) => {
 					</div>
 				</FormRowWithInput>
 			)}
-
 			<FormRowWithInput fieldName='תאריך החשיפה:'>
 				<Controller
 					control={control}
@@ -199,11 +210,13 @@ const ExposureForm = (props: Props) => {
 	);
 };
 
-export default ExposureForm;
 
 interface Props {
 	exposureAndFlightsData: any;
 	fieldsNames: any;
 	handleChangeExposureDataAndFlightsField: (index: number, fieldName: string, value: any) => void;
 	index: number;
+	onExposureDeleted: () => void;
 };
+
+export default ExposureForm;
