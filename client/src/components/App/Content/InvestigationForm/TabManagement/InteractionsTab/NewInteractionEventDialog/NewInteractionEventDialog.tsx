@@ -8,7 +8,7 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 
 import InteractionDialog from '../InteractionDialog/InteractionDialog';
 
-const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], investigationId: number) : InteractionEventDialogData => ({
+const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], investigationId: number) : InteractionEventDialogData & {isRepetitive: false} => ({
     placeType: '',
     placeSubType: null,
     investigationId,
@@ -19,7 +19,8 @@ const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], 
     externalizationApproval: null,
     contacts,
     contactPersonPhoneNumber: '',
-    creationTime: new Date()
+    creationTime: new Date(),
+    isRepetitive: false // TODO: should be removed once repetitive event logic is implemented
 });
 
 const newContactEventTitle = 'יצירת מקום/מגע חדש';

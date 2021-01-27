@@ -1,8 +1,7 @@
-import { ChevronLeft } from '@material-ui/icons';
 import { yupResolver } from '@hookform/resolvers';
 import React, { useContext, useState } from 'react';
 import { FormProvider, useForm, } from 'react-hook-form';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Tooltip } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import InvolvedContact from 'models/InvolvedContact';
@@ -14,14 +13,15 @@ import InteractionEventContactFields from 'models/enums/InteractionsEventDialogC
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import { familyMembersContext } from 'commons/Contexts/FamilyMembersContext';
 import useDuplicateContactId, { IdToCheck } from 'Utils/Contacts/useDuplicateContactId';
-import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 import useStyles from './InteractionDialogStyles';
 import useInteractionsForm from './InteractionEventForm/useInteractionsForm';
 import ContactsTabs from './InteractionEventForm/ContactsSection/ContactsTabs';
 import InteractionEventSchema from './InteractionEventForm/InteractionSection/InteractionEventSchema';
-import ContactTypeKeys from './InteractionEventForm/InteractionSection/ContactForm/ContactTypeKeys';
+import ContactTypeKeys from './InteractionEventForm/ContactsSection/ManualContactsForm/ContactForm/ContactTypeKeys';
 import InteractionEventForm, { InteractionEventFormProps } from './InteractionEventForm/InteractionSection/InteractionEventForm';
+import InteractionFormTabSwitchButton from './InteractionFormTabSwitchButton';
+
 
 const InteractionDialog = (props: Props) => {
     const { isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction } = props;
@@ -40,7 +40,6 @@ const InteractionDialog = (props: Props) => {
     const classes = useStyles();
     const { familyMembers } = useContext(familyMembersContext);
     const [placeSubtypeName, setPlaceSubtypeName] = useState<string>('');
-    const hebrewActionName = isNewInteraction ? 'יצירת' : 'עריכת';
     const isUnknownTime = methods.watch(InteractionEventDialogFields.UNKNOWN_TIME);
     const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
     const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
@@ -49,9 +48,6 @@ const InteractionDialog = (props: Props) => {
     const { saveInteractions } = useInteractionsForm({ loadInteractions, loadInvolvedContacts, onDialogClose, groupedInvestigationContacts });
     const { checkDuplicateIdsForInteractions } = useDuplicateContactId();
 
-    const isContinueToContactsEnable = (): boolean | undefined => {
-        return !Boolean(get(methods.errors, InteractionEventDialogFields.PLACE_TYPE)) && !Boolean(get(methods.errors, InteractionEventDialogFields.PLACE_SUB_TYPE))
-    }
     const addFamilyMemberContacts = (contacts: Contact[]) => {
         familyMembers.forEach((familyMember: InvolvedContact) => {
             if (familyMember.selected) {
@@ -188,22 +184,12 @@ const InteractionDialog = (props: Props) => {
                         />
                     </form>
                 </DialogContent>
-                <DialogActions className={`${classes.dialogFooter}`}   >
-                    {
-                        <Tooltip title={isContinueToContactsEnable() ? '' : 'לא ניתן לעבור ליצירת מגעים מבלי להזין "סוג אתר/תת סוג'}>
-                            <div>
-                                <Button disabled={!isContinueToContactsEnable()} variant='text' className={classes.changeEventSubFormButton}
-                                    onClick={async () => {
-                                        await methods.trigger()
-                                        isContinueToContactsEnable() && setIsAddingContacts(!isAddingContacts)
-                                    }}>
-                                    {isAddingContacts ? `חזרה ל${hebrewActionName} מקום` : `המשך ל${hebrewActionName} מגעים`}
-                                    <ChevronLeft />
-                                </Button>
-                            </div>
-                        </Tooltip>
+                <DialogActions className={`${classes.dialogFooter}`}>
 
-                    }
+                   <InteractionFormTabSwitchButton isAddingContacts={isAddingContacts}
+                                                   setIsAddingContacts={setIsAddingContacts}
+                                                   isNewInteraction={isNewInteraction}/>
+
                     <div>
                         <Button
                             onClick={onDialogClose}
