@@ -20,8 +20,7 @@ const GroupedInvestigationForm = () => {
               />
             : <ContactsForm 
                 investigations={nodes}
-                reason={'aaa'}
-            />
+                reason={investigations.otherReason||investigations.investigationGroupReasonByReason.displayName}            />
     )
 }
 
