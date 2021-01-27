@@ -45,7 +45,6 @@ const TableSearchBar = (props: Props) => {
             )
             }}
             placeholder={INSERT_TABLE_SEARCH}
-            test-id='exposureSource'
             onKeyDown={(e: React.KeyboardEvent) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
