@@ -32,6 +32,7 @@ const TableSearchBar = (props: Props) => {
         <TypePreventiveTextField
             {...rest}
             name='tableSearchBar'
+            className={classes.searchBar}
             value={searchQuery}
             validationSchema={stringAlphabet}
             InputProps={{
