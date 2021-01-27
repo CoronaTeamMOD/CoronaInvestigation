@@ -150,62 +150,76 @@ const ExposureForm = (props: Props) => {
 					</div>
 				</FormRowWithInput>
 			)}
-			<FormRowWithInput fieldName='תאריך החשיפה:'>
-				<Controller
-					control={control}
-					name={`exposures[${index}].${fieldsNames.date}`}
-					defaultValue={exposureAndFlightsData[fieldsNames.date]}
-					render={(props) => {
-						return (
-							<DatePick
-								{...props}
-								maxDateMessage={''}
-								invalidDateMessage={''}
-								maxDate={new Date()}
-								testId='exposureDate'
-								labelText={getDateLabel(dateError)}
-								error={Boolean(dateError)}
-								onChange={(newDate: Date) => {
-									props.onChange(newDate);
-								}
-								}
-							/>
-						);
-					}}
-				/>
-			</FormRowWithInput>
 
-			<FormRowWithInput testId='exposureAddress' fieldName='כתובת החשיפה:'>
-				<Controller
-					control={control}
-					name={`exposures[${index}].${fieldsNames.address}`}
-					defaultValue={exposureAndFlightsData[fieldsNames.address]}
-					render={(props) => {
-						return (
-							<Map
-								name={fieldsNames.address}
-								setSelectedAddress={(newAddress) => {
-									props.onChange(newAddress);
-									handleChangeExposureDataAndFlightsField(index, fieldsNames.address, newAddress)
-								}
-								}
-								selectedAddress={exposureAndFlightsData[fieldsNames.address]}
-							/>
-						)
-					}}
-				/>
-			</FormRowWithInput>
-			<PlacesTypesAndSubTypes
-				size='Tab'
-				placeTypeName={`exposures[${index}].${fieldsNames.placeType}`}
-				placeSubTypeName={`exposures[${index}].${fieldsNames.placeSubType}`}
-				onPlaceTypeChange={(value) => {
-					setValue(`exposures[${index}].${fieldsNames.placeType}`, value);
-				}}
-				onPlaceSubTypeChange={(placeSubType: PlaceSubType | null) => {
-					setValue(`exposures[${index}].${fieldsNames.placeSubType}`, placeSubType?.id || null);
-				}}
-			/>
+			<Grid container justify='space-between' xs={12}>
+                <Grid item xs={11}>
+					<FormRowWithInput fieldName='תאריך החשיפה:'>
+						<Controller
+							control={control}
+							name={`exposures[${index}].${fieldsNames.date}`}
+							defaultValue={exposureAndFlightsData[fieldsNames.date]}
+							render={(props) => {
+								return (
+									<DatePick
+										{...props}
+										maxDateMessage={''}
+										invalidDateMessage={''}
+										maxDate={new Date()}
+										testId='exposureDate'
+										labelText={getDateLabel(dateError)}
+										error={Boolean(dateError)}
+										onChange={(newDate: Date) => {
+											props.onChange(newDate);
+										}
+										}
+									/>
+								);
+							}}
+						/>
+					</FormRowWithInput>
+				</Grid>
+			</Grid>
+
+			<Grid container justify='space-between' xs={12}>
+                <Grid item xs={11}>
+					<FormRowWithInput testId='exposureAddress' fieldName='כתובת החשיפה:'>
+						<Controller
+							control={control}
+							name={`exposures[${index}].${fieldsNames.address}`}
+							defaultValue={exposureAndFlightsData[fieldsNames.address]}
+							render={(props) => {
+								return (
+									<Map
+										name={fieldsNames.address}
+										setSelectedAddress={(newAddress) => {
+											props.onChange(newAddress);
+											handleChangeExposureDataAndFlightsField(index, fieldsNames.address, newAddress)
+										}
+										}
+										selectedAddress={exposureAndFlightsData[fieldsNames.address]}
+									/>
+								)
+							}}
+						/>
+					</FormRowWithInput>
+				</Grid>
+			</Grid>
+			
+			<Grid container justify='space-between' xs={12}>
+                <Grid item xs={11}>
+					<PlacesTypesAndSubTypes
+						size='Tab'
+						placeTypeName={`exposures[${index}].${fieldsNames.placeType}`}
+						placeSubTypeName={`exposures[${index}].${fieldsNames.placeSubType}`}
+						onPlaceTypeChange={(value) => {
+							setValue(`exposures[${index}].${fieldsNames.placeType}`, value);
+						}}
+						onPlaceSubTypeChange={(placeSubType: PlaceSubType | null) => {
+							setValue(`exposures[${index}].${fieldsNames.placeSubType}`, placeSubType?.id || null);
+						}}
+					/>
+				</Grid>
+			</Grid>
 		</Grid>
 	);
 };
