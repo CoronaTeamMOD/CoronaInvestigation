@@ -10,37 +10,22 @@ import SelectedRowsMessage from './SelectedRowsMessage/SelectedRowsMessage';
 
 const AccordionContent = (props: Props) => {
     const { events } = props;
-    const [searchQuery, setsearchQueries] = useState<string>("")
-    const { getCurrentSelectedRowsLength , existingIds } = useAccordionContent({events});   
-
-    const test = () => {
-        console.log(searchQuery);
-    }
+    const [query, setQuery] = useState<string>("");
+    const { getCurrentSelectedRowsLength , existingIds , filteredEvents } = useAccordionContent({events , query});   
 
     return (
         <AccordionDetails>
             <Grid container>
                 <Grid xs={12}>
                     <TableSearchBar
-                        value={searchQuery}
-                        onSearchClick={() => { 
-                            test();
-                        }}
-                        onKeyDown={(e: React.KeyboardEvent) => {
-                            if (e.key === 'Enter') {
-                                e.preventDefault();
-                                test()
-                            }
-                        }}
-                        name={''}
-                        onChange={(value) => { 
-                            setsearchQueries(value);
+                        onSearchClick={(query) => { 
+                            setQuery(query);
                         }}
                     />
                 </Grid>
                 <Grid xs={12}>
                     <ContactsTable
-                        events={events}
+                        events={filteredEvents}
                         existingIds={existingIds}
                     />
                 </Grid>

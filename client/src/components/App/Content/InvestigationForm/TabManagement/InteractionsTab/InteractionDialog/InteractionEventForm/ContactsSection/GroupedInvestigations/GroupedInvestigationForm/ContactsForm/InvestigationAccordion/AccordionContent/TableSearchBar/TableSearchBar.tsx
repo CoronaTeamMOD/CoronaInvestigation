@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Search } from '@material-ui/icons';
 import { IconButton, InputAdornment } from '@material-ui/core';
 
@@ -10,13 +10,11 @@ import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPre
 import useStyles from './tableSearchBarStyles';
 
 const errorMessage = 'השדה יכול להכיל רק אותיות, מספרים, מקף ורווח';
-const maxLengthErrorMessage = 'השדה יכול להכיל 100 תווים בלבד';
-const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן מספר אפידמיולוגי, שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
+const maxLengthErrorMessage = 'השדה יכול להכיל 50 תווים בלבד';
+const INSERT_TABLE_SEARCH = 'הזן שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
 
-interface Props extends AlphabetTextFieldProps<string> {
-  value: string | null;
-  onSearchClick: () => void; 
-  onKeyDown: (e : React.KeyboardEvent) => void;
+interface Props {
+  onSearchClick: (searchQuery : string) => void; 
 }
 
 const stringAlphabet = yup
@@ -25,26 +23,37 @@ const stringAlphabet = yup
   .max(50, maxLengthErrorMessage);
 
 const TableSearchBar = (props: Props) => {
-    const { value, onSearchClick, ...rest } = props;
-    const serachValue : string = useMemo(() => value || '', [value]);
+    const [searchQuery, setsearchQueries] = useState<string>("");
+
+    const { onSearchClick , ...rest} = props;
     const classes = useStyles();
 
     return (
         <TypePreventiveTextField
             {...rest}
-            value={serachValue}
+            name='tableSearchBar'
+            value={searchQuery}
             validationSchema={stringAlphabet}
             InputProps={{
             endAdornment: (
                 <InputAdornment position='end'>
-                    <IconButton onClick={onSearchClick}>
+                    <IconButton onClick={() => onSearchClick(searchQuery)}>
                         <Search className={classes.serachIcon} />
                     </IconButton>
                 </InputAdornment>
             )
             }}
-            placeholder={INSERT_EXPOSURE_SOURCE_SEARCH}
+            placeholder={INSERT_TABLE_SEARCH}
             test-id='exposureSource'
+            onKeyDown={(e: React.KeyboardEvent) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    onSearchClick(searchQuery);
+                }
+            }}
+            onChange={(value) => { 
+                setsearchQueries(value);
+            }}
         />
     );
 };

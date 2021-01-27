@@ -1,27 +1,38 @@
 import React from 'react'
 import { Table } from '@material-ui/core';
 
-import ContactEvent from 'models/GroupedInvestigationContacts/ContactEvent';
+import ContactNode from 'models/GroupedInvestigationContacts/ContactNode';
 
 import TableRows from './TableRows/TableRows';
 import TableHeader from './TableHeader/TableHeader';
+import ErrorMessage from '../../../../../ErrorMessage/ErrorMessage';
+
+const noResultsMessage = 'אין תוצאות מתאימות';
 
 const ContactsTable = (props: Props) => {
     const { events, existingIds} = props;
 
     return (
-        <Table>
-            <TableHeader />
-            <TableRows 
-                existingIds={existingIds}
-                events={events}
-            />
-        </Table>
+        <>
+        {
+            events.length > 0 
+            ? <Table>
+                <TableHeader />
+                <TableRows 
+                    existingIds={existingIds}
+                    events={events}
+                />
+             </Table>
+            : <ErrorMessage 
+                text={noResultsMessage}
+              />
+        }
+        </>
     )
 }
 
 interface Props {
-    events : ContactEvent[];
+    events : ContactNode[];
     existingIds: string[];
 }
 
