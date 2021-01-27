@@ -1,19 +1,8 @@
-import ContactedPerson from './ContactedPerson';
+import ContactNode from './ContactNode';
 
 type ContactEvent = {
     contactedPeopleByContactEvent : {
-        nodes: {
-            id: number;
-            involvedContactByInvolvedContactId?: {
-                involvementReason: number; 
-            }
-            addressByIsolationAddress: {
-                cityByCity: {
-                    displayName: string;
-                }
-            },
-            personByPersonInfo: ContactedPerson
-        }[]
+        nodes: ContactNode[]
     }
 }
 

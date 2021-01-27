@@ -4,7 +4,7 @@ enum TableCoulmns {
     identificationType = 'סוג ת.ז',
     identificationNumber = 'מספר ת.ז',
     birthDate = 'ת. לידה',
-    phoneNum = 'ישוב השהייה בבידוד',
+    phoneNum = 'מספר טלפון',
     secondaryPhoneNum = 'טלפון משני',
     isolationCity = 'ישוב השהייה בבידוד'
 }

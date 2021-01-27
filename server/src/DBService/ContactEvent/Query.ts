@@ -213,8 +213,6 @@ export const CONTACTS_BY_CONTACTS_IDS = gql`
           creationTime
           contactedPersonCity
           contactType
-          contactStatus
-          contactEvent
           completionTime
         }
       }
