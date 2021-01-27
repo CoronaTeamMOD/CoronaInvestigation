@@ -54,12 +54,14 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const saveContact = (interactedContact: InteractedContact): boolean => {
+        const isInterrogationOfContactsHaveCity = interactedContact.isolationAddress.city === null || interactedContact.isolationAddress.city === undefined
         if (
             checkDuplicateIds(
                 allContactedInteractions.map(
                     (contact: InteractedContact) => contact.identificationNumber
                 )
             )
+            || isInterrogationOfContactsHaveCity
         ) {
             return false;
         } else {

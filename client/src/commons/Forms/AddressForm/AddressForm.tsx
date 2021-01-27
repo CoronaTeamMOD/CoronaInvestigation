@@ -82,10 +82,12 @@ const AddressForm: React.FC<Props> = ({
                                 renderInput={(params) =>
                                     <TextField
                                         test-id={cityField.testId || ''}
-                                        error={Boolean(get(methods.errors, cityField.name))}
-                                        label={get(methods.errors, cityField.name)?.message || `${CITY_LABEL} *`}
+                                        label={get(methods.errors, cityField.name)?.message || `${CITY_LABEL}`}
                                         {...params}
                                         placeholder={CITY_LABEL}
+                                        required
+                                        error={props.value === null || props.value === undefined}
+                                        helperText={props.value === null || props.value === undefined ? 'שגיאה: שדה חובה' : ''}
                                     />}
                             />
                         )}

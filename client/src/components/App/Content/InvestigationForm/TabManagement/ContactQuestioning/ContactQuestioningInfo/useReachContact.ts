@@ -12,7 +12,7 @@ const useReachContact = (props: Props) => {
     const { alertWarning , alertError } = useCustomSwal();
 
     const formHasErrors = errors.form ? Boolean(errors.form[index]) : false;
-
+    const isInterrogationOfContactsHaveCity = formValues.isolationAddress?.city !== null && formValues?.isolationAddress.city !==  undefined
     const changeContactStatus = (
         event: React.ChangeEvent<{}>,
         selectedStatus: ContactStatus | null,
@@ -21,7 +21,7 @@ const useReachContact = (props: Props) => {
         event.stopPropagation();
 
         if (selectedStatus?.id === ContactStatusCodes.COMPLETED) {
-            if(!formHasErrors){
+            if(!formHasErrors && isInterrogationOfContactsHaveCity){
                 alertWarning('האם אתה בטוח שתרצה להעביר את המגע לסטטוס הושלם?', {
                     text: 'לאחר העברת המגע, לא תהיה אפשרות לערוך שינויים',
                     showCancelButton: true,
