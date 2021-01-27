@@ -166,7 +166,6 @@ exposureRoute.delete('/deleteExposure',handleInvestigationRequest, (request: Req
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    console.log(request.query)
     const parameters = {exposureId: parseInt(request.query.exposureId as string)};
     deleteExposureLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     

@@ -127,7 +127,9 @@ export const useExposuresAndFlights = (props : Props) => {
     const onExposureDeleted = async (index: number) => {  
         const updatedExpousres = [...exposureAndFlightsData.exposures];
         const deletingExposureLogger = logger.setup('Deleting Exposure');
-        alertWarning((updatedExpousres[index].wasAbroad ? flightDeleteWarningTitle : exposureDeleteWarningTitle),{
+        const exposureToDelete = updatedExpousres[index];
+        const isFlight = exposureToDelete.wasAbroad;
+        alertWarning((isFlight ? flightDeleteWarningTitle : exposureDeleteWarningTitle),{
             showCancelButton: true,
             cancelButtonText: 'בטל',
             cancelButtonColor: theme.palette.error.main,
@@ -137,14 +139,14 @@ export const useExposuresAndFlights = (props : Props) => {
             if (result.value) {
                 deletingExposureLogger.info('launching exposure delete request', Severity.LOW);
                 setIsLoading(true);
-                if (updatedExpousres[index].id){
+                if (exposureToDelete.id){
                     const exposureId = updatedExpousres[index].id;
                     axios.delete('/exposure/deleteExposure', { params: { exposureId }})
                         .then(() => {
                             deletingExposureLogger.info('exposure was deleted successfully', Severity.LOW)
                         }).catch((error) => {
                             deletingExposureLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-                            alertError((updatedExpousres[index].wasAbroad ? flightDeleteFailedMsg : exposureDeleteFailedMsg));
+                            alertError((isFlight ? flightDeleteFailedMsg : exposureDeleteFailedMsg));
                         }) 
                 } else {
                     updatedExpousres.splice(index, 1);
