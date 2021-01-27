@@ -34,6 +34,7 @@ const DESK_LABEL = 'דסק';
 const SOURCE_ORGANIZATION_LABEL = 'מסגרת';
 const LANGUAGE_LABEL = 'שפה';
 const AUTHORITY_LABEL = 'רשות';
+const AUTHORITY_INVESTIGATOR = 'חוקר רשות';
 
 const GenericAlphabetTextField : React.FC<GenericAlphabetTextFieldProps> = 
     ({ props, disabled, label, placeholder, className }: GenericAlphabetTextFieldProps) => (
@@ -94,6 +95,8 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
     const shouldDisableFields = mode === FormMode.READ;
 
     const shouldDisableEditFields = mode === FormMode.EDIT;
+
+    let shouldHideAuthorities = methods.getValues().sourceOrganization !== AUTHORITY_INVESTIGATOR;
     
     const onSubmit = () => {
         const data = methods.getValues();
@@ -344,10 +347,14 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                         getOptionLabel={(option) => option.displayName ? option.displayName : option}
                                         getOptionSelected={(option, value) => option.displayName === value}
                                         value={props.value}
-                                        onChange={(event, selectedSourceOrganization) =>
-                                            props.onChange(selectedSourceOrganization ? 
-                                            selectedSourceOrganization.displayName : null)
-                                        }
+                                        onChange={(event, selectedSourceOrganization) => {
+                                            if(selectedSourceOrganization){
+                                                props.onChange(selectedSourceOrganization.displayName);
+                                                shouldHideAuthorities = selectedSourceOrganization.displayName !== AUTHORITY_INVESTIGATOR;
+                                            } else {
+                                                props.onChange(null);
+                                            }
+                                        }}
                                         onBlur={props.onBlur}
                                         renderInput={(params) =>
                                             <TextField
@@ -362,7 +369,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 )}
                             />
                         </FormInput>
-                        <FormInput xs={4}>
+                        <Grid item xs={4} hidden={shouldHideAuthorities}>
                             <Controller
                                 name={SignUpFields.AUTHORITY}
                                 control={methods.control}
@@ -389,7 +396,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                     />
                                 )}
                             />
-                        </FormInput>
+                        </Grid>
                 </Grid>   
 
                 <Grid container justify='flex-start' className={classes.formRow}>

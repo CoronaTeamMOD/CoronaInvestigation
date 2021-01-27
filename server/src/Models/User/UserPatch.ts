@@ -9,4 +9,5 @@ export default interface UserPatch {
     mailInput: string;
     sourceOrganizationInput: string;
     languagesInput: Language[];
+    authorityInput: number;
 };

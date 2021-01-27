@@ -14,6 +14,7 @@ import SourceOrganization from 'models/SourceOrganization';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
+const AUTHORITY_INVESTIGATOR = 'חוקר רשות';
 
 const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCome  => {
 
@@ -129,7 +130,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
             city : user.city?.id, 
             investigationGroup : user.investigationGroup?.id,
             desk : user.desk?.id ? user.desk?.id : null,
-            authority_id: user.authority?.id
+            authority: user.sourceOrganization === AUTHORITY_INVESTIGATOR ? user.authority?.id : null
         }
     }
 
