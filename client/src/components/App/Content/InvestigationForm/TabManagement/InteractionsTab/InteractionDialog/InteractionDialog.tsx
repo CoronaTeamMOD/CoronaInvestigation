@@ -1,31 +1,35 @@
-import { ChevronLeft } from '@material-ui/icons';
 import { yupResolver } from '@hookform/resolvers';
 import React, { useContext, useState } from 'react';
 import { FormProvider, useForm, } from 'react-hook-form';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Tooltip } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import InvolvedContact from 'models/InvolvedContact';
 import PlaceSubType from 'models/PlaceSubType';
+import { groupedInvestigationsContext } from 'commons/Contexts/GroupedInvestigationFormContext';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import { familyMembersContext } from 'commons/Contexts/FamilyMembersContext';
 import useDuplicateContactId, { IdToCheck } from 'Utils/Contacts/useDuplicateContactId';
-import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 import useStyles from './InteractionDialogStyles';
 import useInteractionsForm from './InteractionEventForm/useInteractionsForm';
 import ContactsTabs from './InteractionEventForm/ContactsSection/ContactsTabs';
 import InteractionEventSchema from './InteractionEventForm/InteractionSection/InteractionEventSchema';
-import ContactTypeKeys from './InteractionEventForm/InteractionSection/ContactForm/ContactTypeKeys';
+import ContactTypeKeys from './InteractionEventForm/ContactsSection/ManualContactsForm/ContactForm/ContactTypeKeys';
 import InteractionEventForm, { InteractionEventFormProps } from './InteractionEventForm/InteractionSection/InteractionEventForm';
+import InteractionFormTabSwitchButton from './InteractionFormTabSwitchButton';
+
 
 const InteractionDialog = (props: Props) => {
     const { isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction } = props;
     const [isAddingContacts, setIsAddingContacts] = React.useState(false);
     const [groupedInvestigationContacts, setGroupedInvestigationContacts] = useState<number[]>([]);
+    const groupedInvestigationsContextState = useContext(groupedInvestigationsContext);
+    groupedInvestigationsContextState.groupedInvestigationContacts = groupedInvestigationContacts;
+    groupedInvestigationsContextState.setGroupedInvestigationContacts = setGroupedInvestigationContacts;
 
     const methods = useForm<InteractionEventDialogData>({
         defaultValues: interactionData,
@@ -36,7 +40,6 @@ const InteractionDialog = (props: Props) => {
     const classes = useStyles();
     const { familyMembers } = useContext(familyMembersContext);
     const [placeSubtypeName, setPlaceSubtypeName] = useState<string>('');
-    const hebrewActionName = isNewInteraction ? 'יצירת' : 'עריכת';
     const isUnknownTime = methods.watch(InteractionEventDialogFields.UNKNOWN_TIME);
     const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
     const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
@@ -45,9 +48,6 @@ const InteractionDialog = (props: Props) => {
     const { saveInteractions } = useInteractionsForm({ loadInteractions, loadInvolvedContacts, onDialogClose, groupedInvestigationContacts });
     const { checkDuplicateIdsForInteractions } = useDuplicateContactId();
 
-    const isContinueToContactsEnable = (): boolean | undefined => {
-        return !Boolean(get(methods.errors, InteractionEventDialogFields.PLACE_TYPE)) && !Boolean(get(methods.errors, InteractionEventDialogFields.PLACE_SUB_TYPE))
-    }
     const addFamilyMemberContacts = (contacts: Contact[]) => {
         familyMembers.forEach((familyMember: InvolvedContact) => {
             if (familyMember.selected) {
@@ -103,6 +103,13 @@ const InteractionDialog = (props: Props) => {
         }
     };
 
+    groupedInvestigationsContextState.allContactIds = interactions.map(interaction => interaction.contacts).flat().map((contact) => {
+        return ({
+            id: contact[InteractionEventContactFields.IDENTIFICATION_NUMBER],
+            serialId: contact[InteractionEventContactFields.ID]
+        })
+    });
+    
     const onSubmit = (data: InteractionEventDialogData) => {
         if (!data.contacts) {
             data.contacts = [];
@@ -110,12 +117,6 @@ const InteractionDialog = (props: Props) => {
         addFamilyMemberContacts(data.contacts);
 
         const interactionDataToSave = convertData(data);
-        const allContactsIds: IdToCheck[] = interactions.map(interaction => interaction.contacts).flat().map((contact) => {
-            return ({
-                id: contact[InteractionEventContactFields.IDENTIFICATION_NUMBER],
-                serialId: contact[InteractionEventContactFields.ID]
-            })
-        });
 
         const newIds: IdToCheck[] = interactionDataToSave[InteractionEventDialogFields.CONTACTS].map((contact: Contact) => {
             return ({
@@ -124,7 +125,7 @@ const InteractionDialog = (props: Props) => {
             })
         });
 
-        const contactsIdsToCheck: IdToCheck[] = allContactsIds.concat(newIds);
+        const contactsIdsToCheck: IdToCheck[] = groupedInvestigationsContextState.allContactIds;
         if (!checkDuplicateIdsForInteractions(contactsIdsToCheck)) {
             saveInteractions(interactionDataToSave);
         }
@@ -180,27 +181,15 @@ const InteractionDialog = (props: Props) => {
                         />
                         <ContactsTabs 
                             isVisible={isAddingContacts}
-                            groupedInvestigationContacts={groupedInvestigationContacts}
-                            setGroupedInvestigationContacts={setGroupedInvestigationContacts}
                         />
                     </form>
                 </DialogContent>
-                <DialogActions className={`${classes.dialogFooter}`}   >
-                    {
-                        <Tooltip title={isContinueToContactsEnable() ? '' : 'לא ניתן לעבור ליצירת מגעים מבלי להזין "סוג אתר/תת סוג'}>
-                            <div>
-                                <Button disabled={!isContinueToContactsEnable()} variant='text' className={classes.changeEventSubFormButton}
-                                    onClick={async () => {
-                                        await methods.trigger()
-                                        isContinueToContactsEnable() && setIsAddingContacts(!isAddingContacts)
-                                    }}>
-                                    {isAddingContacts ? `חזרה ל${hebrewActionName} מקום` : `המשך ל${hebrewActionName} מגעים`}
-                                    <ChevronLeft />
-                                </Button>
-                            </div>
-                        </Tooltip>
+                <DialogActions className={`${classes.dialogFooter}`}>
 
-                    }
+                   <InteractionFormTabSwitchButton isAddingContacts={isAddingContacts}
+                                                   setIsAddingContacts={setIsAddingContacts}
+                                                   isNewInteraction={isNewInteraction}/>
+
                     <div>
                         <Button
                             onClick={onDialogClose}

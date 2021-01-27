@@ -8,18 +8,17 @@ import ContactsTable from './ContactsTable/ContactsTable';
 import SelectedRowsMessage from './SelectedRowsMessage/SelectedRowsMessage';
 
 const AccordionContent = (props: Props) => {
-    const { events, selectedRows, setSelectedRows} = props;
+    const { events } = props;
 
-    const { getCurrentSelectedRowsLength } = useAccordionContent({events , selectedRows});   
+    const { getCurrentSelectedRowsLength , existingIds } = useAccordionContent({events});   
 
     return (
         <AccordionDetails>
             <Grid container>
                 <Grid xs={12}>
                     <ContactsTable
-                        selectedRows={selectedRows}
-                        setSelectedRows={setSelectedRows}
                         events={events}
+                        existingIds={existingIds}
                     />
                 </Grid>
                 <Grid xs={12}>
@@ -33,8 +32,6 @@ const AccordionContent = (props: Props) => {
 }
 
 interface Props {
-    selectedRows : number[];
-    setSelectedRows: React.Dispatch<React.SetStateAction<number[]>>;
     events : ContactEvent[];
 }
 

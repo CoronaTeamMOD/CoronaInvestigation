@@ -20,7 +20,7 @@ import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogCo
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
 import useStyles from './ContactFormStyles';
-import ContactTypeKeys from '../../../InteractionSection/ContactForm/ContactTypeKeys';
+import ContactTypeKeys from './ContactTypeKeys';
 
 const FIRST_NAME_LABEL = 'שם פרטי*';
 const LAST_NAME_LABEL = 'שם משפחה*';

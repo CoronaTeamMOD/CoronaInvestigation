@@ -3,9 +3,9 @@ import { Grid } from '@material-ui/core';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import Map from 'commons/Map/Map';
-import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import useFormStyles from 'styles/formStyles';
 
 import useStyles from './AddressFormStyles';
 
