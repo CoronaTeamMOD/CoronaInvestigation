@@ -28,6 +28,13 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
   const {reset , trigger} = methods;
 
+  const onSubmit = (e? : React.FormEvent) => {
+    e && e.preventDefault();
+    methods.trigger();
+    const data = methods.getValues();
+    saveExposure(data , ids);
+  }
+
   const {
     saveExposure,
     onExposuresStatusChange,
@@ -36,14 +43,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     disableConfirmedExposureAddition,
     disableFlightAddition,
     onExposureDeleted
-  } = useExposuresAndFlights({exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, id, reset, trigger});
-
-  const onSubmit = (e : React.FormEvent) => {
-    e.preventDefault();
-    methods.trigger();
-    const data = methods.getValues();
-    saveExposure(data , ids);
-  }
+  } = useExposuresAndFlights({exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, id, reset, trigger, onSubmit});
 
   return (
       <FormProvider {...methods}>

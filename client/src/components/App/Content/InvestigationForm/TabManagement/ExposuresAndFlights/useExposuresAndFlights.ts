@@ -2,6 +2,7 @@ import axios  from 'axios';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
+import theme from 'styles/theme';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import ResortData from 'models/ResortData';
@@ -18,13 +19,15 @@ import { FormData } from './ExposuresAndFlightsInterfaces';
 import ExposureSchema from './Schema/exposuresAndFlightsSchema';
 
 const defaultDestinationCountryCode = '900';
+const exposureDeleteFailedMsg = 'לא הצלחנו למחוק את החשיפה, אנא נסה שוב בעוד כמה דקות';
+const exposureDeleteWarningTitle = 'האם אתה בטוח שתרצה למחוק חשיפה זו?';
 
 export const useExposuresAndFlights = (props : Props) => {
-    const {exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, id, reset, trigger} = props;
+    const {exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, id, reset, trigger, onSubmit} = props;
     
     const { saveExposureAndFlightData, saveResortsData } = useExposuresSaving();
     const { parseAddress } = useGoogleApiAutocomplete();
-    const { alertError } = useCustomSwal();
+    const { alertError, alertWarning } = useCustomSwal();
 
     const validationDate : Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
@@ -119,19 +122,41 @@ export const useExposuresAndFlights = (props : Props) => {
     };
 
     const onExposureDeleted = async (index: number) => {  
-        const updatedExpousres = [...exposureAndFlightsData.exposures];
-        updatedExpousres.splice(index, 1);
-        setExposureDataAndFlights({
-            ...exposureAndFlightsData,
-            exposures: updatedExpousres,
-        });
-        if (updatedExpousres[index].id){
-            const exposureId = updatedExpousres[index].id;
-            await axios.delete('/exposure/deleteExposure', { params: { exposureId }});        
-            await fetchExposuresAndFlights();
-        }
+        const deletingExposureLogger = logger.setup('Deleting Exposure');
+        alertWarning(exposureDeleteWarningTitle,
+            {
+                showCancelButton: true,
+                cancelButtonText: 'בטל',
+                cancelButtonColor: theme.palette.error.main,
+                confirmButtonColor: theme.palette.primary.main,
+                confirmButtonText: 'כן, המשך',
+            }).then((result) => {
+                if (result.value) {
+                    deletingExposureLogger.info('launching exposure delete request', Severity.LOW);
+                    setIsLoading(true);
+                    const updatedExpousres = [...exposureAndFlightsData.exposures];
+                    if (updatedExpousres[index].id){
+                        const exposureId = updatedExpousres[index].id;
+                        axios.delete('/exposure/deleteExposure', { params: { exposureId }})
+                            .then(() => {
+                                deletingExposureLogger.info('exposure was deleted successfully', Severity.LOW)
+                                onSubmit();
+                            }).catch((error) => {
+                                deletingExposureLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+                                alertError(exposureDeleteFailedMsg);
+                                setIsLoading(false);
+                            }) 
+                    }
+                    updatedExpousres.splice(index, 1);
+                    setExposureDataAndFlights({
+                        ...exposureAndFlightsData,
+                        exposures: updatedExpousres,
+                    });
+                    onSubmit();
+                }            
+            });
     };
-
+    
     const onExposuresStatusChange = (fieldName: any, value: any) => {
         setExposureDataAndFlights({
             ...exposureAndFlightsData,
@@ -191,4 +216,5 @@ interface Props {
     id: number;
     reset: (values : FormData) => void;
     trigger: () => void;
+    onSubmit: (e? : React.FormEvent) => void;
 };
