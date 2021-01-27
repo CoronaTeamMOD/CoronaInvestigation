@@ -54,7 +54,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const saveContact = (interactedContact: InteractedContact): boolean => {
-        const isInterrogationOfContactsHaveCity = interactedContact.isolationAddress.city === null || interactedContact.isolationAddress.city === undefined
+        const isInterrogationOfContactsHaveCity = Boolean(interactedContact?.isolationAddress?.city)
         if (
             checkDuplicateIds(
                 allContactedInteractions.map(
