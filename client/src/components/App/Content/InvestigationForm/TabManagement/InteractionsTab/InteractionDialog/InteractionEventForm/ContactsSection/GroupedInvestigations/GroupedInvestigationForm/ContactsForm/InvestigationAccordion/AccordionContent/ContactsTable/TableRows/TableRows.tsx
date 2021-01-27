@@ -3,14 +3,14 @@ import { TableBody , TableRow , TableCell, Checkbox } from '@material-ui/core';
 
 import formatDate from 'Utils/DateUtils/formatDate';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
-import ContactEvent from 'models/GroupedInvestigationContacts/ContactEvent';
+import ContactNode from 'models/GroupedInvestigationContacts/ContactNode';
 import { groupedInvestigationsContext } from 'commons/Contexts/GroupedInvestigationFormContext';
 
 import useStyles from './tableRowsStyles';
 import useTableRows from './useTableRows';
 
 const TableRows = (props: Props) => {
-    const { events , existingIds} = props;
+    const { events , existingIds } = props;
     const groupedInvestigationsContextState = useContext(groupedInvestigationsContext);
     const classes = useStyles();
     const { isInvolvedThroughFamily } = useInvolvedContact();
@@ -19,10 +19,7 @@ const TableRows = (props: Props) => {
     return (
         <TableBody>
             {
-                events.map((event) => {
-                    const { nodes } = event.contactedPeopleByContactEvent;
-
-                    return nodes.map((person) => {
+                events.map((person) => {
                         const {involvedContactByInvolvedContactId} = person;
                         const isFamily = involvedContactByInvolvedContactId && isInvolvedThroughFamily(involvedContactByInvolvedContactId.involvementReason);
                         
@@ -62,7 +59,7 @@ const TableRows = (props: Props) => {
                                     <TableCell>{lastName}</TableCell>
                                     <TableCell>{identificationType}</TableCell>
                                     <TableCell>{identificationNumber}</TableCell>
-                                    <TableCell>{formatDate(new Date(birthDate))}</TableCell>
+                                    <TableCell>{Boolean(birthDate) && formatDate(new Date(birthDate))}</TableCell>
                                     <TableCell>{phoneNumber}</TableCell>
                                     <TableCell>{additionalPhoneNumber}</TableCell>
                                     <TableCell>{isolationCity}</TableCell>
@@ -70,14 +67,13 @@ const TableRows = (props: Props) => {
                             )
                         }
                     })
-                })
-            }
+                }
         </TableBody>
     )
 }
 
 interface Props {
-    events : ContactEvent[];
+    events : ContactNode[];
     existingIds: string[];
 }
 
