@@ -1,10 +1,9 @@
 import * as yup from 'yup';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Search } from '@material-ui/icons';
 import { IconButton, InputAdornment } from '@material-ui/core';
 
 import { ALPHANUMERIC_SLASHES_TEXT_REGEX } from 'commons/Regex/Regex';
-import { AlphabetTextFieldProps } from 'commons/AlphabetTextField/AlphabetTextFieldTypes';
 import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
 
 import useStyles from './tableSearchBarStyles';
@@ -39,7 +38,7 @@ const TableSearchBar = (props: Props) => {
             endAdornment: (
                 <InputAdornment position='end'>
                     <IconButton onClick={() => onSearchClick(searchQuery)}>
-                        <Search className={classes.serachIcon} />
+                        <Search color='primary' />
                     </IconButton>
                 </InputAdornment>
             )
