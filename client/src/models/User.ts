@@ -18,11 +18,16 @@ interface User {
     deskName: string;
     countyByInvestigationGroup: CountyByInvestigationGroup;
     deskByDeskId?: Desk;
+    authorityByAuthorityId?: authorityByAuthorityId;
 };
 
 interface CountyByInvestigationGroup {
     districtId: number,
     displayName: string
 };
+
+interface authorityByAuthorityId {
+    authorityName: string
+}
 
 export default User;

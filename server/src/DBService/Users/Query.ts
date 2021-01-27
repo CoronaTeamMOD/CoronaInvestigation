@@ -22,6 +22,10 @@ query GetUser($id: String!) {
         displayName
         districtId
       }
+      authorityByAuthorityId{
+        id
+        authorityName
+      }
     }
   }   
 `;
@@ -102,6 +106,10 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter:
       deskByDeskId {
         id,
         deskName
+      }
+      authorityByAuthorityId{
+        id
+        authorityName
       }
     }
     totalCount

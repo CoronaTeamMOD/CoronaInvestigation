@@ -17,4 +17,5 @@ export default interface User {
     languages: Language[];
     newInvestigationsCount: number;
     activeInvestigationsCount: number;
+    authority: number;
 }

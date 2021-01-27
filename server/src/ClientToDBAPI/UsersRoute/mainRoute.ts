@@ -366,7 +366,8 @@ const convertUpdateUserToDB = (clientUserInput: any): UserPatch => {
         sourceOrganizationInput: clientUserInput.sourceOrganization,
         mailInput: clientUserInput.mail,
         deskInput: clientUserInput.desk,
-        languagesInput: clientUserInput.languages?.map((language: Language) => language.displayName)
+        languagesInput: clientUserInput.languages?.map((language: Language) => language.displayName),
+        authorityInput: clientUserInput.authority
     }
 };
 
@@ -436,7 +437,8 @@ const convertToUser = (user: any) => ({
     userType: user.userTypeByUserType.displayName,
     desk: { id: user.deskByDeskId?.id, deskName: user.deskByDeskId?.deskName},
     investigationGroup: {id: user.countyByInvestigationGroup?.id ,displayName: user.countyByInvestigationGroup?.displayName},
-    sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
+    sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName,
+    authority: user.authorityByAuthorityId
 });
 
 export default usersRoute;
