@@ -9,9 +9,9 @@ const GetGroupedInvestigationsIds = () => {
     let groupedInvestigationsIds : string[] = [];
     investigations.forEach( investigation => {
         const events = investigation.contactEventsByInvestigationId.nodes;
-        return events.forEach( event => {
+        events.forEach( event => {
             const persons = event.contactedPeopleByContactEvent.nodes;
-            return persons.forEach( person => {
+            persons.forEach( person => {
                 const {identificationNumber} = person.personByPersonInfo
                 if(identificationNumber){
                     groupedInvestigationsIds.push(identificationNumber);
