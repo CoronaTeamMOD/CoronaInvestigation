@@ -8,6 +8,7 @@ import { useForm, FormProvider, Controller } from 'react-hook-form';
 
 import City from 'models/City';
 import County from 'models/County';
+import Authority from 'models/Authority';
 import SignUpUser from 'models/SignUpUser';
 import FormMode from 'models/enums/FormMode';
 import StoreStateType from 'redux/storeStateType';
@@ -21,7 +22,6 @@ import useStyles from './SignUpFormStyles';
 import useSignUpForm from './useSignUpForm';
 import { SignUpSchema, EditSchema } from './SignUpSchema';
 
-
 const MABAR_USER_NAME = 'שם משתמש מב"ר';
 const FIRST_NAME_LABEL = 'שם פרטי';
 const LAST_NAME_LABEL = 'שם משפחה';
@@ -33,6 +33,8 @@ const COUNTY_LABEL = 'נפה';
 const DESK_LABEL = 'דסק';
 const SOURCE_ORGANIZATION_LABEL = 'מסגרת';
 const LANGUAGE_LABEL = 'שפה';
+const AUTHORITY_LABEL = 'רשות';
+const AUTHORITY_INVESTIGATOR = 'חוקר רשות';
 
 const GenericAlphabetTextField : React.FC<GenericAlphabetTextFieldProps> = 
     ({ props, disabled, label, placeholder, className }: GenericAlphabetTextFieldProps) => (
@@ -69,6 +71,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
     const classes = useStyles();
     const { languages, sourcesOrganization, desks, fetchDesks, createUser, editUser } = useSignUpForm({ handleSaveUser });
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
+    const authorities = useSelector<StoreStateType, Map<string, Authority>>(state => state.authorities);
     const counties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
     
     const methods = useForm<SignUpUser>({
@@ -92,6 +95,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
     const shouldDisableFields = mode === FormMode.READ;
 
     const shouldDisableEditFields = mode === FormMode.EDIT;
+    const sourceOrganization = methods.watch("sourceOrganization");
     
     const onSubmit = () => {
         const data = methods.getValues();
@@ -360,6 +364,34 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 )}
                             />
                         </FormInput>
+                        <Grid item xs={4} hidden={sourceOrganization !== AUTHORITY_INVESTIGATOR}>
+                            <Controller
+                                name={SignUpFields.AUTHORITY}
+                                control={methods.control}
+                                render={(props) => (
+                                    <Autocomplete
+                                        {...props}
+                                        disabled={shouldDisableFields}
+                                        options={Array.from(authorities, ([id, value]) => ({ id, value }))}
+                                        getOptionLabel={(option) => option?.authorityName ? option.authorityName : option.value.authorityName}
+                                        getOptionSelected={(option, value) => option.id === value.id}
+                                        onChange={(event, selectedAuthority) => {
+                                            props.onChange(selectedAuthority ? selectedAuthority.value : null)
+                                        }}
+                                        onBlur={props.onBlur}
+                                        renderInput={(params) =>
+                                            <TextField
+                                                {...params}
+                                                test-id={props.name}
+                                                placeholder='בחר רשות...'
+                                                error={get(methods.errors, props.name)}
+                                                label={get(methods.errors, props.name)?.message || AUTHORITY_LABEL}
+                                            />
+                                        }
+                                    />
+                                )}
+                            />
+                        </Grid>
                 </Grid>   
 
                 <Grid container justify='flex-start' className={classes.formRow}>

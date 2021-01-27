@@ -11,7 +11,8 @@ enum SignUpFields {
     COUNTY = 'investigationGroup',
     DESK = 'desk',
     SOURCE_ORGANIZATION = 'sourceOrganization',
-    LANGUAGES = 'languages'
+    LANGUAGES = 'languages',
+    AUTHORITY= 'authority'
 }
 
 export default SignUpFields;

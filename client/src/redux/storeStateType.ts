@@ -1,6 +1,7 @@
 import Desk from 'models/Desk';
 import City from 'models/City';
 import Country from 'models/Country';
+import Authority from 'models/Authority';
 import ContactType from 'models/ContactType';
 import CountyReducer from 'models/CountyReducer';
 import FlattenedDBAddress from 'models/DBAddress';
@@ -11,6 +12,7 @@ import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
 import { UserState } from './User/userReducer';
 import GroupedInvestigationReducerType from './GroupedInvestigations/GroupedInvestigationsType';
+
 export default interface StoreStateType {
     user: UserState;
     isLoading: boolean;
@@ -30,4 +32,5 @@ export default interface StoreStateType {
     county: CountyReducer;
     desk: Desk[];
     groupedInvestigations: GroupedInvestigationReducerType;
+    authorities: Map<string, Authority>;
 };
