@@ -10,7 +10,8 @@ import InteractedContact from 'models/InteractedContact';
 import InvalidFormIcon from 'commons/Icons/InvalidFormIcon';
 import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
-
+import GroupedContactIcon from 'commons/Icons/GroupedContactIcon';
+import GetGroupedInvestigationsIds from 'Utils/GroupedInvestigationsContacts/getGroupedInvestigationIds';
 
 const ContactDetails = (props: Props) => {
     const { errors } = useFormContext();
@@ -25,10 +26,15 @@ const ContactDetails = (props: Props) => {
         (state) => state.contactTypes
     );
 
+    const { isGroupedContact } = GetGroupedInvestigationsIds();
+
     return (
         <>
             {isInvolvedThroughFamily(interactedContact.involvementReason) && (
                 <FamilyContactIcon />
+            )}
+            {isGroupedContact(interactedContact.identificationNumber) && (
+                <GroupedContactIcon />
             )}
             {
                 formHasErrors && <InvalidFormIcon />
