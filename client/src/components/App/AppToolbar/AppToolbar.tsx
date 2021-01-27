@@ -47,6 +47,8 @@ const AppToolbar: React.FC = (): JSX.Element => {
 
   const classes = useStyles();
   const location = useLocation();
+  const userName = user.authorityByAuthorityId?.authorityName ? 
+                          user.userName +" (" + user.authorityByAuthorityId.authorityName + ")"  : user.userName;
 
   return (
     <AppBar className={classes.appBar} position='static'>
@@ -87,8 +89,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
             </IconButton>
           </Tooltip>
           <Typography className={classes.greetUserText}>
-            שלום, {user.authorityByAuthorityId?.authorityName ? 
-                      user.userName +" (" + user.authorityByAuthorityId.authorityName + ")"  : user.userName}
+            שלום, {userName}
           </Typography>
           {
             user.userType === UserType.SUPER_ADMIN ?

@@ -9,12 +9,13 @@ import Authority from 'models/Authority';
 import { Severity } from 'models/Logger';
 import SignUpUser from 'models/SignUpUser';
 import { setCities } from 'redux/City/cityActionCreators';
-import { setAuthorities } from 'redux/Authority/authorityActionCreators';
 import SourceOrganization from 'models/SourceOrganization';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { setAuthorities } from 'redux/Authority/authorityActionCreators';
 
 const AUTHORITY_INVESTIGATOR = 'חוקר רשות';
+const AUTHORITY_ALERT = 'לא ניתן היה לקבל רשויות';
 
 const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCome  => {
 
@@ -54,7 +55,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
                 fetchAuthoritiesLogger.info('got results back from the server', Severity.LOW);
             })
             .catch(() => {
-                alertError('לא ניתן היה לקבל רשויות');
+                alertError(AUTHORITY_ALERT);
                 fetchAuthoritiesLogger.error('didnt get results back from the server', Severity.HIGH);
             });
     };

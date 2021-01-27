@@ -96,8 +96,6 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
 
     const shouldDisableEditFields = mode === FormMode.EDIT;
     const sourceOrganization = methods.watch("sourceOrganization");
-
-    let shouldHideAuthorities = sourceOrganization !== AUTHORITY_INVESTIGATOR;
     
     const onSubmit = () => {
         const data = methods.getValues();
@@ -366,7 +364,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 )}
                             />
                         </FormInput>
-                        <Grid item xs={4} hidden={shouldHideAuthorities}>
+                        <Grid item xs={4} hidden={sourceOrganization !== AUTHORITY_INVESTIGATOR}>
                             <Controller
                                 name={SignUpFields.AUTHORITY}
                                 control={methods.control}

@@ -1,9 +1,8 @@
 import { Router, Request, Response } from 'express';
 
-
 import { Severity } from '../../Models/Logger/types';
-import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import {GET_ALL_AUTHORITIES} from '../../DBService/Authority/Query';
+import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import logger, { invalidDBResponseLog, validDBResponseLog, launchingDBRequestLog} from '../../Logger/Logger';
 
 const AuthorityRoute = Router();
