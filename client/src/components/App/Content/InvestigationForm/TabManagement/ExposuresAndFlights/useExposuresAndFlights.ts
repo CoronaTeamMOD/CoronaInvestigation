@@ -142,18 +142,17 @@ export const useExposuresAndFlights = (props : Props) => {
                         axios.delete('/exposure/deleteExposure', { params: { exposureId }})
                             .then(() => {
                                 deletingExposureLogger.info('exposure was deleted successfully', Severity.LOW)
-                                onSubmit();
                             }).catch((error) => {
                                 deletingExposureLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                                 alertError((updatedExpousres[index].wasAbroad ? flightDeleteFailedMsg : exposureDeleteFailedMsg));
-                                setIsLoading(false);
                             }) 
+                    } else {
+                        updatedExpousres.splice(index, 1);
+                        setExposureDataAndFlights({
+                            ...exposureAndFlightsData,
+                            exposures: updatedExpousres,
+                        });
                     }
-                    updatedExpousres.splice(index, 1);
-                    setExposureDataAndFlights({
-                        ...exposureAndFlightsData,
-                        exposures: updatedExpousres,
-                    });
                     onSubmit();
                 }            
             });
@@ -171,8 +170,8 @@ export const useExposuresAndFlights = (props : Props) => {
         if (wasAbroad) newExposure.flightDestinationCountry = defaultDestinationCountryCode;
         const updatedExposures: Exposure[] = [...exposures, newExposure];
         setExposureDataAndFlights({
-        ...exposureAndFlightsData,
-        exposures: updatedExposures,
+            ...exposureAndFlightsData,
+            exposures: updatedExposures,
         });
     }
 
