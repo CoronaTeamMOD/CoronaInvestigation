@@ -20,7 +20,9 @@ import ExposureSchema from './Schema/exposuresAndFlightsSchema';
 
 const defaultDestinationCountryCode = '900';
 const exposureDeleteFailedMsg = 'לא הצלחנו למחוק את החשיפה, אנא נסה שוב בעוד כמה דקות';
-const exposureDeleteWarningTitle = 'האם אתה בטוח שתרצה למחוק חשיפה זו?';
+const exposureDeleteWarningTitle = 'האם אתה בטוח שתרצה למחוק את החשיפה?';
+const flightDeleteFailedMsg = 'לא הצלחנו למחוק את הטיסה, אנא נסה שוב בעוד כמה דקות';
+const flightDeleteWarningTitle = 'האם אתה בטוח שתרצה למחוק את הטיסה?';
 
 export const useExposuresAndFlights = (props : Props) => {
     const {exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, id, reset, trigger, onSubmit} = props;
@@ -122,8 +124,9 @@ export const useExposuresAndFlights = (props : Props) => {
     };
 
     const onExposureDeleted = async (index: number) => {  
+        const updatedExpousres = [...exposureAndFlightsData.exposures];
         const deletingExposureLogger = logger.setup('Deleting Exposure');
-        alertWarning(exposureDeleteWarningTitle,
+        alertWarning((updatedExpousres[index].wasAbroad ? flightDeleteWarningTitle : exposureDeleteWarningTitle),
             {
                 showCancelButton: true,
                 cancelButtonText: 'בטל',
@@ -134,7 +137,6 @@ export const useExposuresAndFlights = (props : Props) => {
                 if (result.value) {
                     deletingExposureLogger.info('launching exposure delete request', Severity.LOW);
                     setIsLoading(true);
-                    const updatedExpousres = [...exposureAndFlightsData.exposures];
                     if (updatedExpousres[index].id){
                         const exposureId = updatedExpousres[index].id;
                         axios.delete('/exposure/deleteExposure', { params: { exposureId }})
@@ -143,7 +145,7 @@ export const useExposuresAndFlights = (props : Props) => {
                                 onSubmit();
                             }).catch((error) => {
                                 deletingExposureLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-                                alertError(exposureDeleteFailedMsg);
+                                alertError((updatedExpousres[index].wasAbroad ? flightDeleteFailedMsg : exposureDeleteFailedMsg));
                                 setIsLoading(false);
                             }) 
                     }
