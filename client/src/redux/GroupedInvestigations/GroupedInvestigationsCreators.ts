@@ -6,13 +6,13 @@ import ConnectedInvestigationContact from 'models/GroupedInvestigationContacts/C
 export const setGroupId = (groupId: string): void => {
     store.dispatch({
         type: actionTypes.SET_GROUP_ID,
-        payload: {groupId}
+        payload: groupId
     })
 }
 
 export const setGroupedInvestigations = (investigations: ConnectedInvestigationContact): void => {
     store.dispatch({
         type: actionTypes.SET_GROUPED_INVESTIGATIONS,
-        payload: {investigations}
+        payload: investigations
     })
 }
