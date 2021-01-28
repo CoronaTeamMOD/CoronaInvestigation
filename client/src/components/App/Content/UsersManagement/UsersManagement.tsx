@@ -53,10 +53,11 @@ const UsersManagement: React.FC = () => {
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
     
     const { users, sourcesOrganization, userTypes, languages,
-            totalCount, userDialog, editUserDialog, isBadgeInVisible, watchUserInfo, 
-            handleCloseUserDialog, editUserInfo, handleCloseEditUserDialog, 
-            handleFilterChange, setUserActivityStatus,
-            setUserSourceOrganization, setUserDesk, setUserCounty } =
+            totalCount, userDialog, editUserDialog, isBadgeInVisible, 
+            watchUserInfo, handleCloseUserDialog, editUserInfo, 
+            handleCloseEditUserDialog, handleFilterChange, 
+            setUserActivityStatus, setUserSourceOrganization, 
+            setUserDesk, setUserCounty, handleDeactivateAllUsersCounty } =
             useUsersManagement({ page, rowsPerPage, cellNameSort, setPage });
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
@@ -227,6 +228,7 @@ const UsersManagement: React.FC = () => {
                             variant='contained'
                             color='inherit'
                             className={classes.deactivateButton}
+                            onClick={handleDeactivateAllUsersCounty}
                         >
                             {deactivateAllCountyUsersText}
                         </Button>  
