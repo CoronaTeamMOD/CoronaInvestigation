@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Desk from 'models/Desk';
 import County from 'models/County';
+import UserType from 'models/enums/UserType';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import SearchBar from 'commons/SearchBar/SearchBar';
@@ -49,6 +50,7 @@ const UsersManagement: React.FC = () => {
     const [cellNameSort, setCellNameSort] = useState<CellNameSort>({ name: '', direction: undefined });
     const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
     const allCounties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
+    const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
     
     const { users, sourcesOrganization, userTypes, languages,
             totalCount, userDialog, editUserDialog, isBadgeInVisible, watchUserInfo, 
@@ -219,13 +221,16 @@ const UsersManagement: React.FC = () => {
                 />
 
                 <Grid item>
-                    <Button
-                        variant='contained'
-                        color='inherit'
-                        className={classes.deactivateButton}
-                    >
-                        {deactivateAllCountyUsersText}
-                    </Button>
+                    {
+                        (userType === UserType.ADMIN) &&
+                        <Button
+                            variant='contained'
+                            color='inherit'
+                            className={classes.deactivateButton}
+                        >
+                            {deactivateAllCountyUsersText}
+                        </Button>  
+                    } 
                     <Tooltip title='סינון'>
                         <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
                             <Badge
