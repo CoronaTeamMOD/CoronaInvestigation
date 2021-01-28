@@ -8,4 +8,7 @@ export const contactQuestioningClinical = {
     [InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION]: yup
         .boolean()
         .nullable(),
+    [InteractedContactFields.ISOLATION_ADDRESS]: yup.object().shape({
+        'city': yup.string().nullable().required('שגיאה: שדה חובה')
+    })
 };

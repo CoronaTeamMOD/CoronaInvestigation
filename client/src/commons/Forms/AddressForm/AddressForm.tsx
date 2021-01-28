@@ -79,17 +79,13 @@ const AddressForm: React.FC<Props> = ({
                                 getOptionLabel={(option) => option ? option.value.displayName : option}
                                 value={props.value && {id: props.value as string, value: cities.get(props.value) as City}}
                                 onChange={(event, selectedCity) => props.onChange(selectedCity ? selectedCity.id : null)}
-                                renderInput={(params) => {
-                                    const isInterrogationOfContactsHaveCity = props.value === null || props.value === undefined
-                                    return <TextField
+                                renderInput={(params) => <TextField
+                                    error={Boolean(get(methods.errors, cityField.name))}
                                         test-id={cityField.testId || ''}
                                         label={get(methods.errors, cityField.name)?.message || `${CITY_LABEL}`}
                                         {...params}
                                         placeholder={CITY_LABEL}
-                                        required
-                                        error={isInterrogationOfContactsHaveCity}
-                                        helperText={isInterrogationOfContactsHaveCity ? 'שגיאה: שדה חובה' : ''}
-                                    />}}
+                                    />}
                             />
                         )}
                     />
