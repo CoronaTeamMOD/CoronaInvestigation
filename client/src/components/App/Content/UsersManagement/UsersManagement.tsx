@@ -30,7 +30,6 @@ import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from '.
 
 const rowsPerPage: number = 100;
 export const defaultPage: number = 1;
-const deactivateAllCountyUsersText = 'כיבוי כל החוקרים בנפה';
 
 interface CellNameSort {
     name: string;
@@ -40,6 +39,7 @@ interface CellNameSort {
 const usersManagementTitle = 'ניהול משתמשים';
 const sourceOrganizationLabel = 'מסגרת';
 const searchBarLabel = 'הכנס שם או שם משתמש...';
+const deactivateAllCountyUsersText = 'כיבוי כל החוקרים בנפה';
 
 const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, UsersManagementTableHeadersNames.LANGUAGES,
                                        UsersManagementTableHeadersNames.COUNTY, UsersManagementTableHeadersNames.USER_TYPE,
