@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         height: '2vw'
     },
     deactivateButton: {
-        borderRadius: 48,
+        borderRadius: '48px',
         color: 'white',
         background: theme.palette.error.main,
         '&:hover': {

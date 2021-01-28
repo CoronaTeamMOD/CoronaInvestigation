@@ -282,11 +282,12 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                 deactivateAllCountyUsersLogger.info('send request to server for updating users activity statuses', Severity.LOW);
                 setIsLoading(true);
                 return axios.post('users/deactivateAllCountyUsers', {
-                    countyId: displayedCounty
+                    county: displayedCounty
                 }).then((result) => {
-                    if(result.data)
+                    if(result.data){
                         fetchUsers();
-                        deactivateAllCountyUsersLogger.info('updated users activity statuses successfully', Severity.LOW);
+                        deactivateAllCountyUsersLogger.info('updated users activity statuses successfully', Severity.LOW); 
+                    }
                 }).catch((error) => {
                     alertError('לא הצלחנו לכבות את כל החוקרים בנפה');
                     deactivateAllCountyUsersLogger.error(`error in updating users activity statuses ${error}`, Severity.HIGH);

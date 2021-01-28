@@ -145,7 +145,7 @@ usersRoute.post('/deactivateAllCountyUsers', (request: Request, response: Respon
         workflow: 'updating county users activity status to false',
         user: response.locals.user.id,
     });    
-    const parameters = { countyId: request.body.countyId }
+    const parameters = { countyId: request.body.county }
 
     deactivateAllCountyUsers.info(launchingDBRequestLog(parameters), Severity.LOW);
     graphqlRequest(DEACTIVATE_ALL_COUNTY_USERS, response.locals, parameters)
