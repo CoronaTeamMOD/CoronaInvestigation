@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Delete } from '@material-ui/icons';
 import { Grid, IconButton } from '@material-ui/core';
 import { Controller , useFormContext } from 'react-hook-form';
@@ -19,9 +19,19 @@ const FlightsForm = (props: Props) => {
 
     const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted } = props;
 
-    const {control , errors} = useFormContext();
+    const {control , errors, trigger, watch} = useFormContext();
     const classes = useStyles();
     const formClasses = useFormStyles();
+
+	const flightStartDateFieldName = `exposures[${index}].${fieldsNames.flightStartDate}`;
+	const flightEndDateFieldName = `exposures[${index}].${fieldsNames.flightEndDate}`;
+
+	const watchFlightStartDate = watch(flightStartDateFieldName);
+	const watchFlightEndDate = watch(flightEndDateFieldName);
+
+	useEffect(() => {
+		trigger([flightStartDateFieldName, flightEndDateFieldName])
+	}, [watchFlightStartDate, watchFlightEndDate]);
 
     const getDateLabel = (dateError : {message? : string , type? : string}, isStart: boolean) => {
 		if(dateError) {
