@@ -31,7 +31,7 @@ const useGroupedInvestigationContacts = () => {
             .catch((error) => {
                 return {
                     investigationGroupReasonByReason: {
-                        displayName : "טוען..."
+                        displayName : 'טוען...'
                     },
                     investigationsByGroupId: {
                         nodes : []
@@ -47,7 +47,6 @@ const useGroupedInvestigationContacts = () => {
             const investigations = await fetchGroupedInvestigationContacts(groupId);
             setGroupedInvestigations(investigations);
         }
-
     }
 
     return {

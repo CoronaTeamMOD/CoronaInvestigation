@@ -6,10 +6,10 @@ interface GroupedInvestigationReducerType {
 }
 
 export const initialState : GroupedInvestigationReducerType ={
-    groupId : "",
+    groupId : '',
     investigations : {
         investigationGroupReasonByReason: {
-            displayName : "טוען..."
+            displayName : 'טוען...'
         },
         investigationsByGroupId: {
             nodes : []
