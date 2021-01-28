@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 
 import UserType from '../Models/User/UserType';
+import { Severity } from '../Models/Logger/types';
 import { DISTRICT_BY_COUNTY } from '../DBService/Counties/Query';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../Logger/Logger';
 import { graphqlRequest, unauthorizedStatusCode } from '../GraphqlHTTPRequest';
-import { Severity } from '../Models/Logger/types';
 
 const handleCountyRequest = async (request: Request, response: Response, next: NextFunction) => {
     const currentUser = response.locals.user;
+    const { userType } = currentUser;
     const county = parseInt(request.body.county);
 
     const countyMiddlewareLogger = logger.setup({
@@ -15,7 +16,7 @@ const handleCountyRequest = async (request: Request, response: Response, next: N
         investigation: currentUser.epidemiologynumber,
     });
 
-    if (currentUser.userType === UserType.SUPER_ADMIN) {
+    if (userType === UserType.SUPER_ADMIN) {
         const district = await getUserDistrict(county , response.locals);
 
         if(currentUser.countyByInvestigationGroup.districtId === district) {
@@ -30,7 +31,7 @@ const handleCountyRequest = async (request: Request, response: Response, next: N
             Severity.HIGH
         )
         return response.sendStatus(unauthorizedStatusCode);
-    } else if (currentUser.userType === UserType.ADMIN) {
+    } else if (userType === UserType.ADMIN) {
         if (currentUser.investigationGroup === county) {
             countyMiddlewareLogger.info(
                 'user is admin and county is users, redirecting',

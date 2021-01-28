@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 
 import UserType from '../Models/User/UserType';
-import { DISTRICT_COUNTY_BY_USER } from '../DBService/Users/Query';
-import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../Logger/Logger';
-import { graphqlRequest, unauthorizedStatusCode } from '../GraphqlHTTPRequest';
 import { Severity } from '../Models/Logger/types';
+import { DISTRICT_COUNTY_BY_USER } from '../DBService/Users/Query';
+import { graphqlRequest, unauthorizedStatusCode } from '../GraphqlHTTPRequest';
+import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../Logger/Logger';
 
 const handleUsersRequest = async (request: Request, response: Response, next: NextFunction) => {
     const currentUser = response.locals.user;
+    const { userType } = currentUser;
     const { userId } = request.body;
 
     const usersMiddlewareLogger = logger.setup({
@@ -16,7 +17,7 @@ const handleUsersRequest = async (request: Request, response: Response, next: Ne
     });
 
     const questionedUser = await getUserDistrictCounty(userId, response.locals);
-    if (currentUser.userType === UserType.SUPER_ADMIN) {
+    if (userType === UserType.SUPER_ADMIN) {
         if (currentUser.countyByInvestigationGroup.districtId === questionedUser.countyByInvestigationGroup.districtId) {
             usersMiddlewareLogger.info(
                 'requesting user is super admin and questioned user is in user district , redirecting',
@@ -29,7 +30,7 @@ const handleUsersRequest = async (request: Request, response: Response, next: Ne
             Severity.HIGH
         );
         return response.sendStatus(unauthorizedStatusCode);
-    } else if (currentUser.userType === UserType.ADMIN) {
+    } else if (userType === UserType.ADMIN) {
         if (currentUser.investigationGroup === questionedUser.investigationGroup) {
             usersMiddlewareLogger.info('requesting user is admin and questioned user is in user group, redirecting', Severity.LOW);
             return next();
