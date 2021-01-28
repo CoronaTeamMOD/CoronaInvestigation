@@ -1,6 +1,6 @@
 import {
     Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
-    IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse, MenuItem, Select
+    IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse, MenuItem, Select, Button
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -29,6 +29,7 @@ import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from '.
 
 const rowsPerPage: number = 100;
 export const defaultPage: number = 1;
+const deactivateAllCountyUsersText = 'כיבוי כל החוקרים בנפה';
 
 interface CellNameSort {
     name: string;
@@ -216,18 +217,28 @@ const UsersManagement: React.FC = () => {
                     onClick={(value: string) => handleFilterChange(filterCreators.SEARCH_BAR(value))}
                     validationSchema={userValidationSchema}
                 />
-                <Tooltip title='סינון'>
-                    <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
-                        <Badge
-                            invisible={isBadgeInVisible}
-                            color='error'
-                            variant='dot'
-                            anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
-                        >
-                            <FontAwesomeIcon icon={faFilter} />
-                        </Badge>
-                    </IconButton>
-                </Tooltip>
+
+                <Grid item>
+                    <Button
+                        variant='contained'
+                        color='inherit'
+                        className={classes.deactivateButton}
+                    >
+                        {deactivateAllCountyUsersText}
+                    </Button>
+                    <Tooltip title='סינון'>
+                        <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
+                            <Badge
+                                invisible={isBadgeInVisible}
+                                color='error'
+                                variant='dot'
+                                anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+                            >
+                                <FontAwesomeIcon icon={faFilter} />
+                            </Badge>
+                        </IconButton>
+                    </Tooltip>
+                </Grid>
             </Grid>
             <Collapse in={isFilterOpen} style={{ minHeight: 'unset' }}>
                 <Paper className={classes.filtersContent}>
