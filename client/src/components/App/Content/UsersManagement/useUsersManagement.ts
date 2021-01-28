@@ -278,7 +278,20 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             confirmButtonText: 'כן, המשך',
         }).then((result) => {
             if (result.value) {
-               
+                const deactivateAllCountyUsersLogger = logger.setup('Updating all county users activity status to false');
+                deactivateAllCountyUsersLogger.info('send request to server for updating users activity statuses', Severity.LOW);
+                setIsLoading(true);
+                return axios.post('users/deactivateAllCountyUsers', {
+                    countyId: displayedCounty
+                }).then((result) => {
+                    if(result.data)
+                        fetchUsers();
+                        deactivateAllCountyUsersLogger.info('updated users activity statuses successfully', Severity.LOW);
+                }).catch((error) => {
+                    alertError('לא הצלחנו לכבות את כל החוקרים בנפה');
+                    deactivateAllCountyUsersLogger.error(`error in updating users activity statuses ${error}`, Severity.HIGH);
+                })
+                .finally(() => setIsLoading(false)); 
             }            
         });
     };
