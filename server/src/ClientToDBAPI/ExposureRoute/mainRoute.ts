@@ -5,10 +5,10 @@ import { Severity } from '../../Models/Logger/types';
 import Exposure from '../../Models/Exposure/Exposure';
 import { getPatientAge } from '../../Utils/patientUtils';
 import CovidPatient from '../../Models/Exposure/CovidPatient';
-import { UPDATE_EXPOSURES } from '../../DBService/Exposure/Mutation';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import ExposureByInvestigationId from '../../Models/Exposure/ExposureByInvestigationId';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
+import { DELETE_EXPOSURE_BY_ID, UPDATE_EXPOSURES } from '../../DBService/Exposure/Mutation';
 import { INVALID_CHARS_REGEX, PHONE_OR_IDENTITY_NUMBER_REGEX } from '../../commons/Regex/Regex';
 import { GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS } from '../../DBService/Exposure/Query';
 import CovidPatientDBOutput, { AddressDBOutput } from '../../Models/Exposure/CovidPatientDBOutput';
@@ -156,6 +156,26 @@ exposureRoute.post('/updateExposures',handleInvestigationRequest, (request: Requ
         })
         .catch(error => {
             updateExposuresLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error)
+        })
+});
+
+exposureRoute.delete('/deleteExposure',handleInvestigationRequest, (request: Request, response: Response) => {
+    const deleteExposureLogger = logger.setup({
+        workflow: `deleting investigation's exposure by id`,
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    });
+    const parameters = {exposureId: parseInt(request.query.exposureId as string)};
+    deleteExposureLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+    
+    return graphqlRequest(DELETE_EXPOSURE_BY_ID, response.locals, parameters)
+        .then((result) => {
+            deleteExposureLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result);
+        })
+        .catch(error => {
+            deleteExposureLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error)
         })
 });

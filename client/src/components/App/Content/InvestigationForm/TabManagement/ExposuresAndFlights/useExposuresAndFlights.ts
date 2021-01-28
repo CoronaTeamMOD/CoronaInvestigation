@@ -2,12 +2,13 @@ import axios  from 'axios';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
+import theme from 'styles/theme';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import ResortData from 'models/ResortData';
 import StoreStateType from 'redux/storeStateType';
-import { setFormState } from 'redux/Form/formActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import { setFormState } from 'redux/Form/formActionCreators';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
 import {ExposureAndFlightsDetails} from 'commons/Contexts/ExposuresAndFlights';
@@ -18,24 +19,18 @@ import { FormData } from './ExposuresAndFlightsInterfaces';
 import ExposureSchema from './Schema/exposuresAndFlightsSchema';
 
 const defaultDestinationCountryCode = '900';
-
-interface Props {
-    exposures: Exposure[],
-    wereConfirmedExposures: boolean,
-    wereFlights: boolean,
-    exposureAndFlightsData: ExposureAndFlightsDetails;
-    setExposureDataAndFlights: React.Dispatch<React.SetStateAction<ExposureAndFlightsDetails>>;
-    id: number;
-    reset: (values : FormData) => void;
-    trigger: () => void;
-}
+const exposureDeleteFailedMsg = 'לא הצלחנו למחוק את החשיפה, אנא נסה שוב בעוד כמה דקות';
+const exposureDeleteWarningTitle = 'האם אתה בטוח שתרצה למחוק את החשיפה?';
+const flightDeleteFailedMsg = 'לא הצלחנו למחוק את הטיסה, אנא נסה שוב בעוד כמה דקות';
+const flightDeleteWarningTitle = 'האם אתה בטוח שתרצה למחוק את הטיסה?';
 
 export const useExposuresAndFlights = (props : Props) => {
-    const {exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, id, reset, trigger} = props;
+
+    const {exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, id, reset, trigger, onSubmit} = props;
     
     const { saveExposureAndFlightData, saveResortsData } = useExposuresSaving();
     const { parseAddress } = useGoogleApiAutocomplete();
-    const { alertError } = useCustomSwal();
+    const { alertError, alertWarning } = useCustomSwal();
 
     const validationDate : Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
@@ -129,6 +124,42 @@ export const useExposuresAndFlights = (props : Props) => {
         });
     };
 
+    const onExposureDeleted = async (index: number) => {  
+        const updatedExpousres = [...exposureAndFlightsData.exposures];
+        const deletingExposureLogger = logger.setup('Deleting Exposure');
+        const exposureToDelete = updatedExpousres[index];
+        const isFlight = exposureToDelete.wasAbroad;
+        alertWarning((isFlight ? flightDeleteWarningTitle : exposureDeleteWarningTitle),{
+            showCancelButton: true,
+            cancelButtonText: 'בטל',
+            cancelButtonColor: theme.palette.error.main,
+            confirmButtonColor: theme.palette.primary.main,
+            confirmButtonText: 'כן, המשך',
+        }).then((result) => {
+            if (result.value) {
+                deletingExposureLogger.info('launching exposure delete request', Severity.LOW);
+                setIsLoading(true);
+                if (exposureToDelete.id){
+                    const exposureId = updatedExpousres[index].id;
+                    axios.delete('/exposure/deleteExposure', { params: { exposureId }})
+                        .then(() => {
+                            deletingExposureLogger.info('exposure was deleted successfully', Severity.LOW)
+                        }).catch((error) => {
+                            deletingExposureLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+                            alertError((isFlight ? flightDeleteFailedMsg : exposureDeleteFailedMsg));
+                        }) 
+                } else {
+                    updatedExpousres.splice(index, 1);
+                    setExposureDataAndFlights({
+                        ...exposureAndFlightsData,
+                        exposures: updatedExpousres,
+                    });
+                }
+                onSubmit();
+            }            
+        });
+    };
+    
     const onExposuresStatusChange = (fieldName: any, value: any) => {
         setExposureDataAndFlights({
             ...exposureAndFlightsData,
@@ -141,10 +172,10 @@ export const useExposuresAndFlights = (props : Props) => {
         if (wasAbroad) newExposure.flightDestinationCountry = defaultDestinationCountryCode;
         const updatedExposures: Exposure[] = [...exposures, newExposure];
         setExposureDataAndFlights({
-        ...exposureAndFlightsData,
-        exposures: updatedExposures,
+            ...exposureAndFlightsData,
+            exposures: updatedExposures,
         });
-    }
+    };
 
     const saveExposure = (data : FormData , ids : (number | null)[]) => {
         const saveExposureLogger = logger.setup('Saving Exposures And Flights tab');
@@ -166,7 +197,7 @@ export const useExposuresAndFlights = (props : Props) => {
             })
             setIsLoading(false);
         })
-    }
+    };
 
     return {
         saveExposure,
@@ -174,6 +205,19 @@ export const useExposuresAndFlights = (props : Props) => {
         handleChangeExposureDataAndFlightsField,
         onExposureAdded,
         disableConfirmedExposureAddition,
-        disableFlightAddition
+        disableFlightAddition,
+        onExposureDeleted
     }
-}
+};
+
+interface Props {
+    exposures: Exposure[],
+    wereConfirmedExposures: boolean,
+    wereFlights: boolean,
+    exposureAndFlightsData: ExposureAndFlightsDetails;
+    setExposureDataAndFlights: React.Dispatch<React.SetStateAction<ExposureAndFlightsDetails>>;
+    id: number;
+    reset: (values : FormData) => void;
+    trigger: () => void;
+    onSubmit: (e? : React.FormEvent) => void;
+};
