@@ -21,13 +21,10 @@ const ReachContact = (props: Props) => {
     ? getValues().form[index]
     : interactedContact;
 
-    const watchContactStatus = watch(`form[${index}].contactStatus`)
-    const currentContactStatus = watchContactStatus ? watchContactStatus : formValues.contactStatus;
-    const foundValue = contactStatuses.find(
-        (contactStatus: ContactStatus) =>
-            contactStatus.id === currentContactStatus
-    );
-    const currentValue = foundValue || { id : -1 , displayName : '...'}
+    const foundValue = (status: number) => {
+        return contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === status);
+    }
+    const getCurrentValue = (status: number) => { return foundValue(status) || { id: -1, displayName: '...' } }
     const { isFieldDisabled } = useContactFields(formValues.contactStatus);
 
     const { changeContactStatus } = useReachContact({
@@ -43,6 +40,7 @@ const ReachContact = (props: Props) => {
                         name={`form[${index}].${InteractedContactFields.CONTACT_STATUS}`}
                         defaultValue={interactedContact.contactStatus}
                         render={(props) => {
+                            const currentValue = getCurrentValue(props.value);
                             return (
                                 <Autocomplete
                                     disabled={isFieldDisabled}
@@ -59,6 +57,7 @@ const ReachContact = (props: Props) => {
                                             props.onChange
                                         )
                                     }
+                                    inputValue={currentValue.displayName}
                                     closeIcon={false}
                                     renderInput={(params) => (
                                         <TextField
@@ -69,7 +68,6 @@ const ReachContact = (props: Props) => {
                                             }
                                             InputProps={{
                                                 ...params.InputProps,
-                                                value: currentValue?.displayName,
                                                 className: classes.statusAutocompleteRoot
                                             }}
                                         />
