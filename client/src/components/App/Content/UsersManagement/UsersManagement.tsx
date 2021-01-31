@@ -141,34 +141,37 @@ const UsersManagement: React.FC = () => {
             }
             case UsersManagementTableHeadersNames.SOURCE_ORGANIZATION : {
                 return (
-                    <Select
-                        MenuProps={{
-                            anchorOrigin: {
-                                vertical: 'bottom',
-                                horizontal: 'left'
-                            },
-                            transformOrigin: {
-                                vertical: 'top',
-                                horizontal: 'left'
-                            },
-                            getContentAnchorEl: null
-                        }}
-                        value={row.sourceOrganization  || ''}
-                        onChange={(event: React.ChangeEvent<any>) => setUserSourceOrganization(event.target.value as string, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
-                        label={sourceOrganizationLabel}
-                        variant='outlined'
-                        className={classes.sourceOrganization}
-                    >
-                        {
-                            sourcesOrganization.map(sourceOrganization => (
-                                <MenuItem
-                                    key={sourceOrganization.displayName}
-                                    value={sourceOrganization.displayName}>
-                                    {sourceOrganization.displayName}
-                                </MenuItem>
-                            ))
-                        }
-                    </Select>
+                    <Tooltip placement="top" disableHoverListener={row['authority'] === null} 
+                             title={row['authority']?.authorityName}>
+                        <Select
+                            MenuProps={{
+                                anchorOrigin: {
+                                    vertical: 'bottom',
+                                    horizontal: 'left'
+                                },
+                                transformOrigin: {
+                                    vertical: 'top',
+                                    horizontal: 'left'
+                                },
+                                getContentAnchorEl: null
+                            }}
+                            value={row.sourceOrganization  || ''}
+                            onChange={(event: React.ChangeEvent<any>) => setUserSourceOrganization(event.target.value as string, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
+                            label={sourceOrganizationLabel}
+                            variant='outlined'
+                            className={classes.sourceOrganization}
+                        >
+                            {
+                                sourcesOrganization.map(sourceOrganization => (
+                                    <MenuItem
+                                        key={sourceOrganization.displayName}
+                                        value={sourceOrganization.displayName}>
+                                        {sourceOrganization.displayName}
+                                    </MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </Tooltip>
                 )
             }
             case UsersManagementTableHeadersNames.COUNTY : {
