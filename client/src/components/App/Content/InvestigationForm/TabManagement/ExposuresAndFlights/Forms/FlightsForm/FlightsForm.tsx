@@ -26,13 +26,6 @@ const FlightsForm = (props: Props) => {
 	const flightStartDateFieldName = `exposures[${index}].${fieldsNames.flightStartDate}`;
 	const flightEndDateFieldName = `exposures[${index}].${fieldsNames.flightEndDate}`;
 
-	const watchFlightStartDate = watch(flightStartDateFieldName);
-	const watchFlightEndDate = watch(flightEndDateFieldName);
-
-	useEffect(() => {
-		trigger([flightStartDateFieldName, flightEndDateFieldName])
-	}, [watchFlightStartDate, watchFlightEndDate]);
-
     const getDateLabel = (dateError : {message? : string , type? : string}, isStart: boolean) => {
 		if(dateError) {
 			if(dateError.type === 'typeError') {
@@ -111,6 +104,7 @@ const FlightsForm = (props: Props) => {
 												onChange={(newDate: Date) => {
 													props.onChange(newDate);
 													handleChangeExposureDataAndFlightsField(fieldsNames.flightStartDate, newDate);
+													trigger([flightStartDateFieldName, flightEndDateFieldName])
 												}}
 											/>
 										);
@@ -135,6 +129,7 @@ const FlightsForm = (props: Props) => {
 												onChange={(newDate: Date) => {
 													props.onChange(newDate);
 													handleChangeExposureDataAndFlightsField(fieldsNames.flightEndDate, newDate);
+													trigger([flightStartDateFieldName, flightEndDateFieldName])
 												}}
 											/>
 										);
