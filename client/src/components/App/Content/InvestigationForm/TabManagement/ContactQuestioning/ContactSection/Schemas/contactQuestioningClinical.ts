@@ -1,6 +1,7 @@
 import * as yup from 'yup';
 
 import InteractedContactFields from 'models/enums/InteractedContact';
+import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 
 export const contactQuestioningClinical = {
     [InteractedContactFields.FAMILY_RELATIONSHIP]: yup.number().nullable(),
@@ -10,7 +11,7 @@ export const contactQuestioningClinical = {
         .nullable(),
     [InteractedContactFields.ISOLATION_ADDRESS]: yup.object()
     .when(InteractedContactFields.CONTACT_STATUS, {
-        is: 5,
+        is: ContactStatusCodes.COMPLETED,
         then: yup.object().nullable(),
         otherwise: yup.object().shape({
                  'city': yup.string().nullable().required('שגיאה: שדה חובה')
