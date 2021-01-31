@@ -114,7 +114,9 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
             icon: CollectionsBookmark,
             displayTitle: 'קיבוץ חקירות',
             disabled: shouldGroupActionDisabled,
-            errorMessage: shouldGroupActionDisabled ? 'שים לב לא ניתן לקבץ חקירה שכבר מקובצת' : '',
+            errorMessage: shouldGroupActionDisabled ? 
+                checkedInvestigations.length > 1 ? 'שים לב לא ניתן לקבץ חקירה שכבר מקובצת' : 'חקירה לא מקובצת'
+                : '',
             onClick: handleOpenGroupedInvestigations
         },
         {
