@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useEffect } from 'react';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
@@ -24,14 +23,19 @@ const useGroupedInvestigationContacts = () => {
     }
 
     const fetchGroupedInvestigationContacts = (groupId : string) => {
+        const connectedInvestigationsByGroupIdLogger = logger.setup('Fetching Places And Sub Types By Types');
+        
+        connectedInvestigationsByGroupIdLogger.info('launching connectedInvestigationContacts by groupId request', Severity.LOW);
         return axios.get<ConnectedInvestigationContact>(`/intersections/groupedInvestigationsContacts/${groupId}`)
             .then((response) => {
+                connectedInvestigationsByGroupIdLogger.info('connectedInvestigationContacts by groupId was successful', Severity.LOW);
                 return response.data;
             })
             .catch((error) => {
+                connectedInvestigationsByGroupIdLogger.error(`got errors in server result: ${error}`,Severity.HIGH);
                 return {
                     investigationGroupReasonByReason: {
-                        displayName : 'טוען...'
+                        displayName : 'חלה שגיאה בשליפת הנתונים מהשרת'
                     },
                     investigationsByGroupId: {
                         nodes : []
