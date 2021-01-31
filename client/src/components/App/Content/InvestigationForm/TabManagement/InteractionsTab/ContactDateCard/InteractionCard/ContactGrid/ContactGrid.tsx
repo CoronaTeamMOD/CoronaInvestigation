@@ -13,6 +13,8 @@ import InvolvedContact from 'models/InvolvedContact';
 import ContactFieldName from 'models/enums/ContactFieldName';
 import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
+import GroupedContactIcon from 'commons/Icons/GroupedContactIcon';
+import GetGroupedInvestigationsIds from 'Utils/GroupedInvestigationsContacts/getGroupedInvestigationIds';
 
 import useStyles from './ContactGridStyles';
 
@@ -35,6 +37,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
 
     const { isInvolvedThroughFamily, shouldDisableDeleteContact } = useInvolvedContact();
+    const { isGroupedContact } = GetGroupedInvestigationsIds();
 
     const CompletedQuestioningTooltip = ({ children }: { children: React.ReactElement }) => (
         isContactComplete ?
@@ -85,6 +88,12 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                         isFamilyContact &&
                         <Grid item xs={2}>
                             <FamilyContactIcon />
+                        </Grid>
+                    }
+                    {
+                        isGroupedContact(contact.identificationNumber) &&
+                        <Grid item xs={2}>
+                            <GroupedContactIcon />
                         </Grid>
                     }
                     <FormInput xs={2} fieldName={ContactFieldName.FIRST_NAME}>

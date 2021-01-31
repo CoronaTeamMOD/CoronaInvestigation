@@ -51,6 +51,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     desks: {
         width: '9vw',
         height: '2vw'
+    },
+    deactivateButton: {
+        borderRadius: '48px',
+        color: 'white',
+        background: theme.palette.error.main,
+        '&:hover': {
+            background: theme.palette.error.main,
+        },
     }
 }));
 

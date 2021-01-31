@@ -12,6 +12,7 @@ import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
 
 import useStyles from './InvestigationFormStyles';
 import useInvestigationForm from './useInvestigationForm';
+import useGroupedInvestigationContacts from './useGroupedInvestigationContacts';
 import useTabManagement ,{ LAST_TAB_ID } from './TabManagement/useTabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import TabManagement from './TabManagement/TabManagement';
@@ -31,6 +32,8 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const [endInvestigationDate, setEndInvestigationDate] = React.useState<Date>(new Date());
     const [lastTabDisplayedId, setLastTabDisplayedId] = React.useState<number>(LAST_TAB_ID - 1);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+
+    const {setGroupedInvestigationsDetailsAsync} = useGroupedInvestigationContacts();
 
     const exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet = React.useMemo(() => ({
         exposureAndFlightsData,
@@ -62,6 +65,10 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         setLastTabDisplayedId(areThereContacts ? LAST_TAB_ID : LAST_TAB_ID - 1);
         !areThereContacts && setFormState(investigationId, LAST_TAB_ID, true);
     }, [areThereContacts]);
+
+    useEffect(() => {
+        setGroupedInvestigationsDetailsAsync();
+    }, []);
     
     return (
         <div className={classes.content}>
