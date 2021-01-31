@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
+import theme from 'styles/theme';
 import logger from 'logger/logger';
 import County from 'models/County';
 import Language from 'models/Language';
@@ -45,9 +46,13 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     const [isBadgeInVisible, setIsBadgeInVisible] = useState<boolean>(true);
     
     const user = useSelector<StoreStateType, User>(state => state.user.data);
+    const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
+    const countyDisplayName = useSelector<StoreStateType, string>(state => state.user.data.countyByInvestigationGroup.displayName);
 
     const { alertError, alertWarning } = useCustomSwal();
     
+    const deactivateAllCountyUsersWarningTitle = `האם אתה בטוח שתרצה לכבות את כל המשתמשים בנפת ${countyDisplayName}`;
+
     const getUsersRoute = () => {
         switch (user.userType) {
             case UserTypeEnum.ADMIN: return '/users/county';
@@ -298,6 +303,34 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         }
     }
 
+    const handleDeactivateAllUsersCounty = () => {
+        alertWarning((deactivateAllCountyUsersWarningTitle),{
+            showCancelButton: true,
+            cancelButtonText: 'בטל',
+            cancelButtonColor: theme.palette.error.main,
+            confirmButtonColor: theme.palette.primary.main,
+            confirmButtonText: 'כן, המשך',
+        }).then((result) => {
+            if (result.value) {
+                const deactivateAllCountyUsersLogger = logger.setup('Updating all county users activity status to false');
+                deactivateAllCountyUsersLogger.info('send request to server for updating users activity statuses', Severity.LOW);
+                setIsLoading(true);
+                return axios.post('users/deactivateAllCountyUsers', {
+                    county: displayedCounty
+                }).then((result) => {
+                    if(result.data){
+                        fetchUsers();
+                        deactivateAllCountyUsersLogger.info('updated users activity statuses successfully', Severity.LOW); 
+                    }
+                }).catch((error) => {
+                    alertError('לא הצלחנו לכבות את כל החוקרים בנפה');
+                    deactivateAllCountyUsersLogger.error(`error in updating users activity statuses ${error}`, Severity.HIGH);
+                })
+                .finally(() => setIsLoading(false)); 
+            }            
+        });
+    };
+
     return {
         users,
         counties,
@@ -314,7 +347,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         setUserActivityStatus,
         setUserSourceOrganization,
         setUserDesk,
-        setUserCounty
+        setUserCounty,
+        handleDeactivateAllUsersCounty,
     }
 }
 
@@ -342,6 +376,7 @@ interface useUsersManagementOutCome {
     setUserSourceOrganization: (sourceOrganization: string, userId: string) => void;
     setUserDesk: (deskId: number, userId: string) => void;
     setUserCounty: (countyId: number, userId: string) => void;
+    handleDeactivateAllUsersCounty: () => void;
 }
 
 export default useUsersManagement;

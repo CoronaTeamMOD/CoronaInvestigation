@@ -11,6 +11,14 @@ export const UPDATE_IS_USER_ACTIVE = gql`
     }
 `;
 
+export const DEACTIVATE_ALL_COUNTY_USERS = gql`
+  mutation deactivateAllCountyUsers($countyId: Int!) {
+    deactivateAllCountyUsers(input: {countyId: $countyId}) {
+      clientMutationId
+    }
+  }
+`;
+
 export const UPDATE_SOURCE_ORGANIZATION = gql`
     mutation updateUserSourceOrganization($id: String!, $sourceOrganization: String!) {
       updateUserById(input: {userPatch: {sourceOrganization: $sourceOrganization}, id: $id}) {

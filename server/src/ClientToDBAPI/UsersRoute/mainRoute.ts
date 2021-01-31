@@ -10,7 +10,7 @@ import { adminMiddleWare, superAdminMiddleWare } from '../../middlewares/Authent
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, UPDATE_INVESTIGATOR_BY_GROUP_ID,
-         UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY } from '../../DBService/Users/Mutation';
+         UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY, DEACTIVATE_ALL_COUNTY_USERS } from '../../DBService/Users/Mutation';
 import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
     GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_USERS_BY_DISTRICT_ID, GET_ALL_USER_TYPES, GET_USERS_BY_COUNTY_ID
@@ -130,11 +130,30 @@ const updateIsUserActive = (response: Response, id: string, isActive: Boolean) =
 
 usersRoute.post('/updateIsUserActive', (request: Request, response: Response) => {
     updateIsUserActive(response, response.locals.user.id, request.body.isActive);
-})
+});
 
 usersRoute.post('/updateIsUserActiveById', adminMiddleWare, (request: Request, response: Response) => {
     updateIsUserActive(response, request.body.userId, request.body.isActive);
-})
+});
+
+usersRoute.post('/deactivateAllCountyUsers', (request: Request, response: Response) => {
+    const deactivateAllCountyUsers = logger.setup({
+        workflow: 'updating county users activity status to false',
+        user: response.locals.user.id,
+    });    
+    const parameters = { countyId: request.body.county }
+
+    deactivateAllCountyUsers.info(launchingDBRequestLog(parameters), Severity.LOW);
+    graphqlRequest(DEACTIVATE_ALL_COUNTY_USERS, response.locals, parameters)
+        .then(result => {
+            deactivateAllCountyUsers.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data);
+        })
+        .catch(error => {
+            deactivateAllCountyUsers.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.sendStatus(errorStatusCode).send(error);
+        })
+});
 
 usersRoute.get('/user', (request: Request, response: Response) => {
     const userLogger = logger.setup({
