@@ -11,6 +11,7 @@ import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
 import { UserState } from './User/userReducer';
+import GroupedInvestigationReducerType from './GroupedInvestigations/GroupedInvestigationsType';
 
 export default interface StoreStateType {
     user: UserState;
@@ -29,6 +30,7 @@ export default interface StoreStateType {
     address: FlattenedDBAddress;
     educationGrades: EducationGrade[];
     county: CountyReducer;
-    desk: Desk[],
+    desk: Desk[];
+    groupedInvestigations: GroupedInvestigationReducerType;
     authorities: Map<string, Authority>;
 };
