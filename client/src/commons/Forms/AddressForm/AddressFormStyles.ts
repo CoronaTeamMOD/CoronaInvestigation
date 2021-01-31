@@ -2,10 +2,7 @@ import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles({
     heightendTextField: {
-        minHeight: '3vh',
-        '@media screen and (max-height: 950px)': {
-            minHeight: '5.9vh'
-        }
+        minHeight: '42px',
     },
     fullHeight: {
         height: '100%',
