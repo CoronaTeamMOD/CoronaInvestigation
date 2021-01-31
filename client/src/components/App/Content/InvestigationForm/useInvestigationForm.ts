@@ -46,7 +46,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         tabShowLogger.info('launching amount of contacts request', Severity.LOW);
         const minimalDateToFilter = datesToInvestigate.slice(-1)[0];
         const formattedMinimalDate = typeof minimalDateToFilter !== 'string' ? minimalDateToFilter.toISOString() : minimalDateToFilter;
-        axios.get(`/contactedPeople/allContacts/${epidemiologyNumber}/${formattedMinimalDate}`)
+        axios.get(`/contactedPeople/allContacts/${formattedMinimalDate}`)
         .then((result: any) => {
             tabShowLogger.info('amount of contacts request was successful', Severity.LOW);
             setAreThereContacts(result?.data.length > 0);
@@ -183,7 +183,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         const finishInvestigationLogger= logger.setup('Ending Investigation');
         finishInvestigationLogger.info('the user has been offered the oppurtunity to finish the investigation',  Severity.LOW);
         alertWarning('האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?', {
-            text: 'שים לב, מגעים אשר עבורם הוקם דיווח בידוד יועברו בעת סיום החקירה לסטאטוס "הושלם תחקור" ולא ניתן יהיה לערוך אותם.',
+            text: 'שים לב, מגעים אשר עבורם הוקם דיווח בידוד או מגעים בעלי שם, שם משפחה ומספר טלפון תקינים יועברו בעת סיום החקירה לסטאטוס "הושלם תחקור" ולא ניתן יהיה לערוך אותם.',
             showCancelButton: true,
             cancelButtonText: 'בטל',
             cancelButtonColor: theme.palette.error.main,

@@ -12,7 +12,6 @@ const useReachContact = (props: Props) => {
     const { alertWarning , alertError } = useCustomSwal();
 
     const formHasErrors = errors.form ? Boolean(errors.form[index]) : false;
-
     const changeContactStatus = (
         event: React.ChangeEvent<{}>,
         selectedStatus: ContactStatus | null,

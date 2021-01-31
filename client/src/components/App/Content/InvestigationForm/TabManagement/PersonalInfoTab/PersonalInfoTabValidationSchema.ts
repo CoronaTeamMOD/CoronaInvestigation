@@ -2,20 +2,23 @@ import * as yup from 'yup';
 
 import Occupations from 'models/enums/Occupations';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
-import { notRequiredPhoneNumberRegex, phoneNumberRegex } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { PHONE_NUMBER_REGEX, NOT_REQUIRED_PHONE_NUMBER_REGEX } from 'commons/Regex/Regex';
 
 const occupationsWithInstitution = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון'];
 const occupationsWithoutExtraInfo = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון', 'לא עובד'];
 const requiredText = 'שגיאה: שדה חובה';
 const numberValidationText = 'שגיאה: מספר אינו תקין';
 const requiredSelectionText = 'שגיאה: יש לבחור מבין האפשרויות הקיימות';
+const maxClassNumberError = 'ניתן להזין עד המספר 50';
 
 const schema = yup.object().shape({
-    [PersonalInfoDataContextFields.PHONE_NUMBER]: yup.string().nullable().required(requiredText).matches(phoneNumberRegex, numberValidationText),
-    [PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]: yup.string().nullable().matches(notRequiredPhoneNumberRegex, numberValidationText),
-    [PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]: yup.string().nullable().matches(notRequiredPhoneNumberRegex, numberValidationText),
+    [PersonalInfoDataContextFields.PHONE_NUMBER]: yup.string().nullable().required(requiredText).matches(PHONE_NUMBER_REGEX, numberValidationText),
+    [PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]: yup.string().nullable().matches(NOT_REQUIRED_PHONE_NUMBER_REGEX, numberValidationText),
+    [PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]: yup.string().nullable().matches(NOT_REQUIRED_PHONE_NUMBER_REGEX, numberValidationText),
     [PersonalInfoDataContextFields.INSURANCE_COMPANY]: yup.string().nullable().required(requiredText),
-    [PersonalInfoDataContextFields.CITY]: yup.string().nullable().required(requiredText),
+    address: yup.object().shape({
+        [PersonalInfoDataContextFields.CITY]: yup.string().nullable().required(requiredText),
+    }),
     [PersonalInfoDataContextFields.CONTACT_INFO]: yup.string().nullable(),
     [PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]: yup.string().when(
         PersonalInfoDataContextFields.RELEVANT_OCCUPATION, 
@@ -41,7 +44,7 @@ const schema = yup.object().shape({
             schema.nullable()
     }),
     [PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER]: yup.number().transform((value: any) => 
-        ((value === '' || isNaN(value)) ? null : value)).nullable().max(49, 'ניתן להזין עד המספר 50')
+        (Boolean(value)) ? value : null).nullable().max(50, maxClassNumberError)
 });
 
 export default schema;

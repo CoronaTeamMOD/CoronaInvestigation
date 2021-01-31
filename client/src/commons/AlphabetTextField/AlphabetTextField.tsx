@@ -1,6 +1,8 @@
 import React from 'react';
 import * as yup from 'yup';
 
+import { ALPHBET_TEXT_REGEX } from 'commons/Regex/Regex';
+
 import AlphbetTextFieldType from './AlphabetTextFieldTypes';
 import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventionTextField';
 
@@ -9,7 +11,7 @@ const maxLengthErrorMessage = 'השדה יכול להכיל 50 אותיות בל
 
 const stringAlphabet = yup
   .string()
-  .matches(/^[a-zA-Z\u0590-\u05fe\s]*$/, errorMessage)
+  .matches(ALPHBET_TEXT_REGEX, errorMessage)
   .max(50, maxLengthErrorMessage);
 
 

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 
 import User from 'models/User';
+import theme from 'styles/theme';
 import logger from 'logger/logger';
 import Language from 'models/Language';
 import { Severity } from 'models/Logger';
@@ -23,11 +24,12 @@ import { SortOrderTableHeadersNames } from './UsersManagementTableHeaders'
 interface UserDialog {
     isOpen: boolean,
     info: SignUpUser
-}
+};
+
 interface CellNameSort {
     name: string;
     direction: SortOrder | undefined;
-}
+};
 
 const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUsersManagementInCome): useUsersManagementOutCome => {
     
@@ -37,13 +39,18 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     const [languages, setLanguages] = useState<Language[]>([]);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [userDialog, setUserDialog] = useState<UserDialog>({ isOpen: false, info: {} });
+    const [editUserDialog, setEditUserDialog] = useState<UserDialog>({ isOpen: false, info: {} });
     const [filterRules, setFitlerRules] = useState<any>({});
     const [isBadgeInVisible, setIsBadgeInVisible] = useState<boolean>(true);
     
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
+    const countyDisplayName = useSelector<StoreStateType, string>(state => state.user.data.countyByInvestigationGroup.displayName);
 
     const { alertError, alertWarning } = useCustomSwal();
+
+
+    const deactivateAllCountyUsersWarningTitle = `האם אתה בטוח שתרצה לכבות את כל המשתמשים בנפת ${countyDisplayName}`;
 
     const fetchUsers = () => {
         const fetchUsersLogger = logger.setup('Fetching users');
@@ -78,7 +85,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                 })
                 .finally(() => setIsLoading(false));
         }
-    }
+    };
 
     const fetchSourcesOrganization = () => {
         const fetchSourcesOrganizationLogger = logger.setup('Fetching sourcesOrganization');
@@ -94,7 +101,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                 alertError('לא ניתן היה לקבל מסגרות');
                 fetchSourcesOrganizationLogger.error('didnt get results back from the server', Severity.HIGH);      
             });
-    }
+    };
 
     const fetchUserTypes = () => {
         const fetchUserTypesLogger = logger.setup('Fetching userTypes');
@@ -111,7 +118,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                 alertError('לא ניתן היה לקבל סוגי משתמשים');
                 fetchUserTypesLogger.error('didnt get results back from the server', Severity.HIGH);       
             });
-    }
+    };
 
     const fetchLanguages = () => {
         const fetchLanguagesLogger = logger.setup('Fetching languages');
@@ -127,7 +134,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                 alertError('לא ניתן היה לקבל שפות');
                 fetchLanguagesLogger.error('didnt get results back from the server', Severity.HIGH);      
             });
-    }
+    };
 
     const handleFilterChange = (filterBy: () => any) => {
         let filterRulesToSet = {...filterRules};
@@ -142,22 +149,22 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         }
         setIsBadgeInVisible(Object.keys(filterRulesToSet).length === 0);
         setFitlerRules(filterRulesToSet);
-    }
+    };
 
     useEffect(() => {
         fetchSourcesOrganization();
         fetchUserTypes();
         fetchLanguages();
-    }, [])
+    }, []);
 
     useEffect(() => {
         setPage(defaultPage);
         page === defaultPage && fetchUsers();
-    }, [filterRules, cellNameSort, displayedCounty])
+    }, [filterRules, cellNameSort, displayedCounty]);
 
     useEffect(() => {
         fetchUsers();
-    }, [page, user.userType])
+    }, [page, user.userType]);
     
     const watchUserInfo = (row: any) => {
         const userInfoToSet = {
@@ -165,16 +172,25 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             [SignUpFields.LANGUAGES]: row[SignUpFields.LANGUAGES].map((language: string) => {
                 return { displayName: language }
             }),
-            [SignUpFields.COUNTY]: { displayName: row[SignUpFields.COUNTY].displayName },
-            [SignUpFields.DESK]: { deskName: row[SignUpFields.DESK].deskName },
-            [SignUpFields.CITY]: { value: { displayName: row[SignUpFields.CITY] }},
             [SignUpFields.FULL_NAME]: row[SignUpFields.FULL_NAME] || row[SignUpFields.USER_NAME],
-            [SignUpFields.SOURCE_ORGANIZATION]: { displayName: row[SignUpFields.SOURCE_ORGANIZATION]}
         };
         setUserDialog({ isOpen: true, info: userInfoToSet });
-    }
+    };
 
-    const handleCloseDialog = () => setUserDialog({ isOpen: false, info: {} })
+    const handleCloseUserDialog = () => setUserDialog({ isOpen: false, info: {} });
+
+    const editUserInfo = (row: any) => {
+        const userInfoToEdit = {
+            ...row,
+            [SignUpFields.LANGUAGES]: row[SignUpFields.LANGUAGES].map((language: string) => {
+                return { displayName: language }
+            }),
+            [SignUpFields.FULL_NAME]: row[SignUpFields.FULL_NAME] || row[SignUpFields.USER_NAME],
+        };
+        setEditUserDialog({ isOpen: true, info: userInfoToEdit });
+    };
+
+    const handleCloseEditUserDialog = () => setEditUserDialog({ isOpen: false, info: {} });
 
     const setUserActivityStatus = (isActive: boolean, userId: string) : Promise<any> => {
         const setUpdateActivityStatusLogger = logger.setup('Updating user activity status');
@@ -192,7 +208,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             setUpdateActivityStatusLogger.error(`error in updating user activity status ${error}`, Severity.HIGH);
         })
         .finally(() => setIsLoading(false));
-    }
+    };
 
     const setUserSourceOrganization = (sourceOrganization: string, userId: string) => {
         const setUpdateSourcesOrganizationLogger = logger.setup('Updating user source organization');
@@ -210,7 +226,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             setUpdateSourcesOrganizationLogger.error(`error in updating user source organization ${error}`, Severity.HIGH);
         })
         .finally(() => setIsLoading(false));
-    }
+    };
 
     const setUserDesk = (deskId: number, userId: string) => {
         const setUpdateDeskLogger = logger.setup('Updating user desk');
@@ -228,7 +244,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             setUpdateDeskLogger.error(`error in updating user desk due to ${error}`, Severity.HIGH);
         })
         .finally(() => setIsLoading(false));
-    }
+    };
 
     const setUserCounty = (countyId: number, userId: string) => {
         if(userId != user.id){
@@ -251,7 +267,35 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         } else {
             alertWarning('אין אפשרות להעביר את עצמך לנפה אחרת', {text: 'אם זו עדיין הפעולה שהתכוונת לבצע, ניתן לפנות לתמיכה!'})
         }
-    }
+    };
+
+    const handleDeactivateAllUsersCounty = () => {
+        alertWarning((deactivateAllCountyUsersWarningTitle),{
+            showCancelButton: true,
+            cancelButtonText: 'בטל',
+            cancelButtonColor: theme.palette.error.main,
+            confirmButtonColor: theme.palette.primary.main,
+            confirmButtonText: 'כן, המשך',
+        }).then((result) => {
+            if (result.value) {
+                const deactivateAllCountyUsersLogger = logger.setup('Updating all county users activity status to false');
+                deactivateAllCountyUsersLogger.info('send request to server for updating users activity statuses', Severity.LOW);
+                setIsLoading(true);
+                return axios.post('users/deactivateAllCountyUsers', {
+                    county: displayedCounty
+                }).then((result) => {
+                    if(result.data){
+                        fetchUsers();
+                        deactivateAllCountyUsersLogger.info('updated users activity statuses successfully', Severity.LOW); 
+                    }
+                }).catch((error) => {
+                    alertError('לא הצלחנו לכבות את כל החוקרים בנפה');
+                    deactivateAllCountyUsersLogger.error(`error in updating users activity statuses ${error}`, Severity.HIGH);
+                })
+                .finally(() => setIsLoading(false)); 
+            }            
+        });
+    };
 
     return {
         users,
@@ -260,15 +304,19 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         languages,
         totalCount,
         userDialog,
+        editUserDialog,
         isBadgeInVisible,
         watchUserInfo,
-        handleCloseDialog,
+        handleCloseUserDialog,
+        editUserInfo,
+        handleCloseEditUserDialog,
         handleFilterChange,
         setUserActivityStatus,
         setUserSourceOrganization,
         setUserDesk,
-        setUserCounty
-    }
+        setUserCounty,
+        handleDeactivateAllUsersCounty,
+    };
 }
 
 interface useUsersManagementInCome {
@@ -276,7 +324,7 @@ interface useUsersManagementInCome {
     rowsPerPage: number;
     cellNameSort: CellNameSort;
     setPage: React.Dispatch<React.SetStateAction<number>>;
-}
+};
 
 interface useUsersManagementOutCome {
     users: SignUpUser[];
@@ -285,14 +333,18 @@ interface useUsersManagementOutCome {
     languages: Language[];
     totalCount: number;
     userDialog: UserDialog;
+    editUserDialog: UserDialog;
     isBadgeInVisible: boolean;
     watchUserInfo: (row: any) => void;
-    handleCloseDialog: () => void;
+    handleCloseUserDialog: () => void;
+    editUserInfo: (row: any) => void;
+    handleCloseEditUserDialog: () => void;
     handleFilterChange: (filterBy: any) => void;
     setUserActivityStatus: (isActive: boolean, userId: string) => Promise<any>;
     setUserSourceOrganization: (sourceOrganization: string, userId: string) => void;
     setUserDesk: (deskId: number, userId: string) => void;
     setUserCounty: (countyId: number, userId: string) => void;
-}
+    handleDeactivateAllUsersCounty: () => void;
+};
 
 export default useUsersManagement;

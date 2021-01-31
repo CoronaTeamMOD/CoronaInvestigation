@@ -22,6 +22,10 @@ query GetUser($id: String!) {
         displayName
         districtId
       }
+      authorityByAuthorityId{
+        id
+        authorityName
+      }
     }
   }   
 `;
@@ -80,7 +84,8 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter:
       identityNumber
       isActive
       cityByCity {
-        displayName
+        displayName,
+        id
       }
       isActive
       userLanguagesByUserId {
@@ -101,6 +106,10 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter:
       deskByDeskId {
         id,
         deskName
+      }
+      authorityByAuthorityId{
+        id
+        authorityName
       }
     }
     totalCount

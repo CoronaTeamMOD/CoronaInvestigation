@@ -124,7 +124,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         const fetchClinicalDetailsLogger = logger.setup('Fetching Clinical Details');
         fetchClinicalDetailsLogger.info('launching clinical data request', Severity.LOW);
         setIsLoading(true);
-        axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
+        axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields`).then(
             result => {
                 if (result?.data) {
                     fetchClinicalDetailsLogger.info('got results back from the server', Severity.LOW);

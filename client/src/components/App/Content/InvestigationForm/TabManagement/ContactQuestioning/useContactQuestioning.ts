@@ -54,12 +54,14 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const saveContact = (interactedContact: InteractedContact): boolean => {
+        const isInterrogationOfContactsHaveCity = Boolean(interactedContact?.isolationAddress?.city)
         if (
             checkDuplicateIds(
                 allContactedInteractions.map(
                     (contact: InteractedContact) => contact.identificationNumber
                 )
             )
+            || isInterrogationOfContactsHaveCity
         ) {
             return false;
         } else {
@@ -146,7 +148,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         );
         setIsLoading(true);
         const minimalDate = datesToInvestigate.slice(-1)[0];
-        axios.get(`/contactedPeople/allContacts/${epidemiologyNumber}/${minimalDate?.toISOString()}`)
+        axios.get(`/contactedPeople/allContacts/${minimalDate?.toISOString()}`)
             .then((result: any) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     interactedContactsLogger.info(

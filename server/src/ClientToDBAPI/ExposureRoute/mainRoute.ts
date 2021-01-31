@@ -5,18 +5,18 @@ import { Severity } from '../../Models/Logger/types';
 import Exposure from '../../Models/Exposure/Exposure';
 import { getPatientAge } from '../../Utils/patientUtils';
 import CovidPatient from '../../Models/Exposure/CovidPatient';
-import { UPDATE_EXPOSURES } from '../../DBService/Exposure/Mutation';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import ExposureByInvestigationId from '../../Models/Exposure/ExposureByInvestigationId';
+import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
+import { DELETE_EXPOSURE_BY_ID, UPDATE_EXPOSURES } from '../../DBService/Exposure/Mutation';
+import { INVALID_CHARS_REGEX, PHONE_OR_IDENTITY_NUMBER_REGEX } from '../../commons/Regex/Regex';
 import { GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS } from '../../DBService/Exposure/Query';
 import CovidPatientDBOutput, { AddressDBOutput } from '../../Models/Exposure/CovidPatientDBOutput';
 import OptionalExposureSourcesResponse from '../../Models/Exposure/OptionalExposureSourcesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
+import { parse } from 'dotenv/types';
 
 const exposureRoute = Router();
-
-const phoneOrIdentityNumberRegex = /^([\da-zA-Z]+)$/;
-const invalidCharsRegex = /[^א-ת\da-zA-Z0-9]/;
 
 const searchDaysAmount = 14;
 
@@ -44,14 +44,15 @@ const convertExposuresFromDB = (result: ExposureByInvestigationId) : Exposure[] 
     return convertedExposures
 }
 
-exposureRoute.get('/exposures/:investigationId', (request: Request, response: Response) => {
+exposureRoute.get('/exposures', handleInvestigationRequest, (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const exposuresLogger = logger.setup({
         workflow: 'query all exposures of investigation',
         user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber
+        investigation: epidemiologyNumber
     });
 
-    const parameters = {investigationId: parseInt(request.params.investigationId)};
+    const parameters = {investigationId: epidemiologyNumber};
     exposuresLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_EXPOSURE_INFO, response.locals, parameters)
@@ -65,15 +66,6 @@ exposureRoute.get('/exposures/:investigationId', (request: Request, response: Re
         })
     }
 );
-
-const convertSearchValueToRegex = (searchValue: string, isPhoneOrIdentityNumber: boolean) => {
-    let searchRegexContent : string;
-    if (isPhoneOrIdentityNumber) {
-        searchRegexContent = searchValue;
-    }
-    else searchRegexContent = searchValue.replace(new RegExp(invalidCharsRegex, 'g'), '%');
-    return `%${searchRegexContent}%`
-}
 
 const createAddressString = (address: AddressDBOutput) : string => {
     const addressParts = [];
@@ -100,17 +92,17 @@ const convertCovidPatientsFromDB = (dbBCovidPatients: CovidPatientDBOutput[]) : 
 const filterCovidPatientsByRegex = (searchValue: string, patientsToFilter: CovidPatientDBOutput[]) => {
     let trimmedSerachValue = searchValue;
     const lastIndexValue = trimmedSerachValue.length - 1;
-    if (invalidCharsRegex.test(searchValue[lastIndexValue])) {
+    if (INVALID_CHARS_REGEX.test(searchValue[lastIndexValue])) {
         trimmedSerachValue = trimmedSerachValue.slice(0, lastIndexValue);
     }
-    const complicatedRegex = new RegExp(trimmedSerachValue.replace(new RegExp(invalidCharsRegex, 'g'), '[ -]+[^0-9A-Za-z]*') + '*');
+    const complicatedRegex = new RegExp(trimmedSerachValue.replace(new RegExp(INVALID_CHARS_REGEX, 'g'), '[ -]+[^0-9A-Za-z]*') + '*');
     return patientsToFilter.filter(patient => complicatedRegex.test(patient.fullName) === true);
 }
 
-exposureRoute.get('/optionalExposureSources/:searchValue/:validationDate', (request: Request, response: Response) => {
+exposureRoute.get('/optionalExposureSources/:searchValue/:validationDate', handleInvestigationRequest, (request: Request, response: Response) => {
     const searchValue : string = request.params.searchValue || '';
     const searchInt = isNaN(parseInt(searchValue)) ? 0 : parseInt(searchValue);
-    const isPhoneOrIdentityNumber = phoneOrIdentityNumberRegex.test(searchValue);
+    const isPhoneOrIdentityNumber = PHONE_OR_IDENTITY_NUMBER_REGEX.test(searchValue);
     const searchEndDate = new Date(request.params.validationDate);
     const searchStartDate = subDays(searchEndDate, searchDaysAmount);
     const parameters = {searchValue, searchInt, searchStartDate, searchEndDate}
@@ -147,7 +139,7 @@ const convertExposuresToDB = (request: Request) => {
     return {...request.body, exposures: convertedExposures}
 }
 
-exposureRoute.post('/updateExposures', (request: Request, response: Response) => {
+exposureRoute.post('/updateExposures',handleInvestigationRequest, (request: Request, response: Response) => {
     const updateExposuresLogger = logger.setup({
         workflow: `saving investigation's exposures`,
         user: response.locals.user.id,
@@ -164,6 +156,26 @@ exposureRoute.post('/updateExposures', (request: Request, response: Response) =>
         })
         .catch(error => {
             updateExposuresLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error)
+        })
+});
+
+exposureRoute.delete('/deleteExposure',handleInvestigationRequest, (request: Request, response: Response) => {
+    const deleteExposureLogger = logger.setup({
+        workflow: `deleting investigation's exposure by id`,
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    });
+    const parameters = {exposureId: parseInt(request.query.exposureId as string)};
+    deleteExposureLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+    
+    return graphqlRequest(DELETE_EXPOSURE_BY_ID, response.locals, parameters)
+        .then((result) => {
+            deleteExposureLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result);
+        })
+        .catch(error => {
+            deleteExposureLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error)
         })
 });

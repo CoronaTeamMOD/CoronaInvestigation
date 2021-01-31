@@ -1,4 +1,4 @@
-import ResultError from "../ResultError";
+import ResultError from '../ResultError';
 
 interface CreateUserResponse {
     data?: {
@@ -7,6 +7,6 @@ interface CreateUserResponse {
         }
     },
     errors?: ResultError[]
-}
+};
 
 export default CreateUserResponse;

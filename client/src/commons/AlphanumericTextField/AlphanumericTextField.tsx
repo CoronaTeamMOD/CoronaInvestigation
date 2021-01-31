@@ -1,6 +1,8 @@
 import React from 'react';
 import * as yup from 'yup';
 
+import { ALPHANUMERIC_TEXT_REGEX } from 'commons/Regex/Regex';
+
 import AlphanumericTextFieldType from './AlphanumericTextFieldTypes';
 import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventionTextField';
 
@@ -9,7 +11,7 @@ const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד
 
 export const stringAlphanum = yup
   .string()
-  .matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/, errorMessage)
+  .matches(ALPHANUMERIC_TEXT_REGEX, errorMessage)
   .max(50, maxLengthErrorMessage);
 
 

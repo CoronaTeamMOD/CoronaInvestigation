@@ -31,21 +31,6 @@ const PlaceNameForm = ({nameFieldLabel=DEFAULT_NAME_FIELD_LABEL}:Props) => {
                     )}
                 />
             </FormInput>
-            <FormInput xs={5} labelLength={3} fieldName='פירוט נוסף'>
-                <Controller
-                    name={InteractionEventDialogFields.PLACE_DESCRIPTION}
-                    control={control}
-                    render={(props) => (
-                        <AlphanumericTextField
-                            name={props.name}
-                            value={props.value}
-                            onChange={(newValue: string) => props.onChange(newValue as string)}
-                            onBlur={props.onBlur}
-                            className={classes.placeNameField}
-                        />
-                    )}
-                />
-            </FormInput>
         </Grid>
     );
 };

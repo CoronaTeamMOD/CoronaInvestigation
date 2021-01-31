@@ -1,7 +1,5 @@
+import { PASSPORT_REGEX, VISA_REGEX } from 'commons/Regex/Regex';
 
-export const phoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/;
-export const notRequiredPhoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$|^$/;
-export const mailValidation = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const moreThanOneSlashIndicator = 3;
 
 const get = (obj: any, path: string, defaultValue = undefined) => {
@@ -18,7 +16,6 @@ const get = (obj: any, path: string, defaultValue = undefined) => {
     return result === undefined || result === obj ? defaultValue : result;
 };
 
-export const idBasicValidation = /^[0-9/]*$/;
 export const idLength = 9;
 const isIdValid = (id: string | null | undefined) => {
     let sum = 0;
@@ -38,9 +35,6 @@ const isIdValid = (id: string | null | undefined) => {
     }
 };
 
-export const passportValidationWithDash = /^([a-zA-Z0-9/])*$/;
-const passportValidation = /^([a-zA-Z0-9])*$/;
-export const visaValidation = /^([0-9\/])*$/;
 export const passportLength = 10;
 export const visaLength = 15;
 const isPassportValid = (id: string | null | undefined): boolean => {
@@ -50,10 +44,10 @@ const isPassportValid = (id: string | null | undefined): boolean => {
      */
     if(id) {
         if (id.length === passportLength) {
-            return passportValidation.test(String(id));
+            return PASSPORT_REGEX.test(String(id));
         } else if (id.length === visaLength) {
             if(doesStringHasMoreThanOneSlash(id)) {
-                return visaValidation.test(String(id));
+                return VISA_REGEX.test(String(id));
             } else {
                 return false;
             }

@@ -12,13 +12,11 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFormOutcome => {
-        const { loadInteractions, loadInvolvedContacts, onDialogClose} = props;
+        const { loadInteractions, loadInvolvedContacts, onDialogClose, groupedInvestigationContacts} = props;
         
         const { parseLocation } = useDBParser();
         const { alertError } = useCustomSwal();
         const { isPatientHouse } = useContactEvent();
-
-        const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
         const shouldParseLocation = (interactionsDataToSave: InteractionEventDialogData) =>
             !isPatientHouse(interactionsDataToSave[InteractionEventDialogFields.PLACE_SUB_TYPE]) &&
@@ -31,7 +29,6 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
             const parsedData = {
                 ...interactionsDataToSave,
                 [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
-                [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber
             };
             if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
                 const updateInteractionsLogger = logger.setup('Update Interaction')
@@ -40,9 +37,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 .then((response) => {
                     if (response.data?.data?.updateContactEventFunction) {
                         updateInteractionsLogger.info('updated interaction successfully', Severity.LOW);
-                        loadInteractions();
-                        loadInvolvedContacts();
-                        onDialogClose();
+                        saveGroupedInvestigations(response.data.data.updateContactEventFunction.integer);
                     }
                 })
                 .catch((error) => {
@@ -57,9 +52,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 .then((response) => {
                     if (response.data?.data?.updateContactEventFunction) {
                         createInteractionsLogger.info('created interaction successfully', Severity.LOW);
-                        loadInteractions();
-                        loadInvolvedContacts();
-                        onDialogClose();
+                        saveGroupedInvestigations(response.data.data.updateContactEventFunction.integer);
                     } else {
                         createInteractionsLogger.info(`response data is not valid data : ${JSON.stringify(response)}`, Severity.LOW);
                     }
@@ -73,6 +66,35 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
             }
         }
 
+        const saveGroupedInvestigations = (eventId : number) => {
+            const groupedInvestigationsLogger = logger.setup('save grouped investigations contacts')
+            const params = {
+                eventId ,
+                contacts : groupedInvestigationContacts
+            }
+            if(groupedInvestigationContacts.length !== 0) {
+                axios.post('/intersections/groupedInvestigationContacts' , params)
+                    .then((response) => {
+                        groupedInvestigationsLogger.info('added contacts successfully', Severity.LOW);
+                        loadInteractions();
+                        loadInvolvedContacts();
+                        onDialogClose();
+                        setIsLoading(false);
+                    })
+                    .catch((error) => {
+                        groupedInvestigationsLogger.error(`got error from server: ${error}`, Severity.HIGH);
+                        onDialogClose();
+                        alertError('לא ניתן היה לקשר חשיפות');
+                        setIsLoading(false);
+                    })
+            } else {
+                loadInteractions();
+                loadInvolvedContacts();
+                onDialogClose();
+                setIsLoading(false);
+            }
+        } 
+
         return {
             saveInteractions
         }
@@ -83,6 +105,7 @@ interface useInteractionFormIncome {
     loadInteractions: () => void;
     loadInvolvedContacts:() => void;
     onDialogClose: () => void;
+    groupedInvestigationContacts: number[];
 }
 
 interface useInteractionFormOutcome {

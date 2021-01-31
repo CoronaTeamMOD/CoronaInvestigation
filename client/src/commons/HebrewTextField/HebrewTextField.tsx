@@ -1,6 +1,8 @@
 import React from 'react';
 import * as yup from 'yup';
 
+import { HEBREW_TEXT_REGEX } from 'commons/Regex/Regex';
+
 import HebrewTextFieldType from './HebrewTextFieldTypes';
 import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventionTextField';
 
@@ -9,7 +11,7 @@ const maxLengthErrorMessage = 'השדה יכול להכיל 50 אותיות בל
 
 const stringHebrew = yup
   .string()
-  .matches(/^[\u0590-\u05fe\s]*$/, errorMessage)
+  .matches(HEBREW_TEXT_REGEX, errorMessage)
   .max(50, maxLengthErrorMessage);
 
 

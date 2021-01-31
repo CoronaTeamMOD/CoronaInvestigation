@@ -8,11 +8,13 @@ import genderReducer from './Gender/GenderReducer';
 import countryReducer from './Country/countryReducer';
 import addressReducer from './Address/AddressReducer';
 import statusesReducer from './Status/statusesReducer';
+import authorityReducer from './Authority/authorityReducer';
 import isLoadingReducer from './IsLoading/isLoadingReducer';
 import contactTypeReducer from './ContactType/contactTypeReducer';
 import subStatusesReducer from './SubStatuses/subStatusesReducer';
 import occupationsReducer from './Occupations/occupationsReducer';
 import investigationReducer from './Investigation/investigationReducer';
+import groupedInvestigationReducer from './GroupedInvestigations/GroupedInvestigationsReducer';
 import isInInvestigationReducer from './IsInInvestigations/isInInvestigationReducer';
 import educationGradeReducer from './EducationGrade/educationGradeReducer';
 import placetypeReducer from './PlaceTypes/placetypeReducer';
@@ -37,4 +39,6 @@ export default combineReducers<StoreStateType>({
      placeSubTypesByTypes: placetypeReducer,
      county: countyReducer,
      desk: deskReducer,
+     groupedInvestigations : groupedInvestigationReducer,
+     authorities: authorityReducer,
 }) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;

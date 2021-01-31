@@ -1,33 +1,21 @@
 import React from 'react';
-import { GroupOutlined } from '@material-ui/icons';
+import { GroupOutlined, CallMerge } from '@material-ui/icons';
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Tab, Tabs, useTheme } from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 
+import Forms from './Forms';
 import useStyles from './ContactsTabsStyles';
-import FamilyMembersForm from './FamilyMembers/FamilyMembersForm';
-import ManualContactsForm from './ManualContactsForm/ManualContactsForm';
 
-const contactFormTabs = [
-    { id: 0, Component: <ManualContactsForm /> },
-    { id: 1, Component: <FamilyMembersForm /> },
-];
+const mutualContactsLabel = 'הוספת מגע ידנית';
+const familyMembersLabel = 'בני משפחה';
+const groupedInvestigationsLabel = 'חקירות מקובצות';
 
-const FormComponent = ({ currentTab }: { currentTab: number }) => {
-    const formClasses = useFormStyles();
+const ContactsTabs = (props : Props) => {
+    const {isVisible} = props;
 
-    return <>
-        {contactFormTabs.map(tab =>
-            <div className={currentTab !== tab.id ? formClasses.hidden : formClasses.formSize}>
-                {tab.Component}
-            </div>
-        )}
-    </>
-};
-
-const ContactsTabs = ({ isVisible }: { isVisible: boolean }) => {
     const [currentTab, setTab] = React.useState<number>(0);
     const formClasses = useFormStyles();
     const classes = useStyles();
@@ -48,18 +36,20 @@ const ContactsTabs = ({ isVisible }: { isVisible: boolean }) => {
                 value={currentTab}
                 onChange={handleChange}
             >
-                <Tab classes={tabClasses}
-                    icon={<FontAwesomeIcon color={active} icon={faUserEdit} />}
-                    label='הוספת מגע ידנית' />
-                <Tab
-                    classes={tabClasses}
-                    icon={<GroupOutlined color='action' />}
-                    label='בני משפחה' />
+                <Tab classes={tabClasses} icon={<FontAwesomeIcon color={active} icon={faUserEdit} />} label={mutualContactsLabel} />
+                <Tab classes={tabClasses} icon={<GroupOutlined color='action' />} label={familyMembersLabel} />
+                <Tab classes={tabClasses} icon={<CallMerge color='action' />} label={groupedInvestigationsLabel} />
             </Tabs>
             <Divider orientation='vertical' variant='fullWidth' light={true} />
-            <FormComponent currentTab={currentTab} />
+            <Forms
+                currentTab={currentTab}
+            />
         </div>
     );
 };
+
+interface Props {
+    isVisible: boolean; 
+}
 
 export default ContactsTabs;

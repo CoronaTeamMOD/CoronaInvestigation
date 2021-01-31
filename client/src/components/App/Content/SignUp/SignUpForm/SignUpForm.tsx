@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
@@ -7,8 +7,8 @@ import { Grid, TextField } from '@material-ui/core';
 import { useForm, FormProvider, Controller } from 'react-hook-form';
 
 import City from 'models/City';
-import Desk from 'models/Desk';
 import County from 'models/County';
+import Authority from 'models/Authority';
 import SignUpUser from 'models/SignUpUser';
 import FormMode from 'models/enums/FormMode';
 import StoreStateType from 'redux/storeStateType';
@@ -18,10 +18,9 @@ import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 
-import SignUpSchema from './SignUpSchema';
 import useStyles from './SignUpFormStyles';
 import useSignUpForm from './useSignUpForm';
-
+import { SignUpSchema, EditSchema } from './SignUpSchema';
 
 const MABAR_USER_NAME = 'שם משתמש מב"ר';
 const FIRST_NAME_LABEL = 'שם פרטי';
@@ -34,6 +33,8 @@ const COUNTY_LABEL = 'נפה';
 const DESK_LABEL = 'דסק';
 const SOURCE_ORGANIZATION_LABEL = 'מסגרת';
 const LANGUAGE_LABEL = 'שפה';
+const AUTHORITY_LABEL = 'רשות';
+const AUTHORITY_INVESTIGATOR = 'חוקר רשות';
 
 const GenericAlphabetTextField : React.FC<GenericAlphabetTextFieldProps> = 
     ({ props, disabled, label, placeholder, className }: GenericAlphabetTextFieldProps) => (
@@ -48,9 +49,9 @@ const GenericAlphabetTextField : React.FC<GenericAlphabetTextFieldProps> =
             label={label}
             className={className}
         />
-    )
+    );
 
-    const GenericNumericTextField : React.FC<GenericNumericTextFieldProps> =
+const GenericNumericTextField : React.FC<GenericNumericTextFieldProps> =
     ({ props, disabled, label, placeholder, className}: GenericNumericTextFieldProps) => (
             <NumericTextField
                 disabled={disabled}
@@ -63,32 +64,47 @@ const GenericAlphabetTextField : React.FC<GenericAlphabetTextFieldProps> =
                 label={label}
                 className={className}
             />
-    )
+    );
 
 const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Props) => {
-    const classes = useStyles();
-    
-    const { languages, sourcesOrganization, createUser } = useSignUpForm({ handleSaveUser });
 
+    const classes = useStyles();
+    const { languages, sourcesOrganization, desks, fetchDesks, createUser, editUser } = useSignUpForm({ handleSaveUser });
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
+    const authorities = useSelector<StoreStateType, Map<string, Authority>>(state => state.authorities);
     const counties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
-    const desks = useSelector<StoreStateType, Desk[]>(state => state.desk);
     
     const methods = useForm<SignUpUser>({
         mode: 'all',
         defaultValues: defaultValues,
-        resolver: yupResolver(SignUpSchema)
-    })
+        resolver: yupResolver(mode === FormMode.CREATE ? SignUpSchema : EditSchema)
+    });
+
+    const watchCounty = methods.watch(SignUpFields.COUNTY);
+
+    useEffect(() => {
+        if (watchCounty?.id) {
+            fetchDesks(watchCounty.id)
+        } else if (defaultValues?.investigationGroup?.id) {
+            fetchDesks(defaultValues.investigationGroup.id)
+        } else {
+            fetchDesks()
+        }
+    }, [watchCounty]);
+
+    const shouldDisableFields = mode === FormMode.READ;
+
+    const shouldDisableEditFields = mode === FormMode.EDIT;
+    const sourceOrganization = methods.watch("sourceOrganization");
     
-    const shouldDisableFields = mode === FormMode.READ ? true : false; 
-    
-    const onSubmit = (data: SignUpUser) => {
-        data = {
-            ...data,
-            desk: data.desk ? data.desk : null
-        };
-        createUser(data);
-    }
+    const onSubmit = () => {
+        const data = methods.getValues();
+        if (mode === FormMode.CREATE) {
+            createUser(data);
+        } else if (mode === FormMode.EDIT) {
+            editUser(data)
+        }
+    };
     
     return (
         <FormProvider {...methods}>
@@ -104,7 +120,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                         test-id={props.name}
                                         value={props.value}
                                         onChange={(event) => props.onChange(event.target.value as string)}
-                                        placeholder='itay.benmoshe'
+                                        placeholder='הכנס שם משתמש...'
                                         onBlur={props.onBlur}
                                         error={get(methods.errors, props.name)}
                                         label={get(methods.errors, props.name)?.message || MABAR_USER_NAME}
@@ -115,24 +131,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                         </FormInput>
                 </Grid>
 
-                { mode === FormMode.READ ? 
-                    <Grid container justify='flex-start' className={classes.formRow}>
-                            <FormInput xs={8} fieldName='שם מלא'>
-                                <Controller 
-                                    name={SignUpFields.FULL_NAME}
-                                    control={methods.control}
-                                    render={(props) => (
-                                        <GenericAlphabetTextField 
-                                            props={props}
-                                            disabled={shouldDisableFields}
-                                            label='שם מלא'
-                                            className={classes.textField}
-                                        />
-                                    )}
-                                />
-                            </FormInput>
-                    </Grid>
-                : 
+                { mode === FormMode.CREATE ? 
                     <Grid container justify='flex-start' className={classes.formRow}>
                             <FormInput xs={8} fieldName='שם מלא'>
                                 <Controller
@@ -163,6 +162,23 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                             />
                         </Grid>
                     </Grid>
+                : 
+                    <Grid container justify='flex-start' className={classes.formRow}>
+                        <FormInput xs={8} fieldName='שם מלא'>
+                            <Controller 
+                                name={SignUpFields.FULL_NAME}
+                                control={methods.control}
+                                render={(props) => (
+                                    <GenericAlphabetTextField 
+                                        props={props}
+                                        disabled={shouldDisableEditFields || shouldDisableFields}
+                                        label='שם מלא'
+                                        className={classes.textField}
+                                    />
+                                )}
+                            />
+                        </FormInput>
+                    </Grid>
                 }
 
                 <Grid container justify='flex-start' className={classes.formRow}>
@@ -172,12 +188,13 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 control={methods.control}
                                 render={(props) => (
                                     <Autocomplete
+                                        {...props}
                                         disabled={shouldDisableFields}
                                         options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                                        getOptionLabel={(option) => option ? option.value?.displayName : option}
-                                        value={props.value}
+                                        getOptionLabel={(option) => option?.displayName ? option.displayName : option.value.displayName}
+                                        getOptionSelected={(option, value) => option.id === value.id}
                                         onChange={(event, selectedCity) => {
-                                            props.onChange(selectedCity ? selectedCity.id : null)
+                                            props.onChange(selectedCity ? selectedCity.value : null)
                                         }}
                                         onBlur={props.onBlur}
                                         renderInput={(params) =>
@@ -193,7 +210,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 )}
                             />
                         </FormInput>
-                </Grid>   
+                </Grid> 
                 
                 <Grid container justify='flex-start' className={classes.formRow}>
                         <FormInput xs={8} fieldName='טלפון'>
@@ -221,7 +238,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 render={(props) => (
                                     <GenericNumericTextField 
                                         props={props}
-                                        disabled={shouldDisableFields}
+                                        disabled={shouldDisableEditFields || shouldDisableFields}
                                         placeholder='הכנס מספר תעודת זהות...'
                                         label={ID_LABEL}
                                         className={classes.textField}
@@ -257,15 +274,18 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                         <FormInput xs={8} fieldName='שיוך ארגוני'>
                             <Controller
                                 name={SignUpFields.COUNTY}
-                                control={methods.control}
+                                control={methods.control}                                        
+                                defaultValue={defaultValues.investigationGroup || null}
                                 render={(props) => (
                                     <Autocomplete
+                                        {...props}
                                         disabled={shouldDisableFields}
                                         options={counties}
                                         getOptionLabel={(option) => option?.displayName}
                                         value={props.value}
                                         onChange={(event, selectedCounty) => {
-                                            props.onChange(selectedCounty ? selectedCounty.id : null)
+                                            props.onChange(selectedCounty || null)
+                                            methods.setValue(SignUpFields.DESK, null)
                                         }}
                                         onBlur={props.onBlur}
                                         renderInput={(params) =>
@@ -285,15 +305,18 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                     <Grid item xs={4}>
                         <Controller
                             name={SignUpFields.DESK}
-                            control={methods.control}
+                            control={methods.control}                                    
+                            defaultValue={defaultValues.desk ? defaultValues.desk : null}
                             render={(props) => (
                                 <Autocomplete
+                                    {...props}
                                     options={desks}
                                     disabled={shouldDisableFields}
+                                    getOptionLabel={(option) => option ? option.deskName : ''}                                    
                                     value={props.value}
-                                    getOptionLabel={(option) => option?.deskName}
+                                    getOptionSelected={(option, value) => option.id === value.id}
                                     onChange={(event, selectedDesk) => {
-                                        props.onChange(selectedDesk ? selectedDesk.id : null)
+                                        props.onChange(selectedDesk || null)
                                     }}
                                     onBlur={props.onBlur}
                                     renderInput={(params) =>
@@ -310,7 +333,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                         />
                     </Grid>
                 </Grid>
-            
+        
                 <Grid container justify='flex-start' className={classes.formRow}>
                         <FormInput xs={8} fieldName='מסגרות'>
                             <Controller
@@ -320,7 +343,8 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                     <Autocomplete
                                         disabled={shouldDisableFields}
                                         options={sourcesOrganization}
-                                        getOptionLabel={(option) => option ? option.displayName : option}
+                                        getOptionLabel={(option) => option.displayName ? option.displayName : option}
+                                        getOptionSelected={(option, value) => option.displayName === value}
                                         value={props.value}
                                         onChange={(event, selectedSourceOrganization) =>
                                             props.onChange(selectedSourceOrganization ? 
@@ -340,6 +364,34 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 )}
                             />
                         </FormInput>
+                        <Grid item xs={4} hidden={sourceOrganization !== AUTHORITY_INVESTIGATOR}>
+                            <Controller
+                                name={SignUpFields.AUTHORITY}
+                                control={methods.control}
+                                render={(props) => (
+                                    <Autocomplete
+                                        {...props}
+                                        disabled={shouldDisableFields}
+                                        options={Array.from(authorities, ([id, value]) => ({ id, value }))}
+                                        getOptionLabel={(option) => option?.authorityName ? option.authorityName : option.value.authorityName}
+                                        getOptionSelected={(option, value) => option.id === value.id}
+                                        onChange={(event, selectedAuthority) => {
+                                            props.onChange(selectedAuthority ? selectedAuthority.value : null)
+                                        }}
+                                        onBlur={props.onBlur}
+                                        renderInput={(params) =>
+                                            <TextField
+                                                {...params}
+                                                test-id={props.name}
+                                                placeholder='בחר רשות...'
+                                                error={get(methods.errors, props.name)}
+                                                label={get(methods.errors, props.name)?.message || AUTHORITY_LABEL}
+                                            />
+                                        }
+                                    />
+                                )}
+                            />
+                        </Grid>
                 </Grid>   
 
                 <Grid container justify='flex-start' className={classes.formRow}>
@@ -373,18 +425,16 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                             />
                         </FormInput>
                 </Grid>
-                                        
             </form>
         </FormProvider>
     )
-
-}
+};
 
 interface Props {
     defaultValues: SignUpUser;
     handleSaveUser?: () => void;
     mode: FormMode;
-}
+};
 
 interface GenericAlphabetTextFieldProps {
     props: any;
@@ -392,7 +442,7 @@ interface GenericAlphabetTextFieldProps {
     label: string;
     placeholder?: string;
     className?: string;
-}
+};
 
 interface GenericNumericTextFieldProps {
     props: any;
@@ -400,6 +450,6 @@ interface GenericNumericTextFieldProps {
     label: string;
     placeholder: string;
     className: string;
-}
+};
 
 export default SignUpForm;

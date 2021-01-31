@@ -1,6 +1,8 @@
 import React from 'react';
 import * as yup from 'yup';
 
+import { ALPHBET_DASH_TEXT_REGEX } from 'commons/Regex/Regex';
+
 import AlphbetWithDashTextFieldType from './AlphabetWithDashTextFieldTypes';
 import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventionTextField';
 
@@ -9,7 +11,7 @@ const maxLengthErrorMessage = 'השדה יכול להכיל 50 תווים בלב
 
 const stringAlphabetWithDash = yup
   .string()
-  .matches(/^[a-zA-Z\u0590-\u05fe-\s]*$/, errorMessage)
+  .matches(ALPHBET_DASH_TEXT_REGEX, errorMessage)
   .max(50, maxLengthErrorMessage);
 
 

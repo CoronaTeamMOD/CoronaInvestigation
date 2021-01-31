@@ -3,12 +3,12 @@ import { Typography } from '@material-ui/core';
 
 import CovidPatient from 'models/CovidPatient';
 import CovidPatientFields from 'models/CovidPatientFields';
+import { PHONE_AND_IDENTITY_NUMBER_REGEX } from 'commons/Regex/Regex';
 
 import useStyles from './ExposureFormStyles';
 import { displayPatientFields } from './useExposureForm';
 
 const invalidAge = -1;
-const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
 
 const allCovidPatientFields: CovidPatientFields = {
     ...displayPatientFields,
@@ -36,7 +36,7 @@ const ExposureSourceOption = (props: Props) => {
                 <Typography
                     className={[
                         classes.optionField,
-                        !phoneAndIdentityNumberRegex.test(exposureSourceSearchString) && classes.searchedField,
+                        !PHONE_AND_IDENTITY_NUMBER_REGEX.test(exposureSourceSearchString) && classes.searchedField,
                     ].join(' ')}
                 >
                     {allCovidPatientFields.fullName + ': ' + fullName}

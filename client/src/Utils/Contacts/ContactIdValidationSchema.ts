@@ -1,8 +1,9 @@
 import * as yup from 'yup';
 
+import { ID_BASIC_VALIDATION_REGEX } from 'commons/Regex/Regex';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
-import { isIdValid , isPassportValid, idLength, idBasicValidation } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { isIdValid , isPassportValid, idLength } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 const ContactIdValidationSchema = yup
   .string()
@@ -16,7 +17,7 @@ const ContactIdValidationSchema = yup
         yup
         .string()
         .nullable()
-        .matches(idBasicValidation, 'ת.ז חייבת להכיל ספרות בלבד')
+        .matches(ID_BASIC_VALIDATION_REGEX, 'ת.ז חייבת להכיל ספרות בלבד')
         .length(idLength, `ת.ז מכילה ${idLength} ספרות בלבד`)
         .test('isValid', 'ת.ז לא תקינה', (id) => isIdValid(id)),
     });

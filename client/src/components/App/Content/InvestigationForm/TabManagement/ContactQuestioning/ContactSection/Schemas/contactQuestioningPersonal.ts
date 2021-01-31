@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import ContactIdValidationSchema from 'Utils/Contacts/ContactIdValidationSchema';
-import { notRequiredPhoneNumberRegex, phoneNumberRegex } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { PHONE_NUMBER_REGEX, NOT_REQUIRED_PHONE_NUMBER_REGEX} from 'commons/Regex/Regex';
 
 export const contactQuestioningPersonal = {
     [InteractedContactFields.IDENTIFICATION_TYPE]: yup.string().required('סוג זיהוי חובה'),
@@ -25,12 +25,12 @@ export const contactQuestioningPersonal = {
             (contactStatus: number, needIsolation: boolean, schema: any, { originalValue }: { originalValue: string }) => {
                 return contactStatus === ContactStatusCodes.COMPLETED || (originalValue === '' && !needIsolation)
                     ? yup.string().nullable()
-                    : yup.string().nullable().matches(phoneNumberRegex, 'מספר טלפון לא תקין');
+                    : yup.string().nullable().matches(PHONE_NUMBER_REGEX, 'מספר טלפון לא תקין');
             }
         ),
     [InteractedContactFields.ADDITIONAL_PHONE_NUMBER]: yup.string().when(InteractedContactFields.CONTACT_STATUS, {
         is: 5,
         then: yup.string().nullable(),
-        otherwise: yup.string().nullable().matches(notRequiredPhoneNumberRegex, 'מספר טלפון לא תקין'),
+        otherwise: yup.string().nullable().matches(NOT_REQUIRED_PHONE_NUMBER_REGEX, 'מספר טלפון לא תקין'),
     }),
 };

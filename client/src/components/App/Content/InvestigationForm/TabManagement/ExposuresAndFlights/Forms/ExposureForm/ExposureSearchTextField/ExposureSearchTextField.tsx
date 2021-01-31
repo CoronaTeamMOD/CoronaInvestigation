@@ -3,10 +3,9 @@ import React, { useMemo } from 'react';
 import { Search } from '@material-ui/icons';
 import { IconButton, InputAdornment } from '@material-ui/core';
 
+import { ALPHANUMERIC_WHITE_SPACE_TEXT_REGEX } from 'commons/Regex/Regex';
 import { AlphabetTextFieldProps } from 'commons/AlphabetTextField/AlphabetTextFieldTypes';
 import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
-
-import useStyles from './ExposureSearchTextFieldStyles';
 
 const errorMessage = 'השדה יכול להכיל רק אותיות, מספרים, מקף ורווח';
 const maxLengthErrorMessage = 'השדה יכול להכיל 100 תווים בלבד';
@@ -20,14 +19,13 @@ interface Props extends AlphabetTextFieldProps<string> {
 
 const stringAlphabet = yup
   .string()
-  .matches(/^[a-zA-Z\u0590-\u05fe\s0-9-]*$/, errorMessage)
+  .matches(ALPHANUMERIC_WHITE_SPACE_TEXT_REGEX, errorMessage)
   .max(50, maxLengthErrorMessage);
 
 const ExposureSearchTextField = (props: Props) => {
     const { value, onSearchClick, ...rest } = props;
     const serachValue : string = useMemo(() => value || '', [value]);
-    const classes = useStyles();
-
+    
     return (
         <TypePreventiveTextField
             {...rest}
@@ -37,7 +35,7 @@ const ExposureSearchTextField = (props: Props) => {
             endAdornment: (
                 <InputAdornment position='end'>
                     <IconButton onClick={onSearchClick}>
-                        <Search className={classes.serachIcon} />
+                        <Search color='primary' />
                     </IconButton>
                 </InputAdornment>
             )

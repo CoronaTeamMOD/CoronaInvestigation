@@ -10,4 +10,15 @@ query AllDesks {
     }
   }
 }
-`
+`;
+
+export const DESKS_BY_COUNTY_ID = gql`
+query DesksByCounty($countyId: Int!) {
+  allDesks(filter: {countyId: {equalTo: $countyId}}) {
+      nodes {
+        id
+        deskName
+      }
+  }
+}
+`;

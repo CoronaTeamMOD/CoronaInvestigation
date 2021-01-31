@@ -6,6 +6,7 @@ import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import { formatToInsertAndGetAddressIdInput } from '../../Utils/addressUtils';
 import { CREATE_ADDRESS } from '../../DBService/Address/Mutation';
 import InsertAndGetAddressIdInput from '../../Models/Address/InsertAndGetAddressIdInput';
+import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { calculateInvestigationComplexity } from '../../Utils/InvestigationComplexity/InvestigationComplexity';
 import GetInvestigatedPatientDetails, { PersonalInfoDbData } from '../../Models/PersonalInfo/GetInvestigatedPatientDetails';
@@ -75,7 +76,7 @@ const convertPatientDetailsFromDB = (investigatedPatientDetails: PersonalInfoDbD
     return convertedInvestigatedPatientDetails;
 }
 
-personalDetailsRoute.get('/investigatedPatientPersonalInfoFields', (request: Request, response: Response) => {
+personalDetailsRoute.get('/investigatedPatientPersonalInfoFields', handleInvestigationRequest, (request: Request, response: Response) => {
     const investigatedPatientPersonalInfoFieldsLogger = logger.setup({
         workflow: 'query investigation personal info tab',
         user: response.locals.user.id,
@@ -109,7 +110,7 @@ personalDetailsRoute.get('/subOccupations', (request: Request, response: Respons
     graphqlRequest(GET_SUB_OCCUPATIONS_BY_OCCUPATION, response.locals, parameters)
     .then(result => {
         subOccupationsLogger.info(validDBResponseLog, Severity.LOW);
-        response.send(result)
+        response.send({ subOccupations: result.data.allSubOccupations.nodes })
     }).catch(error => {
         subOccupationsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.sendStatus(errorStatusCode).send(error);
@@ -180,7 +181,7 @@ const savePersonalDetails = (request: Request, response: Response, baseLog: Init
     });
 }
 
-personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response: Response) => {
+personalDetailsRoute.post('/updatePersonalDetails', handleInvestigationRequest, (request: Request, response: Response) => {
     const address = request.body.personalInfoData.address;
     const logData = {
         workflow: 'saving personal details tab',

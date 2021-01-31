@@ -16,13 +16,13 @@ import useStyles from '../ExposuresAndFlightsStyles';
 const addFlightButton: string = 'הוסף טיסה לחול';
 
 export const BackFromAbroad = (props: Props) => {
+
     const { control, watch } = useFormContext();
     const { fieldContainer } = useFormStyles();
     const { wereFlights, onExposuresStatusChange, exposures, handleChangeExposureDataAndFlightsField,
-        onExposureAdded, disableFlightAddition,
+        onExposureAdded, disableFlightAddition, onExposureDeleted
     } = props;
     const classes = useStyles();
-
     const watchWereFlights = watch(fieldsNames.wereFlights, wereFlights);
 
     return (
@@ -63,6 +63,7 @@ export const BackFromAbroad = (props: Props) => {
                                 handleChangeExposureDataAndFlightsField={(fieldName: string, value: any) =>
                                     handleChangeExposureDataAndFlightsField(index, fieldName, value)
                                 }
+                                onExposureDeleted={() => onExposureDeleted(index)}
                             />
                             <Divider />
                         </>
@@ -84,4 +85,5 @@ interface Props {
     handleChangeExposureDataAndFlightsField: (index: number, fieldName: string, value: any) => void;
     onExposureAdded: (wasConfirmedExposure: boolean, wasAbroad: boolean) => void;
     disableFlightAddition: boolean;
+    onExposureDeleted: (index: number) => void;
 };

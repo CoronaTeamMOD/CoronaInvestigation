@@ -1,16 +1,17 @@
 import {
     Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
-    IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse, MenuItem, Select
+    IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse, MenuItem, Select, Button
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Pagination } from '@material-ui/lab';
-import { PersonPin } from '@material-ui/icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Edit, PersonPin } from '@material-ui/icons';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Desk from 'models/Desk';
 import County from 'models/County';
+import UserType from 'models/enums/UserType';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import SearchBar from 'commons/SearchBar/SearchBar';
@@ -21,9 +22,10 @@ import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 
 import useStyles from './UsersManagementStyles';
 import UsersFilter from './UsersFilter/UsersFilter';
+import useUsersManagement from './useUsersManagement';
 import filterCreators from './UsersFilter/FilterCreators';
-import useUsersManagementTable from './useUsersManagement';
 import UserInfoDialog from './UserInfoDialog/UserInfoDialog';
+import EditUserInfoDialog from './EditUserInfoDialog/EditUserInfoDialog';
 import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
 
 const rowsPerPage: number = 100;
@@ -32,27 +34,31 @@ export const defaultPage: number = 1;
 interface CellNameSort {
     name: string;
     direction: SortOrder | undefined;
-}
+};
 
 const usersManagementTitle = 'ניהול משתמשים';
 const sourceOrganizationLabel = 'מסגרת';
 const searchBarLabel = 'הכנס שם או שם משתמש...';
+const deactivateAllCountyUsersText = 'כיבוי כל החוקרים בנפה';
 
 const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, UsersManagementTableHeadersNames.LANGUAGES,
                                        UsersManagementTableHeadersNames.COUNTY, UsersManagementTableHeadersNames.USER_TYPE,
-                                       UsersManagementTableHeadersNames.DESK];
+                                       UsersManagementTableHeadersNames.DESK, UsersManagementTableHeadersNames.EDIT];
 
 const UsersManagement: React.FC = () => {
     const [page, setPage] = useState<number>(defaultPage);
     const [cellNameSort, setCellNameSort] = useState<CellNameSort>({ name: '', direction: undefined });
     const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
-
     const allCounties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
-
+    const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
+    
     const { users, sourcesOrganization, userTypes, languages,
-            totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange, setUserActivityStatus,
-            setUserSourceOrganization, setUserDesk, setUserCounty } =
-            useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
+            totalCount, userDialog, editUserDialog, isBadgeInVisible, 
+            watchUserInfo, handleCloseUserDialog, editUserInfo, 
+            handleCloseEditUserDialog, handleFilterChange, 
+            setUserActivityStatus, setUserSourceOrganization, 
+            setUserDesk, setUserCounty, handleDeactivateAllUsersCounty } =
+            useUsersManagement({ page, rowsPerPage, cellNameSort, setPage });
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
 
@@ -68,7 +74,7 @@ const UsersManagement: React.FC = () => {
                     cellNameSort.direction === SortOrder.asc ? SortOrder.desc : SortOrder.asc
             });
         }
-    }
+    };
 
     const getTableCell = (row: any, cellName: string) => {
         switch (cellName) {
@@ -88,6 +94,15 @@ const UsersManagement: React.FC = () => {
                     <Tooltip title='צפייה בפרטי המשתמש'>
                         <IconButton onClick={() => watchUserInfo(row)}>
                             <PersonPin />
+                        </IconButton>
+                    </Tooltip>
+                )
+            }
+            case UsersManagementTableHeadersNames.EDIT: {
+                return (
+                    <Tooltip title='עריכת פרטי המשתמש'>
+                        <IconButton onClick={() => editUserInfo(row)}>
+                            <Edit />
                         </IconButton>
                     </Tooltip>
                 )
@@ -126,34 +141,37 @@ const UsersManagement: React.FC = () => {
             }
             case UsersManagementTableHeadersNames.SOURCE_ORGANIZATION : {
                 return (
-                    <Select
-                        MenuProps={{
-                            anchorOrigin: {
-                                vertical: 'bottom',
-                                horizontal: 'left'
-                            },
-                            transformOrigin: {
-                                vertical: 'top',
-                                horizontal: 'left'
-                            },
-                            getContentAnchorEl: null
-                        }}
-                        value={row.sourceOrganization  || ''}
-                        onChange={(event: React.ChangeEvent<any>) => setUserSourceOrganization(event.target.value as string, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
-                        label={sourceOrganizationLabel}
-                        variant='outlined'
-                        className={classes.sourceOrganization}
-                    >
-                        {
-                            sourcesOrganization.map(sourceOrganization => (
-                                <MenuItem
-                                    key={sourceOrganization.displayName}
-                                    value={sourceOrganization.displayName}>
-                                    {sourceOrganization.displayName}
-                                </MenuItem>
-                            ))
-                        }
-                    </Select>
+                    <Tooltip placement="top" disableHoverListener={row['authority'] === null} 
+                             title={row['authority']?.authorityName}>
+                        <Select
+                            MenuProps={{
+                                anchorOrigin: {
+                                    vertical: 'bottom',
+                                    horizontal: 'left'
+                                },
+                                transformOrigin: {
+                                    vertical: 'top',
+                                    horizontal: 'left'
+                                },
+                                getContentAnchorEl: null
+                            }}
+                            value={row.sourceOrganization  || ''}
+                            onChange={(event: React.ChangeEvent<any>) => setUserSourceOrganization(event.target.value as string, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
+                            label={sourceOrganizationLabel}
+                            variant='outlined'
+                            className={classes.sourceOrganization}
+                        >
+                            {
+                                sourcesOrganization.map(sourceOrganization => (
+                                    <MenuItem
+                                        key={sourceOrganization.displayName}
+                                        value={sourceOrganization.displayName}>
+                                        {sourceOrganization.displayName}
+                                    </MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </Tooltip>
                 )
             }
             case UsersManagementTableHeadersNames.COUNTY : {
@@ -190,7 +208,7 @@ const UsersManagement: React.FC = () => {
             default:
                 return row[cellName]
         }
-    }
+    };
 
     return (
         <Grid className={classes.content}>
@@ -205,18 +223,32 @@ const UsersManagement: React.FC = () => {
                     onClick={(value: string) => handleFilterChange(filterCreators.SEARCH_BAR(value))}
                     validationSchema={userValidationSchema}
                 />
-                <Tooltip title='סינון'>
-                    <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
-                        <Badge
-                            invisible={isBadgeInVisible}
-                            color='error'
-                            variant='dot'
-                            anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+
+                <Grid item>
+                    {
+                        (userType === UserType.ADMIN) &&
+                        <Button
+                            variant='contained'
+                            color='inherit'
+                            className={classes.deactivateButton}
+                            onClick={handleDeactivateAllUsersCounty}
                         >
-                            <FontAwesomeIcon icon={faFilter} />
-                        </Badge>
-                    </IconButton>
-                </Tooltip>
+                            {deactivateAllCountyUsersText}
+                        </Button>  
+                    } 
+                    <Tooltip title='סינון'>
+                        <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
+                            <Badge
+                                invisible={isBadgeInVisible}
+                                color='error'
+                                variant='dot'
+                                anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+                            >
+                                <FontAwesomeIcon icon={faFilter} />
+                            </Badge>
+                        </IconButton>
+                    </Tooltip>
+                </Grid>
             </Grid>
             <Collapse in={isFilterOpen} style={{ minHeight: 'unset' }}>
                 <Paper className={classes.filtersContent}>
@@ -282,7 +314,12 @@ const UsersManagement: React.FC = () => {
             <UserInfoDialog
                 open={userDialog.isOpen}
                 defaultValues={userDialog.info}
-                handleCloseDialog={handleCloseDialog}
+                handleCloseUserDialog={handleCloseUserDialog}
+            />
+            <EditUserInfoDialog
+                open={editUserDialog.isOpen}
+                defaultValues={editUserDialog.info}
+                handleCloseEditUserDialog={handleCloseEditUserDialog}
             />
         </Grid>
     );

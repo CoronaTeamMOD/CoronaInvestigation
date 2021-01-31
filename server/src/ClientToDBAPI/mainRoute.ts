@@ -3,9 +3,10 @@ import { Router } from 'express';
 import addressRoute from './Address/mainRoute';
 import usersRoute from './UsersRoute/mainRoute';
 import desksRoute from './DesksRoute/mainRoute';
-import educationRoute from './EducationRoute/mainRoute';
 import exposureRoute from './ExposureRoute/mainRoute';
 import countiesRoute from './CountiesRoute/mainRoute';
+import educationRoute from './EducationRoute/mainRoute';
+import AuthorityRoute from './AuthorityRoute/mainRoute';
 import authMiddleware from '../middlewares/Authentication';
 import landingPageRoute from './LandingPageRoute/mainRoute';
 import investigationInfo from './InvestigationInfo/mainRoute';
@@ -14,6 +15,7 @@ import intersectionsRoute from './IntersectionsRoute/mainRoute';
 import personalDetailsRoute from './PersonalDetailsRoute/mainRoute';
 import clinicalDetailsRoute from './ClinicalDetailsRoute/mainRoute';
 import groupedInvestigationsRoute from './GroupedInvestigationsRoute/mainRoute';
+
 
 const clientToDBRouter = Router();
 clientToDBRouter.use(authMiddleware);
@@ -28,7 +30,8 @@ clientToDBRouter.use('/addressDetails', addressRoute);
 clientToDBRouter.use('/contactedPeople', contactedPeopleRoute);
 clientToDBRouter.use('/users', usersRoute);
 clientToDBRouter.use('/counties', countiesRoute);
-clientToDBRouter.use('/groupedInvestigations', groupedInvestigationsRoute)
-clientToDBRouter.use('/education', educationRoute)
+clientToDBRouter.use('/groupedInvestigations', groupedInvestigationsRoute);
+clientToDBRouter.use('/education', educationRoute);
+clientToDBRouter.use('/authorities', AuthorityRoute);
 
 export default clientToDBRouter;

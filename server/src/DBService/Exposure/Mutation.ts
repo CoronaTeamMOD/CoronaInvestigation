@@ -7,3 +7,11 @@ mutation updateExposures ($inputExposures: JSON!) {
   }
 }   
 `;
+
+export const DELETE_EXPOSURE_BY_ID = gql`
+mutation deleteExposureById($exposureId: Int!) {
+  deleteExposureById(input: {id: $exposureId}) {
+    clientMutationId
+  }
+}
+`;
