@@ -146,6 +146,7 @@ query contactsByGroupId($groupId: UUID!, $epidemiologynumber: Int!) {
   investigationGroupById(id: $groupId) {
     otherReason
     investigationGroupReasonByReason {
+      id
       displayName
     }
     investigationsByGroupId(filter: {epidemiologyNumber: {notEqualTo: $epidemiologynumber}}) {
@@ -201,7 +202,6 @@ export const CONTACTS_BY_CONTACTS_IDS = gql`
           occupation
           lastUpdateTime
           isolationAddress
-          involvedContactId
           extraInfo
           doesWorkWithCrowd
           familyRelationship

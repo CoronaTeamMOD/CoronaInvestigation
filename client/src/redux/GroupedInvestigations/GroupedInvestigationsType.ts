@@ -9,6 +9,7 @@ export const initialState : GroupedInvestigationReducerType ={
     groupId : '',
     investigations : {
         investigationGroupReasonByReason: {
+            id: -1,
             displayName : 'טוען...'
         },
         investigationsByGroupId: {

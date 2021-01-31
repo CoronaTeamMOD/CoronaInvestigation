@@ -10,7 +10,7 @@ import useStyles from './tableRowsStyles';
 import useTableRows from './useTableRows';
 
 const TableRows = (props: Props) => {
-    const { events , existingIds } = props;
+    const { events , existingIds, isGroupReasonFamily } = props;
     const groupedInvestigationsContextState = useContext(groupedInvestigationsContext);
     const classes = useStyles();
     const { isInvolvedThroughFamily } = useInvolvedContact();
@@ -21,7 +21,7 @@ const TableRows = (props: Props) => {
             {
                 events.map((person) => {
                         const {involvedContactByInvolvedContactId} = person;
-                        const isFamily = involvedContactByInvolvedContactId && isInvolvedThroughFamily(involvedContactByInvolvedContactId.involvementReason);
+                        const isFamily = involvedContactByInvolvedContactId && isGroupReasonFamily &&  isInvolvedThroughFamily(involvedContactByInvolvedContactId.involvementReason);
                         
                         if(!isFamily) {
                             const {id} = person;
@@ -73,6 +73,7 @@ const TableRows = (props: Props) => {
 }
 
 interface Props {
+    isGroupReasonFamily: boolean;
     events : ContactNode[];
     existingIds: string[];
 }

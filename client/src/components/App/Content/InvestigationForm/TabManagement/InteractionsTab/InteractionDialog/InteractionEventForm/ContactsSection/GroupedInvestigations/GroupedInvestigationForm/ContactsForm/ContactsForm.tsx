@@ -9,7 +9,7 @@ import InvestigationAccordion from './InvestigationAccordion/InvestigationAccord
 const formHeadline = 'מאומתים המקובצים לחקירה :';
 
 const ContactsForm = (props: Props) => {
-    const { investigations , reason } = props;
+    const { investigations, reason, isGroupReasonFamily} = props;
     const { groupedInvestigationContacts } = useContext(groupedInvestigationsContext);
     return (
         <>
@@ -20,6 +20,7 @@ const ContactsForm = (props: Props) => {
                     return (
                         <InvestigationAccordion
                             key={index}
+                            isGroupReasonFamily={isGroupReasonFamily}
                             investigation={investigation}
                         />
                     )
@@ -32,6 +33,7 @@ const ContactsForm = (props: Props) => {
 
 interface Props {
     reason : string;
+    isGroupReasonFamily: boolean;
     investigations : ConnectedInvestigation[];
 }
 

@@ -8,9 +8,11 @@ import ContactsForm from './ContactsForm/ContactsForm';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 
 const noContactsText = 'אין מגעים לחקירות המשותפות';
+const familyReasonId = 100000000;
 
 const GroupedInvestigationForm = () => {
-    const investigations = useSelector<StoreStateType , ConnectedInvestigationContact>(state => state.groupedInvestigations.investigations)
+    const investigations = useSelector<StoreStateType , ConnectedInvestigationContact>(state => state.groupedInvestigations.investigations);
+    const isGroupReasonFamily = investigations.investigationGroupReasonByReason.id === familyReasonId;
     const nodes = investigations.investigationsByGroupId.nodes;
 
     return (
@@ -20,7 +22,8 @@ const GroupedInvestigationForm = () => {
               />
             : <ContactsForm 
                 investigations={nodes}
-                reason={investigations.otherReason||investigations.investigationGroupReasonByReason.displayName}            />
+                isGroupReasonFamily={isGroupReasonFamily}
+                reason={investigations.otherReason||investigations.investigationGroupReasonByReason.displayName} />
     )
 }
 

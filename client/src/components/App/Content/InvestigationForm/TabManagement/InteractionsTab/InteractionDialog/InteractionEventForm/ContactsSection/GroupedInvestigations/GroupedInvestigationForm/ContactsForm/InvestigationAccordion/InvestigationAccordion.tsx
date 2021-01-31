@@ -8,7 +8,7 @@ import AccordionContent from './AccordionContent/AccordionContent';
 import AccordionHeadline from './AccordionHeadline/AccordionHeadline';
 
 const InvestigationAccordion = (props: Props) => {
-    const { investigation } = props;
+    const { investigation, isGroupReasonFamily} = props;
     const { epidemiologyNumber , contactEventsByInvestigationId , investigatedPatientByInvestigatedPatientId } = investigation;
     const { fullName , identityNumber } = investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient;
 
@@ -22,6 +22,7 @@ const InvestigationAccordion = (props: Props) => {
                 identityNumber={identityNumber}
             />
             <AccordionContent 
+                isGroupReasonFamily={isGroupReasonFamily}
                 events={contactEventsByInvestigationId.nodes}
             />
         </Accordion>
@@ -29,6 +30,7 @@ const InvestigationAccordion = (props: Props) => {
 }
 
 interface Props {
+    isGroupReasonFamily: boolean;
     investigation: ConnectedInvestigation;
 }
 
