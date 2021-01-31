@@ -36,7 +36,6 @@ const InteractedContactAccordion = (props: Props) => {
         shouldDisable,
     } = props;
 
-
     const getAccordionClasses = () : string => {
         let classesList : string[] = [];
         classesList.push(classes.accordion);
@@ -47,9 +46,7 @@ const InteractedContactAccordion = (props: Props) => {
                 value !== undefined
             ));
     
-        const showErrorBorder = formHasErrors;
-
-        if(showErrorBorder) {
+        if(formHasErrors) {
             classesList.push(classes.errorAccordion)
         }
         return classesList.join(" ")

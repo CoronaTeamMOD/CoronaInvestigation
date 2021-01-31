@@ -16,12 +16,9 @@ const ContactDetails = (props: Props) => {
     const { errors } = useFormContext();
     const { index , interactedContact } = props;
 
-
     const formErrors = errors.form ? (errors.form[index] ? errors.form[index] : {}) : {};
     const formHasErrors = Object.entries(formErrors)
         .some(([key, value]) => value !== undefined);
-
-    const showErrorIcon = formHasErrors;
 
     const { isInvolvedThroughFamily } = useInvolvedContact();
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(
@@ -34,7 +31,7 @@ const ContactDetails = (props: Props) => {
                 <FamilyContactIcon />
             )}
             {
-                showErrorIcon && <InvalidFormIcon />
+                formHasErrors && <InvalidFormIcon />
             }
 
             <Typography variant='body2'>
