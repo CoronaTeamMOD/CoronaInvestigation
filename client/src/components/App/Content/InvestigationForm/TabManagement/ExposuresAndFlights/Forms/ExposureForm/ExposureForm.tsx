@@ -90,6 +90,7 @@ const ExposureForm = (props: Props) => {
 											setExposureSourceSearchString(value);
 											(!value || !value.includes(':')) &&
 												handleChangeExposureDataAndFlightsField(index, fieldsNames.exposureSource, null);
+												props.onChange(null)
 										}}
 										value={exposureSourceSearchString}
 										test-id='exposureSource'

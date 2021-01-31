@@ -12,7 +12,7 @@ export type ExposureAndFlightsDetails = {
     wereFlights: boolean,
     wasInEilat: boolean,
     wasInDeadSea: boolean,
-}
+};
 
 export interface ExposureAndFlightsDetailsAndSet {
     exposureAndFlightsData: ExposureAndFlightsDetails,
