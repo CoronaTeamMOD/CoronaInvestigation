@@ -9,7 +9,7 @@ import TableSearchBar from './TableSearchBar/TableSearchBar';
 import SelectedRowsMessage from './SelectedRowsMessage/SelectedRowsMessage';
 
 const AccordionContent = (props: Props) => {
-    const { events } = props;
+    const { events, isGroupReasonFamily} = props;
     const [query, setQuery] = useState<string>("");
     const { getCurrentSelectedRowsLength , existingIds , filteredEvents } = useAccordionContent({events , query});   
 
@@ -25,6 +25,7 @@ const AccordionContent = (props: Props) => {
                 </Grid>
                 <Grid xs={12}>
                     <ContactsTable
+                        isGroupReasonFamily={isGroupReasonFamily}
                         events={filteredEvents}
                         existingIds={existingIds}
                     />
@@ -40,6 +41,7 @@ const AccordionContent = (props: Props) => {
 }
 
 interface Props {
+    isGroupReasonFamily: boolean;
     events : ContactEvent[];
 }
 

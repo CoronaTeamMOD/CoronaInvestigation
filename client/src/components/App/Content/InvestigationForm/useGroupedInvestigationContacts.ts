@@ -35,6 +35,7 @@ const useGroupedInvestigationContacts = () => {
                 connectedInvestigationsByGroupIdLogger.error(`got errors in server result: ${error}`,Severity.HIGH);
                 return {
                     investigationGroupReasonByReason: {
+                        id: -1,
                         displayName : 'חלה שגיאה בשליפת הנתונים מהשרת'
                     },
                     investigationsByGroupId: {

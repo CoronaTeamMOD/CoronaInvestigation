@@ -10,7 +10,7 @@ import ErrorMessage from '../../../../../ErrorMessage/ErrorMessage';
 const noResultsMessage = 'אין תוצאות מתאימות';
 
 const ContactsTable = (props: Props) => {
-    const { events, existingIds} = props;
+    const { events, existingIds, isGroupReasonFamily} = props;
 
     return (
         <>
@@ -19,6 +19,7 @@ const ContactsTable = (props: Props) => {
             ? <Table>
                 <TableHeader />
                 <TableRows 
+                    isGroupReasonFamily={isGroupReasonFamily}
                     existingIds={existingIds}
                     events={events}
                 />
@@ -32,6 +33,7 @@ const ContactsTable = (props: Props) => {
 }
 
 interface Props {
+    isGroupReasonFamily: boolean;
     events : ContactNode[];
     existingIds: string[];
 }
