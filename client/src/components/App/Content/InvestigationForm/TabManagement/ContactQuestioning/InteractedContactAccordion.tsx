@@ -36,7 +36,6 @@ const InteractedContactAccordion = (props: Props) => {
         shouldDisable,
     } = props;
 
-    const isStatusCompleted = interactedContact.contactStatus === 5
 
     const getAccordionClasses = () : string => {
         let classesList : string[] = [];
@@ -48,7 +47,7 @@ const InteractedContactAccordion = (props: Props) => {
                 value !== undefined
             ));
     
-        const showErrorBorder = formHasErrors && !isStatusCompleted;
+        const showErrorBorder = formHasErrors;
 
         if(showErrorBorder) {
             classesList.push(classes.errorAccordion)
