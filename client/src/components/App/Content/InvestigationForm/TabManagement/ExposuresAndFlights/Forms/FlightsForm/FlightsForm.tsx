@@ -19,7 +19,7 @@ const FlightsForm = (props: Props) => {
 
     const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted } = props;
 
-    const {control , errors, trigger, watch} = useFormContext();
+    const {control , errors, trigger} = useFormContext();
     const classes = useStyles();
     const formClasses = useFormStyles();
 
