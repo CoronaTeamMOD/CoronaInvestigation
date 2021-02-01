@@ -325,8 +325,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                 }).catch((error) => {
                     alertError('לא הצלחנו לכבות את כל החוקרים בנפה');
                     deactivateAllCountyUsersLogger.error(`error in updating users activity statuses ${error}`, Severity.HIGH);
+                    setIsLoading(false); 
                 })
-                .finally(() => setIsLoading(false)); 
             }            
         });
     };
