@@ -21,7 +21,8 @@ interface User {
 };
 
 interface CountyByInvestigationGroup {
-    districtId: number
+    districtId: number,
+    displayName: string
 };
 
 export default User;

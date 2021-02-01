@@ -19,6 +19,7 @@ query GetUser($id: String!) {
       userName
       userType
       countyByInvestigationGroup {
+        displayName
         districtId
       }
     }
