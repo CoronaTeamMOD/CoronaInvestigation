@@ -320,6 +320,27 @@ const InvestigatedPersonInfo = (props: Props) => {
                     {
                         isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
                     }
+                    <Divider />
+                    <InfoItemWithIcon testId='isVaccinated' name='האם התחסן' value='כן'
+                        icon={Help}
+                    />
+                    {/* {
+                        isVaccinated && <ComplexityIcon tooltipText='' />
+                    } */}
+                    <Divider />
+                    <InfoItemWithIcon testId='isSuspicionOfMutation' name='חשד למוטציה' value='לא'
+                        icon={Help}
+                    />
+                    {/* {
+                        isSuspicionOfMutation && <ComplexityIcon tooltipText='' />
+                    } */}
+                    <Divider />
+                    <InfoItemWithIcon testId='isReturnSick' name='חולה חוזר' value='לא'
+                        icon={Help}
+                    />
+                    {/* {
+                        isReturnSick && <ComplexityIcon tooltipText='' />
+                    } */}
                 </div>
             </div>
         </Paper>
