@@ -135,12 +135,14 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const getFilteredUsersOfCurrentCounty = async (): Promise<InvestigatorOption[]> => {
         const allCountyUsers = await fetchAllCountyUsers();
         const allUsersOfCountyArray: InvestigatorOption[] = Array.from(allCountyUsers, ([id, value]) => ({ id, value }));
+
         if (deskFilter.length > 0) {
-            allUsersOfCountyArray.filter(({ value }) => {
-                if (!value.deskByDeskId?.id) {
+            return allUsersOfCountyArray.filter(({ value }) => {
+                const { deskid } = value;
+                if (!deskid) {
                     return false;
                 }
-                return deskFilter.includes(value.deskByDeskId.id);
+                return deskFilter.indexOf(deskid) !== -1;
             });
         }
         return allUsersOfCountyArray;
