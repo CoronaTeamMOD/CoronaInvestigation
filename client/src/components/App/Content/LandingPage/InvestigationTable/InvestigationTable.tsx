@@ -215,10 +215,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const alertInvestigationDeskChange = (indexedRow: { [T in keyof typeof TableHeadersNames]: any }) =>
         async (event: React.ChangeEvent<{}>, newSelectedDesk: Desk | null) => {
-            const switchDeskTitle = `<p>האם אתה בטוח שאתה רוצה להחליף את דסק <b>${indexedRow.investigationDesk}</b> בדסק <b>${newSelectedDesk?.deskName}</b>?</p>`;
-            const enterDeskTitle = `<p>האם אתה בטוח שאתה רוצה לבחור את דסק <b>${newSelectedDesk?.deskName}</b>?</p>`;
-            if (newSelectedDesk?.deskName !== indexedRow.investigationDesk) {
-                const result = await alertWarning(indexedRow.investigationDesk ? switchDeskTitle : enterDeskTitle, {
+            const deskName = newSelectedDesk?.deskName;
+            const { investigationDesk, epidemiologyNumber, groupId } = indexedRow;
+
+            const switchDeskTitle = `<p>האם אתה בטוח שאתה רוצה להחליף את דסק <b>${investigationDesk}</b> בדסק <b>${deskName}</b>?</p>`;
+            const enterDeskTitle = `<p>האם אתה בטוח שאתה רוצה לבחור את דסק <b>${deskName}</b>?</p>`;
+            if (deskName !== investigationDesk) {
+                const result = await alertWarning(investigationDesk ? switchDeskTitle : enterDeskTitle, {
                     showCancelButton: true,
                     cancelButtonText: 'לא',
                     cancelButtonColor: theme.palette.error.main,
@@ -226,10 +229,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     confirmButtonText: 'כן, המשך',
                 });
                 if (result.isConfirmed) {
-                    indexedRow.groupId ?
-                        await changeGroupsDesk([indexedRow.groupId], newSelectedDesk) :
-                        await changeInvestigationsDesk([indexedRow.epidemiologyNumber], newSelectedDesk);
+                    groupId ?
+                        await changeGroupsDesk([groupId], newSelectedDesk) :
+                        await changeInvestigationsDesk([epidemiologyNumber], newSelectedDesk);
                     fetchTableData();
+                    if(groupId){
+                        fetchInvestigationsByGroupId(groupId);
+                    }
                 }
 
                 setSelectedRow(DEFAULT_SELECTED_ROW);
