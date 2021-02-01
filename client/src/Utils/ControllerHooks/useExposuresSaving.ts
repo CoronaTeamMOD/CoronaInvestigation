@@ -110,6 +110,11 @@ const useExposuresSaving = () => {
                 [fieldsNames.airline]: '',
                 [fieldsNames.flightNumber]: ''
             }
+        } else {
+            exposureAndDataToReturn = {
+                ...exposureAndDataToReturn,
+                exposureSource: exposuresAndFlightsData.exposureSource ||  null
+            }
         }
         return (exposureAndDataToReturn as DBExposure);
     }
