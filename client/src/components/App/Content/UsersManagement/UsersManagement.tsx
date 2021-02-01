@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
     Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
-    IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse, MenuItem, Select
+    IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse, MenuItem, Select, Button
 } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { PersonPin } from '@material-ui/icons';
@@ -10,6 +11,7 @@ import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
 import Desk from 'models/Desk';
 import County from 'models/County';
+import UserType from 'models/enums/UserType';
 import SortOrder from 'models/enums/SortOrder';
 import SearchBar from 'commons/SearchBar/SearchBar';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
@@ -21,6 +23,7 @@ import useUsersManagementTable from './useUsersManagement';
 import UserInfoDialog from './UserInfoDialog/UserInfoDialog';
 import UsersFilter from './UsersFilter/UsersFilter';
 import filterCreators from './UsersFilter/FilterCreators';
+import StoreStateType from 'redux/storeStateType';
 
 const rowsPerPage: number = 100;
 export const defaultPage: number = 1;
@@ -33,6 +36,7 @@ interface CellNameSort {
 const usersManagementTitle = 'ניהול משתמשים';
 const sourceOrganizationLabel = 'מסגרת';
 const searchBarLabel = 'הכנס שם או שם משתמש...';
+const deactivateAllCountyUsersText = 'כיבוי כל החוקרים בנפה';
 
 const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, UsersManagementTableHeadersNames.LANGUAGES,
                                        UsersManagementTableHeadersNames.COUNTY, UsersManagementTableHeadersNames.USER_TYPE,
@@ -43,9 +47,11 @@ const UsersManagement: React.FC = () => {
     const [cellNameSort, setCellNameSort] = useState<CellNameSort>({ name: '', direction: undefined });
     const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
 
+    const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
+
     const { users, counties, desks, sourcesOrganization, userTypes, languages,
             totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange, setUserActivityStatus,
-            setUserSourceOrganization, setUserDesk, setUserCounty } =
+            setUserSourceOrganization, setUserDesk, setUserCounty, handleDeactivateAllUsersCounty } =
             useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
@@ -196,18 +202,32 @@ const UsersManagement: React.FC = () => {
                     searchBarLabel={searchBarLabel}
                     onClick={(value: string) => handleFilterChange(filterCreators.SEARCH_BAR(value))}
                 />
-                <Tooltip title='סינון'>
-                    <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
-                        <Badge
-                            invisible={isBadgeInVisible}
-                            color='error'
-                            variant='dot'
-                            anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+
+                <Grid item>
+                    {
+                        (userType === UserType.ADMIN) &&
+                        <Button
+                            variant='contained'
+                            color='inherit'
+                            className={classes.deactivateButton}
+                            onClick={handleDeactivateAllUsersCounty}
                         >
-                            <FontAwesomeIcon icon={faFilter} />
-                        </Badge>
-                    </IconButton>
-                </Tooltip>
+                            {deactivateAllCountyUsersText}
+                        </Button>
+                    }   
+                    <Tooltip title='סינון'>
+                        <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
+                            <Badge
+                                invisible={isBadgeInVisible}
+                                color='error'
+                                variant='dot'
+                                anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+                            >
+                                <FontAwesomeIcon icon={faFilter} />
+                            </Badge>
+                        </IconButton>
+                    </Tooltip>
+                </Grid>
             </Grid>
             <Collapse in={isFilterOpen} style={{ minHeight: 'unset' }}>
                 <Paper className={classes.filtersContent}>
