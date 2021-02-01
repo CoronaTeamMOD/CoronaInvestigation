@@ -386,9 +386,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return axios.post('/landingPage/investigations', requestData);
     }
 
-    const sortUsersByAvailability = (fisrtUser: User, secondUser: User) =>
-        fisrtUser.newInvestigationsCount - secondUser.newInvestigationsCount ||
-        fisrtUser.activeInvestigationsCount - secondUser.activeInvestigationsCount
+    const sortUsersByAvailability = (firstUser: User, secondUser: User) => {
+        return (
+            firstUser.newInvestigationsCount - secondUser.newInvestigationsCount 
+            || firstUser.activeInvestigationsCount - secondUser.activeInvestigationsCount
+        )
+    }
+
 
     const fetchAllCountyUsers = async () => {
         const countyUsersLogger = logger.setup('Getting group users');
@@ -401,9 +405,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     countyUsers.set(user.id, {
                         ...user,
                         userName: user.username,
-                        newInvestigationsCount: user.newInvestigationsCount,
-                        activeInvestigationsCount: user.activeInvestigationsCount,
-                        pauseInvestigationsCount: user.pauseInvestigationsCount
+                        newInvestigationsCount: user.newinvestigationscount,
+                        activeInvestigationsCount: user.activeinvestigationscount,
+                        pauseInvestigationsCount: user.pauseinvestigationscount
                     })
                 });
                 countyUsersLogger.info('fetched all the users successfully', Severity.LOW);
