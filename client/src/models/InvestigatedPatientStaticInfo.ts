@@ -6,9 +6,9 @@ interface InvestigatedPatientStaticInfo {
     isCurrentlyHospitalized: boolean;
     isInClosedInstitution: boolean;
     isReturnSick: boolean;
-    previousDiseaseStartDate: Date | null;
+    previousDiseaseStartDate: string | null;
     isVaccinated: boolean;
-    vaccinationEffectiveFrom: Date | null;
+    vaccinationEffectiveFrom: string | null;
     isSuspicionOfMutation: boolean;
     mutationName: string | null;
 };

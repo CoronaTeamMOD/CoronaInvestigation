@@ -7,11 +7,15 @@ import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLa
 
 import UserType from 'models/enums/UserType';
 import StoreStateType from 'redux/storeStateType';
+import formatDate from 'Utils/DateUtils/formatDate';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InvestigationInfo from 'models/InvestigationInfo';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
+import MutationIcon from 'commons/Icons/customIcons/MutationIcon';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
+import ReturnSickIcon from 'commons/Icons/customIcons/ReturnSickIcon';
+import VaccinationIcon from 'commons/Icons/customIcons/VaccinationIcon';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import { ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX } from 'commons/Regex/Regex';
 import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';
@@ -20,14 +24,11 @@ import { setInvestigationStatus } from 'redux/Investigation/investigationActionC
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
-import MutationIcon from 'Utils/Icons/MutationIcon';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 import InvestigationMenu from './InvestigationMenu/InvestigationMenu';
-import VaccinationIcon from 'Utils/Icons/VaccinationIcon';
-import ReturnSickIcon from 'Utils/Icons/ReturnSickIcon';
 
 const leaveInvestigationMessage = 'צא מחקירה';
 const displayDateFormat = 'dd/MM/yyyy';
@@ -325,27 +326,39 @@ const InvestigatedPersonInfo = (props: Props) => {
                         isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
                     }
                     <Divider />
-                    <InfoItemWithIcon testId='isVaccinated' name='האם התחסן' value={indication(isVaccinated)}
-                        icon={VaccinationIcon}
-                    />
+                    <Tooltip title={vaccinationEffectiveFrom ? formatDate(vaccinationEffectiveFrom) : ''}>
+                        <div>
+                            <InfoItemWithIcon testId='isVaccinated' name='האם התחסן' value={indication(isVaccinated)}
+                                icon={VaccinationIcon}
+                            />  
+                        </div>
+                        
+                    </Tooltip>
                     {
-                        isVaccinated && <ComplexityIcon tooltipText='' />
+                        isVaccinated && <ComplexityIcon tooltipText={formatDate(vaccinationEffectiveFrom)} />
                     }
                     <Divider />
                     <Tooltip title={mutationName ? mutationName : ''}>
-                        <InfoItemWithIcon testId='isSuspicionOfMutation' name='חשד למוטציה' value={indication(isSuspicionOfMutation)}
-                            icon={MutationIcon}
-                        />
+                        <div>
+                            <InfoItemWithIcon testId='isSuspicionOfMutation' name='חשד למוטציה' value={indication(isSuspicionOfMutation)}
+                                icon={MutationIcon}
+                            />    
+                        </div>
+                         
                     </Tooltip>
                     {
                         isSuspicionOfMutation && <ComplexityIcon tooltipText={mutationName ? mutationName : ''} />
                     }
                     <Divider />
-                    <InfoItemWithIcon testId='isReturnSick' name='חולה חוזר' value={indication(isReturnSick)}
-                        icon={ReturnSickIcon}
-                    />
+                    <Tooltip title={previousDiseaseStartDate ? formatDate(previousDiseaseStartDate) : ''}>
+                        <div>
+                            <InfoItemWithIcon testId='isReturnSick' name='חולה חוזר' value={indication(isReturnSick)}
+                                icon={ReturnSickIcon}
+                            />   
+                        </div>
+                    </Tooltip>
                     {
-                        isReturnSick && <ComplexityIcon tooltipText='' />
+                        isReturnSick && <ComplexityIcon tooltipText={formatDate(previousDiseaseStartDate)} />
                     }
                 </div>
             </div>
