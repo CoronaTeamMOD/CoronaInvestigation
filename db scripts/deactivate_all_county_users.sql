@@ -12,8 +12,7 @@ BEGIN
 	SET is_active = false
 	WHERE 
 		investigation_group = county_id
-		AND id NOT LIKE '%admin.group%' 
-		AND id NOT LIKE '%self_ivestigator.group%';
+		AND id NOT LIKE '%admin.group%';
 
 END;
 $BODY$;
