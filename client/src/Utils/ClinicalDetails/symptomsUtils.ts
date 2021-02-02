@@ -11,7 +11,7 @@ export const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDa
         const endInvestigationDate = new Date();
         let startInvestigationDate= new Date();
         if (doesHaveSymptoms === true) {
-            if (symptomsStartDate && symptomsStartDate < addDays(validationDate, 1))
+            if (symptomsStartDate && symptomsStartDate <= addDays(validationDate, 1))
                 startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
             else
                 startInvestigationDate = subDays(validationDate, symptomsWithUnknownStartDate)
