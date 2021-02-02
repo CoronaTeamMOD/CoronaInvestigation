@@ -44,6 +44,14 @@ order by
 	select birth_date
 	from public.covid_patients
 	where epidemiology_number = investigation.epidemiology_number) END DESC,
+	CASE WHEN order_by='fullNameASC' THEN (
+	select full_name
+	from public.covid_patients
+	where epidemiology_number = investigation.epidemiology_number) END ASC,
+	CASE WHEN order_by='fullNameDESC' THEN (
+	select full_name
+	from public.covid_patients
+	where epidemiology_number = investigation.epidemiology_number) END DESC,
 	CASE WHEN order_by='investigationStatusDESC' THEN (select display_name from
 															public.investigation_status
 															where id = investigation.investigation_status)  END DESC,

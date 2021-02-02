@@ -121,7 +121,7 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.validationDate]: true,
     [TableHeadersNames.isComplex]: false,
     [TableHeadersNames.priority]: false,
-    [TableHeadersNames.fullName]: false,
+    [TableHeadersNames.fullName]: true,
     [TableHeadersNames.phoneNumber]: false,
     [TableHeadersNames.age]: true,
     [TableHeadersNames.city]: true,
