@@ -28,6 +28,7 @@ import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCo
 import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
+import AllocatedInvestigator from 'models/InvestigationTable/AllocateInvestigatorDialog/AllocatedInvestigator';
 
 import useStyle from './InvestigationTableStyles';
 import { filterCreators } from './FilterCreators';
@@ -386,14 +387,18 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return axios.post('/landingPage/investigations', requestData);
     }
 
-    const sortUsersByAvailability = (fisrtUser: User, secondUser: User) =>
-        fisrtUser.newInvestigationsCount - secondUser.newInvestigationsCount ||
-        fisrtUser.activeInvestigationsCount - secondUser.activeInvestigationsCount
+    const sortUsersByAvailability = (firstUser: User, secondUser: User) => {
+        return (
+            firstUser.newInvestigationsCount - secondUser.newInvestigationsCount 
+            || firstUser.activeInvestigationsCount - secondUser.activeInvestigationsCount
+        )
+    }
+
 
     const fetchAllCountyUsers = async () => {
         const countyUsersLogger = logger.setup('Getting group users');
         countyUsersLogger.info('requesting the server the connected admin group users', Severity.LOW);
-        const countyUsers: Map<string, User> = new Map();
+        const countyUsers: Map<string, AllocatedInvestigator> = new Map();
         try {
             const result = await axios.get(`/users/group/${displayedCounty}`);
             if (result && result.data) {
@@ -401,9 +406,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     countyUsers.set(user.id, {
                         ...user,
                         userName: user.username,
-                        newInvestigationsCount: user.newInvestigationsCount,
-                        activeInvestigationsCount: user.activeInvestigationsCount,
-                        pauseInvestigationsCount: user.pauseInvestigationsCount
+                        newInvestigationsCount: user.newinvestigationscount,
+                        activeInvestigationsCount: user.activeinvestigationscount,
+                        pauseInvestigationsCount: user.pauseinvestigationscount
                     })
                 });
                 countyUsersLogger.info('fetched all the users successfully', Severity.LOW);
