@@ -139,8 +139,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         if (deskFilter.length > 0) {
             return allUsersOfCountyArray.filter(({ value }) => {
                 const { deskid } = value;
+                const filterHasNotAssigned = deskFilter.some(desk => desk === null);
                 if (!deskid) {
-                    return false;
+                    return filterHasNotAssigned;
                 }
                 return deskFilter.indexOf(deskid) !== -1;
             });
