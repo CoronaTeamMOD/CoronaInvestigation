@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import React, { ChangeEvent, useEffect, useMemo } from 'react';
 import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
-import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
+import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl, Tooltip } from '@material-ui/core';
 
 import UserType from 'models/enums/UserType';
 import StoreStateType from 'redux/storeStateType';
@@ -20,11 +20,14 @@ import { setInvestigationStatus } from 'redux/Investigation/investigationActionC
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
+import MutationIcon from 'Utils/Icons/MutationIcon';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 import InvestigationMenu from './InvestigationMenu/InvestigationMenu';
+import VaccinationIcon from 'Utils/Icons/VaccinationIcon';
+import ReturnSickIcon from 'Utils/Icons/ReturnSickIcon';
 
 const leaveInvestigationMessage = 'צא מחקירה';
 const displayDateFormat = 'dd/MM/yyyy';
@@ -45,8 +48,9 @@ const InvestigatedPersonInfo = (props: Props) => {
     const classes = useStyles();
 
     const [statusReasonError, setStatusReasonError] = React.useState<string[] | null>(null);
-    const { identityType, gender, isDeceased, isCurrentlyHospitalized, isInClosedInstitution, age, 
-        identityNumber, fullName, primaryPhone, birthDate, validationDate } = investigationStaticInfo;
+    const { identityType, gender, isDeceased, isCurrentlyHospitalized, isInClosedInstitution, age, identityNumber, 
+        fullName, primaryPhone, birthDate, validationDate, isReturnSick, previousDiseaseStartDate, 
+        isVaccinated, vaccinationEffectiveFrom, isSuspicionOfMutation, mutationName } = investigationStaticInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
     const { wasInvestigationReopend } = useStatusUtils();
 
@@ -321,26 +325,28 @@ const InvestigatedPersonInfo = (props: Props) => {
                         isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
                     }
                     <Divider />
-                    <InfoItemWithIcon testId='isVaccinated' name='האם התחסן' value='כן'
-                        icon={Help}
+                    <InfoItemWithIcon testId='isVaccinated' name='האם התחסן' value={indication(isVaccinated)}
+                        icon={VaccinationIcon}
                     />
-                    {/* {
+                    {
                         isVaccinated && <ComplexityIcon tooltipText='' />
-                    } */}
+                    }
                     <Divider />
-                    <InfoItemWithIcon testId='isSuspicionOfMutation' name='חשד למוטציה' value='לא'
-                        icon={Help}
-                    />
-                    {/* {
-                        isSuspicionOfMutation && <ComplexityIcon tooltipText='' />
-                    } */}
+                    <Tooltip title={mutationName ? mutationName : ''}>
+                        <InfoItemWithIcon testId='isSuspicionOfMutation' name='חשד למוטציה' value={indication(isSuspicionOfMutation)}
+                            icon={MutationIcon}
+                        />
+                    </Tooltip>
+                    {
+                        isSuspicionOfMutation && <ComplexityIcon tooltipText={mutationName ? mutationName : ''} />
+                    }
                     <Divider />
-                    <InfoItemWithIcon testId='isReturnSick' name='חולה חוזר' value='לא'
-                        icon={Help}
+                    <InfoItemWithIcon testId='isReturnSick' name='חולה חוזר' value={indication(isReturnSick)}
+                        icon={ReturnSickIcon}
                     />
-                    {/* {
+                    {
                         isReturnSick && <ComplexityIcon tooltipText='' />
-                    } */}
+                    }
                 </div>
             </div>
         </Paper>
