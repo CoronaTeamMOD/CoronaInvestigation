@@ -3,15 +3,19 @@ import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import React, { ChangeEvent, useEffect, useMemo } from 'react';
 import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
-import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
+import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl, Tooltip } from '@material-ui/core';
 
 import UserType from 'models/enums/UserType';
 import StoreStateType from 'redux/storeStateType';
+import formatDate from 'Utils/DateUtils/formatDate';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InvestigationInfo from 'models/InvestigationInfo';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
+import MutationIcon from 'commons/Icons/customIcons/MutationIcon';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
+import ReturnSickIcon from 'commons/Icons/customIcons/ReturnSickIcon';
+import VaccinationIcon from 'commons/Icons/customIcons/VaccinationIcon';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import { ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX } from 'commons/Regex/Regex';
 import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';
@@ -45,8 +49,9 @@ const InvestigatedPersonInfo = (props: Props) => {
     const classes = useStyles();
 
     const [statusReasonError, setStatusReasonError] = React.useState<string[] | null>(null);
-    const { identityType, gender, isDeceased, isCurrentlyHospitalized, isInClosedInstitution, age, 
-        identityNumber, fullName, primaryPhone, birthDate, validationDate } = investigationStaticInfo;
+    const { identityType, gender, isDeceased, isCurrentlyHospitalized, isInClosedInstitution, age, identityNumber, 
+        fullName, primaryPhone, birthDate, validationDate, isReturnSick, previousDiseaseStartDate, 
+        isVaccinated, vaccinationEffectiveFrom, isSuspicionOfMutation, mutationName } = investigationStaticInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
     const { wasInvestigationReopend } = useStatusUtils();
 
@@ -319,6 +324,41 @@ const InvestigatedPersonInfo = (props: Props) => {
                     />
                     {
                         isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
+                    }
+                    <Divider />
+                    <Tooltip title={vaccinationEffectiveFrom ? formatDate(vaccinationEffectiveFrom) : ''}>
+                        <div>
+                            <InfoItemWithIcon testId='isVaccinated' name='האם התחסן' value={indication(isVaccinated)}
+                                icon={VaccinationIcon}
+                            />  
+                        </div>
+                        
+                    </Tooltip>
+                    {
+                        isVaccinated && <ComplexityIcon tooltipText={formatDate(vaccinationEffectiveFrom)} />
+                    }
+                    <Divider />
+                    <Tooltip title={mutationName ? mutationName : ''}>
+                        <div>
+                            <InfoItemWithIcon testId='isSuspicionOfMutation' name='חשד למוטציה' value={indication(isSuspicionOfMutation)}
+                                icon={MutationIcon}
+                            />    
+                        </div>
+                         
+                    </Tooltip>
+                    {
+                        isSuspicionOfMutation && <ComplexityIcon tooltipText={mutationName ? mutationName : ''} />
+                    }
+                    <Divider />
+                    <Tooltip title={previousDiseaseStartDate ? formatDate(previousDiseaseStartDate) : ''}>
+                        <div>
+                            <InfoItemWithIcon testId='isReturnSick' name='חולה חוזר' value={indication(isReturnSick)}
+                                icon={ReturnSickIcon}
+                            />   
+                        </div>
+                    </Tooltip>
+                    {
+                        isReturnSick && <ComplexityIcon tooltipText={formatDate(previousDiseaseStartDate)} />
                     }
                 </div>
             </div>

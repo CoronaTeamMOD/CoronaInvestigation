@@ -1,4 +1,3 @@
-
 interface InvestigatedPatientStaticInfo {
     isDeceased: boolean;
     additionalPhoneNumber: string;
@@ -6,6 +5,12 @@ interface InvestigatedPatientStaticInfo {
     identityType: string;
     isCurrentlyHospitalized: boolean;
     isInClosedInstitution: boolean;
+    isReturnSick: boolean;
+    previousDiseaseStartDate: string | null;
+    isVaccinated: boolean;
+    vaccinationEffectiveFrom: string | null;
+    isSuspicionOfMutation: boolean;
+    mutationName: string | null;
 };
 
 export default InvestigatedPatientStaticInfo;
