@@ -8,18 +8,19 @@ import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InteractedContact from 'models/InteractedContact';
 import useContactFields from 'Utils/Contacts/useContactFields';
 import InteractedContactFields from 'models/enums/InteractedContact';
+import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 
 import useReachContact from './useReachContact';
 import useStyles from '../ContactQuestioningStyles';
 
 const ReachContact = (props: Props) => {
-    const { control, getValues , watch } = useFormContext();
+    const { control, getValues, watch } = useFormContext();
     const { interactedContact, index, contactStatuses, saveContact, parsePerson } = props;
     const classes = useStyles({});
 
     const formValues = getValues().form
-    ? getValues().form[index]
-    : interactedContact;
+        ? getValues().form[index]
+        : interactedContact;
 
     const foundValue = (status: number) => {
         return contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === status);
@@ -41,9 +42,10 @@ const ReachContact = (props: Props) => {
                         defaultValue={interactedContact.contactStatus}
                         render={(props) => {
                             const currentValue = getCurrentValue(props.value);
+                            const toDisableField = isFieldDisabled || currentValue.id === ContactStatusCodes.COMPLETED
                             return (
                                 <Autocomplete
-                                    disabled={isFieldDisabled}
+                                    disabled={toDisableField}
                                     className={classes.statusAutoComplete}
                                     options={contactStatuses}
                                     getOptionLabel={(option) =>
