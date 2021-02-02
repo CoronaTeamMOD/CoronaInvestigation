@@ -98,6 +98,7 @@ export const adminCols: string[] = [
 ]
 
 export const userCols: string[] = [
+    TableHeadersNames.color,
     TableHeadersNames.rowIndicators,
     TableHeadersNames.epidemiologyNumber,
     TableHeadersNames.validationDate,
