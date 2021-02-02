@@ -235,10 +235,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     groupId ?
                         await changeGroupsDesk([groupId], newSelectedDesk) :
                         await changeInvestigationsDesk([epidemiologyNumber], newSelectedDesk);
-                    fetchTableData();
-                    if(groupId){
-                        fetchInvestigationsByGroupId(groupId);
-                    }
                 }
 
                 setSelectedRow(DEFAULT_SELECTED_ROW);
@@ -372,7 +368,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 const indexedRow = convertToIndexedRow(row);
                                 const isRowClickable = isInvestigationRowClickable(row.mainStatus);
                                 const isGroupShown = checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber);
-
+                                
                                 return (
                                     <>
                                         <InvestigationTableRow
@@ -419,6 +415,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                 const currentGroupedInvestigationsLength = allGroupedInvestigations.get(indexedRow.groupId)?.length! - 1; // not including row head
                                                 const indexedGroupedInvestigationRow = convertToIndexedRow(row);
                                                 const isGroupedRowClickable = isInvestigationRowClickable(row.mainStatus);
+
+                                                console.log(row.investigationDesk);
                                                 return (
                                                     <InvestigationTableRow
                                                         columns={(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols}

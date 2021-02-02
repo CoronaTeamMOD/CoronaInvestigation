@@ -725,10 +725,19 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             });
             changeDeskLogger.info(logGroupTransfer(groupIds, TableHeadersNames.investigationDesk, newSelectedDesk?.deskName || '', transferReason), Severity.LOW);
             setSelectedRow(DEFAULT_SELECTED_ROW);
-            fetchTableData();
         } catch (error) {
             changeDeskLogger.error(`couldn't change the desk for group ${joinedGroupIds} due to ${error}`, Severity.HIGH);
             alertError(UPDATE_ERROR_TITLE);
+        } finally {
+            if (groupIds[0]) {
+                await Promise.all(
+                    groupIds.map(async (groupId: string) => {
+                        await fetchInvestigationsByGroupId(groupId);
+                    })
+                );
+            }
+
+            fetchTableData();
         }
     };
 
@@ -930,7 +939,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             investigationsByGroupIdLogger.error(err, Severity.HIGH);
             return [];
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }
 
