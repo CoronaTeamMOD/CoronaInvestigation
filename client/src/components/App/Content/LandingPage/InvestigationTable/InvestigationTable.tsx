@@ -235,10 +235,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     groupId ?
                         await changeGroupsDesk([groupId], newSelectedDesk) :
                         await changeInvestigationsDesk([epidemiologyNumber], newSelectedDesk);
-                    fetchTableData();
-                    if(groupId){
-                        fetchInvestigationsByGroupId(groupId);
-                    }
                 }
 
                 setSelectedRow(DEFAULT_SELECTED_ROW);
@@ -372,7 +368,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 const indexedRow = convertToIndexedRow(row);
                                 const isRowClickable = isInvestigationRowClickable(row.mainStatus);
                                 const isGroupShown = checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber);
-
                                 return (
                                     <>
                                         <InvestigationTableRow
