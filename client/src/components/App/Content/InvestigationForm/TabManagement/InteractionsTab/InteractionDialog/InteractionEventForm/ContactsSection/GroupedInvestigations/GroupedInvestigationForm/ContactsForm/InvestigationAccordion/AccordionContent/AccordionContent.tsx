@@ -15,7 +15,7 @@ const AccordionContent = (props: Props) => {
 
     return (
         <AccordionDetails>
-            <Grid container>
+            <Grid container id="content-container">
                 <Grid item xs={12}>
                     <TableSearchBar
                         onSearchClick={(query) => { 
