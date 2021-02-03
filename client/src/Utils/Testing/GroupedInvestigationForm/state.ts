@@ -19,7 +19,7 @@ export const otherContactReason = {
     }
 }
 
-export const testInvestigationsNodes = [{
+export const testInvestigation = {
     epidemiologyNumber: 555,
     contactEventsByInvestigationId:{
         nodes : [{
@@ -54,7 +54,9 @@ export const testInvestigationsNodes = [{
             identityNumber: '207950171'
         }
     }
-}]
+}
+
+export const testInvestigationsNodes = [testInvestigation]
 
 export const testInvestigations = {
     investigationsByGroupId : {
