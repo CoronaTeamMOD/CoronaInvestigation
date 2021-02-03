@@ -35,6 +35,7 @@ const displayDateFormat = 'dd/MM/yyyy';
 const maxComplexityAge = 14;
 const yes = 'כן';
 const no = 'לא';
+const noInfo = 'אין מידע';
 const statusLabel = 'סטטוס';
 const subStatusLabel = 'סיבה';
 const statusReasonLabel = 'פירוט'
@@ -328,7 +329,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <Divider />
                     <Tooltip title={vaccinationEffectiveFrom ? formatDate(vaccinationEffectiveFrom) : ''}>
                         <div>
-                            <InfoItemWithIcon testId='isVaccinated' name='האם התחסן' value={indication(isVaccinated)}
+                            <InfoItemWithIcon testId='isVaccinated' name='האם מחוסן' value={isVaccinated ? yes : noInfo}
                                 icon={VaccinationIcon}
                             />  
                         </div>
@@ -340,7 +341,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <Divider />
                     <Tooltip title={mutationName ? mutationName : ''}>
                         <div>
-                            <InfoItemWithIcon testId='isSuspicionOfMutation' name='חשד למוטציה' value={indication(isSuspicionOfMutation)}
+                            <InfoItemWithIcon testId='isSuspicionOfMutation' name='חשד למוטציה' value={isSuspicionOfMutation ? yes : noInfo}
                                 icon={MutationIcon}
                             />    
                         </div>
@@ -352,7 +353,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <Divider />
                     <Tooltip title={previousDiseaseStartDate ? formatDate(previousDiseaseStartDate) : ''}>
                         <div>
-                            <InfoItemWithIcon testId='isReturnSick' name='חולה חוזר' value={indication(isReturnSick)}
+                            <InfoItemWithIcon testId='isReturnSick' name='חולה חוזר' value={isReturnSick ? yes : noInfo}
                                 icon={ReturnSickIcon}
                             />   
                         </div>
