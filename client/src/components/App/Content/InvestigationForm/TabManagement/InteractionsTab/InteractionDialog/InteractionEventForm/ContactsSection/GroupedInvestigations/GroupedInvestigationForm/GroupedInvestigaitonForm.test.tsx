@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { FormProvider } from 'react-hook-form';
 
+import MockFormProvider from 'Utils/Testing/MockFormProvider';
 import mockSelectors from 'Utils/Testing/GroupedInvestigationForm/mockSelectors';
 import { familyContactReason, otherContactReason, noInvestigations, testInvestigations} from 'Utils/Testing/GroupedInvestigationForm/state';
 
@@ -57,8 +57,8 @@ describe('<GroupedInvestigationForm />' , () => {
             ...otherContactReason,
             ...testInvestigations
         });
-        //@ts-ignore - this is stright out of the documentation (!) https://github.com/react-hook-form/react-hook-form/blob/4babac795fd7f51d4d4d9bcb382a5551886842f4/src/useFormContext.test.tsx#L15
-        const wrapper = mount(<FormProvider><GroupedInvestigationForm /></FormProvider>);
+        
+        const wrapper = mount(<MockFormProvider><GroupedInvestigationForm /></MockFormProvider>);
 
         const investigationAccordion = wrapper.find(InvestogationAccordion);
 
