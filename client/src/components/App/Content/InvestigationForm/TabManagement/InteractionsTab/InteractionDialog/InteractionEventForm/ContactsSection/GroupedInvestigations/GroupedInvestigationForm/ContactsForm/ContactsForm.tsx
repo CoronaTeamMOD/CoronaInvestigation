@@ -14,7 +14,7 @@ const ContactsForm = (props: Props) => {
     return (
         <>
             <Typography variant='h5'>{formHeadline}</Typography>
-            <Typography variant='h6'>{`סיבת הקיבוץ: ${reason}`}</Typography>
+            <Typography id="groupingReason" variant='h6'>{`סיבת הקיבוץ: ${reason}`}</Typography>
             {
                 investigations.map((investigation , index) => {
                     return (

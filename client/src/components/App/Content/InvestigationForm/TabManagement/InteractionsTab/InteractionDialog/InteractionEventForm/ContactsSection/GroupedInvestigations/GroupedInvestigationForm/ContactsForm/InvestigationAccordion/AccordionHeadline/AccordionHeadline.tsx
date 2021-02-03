@@ -21,7 +21,7 @@ const AccordionHeadline = (props: Props) => {
             expandIcon={<ExpandMoreIcon />}
             id={`accordion-${epidemiologyNumber}`}
         >
-         <Typography variant='h5'>{`${fullName}, ${epidemiologyNumber}, ${identityNumber}`}</Typography>   
+         <Typography id={`accordion-headline-${epidemiologyNumber}`} variant='h5'>{`${fullName}, ${epidemiologyNumber}, ${identityNumber}`}</Typography>   
         </AccordionSummary>
     )
 }
