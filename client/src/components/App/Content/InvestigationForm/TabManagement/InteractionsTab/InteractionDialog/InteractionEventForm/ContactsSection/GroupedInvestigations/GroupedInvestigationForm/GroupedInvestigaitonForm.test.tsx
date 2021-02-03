@@ -2,10 +2,12 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { FormProvider } from 'react-hook-form';
 
-import mockSelectors from './mockSelectors';
-import GroupedInvestigationForm from '../GroupedInvestigationForm';
-import InvestogationAccordion from '../ContactsForm/InvestigationAccordion/InvestigationAccordion';
-import { familyContactReason, otherContactReason, noInvestigations, testInvestigations} from './states';
+import mockSelectors from 'Utils/Testing/GroupedInvestigationForm/mockSelectors';
+import { familyContactReason, otherContactReason, noInvestigations, testInvestigations} from 'Utils/Testing/GroupedInvestigationForm/state';
+
+import GroupedInvestigationForm from './GroupedInvestigationForm';
+import InvestogationAccordion from './ContactsForm/InvestigationAccordion/InvestigationAccordion';
+
 
 describe('<GroupedInvestigationForm />' , () => {
     afterEach(() => {
@@ -69,10 +71,5 @@ describe('<GroupedInvestigationForm />' , () => {
         expect(accordionHeadline.text()).toBe('מוטי בננה, 555, 207950171');
     });
 });
-
-
-
-// const investigatedPatient = useSelector<StoreStateType, InvestigatedPatient>(state => state.investigation.investigatedPatient);
-// const investigationEndTime = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime);
 
 export {}

@@ -1,5 +1,3 @@
-import ConnectedInvestigationContact from 'models/GroupedInvestigationContacts/ConnectedInvestigationContact';
-
 export const noInvestigations = {
     investigationsByGroupId : {
         nodes : []
