@@ -61,7 +61,7 @@ const AddressForm: React.FC<Props> = ({
                             <TextField 
                                 className={smallFieldsClass}
                                 InputProps={{className: smallFieldsClass}}
-                                value={cities.get(props.value)?.displayName || UNKNOWN} 
+                                value={cities.get(cityField.defaultValue)?.displayName || UNKNOWN } 
                                 label={CITY_LABEL}
                                 InputLabelProps={{ shrink: true }}
                                 disabled 
@@ -102,7 +102,7 @@ const AddressForm: React.FC<Props> = ({
                                 className={smallFieldsClass}
                                 InputProps={{className: smallFieldsClass}}
                                 test-id={streetField.testId || ''} 
-                                value={streetsInCity.get(props.value)?.displayName || UNKNOWN} 
+                                value={streetsInCity.get(streetField.defaultValue)?.displayName || UNKNOWN} 
                                 label={STREET_LABEL} 
                                 InputLabelProps={{ shrink: true }}
                                 disabled 
