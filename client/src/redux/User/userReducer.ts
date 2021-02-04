@@ -7,7 +7,7 @@ export interface UserState {
     data: User;
     isLoggedIn: boolean;
     displayedCounty: number;
-}
+};
 
 export const initialUserState: UserState = {
     data: {
@@ -24,6 +24,7 @@ export const initialUserState: UserState = {
         userType: UserType.NOT_LOGGED_IN,
         sourceOrganization: '',
         deskName: '',
+        authorityName: '',
         countyByInvestigationGroup: {
             districtId: -1,
             displayName: ''
@@ -34,7 +35,7 @@ export const initialUserState: UserState = {
     },
     isLoggedIn: false,
     displayedCounty: -1
-}
+};
 
 const userReducer = (state = initialUserState, action: Actions.UserAction): UserState => {
     switch (action.type) {
@@ -54,6 +55,6 @@ const userReducer = (state = initialUserState, action: Actions.UserAction): User
         };
         default: return state;
     }
-}
+};
 
 export default userReducer;

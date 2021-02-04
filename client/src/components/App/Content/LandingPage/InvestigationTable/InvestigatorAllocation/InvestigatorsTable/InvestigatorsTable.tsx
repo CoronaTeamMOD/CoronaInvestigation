@@ -11,6 +11,7 @@ import { TableHeadersNames, TableHeaders } from './InvestigatorsTableHeaders';
 
 const pauseInvestigationsCountTitle = 'חקירות הממתינות להשלמת מידע/העברה';
 const searchBarLabel = 'הכנס שם של חוקר...';
+const authoritySourceOrganization = 'חוקר רשות';
 
 const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSelectedRow }) => {
 
@@ -36,6 +37,10 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
         switch(cellName) {
             case TableHeadersNames.deskName: 
                 return get(investigator, cellName) ? get(investigator, cellName) : 'לא משוייך';
+            case TableHeadersNames.sourceOrganization: 
+                const sourceOrganization: string = get(investigator, cellName);
+                const authorityName: string | null = investigator.authorityName;
+                return (sourceOrganization === authoritySourceOrganization && authorityName) ? `${get(investigator, cellName)}-${authorityName}` : get(investigator, cellName);
             case TableHeadersNames.languages: {
                  const languages: string[] = get(investigator, cellName);
                  if (languages?.length > 2) {

@@ -18,4 +18,5 @@ export default interface User {
     newInvestigationsCount: number;
     activeInvestigationsCount: number;
     authority: number;
-}
+    authorityName: string;
+};

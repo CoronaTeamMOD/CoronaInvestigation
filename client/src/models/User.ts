@@ -16,6 +16,7 @@ interface User {
     userType: UserType;
     sourceOrganization: string;
     deskName: string;
+    authorityName: string;
     countyByInvestigationGroup: CountyByInvestigationGroup;
     deskByDeskId?: Desk;
     authorityByAuthorityId?: authorityByAuthorityId;
@@ -28,6 +29,6 @@ interface CountyByInvestigationGroup {
 
 interface authorityByAuthorityId {
     authorityName: string
-}
+};
 
 export default User;
