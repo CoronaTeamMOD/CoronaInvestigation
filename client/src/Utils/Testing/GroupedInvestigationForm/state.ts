@@ -19,6 +19,17 @@ export const otherContactReason = {
     }
 }
 
+export const testPersonalDetails = {
+    id : 777,
+    firstName: 'יעקב',
+    lastName: 'יעקובי',
+    identificationNumber: '234567899',
+    identificationType: 'דרכון',
+    birthDate: '2021-02-03T08:36:03Z',
+    phoneNumber: '0544444443',
+    additionalPhoneNumber: null
+}
+
 export const testEvents = [{
     contactedPeopleByContactEvent: {
         nodes: [{
@@ -31,16 +42,7 @@ export const testEvents = [{
                     displayName: 'קריית מוטקין'
                 }
             },
-            personByPersonInfo: {
-                id : 777,
-                firstName: 'יעקב',
-                lastName: 'יעקובי',
-                identificationNumber: '234567899',
-                identificationType: 'דרכון',
-                birthDate: '2021-02-03T08:36:03Z',
-                phoneNumber: '0544444443',
-                additionalPhoneNumber: null
-            }
+            personByPersonInfo: testPersonalDetails
         }]
     }
 }]
