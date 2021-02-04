@@ -52,6 +52,7 @@ const TableRows = (props: Props) => {
                                             disabled={isRowDisabled}
                                             color='primary'
                                             checked={isRowSelected}
+                                            id={`person-checkbox-${id}`}
                                             onClick={() => handleCheckboxToggle(id)}
                                         />
                                     </TableCell>
