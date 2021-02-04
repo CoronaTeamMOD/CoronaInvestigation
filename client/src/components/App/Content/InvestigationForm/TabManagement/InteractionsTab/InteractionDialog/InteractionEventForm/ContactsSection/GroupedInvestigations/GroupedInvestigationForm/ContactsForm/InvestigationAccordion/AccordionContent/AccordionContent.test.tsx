@@ -74,6 +74,9 @@ describe('<AccordionContent />', () => {
 
         expect(tableRow.exists()).toBeTruthy();
         expect(tableRow).toHaveLength(1);
+
+        const noResultsMessage = wrapper.find('h5#noResultsMsg');
+        expect(noResultsMessage.exists()).toBeFalsy();
     });
 
     it('triggers search on button click', () => {
@@ -81,6 +84,8 @@ describe('<AccordionContent />', () => {
 
         act(() => {
             wrapper.find(TypePreventiveTextField).at(0).props().onChange(query);
+        });
+        act(() => {
             wrapper.find('button#searchIconButton').simulate('click');
         });
         wrapper.update();
@@ -89,11 +94,15 @@ describe('<AccordionContent />', () => {
         const tableRow = wrapper.find('tr#person-row-666');
 
         expect(tableRow.exists()).toBeFalsy();
+
+        const noResultsMessage = wrapper.find('h5#noResultsMsg');
+        expect(noResultsMessage.exists()).toBeTruthy();
+        expect(noResultsMessage.text()).toBe('אין תוצאות מתאימות');
     })
 
     describe('searches by: ' , () => {
-        const { identificationNumber , firstName , lastName, phoneNumber, identificationType} = testPersonalDetails;
-        const searchableValues = [ identificationNumber, firstName, lastName, phoneNumber, identificationType];
+        const { identificationNumber , firstName , lastName, phoneNumber} = testPersonalDetails;
+        const searchableValues = [ identificationNumber, firstName, lastName, phoneNumber];
         const searchWrapper = mount(
             <MockFormProvider >
                 <AccordionContent 
@@ -102,22 +111,22 @@ describe('<AccordionContent />', () => {
             </MockFormProvider>
         )
 
-        it('firstname', () => {
-            searchableValues.forEach((value) => {
+        searchableValues.forEach((value) => {
+            it(`searches: ${value}` , () => {
                 act(() => {
                     searchWrapper.find(TypePreventiveTextField).at(0).props().onChange(value);
+                });
+                act(() => {
                     searchWrapper.find('button#searchIconButton').simulate('click');
                 });
                 searchWrapper.update();
-        
+    
                 expect(searchWrapper.find(TypePreventiveTextField).at(0).props().value).toBe(value);
                 const tableRow = searchWrapper.find('tr#person-row-666');
-                if(value === identificationType){
-                    console.log(searchWrapper.debug());
-                }
+    
                 expect(tableRow.exists()).toBeTruthy();
                 expect(tableRow).toHaveLength(1);
             })
-        });
+        })
     });
 })
