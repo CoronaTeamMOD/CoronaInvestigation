@@ -15,22 +15,23 @@ const AccordionContent = (props: Props) => {
 
     return (
         <AccordionDetails>
-            <Grid container>
-                <Grid xs={12}>
+            <Grid container id="content-container">
+                <Grid item xs={12}>
                     <TableSearchBar
+                        id='table-search-bar'
                         onSearchClick={(query) => { 
                             setQuery(query);
                         }}
                     />
                 </Grid>
-                <Grid xs={12}>
+                <Grid item xs={12}>
                     <ContactsTable
                         isGroupReasonFamily={isGroupReasonFamily}
                         events={filteredEvents}
                         existingIds={existingIds}
                     />
                 </Grid>
-                <Grid xs={12}>
+                <Grid item xs={12}>
                     <SelectedRowsMessage
                         selectedRows={getCurrentSelectedRowsLength()}
                     />

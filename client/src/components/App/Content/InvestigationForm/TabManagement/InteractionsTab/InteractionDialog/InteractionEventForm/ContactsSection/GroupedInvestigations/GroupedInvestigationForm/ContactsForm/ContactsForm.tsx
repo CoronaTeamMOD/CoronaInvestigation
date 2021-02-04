@@ -13,8 +13,8 @@ const ContactsForm = (props: Props) => {
     const { groupedInvestigationContacts } = useContext(groupedInvestigationsContext);
     return (
         <>
-            <Typography variant='h5'>{formHeadline}</Typography>
-            <Typography variant='h6'>{`סיבת הקיבוץ: ${reason}`}</Typography>
+            <Typography id="groupingFormHeadline" variant='h5'>{formHeadline}</Typography>
+            <Typography id="groupingReason" variant='h6'>{`סיבת הקיבוץ: ${reason}`}</Typography>
             {
                 investigations.map((investigation , index) => {
                     return (
@@ -26,7 +26,7 @@ const ContactsForm = (props: Props) => {
                     )
                 })
             }
-            <Typography variant='h6' align='right'>{`נבחרו ${groupedInvestigationContacts.length} שורות`}</Typography>
+            <Typography id="selectedRowsMsg" variant='h6' align='right'>{`נבחרו ${groupedInvestigationContacts.length} שורות`}</Typography>
         </>
     )
 }
