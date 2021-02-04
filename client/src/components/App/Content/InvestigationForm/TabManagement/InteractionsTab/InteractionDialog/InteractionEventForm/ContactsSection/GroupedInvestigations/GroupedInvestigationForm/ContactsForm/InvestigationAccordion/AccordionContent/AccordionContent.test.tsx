@@ -1,7 +1,6 @@
 import React from 'react'
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
-//import { TableRow } from '@material-ui/core';
 
 import MockFormProvider from 'Utils/Testing/MockFormProvider';
 import mockSelectors from 'Utils/Testing/GroupedInvestigationForm/mockSelectors';
@@ -28,7 +27,6 @@ describe('<AccordionContent />', () => {
         </MockFormProvider>
     )
 
-    //console.log(wrapper.debug());
     it('renders' , () => {
         expect(wrapper.exists()).toBeTruthy();
     })
