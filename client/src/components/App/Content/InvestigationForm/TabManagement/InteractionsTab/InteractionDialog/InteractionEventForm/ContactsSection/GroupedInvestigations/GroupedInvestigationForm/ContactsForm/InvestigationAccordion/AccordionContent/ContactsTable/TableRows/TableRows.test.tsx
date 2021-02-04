@@ -9,7 +9,6 @@ import MockGroupedInvestigationsProvider from 'Utils/Testing/GroupedInvestigatio
 
 import TableRows from './TableRows';
 
-
 const rowsProps = {
     isGroupReasonFamily: false,
     events : [testEventNode],
@@ -30,7 +29,6 @@ describe('<TableRows />', () => {
 
     it('renders' , () => {
         expect(wrapper.exists()).toBeTruthy();
-        //const row = wrapper.find()
     });
 
     describe('not checked' , () => {

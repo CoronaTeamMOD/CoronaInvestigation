@@ -10,6 +10,7 @@ import ContactsTable from './ContactsTable';
 
 describe('<ContactsTable />', () => {
     mockSelectors();
+
     describe('no events' , () => {
         const wrapper = mount(
             <MockFormProvider>
@@ -69,6 +70,7 @@ describe('<ContactsTable />', () => {
                 expect(checkbox.props().disabled).toBeFalsy();
             });
         })
+        
         describe('id already exists', () => {
             const wrapper = mount(
                 <MockFormProvider>

@@ -8,7 +8,6 @@ import { familyContactReason, otherContactReason, noInvestigations, testInvestig
 import GroupedInvestigationForm from './GroupedInvestigationForm';
 import InvestogationAccordion from './ContactsForm/InvestigationAccordion/InvestigationAccordion';
 
-
 describe('<GroupedInvestigationForm />' , () => {
     afterEach(() => {
         jest.resetAllMocks();
@@ -71,5 +70,3 @@ describe('<GroupedInvestigationForm />' , () => {
         expect(accordionHeadline.text()).toBe('מוטי בננה, 555, 207950171');
     });
 });
-
-export {}

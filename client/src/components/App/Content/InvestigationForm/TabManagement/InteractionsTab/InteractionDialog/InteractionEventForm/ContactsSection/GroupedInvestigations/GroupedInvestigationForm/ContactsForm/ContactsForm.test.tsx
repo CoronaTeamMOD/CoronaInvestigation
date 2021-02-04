@@ -57,5 +57,3 @@ describe('<ContactsForm />', () => {
         expect(selectedRowsMsg.text()).toBe('נבחרו 0 שורות');
     });
 })
-
-export {}

@@ -47,8 +47,4 @@ describe('<InvestigationAccordion />', () => {
 
         expect(accordionContent.exists()).toBeTruthy();
     })
-})
-
-
-
-export {}
+});

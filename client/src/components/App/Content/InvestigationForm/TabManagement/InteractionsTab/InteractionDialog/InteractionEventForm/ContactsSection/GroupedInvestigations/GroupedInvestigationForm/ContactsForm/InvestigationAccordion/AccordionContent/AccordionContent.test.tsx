@@ -4,8 +4,8 @@ import { act } from 'react-dom/test-utils';
 
 import MockFormProvider from 'Utils/Testing/MockFormProvider';
 import mockSelectors from 'Utils/Testing/GroupedInvestigationForm/mockSelectors';
-import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
 import { testEvents, testPersonalDetails } from 'Utils/Testing/GroupedInvestigationForm/state';
+import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
 
 import AccordionContent from './AccordionContent';
 import ContactsTable from './ContactsTable/ContactsTable';
@@ -125,6 +125,6 @@ describe('<AccordionContent />', () => {
                 expect(tableRow.exists()).toBeTruthy();
                 expect(tableRow).toHaveLength(1);
             })
-        })
+        });
     });
-})
+});
