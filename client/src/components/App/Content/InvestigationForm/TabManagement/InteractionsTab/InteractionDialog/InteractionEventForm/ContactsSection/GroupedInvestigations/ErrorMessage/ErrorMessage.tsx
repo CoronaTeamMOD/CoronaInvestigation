@@ -4,7 +4,7 @@ import React from 'react'
 const NotGroupedMessage = (props : Props) => {
     const { text } = props;
     return (
-        <Typography id="noResultsMsg" variant='h5'>
+        <Typography id="errorMessage" variant='h5'>
             {text}
         </Typography>
     )

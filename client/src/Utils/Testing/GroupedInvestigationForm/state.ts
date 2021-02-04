@@ -19,6 +19,9 @@ export const otherContactReason = {
     }
 }
 
+/*  
+ *  This test describes a single related contact that is a family member.
+ */
 export const testPersonalDetails = {
     id : 777,
     firstName: 'יעקב',
@@ -30,22 +33,26 @@ export const testPersonalDetails = {
     additionalPhoneNumber: null
 }
 
-export const testEvents = [{
+export const testEventNode = {
+    id: 666,
+    involvedContactByInvolvedContactId: {
+        involvementReason: 1
+    },
+    addressByIsolationAddress: {
+        cityByCity: {
+            displayName: 'קריית מוטקין'
+        }
+    },
+    personByPersonInfo: testPersonalDetails
+}
+
+export const testEvent = {
     contactedPeopleByContactEvent: {
-        nodes: [{
-            id: 666,
-            involvedContactByInvolvedContactId: {
-                involvementReason: 1
-            },
-            addressByIsolationAddress: {
-                cityByCity: {
-                    displayName: 'קריית מוטקין'
-                }
-            },
-            personByPersonInfo: testPersonalDetails
-        }]
+        nodes: [testEventNode]
     }
-}]
+}
+
+export const testEvents = [testEvent]
 
 export const testInvestigation = {
     epidemiologyNumber: 555,

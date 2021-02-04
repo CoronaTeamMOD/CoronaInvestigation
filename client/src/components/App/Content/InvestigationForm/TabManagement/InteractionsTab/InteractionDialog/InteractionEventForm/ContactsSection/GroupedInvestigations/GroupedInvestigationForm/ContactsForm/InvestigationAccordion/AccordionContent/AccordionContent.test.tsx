@@ -73,7 +73,7 @@ describe('<AccordionContent />', () => {
         expect(tableRow.exists()).toBeTruthy();
         expect(tableRow).toHaveLength(1);
 
-        const noResultsMessage = wrapper.find('h5#noResultsMsg');
+        const noResultsMessage = wrapper.find('h5#errorMessage');
         expect(noResultsMessage.exists()).toBeFalsy();
     });
 
@@ -93,7 +93,7 @@ describe('<AccordionContent />', () => {
 
         expect(tableRow.exists()).toBeFalsy();
 
-        const noResultsMessage = wrapper.find('h5#noResultsMsg');
+        const noResultsMessage = wrapper.find('h5#errorMessage');
         expect(noResultsMessage.exists()).toBeTruthy();
         expect(noResultsMessage.text()).toBe('אין תוצאות מתאימות');
     })
