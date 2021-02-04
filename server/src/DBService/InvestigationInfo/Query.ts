@@ -9,6 +9,12 @@ query InvestigationStaticDetails($investigationId: Int!) {
     investigatingUnit
     endTime
     doesHaveSymptoms
+    isReturnSick
+    previousDiseaseStartDate
+    isSuspicionOfMutation
+    mutationName
+    isVaccinated
+    vaccinationEffectiveFrom
     symptomsStartDate: symptomsStartTime
     investigatedPatientByInvestigatedPatientId {
       covidPatientByCovidPatient {

@@ -20,9 +20,10 @@ import ContactQuestioningInfo from './ContactQuestioningInfo';
 import ContactQuestioningCheck from './ContactQuestioningCheck';
 import ContactQuestioningPersonal from './ContactQuestioningPersonal';
 import ContactQuestioningClinical from './ContactQuestioningClinical';
+import InteractedContactFields from 'models/enums/InteractedContact';
 
 const InteractedContactAccordion = (props: Props) => {
-    const {errors, ...methods} = useFormContext();
+    const {errors, watch, ...methods} = useFormContext();
     const classes = useStyles();
 
     const {
@@ -35,6 +36,8 @@ const InteractedContactAccordion = (props: Props) => {
         familyRelationships,
         shouldDisable,
     } = props;
+
+    const watchCurrentStatus = watch(`form[${index}].${InteractedContactFields.CONTACT_STATUS}`)
 
     const getAccordionClasses = () : string => {
         let classesList : string[] = [];
@@ -106,7 +109,7 @@ const InteractedContactAccordion = (props: Props) => {
                 </AccordionDetails>
                 <AccordionActions className={classes.accordionActions}>
                     <PrimaryButton
-                        disabled={shouldDisable(interactedContact.contactStatus)}
+                        disabled={shouldDisable(watchCurrentStatus)}
                         test-id='saveContact'
                         onClick={() => {
                             const currentParsedPerson = parsePerson(

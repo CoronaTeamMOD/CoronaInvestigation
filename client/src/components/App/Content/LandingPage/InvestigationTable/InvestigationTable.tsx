@@ -135,12 +135,15 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const getFilteredUsersOfCurrentCounty = async (): Promise<InvestigatorOption[]> => {
         const allCountyUsers = await fetchAllCountyUsers();
         const allUsersOfCountyArray: InvestigatorOption[] = Array.from(allCountyUsers, ([id, value]) => ({ id, value }));
+
         if (deskFilter.length > 0) {
-            allUsersOfCountyArray.filter(({ value }) => {
-                if (!value.deskByDeskId?.id) {
-                    return false;
+            return allUsersOfCountyArray.filter(({ value }) => {
+                const { deskid } = value;
+                const filterHasNotAssigned = deskFilter.some(desk => desk === null);
+                if (!deskid) {
+                    return filterHasNotAssigned;
                 }
-                return deskFilter.includes(value.deskByDeskId.id);
+                return deskFilter.indexOf(deskid) !== -1;
             });
         }
         return allUsersOfCountyArray;
@@ -232,10 +235,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     groupId ?
                         await changeGroupsDesk([groupId], newSelectedDesk) :
                         await changeInvestigationsDesk([epidemiologyNumber], newSelectedDesk);
-                    fetchTableData();
-                    if(groupId){
-                        fetchInvestigationsByGroupId(groupId);
-                    }
                 }
 
                 setSelectedRow(DEFAULT_SELECTED_ROW);
@@ -369,7 +368,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 const indexedRow = convertToIndexedRow(row);
                                 const isRowClickable = isInvestigationRowClickable(row.mainStatus);
                                 const isGroupShown = checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber);
-
                                 return (
                                     <>
                                         <InvestigationTableRow

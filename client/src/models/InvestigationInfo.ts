@@ -12,11 +12,11 @@ interface InvestigationInfo extends SymptomsExistenceInfo, InvestigatedPatientSt
     userByCreator: StaticUser;
     userByLastUpdator: StaticUser;
     endTime: Date | null;
-}
+};
 
 export interface InvestigationInfoData extends Omit<InvestigationInfo, 'validationDate' | 'symptomsStartDate'> {
     validationDate: string;
     symptomsStartDate: string;
-}
+};
 
 export default InvestigationInfo;

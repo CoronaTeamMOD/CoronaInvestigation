@@ -30,9 +30,9 @@ const useAccordionContent = (props: Props) => {
     const filteredEvents =
         events.flatMap( event => {
             return event.contactedPeopleByContactEvent.nodes.filter( person => {
-                const {identificationNumber , firstName , lastName } = person.personByPersonInfo;
+                const {identificationNumber , firstName , lastName, phoneNumber } = person.personByPersonInfo;
 
-                return identificationNumber?.includes(query) || firstName?.includes(query) || lastName?.includes(query);
+                return identificationNumber?.includes(query) || firstName?.includes(query) || lastName?.includes(query) || phoneNumber?.includes(query);
             })
         })
 

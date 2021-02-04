@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 
-const formatDate = (date: Date): string => {
+const formatDate = (date: Date | string | null): string => {
     return (
         date 
         ? format(new Date(date), 'dd/MM/yyyy')

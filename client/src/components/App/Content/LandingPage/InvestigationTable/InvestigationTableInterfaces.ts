@@ -9,6 +9,7 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationSubStatus from 'models/InvestigationSubStatus';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import AllocatedInvestigator from 'models/InvestigationTable/AllocateInvestigatorDialog/AllocatedInvestigator';
 
 import { SelectedRow } from './useInvestigationTable';
 import { IndexedInvestigationData } from './InvestigationTablesHeaders';
@@ -75,7 +76,7 @@ export interface useInvestigationTableOutcome {
     inactiveUserFilter: boolean;
     changeGroupsCounty: (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => void;
     changeInvestigationCounty: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => void;
-    fetchAllCountyUsers: () => Promise<Map<string, User>>;
+    fetchAllCountyUsers: () => Promise<Map<string, AllocatedInvestigator>>;
     tableTitle: string;
     timeRangeFilter: TimeRange;
     updateDateFilter: string;

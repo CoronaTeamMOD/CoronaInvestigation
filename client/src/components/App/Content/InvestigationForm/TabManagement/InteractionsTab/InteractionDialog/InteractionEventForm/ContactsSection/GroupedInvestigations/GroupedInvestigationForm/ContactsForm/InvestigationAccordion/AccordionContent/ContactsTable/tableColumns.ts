@@ -1,8 +1,8 @@
 enum TableCoulmns {
     firstName = 'שם פרטי',
     lastName = 'שם משפחה',
-    identificationType = 'סוג ת.ז',
-    identificationNumber = 'מספר ת.ז',
+    identificationType = 'סוג תעודה מזהה',
+    identificationNumber = 'מספר תעודה',
     birthDate = 'ת. לידה',
     phoneNum = 'מספר טלפון',
     secondaryPhoneNum = 'טלפון משני',
