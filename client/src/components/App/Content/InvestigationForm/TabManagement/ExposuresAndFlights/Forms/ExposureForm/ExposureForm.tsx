@@ -24,7 +24,7 @@ const ExposureForm = (props: Props) => {
 
 	const classes = useStyles();
 	const formClasses = useFormStyles();
-	const { control, setValue, errors } = useFormContext();
+	const { control, setValue, errors, trigger } = useFormContext();
 
 	const [exposureSourceSearchString, setExposureSourceSearchString] = useState<string>('');
 	const [isOptionalPatientsLoading, setOptionalPatientsLoading] = useState<boolean>(false);
@@ -90,6 +90,7 @@ const ExposureForm = (props: Props) => {
 											setExposureSourceSearchString(value);
 											(!value || !value.includes(':')) &&
 												handleChangeExposureDataAndFlightsField(index, fieldsNames.exposureSource, null);
+												props.onChange(null)
 										}}
 										value={exposureSourceSearchString}
 										test-id='exposureSource'
@@ -136,6 +137,7 @@ const ExposureForm = (props: Props) => {
 													setValue(`exposures[${index}].${fieldsNames.exposureSource}`, exposureSource);
 													setOptionalCovidPatients([]);
 													handleChangeExposureDataAndFlightsField(index, fieldsNames.exposureSource, exposureSource);
+													trigger(`exposures[${index}].${fieldsNames.exposureSource}`)
 												}}
 											>
 												<ExposureSourceOption

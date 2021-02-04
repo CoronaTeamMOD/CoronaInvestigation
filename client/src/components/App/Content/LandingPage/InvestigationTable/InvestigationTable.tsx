@@ -135,12 +135,15 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const getFilteredUsersOfCurrentCounty = async (): Promise<InvestigatorOption[]> => {
         const allCountyUsers = await fetchAllCountyUsers();
         const allUsersOfCountyArray: InvestigatorOption[] = Array.from(allCountyUsers, ([id, value]) => ({ id, value }));
+
         if (deskFilter.length > 0) {
-            allUsersOfCountyArray.filter(({ value }) => {
-                if (!value.deskByDeskId?.id) {
-                    return false;
+            return allUsersOfCountyArray.filter(({ value }) => {
+                const { deskid } = value;
+                const filterHasNotAssigned = deskFilter.some(desk => desk === null);
+                if (!deskid) {
+                    return filterHasNotAssigned;
                 }
-                return deskFilter.includes(value.deskByDeskId.id);
+                return deskFilter.indexOf(deskid) !== -1;
             });
         }
         return allUsersOfCountyArray;
@@ -215,10 +218,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const alertInvestigationDeskChange = (indexedRow: { [T in keyof typeof TableHeadersNames]: any }) =>
         async (event: React.ChangeEvent<{}>, newSelectedDesk: Desk | null) => {
-            const switchDeskTitle = `<p>האם אתה בטוח שאתה רוצה להחליף את דסק <b>${indexedRow.investigationDesk}</b> בדסק <b>${newSelectedDesk?.deskName}</b>?</p>`;
-            const enterDeskTitle = `<p>האם אתה בטוח שאתה רוצה לבחור את דסק <b>${newSelectedDesk?.deskName}</b>?</p>`;
-            if (newSelectedDesk?.deskName !== indexedRow.investigationDesk) {
-                const result = await alertWarning(indexedRow.investigationDesk ? switchDeskTitle : enterDeskTitle, {
+            const deskName = newSelectedDesk?.deskName;
+            const { investigationDesk, epidemiologyNumber, groupId } = indexedRow;
+
+            const switchDeskTitle = `<p>האם אתה בטוח שאתה רוצה להחליף את דסק <b>${investigationDesk}</b> בדסק <b>${deskName}</b>?</p>`;
+            const enterDeskTitle = `<p>האם אתה בטוח שאתה רוצה לבחור את דסק <b>${deskName}</b>?</p>`;
+            if (deskName !== investigationDesk) {
+                const result = await alertWarning(investigationDesk ? switchDeskTitle : enterDeskTitle, {
                     showCancelButton: true,
                     cancelButtonText: 'לא',
                     cancelButtonColor: theme.palette.error.main,
@@ -226,10 +232,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     confirmButtonText: 'כן, המשך',
                 });
                 if (result.isConfirmed) {
-                    indexedRow.groupId ?
-                        await changeGroupsDesk([indexedRow.groupId], newSelectedDesk) :
-                        await changeInvestigationsDesk([indexedRow.epidemiologyNumber], newSelectedDesk);
-                    fetchTableData();
+                    groupId ?
+                        await changeGroupsDesk([groupId], newSelectedDesk) :
+                        await changeInvestigationsDesk([epidemiologyNumber], newSelectedDesk);
                 }
 
                 setSelectedRow(DEFAULT_SELECTED_ROW);
@@ -363,7 +368,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 const indexedRow = convertToIndexedRow(row);
                                 const isRowClickable = isInvestigationRowClickable(row.mainStatus);
                                 const isGroupShown = checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber);
-
                                 return (
                                     <>
                                         <InvestigationTableRow

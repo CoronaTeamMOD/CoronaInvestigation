@@ -44,8 +44,14 @@ const defaultInvestigationStaticInfo : InvestigationInfo = {
     validationDate: new Date(),
     investigatedPatientId: 0,
     userByCreator: defaultUser,
-    userByLastUpdator: defaultUser
-}
+    userByLastUpdator: defaultUser,
+    isReturnSick: false,
+    previousDiseaseStartDate: null,
+    isVaccinated: false,
+    vaccinationEffectiveFrom: null,
+    isSuspicionOfMutation: false,
+    mutationName: null
+};
 
 export const LandingPageTimer = 1900;
 

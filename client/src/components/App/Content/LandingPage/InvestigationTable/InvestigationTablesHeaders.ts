@@ -98,6 +98,7 @@ export const adminCols: string[] = [
 ]
 
 export const userCols: string[] = [
+    TableHeadersNames.color,
     TableHeadersNames.rowIndicators,
     TableHeadersNames.epidemiologyNumber,
     TableHeadersNames.validationDate,
@@ -120,7 +121,7 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.validationDate]: true,
     [TableHeadersNames.isComplex]: false,
     [TableHeadersNames.priority]: false,
-    [TableHeadersNames.fullName]: false,
+    [TableHeadersNames.fullName]: true,
     [TableHeadersNames.phoneNumber]: false,
     [TableHeadersNames.age]: true,
     [TableHeadersNames.city]: true,

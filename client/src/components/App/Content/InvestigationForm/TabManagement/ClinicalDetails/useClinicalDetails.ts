@@ -198,7 +198,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                 deleteIrrelevantEventsLogger.error(`Failed to delete irrelevant contact events: ${err}`, Severity.LOW);
                 alertError(deletingContactEventsErrorMsg);
                 setDidDeletingContactEventsSucceed(false);
-            }).finally(() => {
                 setIsLoading(false);
             })
         }
