@@ -406,6 +406,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     countyUsers.set(user.id, {
                         ...user,
                         userName: user.username,
+                        authorityName: user.authorityname,
                         newInvestigationsCount: user.newinvestigationscount,
                         activeInvestigationsCount: user.activeinvestigationscount,
                         pauseInvestigationsCount: user.pauseinvestigationscount
