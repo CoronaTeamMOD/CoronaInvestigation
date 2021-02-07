@@ -9,12 +9,11 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 
 import TimeForm from './InteractionTimeForm';
 import ExternalizationForm from './InteractionExternalizationForm/InteractionExternalizationForm';
-import repetitiveFieldTools from "../RepetitiveEventForm/hooks/repetitiveFieldTools";
+import repetitiveFieldTools from '../RepetitiveEventForm/hooks/repetitiveFieldTools';
 
 const InteractionDetailsFields = ({index, interactionDate}: Props) => {
     const {control, watch} = useFormContext();
 
-    console.log('date', interactionDate)
     const placeType = watch(InteractionEventDialogFields.PLACE_TYPE);
     const placeSubType = watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
     const {isNamedLocation} = useMemo(() => getOptionsByPlaceAndSubplaceType(placeType, placeSubType), [placeType, placeSubType]);

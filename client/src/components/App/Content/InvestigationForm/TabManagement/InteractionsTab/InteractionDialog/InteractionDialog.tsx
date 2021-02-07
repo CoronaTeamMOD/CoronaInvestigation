@@ -92,6 +92,7 @@ const InteractionDialog = (props: Props) => {
         initialInteractionDate.current.setHours(0, 0, 0, 0);
         const startTimeToSave = isUnknownTime ? initialInteractionDate.current : data.startTime;
         const endTimeToSave = isUnknownTime ? initialInteractionDate.current : data.endTime;
+        const contacts = data[InteractionEventDialogFields.IS_REPETITIVE] ? [] : data[InteractionEventDialogFields.CONTACTS];
         return {
             ...data,
             [InteractionEventDialogFields.START_TIME]: startTimeToSave,
@@ -103,8 +104,7 @@ const InteractionDialog = (props: Props) => {
             [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: Boolean(data[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]),
             [InteractionEventDialogFields.ADDITIONAL_OCCURRENCES]:
             data[InteractionEventDialogFields.ADDITIONAL_OCCURRENCES]?.map(convertAdditionalOccurances) || [],
-            [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS] ?
-                data[InteractionEventDialogFields.CONTACTS].map((contact: Contact, index: number) => {
+            [InteractionEventDialogFields.CONTACTS]: contacts?.map((contact: Contact, index: number) => {
                     const serialId = methods.watch<string, number>(`${InteractionEventDialogFields.CONTACTS}[${index}].${InteractionEventContactFields.ID}`)
                     if (serialId) {
                         return {
@@ -114,7 +114,7 @@ const InteractionDialog = (props: Props) => {
                     } else {
                         return contact
                     }
-                }) : []
+                }) || []
         }
     };
 
