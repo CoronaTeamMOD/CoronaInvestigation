@@ -29,9 +29,11 @@ const convertInvestigationInfoFromDB = (investigationInfo: any) => {
     const investigationPatient = investigationInfo.investigatedPatientByInvestigatedPatientId;
 
     const convertedCovidPatient = {
+        ...investigationPatient,
         ...investigationPatient.covidPatientByCovidPatient,
         age: getPatientAge(investigationPatient.covidPatientByCovidPatient.birthDate)
     }
+    delete convertedCovidPatient.covidPatientByCovidPatient;
 
     const convertedInvestigation = {
         ...investigationInfo,
