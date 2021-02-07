@@ -24,8 +24,34 @@ const GetGroupedInvestigationsIds = () => {
         return id && groupedInvestigationsIds.indexOf(id) !== -1;
     }
 
+    const connectedContactsMap = () => {
+        let ids = new Map();
+        investigations.forEach(investigation => 
+            investigation.contactEventsByInvestigationId.nodes.forEach(event => 
+                event.contactedPeopleByContactEvent.nodes.forEach(person => {
+                    const {identificationType, identificationNumber} = person.personByPersonInfo;
+                    if(identificationType && identificationNumber) {
+                        ids.set(person.id ,identificationType + identificationNumber);
+                    }
+                }
+            )
+        ));
+
+        return ids;
+    }
+
+    const connectedInvestigationsIds = (contactsIds : number[]) => {
+        const connectedMap = connectedContactsMap();
+        let ids: string[] = [];
+        contactsIds.forEach(contactId => 
+            ids.push(connectedMap.get(contactId))    
+        )
+        return ids;
+    }
+
     return {
-        isGroupedContact
+        isGroupedContact,
+        connectedInvestigationsIds
     }
 
 }
