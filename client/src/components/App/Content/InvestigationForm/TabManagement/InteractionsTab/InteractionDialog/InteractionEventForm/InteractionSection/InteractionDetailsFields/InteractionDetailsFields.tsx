@@ -7,7 +7,7 @@ import {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCod
 import FormInput from 'commons/FormInput/FormInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
-import TimeForm from './InteractionTimeForm';
+import TimeForm from './InteractionTimeForm/InteractionTimeForm';
 import ExternalizationForm from './InteractionExternalizationForm/InteractionExternalizationForm';
 import repetitiveFieldTools from '../RepetitiveEventForm/hooks/repetitiveFieldTools';
 

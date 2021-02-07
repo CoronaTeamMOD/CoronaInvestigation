@@ -13,7 +13,7 @@ const CheckableDateTitle = ({disabled, day, isDateSelected, onDateCheckClick}: P
     <FormControlLabel
         onClick={(event) => event.stopPropagation()}
         onFocus={(event) => event.stopPropagation()}
-        control={<DateCheckbox disabled={!!disabled} isDateSelected={isDateSelected} onDateCheckClick={onDateCheckClick} day={day}/>}
+        control={<DateCheckbox disabled={Boolean(disabled)} isDateSelected={isDateSelected} onDateCheckClick={onDateCheckClick} day={day}/>}
         label={<DetailsFieldsTitle date={day}/>}
     />
 );

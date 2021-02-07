@@ -1,14 +1,13 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {isSameDay} from 'date-fns';
 import {Accordion, AccordionDetails, AccordionSummary, Button} from '@material-ui/core';
 import {ArrowDropDown, ArrowDropUp, ExpandMore} from '@material-ui/icons';
-
-import InteractionDetailsFields from '../InteractionDetailsFields/InteractionDetailsFields';
 
 import useDateLoading from './hooks/useDateLoading';
 import useDateSelection from './hooks/useDateSelection';
 
 import CheckableDateTitle from './CheckableDateTitle/CheckableDateTitle';
+import InteractionDetailsFields from '../InteractionDetailsFields/InteractionDetailsFields';
 
 import useStyles from './RepetitiveEventFormStyles';
 
@@ -23,7 +22,7 @@ const RepetitiveEventForm = ({selectedDate}: Props) => {
 
     const classes = useStyles();
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (selectedDates.length === 0) {
             initializeEdgeIndexes(selectedDate)
         }

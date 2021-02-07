@@ -12,7 +12,7 @@ import useFormStyles from 'styles/formStyles';
 import useStyles from './InteractionExternalizationFormStyles';
 import repetitiveFieldTools from '../../RepetitiveEventForm/hooks/repetitiveFieldTools';
 
-const ExternalizationForm = ({occurrenceIndex}: {occurrenceIndex?: number}) => {
+const ExternalizationForm = ({occurrenceIndex}: Props) => {
     const {errors, control, setValue, watch} = useFormContext();
     const formClasses = useFormStyles();
     const classes = useStyles();
@@ -93,5 +93,9 @@ const ExternalizationForm = ({occurrenceIndex}: {occurrenceIndex?: number}) => {
         </>
     );
 };
+
+interface Props {
+    occurrenceIndex?: number
+}
 
 export default ExternalizationForm;
