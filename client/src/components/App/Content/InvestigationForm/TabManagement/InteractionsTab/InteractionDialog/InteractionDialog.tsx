@@ -159,8 +159,8 @@ const InteractionDialog = (props: Props) => {
     const validateAndHandleSubmit = methods.handleSubmit(
         () => {
             const filTimeValidationMessage = 'יש למלא שעה';
-            const repetitiveWithoutDatesSelectedErrorMessage = 'באירוע חזרתי יש לבחור מספר תאריכים';
-            const repetitiveFieldMissingMessage = 'יש למלא האם מדובר באירוע חזרתי';
+            const repetitiveWithoutDatesSelectedErrorMessage = 'באירוע מחזור יש לבחור מספר תאריכים';
+            const repetitiveFieldMissingMessage = 'יש למלא האם מדובר באירוע מחזורי';
 
             const data = methods.getValues();
             const isRepetitiveFieldMissing = isNewInteraction && !(typeof data?.isRepetitive === 'boolean');
