@@ -1,4 +1,5 @@
 import React from 'react';
+import {isSameDay} from 'date-fns';
 import {Accordion, AccordionDetails, AccordionSummary, Button} from '@material-ui/core';
 import {ArrowDropDown, ArrowDropUp, ExpandMore} from '@material-ui/icons';
 
@@ -10,8 +11,6 @@ import useDateSelection from './hooks/useDateSelection';
 import CheckableDateTitle from './CheckableDateTitle/CheckableDateTitle';
 
 import useStyles from './RepetitiveEventFormStyles';
-
-import {isSameDay} from "date-fns";
 
 const RepetitiveEventForm = ({selectedDate}: Props) => {
     const {

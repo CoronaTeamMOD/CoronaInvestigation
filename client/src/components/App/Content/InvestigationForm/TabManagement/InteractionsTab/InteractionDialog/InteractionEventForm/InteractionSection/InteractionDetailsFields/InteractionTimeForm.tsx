@@ -9,7 +9,7 @@ import {get} from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import FormInput from 'commons/FormInput/FormInput';
 import TimePick from 'commons/DatePick/TimePick';
 import useFormStyles from 'styles/formStyles';
-import repetitiveFieldTools from "../RepetitiveEventForm/hooks/repetitiveFieldTools";
+import repetitiveFieldTools from '../RepetitiveEventForm/hooks/repetitiveFieldTools';
 
 const TimeForm = ({occurrenceIndex, interactionDate}: { occurrenceIndex?: number; interactionDate: Date; }) => {
     const formClasses = useFormStyles();

@@ -1,4 +1,5 @@
 import {yupResolver} from '@hookform/resolvers';
+import {DevTool} from '@hookform/devtools';
 import React, {useContext, useState} from 'react';
 import {FormProvider, useForm,} from 'react-hook-form';
 import {Dialog, DialogTitle, DialogContent, DialogActions, Button} from '@material-ui/core';
@@ -21,8 +22,6 @@ import InteractionEventSchema from './InteractionEventForm/InteractionSection/In
 import ContactTypeKeys from './InteractionEventForm/ContactsSection/ManualContactsForm/ContactForm/ContactTypeKeys';
 import InteractionEventForm, {InteractionEventFormProps} from './InteractionEventForm/InteractionSection/InteractionEventForm';
 import InteractionFormTabSwitchButton from './InteractionFormTabSwitchButton';
-import {DevTool} from "@hookform/devtools";
-
 
 const InteractionDialog = (props: Props) => {
     const {isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction} = props;

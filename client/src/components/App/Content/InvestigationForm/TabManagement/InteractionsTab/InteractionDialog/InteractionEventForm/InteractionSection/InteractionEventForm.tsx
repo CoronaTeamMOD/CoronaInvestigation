@@ -177,7 +177,7 @@ export default InteractionEventForm;
 
 export interface InteractionEventFormProps {
     onPlaceSubTypeChange: PlacesTypesAndSubTypesProps['onPlaceSubTypeChange'];
-    interactionData?: InteractionEventDialogData
+    interactionData?: InteractionEventDialogData;
     isNewInteraction?: Boolean;
     isVisible: boolean;
 };

@@ -10,7 +10,7 @@ import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
 
 import useStyles from './InteractionExternalizationFormStyles';
-import repetitiveFieldTools from "../../RepetitiveEventForm/hooks/repetitiveFieldTools";
+import repetitiveFieldTools from '../../RepetitiveEventForm/hooks/repetitiveFieldTools';
 
 const ExternalizationForm = ({occurrenceIndex}: {occurrenceIndex?: number}) => {
     const {errors, control, setValue, watch} = useFormContext();
