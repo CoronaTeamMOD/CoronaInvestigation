@@ -1,5 +1,6 @@
 import {isSameDay} from 'date-fns';
 import {useFieldArray, useFormContext} from 'react-hook-form';
+
 import {OccuranceData} from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogFields
     from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
