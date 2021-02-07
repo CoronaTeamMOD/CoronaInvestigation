@@ -2,16 +2,24 @@ import Contact from 'models/Contact';
 import Address from 'models/Address';
 import { DBAddress } from 'models/DBAddress';
 
-interface InteractionEventDialogData {
-    id?: number;
-    placeType: string;
+export interface OccuranceData {
     startTime: Date;
     endTime: Date;
     unknownTime: boolean;
     externalizationApproval: boolean | null;
+    placeDescription?: string;
+}
+
+interface InteractionEventDialogData extends InteractionEventData, OccuranceData {
+    additionalOccurrences?: OccuranceData[]
+}
+
+interface InteractionEventData {
+    id?: number;
+    isRepetitive: boolean | null;
+    placeType: string;
     investigationId: number;
     placeName?: string;
-    placeDescription?: string;
     locationAddress: Address;
     placeSubType: number | null;
     busLine?: string;

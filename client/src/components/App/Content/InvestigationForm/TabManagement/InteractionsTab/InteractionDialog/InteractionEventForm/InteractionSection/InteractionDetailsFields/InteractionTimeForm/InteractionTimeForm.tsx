@@ -1,6 +1,5 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Controller, useFormContext} from 'react-hook-form';
-import {isValid} from 'date-fns';
 import {Checkbox, FormControlLabel, Grid} from '@material-ui/core';
 
 import InteractionEventDialogFields
@@ -9,54 +8,38 @@ import {get} from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import FormInput from 'commons/FormInput/FormInput';
 import TimePick from 'commons/DatePick/TimePick';
 import useFormStyles from 'styles/formStyles';
+import repetitiveFieldTools from '../../RepetitiveEventForm/hooks/repetitiveFieldTools';
+import useInteractionTimeForm from './useInteractionTimeForm';
 
-const TimeForm = () => {
+const TimeForm = ({occurrenceIndex, interactionDate}: InteractionTimeFormProps) => {
     const formClasses = useFormStyles();
-    const { control, watch, errors, setValue, clearErrors, setError } = useFormContext();
-    const startTime = watch(InteractionEventDialogFields.START_TIME) || null;
-    const endTime = watch(InteractionEventDialogFields.END_TIME) || null;
-    const isUnknownTime = watch(InteractionEventDialogFields.UNKNOWN_TIME);
+    const {control, watch, errors, setValue, getValues} = useFormContext();
 
-    const isEndTimeValid = (fieldName : string, currentTime : Date ) => {
-        if(fieldName === InteractionEventDialogFields.END_TIME) {
-            return startTime && currentTime.getTime() > startTime.getTime()
-        }
-        return true;
-    };
+    const {generateFieldName} = repetitiveFieldTools(occurrenceIndex);
+    const {handleTimeChange} = useInteractionTimeForm(occurrenceIndex, interactionDate);
 
-    const handleTimeChange = (currentTime: Date, interactionDate: Date, fieldName: string) => {
-        if (isValid(currentTime)) {
-            if(isEndTimeValid(fieldName , currentTime)) {
-                let newDate = new Date(interactionDate.getTime());
+    const startTime = watch(generateFieldName(InteractionEventDialogFields.START_TIME));
+    const isUnknownTime = watch(generateFieldName(InteractionEventDialogFields.UNKNOWN_TIME));
 
-                newDate.setHours(currentTime.getHours());
-                newDate.setMinutes(currentTime.getMinutes());
-
-                if (newDate.getTime()) {
-                    clearErrors(fieldName);
-                    setValue(fieldName, newDate);
-                }
-            } else {
-                setError(fieldName, {type: 'manual', message: 'שעת סיום לא תקינה'});
-            }
-        } else {
-            setError(fieldName, {type: 'manual', message: 'שעה לא תקינה'});
-        }
-    };
+    useEffect(()=> {
+        !startTime && setValue(generateFieldName( InteractionEventDialogFields.START_TIME),interactionDate);
+        const endTime = getValues()[generateFieldName( InteractionEventDialogFields.END_TIME)];
+        !endTime && setValue(generateFieldName( InteractionEventDialogFields.END_TIME),interactionDate);
+    }, [interactionDate]);
 
     return (
         <Grid className={formClasses.formRow} container justify='flex-start'>
-            <FormInput xs={5} fieldName='משעה'>
+            <FormInput xs={5} labelLength={4} fieldName='משעה'>
                 <Controller
-                    name={InteractionEventDialogFields.START_TIME}
+                    name={generateFieldName(InteractionEventDialogFields.START_TIME)}
                     control={control}
                     render={(props) => (
                         <TimePick
                             disabled={isUnknownTime as boolean}
                             testId='contactLocationStartTime'
-                            value={startTime}
+                            value={props.value ?? interactionDate}
                             onChange={(newTime: Date) => {
-                                handleTimeChange(newTime, startTime, InteractionEventDialogFields.START_TIME)
+                                handleTimeChange(newTime, InteractionEventDialogFields.START_TIME)
                             }}
                             labelText={get(errors, props.name) ? get(errors, props.name).message : 'משעה*'}
                             error={get(errors, props.name)}
@@ -66,15 +49,15 @@ const TimeForm = () => {
             </FormInput>
             <FormInput xs={4} fieldName='עד שעה'>
                 <Controller
-                    name={InteractionEventDialogFields.END_TIME}
+                    name={generateFieldName(InteractionEventDialogFields.END_TIME)}
                     control={control}
                     render={(props) => (
                         <TimePick
                             disabled={isUnknownTime as boolean}
                             testId='contactLocationEndTime'
-                            value={endTime}
+                            value={props.value ?? interactionDate}
                             onChange={(newTime: Date) => {
-                                handleTimeChange(newTime, endTime, InteractionEventDialogFields.END_TIME)
+                                handleTimeChange(newTime, InteractionEventDialogFields.END_TIME)
                             }}
                             labelText={get(errors, props.name) ? get(errors, props.name).message : 'עד שעה*'}
                             error={get(errors, props.name)}
@@ -84,7 +67,7 @@ const TimeForm = () => {
             </FormInput>
             <FormInput xs={3}>
                 <Controller
-                    name={InteractionEventDialogFields.UNKNOWN_TIME}
+                    name={generateFieldName(InteractionEventDialogFields.UNKNOWN_TIME)}
                     control={control}
                     render={(props) =>
                         <FormControlLabel
@@ -103,5 +86,10 @@ const TimeForm = () => {
         </Grid>
     );
 };
+
+export interface InteractionTimeFormProps {
+    occurrenceIndex?: number;
+    interactionDate: Date;
+}
 
 export default TimeForm;

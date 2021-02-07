@@ -10,17 +10,22 @@ import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
 
 import useStyles from './InteractionExternalizationFormStyles';
+import repetitiveFieldTools from '../../RepetitiveEventForm/hooks/repetitiveFieldTools';
 
-const ExternalizationForm = () => {
+const ExternalizationForm = ({occurrenceIndex}: Props) => {
     const {errors, control, setValue, watch} = useFormContext();
     const formClasses = useFormStyles();
     const classes = useStyles();
 
+    const {generateFieldName} = repetitiveFieldTools(occurrenceIndex);
+
     const placeType = watch(InteractionEventDialogFields.PLACE_TYPE);
-    const isUnknownTime = watch(InteractionEventDialogFields.UNKNOWN_TIME);
     const locationAddress = watch(InteractionEventDialogFields.LOCATION_ADDRESS);
     const placeName = watch(InteractionEventDialogFields.PLACE_NAME);
-    const placeDescription = watch(InteractionEventDialogFields.PLACE_DESCRIPTION);
+    const placeDescription = watch(generateFieldName(InteractionEventDialogFields.PLACE_DESCRIPTION));
+    const isUnknownTime = watch(generateFieldName(InteractionEventDialogFields.UNKNOWN_TIME));
+
+    const externalizationFieldName = generateFieldName(InteractionEventDialogFields.EXTERNALIZATION_APPROVAL);
 
     const externalizationErrorMessage = React.useMemo<string>(() => {
         const initialMessage = '*שים לב כי לא ניתן להחצין מקום אם ';
@@ -41,14 +46,14 @@ const ExternalizationForm = () => {
         if (externalizationErrors.length === 0) {
             return '';
         } else {
-            setValue(InteractionEventDialogFields.EXTERNALIZATION_APPROVAL, null);
+            setValue(externalizationFieldName, null);
             return initialMessage.concat(externalizationErrors.join(', '));
         }
     }, [placeType, isUnknownTime, locationAddress, placeName, placeDescription]);
 
     useEffect(() => {
         if (externalizationErrorMessage) {
-            setValue(InteractionEventDialogFields.EXTERNALIZATION_APPROVAL, null)
+            setValue(externalizationFieldName, null)
         }
     }, [externalizationErrorMessage]);
 
@@ -57,7 +62,7 @@ const ExternalizationForm = () => {
             <Grid className={formClasses.formRow} container justify='flex-start'>
                 <FormInput xs={7} fieldName='האם מותר להחצנה'>
                     <Controller
-                        name={InteractionEventDialogFields.EXTERNALIZATION_APPROVAL}
+                        name={externalizationFieldName}
                         control={control}
                         render={(props) => (
                             <Toggle
@@ -73,7 +78,7 @@ const ExternalizationForm = () => {
                 {
                     !Boolean(externalizationErrorMessage) &&
                     <Typography
-                        color={errors[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL] ? 'error' : 'initial'}>
+                        color={errors[externalizationFieldName] ? 'error' : 'initial'}>
                         חובה לבחור החצנה
                     </Typography>
                 }
@@ -88,5 +93,9 @@ const ExternalizationForm = () => {
         </>
     );
 };
+
+interface Props {
+    occurrenceIndex?: number
+}
 
 export default ExternalizationForm;

@@ -1,30 +1,30 @@
-import { yupResolver } from '@hookform/resolvers';
-import React, { useContext, useState } from 'react';
-import { FormProvider, useForm, } from 'react-hook-form';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
+import {yupResolver} from '@hookform/resolvers';
+import {DevTool} from '@hookform/devtools';
+import React, {useContext, useState} from 'react';
+import {FormProvider, useForm,} from 'react-hook-form';
+import {Dialog, DialogTitle, DialogContent, DialogActions, Button} from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import InvolvedContact from 'models/InvolvedContact';
 import PlaceSubType from 'models/PlaceSubType';
-import { groupedInvestigationsContext } from 'commons/Contexts/GroupedInvestigationFormContext';
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import {groupedInvestigationsContext} from 'commons/Contexts/GroupedInvestigationFormContext';
+import InteractionEventDialogData, {OccuranceData} from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import { familyMembersContext } from 'commons/Contexts/FamilyMembersContext';
-import useDuplicateContactId, { IdToCheck } from 'Utils/Contacts/useDuplicateContactId';
+import {familyMembersContext} from 'commons/Contexts/FamilyMembersContext';
+import useDuplicateContactId, {IdToCheck} from 'Utils/Contacts/useDuplicateContactId';
 
 import useStyles from './InteractionDialogStyles';
 import useInteractionsForm from './InteractionEventForm/useInteractionsForm';
 import ContactsTabs from './InteractionEventForm/ContactsSection/ContactsTabs';
 import InteractionEventSchema from './InteractionEventForm/InteractionSection/InteractionEventSchema';
 import ContactTypeKeys from './InteractionEventForm/ContactsSection/ManualContactsForm/ContactForm/ContactTypeKeys';
-import InteractionEventForm, { InteractionEventFormProps } from './InteractionEventForm/InteractionSection/InteractionEventForm';
+import InteractionEventForm, {InteractionEventFormProps} from './InteractionEventForm/InteractionSection/InteractionEventForm';
 import InteractionFormTabSwitchButton from './InteractionFormTabSwitchButton';
 
-
 const InteractionDialog = (props: Props) => {
-    const { isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction } = props;
+    const {isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction} = props;
     const [isAddingContacts, setIsAddingContacts] = React.useState(false);
     const [groupedInvestigationContacts, setGroupedInvestigationContacts] = useState<number[]>([]);
     const groupedInvestigationsContextState = useContext(groupedInvestigationsContext);
@@ -38,15 +38,20 @@ const InteractionDialog = (props: Props) => {
     });
 
     const classes = useStyles();
-    const { familyMembers } = useContext(familyMembersContext);
+    const {familyMembers} = useContext(familyMembersContext);
     const [placeSubtypeName, setPlaceSubtypeName] = useState<string>('');
     const isUnknownTime = methods.watch(InteractionEventDialogFields.UNKNOWN_TIME);
     const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
     const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
     const interactionEndTime = methods.watch(InteractionEventDialogFields.END_TIME);
     const initialInteractionDate = React.useRef<Date>(new Date(interactionData?.startTime as Date));
-    const { saveInteractions } = useInteractionsForm({ loadInteractions, loadInvolvedContacts, onDialogClose, groupedInvestigationContacts });
-    const { checkDuplicateIdsForInteractions } = useDuplicateContactId();
+    const {saveInteractions} = useInteractionsForm({
+        loadInteractions,
+        loadInvolvedContacts,
+        onDialogClose,
+        groupedInvestigationContacts
+    });
+    const {checkDuplicateIdsForInteractions} = useDuplicateContactId();
 
     const addFamilyMemberContacts = (contacts: Contact[]) => {
         familyMembers.forEach((familyMember: InvolvedContact) => {
@@ -76,20 +81,29 @@ const InteractionDialog = (props: Props) => {
         }
     };
 
+    const convertAdditionalOccurances = (data: OccuranceData) => ({
+        ...data,
+        externalizationApproval: Boolean(data.externalizationApproval),
+        unknownTime:  Boolean(data.unknownTime),
+    });
+
     const convertData = (data: InteractionEventDialogData) => {
         initialInteractionDate.current.setHours(0, 0, 0, 0);
         const startTimeToSave = isUnknownTime ? initialInteractionDate.current : data.startTime;
         const endTimeToSave = isUnknownTime ? initialInteractionDate.current : data.endTime;
+        const contacts = data[InteractionEventDialogFields.IS_REPETITIVE] ? [] : data[InteractionEventDialogFields.CONTACTS];
         return {
             ...data,
             [InteractionEventDialogFields.START_TIME]: startTimeToSave,
             [InteractionEventDialogFields.END_TIME]: endTimeToSave,
+            [InteractionEventDialogFields.UNKNOWN_TIME]: Boolean(data[InteractionEventDialogFields.UNKNOWN_TIME]),
             [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
             [InteractionEventDialogFields.PLACE_NAME]: Boolean(data[InteractionEventDialogFields.PLACE_NAME]) ?
                 data[InteractionEventDialogFields.PLACE_NAME] : generatePlacenameByPlaceSubType(placeSubtypeName),
             [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: Boolean(data[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]),
-            [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS] ?
-                data[InteractionEventDialogFields.CONTACTS].map((contact: Contact, index: number) => {
+            [InteractionEventDialogFields.ADDITIONAL_OCCURRENCES]:
+            data[InteractionEventDialogFields.ADDITIONAL_OCCURRENCES]?.map(convertAdditionalOccurances) || [],
+            [InteractionEventDialogFields.CONTACTS]: contacts?.map((contact: Contact, index: number) => {
                     const serialId = methods.watch<string, number>(`${InteractionEventDialogFields.CONTACTS}[${index}].${InteractionEventContactFields.ID}`)
                     if (serialId) {
                         return {
@@ -99,7 +113,7 @@ const InteractionDialog = (props: Props) => {
                     } else {
                         return contact
                     }
-                }) : []
+                }) || []
         }
     };
 
@@ -109,7 +123,7 @@ const InteractionDialog = (props: Props) => {
             serialId: contact[InteractionEventContactFields.ID]
         })
     });
-    
+
     const onSubmit = (data: InteractionEventDialogData) => {
         if (!data.contacts) {
             data.contacts = [];
@@ -130,19 +144,27 @@ const InteractionDialog = (props: Props) => {
             saveInteractions(interactionDataToSave);
         }
     };
+
     const onPlaceSubtypeChange = (newValue: PlaceSubType | null) => {
         if (newValue) {
             setPlaceSubtypeName(newValue?.displayName);
-            methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, newValue.id, { shouldValidate: true });
+            methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, newValue.id, {shouldValidate: true});
         } else {
             setPlaceSubtypeName('');
-            methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, null, { shouldValidate: true });
+            methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, null, {shouldValidate: true});
         }
     };
 
     const validateAndHandleSubmit = methods.handleSubmit(
         () => {
             const filTimeValidationMessage = 'יש למלא שעה';
+            const repetitiveWithoutDatesSelectedErrorMessage = 'באירוע מחזורי יש לבחור מספר תאריכים';
+            const repetitiveFieldMissingMessage = 'יש למלא האם מדובר באירוע מחזורי';
+
+            const data = methods.getValues();
+            const isRepetitiveFieldMissing = isNewInteraction && !(typeof data?.isRepetitive === 'boolean');
+            const isRepetitiveInvalid = isRepetitiveFieldMissing
+                || (data?.isRepetitive && !(data.additionalOccurrences && data.additionalOccurrences.length > 0));
             if (!isUnknownTime) {
                 if (!interactionStartTime) {
                     methods.setError(InteractionEventDialogFields.START_TIME, {
@@ -157,8 +179,18 @@ const InteractionDialog = (props: Props) => {
                     });
                 }
             }
-            if (Boolean(interactionStartTime && interactionEndTime) || isUnknownTime) {
-                const data = methods.getValues();
+
+            if (isRepetitiveInvalid) {
+                methods.setError(InteractionEventDialogFields.IS_REPETITIVE, {
+                    type: 'manual',
+                    message: isRepetitiveFieldMissing
+                        ? repetitiveFieldMissingMessage
+                        : repetitiveWithoutDatesSelectedErrorMessage
+                });
+            }
+
+            const canSubmit = (!!(interactionStartTime && interactionEndTime) || isUnknownTime) && !isRepetitiveInvalid;
+            if (canSubmit) {
                 delete data.privateHouseAddress;
                 onSubmit(data);
             }
@@ -166,7 +198,8 @@ const InteractionDialog = (props: Props) => {
 
     return (
         <FormProvider {...methods}>
-            <Dialog classes={{ paper: classes.dialogPaper }} open={isOpen} maxWidth={false}>
+            <DevTool control={methods.control}/>
+            <Dialog classes={{paper: classes.dialogPaper}} open={isOpen} maxWidth={false}>
                 <DialogTitle className={classes.dialogTitleWrapper}>
                     {dialogTitle}
                 </DialogTitle>
@@ -179,16 +212,16 @@ const InteractionDialog = (props: Props) => {
                             isNewInteraction={isNewInteraction}
                             onPlaceSubTypeChange={onPlaceSubtypeChange}
                         />
-                        <ContactsTabs 
+                        <ContactsTabs
                             isVisible={isAddingContacts}
                         />
                     </form>
                 </DialogContent>
                 <DialogActions className={`${classes.dialogFooter}`}>
 
-                   <InteractionFormTabSwitchButton isAddingContacts={isAddingContacts}
-                                                   setIsAddingContacts={setIsAddingContacts}
-                                                   isNewInteraction={isNewInteraction}/>
+                    <InteractionFormTabSwitchButton isAddingContacts={isAddingContacts}
+                                                    setIsAddingContacts={setIsAddingContacts}
+                                                    isNewInteraction={isNewInteraction}/>
 
                     <div>
                         <Button
@@ -196,14 +229,14 @@ const InteractionDialog = (props: Props) => {
                             color='default'
                             className={classes.cancelButton}>
                             בטל
-                    </Button>
+                        </Button>
                         <PrimaryButton
                             form='interactionEventForm'
                             type='submit'
                             id='createContact'
                         >
                             {`${isNewInteraction ? 'צור' : 'ערוך'} מקום ומגעים`}
-                    </PrimaryButton>
+                        </PrimaryButton>
                     </div>
                 </DialogActions>
             </Dialog>
