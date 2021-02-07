@@ -9,23 +9,27 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 
 import TimeForm from './InteractionTimeForm';
 import ExternalizationForm from './InteractionExternalizationForm/InteractionExternalizationForm';
+import repetitiveFieldTools from "../RepetitiveEventForm/hooks/repetitiveFieldTools";
 
-const InteractionDetailsFields = () => {
+const InteractionDetailsFields = ({index, interactionDate}: Props) => {
     const {control, watch} = useFormContext();
 
+    console.log('date', interactionDate)
     const placeType = watch(InteractionEventDialogFields.PLACE_TYPE);
     const placeSubType = watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
     const {isNamedLocation} = useMemo(() => getOptionsByPlaceAndSubplaceType(placeType, placeSubType), [placeType, placeSubType]);
 
+    const {generateFieldName} = repetitiveFieldTools(index);
+
     return (
         <>
-            <TimeForm/>
+            <TimeForm occurrenceIndex={index} interactionDate={interactionDate} />
 
             {
                 isNamedLocation &&
-                <FormInput xs={5} labelLength={3} fieldName='פירוט נוסף'>
+                <FormInput xs={7} labelLength={3} fieldName='פירוט נוסף'>
                     <Controller control={control}
-                                name={InteractionEventDialogFields.PLACE_DESCRIPTION}
+                                name={generateFieldName(InteractionEventDialogFields.PLACE_DESCRIPTION)}
                                 render={(props) => (
                                     <AlphanumericTextField
                                         name={props.name}
@@ -38,9 +42,14 @@ const InteractionDetailsFields = () => {
                 </FormInput>
             }
 
-            <ExternalizationForm/>
+            <ExternalizationForm occurrenceIndex={index}/>
         </>
     );
 };
+
+interface Props {
+    index?: number;
+    interactionDate: Date;
+}
 
 export default InteractionDetailsFields;

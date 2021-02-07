@@ -27,8 +27,7 @@ const additionalContactText = ' נוסף';
 
 const ManualContactsForm = () => {
     const { control } = useFormContext();
-    const { fields, append } = useFieldArray<Contact>({ control, name: InteractionEventDialogFields.CONTACTS });
-    const contacts = fields;
+    const { fields: contacts, append } = useFieldArray<Contact>({ control, name: InteractionEventDialogFields.CONTACTS });
 
     const addContactButton = contacts.length > 0 ? addContactText.concat(additionalContactText): addContactText;
 

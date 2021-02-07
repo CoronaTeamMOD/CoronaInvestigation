@@ -1,8 +1,7 @@
 import {useSelector} from 'react-redux';
 import React, {useEffect, useMemo,} from 'react';
 import {useFormContext, Controller} from 'react-hook-form';
-import {isSameDay} from 'date-fns';
-import {Grid, Divider, Collapse} from '@material-ui/core';
+import {Grid, Divider, Collapse, Typography} from '@material-ui/core';
 
 import StoreStateType from 'redux/storeStateType';
 import FlattenedDBAddress from 'models/DBAddress';
@@ -30,13 +29,9 @@ const ADDRESS_LABEL = 'כתובת';
 const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     {onPlaceSubTypeChange, isVisible, interactionData, isNewInteraction}: InteractionEventFormProps): JSX.Element => {
 
-    const {control, watch, setValue} = useFormContext();
+    const {control, watch, setValue, errors} = useFormContext();
     const patientAddress = useSelector<StoreStateType, FlattenedDBAddress>(state => state.address);
-    const doesHaveSymptoms = useSelector<StoreStateType, boolean>(state => state.investigation.doesHaveSymptoms);
-    const symptomsStartDate = useSelector<StoreStateType, Date | null>(state => state.investigation.symptomsStartDate);
-    const validationDate = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
     const {city, floor, houseNum, street} = patientAddress;
-    const datesToInvestigate = getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, validationDate);
 
     const placeType = watch(InteractionEventDialogFields.PLACE_TYPE);
     const placeSubType = watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
@@ -131,7 +126,8 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
             </Collapse>
 
             {
-                isNewInteraction
+                interactionData && (
+                    isNewInteraction
                     ?
                     <div>
                         <FormInput xs={7} fieldName='האם האירוע מחזורי ?'>
@@ -140,7 +136,6 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                                 control={control}
                                 render={(props) => (
                                     <Toggle
-                                        disabled={true} // disabled until logic is implemented
                                         value={props.value}
                                         onChange={(event, value) => value !== null && props.onChange(value)}
                                         className={formClasses.formToggle}
@@ -149,21 +144,24 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                             />
                         </FormInput>
                         {
+                            errors[InteractionEventDialogFields.IS_REPETITIVE] &&
+                            <Typography color='error'>
+                                {errors[InteractionEventDialogFields.IS_REPETITIVE].message}
+                            </Typography>
+                        }
+                        {
                             (interactionData && typeof isRepetitive === 'boolean') && (
                                 isRepetitive
-                                    ? <RepetitiveEventForm datesToOffer={datesToInvestigate}
-                                                           selectedDateIndex={
-                                                               datesToInvestigate.findIndex(date =>
-                                                                   isSameDay(date, interactionData.startTime))
-                                                           }/>
+                                    ? <RepetitiveEventForm selectedDate={interactionData.startTime}/>
                                     : <>
                                         <DetailsFieldsTitle date={interactionData.startTime}/>
-                                        <InteractionDetailsFields/>
+                                        <InteractionDetailsFields interactionDate={interactionData.startTime}/>
                                     </>
                             )
                         }
                     </div>
-                    : <InteractionDetailsFields/>
+                    : <InteractionDetailsFields interactionDate={interactionData.startTime}/>
+                )
             }
 
             <Divider light={true}/>
@@ -179,7 +177,7 @@ export default InteractionEventForm;
 
 export interface InteractionEventFormProps {
     onPlaceSubTypeChange: PlacesTypesAndSubTypesProps['onPlaceSubTypeChange'];
-    interactionData?: InteractionEventDialogData;
+    interactionData?: InteractionEventDialogData
     isNewInteraction?: Boolean;
     isVisible: boolean;
 };

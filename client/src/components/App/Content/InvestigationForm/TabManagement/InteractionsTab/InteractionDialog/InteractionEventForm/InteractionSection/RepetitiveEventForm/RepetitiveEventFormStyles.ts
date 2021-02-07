@@ -2,11 +2,11 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles({
    formSection: {
-       width: '50%',
+       width: '75%',
        flexWrap: 'wrap'
    },
     formSectionTitle: {
-       width: '15%'
+       width: '25%'
    },
 });
 

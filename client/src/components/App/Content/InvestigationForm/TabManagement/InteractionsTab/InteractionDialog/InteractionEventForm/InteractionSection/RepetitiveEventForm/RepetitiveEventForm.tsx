@@ -4,32 +4,31 @@ import {ArrowDropDown, ArrowDropUp, ExpandMore} from '@material-ui/icons';
 
 import InteractionDetailsFields from '../InteractionDetailsFields/InteractionDetailsFields';
 
-import useDateLoading from './useDateLoading';
-import useDateSelection from './useDateSelection';
+import useDateLoading from './hooks/useDateLoading';
+import useDateSelection from './hooks/useDateSelection';
 
 import CheckableDateTitle from './CheckableDateTitle/CheckableDateTitle';
 
 import useStyles from './RepetitiveEventFormStyles';
 
-const RepetitiveEventForm = ({datesToOffer, selectedDateIndex}: Props) => {
+import {isSameDay} from "date-fns";
+
+const RepetitiveEventForm = ({selectedDate}: Props) => {
     const {
         initializeEdgeIndexes, daysToDisplay,
         hasFutureDaysToLoad, hasPastDaysToLoad,
         loadNextDays, loadPreviousDays
-    } = useDateLoading(datesToOffer);
+    } = useDateLoading();
 
-    const { selectedDates, isDateSelected, onDateCheckClick, initializeSelectedDate} = useDateSelection();
+    const {selectedDates, getDateIndex, onDateCheckClick} = useDateSelection();
 
     const classes = useStyles();
 
-
     React.useEffect(() => {
         if (selectedDates.length === 0) {
-            initializeSelectedDate(datesToOffer[selectedDateIndex]);
-            initializeEdgeIndexes(selectedDateIndex)
+            initializeEdgeIndexes(selectedDate)
         }
-    }, [selectedDateIndex]);
-
+    }, [selectedDate]);
 
     return (
         <>
@@ -40,21 +39,25 @@ const RepetitiveEventForm = ({datesToOffer, selectedDateIndex}: Props) => {
                 </Button>
             }
             {
-                daysToDisplay.map(day =>
-                    isDateSelected(day)
-                        ? <Accordion elevation={0} defaultExpanded>
-                            <AccordionSummary expandIcon={<ExpandMore/>}
-                                              className={classes.formSectionTitle}>
-                                <CheckableDateTitle day={day} isDateSelected={true} onDateCheckClick={onDateCheckClick}/>
+                daysToDisplay.map(day => {
+                    const dateIndex = getDateIndex(day);
+                    const isInitialDay = isSameDay(selectedDate, day);
+                    return (dateIndex >= 0 || isInitialDay)
+                        ? <Accordion key={day.getTime()} elevation={0} defaultExpanded>
+                            <AccordionSummary expandIcon={<ExpandMore/>} className={classes.formSectionTitle}>
+                                <CheckableDateTitle disabled={isInitialDay}
+                                                    day={day} isDateSelected={true}
+                                                    onDateCheckClick={onDateCheckClick}/>
                             </AccordionSummary>
                             <AccordionDetails classes={{root: classes.formSection}}>
-                                <InteractionDetailsFields/>
+                                <InteractionDetailsFields interactionDate={day}
+                                                          {...!isInitialDay && {index: dateIndex}}/>
                             </AccordionDetails>
                         </Accordion>
-                        : <div className='.MuiAccordion-root .MuiAccordionSummary-root'>
+                        : <div key={day.getTime()} className='.MuiAccordion-root .MuiAccordionSummary-root'>
                             <CheckableDateTitle day={day} isDateSelected={false} onDateCheckClick={onDateCheckClick}/>
                         </div>
-                )
+                })
             }
             {
                 hasFutureDaysToLoad &&
@@ -67,8 +70,7 @@ const RepetitiveEventForm = ({datesToOffer, selectedDateIndex}: Props) => {
 };
 
 interface Props {
-    datesToOffer: Date[];
-    selectedDateIndex: number;
+    selectedDate: Date;
 }
 
 export default RepetitiveEventForm;
