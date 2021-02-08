@@ -11,6 +11,7 @@ import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import useStyles from './ContactDateCardStyles';
 import InteractionCard from './InteractionCard/InteractionCard';
+import RepetitiveEventIcon from './RepetitiveEventIcon';
 
 const ContactDateCard: React.FC<Props> = (props: Props) => {
 
@@ -42,6 +43,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                         יום {DayOfWeek[contactDate.getUTCDay()] + ' '}
                         {format(contactDate, 'dd/MM/yyyy')}
                     </Typography>
+                    {interactions?.some(interaction => interaction.isRepetitive) && <RepetitiveEventIcon/>}
                 </div>
                 {
                     interactions !== undefined &&

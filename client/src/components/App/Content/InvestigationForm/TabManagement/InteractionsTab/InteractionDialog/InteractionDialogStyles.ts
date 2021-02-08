@@ -30,6 +30,9 @@ const useStyles = makeStyles({
     changeEventSubFormButton: {
         color: '#107F9B',
         fontWeight: 'bold'
+    },
+    footerActionButtons: {
+        display: 'flex',
     }
 });
 

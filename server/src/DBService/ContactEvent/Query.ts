@@ -70,6 +70,7 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!, $minimalDateT
   allContactEvents(filter: {investigationId: {equalTo: $currInvestigation}, startTime: {greaterThanOrEqualTo: $minimalDateToFilter}}) {
     nodes {
       id
+      isRepetitive
       unknownTime
       hospitalDepartment
       airline

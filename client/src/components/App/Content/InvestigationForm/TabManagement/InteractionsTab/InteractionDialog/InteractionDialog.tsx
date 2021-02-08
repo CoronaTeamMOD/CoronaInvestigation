@@ -1,14 +1,14 @@
 import {yupResolver} from '@hookform/resolvers';
 import {DevTool} from '@hookform/devtools';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useMemo, useState} from 'react';
 import {FormProvider, useForm,} from 'react-hook-form';
-import {Dialog, DialogTitle, DialogContent, DialogActions, Button} from '@material-ui/core';
+import {Dialog, DialogTitle, DialogContent, DialogActions, Button, Tooltip} from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import InvolvedContact from 'models/InvolvedContact';
 import PlaceSubType from 'models/PlaceSubType';
 import {groupedInvestigationsContext} from 'commons/Contexts/GroupedInvestigationFormContext';
-import InteractionEventDialogData, {OccuranceData} from 'models/Contexts/InteractionEventDialogData';
+import InteractionEventDialogData, {DateData, OccuranceData} from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
@@ -22,6 +22,14 @@ import InteractionEventSchema from './InteractionEventForm/InteractionSection/In
 import ContactTypeKeys from './InteractionEventForm/ContactsSection/ManualContactsForm/ContactForm/ContactTypeKeys';
 import InteractionEventForm, {InteractionEventFormProps} from './InteractionEventForm/InteractionSection/InteractionEventForm';
 import InteractionFormTabSwitchButton from './InteractionFormTabSwitchButton';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import repetitiveFieldTools
+    from './InteractionEventForm/InteractionSection/RepetitiveEventForm/hooks/repetitiveFieldTools';
+import theme from 'styles/theme';
+
+const filTimeValidationMessage = 'יש למלא שעה';
+const repetitiveWithoutDatesSelectedErrorMessage = 'שים לב שלא ניתן לשמור אירוע מחזורי עם תאריך אחד בלבד';
+const repetitiveFieldMissingMessage = 'יש למלא האם מדובר באירוע מחזורי';
 
 const InteractionDialog = (props: Props) => {
     const {isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction} = props;
@@ -30,6 +38,7 @@ const InteractionDialog = (props: Props) => {
     const groupedInvestigationsContextState = useContext(groupedInvestigationsContext);
     groupedInvestigationsContextState.groupedInvestigationContacts = groupedInvestigationContacts;
     groupedInvestigationsContextState.setGroupedInvestigationContacts = setGroupedInvestigationContacts;
+    const { alertWarning } = useCustomSwal();
 
     const methods = useForm<InteractionEventDialogData>({
         defaultValues: interactionData,
@@ -44,7 +53,22 @@ const InteractionDialog = (props: Props) => {
     const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
     const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
     const interactionEndTime = methods.watch(InteractionEventDialogFields.END_TIME);
+    const isRepetitive = methods.watch(InteractionEventDialogFields.IS_REPETITIVE);
+    const additionalOccurrences = methods.watch(InteractionEventDialogFields.ADDITIONAL_OCCURRENCES, []);
     const initialInteractionDate = React.useRef<Date>(new Date(interactionData?.startTime as Date));
+
+    const isRepetitiveFieldInvalid = useMemo(() => {
+            const isRepetitiveFieldMissing = isNewInteraction && !(typeof isRepetitive === 'boolean');
+            const missingAdditionalDate = isRepetitive && !(additionalOccurrences && additionalOccurrences.length > 0);
+
+            return {
+                RepetitiveFieldMissingMessage: isRepetitiveFieldMissing ? repetitiveFieldMissingMessage : '',
+                missingAdditionalDateMessage: missingAdditionalDate ? repetitiveWithoutDatesSelectedErrorMessage : '',
+                invalid: isRepetitiveFieldMissing || missingAdditionalDate
+            }
+        },
+        [isRepetitive, isNewInteraction,additionalOccurrences]);
+
     const {saveInteractions} = useInteractionsForm({
         loadInteractions,
         loadInvolvedContacts,
@@ -141,7 +165,18 @@ const InteractionDialog = (props: Props) => {
 
         const contactsIdsToCheck: IdToCheck[] = groupedInvestigationsContextState.allContactIds;
         if (!checkDuplicateIdsForInteractions(contactsIdsToCheck)) {
-            saveInteractions(interactionDataToSave);
+            alertWarning('שים לב כי לא הוזנו עד כה מגעים לאירועים מחזוריים\n' +
+                'ותצטרך להוסיף אותם בנפרד לכל תאריך שיצרת בו אירוע ', {
+                showCancelButton: true,
+                cancelButtonText: 'בטל',
+                cancelButtonColor: theme.palette.error.main,
+                confirmButtonColor: theme.palette.primary.main,
+                confirmButtonText: 'אישור',
+            }).then(result => {
+                if (result.value) {
+                    saveInteractions(interactionDataToSave);
+                }
+            })
         }
     };
 
@@ -155,46 +190,41 @@ const InteractionDialog = (props: Props) => {
         }
     };
 
-    const validateAndHandleSubmit = methods.handleSubmit(
-        () => {
-            const filTimeValidationMessage = 'יש למלא שעה';
-            const repetitiveWithoutDatesSelectedErrorMessage = 'באירוע מחזורי יש לבחור מספר תאריכים';
-            const repetitiveFieldMissingMessage = 'יש למלא האם מדובר באירוע מחזורי';
+    const getAndSetDateErrors =(data:DateData, index?:number) => {
+        const {generateFieldName} = repetitiveFieldTools(index);
 
-            const data = methods.getValues();
-            const isRepetitiveFieldMissing = isNewInteraction && !(typeof data?.isRepetitive === 'boolean');
-            const isRepetitiveInvalid = isRepetitiveFieldMissing
-                || (data?.isRepetitive && !(data.additionalOccurrences && data.additionalOccurrences.length > 0));
-            if (!isUnknownTime) {
-                if (!interactionStartTime) {
-                    methods.setError(InteractionEventDialogFields.START_TIME, {
-                        type: 'manual',
-                        message: filTimeValidationMessage
-                    });
-                }
-                if (!interactionEndTime) {
-                    methods.setError(InteractionEventDialogFields.END_TIME, {
-                        type: 'manual',
-                        message: filTimeValidationMessage
-                    });
-                }
-            }
-
-            if (isRepetitiveInvalid) {
-                methods.setError(InteractionEventDialogFields.IS_REPETITIVE, {
+        if (!data.unknownTime) {
+            if (!data.startTime) {
+                methods.setError(generateFieldName(InteractionEventDialogFields.START_TIME), {
                     type: 'manual',
-                    message: isRepetitiveFieldMissing
-                        ? repetitiveFieldMissingMessage
-                        : repetitiveWithoutDatesSelectedErrorMessage
+                    message: filTimeValidationMessage
                 });
             }
+            if (!data.endTime) {
+                methods.setError(generateFieldName(InteractionEventDialogFields.END_TIME), {
+                    type: 'manual',
+                    message: filTimeValidationMessage
+                });
+            }
+        }
 
-            const canSubmit = (!!(interactionStartTime && interactionEndTime) || isUnknownTime) && !isRepetitiveInvalid;
+        return (!data.unknownTime && (!data.startTime || !data.endTime));
+    };
+
+    const validateAndHandleSubmit = methods.handleSubmit(
+        () => {
+            const datesHaveError =
+                getAndSetDateErrors({unknownTime: isUnknownTime,startTime: interactionStartTime, endTime: interactionEndTime })
+               || additionalOccurrences?.map((occurence, index) => getAndSetDateErrors(occurence, index)).some(Boolean);
+
+            const canSubmit = !(datesHaveError || isRepetitiveFieldInvalid.invalid);
+
             if (canSubmit) {
+                const data = methods.getValues();
                 delete data.privateHouseAddress;
                 onSubmit(data);
             }
-        })
+        });
 
     return (
         <FormProvider {...methods}>
@@ -223,20 +253,25 @@ const InteractionDialog = (props: Props) => {
                                                     setIsAddingContacts={setIsAddingContacts}
                                                     isNewInteraction={isNewInteraction}/>
 
-                    <div>
+                    <div className={classes.footerActionButtons}>
                         <Button
                             onClick={onDialogClose}
                             color='default'
                             className={classes.cancelButton}>
                             בטל
                         </Button>
-                        <PrimaryButton
-                            form='interactionEventForm'
-                            type='submit'
-                            id='createContact'
-                        >
-                            {`${isNewInteraction ? 'צור' : 'ערוך'} מקום ומגעים`}
-                        </PrimaryButton>
+                        <Tooltip title={
+                            isRepetitiveFieldInvalid.RepetitiveFieldMissingMessage || isRepetitiveFieldInvalid.missingAdditionalDateMessage
+                        }>
+                            <div>
+                                <PrimaryButton disabled={isRepetitiveFieldInvalid.invalid}
+                                               form='interactionEventForm'
+                                               type='submit'
+                                               id='createContact'>
+                                    {`${isNewInteraction ? 'צור' : 'ערוך'} מקום ומגעים`}
+                                </PrimaryButton>
+                            </div>
+                        </Tooltip>
                     </div>
                 </DialogActions>
             </Dialog>
