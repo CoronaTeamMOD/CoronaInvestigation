@@ -86,7 +86,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
         } else {
             completeTabChange();
         }
-    }
+    };
 
     const closeFamilyDialog = () => setUncontactedFamilyMembers([]);
 

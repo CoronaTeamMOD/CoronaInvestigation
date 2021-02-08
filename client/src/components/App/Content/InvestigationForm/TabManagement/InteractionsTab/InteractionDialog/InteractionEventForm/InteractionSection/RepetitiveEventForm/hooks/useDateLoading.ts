@@ -10,7 +10,7 @@ const firstPossibleIndex = 0;
 const useDateLoading = () => {
     const [firstDayToDisplay, setFirstDayToDisplay] = React.useState<number>(0);
     const [lastDayToDisplay, setLastDayToDisplay] = React.useState<number>(0);
-    const datesToOffer = useSelector<StoreStateType, Date[]>((state) => state.investigation.datesToInvestigate);
+    const datesToOffer = useSelector<StoreStateType, Date[]>((state) => [...state.investigation.datesToInvestigate].reverse());
 
     const lastPossibleIndex = React.useMemo(() => datesToOffer.length - 1, [datesToOffer]);
 
@@ -37,7 +37,7 @@ const useDateLoading = () => {
     const initializeEdgeIndexes = (selectedDate: Date) => {
         const selectedDateIndex = datesToOffer.findIndex(date => isSameDay(date, selectedDate));
         setFirstDayToDisplay(getNextPastIndex(selectedDateIndex));
-        setLastDayToDisplay(getNextFutureIndex(selectedDateIndex))
+        setLastDayToDisplay(getNextFutureIndex(selectedDateIndex));
     };
 
     return {

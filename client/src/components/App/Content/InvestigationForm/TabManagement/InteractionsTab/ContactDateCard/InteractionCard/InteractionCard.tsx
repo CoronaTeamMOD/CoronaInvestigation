@@ -24,6 +24,7 @@ import ExcelFormatDownloader from './ExcelFormatDownloader/ExcelFormatDownloader
 import PrivateHouseEventGrid from './PlacesAdditionalGrids/PrivateHouseEventGrid';
 import OtherPublicLocationGrid from './PlacesAdditionalGrids/OtherPublicLocationGrid';
 import TransportationEventGrid from './PlacesAdditionalGrids/TransportationAdditionalGrids/TransportationEventGrid';
+import RepetitiveEventIcon from "../RepetitiveEventIcon";
 
 const unknownTimeMessage = 'זמן לא ידוע';
 
@@ -57,6 +58,9 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                             {interaction.placeName}
                         </b>
                     </Typography>
+                    {
+                        interaction.isRepetitive && <RepetitiveEventIcon/>
+                    }
                 </div>
                 <div>
                     <IconButton test-id={'editContactLocation'} onClick={onEditClick}>

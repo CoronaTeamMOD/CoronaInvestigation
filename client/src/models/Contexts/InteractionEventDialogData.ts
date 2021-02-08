@@ -1,17 +1,20 @@
 import Contact from 'models/Contact';
 import Address from 'models/Address';
 import { DBAddress } from 'models/DBAddress';
+import InteractionEventDialogFields from '../enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
-export interface OccuranceData {
+export interface DateData {
     startTime: Date;
     endTime: Date;
     unknownTime: boolean;
+}
+export interface OccuranceData extends DateData{
     externalizationApproval: boolean | null;
     placeDescription?: string;
 }
 
 interface InteractionEventDialogData extends InteractionEventData, OccuranceData {
-    additionalOccurrences?: OccuranceData[]
+    [InteractionEventDialogFields.ADDITIONAL_OCCURRENCES]?: OccuranceData[]
 }
 
 interface InteractionEventData {
