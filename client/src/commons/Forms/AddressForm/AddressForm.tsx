@@ -148,6 +148,7 @@ const AddressForm: React.FC<Props> = ({
                     <Controller
                         name={houseNumberField.name}
                         control={methods.control}
+                        defaultValue={houseNumberField.defaultValue}
                         render={(props) => (
                             <TextField 
                                 className={smallFieldsClass}
@@ -231,6 +232,7 @@ const AddressForm: React.FC<Props> = ({
                         <Controller
                             name={apartmentField?.name || ''}
                             control={methods.control}
+                            defaultValue={apartmentField?.defaultValue}
                             render={(props) => (
                                 <TextField 
                                     className={smallFieldsClass}
