@@ -16,6 +16,18 @@ export interface GetContactEventByIdResponse {
     }
 }
 
+export interface OccuranceData {
+    startTime: ContactEvent['startTime'];
+    endTime: ContactEvent['endTime'];
+    unknownTime: boolean;
+    externalizationApproval: ContactEvent['externalizationApproval'];
+    placeDescription?: string;
+}
+
+export interface ClientInteractionsData extends ContactEvent, OccuranceData {
+    additionalOccurrences?: OccuranceData[]
+}
+
 export interface ContactEvent {
     id: number,
     airline: string,

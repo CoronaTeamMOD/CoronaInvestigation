@@ -4,13 +4,12 @@ import { Severity } from '../../Models/Logger/types';
 import {errorStatusCode, validStatusCode, graphqlRequest} from '../../GraphqlHTTPRequest';
 import {GetContactTypeResponse} from '../../Models/ContactEvent/GetContactType';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
-import { GetContactEventResponse, ContactEvent } from '../../Models/ContactEvent/GetContactEvent';
+import {GetContactEventResponse, ContactEvent, ClientInteractionsData} from '../../Models/ContactEvent/GetContactEvent';
 import { GetInvolvedContactsResponse, InvolvedContactDB} from '../../Models/ContactEvent/GetInvolvedContacts';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
 import {
-    CREATE_CONTACT_EVENT, DELETE_CONTACT_EVENT, DELETE_CONTACT_EVENTS_BY_DATE, DELETE_CONTACTED_PERSON,
-    EDIT_CONTACT_EVENT, CREATE_CONTACTED_PERSON
+    CREATE_OR_EDIT_CONTACT_EVENT, DELETE_CONTACT_EVENT, DELETE_CONTACT_EVENTS_BY_DATE, DELETE_CONTACTED_PERSON, CREATE_CONTACTED_PERSON
 } from '../../DBService/ContactEvent/Mutation';
 import {
     GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_ALL_CONTACT_TYPES,
@@ -107,6 +106,15 @@ intersectionsRoute.get('/contactEvent/:minimalDateToFilter', handleInvestigation
     });
 });
 
+const extractInteractions = (interactionsData: ClientInteractionsData) => {
+    const {additionalOccurrences, ...data} = interactionsData;
+    const {startTime, endTime, unknownTime, placeDescription, externalizationApproval, ...commonData} = data;
+    const baseData = [data];
+    return additionalOccurrences?.length > 0
+        ? baseData.concat(additionalOccurrences.map(occurence => ({...commonData, ...occurence})))
+        : baseData
+};
+
 intersectionsRoute.post('/createContactEvent', handleInvestigationRequest, (request: Request, response: Response) => {
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const createContactEventLogger = logger.setup({
@@ -114,12 +122,16 @@ intersectionsRoute.post('/createContactEvent', handleInvestigationRequest, (requ
         user: response.locals.user.id,
         investigation: epidemiologyNumber
     });
-    const parameters = {contactEvent: JSON.stringify({
-        ...request.body,
-        investigationId : epidemiologyNumber
-    })}
+
+    const parameters = {
+        event: JSON.stringify({
+            contactEvents: extractInteractions(request.body),
+            investigationId: epidemiologyNumber
+        })
+    };
+
     createContactEventLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-    graphqlRequest(CREATE_CONTACT_EVENT, response.locals, parameters)
+    graphqlRequest(CREATE_OR_EDIT_CONTACT_EVENT, response.locals, parameters)
         .then(result => {
             createContactEventLogger.info(validDBResponseLog, Severity.LOW);
             response.send(result);
@@ -139,12 +151,13 @@ intersectionsRoute.post('/updateContactEvent', (request: Request, response: Resp
     });
 
     const parameters = {event: JSON.stringify({
-        ...request.body,
+        contactEvents: [request.body],
         investigationId : epidemiologyNumber
-    })}
+    })};
+
     updateContactEventLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
-    graphqlRequest(EDIT_CONTACT_EVENT, response.locals, parameters)
+    graphqlRequest(CREATE_OR_EDIT_CONTACT_EVENT, response.locals, parameters)
         .then(result => {
             updateContactEventLogger.info(validDBResponseLog, Severity.LOW);
             response.send(result);

@@ -13,6 +13,7 @@ const maxLengthErrorMessage = 'השדה יכול להכיל 50 תווים בלב
 const INSERT_TABLE_SEARCH = 'הזן שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
 
 interface Props {
+  id: string;
   onSearchClick: (searchQuery : string) => void; 
 }
 
@@ -37,7 +38,7 @@ const TableSearchBar = (props: Props) => {
             InputProps={{
             endAdornment: (
                 <InputAdornment position='end'>
-                    <IconButton onClick={() => onSearchClick(searchQuery)}>
+                    <IconButton id="searchIconButton" onClick={() => onSearchClick(searchQuery)}>
                         <Search color='primary' />
                     </IconButton>
                 </InputAdornment>

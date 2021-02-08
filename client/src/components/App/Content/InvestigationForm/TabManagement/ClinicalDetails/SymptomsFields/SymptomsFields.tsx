@@ -99,7 +99,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                 onChange={(newDate: Date) => {
                                                     if (newDate !== null) {
                                                         handleDidSymptomsDateChangeOccur();
-                                                        props.onChange(newDate)
+                                                        props.onChange(new Date(newDate.toDateString()));
                                                     }
                                                 }}
                                                 error={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE] ? true : false}

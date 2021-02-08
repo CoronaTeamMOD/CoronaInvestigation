@@ -6,7 +6,7 @@ import InteractionEventDialogFields
     from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import {get} from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
-const cantMoveToContactsBaseMessage = 'לא ניתן לעבור ליצירת מגעים';
+const cantMoveToContactsBaseMessage = 'לא ניתן לעבור ליצירת מגעים ';
 
 interface ContinueToTabBaseType {
     canContinue: boolean;

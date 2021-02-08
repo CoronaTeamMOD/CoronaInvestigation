@@ -46,12 +46,13 @@ const TableRows = (props: Props) => {
                                                     : ''
 
                             return (
-                                <TableRow key={id} className={rowClass}>
+                                <TableRow key={id} className={rowClass} id={`person-row-${id}`}>
                                     <TableCell>
                                         <Checkbox
                                             disabled={isRowDisabled}
                                             color='primary'
                                             checked={isRowSelected}
+                                            id={`person-checkbox-${id}`}
                                             onClick={() => handleCheckboxToggle(id)}
                                         />
                                     </TableCell>

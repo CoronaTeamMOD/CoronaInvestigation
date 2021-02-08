@@ -1,19 +1,19 @@
 import axios  from 'axios';
-import {useSelector} from 'react-redux';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
-import StoreStateType from 'redux/storeStateType';
 import useDBParser from 'Utils/vendor/useDBParsing';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useContactEvent from 'Utils/ContactEvent/useContactEvent';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import GetGroupedInvestigationsIds from 'Utils/GroupedInvestigationsContacts/getGroupedInvestigationIds';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFormOutcome => {
         const { loadInteractions, loadInvolvedContacts, onDialogClose, groupedInvestigationContacts} = props;
         
+        const { connectedInvestigationsIds } = GetGroupedInvestigationsIds();
         const { parseLocation } = useDBParser();
         const { alertError } = useCustomSwal();
         const { isPatientHouse } = useContactEvent();
@@ -30,39 +30,49 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 ...interactionsDataToSave,
                 [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
             };
-            if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
-                const updateInteractionsLogger = logger.setup('Update Interaction')
-                updateInteractionsLogger.info('launching update interaction request', Severity.LOW);
-                axios.post('/intersections/updateContactEvent', parsedData)
-                .then((response) => {
-                    if (response.data?.data?.updateContactEventFunction) {
-                        updateInteractionsLogger.info('updated interaction successfully', Severity.LOW);
-                        saveGroupedInvestigations(response.data.data.updateContactEventFunction.integer);
-                    }
-                })
-                .catch((error) => {
-                    updateInteractionsLogger.error(`got error from server: ${error}`, Severity.HIGH);
-                    alertError('לא ניתן היה לשמור את השינויים');
-                    setIsLoading(false);
-                })
+            const allInvestigationIds = parsedData.contacts
+                .map((contact) => contact.identificationType + contact.identificationNumber)
+                .concat(connectedInvestigationsIds(groupedInvestigationContacts));
+
+            const formHasDuplicateIds =  (new Set(allInvestigationIds)).size !== allInvestigationIds.length;
+            if(!formHasDuplicateIds) {
+                if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
+                    const updateInteractionsLogger = logger.setup('Update Interaction')
+                    updateInteractionsLogger.info('launching update interaction request', Severity.LOW);
+                    axios.post('/intersections/updateContactEvent', parsedData)
+                    .then((response) => {
+                        if (response.data?.data?.updateContactEventFunction) {
+                            updateInteractionsLogger.info('updated interaction successfully', Severity.LOW);
+                            saveGroupedInvestigations(response.data.data.updateContactEventFunction.integer);
+                        }
+                    })
+                    .catch((error) => {
+                        updateInteractionsLogger.error(`got error from server: ${error}`, Severity.HIGH);
+                        alertError('לא ניתן היה לשמור את השינויים');
+                        setIsLoading(false);
+                    })
+                } else {
+                    const createInteractionsLogger = logger.setup('Create Interaction');
+                    createInteractionsLogger.info('launching create interaction request', Severity.LOW);
+                    axios.post('/intersections/createContactEvent', parsedData)
+                    .then((response) => {
+                        if (response.data?.data?.updateContactEventFunction) {
+                            createInteractionsLogger.info('created interaction successfully', Severity.LOW);
+                            saveGroupedInvestigations(response.data.data.updateContactEventFunction.integer);
+                        } else {
+                            createInteractionsLogger.info(`response data is not valid data : ${JSON.stringify(response)}`, Severity.LOW);
+                        }
+                    })
+                    .catch((error) => {
+                        createInteractionsLogger.error(`got error from server: ${error}`, Severity.LOW);
+                        onDialogClose();
+                        alertError('לא ניתן היה ליצור אירוע חדש');
+                        setIsLoading(false);
+                    })
+                }
             } else {
-                const createInteractionsLogger = logger.setup('Create Interaction');
-                createInteractionsLogger.info('launching create interaction request', Severity.LOW);
-                axios.post('/intersections/createContactEvent', parsedData)
-                .then((response) => {
-                    if (response.data?.data?.updateContactEventFunction) {
-                        createInteractionsLogger.info('created interaction successfully', Severity.LOW);
-                        saveGroupedInvestigations(response.data.data.updateContactEventFunction.integer);
-                    } else {
-                        createInteractionsLogger.info(`response data is not valid data : ${JSON.stringify(response)}`, Severity.LOW);
-                    }
-                })
-                .catch((error) => {
-                    createInteractionsLogger.error(`got error from server: ${error}`, Severity.LOW);
-                    onDialogClose();
-                    alertError('לא ניתן היה ליצור אירוע חדש');
-                    setIsLoading(false);
-                })
+                alertError('ישנם תזים כפולים בטופס ולכן לא ניתן לשמור');
+                setIsLoading(false);
             }
         }
 

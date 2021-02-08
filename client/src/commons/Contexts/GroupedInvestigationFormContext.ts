@@ -8,7 +8,7 @@ export interface GroupedInvestigationContext {
     allContactIds: IdToCheck[];
 };
 
-const initialContacts: GroupedInvestigationContext = {
+export const initialContacts: GroupedInvestigationContext = {
     groupedInvestigationContacts: [],
     setGroupedInvestigationContacts: () => {},
     allContactIds: []

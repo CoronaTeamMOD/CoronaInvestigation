@@ -1,7 +1,15 @@
-CREATE OR REPLACE FUNCTION public.get_investigator_list_by_county_function(input_county_id integer)
- RETURNS json
- LANGUAGE plpgsql
-AS $function$declare
+-- FUNCTION: public.get_investigator_list_by_county_function(integer)
+
+DROP FUNCTION public.get_investigator_list_by_county_function(integer);
+
+CREATE OR REPLACE FUNCTION public.get_investigator_list_by_county_function(
+	input_county_id integer)
+    RETURNS json
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+declare
 res json;
 begin
 
@@ -16,7 +24,9 @@ select 			  id,
 				  user_type as userType,
 				  source_organization as sourceOrganization,
 				  desk_id as deskId, 
-				  desk_name as deskName,
+				  desk_name as deskName,				  
+				  authority_id as authorityId,
+				  authority_name as authorityName,				  
 				  newInvestigationsCount,
 				  activeInvestigationsCount,
 				  pauseInvestigationsCount,
@@ -30,6 +40,8 @@ from (
        u.serial_number,
        u.user_type,
        u.source_organization,
+	   u.authority_id,
+	   authority.authority_name,
        u.desk_id, 
        d.desk_name,
        sum( case when i.investigation_status = 1 then 1 else 0 end)    as newInvestigationsCount,
@@ -37,6 +49,7 @@ from (
 	   sum( case when i.investigation_status = 100000002 and investigation_sub_status is not null  then 1 else 0 end) as pauseInvestigationsCount 	
 	   from   public."user" u 
 		 	  left join desks d  on u.desk_id = d.id 	
+			  left join authorities authority  on u.authority_id = authority.id 	
 			  left join investigation i on u.id  = i.creator  
 	  where  u.is_active =true and u.investigation_group = input_county_id
 	 group by u.id ,
@@ -47,6 +60,8 @@ from (
        u.serial_number ,
        u.user_type ,
        u.source_organization ,
+	   u.authority_id,
+	   authority.authority_name,
        u.desk_id , 
        d.desk_name
 	 ) as innerTable left join user_languages ul  on innerTable.id  = ul.user_id
@@ -59,6 +74,8 @@ group by
 				  serial_number,
 				  user_type,
 				  source_organization,
+				  authority_id,
+		          authority_name,
 				  desk_id, 
 				  desk_name,
 				  newInvestigationsCount,
@@ -67,5 +84,7 @@ group by
 ) src into res ;
 return res;
 end;
-$function$
-;
+$BODY$;
+
+ALTER FUNCTION public.get_investigator_list_by_county_function(integer)
+    OWNER TO coronai;
