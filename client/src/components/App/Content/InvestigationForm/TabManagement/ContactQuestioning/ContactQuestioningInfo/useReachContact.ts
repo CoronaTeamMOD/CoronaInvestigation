@@ -31,7 +31,6 @@ const useReachContact = (props: Props) => {
                 }).then((result) => {
                     if (result.value) {
                         onChange(selectedStatus?.id);
-                        saveContact(parsePerson(formValues, index));
                     }
                 });
             } else {
@@ -44,7 +43,6 @@ const useReachContact = (props: Props) => {
             }
         } else if (selectedStatus?.id) {
             onChange(selectedStatus?.id);
-            saveContact(parsePerson(formValues, index));
         }
     };
 
