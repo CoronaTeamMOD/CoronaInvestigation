@@ -267,9 +267,9 @@ const UsersManagement: React.FC = () => {
                     <TableHead>
                         <TableRow>
                             {
-                                Object.keys(UsersManagementTableHeaders).map(cellName => {
+                                Object.keys(UsersManagementTableHeaders).map((cellName , index) => {
                                     return (
-                                        <TableCell>
+                                        <TableCell key={cellName+index}>
                                             <TableSortLabel
                                                 active={!notActiveSortFields.includes(cellName)}
                                                 hideSortIcon
