@@ -57,11 +57,12 @@ const AddressForm: React.FC<Props> = ({
                     <Controller
                         name={cityField.name}
                         control={methods.control}
+                        defaultValue={cityField.defaultValue}
                         render={(props) => (
                             <TextField 
                                 className={smallFieldsClass}
                                 InputProps={{className: smallFieldsClass}}
-                                value={cities.get(cityField.defaultValue)?.displayName || UNKNOWN } 
+                                value={cities.get(props.value)?.displayName} 
                                 label={CITY_LABEL}
                                 InputLabelProps={{ shrink: true }}
                                 disabled 
@@ -97,12 +98,13 @@ const AddressForm: React.FC<Props> = ({
                     <Controller
                         name={streetField.name}
                         control={methods.control}
+                        defaultValue={streetField.defaultValue}
                         render={(props) => (
                             <TextField 
                                 className={smallFieldsClass}
                                 InputProps={{className: smallFieldsClass}}
                                 test-id={streetField.testId || ''} 
-                                value={streetsInCity.get(streetField.defaultValue)?.displayName || UNKNOWN} 
+                                value={streetsInCity.get(props.value)?.displayName} 
                                 label={STREET_LABEL} 
                                 InputLabelProps={{ shrink: true }}
                                 disabled 
