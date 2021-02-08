@@ -3,6 +3,7 @@ import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import { Pagination } from '@material-ui/lab';
 
+import UserType from 'models/enums/UserType';
 import MockThemeProvider from 'Utils/Testing/MockThemeProvider';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import mockSelectors from 'Utils/Testing/UsersManagement/mockSelectors';
@@ -11,7 +12,7 @@ import UserInfoDialog from './UserInfoDialog/UserInfoDialog';
 import EditUserInfoDialog from './EditUserInfoDialog/EditUserInfoDialog';
 import { UsersManagementTableHeaders } from './UsersManagementTableHeaders';
 import UsersManagement , { usersManagementTitle, notActiveSortFields } from './UsersManagement';
-import UserType from '../../../../models/enums/UserType';
+
 
 describe('<UsersManagement />', () => {
     mockSelectors(UserType.ADMIN);
@@ -155,7 +156,7 @@ describe('<UsersManagement />', () => {
             );
 
             const deactivteButton = deactivateWrapper.find('button#deactivate-all-users-button');
-            
+
             expect(deactivteButton.exists()).toBeFalsy();
         });
     });
