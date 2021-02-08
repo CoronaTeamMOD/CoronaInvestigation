@@ -3,10 +3,10 @@ import configureMockStore from 'redux-mock-store';
 
 import { user, county, desk } from './state';
 
-const mockSelectors = () => {
+const mockSelectors = (userType : number) => {
     const storeState = {
         county,
-        user,
+        user : user(userType),
         desk,
     }
     const mockStore = configureMockStore()(storeState);

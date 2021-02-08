@@ -41,7 +41,7 @@ const sourceOrganizationLabel = 'מסגרת';
 const searchBarLabel = 'הכנס שם או שם משתמש...';
 const deactivateAllCountyUsersText = 'כיבוי כל החוקרים בנפה';
 
-const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, UsersManagementTableHeadersNames.LANGUAGES,
+export const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, UsersManagementTableHeadersNames.LANGUAGES,
                                        UsersManagementTableHeadersNames.COUNTY, UsersManagementTableHeadersNames.USER_TYPE,
                                        UsersManagementTableHeadersNames.DESK, UsersManagementTableHeadersNames.EDIT];
 
@@ -264,13 +264,13 @@ const UsersManagement: React.FC = () => {
                 </Paper>
             </Collapse>
             <TableContainer component={Paper} className={classes.tableContainer}>
-                <Table stickyHeader>
-                    <TableHead>
+                <Table stickyHeader id='users-table'>
+                    <TableHead id='users-table-header'>
                         <TableRow>
                             {
                                 Object.keys(UsersManagementTableHeaders).map((cellName , index) => {
                                     return (
-                                        <TableCell key={cellName+index}>
+                                        <TableCell key={cellName+index} id={`table-header-${cellName}`}>
                                             <TableSortLabel
                                                 active={!notActiveSortFields.includes(cellName)}
                                                 hideSortIcon
