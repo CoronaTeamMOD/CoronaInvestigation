@@ -27,7 +27,7 @@ groupedInvestigationsRoute.get('/reasons', adminMiddleWare, (request: Request, r
     });
 });
 
-groupedInvestigationsRoute.get('/:groupId', adminMiddleWare, (request: Request, response: Response) => {
+groupedInvestigationsRoute.get('/:groupId', (request: Request, response: Response) => {
     const investigationsByGroupIdLogger = logger.setup({
         workflow: `get investigations by group id`,
         user: response.locals.user.id,
