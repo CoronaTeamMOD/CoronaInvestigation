@@ -100,6 +100,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
             <TransferInvestigationDialogNote />
             <DialogActions>
                 <Button
+                    id='cancel-button'
                     variant='contained'
                     color='default'
                     onClick={(event) => {
@@ -112,6 +113,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
                 <Tooltip title={shouldButtonDisabled ? 'לא נבחר חוקר' : ''}>
                     <span> {/* The span role is to wrap the button to make sure the tooltip work properly even if the button is disabled */}
                         <Button
+                            id='submit-button'
                             form='investigatorAllocation'
                             variant='contained'
                             color='primary'
