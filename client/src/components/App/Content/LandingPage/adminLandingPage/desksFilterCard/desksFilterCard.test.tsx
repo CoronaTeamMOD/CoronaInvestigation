@@ -9,11 +9,12 @@ import mockSelectors from 'Utils/Testing/AdminLandingPage/mockSelectors';
 
 import DesksFilterCard from './desksFilterCard';
 import LoadingCard from '../LoadingCard/LoadingCard';
+import UpdateButton from '../UpdateButton/UpdateButton';
 
 const onUpdateButtonClicked = jest.fn();
 
 const mockedLocationState = {
-    deskFilter : [2]
+    deskFilter : [desks[0].id]
 }
 
 describe('<DesksFilterCard />', () => {
@@ -110,10 +111,43 @@ describe('<DesksFilterCard />', () => {
     })
 
     describe('updateButton' , () => {
-        it.todo('renders');
+        let updateButton = wrapper.find(UpdateButton);
 
-        it.todo('calls click with correct info');
+        it('renders', () => {
+            expect(updateButton.exists()).toBeTruthy();
+            expect(updateButton).toHaveLength(1);
+        });
+
+        it('calls click with correct info' , () => {
+            expect(onUpdateButtonClicked).toHaveBeenCalledTimes(0);
+            act( () => {
+                updateButton.simulate('click');               
+            });
+            expect(onUpdateButtonClicked).toHaveBeenCalledTimes(1);
+        });
     })
 
-    it.todo('existing history')
+    it('relies on existing filters' , () => {
+        const customHistoryWrapper = mount(
+            <MockThemeProvider>
+                <MockRouter locationState={mockedLocationState}>
+                    <DesksFilterCard 
+                        onUpdateButtonClicked={onUpdateButtonClicked}
+                    />
+                </MockRouter>
+            </MockThemeProvider>    
+        );
+
+        const existingDeskInputId = `input#desk-checkbox-${desks[0].id}`;
+        const existingDeskInput = customHistoryWrapper.find(existingDeskInputId);
+
+        expect(existingDeskInput.exists()).toBeTruthy();
+        expect(existingDeskInput.props().checked).toBeTruthy();
+
+        const nonFilteredDeskInputId = `input#desk-checkbox-${desks[1].id}`
+        const nonFilteredDeskInput = customHistoryWrapper.find(nonFilteredDeskInputId);
+
+        expect(nonFilteredDeskInput.exists()).toBeTruthy();
+        expect(nonFilteredDeskInput.props().checked).toBeFalsy();
+    });
 });
