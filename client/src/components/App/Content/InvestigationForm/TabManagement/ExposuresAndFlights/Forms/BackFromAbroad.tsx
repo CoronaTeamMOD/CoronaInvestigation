@@ -29,7 +29,7 @@ export const BackFromAbroad = (props: Props) => {
     return (
         <div className={classes.subForm}>
             <FormTitle title='חזרה מחו״ל' />
-            <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?' appendantLabelIcon={fieldsNames.wereFlights ? <ComplexityIcon tooltipText='חקירה מורכבת' /> : undefined}>
+            <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?' appendantLabelIcon={wereFlights ? <ComplexityIcon tooltipText='חקירה מורכבת' /> : undefined}>
                 <Controller
                     control={control}
                     name={fieldsNames.wereFlights}
