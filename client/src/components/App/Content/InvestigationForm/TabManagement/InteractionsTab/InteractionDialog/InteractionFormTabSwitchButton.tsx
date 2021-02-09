@@ -34,7 +34,7 @@ const InteractionFormTabSwitchButton = ({isAddingContacts, setIsAddingContacts, 
             return {canContinue: false, message: cantMoveToContactsBaseMessage.concat('מבלי להזין סוג אתר/תת סוג')};
         }
 
-        if (isEventRepetitive) {
+        if (isNewInteraction && isEventRepetitive) {
             return {canContinue: false, message: cantMoveToContactsBaseMessage.concat('באירוע מחזורי')};
         }
 
