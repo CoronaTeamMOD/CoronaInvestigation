@@ -2,6 +2,7 @@ import React from 'react';
 import { AddCircle } from '@material-ui/icons';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Collapse, Divider, IconButton, Typography } from '@material-ui/core';
+import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 
 import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
@@ -28,7 +29,7 @@ export const BackFromAbroad = (props: Props) => {
     return (
         <div className={classes.subForm}>
             <FormTitle title='חזרה מחו״ל' />
-            <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?'>
+            <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?' appendantLabelIcon={wereFlights ? <ComplexityIcon tooltipText='חקירה מורכבת' /> : undefined}>
                 <Controller
                     control={control}
                     name={fieldsNames.wereFlights}
