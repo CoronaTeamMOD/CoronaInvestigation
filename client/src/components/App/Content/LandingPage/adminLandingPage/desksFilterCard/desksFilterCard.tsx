@@ -26,12 +26,12 @@ const DesksFilterCard = (props: Props): JSX.Element => {
         <LoadingCard isLoading={countyDesks.length === 0} width={cardWidth} height={cardHeight} className={classes.desksCard}>
             <CardContent>
                 <Box display='flex' flexDirection='column' className={classes.desksCardContent}>
-                    <Typography variant='h6' id='desks-card-healine'>
+                    <Typography variant='h6' id='desks-card-headline'>
                         <b>הדסקים בהם הינך צופה</b>
                     </Typography>
                     <CustomCheckbox
                         checkboxElements={[{
-                            id:'all-desks-card',
+                            id:'all-desks-checkbox',
                             checked: filteredDesks.length === 0,
                             labelText: <b>כל הדסקים</b>,
                             onChange: clearAllDesks
