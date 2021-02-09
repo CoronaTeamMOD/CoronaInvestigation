@@ -28,7 +28,7 @@ const LastUpdateMessage = (props: Props) => {
     return (
         <Grid container spacing={2} justify='flex-end'>
             <Grid item>
-                <Typography color='textPrimary' align='right'>
+                <Typography color='textPrimary' align='right' id='time-since-message'>
                     <b>עודכן לאחרונה</b> לפני {lastUpdatedMsg}
                 </Typography>
             </Grid>
