@@ -6,7 +6,7 @@ import theme from 'styles/theme';
 
 const MockFormProvider : React.FC<Props> = (props) => {
     return (
-        <MuiThemeProvider theme={theme}>0
+        <MuiThemeProvider theme={theme}>
             {props.children}
         </MuiThemeProvider>
     )
