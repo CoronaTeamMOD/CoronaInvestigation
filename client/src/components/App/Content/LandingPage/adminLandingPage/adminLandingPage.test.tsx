@@ -4,8 +4,16 @@ import { mount } from 'enzyme';
 import MockRouter from 'Utils/Testing/MockRouter';
 import MockThemeProvider from 'Utils/Testing/MockThemeProvider';
 import mockSelectors from 'Utils/Testing/AdminLandingPage/mockSelectors';
+import { testCountyName } from 'Utils/Testing/AdminLandingPage/state/user';
 
 import AdminLandingPage from './adminLandingPage';
+import UnusualCard from './UnusualCard/UnusualCard';
+import PostponedCard from './PostponedCard/PostponedCard';
+import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
+import DesksFilterCard from './desksFilterCard/desksFilterCard';
+import LastUpdateMessage from './LastUpdateMessage/LastUpdateMessage';
+import InvestigationsInfo from './investigationsInfo/investigationsInfo';
+import TimeRangeFilterCard from './TimeRangeFilterCard/TimeRangeFilterCard';
 
 describe('<AdminLandingPage />', () => {
     mockSelectors();
@@ -21,19 +29,60 @@ describe('<AdminLandingPage />', () => {
         expect(wrapper.exists()).toBeTruthy();
     });
 
-    it.todo('shows correct napa');
+    it('shows correct napa', () => {
+        const countyName = wrapper.find('p#county-name');
 
-    it.todo('shows lastUpdateMessage');
+        expect(countyName.exists()).toBeTruthy();
+        expect(countyName).toHaveLength(1);
+        expect(countyName.text()).toBe(`נפת ${testCountyName}`);
+    });
 
-    it.todo('shows desksFilterCard');
+    it('shows LastUpdateMessage', () => {
+        const lastUpdateMessage = wrapper.find(LastUpdateMessage);
 
-    it.todo('shows investigationsInfo');
+        expect(lastUpdateMessage.exists()).toBeTruthy();
+        expect(lastUpdateMessage).toHaveLength(1);
+    });
 
-    it.todo('shows TimeRangeFilter card');
+    it('shows DesksFilterCard', () => {
+        const desksFilterCard = wrapper.find(DesksFilterCard);
 
-    it.todo('shows Unallocated card');
+        expect(desksFilterCard.exists()).toBeTruthy();
+        expect(desksFilterCard).toHaveLength(1);
+    });
 
-    it.todo('shows Postponed card');
+    it('shows InvestigationsInfo', () => {
+        const investigationsInfo = wrapper.find(InvestigationsInfo);
 
-    it.todo('shows UnusualCard');
+        expect(investigationsInfo.exists()).toBeTruthy();
+        expect(investigationsInfo).toHaveLength(1);
+    });
+
+    it('shows TimeRangeFilter card', () => {
+        const timeRangeFilterCard = wrapper.find(TimeRangeFilterCard);
+
+        expect(timeRangeFilterCard.exists()).toBeTruthy();
+        expect(timeRangeFilterCard).toHaveLength(1);
+    });
+
+    it('shows Unallocated card' , () => {
+        const unallocatedCard = wrapper.find(UnallocatedCard);
+
+        expect(unallocatedCard.exists()).toBeTruthy();
+        expect(unallocatedCard).toHaveLength(1);
+    });
+
+    it('shows Postponed card', () => {
+        const postponedCard = wrapper.find(PostponedCard);
+
+        expect(postponedCard.exists()).toBeTruthy();
+        expect(postponedCard).toHaveLength(1);
+    });
+
+    it('shows UnusualCard', () => {
+        const unusualCard = wrapper.find(UnusualCard);
+
+        expect(unusualCard.exists()).toBeTruthy();
+        expect(unusualCard).toHaveLength(1);
+    });
 });

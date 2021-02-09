@@ -33,7 +33,7 @@ const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit<Invest
     }
 }
 
-const InvestigationsInfo: React.FC<Props> = (props: Props): JSX.Element => {
+const InvestigationsInfo = (props: Props): JSX.Element => {
     const classes = useStyles();
     const hoverClasses = useHoverStyles();
 

@@ -47,7 +47,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
         <div className={classes.content}>
             <Grid container spacing={5} className={classes.gridContainer}>
                 <Grid item xs={6} md={3}>
-                    <Typography color='textPrimary'>
+                    <Typography color='textPrimary' id='county-name'>
                         <b>{'נפת ' + countyDisplayName}</b>
                     </Typography>
                 </Grid>
