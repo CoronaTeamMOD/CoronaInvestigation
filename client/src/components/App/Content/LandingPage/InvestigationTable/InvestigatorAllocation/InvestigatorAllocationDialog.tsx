@@ -13,7 +13,7 @@ import InvestigatorsTable from './InvestigatorsTable/InvestigatorsTable';
 import { TableHeadersNames } from './InvestigatorsTable/InvestigatorsTableHeaders';
 import TransferInvestigationDialogNote from '../InvestigationTableFooter/TransferInvestigationsDialogs/TransferInvestigationDialogNote';
 
-const title = 'הקצאת חקירה';
+export const investigatorAllocationTitle = 'הקצאת חקירה';
 const unSelectedRow = '';
 
 const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
@@ -83,9 +83,9 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
             onClose={() => closeDialog()}
             onEnter={() => loadInvestigators()}
         >
-            <DialogTitle>
+            <DialogTitle id='investigator-allocation-title'>
                 <b>
-                    {title}
+                    {investigatorAllocationTitle}
                 </b>
             </DialogTitle>
             <DialogContent>
