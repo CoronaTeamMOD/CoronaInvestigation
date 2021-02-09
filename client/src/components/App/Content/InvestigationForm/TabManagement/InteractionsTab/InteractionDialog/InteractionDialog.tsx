@@ -148,6 +148,16 @@ const InteractionDialog = (props: Props) => {
         })
     });
 
+    const fireRepetitiveContactWarning = () =>
+        alertWarning('שים לב כי לא הוזנו עד כה מגעים לאירועים מחזוריים\n' +
+            'ותצטרך להוסיף אותם בנפרד לכל תאריך שיצרת בו אירוע ', {
+            showCancelButton: true,
+            cancelButtonText: 'בטל',
+            cancelButtonColor: theme.palette.error.main,
+            confirmButtonColor: theme.palette.primary.main,
+            confirmButtonText: 'אישור',
+        });
+
     const onSubmit = (data: InteractionEventDialogData) => {
         if (!data.contacts) {
             data.contacts = [];
@@ -165,18 +175,16 @@ const InteractionDialog = (props: Props) => {
 
         const contactsIdsToCheck: IdToCheck[] = groupedInvestigationsContextState.allContactIds;
         if (!checkDuplicateIdsForInteractions(contactsIdsToCheck)) {
-            alertWarning('שים לב כי לא הוזנו עד כה מגעים לאירועים מחזוריים\n' +
-                'ותצטרך להוסיף אותם בנפרד לכל תאריך שיצרת בו אירוע ', {
-                showCancelButton: true,
-                cancelButtonText: 'בטל',
-                cancelButtonColor: theme.palette.error.main,
-                confirmButtonColor: theme.palette.primary.main,
-                confirmButtonText: 'אישור',
-            }).then(result => {
-                if (result.value) {
-                    saveInteractions(interactionDataToSave);
-                }
-            })
+            if (data.isRepetitive) {
+                fireRepetitiveContactWarning()
+                    .then(result => {
+                        if (result.value) {
+                            saveInteractions(interactionDataToSave)
+                        }
+                    })
+            } else {
+                saveInteractions(interactionDataToSave)
+            }
         }
     };
 
