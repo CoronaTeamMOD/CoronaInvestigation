@@ -111,7 +111,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
                     ביטול
                 </Button>
                 <Tooltip title={shouldButtonDisabled ? 'לא נבחר חוקר' : ''}>
-                    <span> {/* The span role is to wrap the button to make sure the tooltip work properly even if the button is disabled */}
+                    <span id='tool-tip'> {/* The span role is to wrap the button to make sure the tooltip work properly even if the button is disabled */}
                         <Button
                             id='submit-button'
                             form='investigatorAllocation'

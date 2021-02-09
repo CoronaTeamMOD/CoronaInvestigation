@@ -2,9 +2,6 @@ import React from 'react'
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 
-import mockSelectors from 'Utils/Testing/GroupedInvestigationForm/mockSelectors';
-import { testEvents, testPersonalDetails } from 'Utils/Testing/GroupedInvestigationForm/state';
-import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
 
 import InvestigatorAllocationDialog, { investigatorAllocationTitle } from './InvestigatorAllocationDialog';
 import InvestigatorOption from 'models/InvestigatorOption';
@@ -21,7 +18,6 @@ const contentProps = {
 };
 
 describe('<InvestigatorAllocationDialog />', () => {
-    mockSelectors();
     let wrapper = mount(
         <InvestigatorAllocationDialog 
             {...contentProps}
@@ -39,25 +35,39 @@ describe('<InvestigatorAllocationDialog />', () => {
     });
 
     it('renders cancel button' , () => {
-        const cancelButton = wrapper.find('#cancel-button');
+        const cancelButton = wrapper.find('button#cancel-button');
         expect(cancelButton.exists()).toBeTruthy();
     });
 
-    it('renders submit button' , () => {
-        const submitButton = wrapper.find('#submit-button');
-        expect(submitButton.exists()).toBeTruthy();
+    describe('submit button:', () => {
+        const submitButton = wrapper.find('button#submit-button');
+        it('renders' , () => {
+            expect(submitButton.exists()).toBeTruthy();
+        });
+
+        it('is disabled' , () => {
+            expect(submitButton.props().disabled).toBeTruthy();
+        });
+
+
+    });
+
+    describe('tool tip message:', () => {
+        const toolTip = wrapper.find('span#tool-tip');
+        const toolTipMessage = 'לא נבחר חוקר';
+        it('renders' , () => {
+            expect(toolTip.exists()).toBeTruthy();
+        });
+
+        it('shows message' , () => {
+            expect(toolTip.props().title).toBe(toolTipMessage);
+        });    
     });
 
     it('renders InvestigatorsTable' , () => {
         const investigatorsTable = wrapper.find(InvestigatorsTable);
         expect(investigatorsTable.exists()).toBeTruthy();
     });
-
-    // it('renders SelectedRowsMessage' , () => {
-    //     const selectedRowsMessage = wrapper.find(SelectedRowsMessage);
-
-    //     expect(selectedRowsMessage.exists()).toBeTruthy();
-    // });
 
     // it('triggers search on input', () => {
     //     const query = 'מוטי';
