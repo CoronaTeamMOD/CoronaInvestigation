@@ -56,8 +56,9 @@ const InvestigationsInfo: React.FC<Props> = (props: Props): JSX.Element => {
                         </Grid>
                         <Grid item container alignItems='flex-end' justify='space-around' spacing={1} xs={9}>
                         {
-                            investigationsGraphData.map((InvestigationData: InvestigationChart) => (
+                            investigationsGraphData.map((InvestigationData: InvestigationChart , index) => (
                                 <InvestigationInfoButton
+                                    key={`investigationInfoButton-${index}`}
                                     amountOfInvestigations={InvestigationData.value}
                                     text={InvestigationData.id}
                                     style={{ backgroundColor: InvestigationData.color }}

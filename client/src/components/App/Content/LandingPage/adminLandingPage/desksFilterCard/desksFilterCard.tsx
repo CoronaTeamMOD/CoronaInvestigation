@@ -40,6 +40,7 @@ const DesksFilterCard = (props: Props): JSX.Element => {
                         {
                             countyDesks.map((desk: Desk) => (
                                 <CustomCheckbox
+                                    key={`custom-checkbox-${desk.id}`}
                                     checkboxElements={[{
                                         key: desk.id,
                                         value: desk.id,
