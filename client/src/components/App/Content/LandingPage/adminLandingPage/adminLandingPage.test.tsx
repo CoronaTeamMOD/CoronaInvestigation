@@ -1,30 +1,20 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { Router } from 'react-router-dom';
 
-import mockSelectors from 'Utils/Testing/AdminLandingPage/mockSelectors';
+import MockRouter from 'Utils/Testing/MockRouter';
 import MockThemeProvider from 'Utils/Testing/MockThemeProvider';
+import mockSelectors from 'Utils/Testing/AdminLandingPage/mockSelectors';
 
 import AdminLandingPage from './adminLandingPage';
 
 describe('<AdminLandingPage />', () => {
-    const historyMock = { push: jest.fn(), location: {}, listen: jest.fn(), replace: jest.fn() };
-
-    jest.mock('react-router-dom' , () => ({
-        useHistory: () => ({
-          location : {state : '/hello'},
-          push: jest.fn(),
-        })
-    }));
-
     mockSelectors();
     const wrapper = mount(
-        //@ts-ignore
-        <Router history={historyMock}>
+        <MockRouter>
             <MockThemeProvider>
                 <AdminLandingPage />
             </MockThemeProvider>
-        </Router>
+        </MockRouter>
     );
 
     it('renders', () => {
