@@ -26,22 +26,24 @@ const DesksFilterCard = (props: Props): JSX.Element => {
         <LoadingCard isLoading={countyDesks.length === 0} width={cardWidth} height={cardHeight} className={classes.desksCard}>
             <CardContent>
                 <Box display='flex' flexDirection='column' className={classes.desksCardContent}>
-                    <Typography variant='h6'>
+                    <Typography variant='h6' id='desks-card-healine'>
                         <b>הדסקים בהם הינך צופה</b>
                     </Typography>
                     <CustomCheckbox
                         checkboxElements={[{
+                            id:'all-desks-card',
                             checked: filteredDesks.length === 0,
                             labelText: <b>כל הדסקים</b>,
                             onChange: clearAllDesks
                         }]}
                     />
-                    <div className={classes.desksWrapper}>
+                    <div className={classes.desksWrapper} id='desks-wrapper'>
                         {
                             countyDesks.map((desk: Desk) => (
                                 <CustomCheckbox
                                     key={`custom-checkbox-${desk.id}`}
                                     checkboxElements={[{
+                                        id: `desk-checkbox-${desk.id}`,
                                         key: desk.id,
                                         value: desk.id,
                                         checked: filteredDesks.includes(desk.id!),
@@ -54,6 +56,7 @@ const DesksFilterCard = (props: Props): JSX.Element => {
                     </div>
                     <div className={classes.desksCardActions}>
                         <UpdateButton
+                            id='desks-filter-update-button'
                             onClick={() => onUpdateButtonClicked(filteredDesks)}
                         />
                     </div>

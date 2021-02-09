@@ -1,12 +1,12 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import { subHours } from 'date-fns';
+import { act } from 'react-dom/test-utils';
 
 import RefreshIcon from 'commons/Icons/RefreshIcon';
 import MockThemeProvider from 'Utils/Testing/MockThemeProvider';
 
 import LastUpdateMessage from './LastUpdateMessage';
-import { subHours } from 'date-fns';
-import { act } from 'react-dom/test-utils';
 
 const fetchInvestigationStatistics = jest.fn();
 
