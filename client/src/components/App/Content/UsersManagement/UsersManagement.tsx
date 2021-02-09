@@ -36,12 +36,12 @@ interface CellNameSort {
     direction: SortOrder | undefined;
 };
 
-const usersManagementTitle = 'ניהול משתמשים';
+export const usersManagementTitle = 'ניהול משתמשים';
 const sourceOrganizationLabel = 'מסגרת';
 const searchBarLabel = 'הכנס שם או שם משתמש...';
 const deactivateAllCountyUsersText = 'כיבוי כל החוקרים בנפה';
 
-const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, UsersManagementTableHeadersNames.LANGUAGES,
+export const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, UsersManagementTableHeadersNames.LANGUAGES,
                                        UsersManagementTableHeadersNames.COUNTY, UsersManagementTableHeadersNames.USER_TYPE,
                                        UsersManagementTableHeadersNames.DESK, UsersManagementTableHeadersNames.EDIT];
 
@@ -213,11 +213,11 @@ const UsersManagement: React.FC = () => {
     return (
         <Grid className={classes.content}>
             <Grid>
-                <Typography color='textPrimary' className={classes.header}>
+                <Typography color='textPrimary' id='user-management-title' className={classes.header}>
                     {usersManagementTitle}
                 </Typography>
             </Grid>
-            <Grid container justify='space-between' className={classes.filters}>
+            <Grid container justify='space-between' id='user-management-filters' className={classes.filters}>
                 <SearchBar 
                     searchBarLabel={searchBarLabel}
                     onClick={(value: string) => handleFilterChange(filterCreators.SEARCH_BAR(value))}
@@ -228,6 +228,7 @@ const UsersManagement: React.FC = () => {
                     {
                         (userType === UserType.ADMIN) &&
                         <Button
+                            id='deactivate-all-users-button'
                             variant='contained'
                             color='inherit'
                             className={classes.deactivateButton}
@@ -237,7 +238,7 @@ const UsersManagement: React.FC = () => {
                         </Button>  
                     } 
                     <Tooltip title='סינון'>
-                        <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
+                        <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)} id='filterButton'>
                             <Badge
                                 invisible={isBadgeInVisible}
                                 color='error'
@@ -251,7 +252,7 @@ const UsersManagement: React.FC = () => {
                 </Grid>
             </Grid>
             <Collapse in={isFilterOpen} style={{ minHeight: 'unset' }}>
-                <Paper className={classes.filtersContent}>
+                <Paper id='filters-collapse' className={classes.filtersContent}>
                     <UsersFilter
                         sourcesOrganization={sourcesOrganization}
                         languages={languages}
@@ -263,13 +264,13 @@ const UsersManagement: React.FC = () => {
                 </Paper>
             </Collapse>
             <TableContainer component={Paper} className={classes.tableContainer}>
-                <Table stickyHeader>
-                    <TableHead>
+                <Table stickyHeader id='users-table'>
+                    <TableHead id='users-table-header'>
                         <TableRow>
                             {
-                                Object.keys(UsersManagementTableHeaders).map(cellName => {
+                                Object.keys(UsersManagementTableHeaders).map((cellName , index) => {
                                     return (
-                                        <TableCell>
+                                        <TableCell key={cellName+index} id={`table-header-${cellName}`}>
                                             <TableSortLabel
                                                 active={!notActiveSortFields.includes(cellName)}
                                                 hideSortIcon
