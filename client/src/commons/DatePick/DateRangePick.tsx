@@ -42,7 +42,7 @@ interface Props {
     minDate?: Date;
     maxDate?: Date;
     startDate: string | Date;
-    onStartDateChange: any;
+    onStartDateChange: (date : Date) => void;
     endDate: string | Date;
     onEndDateChange: any;
 };

@@ -8,6 +8,7 @@ import MockMuiPickersUtilsProvider from 'Utils/Testing/MockMuiPickersUtilsProvid
 import timeRanges, { customTimeRange, defaultTimeRange } from 'models/enums/timeRanges';
 
 import TimeRangeFilterCard from './TimeRangeFilterCard';
+import UpdateButton from '../UpdateButton/UpdateButton';
 
 const onUpdateButtonClicked = jest.fn();
 
@@ -119,25 +120,88 @@ describe('<TimeRangeFilterCard />', () => {
                 </MockMuiPickersUtilsProvider>
             </MockThemeProvider>
         );
-        const startDateSelector = '#time-range-filter-datepick-start';
-        
+        const datepickSelector = 'div#time-range-filter-datepick';
+        const startSelector = 'DatePick#time-range-filter-datepick-start';
+        const endSelector = 'DatePick#time-range-filter-datepick-end';
+
+        const datepick = wrapper.find(datepickSelector);
+
         it('renders', () => {
             expect(wrapper.exists()).toBeTruthy;
         });
 
         it('renders startdate', () => {
-            //console.log(wrapper.find(startDateSelector).debug());
+            const startdate = datepick.find(startSelector);
 
-            expect(true).toBeTruthy();
+            expect(startdate.exists()).toBeTruthy();
         });
 
-        it.todo('changes startdate');
+        it('changes startdate', () => {
+            let startdate = wrapper.find(startSelector);
+            const testDate = new Date('2020-09-11T00:00:00.000Z');
 
-        it.todo('renders enddate');
+            expect(startdate.prop('value')).toBe(customTimeRange.startDate);
+            
+            act(() => {
+                //@ts-ignore
+                startdate.props().onChange(testDate);
+            });
+            wrapper.update();
+            startdate = wrapper.find(startSelector);
+            const inputDate = new Date(String(startdate.prop('value')));
+            
+            expect(inputDate.getTime()).toBe(testDate.getTime());
+        });
 
-        it.todo('changes enddate');
-        
-        // errors ? 
+        it('renders enddate', () => {
+            const enddate = datepick.find(endSelector);
+
+            expect(enddate.exists()).toBeTruthy();
+        });
+
+        it('changes enddate' , () => {
+            let endDate = wrapper.find(endSelector);
+            const testDate = new Date('2020-09-12T00:00:00.000Z');
+            
+            expect(endDate.prop('value')).toBe(customTimeRange.endDate);
+            
+            act(() => {
+                //@ts-ignore
+                endDate.props().onChange(testDate);
+            });
+            wrapper.update();
+            endDate = wrapper.find(endSelector);
+            const inputDate = new Date(String(endDate.prop('value')));
+            
+            expect(inputDate.getTime()).toBe(testDate.getTime());
+        });
+
+        it('shows error' , () => {
+            const errorMessageSelector = 'p#time-range-error-message';
+            const updateButton = wrapper.find(UpdateButton);
+
+            let endDate = wrapper.find(endSelector);
+            let startDate = wrapper.find(startSelector);
+            let invalidDateRange = {
+                start : new Date('2020-09-12T00:00:00.000Z'),
+                end : new Date('2020-09-11T00:00:00.000Z'),
+            }
+            expect(wrapper.find(errorMessageSelector).exists()).toBeFalsy();
+
+            act(() => {
+                //@ts-ignore
+                startDate.props().onChange(invalidDateRange.start);
+                //@ts-ignore
+                endDate.props().onChange(invalidDateRange.end);
+            });
+            act(() => {
+                updateButton.simulate('click');
+            });
+            wrapper.update();
+            
+            expect(wrapper.find(errorMessageSelector).exists()).toBeTruthy();
+            expect(onUpdateButtonClicked).not.toHaveBeenCalled();
+        })
     });
 
     describe('UpdateButton' , () => {

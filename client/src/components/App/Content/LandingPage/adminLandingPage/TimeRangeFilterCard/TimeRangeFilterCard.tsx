@@ -45,7 +45,7 @@ const TimeRangeCard = (props : Props): JSX.Element => {
                         minDate={timeRangeMinDate}
                         maxDate={new Date()}
                     />   
-                    {errorMes && <Typography className={classes.timeRangeError}>{errorMes}</Typography>}
+                    {errorMes && <Typography id='time-range-error-message' className={classes.timeRangeError}>{errorMes}</Typography>}
                 </CardContent>
             </Collapse>
             <CardActions className={classes.timeCardActions}>
