@@ -21,11 +21,12 @@ const TimeRangeCard = (props : Props): JSX.Element => {
     return (
         <Card className={classes.timeRangeCard}>
             <CardContent className={classes.timeRangeCardContent}>
-                <Typography className={classes.cardTitle}>
+                <Typography className={classes.cardTitle} id='time-range-filter-title'>
                     <b>{filterTimeRangeLabel}</b>
                 </Typography>
                 <FormControl variant='outlined' className={classes.timeRangeSelect}>
                     <SelectDropdown
+                        id='time-range-filter-dropdown'
                         onChange={onTimeRangeChange}
                         items={timeRanges}
                         value={timeRangeFilter.id}

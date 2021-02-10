@@ -7,7 +7,6 @@ import invesitgationInfoStatistics from 'Utils/Testing/AdminLandingPage/investig
 
 import InvestigationsInfo , { convertorsToGraph } from './investigationsInfo';
 import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart';
-import { IconButton } from '@material-ui/core';
 
 const onInfoButtonClick = jest.fn();
 const allInvestigationsCount = 3;
