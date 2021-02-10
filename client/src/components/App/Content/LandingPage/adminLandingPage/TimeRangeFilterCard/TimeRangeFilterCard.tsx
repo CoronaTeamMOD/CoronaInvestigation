@@ -37,6 +37,7 @@ const TimeRangeCard = (props : Props): JSX.Element => {
             <Collapse in={timeRangeFilter.id === customTimeRange.id} unmountOnExit className={classes.collapse}>
                 <CardContent className={classes.dateRangeCardContent}>
                     <DateRangePick
+                        id='time-range-filter-datepick'
                         startDate={timeRangeFilter.startDate}
                         onStartDateChange={onStartDateSelect}
                         endDate={timeRangeFilter.endDate}

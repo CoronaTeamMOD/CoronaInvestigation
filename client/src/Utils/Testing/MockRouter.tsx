@@ -1,6 +1,8 @@
 import React from 'react';
 import { Router } from 'react-router-dom';
 
+import { TimeRange } from 'models/TimeRange';
+
 const MockRouter: React.FC<Props> = (props) => {
     const { locationState } = props
     
@@ -27,7 +29,8 @@ const MockRouter: React.FC<Props> = (props) => {
 
 interface Props {
     locationState? : {
-        deskFilter : number[];
+        deskFilter? : number[];
+        timeRangeFilter? : TimeRange;
     }; 
 }
 

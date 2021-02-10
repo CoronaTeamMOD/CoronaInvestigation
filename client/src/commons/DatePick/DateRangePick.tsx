@@ -6,11 +6,11 @@ import useStyles from './DateRangePickStyles';
 
 const DateRangePick: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { startDate, onStartDateChange, endDate, onEndDateChange, minDate, maxDate } = props;
+    const { id, startDate, onStartDateChange, endDate, onEndDateChange, minDate, maxDate } = props;
     const classes = useStyles();
 
     return (
-        <Grid container alignItems='center' xs={12} spacing={1}>
+        <Grid item container alignItems='center' xs={12} spacing={1} id={id}>
             <Grid item xs={5} className={classes.dateItem}>
                 <DatePick
                     minDate={minDate}
@@ -36,8 +36,9 @@ const DateRangePick: React.FC<Props> = (props: Props): JSX.Element => {
 };
 
 interface Props {
-    minDate?: Date,
-    maxDate?: Date,
+    id? : string;
+    minDate?: Date;
+    maxDate?: Date;
     startDate: string | Date;
     onStartDateChange: any;
     endDate: string | Date;
