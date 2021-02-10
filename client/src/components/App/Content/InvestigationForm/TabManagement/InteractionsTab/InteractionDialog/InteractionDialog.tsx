@@ -53,7 +53,7 @@ const InteractionDialog = (props: Props) => {
     const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
     const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
     const interactionEndTime = methods.watch(InteractionEventDialogFields.END_TIME);
-    const isRepetitive = methods.watch(InteractionEventDialogFields.IS_REPETITIVE);
+    const isRepetitive = InteractionEventDialogFields.IS_REPETITIVE;
     const additionalOccurrences = methods.watch(InteractionEventDialogFields.ADDITIONAL_OCCURRENCES, []);
     const initialInteractionDate = React.useRef<Date>(new Date(interactionData?.startTime as Date));
 
@@ -219,14 +219,15 @@ const InteractionDialog = (props: Props) => {
         return (!data.unknownTime && (!data.startTime || !data.endTime));
     };
 
+    const toEnableButton: string | boolean = (!isNewInteraction && isRepetitiveFieldInvalid.invalid && isRepetitiveFieldInvalid.missingAdditionalDateMessage) || !isRepetitiveFieldInvalid.invalid
+
     const validateAndHandleSubmit = methods.handleSubmit(
         () => {
             const datesHaveError =
                 getAndSetDateErrors({unknownTime: isUnknownTime,startTime: interactionStartTime, endTime: interactionEndTime })
                || additionalOccurrences?.map((occurence, index) => getAndSetDateErrors(occurence, index)).some(Boolean);
 
-            const canSubmit = !(datesHaveError || isRepetitiveFieldInvalid.invalid);
-
+            const canSubmit = !datesHaveError && toEnableButton
             if (canSubmit) {
                 const data = methods.getValues();
                 delete data.privateHouseAddress;
@@ -269,10 +270,10 @@ const InteractionDialog = (props: Props) => {
                             בטל
                         </Button>
                         <Tooltip title={
-                            isRepetitiveFieldInvalid.RepetitiveFieldMissingMessage || isRepetitiveFieldInvalid.missingAdditionalDateMessage
+                            isRepetitiveFieldInvalid.RepetitiveFieldMissingMessage || (!toEnableButton && isRepetitiveFieldInvalid.missingAdditionalDateMessage)
                         }>
                             <div>
-                                <PrimaryButton disabled={isRepetitiveFieldInvalid.invalid}
+                                <PrimaryButton disabled={!toEnableButton}
                                                form='interactionEventForm'
                                                type='submit'
                                                id='createContact'>
