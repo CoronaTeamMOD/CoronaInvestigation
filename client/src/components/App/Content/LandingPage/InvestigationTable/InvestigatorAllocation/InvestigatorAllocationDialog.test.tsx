@@ -21,30 +21,24 @@ const contentProps = {
 };
 
 
+let wrapper: ReactWrapper<any, Readonly<{}>, React.Component<{}, {}, any>>;
+const fulshPromises = () => new Promise(setImmediate);
 
-// beforeAll( async () =>{
-//     wrapper = await mount(
-//         <InvestigatorAllocationDialog 
-//             {...contentProps}
-//         />
-//     );
-//     wrapper.update();
-// })
+const loadWrapper = async () => {
+    await act(async () => {
+        wrapper = mount(
+            <InvestigatorAllocationDialog 
+                {...contentProps}
+            />
+        );
+        await fulshPromises();
+    })
+    wrapper.update();
+}
 
 describe('<InvestigatorAllocationDialog />', () => {
-    let wrapper: ReactWrapper<any, Readonly<{}>, React.Component<{}, {}, any>>;
-    const fulshPromises = () => new Promise(setImmediate);
-    beforeAll(async () => {
-        await act(async () => {
-            wrapper = mount(
-                <InvestigatorAllocationDialog 
-                    {...contentProps}
-                />
-            );
-            await fulshPromises();
-        })
-        wrapper.update();
-    });
+    beforeAll(loadWrapper);
+    afterEach(loadWrapper);
     
     it('renders' , () => {
         expect(wrapper.exists()).toBeTruthy();
@@ -61,58 +55,57 @@ describe('<InvestigatorAllocationDialog />', () => {
         expect(cancelButton.exists()).toBeTruthy();
     });
 
-    
-    it('renders' , () => {
-        const submitButton = wrapper.find('button#submit-button');
-        expect(submitButton.exists()).toBeTruthy();
-    });
+    describe('Submit Btn :', () => {
+        beforeAll(loadWrapper);
+        afterEach(loadWrapper);
+        const submitButtonSelector = 'button#submit-button';
 
-    it('is disabled' , () => {
-        const submitButton = wrapper.find('button#submit-button');
-        expect(submitButton.props().disabled).toBeTruthy();
-    });
-    
-    it('renders tool tip' , () => {
-        const toolTip = wrapper.find('span#tool-tip');
-        expect(toolTip.exists()).toBeTruthy();
-    });
-
-    it('shows tool tip message' , () => {
-        const toolTipMessage = 'לא נבחר חוקר';
-        const toolTip = wrapper.find('span#tool-tip');
-        expect(toolTip.props().title).toBe(toolTipMessage);
-    });
-
-    it('is not disabled when row selected' , () => {
-        const submitButton = 'button#submit-button'
-        act(() => {
-            wrapper.find('tr#investigator-row-206621534').simulate('click');  
+        it('renders' , () => {
+            expect(wrapper.find(submitButtonSelector).exists()).toBeTruthy();
         });
-        wrapper.update()
 
-        expect(wrapper.find(submitButton).props().disabled).toBeFalsy();
+        it('is disabled' , () => {
+            expect(wrapper.find(submitButtonSelector).props().disabled).toBeTruthy();
+        });
+
+        it('is not disabled when row selected' , () => {
+            expect(wrapper.find(submitButtonSelector).props().disabled).toBeTruthy();
+            act(() => {
+                wrapper.find('tr#investigator-row-206621534').simulate('click');  
+            });
+            wrapper.update()
+    
+            expect(wrapper.find(submitButtonSelector).props().disabled).toBeFalsy();
+        });
     });
 
-    it('does not show tool tip message when row selected' , async () => {
+    describe('Tooltip : ' , () => {
+        beforeAll(loadWrapper);
+        afterEach(loadWrapper);
         const tooltipSelector = 'span#tool-tip';
-        await act(async () => {
-            wrapper = mount(
-                <InvestigatorAllocationDialog 
-                    {...contentProps}
-                />
-            );
-            await fulshPromises();
-        })
-        wrapper.update();
 
-        act(() => {
-            wrapper.find('tr#investigator-row-206621534').simulate('click')
-        })
-        wrapper.update();
-
-        expect(wrapper.find(tooltipSelector).props().title).toBeFalsy();
-        
-    });    
+        it('renders' , () => {
+            expect(wrapper.find(tooltipSelector).exists()).toBeTruthy();
+        });
+    
+        it('shows message' , () => {
+            const toolTipMessage = 'לא נבחר חוקר';
+            expect(wrapper.find(tooltipSelector).props().title).toBe(toolTipMessage);
+        });
+    
+        it('does not show message when row selected' , () => {
+            expect(wrapper.find(tooltipSelector).props().title).toBeTruthy();
+            act(() => {
+                wrapper.find('tr#investigator-row-206621534').simulate('click')
+            })
+            wrapper.update();
+    
+            expect(wrapper.find(tooltipSelector).props().title).toBeFalsy();
+        });   
+    })
+    
+    
+ 
 
     it('renders InvestigatorsTable' , () => {
         const investigatorsTable = wrapper.find(InvestigatorsTable);
