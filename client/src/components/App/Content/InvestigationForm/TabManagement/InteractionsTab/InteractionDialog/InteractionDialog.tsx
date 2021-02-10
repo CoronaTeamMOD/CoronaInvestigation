@@ -59,7 +59,7 @@ const InteractionDialog = (props: Props) => {
 
     const isRepetitiveFieldInvalid = useMemo(() => {
             const isRepetitiveFieldMissing = isNewInteraction && !(typeof isRepetitive === 'boolean');
-            const missingAdditionalDate = isRepetitive && !(additionalOccurrences && additionalOccurrences.length > 0);
+            const missingAdditionalDate = isNewInteraction && isRepetitive && !(additionalOccurrences && additionalOccurrences.length > 0);
 
             return {
                 RepetitiveFieldMissingMessage: isRepetitiveFieldMissing ? repetitiveFieldMissingMessage : '',
@@ -115,7 +115,7 @@ const InteractionDialog = (props: Props) => {
         initialInteractionDate.current.setHours(0, 0, 0, 0);
         const startTimeToSave = isUnknownTime ? initialInteractionDate.current : data.startTime;
         const endTimeToSave = isUnknownTime ? initialInteractionDate.current : data.endTime;
-        const contacts = data[InteractionEventDialogFields.IS_REPETITIVE] ? [] : data[InteractionEventDialogFields.CONTACTS];
+
         return {
             ...data,
             [InteractionEventDialogFields.START_TIME]: startTimeToSave,
@@ -127,7 +127,7 @@ const InteractionDialog = (props: Props) => {
             [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: Boolean(data[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]),
             [InteractionEventDialogFields.ADDITIONAL_OCCURRENCES]:
             data[InteractionEventDialogFields.ADDITIONAL_OCCURRENCES]?.map(convertAdditionalOccurances) || [],
-            [InteractionEventDialogFields.CONTACTS]: contacts?.map((contact: Contact, index: number) => {
+            [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS]?.map((contact: Contact, index: number) => {
                     const serialId = methods.watch<string, number>(`${InteractionEventDialogFields.CONTACTS}[${index}].${InteractionEventContactFields.ID}`)
                     if (serialId) {
                         return {
@@ -148,6 +148,16 @@ const InteractionDialog = (props: Props) => {
         })
     });
 
+    const fireRepetitiveContactWarning = () =>
+        alertWarning('שים לב כי לא הוזנו עד כה מגעים לאירועים מחזוריים\n' +
+            'ותצטרך להוסיף אותם בנפרד לכל תאריך שיצרת בו אירוע ', {
+            showCancelButton: true,
+            cancelButtonText: 'בטל',
+            cancelButtonColor: theme.palette.error.main,
+            confirmButtonColor: theme.palette.primary.main,
+            confirmButtonText: 'אישור',
+        });
+
     const onSubmit = (data: InteractionEventDialogData) => {
         if (!data.contacts) {
             data.contacts = [];
@@ -165,18 +175,16 @@ const InteractionDialog = (props: Props) => {
 
         const contactsIdsToCheck: IdToCheck[] = groupedInvestigationsContextState.allContactIds;
         if (!checkDuplicateIdsForInteractions(contactsIdsToCheck)) {
-            alertWarning('שים לב כי לא הוזנו עד כה מגעים לאירועים מחזוריים\n' +
-                'ותצטרך להוסיף אותם בנפרד לכל תאריך שיצרת בו אירוע ', {
-                showCancelButton: true,
-                cancelButtonText: 'בטל',
-                cancelButtonColor: theme.palette.error.main,
-                confirmButtonColor: theme.palette.primary.main,
-                confirmButtonText: 'אישור',
-            }).then(result => {
-                if (result.value) {
-                    saveInteractions(interactionDataToSave);
-                }
-            })
+            if (isNewInteraction && data.isRepetitive) {
+                fireRepetitiveContactWarning()
+                    .then(result => {
+                        if (result.value) {
+                            saveInteractions(interactionDataToSave)
+                        }
+                    })
+            } else {
+                saveInteractions(interactionDataToSave)
+            }
         }
     };
 

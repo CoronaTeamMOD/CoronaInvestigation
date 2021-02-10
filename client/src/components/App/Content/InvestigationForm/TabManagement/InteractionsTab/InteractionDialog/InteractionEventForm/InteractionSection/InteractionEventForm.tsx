@@ -126,9 +126,6 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
             </Collapse>
 
             {
-                interactionData && (
-                    isNewInteraction
-                    ?
                     <div>
                         <FormInput xs={7} fieldName='האם האירוע מחזורי ?'>
                             <Controller
@@ -136,6 +133,7 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                                 control={control}
                                 render={(props) => (
                                     <Toggle
+                                        disabled={!isNewInteraction}
                                         value={props.value}
                                         onChange={(event, value) => value !== null && props.onChange(value)}
                                         className={formClasses.formToggle}
@@ -144,14 +142,8 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                             />
                         </FormInput>
                         {
-                            errors[InteractionEventDialogFields.IS_REPETITIVE] &&
-                            <Typography color='error'>
-                                {errors[InteractionEventDialogFields.IS_REPETITIVE].message}
-                            </Typography>
-                        }
-                        {
                             (interactionData && typeof isRepetitive === 'boolean') && (
-                                isRepetitive
+                                (isNewInteraction && isRepetitive)
                                     ? <RepetitiveEventForm selectedDate={interactionData.startTime}/>
                                     : <>
                                         <DetailsFieldsTitle date={interactionData.startTime}/>
@@ -160,8 +152,6 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                             )
                         }
                     </div>
-                    : <InteractionDetailsFields interactionDate={interactionData.startTime}/>
-                )
             }
 
             <Divider light={true}/>
