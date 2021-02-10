@@ -72,7 +72,7 @@ const InvestigationsInfo = (props: Props): JSX.Element => {
                     <Grid item xs={12} className={[classes.investigationAmountContainer, hoverClasses.whiteButtons].join(' ')}>
                         <Typography id='investigations-count' className={classes.investigationAmountText}><b>{allInvestigationsCount}</b></Typography>
                         <Typography><b>חקירות בסך הכל</b></Typography>
-                        <IconButton onClick={() => onInfoButtonClick({})}>
+                        <IconButton id='next-page-arrow' onClick={() => onInfoButtonClick({})}>
                             <NavigateBeforeIcon className={classes.navigateIcon} />
                         </IconButton>
                     </Grid>

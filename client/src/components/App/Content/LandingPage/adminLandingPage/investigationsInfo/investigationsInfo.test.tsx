@@ -6,6 +6,8 @@ import statusToFilterConvertor from 'commons/statusToFilterConvertor';
 import invesitgationInfoStatistics from 'Utils/Testing/AdminLandingPage/investigationInfoStatistics';
 
 import InvestigationsInfo , { convertorsToGraph } from './investigationsInfo';
+import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart';
+import { IconButton } from '@material-ui/core';
 
 const onInfoButtonClick = jest.fn();
 const allInvestigationsCount = 3;
@@ -64,9 +66,46 @@ describe('<InvestigationsInfo />', () => {
         });
     });
 
-    it.todo('shows investigationBarChart')
+    it('shows investigationBarChart' , () => {
+        const investigationBarChart = wrapper.find(InvestigationBarChart);
 
-    it.todo('shows correct amount of investigations')
+        expect(investigationBarChart.exists()).toBeTruthy();
+        expect(investigationBarChart).toHaveLength(1);
+    })
 
-    it.todo('shows nextPageArrow')
+    it('shows correct amount of investigations' , () => {
+        const investigationsCount = wrapper.find('p#investigations-count');
+
+        expect(investigationsCount.exists()).toBeTruthy();
+        expect(investigationsCount).toHaveLength(1);
+        expect(investigationsCount.text()).toBe(String(allInvestigationsCount));
+    });
+
+    describe('Next Page Arrow: ', () => {
+        const onInfoButtonClick = jest.fn();
+        const nextPageWrapper = mount(
+            <InvestigationsInfo 
+                {...investigationsInfoProps}
+                onInfoButtonClick={onInfoButtonClick}
+            />
+        );
+
+        const nextPageArrowSelector = 'button#next-page-arrow'; 
+        it('renders' , () => {
+            expect(nextPageWrapper.find(nextPageArrowSelector).exists()).toBeTruthy();
+        });
+
+        it('clicks correctly' , () => {
+            expect(onInfoButtonClick).toHaveBeenCalledTimes(0);
+
+            act(() => {
+                nextPageWrapper.find(nextPageArrowSelector).simulate('click');
+            });
+            nextPageWrapper.update();
+
+            expect(onInfoButtonClick).toHaveBeenCalledTimes(1);
+            expect(onInfoButtonClick).toHaveBeenCalledWith({});
+        })
+    })
+    
 })
