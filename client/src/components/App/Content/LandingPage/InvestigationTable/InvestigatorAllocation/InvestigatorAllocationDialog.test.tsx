@@ -20,18 +20,32 @@ const contentProps = {
     onSuccess:  jest.fn(() => Promise.resolve({ isConfirmed: true, isDenied: false, isDismissed: false })),
 };
 
-let wrapper: ReactWrapper<any, Readonly<{}>, React.Component<{}, {}, any>>;
 
-beforeAll( async () =>{
-    wrapper = await mount(
-        <InvestigatorAllocationDialog 
-            {...contentProps}
-        />
-    );
-    wrapper.update();
-})
+
+// beforeAll( async () =>{
+//     wrapper = await mount(
+//         <InvestigatorAllocationDialog 
+//             {...contentProps}
+//         />
+//     );
+//     wrapper.update();
+// })
 
 describe('<InvestigatorAllocationDialog />', () => {
+    let wrapper: ReactWrapper<any, Readonly<{}>, React.Component<{}, {}, any>>;
+    const fulshPromises = () => new Promise(setImmediate);
+    beforeAll(async () => {
+        await act(async () => {
+            wrapper = mount(
+                <InvestigatorAllocationDialog 
+                    {...contentProps}
+                />
+            );
+            await fulshPromises();
+        })
+        wrapper.update();
+    });
+    
     it('renders' , () => {
         expect(wrapper.exists()).toBeTruthy();
     });
@@ -47,23 +61,17 @@ describe('<InvestigatorAllocationDialog />', () => {
         expect(cancelButton.exists()).toBeTruthy();
     });
 
-    describe('submit button:', () => {
+    
+    it('renders' , () => {
         const submitButton = wrapper.find('button#submit-button');
-        it('renders' , () => {
-            expect(submitButton.exists()).toBeTruthy();
-        });
-
-        it('is disabled' , () => {
-            expect(submitButton.props().disabled).toBeTruthy();
-        });
-        it('is not disabled when row selected' , () => {
-            act(() => {
-                wrapper.find('tr#investigator-row-206621534').simulate('click');
-            });
-            expect(submitButton.props().disabled).toBeFalsy();
-        });
+        expect(submitButton.exists()).toBeTruthy();
     });
 
+    it('is disabled' , () => {
+        const submitButton = wrapper.find('button#submit-button');
+        expect(submitButton.props().disabled).toBeTruthy();
+    });
+    
     it('renders tool tip' , () => {
         const toolTip = wrapper.find('span#tool-tip');
         expect(toolTip.exists()).toBeTruthy();
@@ -74,10 +82,35 @@ describe('<InvestigatorAllocationDialog />', () => {
         const toolTip = wrapper.find('span#tool-tip');
         expect(toolTip.props().title).toBe(toolTipMessage);
     });
-    it('does not show tool tip message when row selected' , () => {
-        const toolTip = wrapper.find('span#tool-tip');
-        wrapper.find('tr#investigator-row-206621534').invoke('onClick')!({} as any)
-            expect(toolTip.props().title).toBeFalsy();
+
+    it('is not disabled when row selected' , () => {
+        const submitButton = 'button#submit-button'
+        act(() => {
+            wrapper.find('tr#investigator-row-206621534').simulate('click');  
+        });
+        wrapper.update()
+
+        expect(wrapper.find(submitButton).props().disabled).toBeFalsy();
+    });
+
+    it('does not show tool tip message when row selected' , async () => {
+        const tooltipSelector = 'span#tool-tip';
+        await act(async () => {
+            wrapper = mount(
+                <InvestigatorAllocationDialog 
+                    {...contentProps}
+                />
+            );
+            await fulshPromises();
+        })
+        wrapper.update();
+
+        act(() => {
+            wrapper.find('tr#investigator-row-206621534').simulate('click')
+        })
+        wrapper.update();
+
+        expect(wrapper.find(tooltipSelector).props().title).toBeFalsy();
         
     });    
 
