@@ -14,7 +14,7 @@ import useStyles, { cardHeight } from './investigationsInfoStyles';
 import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart';
 import InvestigationInfoButton from './investigationInfoButton/investigationInfoButton';
 
-const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit<InvestigationChart, 'value'> } = {
+export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit<InvestigationChart, 'value'> } = {
     newInvestigations: {
         id: FilterRulesDescription.NEW,
         color: '#1F78B4'
@@ -58,6 +58,7 @@ const InvestigationsInfo = (props: Props): JSX.Element => {
                         {
                             investigationsGraphData.map((InvestigationData: InvestigationChart , index) => (
                                 <InvestigationInfoButton
+                                    id={`info-button-${index}`}
                                     key={`investigationInfoButton-${index}`}
                                     amountOfInvestigations={InvestigationData.value}
                                     text={InvestigationData.id}
@@ -69,7 +70,7 @@ const InvestigationsInfo = (props: Props): JSX.Element => {
                         </Grid>
                     </Grid>
                     <Grid item xs={12} className={[classes.investigationAmountContainer, hoverClasses.whiteButtons].join(' ')}>
-                        <Typography className={classes.investigationAmountText}><b>{allInvestigationsCount}</b></Typography>
+                        <Typography id='investigations-count' className={classes.investigationAmountText}><b>{allInvestigationsCount}</b></Typography>
                         <Typography><b>חקירות בסך הכל</b></Typography>
                         <IconButton onClick={() => onInfoButtonClick({})}>
                             <NavigateBeforeIcon className={classes.navigateIcon} />
