@@ -13,6 +13,7 @@ const DateRangePick: React.FC<Props> = (props: Props): JSX.Element => {
         <Grid item container alignItems='center' xs={12} spacing={1} id={id}>
             <Grid item xs={5} className={classes.dateItem}>
                 <DatePick
+                    id={`${id}-start`}
                     minDate={minDate}
                     maxDate={maxDate}
                     value={startDate}
@@ -25,6 +26,7 @@ const DateRangePick: React.FC<Props> = (props: Props): JSX.Element => {
             </Grid>
             <Grid item xs={5} className={classes.dateItem}>
                 <DatePick
+                    id={`${id}-end`}
                     maxDate={maxDate}
                     value={endDate}
                     onChange={onEndDateChange}
