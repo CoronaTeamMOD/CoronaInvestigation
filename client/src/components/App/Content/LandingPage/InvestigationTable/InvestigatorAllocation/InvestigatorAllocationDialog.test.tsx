@@ -1,29 +1,37 @@
 import React from 'react'
-import { mount } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 
 
 import InvestigatorAllocationDialog, { investigatorAllocationTitle } from './InvestigatorAllocationDialog';
 import InvestigatorOption from 'models/InvestigatorOption';
 import InvestigatorsTable from './InvestigatorsTable/InvestigatorsTable';
+import { investigators } from 'Utils/Testing/InvestigatorAllocation/state/index';
+
+const fetchInvestigatorsSpy = jest.fn(() => Promise.resolve(investigators));
 
 const contentProps = {
     isOpen: true,
     handleCloseDialog:  jest.fn(),
-    fetchInvestigators: jest.fn(() => Promise.resolve([])),
+    fetchInvestigators: fetchInvestigatorsSpy,
     allocateInvestigationToInvestigator: jest.fn(),
     groupIds: [],
     epidemiologyNumbers: [],
     onSuccess:  jest.fn(() => Promise.resolve({ isConfirmed: true, isDenied: false, isDismissed: false })),
 };
 
-describe('<InvestigatorAllocationDialog />', () => {
-    let wrapper = mount(
+let wrapper: ReactWrapper<any, Readonly<{}>, React.Component<{}, {}, any>>;
+
+beforeAll( async () =>{
+    wrapper = await mount(
         <InvestigatorAllocationDialog 
             {...contentProps}
         />
     );
+    wrapper.update();
+})
 
+describe('<InvestigatorAllocationDialog />', () => {
     it('renders' , () => {
         expect(wrapper.exists()).toBeTruthy();
     });
@@ -48,21 +56,30 @@ describe('<InvestigatorAllocationDialog />', () => {
         it('is disabled' , () => {
             expect(submitButton.props().disabled).toBeTruthy();
         });
-
-
-    });
-
-    describe('tool tip message:', () => {
-        const toolTip = wrapper.find('span#tool-tip');
-        const toolTipMessage = 'לא נבחר חוקר';
-        it('renders' , () => {
-            expect(toolTip.exists()).toBeTruthy();
+        it('is not disabled when row selected' , () => {
+            act(() => {
+                wrapper.find('tr#investigator-row-206621534').simulate('click');
+            });
+            expect(submitButton.props().disabled).toBeFalsy();
         });
-
-        it('shows message' , () => {
-            expect(toolTip.props().title).toBe(toolTipMessage);
-        });    
     });
+
+    it('renders tool tip' , () => {
+        const toolTip = wrapper.find('span#tool-tip');
+        expect(toolTip.exists()).toBeTruthy();
+    });
+
+    it('shows tool tip message' , () => {
+        const toolTipMessage = 'לא נבחר חוקר';
+        const toolTip = wrapper.find('span#tool-tip');
+        expect(toolTip.props().title).toBe(toolTipMessage);
+    });
+    it('does not show tool tip message when row selected' , () => {
+        const toolTip = wrapper.find('span#tool-tip');
+        wrapper.find('tr#investigator-row-206621534').invoke('onClick')!({} as any)
+            expect(toolTip.props().title).toBeFalsy();
+        
+    });    
 
     it('renders InvestigatorsTable' , () => {
         const investigatorsTable = wrapper.find(InvestigatorsTable);

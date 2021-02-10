@@ -7,7 +7,7 @@ import useStyles from './SearchBarStyles';
 
 const SearchBar: React.FC<Props> = (props: Props) => {
 
-    const { searchBarLabel, onClick, onChange, validationSchema } = props;
+    const { searchBarLabel, onClick, onChange, validationSchema, id } = props;
 
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [queryValidationError, setQueryValidationError] = useState<string>('');
@@ -33,6 +33,7 @@ const SearchBar: React.FC<Props> = (props: Props) => {
 
     return (
         <TextField
+            id={id}
             value={searchQuery}
             className={classes.searchBar}
             onChange={event => handleChange(event.target.value as string)}
@@ -68,6 +69,7 @@ const SearchBar: React.FC<Props> = (props: Props) => {
 }
 
 interface Props {
+    id?: string;
     searchBarLabel: string;
     onClick: (value: string) => void;
     onChange?: (value: string) => void;
