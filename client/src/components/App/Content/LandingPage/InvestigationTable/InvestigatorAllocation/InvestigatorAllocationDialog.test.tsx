@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import Swal from 'sweetalert2';
 import { act } from 'react-dom/test-utils';
 import { mount, ReactWrapper } from 'enzyme';
 
@@ -12,6 +13,8 @@ const handleCloseDialogSpy = jest.fn();
 const allocateInvestigationToInvestigatorSpy = jest.fn();
 const onSuccessSpy = jest.fn(() => Promise.resolve({ isConfirmed: true, isDenied: false, isDismissed: false }));
 
+const testSpy = jest.fn();
+
 const contentProps = {
     isOpen: true,
     handleCloseDialog: handleCloseDialogSpy,
@@ -19,7 +22,8 @@ const contentProps = {
     allocateInvestigationToInvestigator: allocateInvestigationToInvestigatorSpy,
     groupIds: [],
     epidemiologyNumbers: [],
-    onSuccess: onSuccessSpy
+    onSuccess: onSuccessSpy,
+    test : testSpy
 };
 
 let wrapper: ReactWrapper<any, Readonly<{}>, React.Component<{}, {}, any>>;
@@ -123,4 +127,31 @@ describe('<InvestigatorAllocationDialog />', () => {
         expect(investigatorsTable.exists()).toBeTruthy();
     });
 
+    describe('Alert: ', () => {
+        beforeAll(loadWrapper);
+        afterEach(loadWrapper);
+        const mockWarning = jest.fn(() => Promise.resolve({ isConfirmed: true, isDenied: false, isDismissed: false, value: true }));
+        jest.spyOn(Swal, 'fire').mockImplementation(mockWarning);
+
+        it('shows alert when selected', async () => {
+            expect(mockWarning).not.toBeCalled();
+            expect(onSuccessSpy).not.toBeCalled();
+            expect(allocateInvestigationToInvestigatorSpy).not.toBeCalled()
+
+            act(() => {
+                wrapper.find('tr#investigator-row-206621534').simulate('click');
+            });
+            await act(async () => {
+                wrapper.find('button#submit-button').simulate('click');  
+                await fulshPromises();
+            });
+            wrapper.update();
+
+            expect(mockWarning).toBeCalled();
+            expect(onSuccessSpy).toBeCalled();
+            expect(allocateInvestigationToInvestigatorSpy).toBeCalledWith([] , [] , investigators[0])
+        });
+
+    })
+    
 });
