@@ -80,10 +80,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
     const insuranceCompany = methods.watch(PersonalInfoDataContextFields.INSURANCE_COMPANY);
     const selectedRoleId = methods.watch(PersonalInfoDataContextFields.ROLE);
     const educationOccupationCity = methods.watch(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY);
-    const city = methods.watch(PersonalInfoDataContextFields.CITY);
-    const street = methods.watch(PersonalInfoDataContextFields.STREET);
-    const houseNumber = methods.watch(PersonalInfoDataContextFields.HOUSE_NUMBER);
-    const floor = methods.watch(PersonalInfoDataContextFields.FLOOR);
+    const city = methods.watch(`${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.CITY}`);
+    const street = methods.watch(`${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.STREET}`);
+    const houseNumber = methods.watch(`${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.HOUSE_NUMBER}`);
+    const floor = methods.watch(`${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.FLOOR}`);
 
     const selectedRole = useMemo<investigatedPatientRole | undefined>(() => (
         investigatedPatientRoles.find(role => role.id === selectedRoleId)
