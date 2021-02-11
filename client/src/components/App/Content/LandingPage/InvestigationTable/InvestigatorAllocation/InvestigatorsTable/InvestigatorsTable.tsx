@@ -71,7 +71,7 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
             />
             <TableContainer component={Paper}>
                 <Table stickyHeader>
-                    <TableHead>
+                    <TableHead id='investigators-table-header'>
                         <TableRow>
                             {
                                 Object.keys(TableHeaders).map((cellName: string) => {

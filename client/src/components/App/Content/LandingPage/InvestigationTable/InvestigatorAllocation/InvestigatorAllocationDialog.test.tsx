@@ -3,7 +3,9 @@ import Swal from 'sweetalert2';
 import { act } from 'react-dom/test-utils';
 import { mount, ReactWrapper } from 'enzyme';
 
-import { investigators, confirmedAlert, dismissedAlert } from 'Utils/Testing/InvestigatorAllocation/state/index';
+import flushPromises from 'Utils/Testing/flushPromises';
+import { confirmed, dismissed } from 'Utils/Testing/MockSwal';
+import { investigators } from 'Utils/Testing/InvestigatorAllocation/state';
 
 import InvestigatorsTable from './InvestigatorsTable/InvestigatorsTable';
 import InvestigatorAllocationDialog, { investigatorAllocationTitle } from './InvestigatorAllocationDialog';
@@ -11,7 +13,7 @@ import InvestigatorAllocationDialog, { investigatorAllocationTitle } from './Inv
 const handleCloseDialogSpy = jest.fn();
 const fetchInvestigatorsSpy = jest.fn(() => Promise.resolve(investigators));
 const allocateInvestigationToInvestigatorSpy = jest.fn();
-const onSuccessSpy = jest.fn(() => Promise.resolve(confirmedAlert));
+const onSuccessSpy = confirmed;
 
 const contentProps = {
     isOpen: true,
@@ -24,7 +26,6 @@ const contentProps = {
 };
 
 let wrapper: ReactWrapper<any, Readonly<{}>, React.Component<{}, {}, any>>;
-const fulshPromises = () => new Promise(setImmediate);
 
 const loadWrapper = async () => {
     await act(async () => {
@@ -33,7 +34,7 @@ const loadWrapper = async () => {
                 {...contentProps}
             />
         );
-        await fulshPromises();
+        await flushPromises();
     })
     wrapper.update();
 };
@@ -127,7 +128,7 @@ describe('<InvestigatorAllocationDialog />', () => {
         afterEach(loadWrapper);
 
         it('shows alert dismissed', async () => {
-            const mockWarning = jest.fn(() => Promise.resolve(dismissedAlert));
+            const mockWarning = dismissed;
             jest.spyOn(Swal, 'fire').mockImplementation(mockWarning);
             expect(mockWarning).not.toBeCalled();
             expect(onSuccessSpy).not.toBeCalled();
@@ -137,7 +138,7 @@ describe('<InvestigatorAllocationDialog />', () => {
             });
             await act(async () => {
                 wrapper.find('button#submit-button').simulate('click');  
-                await fulshPromises();
+                await flushPromises();
             });
             wrapper.update();
             expect(mockWarning).toBeCalled();
@@ -146,7 +147,7 @@ describe('<InvestigatorAllocationDialog />', () => {
         });
 
         it('shows alert confirmed', async () => {
-            const mockWarning = jest.fn(() => Promise.resolve(confirmedAlert));
+            const mockWarning = confirmed;
             jest.spyOn(Swal, 'fire').mockImplementation(mockWarning);
             expect(mockWarning).not.toBeCalled();
             expect(onSuccessSpy).not.toBeCalled();
@@ -156,7 +157,7 @@ describe('<InvestigatorAllocationDialog />', () => {
             });
             await act(async () => {
                 wrapper.find('button#submit-button').simulate('click');  
-                await fulshPromises();
+                await flushPromises();
             });
             wrapper.update();
             expect(mockWarning).toBeCalled();

@@ -5,8 +5,6 @@ export const confirmedAlert = {
     value: true 
 };
 
-export const dismissedAlert = {
-    isConfirmed: false, 
-    isDenied: false, 
-    isDismissed: true,
-};
+const confirmed = jest.fn(() => Promise.resolve(confirmedAlert));
+
+export default confirmed;
