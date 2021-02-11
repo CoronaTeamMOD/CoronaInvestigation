@@ -9,6 +9,7 @@ import timeRanges, { customTimeRange, defaultTimeRange } from 'models/enums/time
 
 import TimeRangeFilterCard from './TimeRangeFilterCard';
 import UpdateButton from '../UpdateButton/UpdateButton';
+import thunk from 'redux-thunk';
 
 const onUpdateButtonClicked = jest.fn();
 
@@ -180,9 +181,9 @@ describe('<TimeRangeFilterCard />', () => {
             const errorMessageSelector = 'p#time-range-error-message';
             const updateButton = wrapper.find(UpdateButton);
 
-            let endDate = wrapper.find(endSelector);
-            let startDate = wrapper.find(startSelector);
-            let invalidDateRange = {
+            const endDate = wrapper.find(endSelector);
+            const startDate = wrapper.find(startSelector);
+            const invalidDateRange = {
                 start : new Date('2020-09-12T00:00:00.000Z'),
                 end : new Date('2020-09-11T00:00:00.000Z'),
             }
@@ -204,15 +205,76 @@ describe('<TimeRangeFilterCard />', () => {
         })
     });
 
-    describe('UpdateButton' , () => {
-        it.todo('renders');
+    describe('UpdateButton:' , () => {
+        const updateButton = wrapper.find(UpdateButton);
 
-        it.todo('clicks');
+        it('renders', () => {
+            expect(updateButton.exists()).toBeTruthy();
+            expect(updateButton).toHaveLength(1);
+        });
 
-        it.todo('clicks with default value');
+        it('clicks' , () => {
+            const dropdownSelector = 'div#time-range-filter-dropdown';
+            const dropdown = wrapper.find(dropdownSelector);
+            const selectInput = dropdown.parent();
+            
+            expect(onUpdateButtonClicked).not.toHaveBeenCalled();
+            
+            act(() => {
+                selectInput.props().onChange({target : { value : timeRanges[2].id}});
+            });
+            act(() => {
+                updateButton.simulate('click');
+            });
+            wrapper.update();
 
-        it.todo('clicks with custom value');
+            expect(onUpdateButtonClicked).toHaveBeenCalled();
+            expect(onUpdateButtonClicked).toHaveBeenCalledWith(timeRanges[2]);
+        });
 
-        //it.todo('stops invalid dates'); ?
+        it('clicks with custom value' , () => {
+            const startSelector = 'DatePick#time-range-filter-datepick-start';
+            const endSelector = 'DatePick#time-range-filter-datepick-end';
+
+            const mockedLocationState = {
+                timeRangeFilter: customTimeRange
+            };
+            const wrapper = mount(
+                <MockThemeProvider>
+                    <MockMuiPickersUtilsProvider>
+                        <MockRouter locationState={mockedLocationState}>
+                            <TimeRangeFilterCard 
+                                onUpdateButtonClicked={onUpdateButtonClicked}
+                            />
+                        </MockRouter>
+                    </MockMuiPickersUtilsProvider>
+                </MockThemeProvider>
+            );
+            const updateButton = wrapper.find(UpdateButton);
+            const endDate = wrapper.find(endSelector);
+            const startDate = wrapper.find(startSelector);
+            const validDateRange = {
+                start : new Date('2020-09-11T00:00:00.000Z'),
+                end : new Date('2020-09-12T00:00:00.000Z'),
+            }
+
+            act(() => {
+                //@ts-ignore
+                startDate.props().onChange(validDateRange.start);
+                //@ts-ignore
+                endDate.props().onChange(validDateRange.end);
+            });
+            act(() => {
+                updateButton.simulate('click');
+            });
+            wrapper.update();
+
+            expect(onUpdateButtonClicked).toHaveBeenCalled();
+            expect(onUpdateButtonClicked).toHaveBeenCalledWith({
+                ...customTimeRange,
+                startDate : "2020-09-11",
+                endDate : "2020-09-12",
+            });
+        });
     });
 })
