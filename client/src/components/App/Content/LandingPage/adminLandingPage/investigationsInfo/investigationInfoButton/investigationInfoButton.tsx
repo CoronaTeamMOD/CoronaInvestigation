@@ -20,7 +20,7 @@ const InvestigationInfoButton: React.FC<Props> = (props: Props): JSX.Element => 
             >
                 <div>
                     <Typography><b>{amountOfInvestigations}</b></Typography>
-                    <Typography><b>{text}</b></Typography>
+                    <Typography aria-labelledby='button-name'><b>{text}</b></Typography>
                 </div>
             </Button>
         </>

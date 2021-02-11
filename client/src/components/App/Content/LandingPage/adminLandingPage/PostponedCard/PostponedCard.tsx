@@ -30,12 +30,13 @@ const PostponedCard: React.FC<Props> = (props: Props): JSX.Element => {
                 <Typography><b>{postponedInvestigationsTitle}</b></Typography>
             </div>
             <Tooltip title={transferRequestText}>
-                <div 
+                <div
+                    id='postponed-transfer-wrapper' 
                     className={[classes.filterText, hoverClasses.whiteButtons].join(' ')} 
                     onClick={() => onClick(statusToFilterConvertor[FilterRulesDescription.TRANSFER_REQUEST], FilterRulesDescription.TRANSFER_REQUEST)}
                 >
                     <Box display='flex'>
-                    <Typography className={classes.investigationNumberText}><b>{transferRequestInvestigationsCount}</b></Typography>
+                        <Typography id='postponed-transfer-count' className={classes.investigationNumberText}><b>{transferRequestInvestigationsCount}</b></Typography>
                         <Typography className={classes.investigationText}><b>{transferRequestTitle}</b></Typography>
                         <NavigateBeforeIcon className={classes.navigateIcon} />
                     </Box>
@@ -43,12 +44,13 @@ const PostponedCard: React.FC<Props> = (props: Props): JSX.Element => {
             </Tooltip>
             <Divider/>
             <Tooltip title={waitingForDetailsText}>
-                <div  
+                <div
+                    id='postponed-waiting-wrapper'  
                     className={[classes.filterText, hoverClasses.whiteButtons].join(' ')} 
                     onClick={() => onClick(statusToFilterConvertor[FilterRulesDescription.WAITING_FOR_DETAILS], FilterRulesDescription.WAITING_FOR_DETAILS)}
                 >
                     <Box display='flex'>
-                        <Typography className={classes.investigationNumberText}><b>{waitingForDetailsInvestigationsCount}</b></Typography>
+                        <Typography id='postponed-waiting-count' className={classes.investigationNumberText}><b>{waitingForDetailsInvestigationsCount}</b></Typography>
                         <Typography className={classes.investigationText}><b>{waitingForDetailsTitle}</b></Typography>
                         <NavigateBeforeIcon className={classes.navigateIcon} />
                     </Box>

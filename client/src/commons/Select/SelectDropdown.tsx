@@ -6,10 +6,11 @@ import useStyles from './SelectDropdownStyles';
 const SelectDropdown: React.FC<Props> = (props: Props): JSX.Element => {
 
     const classes = useStyles();
-    const { items, value, onChange } = props;
+    const { id, items, value, onChange } = props;
 
     return (
         <Select
+            id={id}
             MenuProps={{
                 anchorOrigin: {
                     vertical: 'bottom',
@@ -46,4 +47,5 @@ interface Props {
     items: any;
     value: any;
     onChange: any;
+    id?: string;
 }

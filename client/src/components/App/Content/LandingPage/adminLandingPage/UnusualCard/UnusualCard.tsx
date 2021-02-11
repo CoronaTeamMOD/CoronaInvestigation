@@ -27,9 +27,9 @@ const UnusualCard: React.FC<Props> = (props: Props): JSX.Element => {
                 <Typography><b>לתשומת ליבך</b></Typography>
             </div>
             <Tooltip className={[classes.unusualCompleted, hoverClasses.whiteButtons].join(' ')} title={unusualCompletesInvestigationsText}>
-                <div onClick={() => onUnusualCompletedNoContactInvestigationsClick(statusToFilterConvertor[FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT])}>
+                <div id='unusual-completed-wrapper' onClick={() => onUnusualCompletedNoContactInvestigationsClick(statusToFilterConvertor[FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT])}>
                     <div className={classes.investigationAmount}>
-                        <Typography className={classes.investigationNumberText}><b>{unusualCompletedNoContactInvestigationsCount}</b></Typography>
+                        <Typography id='unusual-completed-count' className={classes.investigationNumberText}><b>{unusualCompletedNoContactInvestigationsCount}</b></Typography>
                         <Typography><b>חקירות</b></Typography>
                     </div>
                     <div className={classes.unusualInvestigations}>
@@ -40,9 +40,9 @@ const UnusualCard: React.FC<Props> = (props: Props): JSX.Element => {
             </Tooltip>
             <Divider/>
             <Tooltip className={[classes.unusualInProcess, hoverClasses.whiteButtons].join(' ')} title={unusualInProcessInvestigationsText}>
-                <div  onClick={() => onUnusualInProgressInvestigationsClick(statusToFilterConvertor[FilterRulesDescription.UNUSUAL_IN_PROCESS])} >
+                <div id='unusual-progress-wrapper' onClick={() => onUnusualInProgressInvestigationsClick(statusToFilterConvertor[FilterRulesDescription.UNUSUAL_IN_PROCESS])} >
                     <div className={classes.investigationAmount}>
-                        <Typography className={classes.investigationNumberText}><b>{unusualInProgressInvestigationsCount}</b></Typography>
+                        <Typography id='unusual-progress-count' className={classes.investigationNumberText}><b>{unusualInProgressInvestigationsCount}</b></Typography>
                         <Typography><b>חקירות</b></Typography>
                     </div>
                     <div className={classes.unusualInvestigations}>
