@@ -4,4 +4,4 @@ import desk from './desks';
 export {
     user,
     desk
-}
+};

@@ -9,7 +9,6 @@ import timeRanges, { customTimeRange, defaultTimeRange } from 'models/enums/time
 
 import TimeRangeFilterCard from './TimeRangeFilterCard';
 import UpdateButton from '../UpdateButton/UpdateButton';
-import thunk from 'redux-thunk';
 
 const onUpdateButtonClicked = jest.fn();
 
@@ -68,7 +67,6 @@ describe('<TimeRangeFilterCard />', () => {
                 selectInput.props().onChange({target : { value : customTimeRange.id}});
             });
             wrapper.update();
-            
             
             const datePick = wrapper.find('div#time-range-filter-datepick');
             expect(datePick.exists()).toBeTruthy();
@@ -154,13 +152,13 @@ describe('<TimeRangeFilterCard />', () => {
             expect(inputDate.getTime()).toBe(testDate.getTime());
         });
 
-        it('renders enddate', () => {
-            const enddate = datepick.find(endSelector);
+        it('renders endDate', () => {
+            const endDate = datepick.find(endSelector);
 
-            expect(enddate.exists()).toBeTruthy();
+            expect(endDate.exists()).toBeTruthy();
         });
 
-        it('changes enddate' , () => {
+        it('changes endDate' , () => {
             let endDate = wrapper.find(endSelector);
             const testDate = new Date('2020-09-12T00:00:00.000Z');
             
@@ -272,8 +270,8 @@ describe('<TimeRangeFilterCard />', () => {
             expect(onUpdateButtonClicked).toHaveBeenCalled();
             expect(onUpdateButtonClicked).toHaveBeenCalledWith({
                 ...customTimeRange,
-                startDate : "2020-09-11",
-                endDate : "2020-09-12",
+                startDate : '2020-09-11',
+                endDate : '2020-09-12',
             });
         });
     });

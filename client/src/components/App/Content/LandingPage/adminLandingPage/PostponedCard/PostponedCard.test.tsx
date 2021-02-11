@@ -89,7 +89,5 @@ describe('<PostponedCard />', () => {
             expect(onClick).toHaveBeenCalled();
             expect(onClick).toHaveBeenCalledWith(statusToFilterConvertor[FilterRulesDescription.WAITING_FOR_DETAILS], FilterRulesDescription.WAITING_FOR_DETAILS);
         });
-    })
-    
-    
-})
+    });
+});
