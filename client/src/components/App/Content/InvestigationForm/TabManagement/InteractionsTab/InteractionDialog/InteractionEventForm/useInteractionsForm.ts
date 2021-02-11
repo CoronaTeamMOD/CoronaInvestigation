@@ -31,10 +31,10 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
             };
             const allInvestigationIds = parsedData.contacts
-                .map((contact) => contact.identificationType + contact.identificationNumber)
-                .concat(connectedInvestigationsIds(groupedInvestigationContacts));
-
-            const formHasDuplicateIds =  (new Set(allInvestigationIds)).size !== allInvestigationIds.length;
+                .map((contact) => contact.identificationNumber && ((contact.identificationType || 'ת"ז') + contact.identificationNumber)) 
+                .concat(connectedInvestigationsIds(groupedInvestigationContacts))
+                .filter(contact => Boolean(contact));
+            const formHasDuplicateIds = (new Set(allInvestigationIds)).size !== allInvestigationIds.length;
             if(!formHasDuplicateIds) {
                 if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
                     const updateInteractionsLogger = logger.setup('Update Interaction')
@@ -43,7 +43,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                     .then((response) => {
                         if (response.data?.data?.updateContactEventFunction) {
                             updateInteractionsLogger.info('updated interaction successfully', Severity.LOW);
-                            saveGroupedInvestigations(response.data.data.updateContactEventFunction.integer);
+                            saveGroupedInvestigations(response.data.data.updateContactEventFunction.integers[0]);
                         }
                     })
                     .catch((error) => {
@@ -58,7 +58,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                     .then((response) => {
                         if (response.data?.data?.updateContactEventFunction) {
                             createInteractionsLogger.info('created interaction successfully', Severity.LOW);
-                            saveGroupedInvestigations(response.data.data.updateContactEventFunction.integer);
+                            saveGroupedInvestigations(response.data.data.updateContactEventFunction.integers[0]);
                         } else {
                             createInteractionsLogger.info(`response data is not valid data : ${JSON.stringify(response)}`, Severity.LOW);
                         }
