@@ -50,151 +50,96 @@ const AppToolbar: React.FC = (): JSX.Element => {
     const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
     const districtCounties = useSelector<StoreStateType, County[]>(state => state.county.districtCounties);
     const countyDisplayName = useSelector<StoreStateType, string>(state => state.user.data.countyByInvestigationGroup.displayName);
+    
+  
+
     const classes = useStyles();
     const location = useLocation();
     const userName = user.authorityByAuthorityId?.authorityName ? 
-                            user.userName +" (" + user.authorityByAuthorityId.authorityName + ")"  : user.userName;
+                          user.userName +" (" + user.authorityByAuthorityId.authorityName + ")"  : user.userName;
 
     return (
         <AppBar className={classes.appBar} position='static'>
-            <Toolbar>
-                <div className={classes.rightSection}>
-                    <StatePersistentNavLink exact to={indexRoute} >
-                        <img alt='logo' src='./assets/img/logo.png' width={48} height={48} />
-                        <Typography variant='h4' className={classes.title}>אבן יסוד</Typography>
-                    </StatePersistentNavLink>
+        <Toolbar>
+            <div className={classes.rightSection}>
+            <img alt='logo' src='./assets/img/logo.png' width={48} height={48} />
+            <Typography variant='h4' id='title'>אבן יסוד</Typography>
+            {
+                navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
+                navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&
+                <div className={classes.navButtons}>
+                <StatePersistentNavLink exact to={indexRoute} 
+                    isActive={(match, location) => 
+                    (location.pathname === adminLandingPageRoute || location.pathname  === landingPageRoute)}>
+                    <Home className={classes.menuIcon} />
+                    <Typography className={classes.menuTypo}> עמוד הבית</Typography>
+                </StatePersistentNavLink>
+                <StatePersistentNavLink exact to={usersManagementRoute}>
+                    <SupervisorAccount className={classes.menuIcon} />
+                    <Typography className={classes.menuTypo}> ניהול משתמשים</Typography>
+                </StatePersistentNavLink>
+                </div>
+            }
+            </div>
+            <div className={classes.userSection}>
+            {isActive !== null &&
+                <Tooltip title={toggleMessage} arrow>
+                <IsActiveToggle
+                    value={isActive}
+                    onToggle={setUserActivityStatus}
+                    exclusive
+                />
+                </Tooltip>
+            }
+            <Tooltip title='התנתקות מהמערכת' arrow>
+                <IconButton color='inherit' onClick={logout}>
+                <ExitToApp />
+                </IconButton>
+            </Tooltip>
+            <Typography className={classes.greetUserText}>
+                שלום, {userName}
+            </Typography>
+            {
+                user.userType === UserType.SUPER_ADMIN ?
+                <Select
+                    className={classes.countySelect}
+                    value={displayedCounty}
+                    onChange={(event) => setDisplayedCounty(event.target.value as number)}
+                    classes={{icon: classes.countySelect}}
+                    disableUnderline
+                    MenuProps={{
+                    anchorOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'left'
+                    },
+                    transformOrigin: {
+                        vertical: 'top',
+                        horizontal: 'left'
+                    },
+                    getContentAnchorEl: null
+                    }}
+                    renderValue={(value) => 
+                    <Typography>נפת <b>{districtCounties.find(county => county.id === value)?.displayName}</b></Typography>
+                    }
+                >
                     {
-                    navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
-                    navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&
-                        <div className={classes.navButtons}>
-                            <StatePersistentNavLink exact to={landingPageRoute} >
-                                <Typography className={classes.menuTypo}>  ניהול חקירות</Typography>
-                            </StatePersistentNavLink>
-                            <StatePersistentNavLink exact to={usersManagementRoute}>
-                                <Typography className={classes.menuTypo}> ניהול משתמשים</Typography>
-                            </StatePersistentNavLink>
-                        </div>
+                    districtCounties.map(county => 
+                        <MenuItem key={county.id} value={county.id}>
+                            {`נפת  ${county.displayName}`}
+                        </MenuItem>
+                    )
                     }
-                </div>
-                <div className={classes.userSection}>
-                    {user.isDeveloper &&
-                        <Select
-                            className={classes.select}
-                            value={user.userType}
-                            onChange={(event) => setDisplayedUserType(event.target.value as number)}
-                            classes={{icon: classes.select}}
-                            disableUnderline
-                            MenuProps={{
-                            anchorOrigin: {
-                                vertical: 'bottom',
-                                horizontal: 'left'
-                            },
-                            transformOrigin: {
-                                vertical: 'top',
-                                horizontal: 'left'
-                            },
-                            getContentAnchorEl: null
-                            }}
-                            renderValue={(value) => 
-                                <Typography>משתמש <b>{userTypes.find(userType => userType.id === value)?.displayName}</b></Typography>
-                            }
-                        >
-                            {
-                                userTypes.map(userType => 
-                                    <MenuItem key={userType.id} value={userType.id}>
-                                        {userType.displayName}
-                                    </MenuItem>
-                                )
-                            }
-                        </Select>
-                    }
-                    {isActive !== null &&
-                        <Tooltip title={toggleMessage} arrow>
-                        <IsActiveToggle
-                            value={isActive}
-                            onToggle={setUserActivityStatus}
-                            exclusive
-                        />
-                        </Tooltip>
-                    }
-                    <Tooltip title='התנתקות מהמערכת' arrow>
-                        <IconButton color='inherit' onClick={logout}>
-                            <ExitToApp />
-                        </IconButton>
-                    </Tooltip>
-                    <Typography className={classes.greetUserText}>
-                        שלום, {userName}
-                    </Typography>
-                    {user.userType === UserTypeCodes.SUPER_ADMIN && user.isDeveloper &&
-                        <Select
-                            className={classes.select}
-                            value={displayedDistrict}
-                            onChange={(event) => changeUserDistrict(event.target.value as number)}
-                            classes={{icon: classes.select}}
-                            disableUnderline
-                            MenuProps={{
-                            anchorOrigin: {
-                                vertical: 'bottom',
-                                horizontal: 'left'
-                            },
-                            transformOrigin: {
-                                vertical: 'top',
-                                horizontal: 'left'
-                            },
-                            getContentAnchorEl: null
-                            }}
-                            renderValue={(value) => 
-                                <Typography>מחוז <b>{districts.find(district => district.id === value)?.displayName}</b></Typography>
-                            }
-                        >
-                        {
-                            districts.map(district => 
-                                <MenuItem key={district.id} value={district.id}>
-                                    {`מחוז  ${district.displayName}`}
-                                </MenuItem>
-                            )
-                        }
-                    </Select>
-                    }
-                    {user.userType === UserTypeCodes.SUPER_ADMIN ?
-                        <Select
-                            className={classes.select}
-                            value={displayedCounty}
-                            onChange={(event) => changeUserCounty(event.target.value as number)}
-                            classes={{icon: classes.select}}
-                            disableUnderline
-                            MenuProps={{
-                            anchorOrigin: {
-                                vertical: 'bottom',
-                                horizontal: 'left'
-                            },
-                            transformOrigin: {
-                                vertical: 'top',
-                                horizontal: 'left'
-                            },
-                            getContentAnchorEl: null
-                            }}
-                            renderValue={(value) => 
-                                <Typography>נפת <b>{districtCounties.find(county => county.id === value)?.displayName}</b></Typography>
-                            }
-                        >
-                        {
-                            districtCounties.map(county => 
-                                <MenuItem key={county.id} value={county.id}>
-                                    {`נפת  ${county.displayName}`}
-                                </MenuItem>
-                            )
-                        }
-                    </Select>
-                    : countyDisplayName &&
-                        <Typography>
-                            הינך מחובר/ת לנפת <b>{countyDisplayName}</b>
-                        </Typography>
-                    }
-                </div>
-            </Toolbar>
+                </Select>
+                :
+                countyDisplayName &&
+                <Typography>
+                    הינך מחובר/ת לנפת <b>{countyDisplayName}</b>
+                </Typography>
+            }
+            </div>
+        </Toolbar>
         </AppBar>
     );
-};
+}
 
 export default AppToolbar;
