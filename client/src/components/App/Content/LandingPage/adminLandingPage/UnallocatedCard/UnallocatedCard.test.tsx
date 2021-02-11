@@ -43,7 +43,6 @@ describe('<UnallocatedCard />', () => {
         act(() => {
             cardWrapper.simulate('click');
         });
-        wrapper.update();
 
         expect(onClick).toBeCalled();
         expect(onClick).toHaveBeenCalledWith(statusToFilterConvertor[FilterRulesDescription.UNALLOCATED]);

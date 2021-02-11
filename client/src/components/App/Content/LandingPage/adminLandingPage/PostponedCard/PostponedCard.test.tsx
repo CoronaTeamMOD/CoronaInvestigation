@@ -16,7 +16,6 @@ const props = {
     isLoading : false,
     transferRequestInvestigationsCount: testTransferCount,
     waitingForDetailsInvestigationsCount: testWaitingCount
-
 }
 
 describe('<PostponedCard />', () => {
@@ -55,7 +54,6 @@ describe('<PostponedCard />', () => {
             act(() => {
                 transferWrapper.simulate('click');
             });
-            wrapper.update();
 
             expect(onClick).toHaveBeenCalled();
             expect(onClick).toHaveBeenCalledWith(statusToFilterConvertor[FilterRulesDescription.TRANSFER_REQUEST], FilterRulesDescription.TRANSFER_REQUEST);
@@ -87,7 +85,6 @@ describe('<PostponedCard />', () => {
             act(() => {
                 waitingWrapper.simulate('click');
             });
-            wrapper.update();
 
             expect(onClick).toHaveBeenCalled();
             expect(onClick).toHaveBeenCalledWith(statusToFilterConvertor[FilterRulesDescription.WAITING_FOR_DETAILS], FilterRulesDescription.WAITING_FOR_DETAILS);
