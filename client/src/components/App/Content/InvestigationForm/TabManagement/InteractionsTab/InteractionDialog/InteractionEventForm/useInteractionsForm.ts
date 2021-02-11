@@ -33,7 +33,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
             const allInvestigationIds = parsedData.contacts
                 .map((contact) => contact.identificationNumber && ((contact.identificationType || 'ת"ז') + contact.identificationNumber)) 
                 .concat(connectedInvestigationsIds(groupedInvestigationContacts))
-                .filter(contact => contact !== undefined);
+                .filter(contact => Boolean(contact));
             const formHasDuplicateIds =  (new Set(allInvestigationIds)).size !== allInvestigationIds.length;
             if(!formHasDuplicateIds) {
                 if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
