@@ -174,7 +174,7 @@ const InteractionDialog = (props: Props) => {
         });
 
         const contactsIdsToCheck: IdToCheck[] = groupedInvestigationsContextState.allContactIds;
-        if (!checkDuplicateIdsForInteractions(contactsIdsToCheck)) {
+        if (!checkDuplicateIdsForInteractions(contactsIdsToCheck.concat(newIds))) {
             if (isNewInteraction && data.isRepetitive) {
                 fireRepetitiveContactWarning()
                     .then(result => {
