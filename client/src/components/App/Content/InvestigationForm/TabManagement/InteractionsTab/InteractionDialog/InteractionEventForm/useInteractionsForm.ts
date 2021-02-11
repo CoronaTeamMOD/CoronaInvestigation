@@ -31,9 +31,10 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
             };
             const allInvestigationIds = parsedData.contacts
-                .map((contact) => (contact.identificationType || 'ת"ז') + contact.identificationNumber)
+                .map((contact) => contact.identificationNumber && ((contact.identificationType || 'ת"ז') + contact.identificationNumber))
+                .filter(contact => contact !== undefined) 
                 .concat(connectedInvestigationsIds(groupedInvestigationContacts));
-
+            console.log(allInvestigationIds);
             const formHasDuplicateIds =  (new Set(allInvestigationIds)).size !== allInvestigationIds.length;
             if(!formHasDuplicateIds) {
                 if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
