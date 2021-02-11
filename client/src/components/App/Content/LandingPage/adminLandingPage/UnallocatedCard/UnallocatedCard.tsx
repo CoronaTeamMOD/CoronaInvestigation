@@ -21,9 +21,9 @@ const UnallocatedCard: React.FC<Props> = (props: Props): JSX.Element => {
     return (
         <LoadingCard isLoading={isLoading} height={cardHeight} className={[classes.unallocatedCard, hoverClasses.whiteButtons].join(' ')}>
             <Tooltip title={unallocatedInvestigationsText}>
-                <div onClick={() => onClick(statusToFilterConvertor[FilterRulesDescription.UNALLOCATED])}>
+                <div id='unallocated-card-wrapper' onClick={() => onClick(statusToFilterConvertor[FilterRulesDescription.UNALLOCATED])}>
                     <div className={classes.investigationAmount}>
-                        <Typography className={classes.investigationNumberText}><b>{unallocatedInvestigationsCount}</b></Typography>
+                        <Typography id='unallocated-amount' className={classes.investigationNumberText}><b>{unallocatedInvestigationsCount}</b></Typography>
                         <Typography><b>חקירות</b></Typography>
                     </div>
                     <Box display='flex'>
