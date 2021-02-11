@@ -31,7 +31,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
             };
             const allInvestigationIds = parsedData.contacts
-                .map((contact) => contact.identificationType + contact.identificationNumber)
+                .map((contact) => (contact.identificationType || 'ת"ז') + contact.identificationNumber)
                 .concat(connectedInvestigationsIds(groupedInvestigationContacts));
 
             const formHasDuplicateIds =  (new Set(allInvestigationIds)).size !== allInvestigationIds.length;
