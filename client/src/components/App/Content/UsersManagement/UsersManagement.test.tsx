@@ -183,11 +183,14 @@ describe('<UsersManagement />', () => {
                     );
                     await flushPromises();
                 });
+                jest.clearAllMocks();
             });
             afterEach(() => {
-                deactivateWrapper.unmount();
-                jest.clearAllMocks(); 
+                deactivateWrapper.unmount(); 
             });
+            afterAll(() => {
+                jest.clearAllMocks();
+            })
 
             it('decline' , async () => {
                 const deactivteButton = deactivateWrapper.find('button#deactivate-all-users-button');
@@ -216,7 +219,7 @@ describe('<UsersManagement />', () => {
                 const axiosSpy = jest.spyOn(axios , 'post');
 
                 expect(mockWarning).not.toHaveBeenCalled();
-                expect(axiosSpy).not.toHaveBeenCalledWith('users/deactivateAllCountyUsers');
+                expect(axiosSpy).not.toHaveBeenCalled();
 
                 await act( async () => {
                     deactivteButton.simulate('click');    
