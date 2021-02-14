@@ -13,7 +13,7 @@ import InvestigatorsTable from './InvestigatorsTable/InvestigatorsTable';
 import { TableHeadersNames } from './InvestigatorsTable/InvestigatorsTableHeaders';
 import TransferInvestigationDialogNote from '../InvestigationTableFooter/TransferInvestigationsDialogs/TransferInvestigationDialogNote';
 
-const title = 'הקצאת חקירה';
+export const investigatorAllocationTitle = 'הקצאת חקירה';
 const unSelectedRow = '';
 
 const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
@@ -83,9 +83,9 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
             onClose={() => closeDialog()}
             onEnter={() => loadInvestigators()}
         >
-            <DialogTitle>
+            <DialogTitle id='investigator-allocation-title'>
                 <b>
-                    {title}
+                    {investigatorAllocationTitle}
                 </b>
             </DialogTitle>
             <DialogContent>
@@ -100,6 +100,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
             <TransferInvestigationDialogNote />
             <DialogActions>
                 <Button
+                    id='cancel-button'
                     variant='contained'
                     color='default'
                     onClick={(event) => {
@@ -110,8 +111,9 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
                     ביטול
                 </Button>
                 <Tooltip title={shouldButtonDisabled ? 'לא נבחר חוקר' : ''}>
-                    <span> {/* The span role is to wrap the button to make sure the tooltip work properly even if the button is disabled */}
+                    <span id='tool-tip'> {/* The span role is to wrap the button to make sure the tooltip work properly even if the button is disabled */}
                         <Button
+                            id='submit-button'
                             form='investigatorAllocation'
                             variant='contained'
                             color='primary'

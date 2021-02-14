@@ -63,6 +63,7 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
     return (
         <>
             <SearchBar
+                id='search-bar'
                 searchBarLabel={searchBarLabel}
                 onClick={(value: string) => setInvestigatorInput(value)}
                 onChange={(value: string) => setInvestigatorInput(value)}
@@ -70,7 +71,7 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
             />
             <TableContainer component={Paper}>
                 <Table stickyHeader>
-                    <TableHead>
+                    <TableHead id='investigators-table-header'>
                         <TableRow>
                             {
                                 Object.keys(TableHeaders).map((cellName: string) => {
@@ -89,6 +90,7 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
                         {
                             filteredInvestigators.map((investigator: User) => (
                                 <TableRow 
+                                    id={`investigator-row-${investigator.id}`}
                                     key={investigator.id}
                                     selected={selectedRow === investigator.id}
                                     onClick={() => setSelectedRow(investigator.id)}
