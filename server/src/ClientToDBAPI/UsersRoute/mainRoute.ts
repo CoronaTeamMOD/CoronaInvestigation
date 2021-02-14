@@ -232,7 +232,8 @@ usersRoute.post('/changeGroupCounty', adminMiddleWare, (request: Request, respon
     });
     
     const parameters = { 
-        newInvestigator: `${unassignedUserPrefix}${request.body.county}`,
+        //hack: 1533
+        newInvestigator: `${unassignedUserPrefix}${request.body.updateCounty}`,
         selectedGroups: request.body.groupIds,
         userCounty: request.body.county,
         wasInvestigationTransferred: true
