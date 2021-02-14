@@ -746,7 +746,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const changeCountyLogger = logger.setup('Change Investigation County');
         try {
             axios.post('/users/changeGroupCounty', {
+                //hack: 1533
                 groupIds,
+                updateCounty: newSelectedCounty?.id,
                 county: displayedCounty,
                 transferReason,
             });
