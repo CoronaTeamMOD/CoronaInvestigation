@@ -2,9 +2,13 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
 
+import UserType from 'models/enums/UserType';
+import mockSelectors from 'Utils/Testing/AppToolbar/mockSelectors';
+
 import AppToolbar from './AppToolbar';
 
 describe('<AppToolbar />', () => {
+    mockSelectors(UserType.INVESTIGATOR);
     const wrapper = mount(
         <AppToolbar />
     );
