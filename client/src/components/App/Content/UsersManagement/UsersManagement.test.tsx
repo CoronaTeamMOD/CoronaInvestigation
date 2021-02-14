@@ -1,9 +1,15 @@
 import React from 'react';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
+import MockAdapter from 'axios-mock-adapter';
 import { Pagination } from '@material-ui/lab';
 
 import UserType from 'models/enums/UserType';
+import flushPromises from 'Utils/Testing/flushPromises';
+import { user } from 'Utils/Testing/UsersManagement/state';
+import { confirmed , dismissed } from 'Utils/Testing/MockSwal';
 import MockThemeProvider from 'Utils/Testing/MockThemeProvider';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import mockSelectors from 'Utils/Testing/UsersManagement/mockSelectors';
@@ -13,6 +19,7 @@ import EditUserInfoDialog from './EditUserInfoDialog/EditUserInfoDialog';
 import { UsersManagementTableHeaders } from './UsersManagementTableHeaders';
 import UsersManagement , { usersManagementTitle, notActiveSortFields } from './UsersManagement';
 
+const mockAxios = new MockAdapter(axios);
 
 describe('<UsersManagement />', () => {
     mockSelectors(UserType.ADMIN);
@@ -114,50 +121,112 @@ describe('<UsersManagement />', () => {
     });
 
     describe('deactivte all users button: ' , () => {
-        beforeEach(() => {
-            jest.clearAllMocks();
-        })
-        afterAll(() => {
-            jest.clearAllMocks();
-        })
+        describe('shows: ', () => {
+            beforeEach(() => {
+                jest.clearAllMocks();
+            })
+            afterAll(() => {
+                jest.clearAllMocks();
+            });
 
-        it('doesnt show for investigaitor' , () => {
-            mockSelectors(UserType.INVESTIGATOR);
-            const deactivateWrapper = mount(
-                <MockThemeProvider>
-                    <UsersManagement />
-                </MockThemeProvider>
-            );
+            it('investigaitor' , () => {
+                mockSelectors(UserType.INVESTIGATOR);
+                const deactivateWrapper = mount(
+                    <MockThemeProvider>
+                        <UsersManagement />
+                    </MockThemeProvider>
+                );
+    
+                const deactivteButton = deactivateWrapper.find('button#deactivate-all-users-button');
+    
+                expect(deactivteButton.exists()).toBeFalsy();
+            });
+    
+            it('admin' , () => {
+                mockSelectors(UserType.ADMIN);
+                const deactivateWrapper = mount(
+                    <MockThemeProvider>
+                        <UsersManagement />
+                    </MockThemeProvider>
+                );
+    
+                const deactivteButton = deactivateWrapper.find('button#deactivate-all-users-button');
+    
+                expect(deactivteButton.exists()).toBeTruthy();
+            });
 
-            const deactivteButton = deactivateWrapper.find('button#deactivate-all-users-button');
-
-            expect(deactivteButton.exists()).toBeFalsy();
+            it('investigaitor' , () => {
+                mockSelectors(UserType.INVESTIGATOR);
+                const deactivateWrapper = mount(
+                    <MockThemeProvider>
+                        <UsersManagement />
+                    </MockThemeProvider>
+                );
+    
+                const deactivteButton = deactivateWrapper.find('button#deactivate-all-users-button');
+    
+                expect(deactivteButton.exists()).toBeFalsy();
+            });
         });
 
-        it('shows for admin' , () => {
-            mockSelectors(UserType.ADMIN);
-            const deactivateWrapper = mount(
-                <MockThemeProvider>
-                    <UsersManagement />
-                </MockThemeProvider>
-            );
+        describe('clicks', () => {
+            const expectedUserCounty = user(UserType.ADMIN).displayedCounty;
+            let deactivateWrapper : any;
 
-            const deactivteButton = deactivateWrapper.find('button#deactivate-all-users-button');
+            beforeEach( async () => {
+                mockSelectors(UserType.ADMIN);
+                await act( async () => {
+                    deactivateWrapper = mount(
+                        <MockThemeProvider>
+                            <UsersManagement />
+                        </MockThemeProvider>
+                    );
+                    await flushPromises();
+                });
+            });
+            afterEach(() => {
+                deactivateWrapper.unmount();
+                jest.clearAllMocks(); 
+            });
 
-            expect(deactivteButton.exists()).toBeTruthy();
-        });
+            it('decline' , async () => {
+                const deactivteButton = deactivateWrapper.find('button#deactivate-all-users-button');
+                
+                const mockWarning = dismissed;
+                jest.spyOn(Swal, 'fire').mockImplementation(mockWarning);
+                const axiosSpy = jest.spyOn(axios , 'post');
 
-        it('doesnt show for investigaitor' , () => {
-            mockSelectors(UserType.INVESTIGATOR);
-            const deactivateWrapper = mount(
-                <MockThemeProvider>
-                    <UsersManagement />
-                </MockThemeProvider>
-            );
+                expect(mockWarning).not.toHaveBeenCalled();
+                expect(axiosSpy).not.toHaveBeenCalled();
 
-            const deactivteButton = deactivateWrapper.find('button#deactivate-all-users-button');
+                await act( async () => {
+                    deactivteButton.simulate('click');    
+                    await flushPromises();
+                });
 
-            expect(deactivteButton.exists()).toBeFalsy();
+                expect(mockWarning).toHaveBeenCalled();
+                expect(axiosSpy).not.toHaveBeenCalled();
+            });
+
+            it('accept' , async () => {
+                const deactivteButton = deactivateWrapper.find('button#deactivate-all-users-button');
+                
+                const mockWarning = confirmed;
+                jest.spyOn(Swal, 'fire').mockImplementation(mockWarning);
+                const axiosSpy = jest.spyOn(axios , 'post');
+
+                expect(mockWarning).not.toHaveBeenCalled();
+                expect(axiosSpy).not.toHaveBeenCalledWith('users/deactivateAllCountyUsers');
+
+                await act( async () => {
+                    deactivteButton.simulate('click');    
+                    await flushPromises();
+                });
+
+                expect(mockWarning).toHaveBeenCalled();
+                expect(axiosSpy).toHaveBeenCalled();
+                expect(axiosSpy).toHaveBeenCalledWith('users/deactivateAllCountyUsers' , { county : expectedUserCounty});
+            });
         });
     });
 });
