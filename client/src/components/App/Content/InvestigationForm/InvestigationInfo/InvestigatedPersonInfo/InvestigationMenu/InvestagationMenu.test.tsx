@@ -9,7 +9,7 @@ import MockCommentContextProvider from 'Utils/Testing/InvestigationInfo/MockComm
 
 import InvestigationMenu, { existingCommentColor, noCommentsColor } from './InvestigationMenu';
 
-const comment = 'זוהי הערה';
+const comment = 'הערה';
 const setComment = jest.fn();
 const props = {
     comment,
