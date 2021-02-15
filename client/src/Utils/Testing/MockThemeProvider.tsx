@@ -3,7 +3,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import theme from 'styles/theme';
 
-const MockFormProvider : React.FC<Props> = (props) => {
+const MockThemeProvider : React.FC<Props> = (props) => {
     return (
         <MuiThemeProvider theme={theme}>
             {props.children}
@@ -15,4 +15,4 @@ interface Props {
     
 }
 
-export default MockFormProvider;
+export default MockThemeProvider;
