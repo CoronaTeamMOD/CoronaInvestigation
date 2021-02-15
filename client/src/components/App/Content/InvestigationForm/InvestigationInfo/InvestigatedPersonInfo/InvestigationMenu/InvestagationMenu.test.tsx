@@ -2,6 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import MockThemeProvider from 'Utils/Testing/MockThemeProvider';
+import mockSelectors from 'Utils/Testing/InvestigationInfo/mockSelectors';
 import MockCommentContextProvider from 'Utils/Testing/InvestigationInfo/MockCommentContextProvider';
 
 import InvestigationMenu from './InvestigationMenu';
@@ -14,6 +15,7 @@ const props = {
 }
 
 describe('<InvestigationMenu />', () => {
+    mockSelectors();
     const wrapper = mount(
         <MockThemeProvider >
             <MockCommentContextProvider {...props}>
