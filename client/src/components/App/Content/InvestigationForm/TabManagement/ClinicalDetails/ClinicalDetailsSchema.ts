@@ -4,6 +4,7 @@ import { startOfTomorrow, subDays } from 'date-fns';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { getMinimalSymptomsStartDate, getMinimalStartIsolationDate, maxInvestigatedDays, maxIsolationDays } from 'Utils/ClinicalDetails/symptomsUtils';
 
+const invalidDateText = 'תאריך לא תקין';
 const requiredText = 'שדה זה הוא חובה';
 const StartDateAfterEndDateText = 'תאריך ההתחלה צריך להיות מוקדם יותר מתאריך הסיום';
 const EndDateBeforeStartDateText = 'תאריך הסיום צריך להיות מאוחר יותר מתאריך ההתחלה';
@@ -20,10 +21,10 @@ const isInIsolationStartDateSchema = (validationDate: Date) => yup.date().when(
             return validationDate > isolationStartDate ?
                     isolationStartDate < startOfTomorrowDate ?
                         isolationStartDate < getMinimalStartIsolationDate(validationDate) ?
-                            yup.date().min(getMinimalStartIsolationDate(validationDate), isolationStartDateIsTooEarlyText).required(requiredText).typeError(requiredText) :
-                            yup.date().max(yup.ref(ClinicalDetailsFields.ISOLATION_END_DATE), StartDateAfterEndDateText).required(requiredText).typeError(requiredText) :
-                    yup.date().max(startOfTomorrowDate, futureDateText).required(requiredText).typeError(requiredText) :
-                yup.date().max(validationDate, endDateBeforeValidationDateText).required(requiredText).typeError(requiredText)
+                            yup.date().min(getMinimalStartIsolationDate(validationDate), isolationStartDateIsTooEarlyText).required(requiredText).typeError(invalidDateText) :
+                            yup.date().max(yup.ref(ClinicalDetailsFields.ISOLATION_END_DATE), StartDateAfterEndDateText).required(requiredText).typeError(invalidDateText) :
+                    yup.date().max(startOfTomorrowDate, futureDateText).required(requiredText).typeError(invalidDateText) :
+                yup.date().max(validationDate, endDateBeforeValidationDateText).required(requiredText).typeError(invalidDateText)
         }),
         otherwise: yup.date().nullable()
     }
@@ -34,8 +35,8 @@ const isInIsolationEndDateSchema = (validationDate: Date) => yup.date().when(
         is: true,
         then: yup.date().when(ClinicalDetailsFields.ISOLATION_END_DATE, (isolationEndDate: Date) => {
             return new Date(validationDate) > isolationEndDate ?
-            yup.date().min(yup.ref(ClinicalDetailsFields.ISOLATION_START_DATE), StartDateAfterEndDateText).required(requiredText).typeError(requiredText) :
-            yup.date().max(validationDate, endDateBeforeValidationDateText).required(requiredText).typeError(requiredText)
+            yup.date().min(yup.ref(ClinicalDetailsFields.ISOLATION_START_DATE), StartDateAfterEndDateText).required(requiredText).typeError(invalidDateText) :
+            yup.date().max(validationDate, endDateBeforeValidationDateText).required(requiredText).typeError(invalidDateText)
         }),
         otherwise: yup.date().nullable()
     }
@@ -47,8 +48,8 @@ const wasHospitilizedStartDateSchema = yup.date().when(
         then: yup.date().when(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, (hospitalizationStartDate: Date) => {
             const startOfTomorrowDate = startOfTomorrow();
             return hospitalizationStartDate < startOfTomorrowDate ?
-                yup.date().max(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_END_DATE), StartDateAfterEndDateText).required(requiredText).typeError(requiredText) :
-                yup.date().max(startOfTomorrowDate, futureDateText).required(requiredText).typeError(requiredText)
+                yup.date().max(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_END_DATE), StartDateAfterEndDateText).required(requiredText).typeError(invalidDateText) :
+                yup.date().max(startOfTomorrowDate, futureDateText).required(requiredText).typeError(invalidDateText)
         }),
         otherwise: yup.date().nullable()
     }
@@ -57,7 +58,7 @@ const wasHospitilizedStartDateSchema = yup.date().when(
 const wasHospitilizedEndDateSchema = yup.date().when(
     ClinicalDetailsFields.WAS_HOPITALIZED, {
         is: true,
-        then: yup.date().min(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_START_DATE), EndDateBeforeStartDateText).required(requiredText).typeError(requiredText),
+        then: yup.date().min(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_START_DATE), EndDateBeforeStartDateText).required(requiredText).typeError(invalidDateText),
         otherwise: yup.date().nullable()
     }
 );
@@ -113,7 +114,7 @@ const ClinicalDetailsSchema = (validationDate: Date) => yup.object().shape({
             } else if(!doesHaveSymptoms) {
                 return schema.nullable();
             }
-            return yup.date().required(requiredText).typeError(requiredText)
+            return yup.date().required(requiredText).typeError(invalidDateText)
             .min(subDays(getMinimalSymptomsStartDate(validationDate), 1), symptomsStartDateIsTooEarlyText);
         }),
     [ClinicalDetailsFields.SYMPTOMS]: yup.array().of(yup.string()).when(
