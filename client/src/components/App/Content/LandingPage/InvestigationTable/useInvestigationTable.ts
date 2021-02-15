@@ -742,10 +742,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
-    const changeGroupsCounty = (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => {
+    const changeGroupsCounty = async (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => {
         const changeCountyLogger = logger.setup('Change Investigation County');
         try {
-            axios.post('/users/changeGroupCounty', {
+            await axios.post('/users/changeGroupCounty', {
                 //hack: 1533
                 groupIds,
                 updateCounty: newSelectedCounty?.id,
