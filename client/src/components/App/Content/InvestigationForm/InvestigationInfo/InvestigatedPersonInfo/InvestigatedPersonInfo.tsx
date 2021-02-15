@@ -327,7 +327,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                         isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
                     }
                     <Divider />
-                    <Tooltip title={vaccinationEffectiveFrom ? formatDate(vaccinationEffectiveFrom) : noInfo}>
+                    <Tooltip title={isVaccinated ? vaccinationEffectiveFrom ? formatDate(vaccinationEffectiveFrom) : noInfo : ''}>
                         <div>
                             <InfoItemWithIcon testId='isVaccinated' name='האם מחוסן' value={isVaccinated ? yes : noInfo}
                                 icon={VaccinationIcon}
@@ -339,7 +339,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                         isVaccinated && <ComplexityIcon tooltipText={formatDate(vaccinationEffectiveFrom)} />
                     }
                     <Divider />
-                    <Tooltip title={mutationName ? mutationName : noInfo}>
+                    <Tooltip title={isSuspicionOfMutation ? mutationName ? mutationName : noInfo : ''}>
                         <div>
                             <InfoItemWithIcon testId='isSuspicionOfMutation' name='חשד למוטציה' value={isSuspicionOfMutation ? yes : noInfo}
                                 icon={MutationIcon}
@@ -351,7 +351,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                         isSuspicionOfMutation && <ComplexityIcon tooltipText={mutationName ? mutationName : noInfo} />
                     }
                     <Divider />
-                    <Tooltip title={previousDiseaseStartDate ? formatDate(previousDiseaseStartDate) : noInfo}>
+                    <Tooltip title={isReturnSick ? previousDiseaseStartDate ? formatDate(previousDiseaseStartDate) : noInfo : ''}>
                         <div>
                             <InfoItemWithIcon testId='isReturnSick' name='חולה חוזר' value={isReturnSick ? yes : noInfo}
                                 icon={ReturnSickIcon}
