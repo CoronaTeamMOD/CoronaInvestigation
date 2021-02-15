@@ -37,17 +37,4 @@ describe('ClinicalDetails', () => {
             new Date('2021-02-10T22:00:00.000Z'),
         ])
     })
-
-    it('HaveSymptoms, dont have symptomsStartDate and have validationDate' , () => {
-        expect(getDatesToInvestigate(true ,null ,date)).toStrictEqual([
-            new Date('2021-02-14T22:00:00.000Z'),
-            new Date('2021-02-13T22:00:00.000Z'),
-            new Date('2021-02-12T22:00:00.000Z'),
-            new Date('2021-02-11T22:00:00.000Z'),
-            new Date('2021-02-10T22:00:00.000Z'),
-            new Date('2021-02-09T22:00:00.000Z'),
-            new Date('2021-02-08T22:00:00.000Z'),
-            new Date('2021-02-07T22:00:00.000Z'),
-        ])
-    })
 })
