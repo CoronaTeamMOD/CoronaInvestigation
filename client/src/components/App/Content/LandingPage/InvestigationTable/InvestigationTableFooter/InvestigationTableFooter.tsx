@@ -201,7 +201,7 @@ interface Props {
     fetchInvestigationsByGroupId: (groupId: string) => void;
     onDeskGroupChange: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
     onDeskChange: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
-    onCountyGroupChange: (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => void;
+    onCountyGroupChange: (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => Promise<void>;
     onCountyChange: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => void;
     allocateInvestigationToInvestigator: (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => void;
 }
