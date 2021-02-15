@@ -236,7 +236,8 @@ usersRoute.post('/changeGroupCounty', adminMiddleWare, (request: Request, respon
         newInvestigator: `${unassignedUserPrefix}${request.body.updateCounty}`,
         selectedGroups: request.body.groupIds,
         userCounty: request.body.county,
-        wasInvestigationTransferred: true
+        wasInvestigationTransferred: true,
+        transferReason: request.body.transferReason
     }
     changeGroupCountyLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
