@@ -1,40 +1,35 @@
-import { getDatesToInvestigate, getMinimalSymptomsStartDate, getMinimalStartIsolationDate } from './symptomsUtils'
+import { subDays, eachDayOfInterval, compareDesc } from 'date-fns';
+import { getDatesToInvestigate } from 'Utils/ClinicalDetails/symptomsUtils';
 
-describe('ClinicalDetails', () => {
-    let date: Date = new Date('2021-02-15T06:05:26.497Z');
+    describe('getDatesToInvestigate tests:', () => {
+        const investigationStartDate = new Date();
+        let validationDate = new Date();
+        let symptomsStartDate = new Date();
+        beforeAll(async () => {
+            validationDate = subDays(validationDate, 3);
+            symptomsStartDate= subDays(symptomsStartDate, 5);
+        });
+            it('HaveSymptoms, symptomsStartDateand and validationDate', async () => {
+                expect(getDatesToInvestigate(true, symptomsStartDate, validationDate)).toEqual(eachDayOfInterval({start: subDays(symptomsStartDate, 4), end: investigationStartDate}).sort(compareDesc));
+            })
 
-    it('dont HaveSymptoms, symptomsStartDate and validationDate' , () => {
-        expect(getDatesToInvestigate(false,null,null)).toEqual([])
-    })
+            it('HaveSymptoms and validationDate', async () => {
+                expect( getDatesToInvestigate(true, null, validationDate)).toEqual(eachDayOfInterval({start: subDays(validationDate, 7), end: investigationStartDate}).sort(compareDesc));
+            });
 
-    it('HaveSymptoms, dont have symptomsStartDate and validationDate' , () => {
-        expect(getDatesToInvestigate(true,null,null)).toEqual([])
-    })
+            it('asymptomatic with validationDate', async () => {
+                expect(getDatesToInvestigate(false, null, validationDate)).toEqual(eachDayOfInterval({start: subDays(validationDate, 7), end: investigationStartDate}).sort(compareDesc));
+            });
 
-    it('dont HaveSymptoms, have symptomsStartDate, dont validationDate' , () => {
-        expect(getDatesToInvestigate(false, date, null)).toEqual([])
-    })
+            it('asymptomatic, dont have symptomsStartDate and validationDate', async () => {
+                expect(getDatesToInvestigate(false, null, null)).toEqual([]);
+            });
 
-    it('HaveSymptoms, dont have symptomsStartDate and have validationDate' , () => {
-        expect(getDatesToInvestigate(true ,null ,date)).toEqual([
-            new Date('2021-02-14T22:00:00.000Z'),
-            new Date('2021-02-13T22:00:00.000Z'),
-            new Date('2021-02-12T22:00:00.000Z'),
-            new Date('2021-02-11T22:00:00.000Z'),
-            new Date('2021-02-10T22:00:00.000Z'),
-            new Date('2021-02-09T22:00:00.000Z'),
-            new Date('2021-02-08T22:00:00.000Z'),
-            new Date('2021-02-07T22:00:00.000Z'),
-        ])
-    })
+            it('HaveSymptoms, dont have symptomsStartDate and validationDate', async () => {
+                expect(getDatesToInvestigate(true, null, null)).toEqual([]);
+            });
 
-    it('HaveSymptoms, symptomsStartDate and validationDate are the same date' , () => {
-        expect(getDatesToInvestigate(true ,date ,date)).toEqual([
-            new Date('2021-02-14T22:00:00.000Z'),
-            new Date('2021-02-13T22:00:00.000Z'),
-            new Date('2021-02-12T22:00:00.000Z'),
-            new Date('2021-02-11T22:00:00.000Z'),
-            new Date('2021-02-10T22:00:00.000Z'),
-        ])
-    })
-})
+            it('HaveSymptoms and symptomsStartDate, dont have validationDate', async () => {
+                expect(getDatesToInvestigate(true, symptomsStartDate, null)).toEqual([]);
+            });
+    });
