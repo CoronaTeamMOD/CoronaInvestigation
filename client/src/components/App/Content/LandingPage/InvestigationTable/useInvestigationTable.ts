@@ -754,6 +754,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             });
             changeCountyLogger.info(logGroupTransfer(groupIds, HiddenTableKeys.county, newSelectedCounty?.id || '', transferReason), Severity.LOW);
             setSelectedRow(DEFAULT_SELECTED_ROW);
+            if (groupIds[0]) {
+                await Promise.all(
+                    groupIds.map(async (groupId: string) => {
+                        await fetchInvestigationsByGroupId(groupId);
+                    })
+                );
+            };            
             fetchTableData();
         } catch (error) {
             changeCountyLogger.error(`couldn't change the county for groups ${groupIds} due to ${error}`, Severity.HIGH);
