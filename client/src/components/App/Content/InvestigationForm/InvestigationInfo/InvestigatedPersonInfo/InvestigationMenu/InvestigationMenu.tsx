@@ -8,8 +8,8 @@ import {commentContext} from '../../Context/CommentContext';
 
 import useStyles from './InvestigationMenuStyles';
 
-const existingCommentColor = '#91BF7C';
-const noCommentsColor = '#727272';
+export const existingCommentColor = '#91BF7C';
+export const noCommentsColor = '#727272';
 
 const InvestigationMenu = () => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -33,7 +33,7 @@ const InvestigationMenu = () => {
 
     return (
         <>
-            <IconButton onClick={handleMenuOpen}>
+            <IconButton id='investigationInfo-menu-button' onClick={handleMenuOpen}>
                 <MoreVertIcon color='primary'/>
             </IconButton>
             <Menu classes={{paper: classes.menu}}
@@ -43,7 +43,7 @@ const InvestigationMenu = () => {
                 onClose={handleMenuClose}>
                 <MenuItem className={classes.menuItem} onClick={handleDialogOpen}>
                     <CommentIcon htmlColor={comment ? existingCommentColor : noCommentsColor}/>
-                    <Typography>
+                    <Typography id='investigation-comment'>
                         הערות על החקירה
                     </Typography>
                 </MenuItem>
