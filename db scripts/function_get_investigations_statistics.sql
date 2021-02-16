@@ -82,23 +82,20 @@ BEGIN
 	
 	-- unusualCompletedNoContactInvestigations
 	SELECT COUNT(epidemiology_number) INTO unusualCompletedNoContactInvestigationsCount FROM filtered_investigations
-		WHERE (
-				epidemiology_number NOT IN (
-				SELECT investigation_id FROM public.contact_event 
+	WHERE (
+		(
+			SELECT COUNT(investigation_id) FROM public.contact_event 
+			WHERE investigation_id = epidemiology_number 
+		) = 0
+		OR 
+		(
+			SELECT COUNT(id) FROM public.contacted_person
+			WHERE contacted_person.contact_event IN (
+				SELECT id FROM public.contact_event 
 				WHERE investigation_id = epidemiology_number 
-			) OR (
-				epidemiology_number IN (
-				SELECT investigation_id FROM public.contact_event 
-				WHERE investigation_id = epidemiology_number AND (
-					SELECT contact_event FROM public.contacted_person
-					WHERE contacted_person.contact_event IN (
-						SELECT id FROM public.contact_event
-						WHERE investigation_id = epidemiology_number  
-						) 
-					) IS NULL
-				) IS NOT NULL
 			)
-		) AND investigation_status = 100000001;
+		) = 0
+	) AND investigation_status = 100000001;
 	
 	-- transferRequestInvestigations
 	SELECT COUNT(epidemiology_number) INTO transferRequestInvestigationsCount FROM filtered_investigations
