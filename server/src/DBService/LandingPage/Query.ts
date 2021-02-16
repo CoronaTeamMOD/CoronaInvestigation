@@ -186,93 +186,16 @@ query allDesks {
 `;
 
 export const GET_INVESTIGATION_STATISTICS = gql`
-query InvestigationStatistics($userFilters: [InvestigationFilter!], $allInvesitgationsFilter: InvestigationFilter!, $lastUpdateDateFilter: InvestigationFilter!){
-  allInvestigations(filter: $allInvesitgationsFilter) {
-    totalCount
-  }
-  inProcessInvestigations: allInvestigations(filter: {
-    investigationStatusByInvestigationStatus: {
-      id: {equalTo: ${String(InvestigationMainStatusCodes.IN_PROCESS)}}
-    },
-    and: $userFilters
-  }) {
-    totalCount
-  }
-  newInvestigations: allInvestigations(filter: {
-    investigationStatusByInvestigationStatus: {
-      id: {equalTo: ${String(InvestigationMainStatusCodes.NEW)}}
-    }, 
-    and: $userFilters
-  }) {
-    totalCount
-  }
-  unassignedInvestigations: allInvestigations(filter: {
-    userByCreator: {
-      userName: {equalTo: "${UNASSIGNED_USER_NAME}"}
-    },
-    and: $userFilters
-  }) {
-    totalCount
-  }
-  inactiveInvestigations: allInvestigations(filter: {
-    userByCreator: {
-      isActive: {equalTo: false},
-      userName: {notEqualTo: "${UNASSIGNED_USER_NAME}"}
-    },
-    and: $userFilters
-  }) {
-    totalCount
-  }
-  unallocatedInvestigations: allInvestigations(
-    filter: {and: [
-        {userByCreator: {or: [{isActive: {equalTo: false}}, {userName: {equalTo: "${UNASSIGNED_USER_NAME}"}}]}},
-        {investigationStatus: {in:[${String(InvestigationMainStatusCodes.NEW)}, ${String(InvestigationMainStatusCodes.IN_PROCESS)}]}},
-        $allInvesitgationsFilter
-      ]},
-    ) {
-    totalCount
-  }
-  unusualInProgressInvestigations: allInvestigations(filter: {
-    and: [
-    {investigationStatus: {equalTo:${String(InvestigationMainStatusCodes.IN_PROCESS)}}},
-    $lastUpdateDateFilter,
-    {investigationSubStatus: {in:["${TRANSFER_REQUEST}", "${WAITING_FOR_DETAILS}", "${WAITING_FOR_RESPONSE}"]}},
-    $allInvesitgationsFilter]
-  }) {
-    totalCount
-  }
-  unusualCompletedNoContactInvestigations: allInvestigations(filter:{
-    and:[{contactEventsByInvestigationId:{
-      every:{
-        contactedPeopleByContactEvent:{
-          every:{
-            contactEvent:{
-              isNull:true
-            }
-          }
-        }
-      }
-    }},
-    {investigationStatus: {equalTo:${String(InvestigationMainStatusCodes.DONE)}}},
-    $allInvesitgationsFilter]
-  }){
-    totalCount
-  }
-  transferRequestInvestigations: allInvestigations(
-    filter: {and: [
-        {investigationSubStatus: {equalTo: "${TRANSFER_REQUEST}"}},
-        $allInvesitgationsFilter
-      ]},
-    ) {
-    totalCount
-  }
-  waitingForDetailsInvestigations: allInvestigations(
-    filter: {and: [
-        {investigationSubStatus: {equalTo: "${WAITING_FOR_DETAILS}"}},
-        $allInvesitgationsFilter
-      ]},
-    ) {
-    totalCount
+mutation getInvestigationStatistics( $county: Int!, $desks: [Int], $startDate: Date, $endDate: Date ) {
+  functionGetInvestigationStatistics(
+    input: {
+      countyInput: $county
+      desksInput: $desks
+      endDateInput: $endDate
+      startDateInput: $startDate
+    }
+  ) {
+    json
   }
 }
 `;

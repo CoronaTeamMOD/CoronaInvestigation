@@ -190,45 +190,18 @@ landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Req
     const desks = request.body.deskFilter;
     const timeRange = request.body.timeRangeFilter; 
     const county = request.body.county; 
-    const dateFilter = new Date(Date.now() - (4 * 60 * 60 * 1000)).toUTCString();
 
-    const desksFilter = desks
-                        ? { deskId : { in : desks}} 
-                        : {};
-
-    const timeRangeFilter = timeRange
-                        ? { creationDate: { greaterThanOrEqualTo: timeRange.startDate, lessThanOrEqualTo: timeRange.endDate }} 
-                        : {};
-    
-    const lastUpdateDateFilter = {
-        lastUpdateTime: {
-            lessThan: dateFilter
-        }
-    };
-    
-    const userFilters = {
-        userByCreator: {
-            countyByInvestigationGroup: {
-                id: {equalTo: county}
-            }
-        },
-        ...desksFilter,
-        ...timeRangeFilter
-    };
-
-    const parameters = { userFilters, allInvesitgationsFilter: userFilters };
+    const parameters = {
+        county,
+        desks,
+        startDate: timeRange?.startDate,
+        endDate: timeRange?.endDate
+    }
     investigationsStatisticsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
-    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, { userFilters, 
-                                                                    allInvesitgationsFilter: userFilters, 
-                                                                    lastUpdateDateFilter: lastUpdateDateFilter})
+    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals,parameters)
     .then((results) => {
-        const {data: preprocessedResults} = results;
-        const outcome: any = {};
-        Object.keys(preprocessedResults).forEach(preprocessedResult => {
-            outcome[preprocessedResult] = preprocessedResults[preprocessedResult].totalCount;
-        })
-        response.send(outcome); 
+        response.send(results.data.functionGetInvestigationStatistics.json); 
     })
     .catch(error => {
         investigationsStatisticsLogger.error(invalidDBResponseLog(error), Severity.HIGH)
