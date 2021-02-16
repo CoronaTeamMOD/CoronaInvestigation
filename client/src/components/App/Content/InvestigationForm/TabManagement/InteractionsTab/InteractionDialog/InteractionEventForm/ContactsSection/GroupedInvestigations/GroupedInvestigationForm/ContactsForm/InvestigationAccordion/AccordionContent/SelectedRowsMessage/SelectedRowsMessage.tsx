@@ -10,7 +10,7 @@ const SelectedRowsMessage = (props: Props) => {
     
     return (
         <Typography variant='h6' align='right'>
-            {`${selectedRows} שורות נבחרו`}
+            {`נבחרו ${selectedRows} מגעים משותפים מהמאומת`}
         </Typography>
     )
 }

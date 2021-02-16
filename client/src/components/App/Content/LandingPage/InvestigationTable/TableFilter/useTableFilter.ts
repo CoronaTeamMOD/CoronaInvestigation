@@ -5,6 +5,8 @@ import { TimeRange } from 'models/TimeRange';
 import timeRanges, { customTimeRange } from 'models/enums/timeRanges';
 
 const rangeError = 'טווח תאריכים צריך להיות תקין';
+const dateInvalid = 'תאריך לא תקין';
+const invalidDateString = '9999-99-99';
 
 const useTableFilter = (props : Props) => {
     
@@ -16,7 +18,9 @@ const useTableFilter = (props : Props) => {
     useEffect(() => {
         if (displayTimeRange.id === customTimeRange.id){
             if (displayTimeRange.startDate && displayTimeRange.endDate){
-                if (displayTimeRange.startDate > displayTimeRange.endDate){
+                if (!isValid(new Date(displayTimeRange.startDate)) || !isValid(new Date(displayTimeRange.endDate))) {
+                    setErrorMes(dateInvalid);
+                } else if (displayTimeRange.startDate > displayTimeRange.endDate){
                     setErrorMes(rangeError)
                 } else {
                     setErrorMes('');
@@ -26,7 +30,7 @@ const useTableFilter = (props : Props) => {
         } else {
             setErrorMes('');
         }
-    }, [displayTimeRange])
+    }, [displayTimeRange]);
 
     const onSelectTimeRangeChange = (timeRangeId: number) => {
         const selectedTimeRange = timeRanges.find(timeRange => timeRange.id === timeRangeId) as TimeRange;
@@ -37,15 +41,13 @@ const useTableFilter = (props : Props) => {
     }
 
     const onStartDateSelect = (startDateInput: Date) => {
-        if(isValid(startDateInput)){
-            setDisplayTimeRange({...displayTimeRange, startDate: format(startDateInput,'yyyy-MM-dd')})
-        }
+        const startDate = isValid(startDateInput) ? format(startDateInput, 'yyyy-MM-dd') : invalidDateString;
+        setDisplayTimeRange({...displayTimeRange, startDate});
     }
 
     const onEndDateSelect = (endDateInput :Date) => {
-        if(isValid(endDateInput)){
-            setDisplayTimeRange({...displayTimeRange, endDate: format(endDateInput,'yyyy-MM-dd')})       
-        }
+        const endDate = isValid(endDateInput) ? format(endDateInput, 'yyyy-MM-dd') : invalidDateString;
+        setDisplayTimeRange({...displayTimeRange, endDate});
     }
 
     return {
