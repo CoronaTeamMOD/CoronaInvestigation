@@ -14,7 +14,8 @@ import SelectedRowsMessage from './SelectedRowsMessage/SelectedRowsMessage';
 
 const contentProps = {
     isGroupReasonFamily: false,
-    events: testEvents
+    events: testEvents,
+    duplicateIds: []
 }
 
 describe('<AccordionContent />', () => {

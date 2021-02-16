@@ -26,7 +26,7 @@ const ContactsForm = (props: Props) => {
                     )
                 })
             }
-            <Typography id="selectedRowsMsg" variant='h6' align='right'>{`נבחרו ${groupedInvestigationContacts.length} שורות`}</Typography>
+            <Typography id="selectedRowsMsg" variant='h6' align='right'>{`נבחרו עד כה ${groupedInvestigationContacts.length} מגעים משותפים`}</Typography>
         </>
     )
 }
