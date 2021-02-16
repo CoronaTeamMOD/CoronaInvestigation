@@ -29,7 +29,7 @@ describe('auxiliaryFunctions', () => {
         expect(isPassportValid('30057391')).toBe(false)
     })
 
-    it('shouldnt accept ID number - short number' , () => {
+    it('shouldnt accept Passport number - short number' , () => {
         expect(isPassportValid('300573')).toBe(false)
     })
 })

@@ -5,6 +5,7 @@ import { getDatesToInvestigate } from 'Utils/ClinicalDetails/symptomsUtils';
         const investigationStartDate = new Date();
         let validationDate = new Date();
         let symptomsStartDate = new Date();
+        const expectedDatesToInvestigate = eachDayOfInterval({start: subDays(validationDate, 7), end: investigationStartDate}).sort(compareDesc);
         beforeAll(async () => {
             validationDate = subDays(validationDate, 3);
             symptomsStartDate= subDays(symptomsStartDate, 5);
@@ -14,11 +15,11 @@ import { getDatesToInvestigate } from 'Utils/ClinicalDetails/symptomsUtils';
             })
 
             it('HaveSymptoms and validationDate', async () => {
-                expect( getDatesToInvestigate(true, null, validationDate)).toEqual(eachDayOfInterval({start: subDays(validationDate, 7), end: investigationStartDate}).sort(compareDesc));
+                expect( getDatesToInvestigate(true, null, validationDate)).toEqual(expectedDatesToInvestigate);
             });
 
             it('asymptomatic with validationDate', async () => {
-                expect(getDatesToInvestigate(false, null, validationDate)).toEqual(eachDayOfInterval({start: subDays(validationDate, 7), end: investigationStartDate}).sort(compareDesc));
+                expect(getDatesToInvestigate(false, null, validationDate)).toEqual(expectedDatesToInvestigate);
             });
 
             it('asymptomatic, dont have symptomsStartDate and validationDate', async () => {

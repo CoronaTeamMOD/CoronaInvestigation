@@ -7,6 +7,9 @@ import flushPromises from '../Testing/flushPromises';
 const mockAxios = new MockAdapter(axios);
 
 describe('getStreetByCity', () => {
+
+    afterEach(()=> mockAxios.reset()) 
+
     it('should return Avnei Chefetz streets', async () => {
         const avniChefetzStreets = [
             { displayName: "אודם", id: "1038" },
