@@ -114,7 +114,7 @@ BEGIN
 	-- returning a json object containing all of the statistics
 	return json_build_object(
 		'allInvestigations',allInvestigationsCount,
-		'inProcess',inProcessCount,
+		'inProcessInvestigations',inProcessCount,
 		'newInvestigations',newInvestigationsCount,
 		'unassignedInvestigations',unassignedInvestigationsCount,
 		'inactiveInvestigations',inactiveInvestigationsCount,
