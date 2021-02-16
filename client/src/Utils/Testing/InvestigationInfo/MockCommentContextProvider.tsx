@@ -1,5 +1,3 @@
-
-
 import React from 'react'
 import { CommentContextProvider } from  'components/App/Content/InvestigationForm/InvestigationInfo/Context/CommentContext';
 
