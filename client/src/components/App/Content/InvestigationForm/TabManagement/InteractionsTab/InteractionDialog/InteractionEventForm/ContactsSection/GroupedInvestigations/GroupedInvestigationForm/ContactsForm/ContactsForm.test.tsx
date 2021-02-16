@@ -57,6 +57,6 @@ describe('<ContactsForm />', () => {
         const selectedRowsMsg = wrapper.find('h6#selectedRowsMsg');
 
         expect(selectedRowsMsg.exists()).toBeTruthy();
-        expect(selectedRowsMsg.text()).toBe('נבחרו 0 שורות');
+        expect(selectedRowsMsg.text()).toBe('נבחרו עד כה 0 מגעים משותפים');
     });
 })
