@@ -212,7 +212,6 @@ export const CONTACTS_BY_CONTACTS_IDS = gql`
           doesHaveBackgroundDiseases
           doesFeelGood
           creationTime
-          contactedPersonCity
           contactType
           completionTime
         }
