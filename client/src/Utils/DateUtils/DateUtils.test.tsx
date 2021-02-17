@@ -6,7 +6,7 @@ describe('test formatDate functions', () => {
     it('test formatDateTime', () => {
         const date = new Date('2021-02-15T20:33:09.078Z')
         const formatDate = '22:33:09 15/02/2021'
-        expect(formatDateTime(date)).toEqual(formatDate)
+        expect(formatDateTime(date)).toBe(formatDate)
     })
 
     it('test truncateDate', () => {
