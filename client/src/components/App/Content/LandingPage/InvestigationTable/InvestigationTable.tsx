@@ -150,12 +150,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }
 
     const allocateInvestigationToInvestigator = async (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => {
-        if (epidemiologyNumbers) {
+        if (groupIds.length && groupIds[0]) {
+            await changeGroupsInvestigator(groupIds, investigatorToAllocate, '')
+        }
+        if (epidemiologyNumbers.length > 0) {
             await changeInvestigationsInvestigator(epidemiologyNumbers, investigatorToAllocate);
-        } else {
-            if (groupIds.length && groupIds[0]) {
-            await changeGroupsInvestigator(groupIds, investigatorToAllocate)
-        }}
+        }
         groupIds[0] && groupIds.forEach((groupId: string) => fetchInvestigationsByGroupId(groupId));
         fetchTableData();
     }
