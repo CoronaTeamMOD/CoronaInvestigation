@@ -677,7 +677,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return key ? key : ''
     }
 
-    const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null) => {
+    const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => {
         const changeGroupsInvestigatorLogger = logger.setup('Change groups investigator');
         const joinedGroupIds = groupIds.join(', ');
         changeGroupsInvestigatorLogger.info(logGroupTransfer(groupIds, TableHeadersNames.investigatorName, investigator?.value.userName || ''), Severity.LOW);
@@ -685,7 +685,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             await axios.post('/users/changeGroupInvestigator', {
                 groupIds,
                 user: investigator?.id,
-                county: displayedCounty
+                county: displayedCounty,
+                transferReason
             });
             changeGroupsInvestigatorLogger.info(`the investigator have been changed successfully for groups ${joinedGroupIds}`, Severity.LOW);
         } catch (error) {
