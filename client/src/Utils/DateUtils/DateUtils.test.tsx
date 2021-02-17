@@ -3,10 +3,17 @@ import  getTimeSinceMessage from './timeSince'
 // import {useDateUtils} from './useDateUtils'
 
 describe('test formatDate functions', () => {
+    // it('test formatDateTime', () => {
+    //     const date = new Date('2021-02-15T20:33:09.078Z')
+    //     const formatDate = '22:33:09 15/02/2021'
+    //     formatDateTime(date)
+    //     expect(formatDateTime()).toHaveReturnedWith("אין מידע")
+    // })
+
     it('test formatDateTime', () => {
         const date = new Date('2021-02-15T20:33:09.078Z')
-        const formatDate = '22:33:09 15/02/2021'
-        expect(formatDateTime(date)).toBe(formatDate)
+        const formatDate = new String ("22:33:09 15/02/2021")
+        expect(formatDateTime(date)).toEqual(formatDate)
     })
 
     it('test truncateDate', () => {
