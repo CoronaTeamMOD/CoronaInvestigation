@@ -455,7 +455,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     className={classes.pagination}
                 />
             </Grid>
-            {console.log(selectedRow)}
             <InvestigatorAllocationDialog
                 isOpen={isInvestigatorAllocationDialogOpen}
                 handleCloseDialog={() => setIsInvestigatorAllocationDialogOpen(false)}
