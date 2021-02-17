@@ -15,7 +15,7 @@ export const contactQuestioningClinical = {
         is: ContactStatusCodes.COMPLETED,
         then: yup.object().nullable(),
         otherwise: yup.object().shape({
-                 'city': yup.string().nullable().required('שגיאה: שדה חובה')
+                 'city': yup.string().nullable()
              })
     })
 };
