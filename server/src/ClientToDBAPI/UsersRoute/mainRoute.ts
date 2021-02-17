@@ -210,7 +210,8 @@ usersRoute.post('/changeGroupInvestigator', adminMiddleWare, (request: Request, 
     const parameters = { 
         newInvestigator: request.body.user,
         selectedGroups: request.body.groupIds,
-        userCounty: request.body.county
+        userCounty: request.body.county,
+        transferReason: request.body.transferReason
     }
     changeGroupInvestigatorLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
