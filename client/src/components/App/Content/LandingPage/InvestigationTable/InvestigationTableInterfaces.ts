@@ -74,7 +74,7 @@ export interface useInvestigationTableOutcome {
     unassignedUserFilter: boolean;
     changeInactiveUserFilter: (isFilterOn: boolean) => void;
     inactiveUserFilter: boolean;
-    changeGroupsCounty: (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => void;
+    changeGroupsCounty: (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => Promise<void>;
     changeInvestigationCounty: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => void;
     fetchAllCountyUsers: () => Promise<Map<string, AllocatedInvestigator>>;
     tableTitle: string;

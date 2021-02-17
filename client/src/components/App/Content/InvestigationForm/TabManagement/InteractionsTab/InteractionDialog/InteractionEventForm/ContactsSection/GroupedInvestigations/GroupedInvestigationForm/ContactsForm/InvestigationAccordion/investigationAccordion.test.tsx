@@ -4,7 +4,7 @@ import { Accordion } from '@material-ui/core';
 
 import MockFormProvider from 'Utils/Testing/MockFormProvider';
 import mockSelectors from 'Utils/Testing/GroupedInvestigationForm/mockSelectors';
-import { testInvestigation } from 'Utils/Testing/GroupedInvestigationForm/state'; 
+import { testInvestigation, otherContactReason, testInvestigations} from 'Utils/Testing/GroupedInvestigationForm/state'; 
 
 import InvestigationAccordion from './InvestigationAccordion';
 import AccordionContent from './AccordionContent/AccordionContent';
@@ -16,7 +16,10 @@ const accordionProps = {
 }
 
 describe('<InvestigationAccordion />', () => {
-    mockSelectors();
+    mockSelectors({
+        ...otherContactReason,
+        ...testInvestigations
+    });
     const wrapper = mount(
         <MockFormProvider>
             <InvestigationAccordion 

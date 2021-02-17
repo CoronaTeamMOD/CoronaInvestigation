@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 
 import MockFormProvider from 'Utils/Testing/MockFormProvider';
 import mockSelectors from 'Utils/Testing/GroupedInvestigationForm/mockSelectors';
-import { testInvestigationsNodes } from 'Utils/Testing/GroupedInvestigationForm/state'; 
+import { testInvestigationsNodes, otherContactReason, testInvestigations} from 'Utils/Testing/GroupedInvestigationForm/state';
 
 import ContactsForm from './ContactsForm';
 import InvestigationAccordion from './InvestigationAccordion/InvestigationAccordion';
@@ -17,7 +17,10 @@ const formProps = {
 }
 
 describe('<ContactsForm />', () => {
-    mockSelectors();
+    mockSelectors({
+        ...otherContactReason,
+        ...testInvestigations
+    });
     const wrapper = mount(
         <MockFormProvider>
             <ContactsForm 
@@ -54,6 +57,6 @@ describe('<ContactsForm />', () => {
         const selectedRowsMsg = wrapper.find('h6#selectedRowsMsg');
 
         expect(selectedRowsMsg.exists()).toBeTruthy();
-        expect(selectedRowsMsg.text()).toBe('נבחרו 0 שורות');
+        expect(selectedRowsMsg.text()).toBe('נבחרו עד כה 0 מגעים משותפים');
     });
 })

@@ -742,16 +742,25 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
-    const changeGroupsCounty = (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => {
+    const changeGroupsCounty = async (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => {
         const changeCountyLogger = logger.setup('Change Investigation County');
         try {
-            axios.post('/users/changeGroupCounty', {
+            await axios.post('/users/changeGroupCounty', {
+                //hack: 1533
                 groupIds,
+                updateCounty: newSelectedCounty?.id,
                 county: displayedCounty,
                 transferReason,
             });
             changeCountyLogger.info(logGroupTransfer(groupIds, HiddenTableKeys.county, newSelectedCounty?.id || '', transferReason), Severity.LOW);
             setSelectedRow(DEFAULT_SELECTED_ROW);
+            if (groupIds[0]) {
+                await Promise.all(
+                    groupIds.map(async (groupId: string) => {
+                        await fetchInvestigationsByGroupId(groupId);
+                    })
+                );
+            };            
             fetchTableData();
         } catch (error) {
             changeCountyLogger.error(`couldn't change the county for groups ${groupIds} due to ${error}`, Severity.HIGH);
