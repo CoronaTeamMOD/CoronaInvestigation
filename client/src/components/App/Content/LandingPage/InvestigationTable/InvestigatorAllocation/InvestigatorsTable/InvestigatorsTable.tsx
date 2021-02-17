@@ -27,7 +27,8 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
     useEffect(() => {
         if(investigatorInput !== '') {
             const filteredArray = investigators.filter(investigator => investigator.userName.includes(investigatorInput) || 
-                                                                    (investigator.authorityName && investigator.authorityName.includes(investigatorInput)));
+                                                                    (investigator.authorityName && investigator?.authorityName.includes(investigatorInput)) ||
+                                                                    (investigator.sourceOrganization && investigator?.sourceOrganization.includes(investigatorInput)));
             setFilteredInvestigators(filteredArray)   
         } else {
             setFilteredInvestigators(investigators)
