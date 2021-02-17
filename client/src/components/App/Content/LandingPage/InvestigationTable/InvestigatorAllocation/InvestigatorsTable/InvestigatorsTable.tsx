@@ -10,7 +10,7 @@ import useStyles from './InvestigatorsTableStyles';
 import { TableHeadersNames, TableHeaders } from './InvestigatorsTableHeaders';
 
 const pauseInvestigationsCountTitle = 'חקירות הממתינות להשלמת מידע/העברה';
-const searchBarLabel = 'הכנס שם של חוקר...';
+const searchBarLabel = 'הכנס שם של חוקר או שם רשות...';
 const authoritySourceOrganization = 'חוקר רשות';
 
 const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSelectedRow }) => {
@@ -26,7 +26,8 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
     
     useEffect(() => {
         if(investigatorInput !== '') {
-            const filteredArray = investigators.filter(investigator => investigator.userName.includes(investigatorInput))
+            const filteredArray = investigators.filter(investigator => investigator.userName.includes(investigatorInput) || 
+                                                                    (investigator.authorityName && investigator.authorityName.includes(investigatorInput)));
             setFilteredInvestigators(filteredArray)   
         } else {
             setFilteredInvestigators(investigators)
