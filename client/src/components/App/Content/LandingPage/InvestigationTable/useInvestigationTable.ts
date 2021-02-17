@@ -409,7 +409,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         authorityName: user.authorityname,
                         newInvestigationsCount: user.newinvestigationscount,
                         activeInvestigationsCount: user.activeinvestigationscount,
-                        pauseInvestigationsCount: user.pauseinvestigationscount
+                        pauseInvestigationsCount: user.pauseinvestigationscount,
+                        sourceOrganization: user.sourceorganization
                     })
                 });
                 countyUsersLogger.info('fetched all the users successfully', Severity.LOW);
