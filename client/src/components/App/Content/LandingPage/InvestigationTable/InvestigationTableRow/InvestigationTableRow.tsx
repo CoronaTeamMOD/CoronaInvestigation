@@ -194,7 +194,7 @@ const InvestigationTableRow = ({
             case TableHeadersNames.multipleCheck:
                 return (
                     <>
-                        {(!wasInvestigationFetchedByGroup) &&
+                        {(!wasInvestigationFetchedByGroup) && user.userType !== UserType.INVESTIGATOR &&
                             <Checkbox onClick={onMultiCheckClick} color='primary' checked={checked} size='small'
                                 className={indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup} />}
                         {indexedRow.canFetchGroup &&
