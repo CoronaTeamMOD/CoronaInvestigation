@@ -13,8 +13,14 @@ const LoadingSpinner: React.FC = () => {
     const classes = useStyles();
 
     return (
-      <Backdrop open={isLoading} className={classes.container}>
-        <CircularProgress size='20vh' />
+      <Backdrop open={true} className={classes.container}>
+        <div className={classes.wrapper}>
+          <div className={classes.loader}>
+            <div className={classes.inner}>
+              
+            </div>
+          </div>
+        </div>
       </Backdrop>
     );
 }
