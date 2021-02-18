@@ -2,6 +2,7 @@ import { makeStyles } from '@material-ui/styles';
 
 import { primaryBackgroundColor } from 'styles/theme';
 
+
 const useStyle = makeStyles({
   '@keyframes loader': {
     '100%': {
@@ -17,24 +18,24 @@ const useStyle = makeStyles({
     opacity: '0.8 !important',
   },
   wrapper: {
-    width: '300px',
-    height: '30px',
+    width: '200px',
+    height: '60px',
     background: '#2c2c2c',
-    borderRadius: '30px',
+    borderRadius: '60px',
     position: 'relative',
-    top: '130px',
+    //top: '130px',
     margin: '0 auto',
-    transform: 'rotate(-90Deg) scale(0.85)',
+    transform: 'rotate(-90Deg) scale(1.5)',
     '&::before' : {
       content: '""',
       position: 'absolute',
       background: 'inherit',
       borderRadius: '50%',
-      width: '45px',
-      height: '45px',
+      width: '90px',
+      height: '90px',
       left: '-10px',
       top: '50%',
-      marginTop: '-22px'
+      marginTop: '-44px'
     },
     '&::after': {
       content: '""',
@@ -52,7 +53,7 @@ const useStyle = makeStyles({
     position: 'absolute',
     left: '0',
     top: '50%',
-    marginTop: '-8px',
+    marginTop: '-15px',
     background: '#404040',
     borderRadius: 'inherit',
     zIndex: 100
@@ -66,13 +67,13 @@ const useStyle = makeStyles({
     '&::after': {
       content: '""',
       position: 'absolute',
-      width: '30px',
-      height: '30px',
+      width: '60px',
+      height: '60px',
       borderRadius: '50%',
       background: '#2b8095',
       left: '-3px',
       top: '50%',
-      marginTop: '-15px'
+      marginTop: '-30px'
     },
     '&::before': {
       content: '""',
