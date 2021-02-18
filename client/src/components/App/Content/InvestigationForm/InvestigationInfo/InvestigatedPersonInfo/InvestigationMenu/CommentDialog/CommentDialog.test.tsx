@@ -27,15 +27,19 @@ const textfieldSelector = 'TypePreventiveTextField[name="comment"]';
 
 axiosMock.onPost('/investigationInfo/comment').reply(200);
 
-describe('<CommentDialog />', () => {
-    mockSelectors();
-    const wrapper = mount(
+const getWrapper = () => {
+    return mount(
         <MockThemeProvider>
             <MockCommentContextProvider {...commentProps}>
                 <CommentDialog {...props}/>
             </MockCommentContextProvider>
         </MockThemeProvider>
     )
+}
+
+describe('<CommentDialog />', () => {
+    mockSelectors();
+    const wrapper = getWrapper();
     
     it('renders', () => {
         expect(wrapper.exists).toBeTruthy();
@@ -51,13 +55,7 @@ describe('<CommentDialog />', () => {
     describe('input :', () => {
         const testQuery = 'test';
         mockSelectors();
-        const wrapper = mount(
-            <MockThemeProvider>
-                <MockCommentContextProvider {...commentProps}>
-                    <CommentDialog {...props}/>
-                </MockCommentContextProvider>
-            </MockThemeProvider>
-        )
+        const wrapper = getWrapper();
         
         it('renders', () => {
             expect(wrapper.find(textfieldSelector).exists()).toBeTruthy();
@@ -75,13 +73,7 @@ describe('<CommentDialog />', () => {
     describe('save button: ', () => {
         const testQuery = 'test';
         mockSelectors();
-        const wrapper = mount(
-            <MockThemeProvider>
-                <MockCommentContextProvider {...commentProps}>
-                    <CommentDialog {...props}/>
-                </MockCommentContextProvider>
-            </MockThemeProvider>
-        )
+        const wrapper = getWrapper();
         const saveButtonSelector = 'button#comment-dialog-save';
 
         afterEach(() => {
@@ -127,13 +119,7 @@ describe('<CommentDialog />', () => {
 
     describe('delete button' , () => {
         mockSelectors();
-        const wrapper = mount(
-            <MockThemeProvider>
-                <MockCommentContextProvider {...commentProps}>
-                    <CommentDialog {...props}/>
-                </MockCommentContextProvider>
-            </MockThemeProvider>
-        )
+        const wrapper = getWrapper();
         const deleteButton = wrapper.find('button#comment-dialog-delete');
         
         it('renders' , () => {
