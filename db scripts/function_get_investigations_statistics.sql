@@ -82,23 +82,17 @@ BEGIN
 		AND last_update_time <= current_date - interval '4 hours';
 	
 	-- unusualCompletedNoContactInvestigations
-
-	-- first I'm selecting all of the completed investigations from the filtered investigations
-	SELECT COUNT(epidemiology_number) INTO completedInvestigationsCount FROM filtered_Investigations
-	WHERE filtered_investigations.investigation_status = 100000001;
-	
-	-- then I'm claculating all of the investigations that have at least one contacts length ( by joining contacted_person -> contact_event -> epidemiology_number )
-	-- and to get the number of the investigations that are completed but have no contact
-	-- finally ,I'm subtracting all of the completed investigations from the investigations that have any contact to find how many don't have any contacts
-	SELECT completedInvestigationsCount - COUNT(epidemiology_number) INTO unusualCompletedNoContactInvestigationsCount FROM (
-		SELECT filtered_investigations.epidemiology_number FROM public.contacted_person
-			JOIN public.contact_event
-				ON contacted_person.contact_event = contact_event.id
-			JOIN filtered_investigations
-				ON filtered_investigations.epidemiology_number = contact_event.investigation_id
-		WHERE filtered_investigations.investigation_status = 100000001
-		GROUP BY (filtered_investigations.epidemiology_number)
-	 ) AS nonEmptyCompletedInvestigationsCount;
+	SELECT COUNT(epidemiology_number) INTO unusualCompletedNoContactInvestigationsCount FROM (
+		 SELECT inv.epidemiology_number, COUNT(coe.investigation_id) 
+		 FROM public.contacted_person
+			LEFT JOIN public.contact_event AS coe
+				ON contacted_person.contact_event = coe.id
+			RIGHT JOIN filtered_investigations AS inv
+				ON inv.epidemiology_number = coe.investigation_id
+		WHERE inv.investigation_status = 100000001	
+		GROUP BY inv.epidemiology_number
+		HAVING COUNT(coe.investigation_id) = 0
+	) AS nonEmptyCompletedInvestigationsCount;
 	
 	-- transferRequestInvestigations
 	SELECT COUNT(epidemiology_number) INTO transferRequestInvestigationsCount FROM filtered_investigations
