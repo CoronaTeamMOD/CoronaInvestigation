@@ -4,7 +4,7 @@
 
 CREATE OR REPLACE FUNCTION public.function_get_investigation_statistics(
 	county_input integer,
-	desks_input int[],
+	desks_input integer[],
 	start_date_input date,
 	end_date_input date)
     RETURNS json
@@ -22,6 +22,7 @@ unassignedInvestigationsCount bigint;
 inactiveInvestigationsCount bigint;
 unallocatedInvestigationsCount bigint;
 unusualInProgressInvestigationsCount bigint;
+completedInvestigationsCount bigint;
 unusualCompletedNoContactInvestigationsCount bigint;
 transferRequestInvestigationsCount bigint;
 waitingForDetailsInvestigationsCount bigint;
@@ -81,21 +82,17 @@ BEGIN
 		AND last_update_time <= current_date - interval '4 hours';
 	
 	-- unusualCompletedNoContactInvestigations
-	SELECT COUNT(epidemiology_number) INTO unusualCompletedNoContactInvestigationsCount FROM filtered_investigations
-	WHERE (
-		(
-			SELECT COUNT(investigation_id) FROM public.contact_event 
-			WHERE investigation_id = epidemiology_number 
-		) = 0
-		OR 
-		(
-			SELECT COUNT(id) FROM public.contacted_person
-			WHERE contacted_person.contact_event IN (
-				SELECT id FROM public.contact_event 
-				WHERE investigation_id = epidemiology_number 
-			)
-		) = 0
-	) AND investigation_status = 100000001;
+	SELECT COUNT(epidemiology_number) INTO unusualCompletedNoContactInvestigationsCount FROM (
+		 SELECT inv.epidemiology_number, COUNT(coe.investigation_id) 
+		 FROM public.contacted_person
+			LEFT JOIN public.contact_event AS coe
+				ON contacted_person.contact_event = coe.id
+			RIGHT JOIN filtered_investigations AS inv
+				ON inv.epidemiology_number = coe.investigation_id
+		WHERE inv.investigation_status = 100000001	
+		GROUP BY inv.epidemiology_number
+		HAVING COUNT(coe.investigation_id) = 0
+	) AS nonEmptyCompletedInvestigationsCount;
 	
 	-- transferRequestInvestigations
 	SELECT COUNT(epidemiology_number) INTO transferRequestInvestigationsCount FROM filtered_investigations
