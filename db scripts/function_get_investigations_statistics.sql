@@ -4,7 +4,7 @@
 
 CREATE OR REPLACE FUNCTION public.function_get_investigation_statistics(
 	county_input integer,
-	desks_input int[],
+	desks_input integer[],
 	start_date_input date,
 	end_date_input date)
     RETURNS json
@@ -22,6 +22,7 @@ unassignedInvestigationsCount bigint;
 inactiveInvestigationsCount bigint;
 unallocatedInvestigationsCount bigint;
 unusualInProgressInvestigationsCount bigint;
+completedInvestigationsCount bigint;
 unusualCompletedNoContactInvestigationsCount bigint;
 transferRequestInvestigationsCount bigint;
 waitingForDetailsInvestigationsCount bigint;
@@ -81,21 +82,23 @@ BEGIN
 		AND last_update_time <= current_date - interval '4 hours';
 	
 	-- unusualCompletedNoContactInvestigations
-	SELECT COUNT(epidemiology_number) INTO unusualCompletedNoContactInvestigationsCount FROM filtered_investigations
-	WHERE (
-		(
-			SELECT COUNT(investigation_id) FROM public.contact_event 
-			WHERE investigation_id = epidemiology_number 
-		) = 0
-		OR 
-		(
-			SELECT COUNT(id) FROM public.contacted_person
-			WHERE contacted_person.contact_event IN (
-				SELECT id FROM public.contact_event 
-				WHERE investigation_id = epidemiology_number 
-			)
-		) = 0
-	) AND investigation_status = 100000001;
+
+	-- first I'm selecting all of the completed investigations from the filtered investigations
+	SELECT COUNT(epidemiology_number) INTO completedInvestigationsCount FROM filtered_Investigations
+	WHERE filtered_investigations.investigation_status = 100000001;
+	
+	-- then I'm claculating all of the investigations that have at least one contacts length ( by joining contacted_person -> contact_event -> epidemiology_number )
+	-- and to get the number of the investigations that are completed but have no contact
+	-- finally ,I'm subtracting all of the completed investigations from the investigations that have any contact to find how many don't have any contacts
+	SELECT completedInvestigationsCount - COUNT(epidemiology_number) INTO unusualCompletedNoContactInvestigationsCount FROM (
+		SELECT filtered_investigations.epidemiology_number FROM public.contacted_person
+			JOIN public.contact_event
+				ON contacted_person.contact_event = contact_event.id
+			JOIN filtered_investigations
+				ON filtered_investigations.epidemiology_number = contact_event.investigation_id
+		WHERE filtered_investigations.investigation_status = 100000001
+		GROUP BY (filtered_investigations.epidemiology_number)
+	 ) AS nonEmptyCompletedInvestigationsCount;
 	
 	-- transferRequestInvestigations
 	SELECT COUNT(epidemiology_number) INTO transferRequestInvestigationsCount FROM filtered_investigations
