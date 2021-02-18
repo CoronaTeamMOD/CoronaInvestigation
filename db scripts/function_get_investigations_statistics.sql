@@ -58,14 +58,14 @@ BEGIN
 		WHERE creator IN (
 			SELECT id FROM public.user 
 			WHERE user_name = 'לא משויך'
-		);
+		) AND investigation_status IN (1 , 100000002);
 		
 	-- inactiveInvestigations
 	SELECT COUNT(epidemiology_number) INTO inactiveInvestigationsCount FROM filtered_investigations
 		WHERE creator IN (
 			SELECT id FROM public.user 
 			WHERE user_name != 'לא משויך' AND is_active = false
-		);
+		) AND investigation_status IN (1 , 100000002);
 		
 	-- unallocatedInvestigations
 	SELECT COUNT(epidemiology_number) INTO unallocatedInvestigationsCount FROM filtered_investigations
