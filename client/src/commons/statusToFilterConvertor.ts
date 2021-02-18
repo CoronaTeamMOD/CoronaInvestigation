@@ -22,9 +22,11 @@ const statusToFilterConvertor = {
         subStatusFilter: [InvestigationSubStatusCodes.WAITING_FOR_DETAILS]
     },
     [FilterRulesDescription.UNASSIGNED]: {
+        statusFilter: [InvestigationMainStatusCodes.NEW,InvestigationMainStatusCodes.IN_PROCESS],
         unassignedUserFilter: true
     },
     [FilterRulesDescription.INACTIVE]: {
+        statusFilter: [InvestigationMainStatusCodes.NEW,InvestigationMainStatusCodes.IN_PROCESS],
         inactiveUserFilter: true,
         unassignedUserFilter: false
     },
