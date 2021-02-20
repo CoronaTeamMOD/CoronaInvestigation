@@ -38,36 +38,37 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
                 (investigator.authorityName && investigator?.authorityName.includes(investigatorInput)) ||
                 (investigator.sourceOrganization && investigator?.sourceOrganization.includes(investigatorInput)));
             setFilteredInvestigators(filteredArray)
-            sortInvestigators()
+            sortInvestigators(filteredInvestigators)
         } else {
             setFilteredInvestigators(investigators)
-            sortInvestigators()
+            setStortedInvestigators(investigators)
+            sortInvestigators(investigators)
         }
     }, [investigatorInput]);
 
     useEffect(() => {
-        sortInvestigators()
+        sortInvestigators(filteredInvestigators)
         }, [orderByValue]);
 
-    const sortInvestigators = () => {
+    const sortInvestigators = (investigatorsToOrder: User[]) => {
         switch(orderBy) {
             case 'username': {
-                const orderd = _.orderBy(filteredInvestigators, [investigator => investigator['userName']], [order])
+                const orderd = _.orderBy(investigatorsToOrder, [investigator => investigator['userName']], [order])
                 setStortedInvestigators(orderd)
                 break;
             }
             case 'sourceorganization': {
-                const orderd = _.orderBy(filteredInvestigators, [investigator => investigator['sourceOrganization']], [order])
+                const orderd = _.orderBy(investigatorsToOrder, [investigator => investigator['sourceOrganization']], [order])
                 setStortedInvestigators(orderd)
                 break;
             }
             case 'deskname': {
-                const orderd = _.orderBy(filteredInvestigators, [investigator => investigator['deskname']], [order])
+                const orderd = _.orderBy(investigatorsToOrder, [investigator => investigator['deskname']], [order])
                 setStortedInvestigators(orderd)
                 break;
             }
             default: {
-                setStortedInvestigators(filteredInvestigators)
+                setStortedInvestigators(investigatorsToOrder)
                 break;
             }
         }
