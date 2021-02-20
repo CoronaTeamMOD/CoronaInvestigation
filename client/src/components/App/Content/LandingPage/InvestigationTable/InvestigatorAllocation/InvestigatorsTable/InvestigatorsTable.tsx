@@ -62,7 +62,6 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
                 break;
             }
             case 'deskname': {
-                console.log(filteredInvestigators)
                 const orderd = _.orderBy(filteredInvestigators, [investigator => investigator['deskname']], [order])
                 setStortedInvestigators(orderd)
                 break;
