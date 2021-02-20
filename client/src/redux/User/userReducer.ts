@@ -24,6 +24,7 @@ export const initialUserState: UserState = {
         userType: UserType.NOT_LOGGED_IN,
         sourceOrganization: '',
         deskName: '',
+        deskname: '',
         authorityName: '',
         countyByInvestigationGroup: {
             districtId: -1,
