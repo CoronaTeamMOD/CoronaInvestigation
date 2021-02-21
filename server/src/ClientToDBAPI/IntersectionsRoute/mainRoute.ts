@@ -199,21 +199,16 @@ intersectionsRoute.post('/groupedInvestigationContacts' , async (request : Reque
                 response.status(errorStatusCode).send(error);
             });
         return {
-            node : {
                 ...contact.node,
-                personInfo : parseInt(newPersonInfo)
-            }
+                personInfo : parseInt(newPersonInfo),
+                contactStatus: 1,
+                contactEvent: eventId,
+                creationTime: new Date()
         }
     }));
 
     await fullContacts.map(async (contact : any) => {
-        const params = {
-            ...contact.node,
-            contactStatus: 1,
-            contactEvent: eventId,
-            creationTime: new Date()
-        }
-        await graphqlRequest(CREATE_CONTACTED_PERSON , response.locals , {params})
+        await graphqlRequest(CREATE_CONTACTED_PERSON , response.locals , {params : contact})
             .then(result => {
                 createGroupedContactLogger.info(validDBResponseLog, Severity.LOW);
                 return;
