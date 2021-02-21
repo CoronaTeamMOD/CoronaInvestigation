@@ -1,10 +1,12 @@
+export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean };
+
 export enum TableHeadersNames {
-    userName = 'username',
-    sourceOrganization = 'sourceorganization',
+    userName = 'userName',
+    sourceOrganization = 'sourceOrganization',
     deskName = 'deskname',
-    newInvestigationsCount = 'newinvestigationscount',
-    activeInvestigationsCount = 'activeinvestigationscount',
-    pauseInvestigationsCount = 'pauseinvestigationscount',
+    newInvestigationsCount = 'newInvestigationsCount',
+    activeInvestigationsCount = 'activeInvestigationsCount',
+    pauseInvestigationsCount = 'pauseInvestigationsCount',
     languages = 'languages'
 }
 
@@ -16,4 +18,14 @@ export const TableHeaders = {
     [TableHeadersNames.activeInvestigationsCount]: 'חקירות בטיפול',
     [TableHeadersNames.pauseInvestigationsCount]: 'חקירות בהשהיה',
     [TableHeadersNames.languages]: 'שפות'
+}
+
+export const SortableTableHeaders = {
+    [TableHeadersNames.userName]: true,
+    [TableHeadersNames.sourceOrganization]: true,
+    [TableHeadersNames.deskName]: true,
+    [TableHeadersNames.newInvestigationsCount]: false,
+    [TableHeadersNames.activeInvestigationsCount]: false,
+    [TableHeadersNames.pauseInvestigationsCount]: false,
+    [TableHeadersNames.languages]: false
 }

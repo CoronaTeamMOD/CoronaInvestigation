@@ -16,6 +16,7 @@ interface User {
     userType: UserType;
     sourceOrganization: string;
     deskName: string;
+    deskname: string;
     authorityName: string;
     countyByInvestigationGroup: CountyByInvestigationGroup;
     deskByDeskId?: Desk;
