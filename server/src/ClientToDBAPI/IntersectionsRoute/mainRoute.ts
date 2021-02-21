@@ -209,8 +209,9 @@ intersectionsRoute.post('/groupedInvestigationContacts' , async (request : Reque
     await fullContacts.map(async (contact : any) => {
         const params = {
             ...contact.node,
-            contactStatus : 1,
-            contactEvent : eventId
+            contactStatus: 1,
+            contactEvent: eventId,
+            creationTime: new Date()
         }
         await graphqlRequest(CREATE_CONTACTED_PERSON , response.locals , {params})
             .then(result => {

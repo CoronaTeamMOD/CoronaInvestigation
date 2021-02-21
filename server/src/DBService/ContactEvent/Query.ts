@@ -211,7 +211,6 @@ export const CONTACTS_BY_CONTACTS_IDS = gql`
           doesLiveWithConfirmed
           doesHaveBackgroundDiseases
           doesFeelGood
-          creationTime
           contactType
           completionTime
         }
