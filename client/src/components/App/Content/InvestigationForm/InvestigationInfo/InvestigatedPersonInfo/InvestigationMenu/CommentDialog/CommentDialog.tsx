@@ -69,7 +69,7 @@ const CommentDialog = ({ open, handleDialogClose }: Props) => {
             <DialogTitle disableTypography>
                 <Typography variant='h6' className={classes.title}>
                     <CommentIcon />
-                    <span className={classes.titleText}>
+                    <span id='comment-dialog-title-text' className={classes.titleText}>
                         הוספת הערה על חקירה:
                     </span>
                 </Typography>
@@ -83,12 +83,14 @@ const CommentDialog = ({ open, handleDialogClose }: Props) => {
             </DialogContent>
             <DialogActions>
                 <PrimaryButton
+                    id='comment-dialog-save'
                     width='custom'
                     disabled={!(commentInput && commentInput !== comment)}
                     onClick={handleCommentSave}>
                     {SAVE_BUTTON_TEXT}
                 </PrimaryButton>
                 <PrimaryButton
+                    id='comment-dialog-delete'
                     width='custom'
                     background='rgb(249, 89, 89)'
                     disabled={!comment}
