@@ -1,9 +1,9 @@
 export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean };
 
 export enum TableHeadersNames {
-    userName = 'username',
-    sourceOrganization = 'sourceorganization',
-    deskName = 'deskname',
+    userName = 'userName',
+    sourceOrganization = 'sourceOrganization',
+    deskName = 'deskName',
     newInvestigationsCount = 'newinvestigationscount',
     activeInvestigationsCount = 'activeinvestigationscount',
     pauseInvestigationsCount = 'pauseinvestigationscount',

@@ -24,7 +24,7 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
     const [filteredInvestigators, setFilteredInvestigators] = useState<User[]>(investigators);
     const [sortedInvestigators, setStortedInvestigators] = useState<User[]>(filteredInvestigators);
     const [order, setOrder] = useState<Order>(SortOrder.asc);
-    const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
+    const [orderBy, setOrderBy] = useState<keyof typeof filteredInvestigators[0] | 'defaultOrder'>(defaultOrderBy);
     const [orderByValue, setOrderByValue] = useState<string>(defaultOrderBy);
 
     useEffect(() => {
@@ -51,30 +51,15 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
         }, [orderByValue]);
 
     const sortInvestigators = (investigatorsToOrder: User[]) => {
-        switch(orderBy) {
-            case 'username': {
-                const orderd = _.orderBy(investigatorsToOrder, [investigator => investigator['userName']], [order])
-                setStortedInvestigators(orderd)
-                break;
-            }
-            case 'sourceorganization': {
-                const orderd = _.orderBy(investigatorsToOrder, [investigator => investigator['sourceOrganization']], [order])
-                setStortedInvestigators(orderd)
-                break;
-            }
-            case 'deskname': {
-                const orderd = _.orderBy(investigatorsToOrder, [investigator => investigator['deskname']], [order])
-                setStortedInvestigators(orderd)
-                break;
-            }
-            default: {
-                setStortedInvestigators(investigatorsToOrder)
-                break;
-            }
+        if(orderBy !== defaultOrderBy){
+            const orderd = _.orderBy(investigatorsToOrder, [investigator => investigator[orderBy]], [order])
+            setStortedInvestigators(orderd)
+        } else {
+            setStortedInvestigators(investigatorsToOrder)
         }
     }
 
-    const handleRequestSort = (event: any, property: React.SetStateAction<string>) => {
+    const handleRequestSort = (event: any, property: React.SetStateAction<keyof typeof filteredInvestigators[0] | 'defaultOrder'>) => {
         const isAsc = orderBy === property && order === SortOrder.asc;
         const newOrder = isAsc ? SortOrder.desc : SortOrder.asc;
         setOrder(newOrder);
@@ -136,7 +121,7 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
                                                     classes={{ root: cellName === orderBy ? classes.activeSortIcon : '', icon: classes.icon, active: classes.active }}
                                                     active
                                                     direction={orderBy === cellName ? order : SortOrder.asc}
-                                                    onClick={(event: any) => handleRequestSort(event, cellName)}>
+                                                    onClick={(event: any) => handleRequestSort(event, cellName as (keyof typeof filteredInvestigators[0] | 'defaultOrder'))}>
                                                 </TableSortLabel>
                                             }
                                         </TableCell>
