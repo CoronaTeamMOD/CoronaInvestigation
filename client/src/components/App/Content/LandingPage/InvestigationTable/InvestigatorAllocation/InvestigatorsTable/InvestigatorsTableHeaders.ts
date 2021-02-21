@@ -3,10 +3,10 @@ export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean }
 export enum TableHeadersNames {
     userName = 'userName',
     sourceOrganization = 'sourceOrganization',
-    deskName = 'deskName',
-    newInvestigationsCount = 'newinvestigationscount',
-    activeInvestigationsCount = 'activeinvestigationscount',
-    pauseInvestigationsCount = 'pauseinvestigationscount',
+    deskName = 'deskname',
+    newInvestigationsCount = 'newInvestigationsCount',
+    activeInvestigationsCount = 'activeInvestigationsCount',
+    pauseInvestigationsCount = 'pauseInvestigationsCount',
     languages = 'languages'
 }
 

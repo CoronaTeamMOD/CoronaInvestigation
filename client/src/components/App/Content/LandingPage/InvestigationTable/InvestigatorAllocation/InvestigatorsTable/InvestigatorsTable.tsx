@@ -19,12 +19,12 @@ const authoritySourceOrganization = 'חוקר רשות';
 const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSelectedRow }) => {
 
     const classes = useStyles();
-
     const [investigatorInput, setInvestigatorInput] = useState<string>('');
     const [filteredInvestigators, setFilteredInvestigators] = useState<User[]>(investigators);
+    const orderBytype = filteredInvestigators[0]
     const [sortedInvestigators, setStortedInvestigators] = useState<User[]>(filteredInvestigators);
     const [order, setOrder] = useState<Order>(SortOrder.asc);
-    const [orderBy, setOrderBy] = useState<keyof typeof filteredInvestigators[0] | 'defaultOrder'>(defaultOrderBy);
+    const [orderBy, setOrderBy] = useState<keyof typeof orderBytype | 'defaultOrder'>(defaultOrderBy);
     const [orderByValue, setOrderByValue] = useState<string>(defaultOrderBy);
 
     useEffect(() => {
@@ -59,7 +59,7 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
         }
     }
 
-    const handleRequestSort = (event: any, property: React.SetStateAction<keyof typeof filteredInvestigators[0] | 'defaultOrder'>) => {
+    const handleRequestSort = ( property: React.SetStateAction<keyof typeof orderBytype | 'defaultOrder'>) => {
         const isAsc = orderBy === property && order === SortOrder.asc;
         const newOrder = isAsc ? SortOrder.desc : SortOrder.asc;
         setOrder(newOrder);
@@ -121,7 +121,7 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
                                                     classes={{ root: cellName === orderBy ? classes.activeSortIcon : '', icon: classes.icon, active: classes.active }}
                                                     active
                                                     direction={orderBy === cellName ? order : SortOrder.asc}
-                                                    onClick={(event: any) => handleRequestSort(event, cellName as (keyof typeof filteredInvestigators[0] | 'defaultOrder'))}>
+                                                    onClick={() => handleRequestSort( cellName as (keyof typeof orderBytype | 'defaultOrder'))}>
                                                 </TableSortLabel>
                                             }
                                         </TableCell>
