@@ -39,3 +39,11 @@ export const CREATE_CONTACTED_PERSON = gql`
         }
     }
 `;
+
+export const DUPLICATE_PERSON = gql`
+    mutation duplicatePersonById($personId: BigInt!) {
+        duplicatePersonById(input: {personid: $personId}) {
+            bigInt
+        }
+    }
+`;

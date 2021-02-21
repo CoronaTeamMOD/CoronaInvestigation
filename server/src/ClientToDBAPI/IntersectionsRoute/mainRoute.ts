@@ -9,7 +9,8 @@ import { GetInvolvedContactsResponse, InvolvedContactDB} from '../../Models/Cont
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
 import {
-    CREATE_OR_EDIT_CONTACT_EVENT, DELETE_CONTACT_EVENT, DELETE_CONTACT_EVENTS_BY_DATE, DELETE_CONTACTED_PERSON, CREATE_CONTACTED_PERSON
+    CREATE_OR_EDIT_CONTACT_EVENT, DELETE_CONTACT_EVENT, DELETE_CONTACT_EVENTS_BY_DATE, DELETE_CONTACTED_PERSON, 
+    CREATE_CONTACTED_PERSON, DUPLICATE_PERSON
 } from '../../DBService/ContactEvent/Mutation';
 import {
     GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_ALL_CONTACT_TYPES,
@@ -177,7 +178,8 @@ intersectionsRoute.post('/groupedInvestigationContacts' , async (request : Reque
         user: response.locals.user.id,
         investigation: epidemiologynumber
     });
-    const fullContacts = await graphqlRequest(CONTACTS_BY_CONTACTS_IDS , response.locals ,{ids : contacts})
+
+    let fullContacts = await graphqlRequest(CONTACTS_BY_CONTACTS_IDS , response.locals ,{ids : contacts})
         .then(result => {
             createGroupedContactLogger.info(validDBResponseLog, Severity.LOW);
             return result.data.allContactedPeople.edges
@@ -185,7 +187,24 @@ intersectionsRoute.post('/groupedInvestigationContacts' , async (request : Reque
         .catch(error => {
             createGroupedContactLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
-        })
+        });
+
+    fullContacts = await Promise.all(fullContacts.map(async (contact : any) => {
+        const newPersonInfo = await graphqlRequest(DUPLICATE_PERSON , response.locals ,{personId : parseInt(contact.node.personInfo)})
+            .then(result => {
+                return result.data.duplicatePersonById.bigInt
+            })
+            .catch(error => {
+                createGroupedContactLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                response.status(errorStatusCode).send(error);
+            });
+        return {
+            node : {
+                ...contact.node,
+                personInfo : parseInt(newPersonInfo)
+            }
+        }
+    }));
 
     await fullContacts.map(async (contact : any) => {
         const params = {
