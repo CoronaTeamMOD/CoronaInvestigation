@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/styles';
-import { Theme } from '@material-ui/core';
+import theme from 'styles/theme';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles({
   tableRow: {
     '&$selected, &$selected:hover': {
       backgroundColor: 'rgb(202, 222, 234)'
@@ -19,6 +19,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   icon: {},
   active: {},
   selected: {},
-}));
+});
 
 export default useStyles;
