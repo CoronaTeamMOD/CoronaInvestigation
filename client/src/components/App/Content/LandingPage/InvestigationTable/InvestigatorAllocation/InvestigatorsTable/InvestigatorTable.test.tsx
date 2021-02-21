@@ -51,7 +51,7 @@ describe('<InvestigatorsTable />', () => {
             wrapper.update();
             expect(wrapper.find(searchBarTextSelector).at(0).props().value).toBe(event.target.value);
             const tableRow = wrapper.find('tr#investigator-row-206621534');
-            expect(tableRow.exists()).toBeFalsy();
+            expect(tableRow.exists()).toBeTruthy();
         });
 
         it('triggers search on user type with no results', () => {
@@ -64,7 +64,7 @@ describe('<InvestigatorsTable />', () => {
             wrapper.update();
             expect(wrapper.find(searchBarTextSelector).at(0).props().value).toBe(event.target.value);
             const tableRow = wrapper.find('tr#investigator-row-206621534');
-            expect(tableRow.exists()).toBeTruthy();
+            expect(tableRow.exists()).toBeFalsy();
         });
     });
 });
