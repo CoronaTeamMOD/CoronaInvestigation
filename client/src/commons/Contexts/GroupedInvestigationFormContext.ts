@@ -1,17 +1,13 @@
 import { createContext } from 'react';
 
-import { IdToCheck } from 'Utils/Contacts/useDuplicateContactId';
-
 export interface GroupedInvestigationContext {
     groupedInvestigationContacts: number[];
     setGroupedInvestigationContacts: React.Dispatch<React.SetStateAction<number[]>>;
-    allContactIds: IdToCheck[];
 };
 
 export const initialContacts: GroupedInvestigationContext = {
     groupedInvestigationContacts: [],
-    setGroupedInvestigationContacts: () => {},
-    allContactIds: []
+    setGroupedInvestigationContacts: () => {}
 };
 
 export const groupedInvestigationsContext = createContext<GroupedInvestigationContext>(initialContacts);

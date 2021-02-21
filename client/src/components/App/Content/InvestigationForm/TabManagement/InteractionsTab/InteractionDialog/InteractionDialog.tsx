@@ -139,13 +139,6 @@ const InteractionDialog = (props: Props) => {
         }
     };
 
-    groupedInvestigationsContextState.allContactIds = interactions.map(interaction => interaction.contacts).flat().map((contact) => {
-        return ({
-            id: contact[InteractionEventContactFields.IDENTIFICATION_NUMBER],
-            serialId: contact[InteractionEventContactFields.ID]
-        })
-    });
-
     const fireRepetitiveContactWarning = () =>
         alertWarning('שים לב כי לא הוזנו עד כה מגעים לאירועים מחזוריים\n' +
             'ותצטרך להוסיף אותם בנפרד לכל תאריך שיצרת בו אירוע ', {
