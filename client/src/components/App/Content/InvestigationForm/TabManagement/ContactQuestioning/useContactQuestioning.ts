@@ -9,7 +9,6 @@ import { setFormState } from 'redux/Form/formActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
-import useDuplicateContactId from 'Utils/Contacts/useDuplicateContactId';
 
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 import {
@@ -31,7 +30,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
 
-    const { checkDuplicateIds } = useDuplicateContactId();
     const { alertError } = useCustomSwal();
 
     const createSaveContactRequest = (contactsSavingVariable: { unSavedContacts: { contacts: InteractedContact[] } },
@@ -54,44 +52,26 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const saveContact = (interactedContact: InteractedContact): boolean => {
-        if (
-            checkDuplicateIds(
-                allContactedInteractions.map(
-                    (contact: InteractedContact) => contact.identificationNumber
-                )
-            )
-        ) {
-            return false;
-        } else {
-            const contacts = [interactedContact];
-            const contactsSavingVariable = {
-                unSavedContacts: { contacts },
-            };
+        const contacts = [interactedContact];
+        const contactsSavingVariable = {
+            unSavedContacts: { contacts },
+        };
 
-            createSaveContactRequest(contactsSavingVariable, 'Saving single contact');
-            return true;
-        }
+        createSaveContactRequest(contactsSavingVariable, 'Saving single contact');
+        return true;
     };
 
     const saveContactQuestioning = (parsedFormData: InteractedContact[] , originalFormData: FormInputs) => {
-        if (
-            !checkDuplicateIds(
-                parsedFormData.map(
-                    (contact: InteractedContact) => contact.identificationNumber
-                )
-            )
-        ) {
-            const contactsSavingVariable = {
-                unSavedContacts: {contacts: parsedFormData}
-            };
+        const contactsSavingVariable = {
+            unSavedContacts: {contacts: parsedFormData}
+        };
 
-            createSaveContactRequest(contactsSavingVariable, 'Saving all contacts')
-            .finally(() => {
-                ContactQuestioningSchema.isValid(originalFormData).then(valid => {
-                    setFormState(epidemiologyNumber, id, valid);
-                })
+        createSaveContactRequest(contactsSavingVariable, 'Saving all contacts')
+        .finally(() => {
+            ContactQuestioningSchema.isValid(originalFormData).then(valid => {
+                setFormState(epidemiologyNumber, id, valid);
             })
-        }        
+        })    
     };
 
     const loadFamilyRelationships = () => {
