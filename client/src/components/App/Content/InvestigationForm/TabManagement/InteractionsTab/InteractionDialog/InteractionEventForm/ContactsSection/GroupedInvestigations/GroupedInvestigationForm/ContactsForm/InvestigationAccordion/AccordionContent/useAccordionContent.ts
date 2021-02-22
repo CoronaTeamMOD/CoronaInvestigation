@@ -4,7 +4,7 @@ import ContactEvent from 'models/GroupedInvestigationContacts/ContactEvent';
 import { groupedInvestigationsContext } from 'commons/Contexts/GroupedInvestigationFormContext';
 
 const useAccordionContent = (props: Props) => {
-    const { allContactIds , groupedInvestigationContacts } = useContext(groupedInvestigationsContext);
+    const { groupedInvestigationContacts } = useContext(groupedInvestigationsContext);
     const { events , query } = props;
     const getCurrentSelectedRowsLength = () => {
         let count = 0;
@@ -20,13 +20,6 @@ const useAccordionContent = (props: Props) => {
         return count;
     }
 
-    const existingIds = allContactIds.map(contact => {
-        if(contact.id) { 
-            return contact.id;
-        }
-        return "";
-    })!;
-
     const filteredEvents =
         events.flatMap( event => {
             return event.contactedPeopleByContactEvent.nodes.filter( person => {
@@ -38,7 +31,6 @@ const useAccordionContent = (props: Props) => {
 
     return {
         getCurrentSelectedRowsLength,
-        existingIds,
         filteredEvents
     }
 }

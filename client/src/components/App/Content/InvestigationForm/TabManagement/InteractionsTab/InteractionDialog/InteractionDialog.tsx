@@ -13,7 +13,6 @@ import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogCo
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import {familyMembersContext} from 'commons/Contexts/FamilyMembersContext';
-import useDuplicateContactId, {IdToCheck} from 'Utils/Contacts/useDuplicateContactId';
 
 import useStyles from './InteractionDialogStyles';
 import useInteractionsForm from './InteractionEventForm/useInteractionsForm';
@@ -75,7 +74,6 @@ const InteractionDialog = (props: Props) => {
         onDialogClose,
         groupedInvestigationContacts
     });
-    const {checkDuplicateIdsForInteractions} = useDuplicateContactId();
 
     const addFamilyMemberContacts = (contacts: Contact[]) => {
         familyMembers.forEach((familyMember: InvolvedContact) => {
@@ -141,13 +139,6 @@ const InteractionDialog = (props: Props) => {
         }
     };
 
-    groupedInvestigationsContextState.allContactIds = interactions.map(interaction => interaction.contacts).flat().map((contact) => {
-        return ({
-            id: contact[InteractionEventContactFields.IDENTIFICATION_NUMBER],
-            serialId: contact[InteractionEventContactFields.ID]
-        })
-    });
-
     const fireRepetitiveContactWarning = () =>
         alertWarning('שים לב כי לא הוזנו עד כה מגעים לאירועים מחזוריים\n' +
             'ותצטרך להוסיף אותם בנפרד לכל תאריך שיצרת בו אירוע ', {
@@ -166,25 +157,15 @@ const InteractionDialog = (props: Props) => {
 
         const interactionDataToSave = convertData(data);
 
-        const newIds: IdToCheck[] = interactionDataToSave[InteractionEventDialogFields.CONTACTS].map((contact: Contact) => {
-            return ({
-                id: contact[InteractionEventContactFields.IDENTIFICATION_NUMBER],
-                serialId: contact[InteractionEventContactFields.ID]
-            })
-        });
-
-        const contactsIdsToCheck: IdToCheck[] = groupedInvestigationsContextState.allContactIds;
-        if (!checkDuplicateIdsForInteractions(contactsIdsToCheck.concat(newIds))) {
-            if (isNewInteraction && data.isRepetitive) {
-                fireRepetitiveContactWarning()
-                    .then(result => {
-                        if (result.value) {
-                            saveInteractions(interactionDataToSave)
-                        }
-                    })
-            } else {
-                saveInteractions(interactionDataToSave)
-            }
+        if (isNewInteraction && data.isRepetitive) {
+            fireRepetitiveContactWarning()
+                .then(result => {
+                    if (result.value) {
+                        saveInteractions(interactionDataToSave)
+                    }
+                })
+        } else {
+            saveInteractions(interactionDataToSave)
         }
     };
 
