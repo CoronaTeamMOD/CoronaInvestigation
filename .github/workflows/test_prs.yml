@@ -73,8 +73,8 @@ jobs:
     steps:
       - name: Set output
         id: vars
-        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
-
+        run: echo ::set-output name=short_ref::${GITHUB_REF} #refs/*/}
+# 
       - name: comment PR
         uses: unsplash/comment-on-pr@master
         env:
