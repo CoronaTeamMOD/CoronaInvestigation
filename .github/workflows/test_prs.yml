@@ -66,9 +66,6 @@ jobs:
       - name: Running tests
         run: npm test
         working-directory: server
-
-        name: comment-on-pr example
-
   comment-tfs-link:
     name: sample comment
     runs-on: ubuntu-latest
@@ -80,3 +77,12 @@ jobs:
         with:
           msg: "Hi! , is this working?"
           check_for_duplicate_msg: false  # OPTIONAL 
+  pr-labeler:
+    name: comment-on-pr example
+    runs-on: ubuntu-latest
+    steps:
+      - uses: TimonVS/pr-labeler-action@v3
+        with:
+          configuration-path: .github/pr-labeler.yml # optional, .github/pr-labeler.yml is the default value
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
