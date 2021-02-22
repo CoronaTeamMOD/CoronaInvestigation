@@ -228,13 +228,12 @@ usersRoute.post('/changeGroupInvestigator', adminMiddleWare, (request: Request, 
 
 usersRoute.post('/changeGroupCounty', adminMiddleWare, (request: Request, response: Response) => {
     const changeGroupCountyLogger = logger.setup({
-        workflow: 'change county for grouped investigatios',
+        workflow: 'change county for grouped investigations',
         user: response.locals.user.id,
     });
     
     const parameters = { 
-        //hack: 1533
-        newInvestigator: `${unassignedUserPrefix}${request.body.updateCounty}`,
+        newInvestigator: `${unassignedUserPrefix}${request.body.newCounty}`,
         selectedGroups: request.body.groupIds,
         userCounty: request.body.county,
         wasInvestigationTransferred: true,
