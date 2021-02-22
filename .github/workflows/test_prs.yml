@@ -76,7 +76,7 @@ jobs:
 
       - name: Set output
         id: vars
-        run: echo ::set-output name=short_ref::${{github.event.pull_request.head.ref}}| cut -d/  #refs/*/}
+        run: echo ::set-output name=short_ref::${{github.event.pull_request.head.ref}}| cut -d/ -f #refs/*/}
 # 
       - name: comment PR
         uses: unsplash/comment-on-pr@master
