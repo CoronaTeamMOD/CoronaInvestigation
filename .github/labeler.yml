@@ -5,4 +5,4 @@ server:
   - 'server/**/*'
 
 tests:
-  - any: ['client/**/*.test.tsx','client/**/*.test.ts']
+  - all: ['client/**/*.test.tsx','client/**/*.test.ts']
