@@ -76,8 +76,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          msg: "Hi! , is this working?, ${{ github.event.pull_request.head.ref }}""
-          check_for_duplicate_msg: false  # OPTIONAL 
+          msg: "Hi! , is this working?, ${{ github.event.pull_request.head.ref }}"
+          check_for_duplicate_msg: false
+
   pr-labeler:
     name: comment-on-pr example
     runs-on: ubuntu-latest
