@@ -71,9 +71,6 @@ jobs:
     name: sample comment
     runs-on: ubuntu-latest
     steps:
-      - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v3.x
-
       - name: Set output
         id: vars
         run: echo ::set-output name=short_ref::${{github.event.pull_request.head.ref}}| cut -d'/' -f1 #refs/*/}
@@ -83,7 +80,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          msg: "Hi! , is this working?, echo ${{ steps.vars.outputs.short_ref }}"
+          msg: >
+            # Hello!
+            connected Issue on TFS link : https://dev.azure.com/spectrumFactory/CoronaI/_workitems/edit/${{ steps.vars.outputs.short_ref }}
+            did it work?
+
           check_for_duplicate_msg: false
 
   pr-labeler:
