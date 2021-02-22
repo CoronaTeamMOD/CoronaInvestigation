@@ -1,2 +1,2 @@
 feature : ['*/feat*' , '*/feature*' , 'feat/*' , 'feature/*']
-fix : ['*/fix' , 'fix/*']
+fix : ['*/fix*' , 'fix/*']

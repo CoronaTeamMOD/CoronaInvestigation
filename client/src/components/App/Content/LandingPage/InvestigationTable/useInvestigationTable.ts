@@ -25,10 +25,10 @@ import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
-import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
 import AllocatedInvestigator from 'models/InvestigationTable/AllocateInvestigatorDialog/AllocatedInvestigator';
+import { resetInvestigationState, setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
 import { filterCreators } from './FilterCreators';
@@ -337,6 +337,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
 
     useEffect(() => {
+        resetInvestigationState();
         fetchAllInvestigationStatuses();
         fetchAllInvestigationSubStatuses();
         startWaiting();
