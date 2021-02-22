@@ -42,6 +42,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     const [editUserDialog, setEditUserDialog] = useState<UserDialog>({ isOpen: false, info: {} });
     const [filterRules, setFitlerRules] = useState<any>({});
     const [isBadgeInVisible, setIsBadgeInVisible] = useState<boolean>(true);
+    const [counter, setCounter] = useState<number>(0);
     
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
@@ -165,6 +166,10 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     useEffect(() => {
         fetchUsers();
     }, [page, user.userType]);
+
+    useEffect(() => {
+        setCounter(users.length);
+    }, [users])
     
     const watchUserInfo = (row: any) => {
         const userInfoToSet = {
@@ -316,6 +321,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         setUserDesk,
         setUserCounty,
         handleDeactivateAllUsersCounty,
+        counter
     };
 }
 
@@ -345,6 +351,7 @@ interface useUsersManagementOutCome {
     setUserDesk: (deskId: number, userId: string) => void;
     setUserCounty: (countyId: number, userId: string) => void;
     handleDeactivateAllUsersCounty: () => void;
+    counter: number;
 };
 
 export default useUsersManagement;

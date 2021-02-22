@@ -52,13 +52,12 @@ const UsersManagement: React.FC = () => {
     const allCounties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
     
-    const { users, sourcesOrganization, userTypes, languages,
-            totalCount, userDialog, editUserDialog, isBadgeInVisible, 
-            watchUserInfo, handleCloseUserDialog, editUserInfo, 
-            handleCloseEditUserDialog, handleFilterChange, 
-            setUserActivityStatus, setUserSourceOrganization, 
-            setUserDesk, setUserCounty, handleDeactivateAllUsersCounty } =
-            useUsersManagement({ page, rowsPerPage, cellNameSort, setPage });
+    const { users, sourcesOrganization, userTypes, languages,totalCount, 
+            userDialog, editUserDialog, isBadgeInVisible, watchUserInfo, 
+            handleCloseUserDialog, editUserInfo, handleCloseEditUserDialog, 
+            handleFilterChange, setUserActivityStatus, setUserSourceOrganization, 
+            setUserDesk, setUserCounty, handleDeactivateAllUsersCounty, counter
+        } = useUsersManagement({ page, rowsPerPage, cellNameSort, setPage });
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
 
@@ -215,6 +214,11 @@ const UsersManagement: React.FC = () => {
             <Grid>
                 <Typography color='textPrimary' id='user-management-title' className={classes.header}>
                     {usersManagementTitle}
+                </Typography>
+            </Grid>
+            <Grid container justify='flex-end'className={classes.counter}>
+                <Typography color='textPrimary' id='user-management-counter'>
+                    {`סה"כ ${counter} חוקרים`}
                 </Typography>
             </Grid>
             <Grid container justify='space-between' id='user-management-filters' className={classes.filters}>

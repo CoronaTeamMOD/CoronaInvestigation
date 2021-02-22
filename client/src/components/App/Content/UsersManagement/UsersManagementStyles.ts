@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     icon: {},
     active: {},
+    counter: {
+        width: '90vw',
+    },
     filters: {
         width: '90vw',
     },
