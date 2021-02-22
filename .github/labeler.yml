@@ -5,7 +5,7 @@ server:
   - 'server/**/*'
 
 tests:
-  - 'client/**/*.test.tsx'
+  - any: ['client/**/*.test.tsx']
     #any : 
   #  [
   #   'client/**/*.test.ts',
