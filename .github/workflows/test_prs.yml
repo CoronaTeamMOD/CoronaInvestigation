@@ -66,3 +66,17 @@ jobs:
       - name: Running tests
         run: npm test
         working-directory: server
+
+        name: comment-on-pr example
+
+  comment-tfs-link:
+    name: sample comment
+    runs-on: ubuntu-latest
+    steps:
+      - name: comment PR
+        uses: unsplash/comment-on-pr@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          msg: "Hi! , is this working?"
+          check_for_duplicate_msg: false  # OPTIONAL 
