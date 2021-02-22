@@ -7,7 +7,7 @@ import { subDays, eachDayOfInterval, compareDesc } from 'date-fns';
 
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import { getDatesToInvestigate } from 'Utils/ClinicalDetails/symptomsUtils';
-// plz work
+
 import useInteractionsTab from './useInteractionsTab';
 import { useInteractionsTabOutcome as useInteactionsTabsOutcomeInterface,
     useInteractionsTabParameters as useInteactionsTabsInputInterface } from './useInteractionsTabInterfaces';
