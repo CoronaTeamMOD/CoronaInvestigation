@@ -81,9 +81,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           msg: >
-            # Hello!
-            connected Issue on TFS link : https://dev.azure.com/spectrumFactory/CoronaI/_workitems/edit/${{ steps.vars.outputs.short_ref }}
-            did it work?
+            [link to TFS issue](https://dev.azure.com/spectrumFactory/CoronaI/_workitems/edit/${{ steps.vars.outputs.short_ref }}) <br />
+            <sub>This was preforemed automatically accordiong to the branches name</sub>
 
           check_for_duplicate_msg: false
 
