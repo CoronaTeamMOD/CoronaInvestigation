@@ -7,3 +7,5 @@ server:
 tests:
   - 'client/**/*.test.tsx'
   - 'client/**/*.test.ts'
+  - 'client/**/*.test.jsx'
+  - 'client/**/*.test.js'
