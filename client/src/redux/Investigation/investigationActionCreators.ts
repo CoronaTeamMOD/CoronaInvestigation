@@ -80,3 +80,9 @@ export const setDatesToInvestigateParams = (symptomsExistenceInfo?: SymptomsExis
         payload: { symptomsExistenceInfo, validationDate }
     })
 };
+
+export const resetInvestigationState = () => {
+    store.dispatch({
+        type: actionTypes.RESET_STATE,
+    })
+};
