@@ -5,9 +5,11 @@ server:
   - 'server/**/*'
 
 tests:
-  - any : [
-    'client/**/*.test.ts',
-    'client/**/*.test.tsx',
-    'client/**/*.test.js',
-    'client/**/*.test.jsx'
-  ]
+  - 'client/**/*.test.tsx'
+    #any : 
+  #  [
+  #   'client/**/*.test.ts',
+  #   'client/**/*.test.tsx',
+  #   'client/**/*.test.js',
+  #   'client/**/*.test.jsx'
+  # ]
