@@ -58,28 +58,26 @@ const AppToolbar: React.FC = (): JSX.Element => {
     const userName = user.authorityByAuthorityId?.authorityName ? 
                           user.userName +" (" + user.authorityByAuthorityId.authorityName + ")"  : user.userName;
 
-    return (
-        <AppBar className={classes.appBar} position='static'>
-        <Toolbar>
-            <div className={classes.rightSection}>
-            <img alt='logo' src='./assets/img/logo.png' width={48} height={48} />
-            <Typography variant='h4' id='title'>אבן יסוד</Typography>
-            {
-                navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
-                navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&
-                <div className={classes.navButtons}>
-                <StatePersistentNavLink exact to={indexRoute} 
-                    isActive={(match, location) => 
-                    (location.pathname === adminLandingPageRoute || location.pathname  === landingPageRoute)}>
-                    <Home className={classes.menuIcon} />
-                    <Typography className={classes.menuTypo}> עמוד הבית</Typography>
-                </StatePersistentNavLink>
-                <StatePersistentNavLink exact to={usersManagementRoute}>
-                    <SupervisorAccount className={classes.menuIcon} />
-                    <Typography className={classes.menuTypo}> ניהול משתמשים</Typography>
-                </StatePersistentNavLink>
-                </div>
-            }
+  return (
+    <AppBar className={classes.appBar} position='static'>
+      <Toolbar>
+        <div className={classes.rightSection}>
+          <img id='logo' alt='logo' src='./assets/img/logo.png' width={48} height={48} />
+          <Typography variant='h4' id='title'>אבן יסוד</Typography>
+          {
+            navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
+            navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&
+            <div className={classes.navButtons}>
+              <StatePersistentNavLink exact to={indexRoute} 
+                isActive={(match, location) => 
+                  (location.pathname === adminLandingPageRoute || location.pathname  === landingPageRoute)}>
+                <Home className={classes.menuIcon} />
+                <Typography className={classes.menuTypo}> עמוד הבית</Typography>
+              </StatePersistentNavLink>
+              <StatePersistentNavLink exact to={usersManagementRoute}>
+                <SupervisorAccount className={classes.menuIcon} />
+                <Typography className={classes.menuTypo}> ניהול משתמשים</Typography>
+              </StatePersistentNavLink>
             </div>
             <div className={classes.userSection}>
             {isActive !== null &&
