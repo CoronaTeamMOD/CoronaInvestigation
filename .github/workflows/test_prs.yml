@@ -76,7 +76,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          msg: "Hi! , is this working?, ${{ github.event.pull_request.head.ref }}"
+          msg: "Hi! , is this working?, ${${{ github.event.pull_request.head.ref }}%:/}"
           check_for_duplicate_msg: false
 
   pr-labeler:
@@ -85,6 +85,6 @@ jobs:
     steps:
       - uses: TimonVS/pr-labeler-action@v3
         with:
-          configuration-path: .github/pr-labeler.yml # optional, .github/pr-labeler.yml is the default value
+          configuration-path: .github/pr-labeler.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
