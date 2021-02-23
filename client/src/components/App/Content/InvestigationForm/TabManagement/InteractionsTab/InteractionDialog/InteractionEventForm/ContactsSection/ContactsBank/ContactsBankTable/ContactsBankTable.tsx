@@ -21,7 +21,7 @@ const ContactsBankTable = (props: Props) => {
         <Table>
             <TableHeader />
             {contacts.map( contact => {
-                return(
+                return (
                     <Row 
                         contact={contact}
                     />
