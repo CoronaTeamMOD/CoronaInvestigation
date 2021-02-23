@@ -43,13 +43,18 @@ const RepetitiveEventForm = ({selectedDate}: Props) => {
                     return (dateIndex >= 0 || isInitialDay)
                         ? <Accordion key={day.getTime()} elevation={0} defaultExpanded>
                             <AccordionSummary expandIcon={<ExpandMore/>} className={classes.formSectionTitle}>
-                                <CheckableDateTitle disabled={isInitialDay}
-                                                    day={day} isDateSelected={true}
-                                                    onDateCheckClick={onDateCheckClick}/>
+                                <CheckableDateTitle 
+                                    disabled={isInitialDay}
+                                    day={day} isDateSelected={true}
+                                    onDateCheckClick={onDateCheckClick}
+                                />
                             </AccordionSummary>
                             <AccordionDetails classes={{root: classes.formSection}}>
-                                <InteractionDetailsFields interactionDate={day}
-                                                          {...!isInitialDay && {index: dateIndex}}/>
+                                <InteractionDetailsFields 
+                                    interactionDate={day}
+                                    {...!isInitialDay && {index: dateIndex}}
+                                    defaultDate={isInitialDay}
+                                />
                             </AccordionDetails>
                         </Accordion>
                         : <div key={day.getTime()} className='.MuiAccordion-root .MuiAccordionSummary-root'>
@@ -69,6 +74,6 @@ const RepetitiveEventForm = ({selectedDate}: Props) => {
 
 interface Props {
     selectedDate: Date;
-}
+};
 
 export default RepetitiveEventForm;
