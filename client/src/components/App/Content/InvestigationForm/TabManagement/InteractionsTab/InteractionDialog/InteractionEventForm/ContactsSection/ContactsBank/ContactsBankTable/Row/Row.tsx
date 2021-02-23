@@ -3,17 +3,25 @@ import { TableCell, TableRow, Checkbox, Select, MenuItem, TextField } from '@mat
 
 import Contact from 'models/Contact';
 
+import UseRow from './useRow';
+
 const Row = (props: Props) => {
+
     const { contact } = props;
+
+    const { isPersonChecked,handleCheckboxClick } = UseRow({contact});
+
+    const { personInfo } = contact;
+
     return (
         <TableRow>
             <TableCell>
                 <Checkbox
                     disabled={false}
                     color='primary'
-                    checked={false}
-                    id={`person-checkbox-${contact.personInfo}`}
-                    onClick={() => {}}
+                    checked={isPersonChecked()}
+                    id={`person-checkbox-${personInfo}`}
+                    onClick={handleCheckboxClick}
                 />    
             </TableCell> 
             <TableCell>{contact.firstName}</TableCell>
@@ -33,7 +41,7 @@ const Row = (props: Props) => {
             <TableCell>{contact.phoneNumber}</TableCell>
             <TableCell>
                 <TextField
-                    id={`pesron-extraInfo-${contact.personInfo}`}
+                    id={`pesron-extraInfo-${personInfo}`}
                     defaultValue={contact.extraInfo}
                     onChange={() => {}}
                 />

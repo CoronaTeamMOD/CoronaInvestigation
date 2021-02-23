@@ -7,6 +7,7 @@ import {Dialog, DialogTitle, DialogContent, DialogActions, Button, Tooltip} from
 import Contact from 'models/Contact';
 import InvolvedContact from 'models/InvolvedContact';
 import PlaceSubType from 'models/PlaceSubType';
+import {contactBankContext , ContactBankOption} from 'commons/Contexts/ContactBankContext';
 import {groupedInvestigationsContext} from 'commons/Contexts/GroupedInvestigationFormContext';
 import InteractionEventDialogData, {DateData, OccuranceData} from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
@@ -37,6 +38,12 @@ const InteractionDialog = (props: Props) => {
     const groupedInvestigationsContextState = useContext(groupedInvestigationsContext);
     groupedInvestigationsContextState.groupedInvestigationContacts = groupedInvestigationContacts;
     groupedInvestigationsContextState.setGroupedInvestigationContacts = setGroupedInvestigationContacts;
+    
+    const [contactBank, setContactBank] = useState<Map<number, ContactBankOption>>(new Map());
+    const contactBankContextState = useContext(contactBankContext);
+    contactBankContextState.contactBank = contactBank;
+    contactBankContextState.setContactBank = setContactBank;
+
     const { alertWarning } = useCustomSwal();
 
     const methods = useForm<InteractionEventDialogData>({
