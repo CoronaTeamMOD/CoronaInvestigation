@@ -354,7 +354,7 @@ intersectionsRoute.delete('/deleteContactEventsByDate', (request: Request, respo
 intersectionsRoute.post('/addContactsFromBank', handleInvestigationRequest, (request: Request, response: Response) => {
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const addContactsFromBankLogger = logger.setup({
-        workflow: 'adds contacts to event from contacts bank',
+        workflow: 'add contacts to event from contacts bank',
         user: response.locals.user.id,
         investigation: epidemiologyNumber
     });

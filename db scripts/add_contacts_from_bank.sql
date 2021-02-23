@@ -1,4 +1,4 @@
- DROP FUNCTION public.add_contacts_from_bank(integer, json);
+-- DROP FUNCTION public.add_contacts_from_bank(integer, json);
 
 CREATE OR REPLACE FUNCTION public.add_contacts_from_bank(IN contact_event_id integer, IN contacts json)
     RETURNS void
@@ -8,8 +8,8 @@ CREATE OR REPLACE FUNCTION public.add_contacts_from_bank(IN contact_event_id int
     COST 100
 AS $BODY$
 declare
-/*adds contacted persons assigned to specified contacted_event*/
---Variables:
+-- Adds contacted persons assigned to specified contacted_eventט
+-- Variables:
 
 contacts_arr json[];
 contact json;
