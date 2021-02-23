@@ -17,4 +17,4 @@ export const initialContactBank: ContactBankContext = {
 };
 
 export const contactBankContext = createContext<ContactBankContext>(initialContactBank);
-export const contactBankContextProvider = contactBankContext.Provider;
+export const ContactBankContextProvider = contactBankContext.Provider;

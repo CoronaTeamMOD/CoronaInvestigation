@@ -7,8 +7,8 @@ import {Dialog, DialogTitle, DialogContent, DialogActions, Button, Tooltip} from
 import Contact from 'models/Contact';
 import InvolvedContact from 'models/InvolvedContact';
 import PlaceSubType from 'models/PlaceSubType';
-import {contactBankContext , ContactBankOption} from 'commons/Contexts/ContactBankContext';
-import {groupedInvestigationsContext, GroupedInvestigationsContextProvider} from 'commons/Contexts/GroupedInvestigationFormContext';
+import {ContactBankContextProvider , ContactBankOption} from 'commons/Contexts/ContactBankContext';
+import {GroupedInvestigationsContextProvider} from 'commons/Contexts/GroupedInvestigationFormContext';
 import InteractionEventDialogData, {DateData, OccuranceData} from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
@@ -35,12 +35,8 @@ const InteractionDialog = (props: Props) => {
     const {isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction} = props;
     const [isAddingContacts, setIsAddingContacts] = React.useState(false);
     const [groupedInvestigationContacts, setGroupedInvestigationContacts] = useState<number[]>([]);
-    
     const [contactBank, setContactBank] = useState<Map<number, ContactBankOption>>(new Map());
-    const contactBankContextState = useContext(contactBankContext);
-    contactBankContextState.contactBank = contactBank;
-    contactBankContextState.setContactBank = setContactBank;
-
+    
     const { alertWarning } = useCustomSwal();
 
     const methods = useForm<InteractionEventDialogData>({
@@ -247,10 +243,12 @@ const InteractionDialog = (props: Props) => {
                             onPlaceSubTypeChange={onPlaceSubtypeChange}
                         />
                         <GroupedInvestigationsContextProvider value={{groupedInvestigationContacts, setGroupedInvestigationContacts}}>
-                            <ContactsTabs
-                                isVisible={isAddingContacts}
-                                existingPersons={getPersonMap()}
-                            />
+                            <ContactBankContextProvider value={{contactBank, setContactBank}}>
+                                <ContactsTabs
+                                    isVisible={isAddingContacts}
+                                    existingPersons={getPersonMap()}
+                                />
+                            </ContactBankContextProvider>
                         </GroupedInvestigationsContextProvider>
                     </form>
                 </DialogContent>
