@@ -47,3 +47,11 @@ export const DUPLICATE_PERSON = gql`
         }
     }
 `;
+
+export const ADD_CONTACTS_FROM_BANK = gql`
+    mutation addContactsFromBank() {
+        addContactsFromBank(input: {}) {
+            clientMutationId
+        }
+    }
+`;
