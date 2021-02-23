@@ -200,6 +200,16 @@ const InteractionDialog = (props: Props) => {
         return (!data.unknownTime && (!data.startTime || !data.endTime));
     };
 
+    const getPersonMap = () => {
+        const allInteractionPersons = interactions.flatMap(interaction => interaction.contacts);
+        const personMap = new Map<number,Contact>();
+        allInteractionPersons.forEach(person => {
+            const {personInfo} = person;
+            personInfo && personMap.set(personInfo, person);
+        });
+        return personMap;
+    }
+
     const validateAndHandleSubmit = methods.handleSubmit(
         () => {
             const datesHaveError =
@@ -233,6 +243,7 @@ const InteractionDialog = (props: Props) => {
                         />
                         <ContactsTabs
                             isVisible={isAddingContacts}
+                            existingPersons={getPersonMap()}
                         />
                     </form>
                 </DialogContent>

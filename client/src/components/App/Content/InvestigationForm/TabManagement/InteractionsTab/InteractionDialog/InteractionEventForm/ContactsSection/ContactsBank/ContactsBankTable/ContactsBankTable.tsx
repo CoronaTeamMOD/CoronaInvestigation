@@ -1,26 +1,19 @@
 import React from 'react'
 import { Table } from '@material-ui/core';
 
+import Contact from 'models/Contact';
+
 import Row from './Row/Row';
 import TableHeader from './TableHeader/TableHeader';
 
-const contacts = [
-    {
-        firstName : 'יוסי',
-        lastName: 'יוסי',
-        identifiactionType: `ת"ז`,
-        identifiactionNumber: '207950171',
-        contactType: 1,
-        phoneNum: '0545802270',
-        extraDesc: 'abcdefg'
-    }
-]
-
 const ContactsBankTable = (props: Props) => {
+    const { existingPersons } = props;
+    const personsArray = Array.from(existingPersons).map(person => person[1]);
+
     return (
         <Table>
             <TableHeader />
-            {contacts.map( contact => {
+            {personsArray.map( contact => {
                 return (
                     <Row 
                         contact={contact}
@@ -32,7 +25,7 @@ const ContactsBankTable = (props: Props) => {
 }
 
 interface Props {
-    
+    existingPersons: Map<number,Contact>;
 }
 
 export default ContactsBankTable

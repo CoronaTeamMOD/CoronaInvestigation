@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Tab, Tabs, useTheme } from '@material-ui/core';
 import { GroupOutlined, CallMerge, AccountBalance } from '@material-ui/icons';
 
+import Contact from 'models/Contact';
 import useFormStyles from 'styles/formStyles';
 
 import Forms from './Forms';
@@ -15,7 +16,7 @@ const groupedInvestigationsLabel = 'חקירות מקובצות';
 const contactBankLabel = 'בנק מגעים';
 
 const ContactsTabs = (props : Props) => {
-    const {isVisible} = props;
+    const {isVisible, existingPersons} = props;
 
     const [currentTab, setTab] = React.useState<number>(0);
     const formClasses = useFormStyles();
@@ -45,6 +46,7 @@ const ContactsTabs = (props : Props) => {
             <Divider orientation='vertical' variant='fullWidth' light={true} />
             <Forms
                 currentTab={currentTab}
+                existingPersons={existingPersons}
             />
         </div>
     );
@@ -52,6 +54,7 @@ const ContactsTabs = (props : Props) => {
 
 interface Props {
     isVisible: boolean; 
+    existingPersons: Map<number,Contact>;
 }
 
 export default ContactsTabs;

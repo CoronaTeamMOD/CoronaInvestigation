@@ -1,6 +1,8 @@
 import React from 'react'
 import { TableCell, TableRow } from '@material-ui/core';
 
+import Contact from 'models/Contact';
+
 const Row = (props: Props) => {
     const { contact } = props;
     return (
@@ -8,17 +10,17 @@ const Row = (props: Props) => {
             <TableCell />
             <TableCell>{contact.firstName}</TableCell>
             <TableCell>{contact.lastName}</TableCell>
-            <TableCell>{contact.identifiactionType}</TableCell>
-            <TableCell>{contact.identifiactionNumber}</TableCell>
+            <TableCell>{contact.identificationType}</TableCell>
+            <TableCell>{contact.identificationNumber}</TableCell>
             <TableCell>{contact.contactType === 1 ? 'הדוק' : 'לא הדוק'}</TableCell>
-            <TableCell>{contact.phoneNum}</TableCell>
-            <TableCell>{contact.extraDesc}</TableCell>
+            <TableCell>{contact.phoneNumber}</TableCell>
+            <TableCell>{contact.extraInfo}</TableCell>
         </TableRow>
     )
 }
 
 interface Props {
-    contact : any
+    contact : Contact
 }
 
 export default Row
