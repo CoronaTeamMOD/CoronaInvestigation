@@ -1,8 +1,8 @@
 import React from 'react';
-import { GroupOutlined, CallMerge } from '@material-ui/icons';
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Tab, Tabs, useTheme } from '@material-ui/core';
+import { GroupOutlined, CallMerge, AccountBalance } from '@material-ui/icons';
 
 import useFormStyles from 'styles/formStyles';
 
@@ -12,6 +12,7 @@ import useStyles from './ContactsTabsStyles';
 const mutualContactsLabel = 'הוספת מגע ידנית';
 const familyMembersLabel = 'בני משפחה';
 const groupedInvestigationsLabel = 'חקירות מקובצות';
+const contactBankLabel = 'בנק מגעים';
 
 const ContactsTabs = (props : Props) => {
     const {isVisible} = props;
@@ -39,6 +40,7 @@ const ContactsTabs = (props : Props) => {
                 <Tab classes={tabClasses} icon={<FontAwesomeIcon color={active} icon={faUserEdit} />} label={mutualContactsLabel} />
                 <Tab classes={tabClasses} icon={<GroupOutlined color='action' />} label={familyMembersLabel} />
                 <Tab classes={tabClasses} icon={<CallMerge color='action' />} label={groupedInvestigationsLabel} />
+                <Tab classes={tabClasses} icon={<AccountBalance color='action' />} label={contactBankLabel} />
             </Tabs>
             <Divider orientation='vertical' variant='fullWidth' light={true} />
             <Forms
