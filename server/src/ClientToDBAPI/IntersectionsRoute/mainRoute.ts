@@ -349,4 +349,31 @@ intersectionsRoute.delete('/deleteContactEventsByDate', (request: Request, respo
     });
 });
 
+intersectionsRoute.post('/addContactsFromBank', handleInvestigationRequest, (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
+    const addContactsFromBankLogger = logger.setup({
+        workflow: 'adds contacts to event from contacts bank',
+        user: response.locals.user.id,
+        investigation: epidemiologyNumber
+    });
+
+    // const parameters = {
+    //     event: JSON.stringify({
+    //         contactEvents: extractInteractions(request.body),
+    //         investigationId: epidemiologyNumber
+    //     })
+    // };
+
+    addContactsFromBankLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+    graphqlRequest(ADD_CONTACTS_FROM_BANK, response.locals, parameters)
+        .then(result => {
+            addContactsFromBankLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result);
+        })
+        .catch(error => {
+            addContactsFromBankLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
+});
+
 export default intersectionsRoute;
