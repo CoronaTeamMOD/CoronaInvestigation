@@ -9,7 +9,12 @@ const Row = (props: Props) => {
 
     const { contact } = props;
 
-    const { isPersonChecked,handleCheckboxClick } = UseRow({contact});
+    const { 
+        isPersonChecked,
+        handleCheckboxClick, 
+        handleContactTypeChange, 
+        handleExtraInfoChange 
+    } = UseRow({contact});
 
     const { personInfo } = contact;
 
@@ -32,7 +37,7 @@ const Row = (props: Props) => {
                 <Select
                    id="demo-simple-select"
                    defaultValue={contact.contactType}
-                   onChange={() => {}} 
+                   onChange={(e) => {handleContactTypeChange(e.target.value)}} 
                 >
                     <MenuItem value={1}>הדוק</MenuItem>
                     <MenuItem value={2}>לא הדוק</MenuItem>
@@ -43,7 +48,7 @@ const Row = (props: Props) => {
                 <TextField
                     id={`pesron-extraInfo-${personInfo}`}
                     defaultValue={contact.extraInfo}
-                    onChange={() => {}}
+                    onChange={(e) => {handleExtraInfoChange(e.target.value)}}
                 />
             </TableCell>
         </TableRow>

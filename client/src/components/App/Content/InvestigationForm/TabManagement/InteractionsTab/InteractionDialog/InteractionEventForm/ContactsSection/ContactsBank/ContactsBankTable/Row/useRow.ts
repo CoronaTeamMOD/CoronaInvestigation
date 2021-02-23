@@ -21,27 +21,63 @@ const UseRow = (props : Props) => {
         if(personInfo){
             let tempBank = contactBank;
             const person = contactBank.get(personInfo);
-            if(person) {
-                tempBank.set(personInfo, {
-                    contactType,
-                    extraInfo,
-                    checked: !person.checked
-                });
-            } else {
-                tempBank.set(personInfo , {
-                    contactType,
-                    extraInfo,
-                    checked: true
-                });
+            const newBankValue = {
+                contactType,
+                extraInfo,
+                checked: person ? !person.checked : true
             }
-            
+            tempBank.set(personInfo , newBankValue);
+
+            setContactBank(tempBank);
+        }
+    }
+
+    const handleContactTypeChange = (selectedType? :  number | unknown) => {
+        if(personInfo && typeof selectedType === 'number') {
+            let tempBank = contactBank;
+            const person = contactBank.get(personInfo);
+            const newBankValue = person 
+                ? {
+                    contactType: selectedType,
+                    extraInfo: person.extraInfo,
+                    checked: person.checked
+                }
+                : {
+                    contactType: selectedType,
+                    extraInfo: contact.extraInfo,
+                    checked: false
+                }
+            tempBank.set(personInfo , newBankValue);
+
+            setContactBank(tempBank);
+        }
+    }
+
+    const handleExtraInfoChange = (selectedInfo : string | unknown) => {
+        if(personInfo && typeof selectedInfo === 'string') {
+            let tempBank = contactBank;
+            const person = contactBank.get(personInfo);
+            const newBankValue = person 
+                ? {
+                    ...person,
+                    extraInfo : selectedInfo
+                }
+                : {
+                    contactType,
+                    extraInfo: selectedInfo,
+                    checked: false
+                }
+            tempBank.set(personInfo , newBankValue);
+
             setContactBank(tempBank);
         }
     }
 
     return {
         isPersonChecked,
-        handleCheckboxClick
+        handleCheckboxClick,
+        handleContactTypeChange,
+        handleExtraInfoChange
     }
 }
 

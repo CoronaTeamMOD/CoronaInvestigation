@@ -79,7 +79,8 @@ const InteractionDialog = (props: Props) => {
         loadInteractions,
         loadInvolvedContacts,
         onDialogClose,
-        groupedInvestigationContacts
+        groupedInvestigationContacts,
+        contactBank
     });
 
     const addFamilyMemberContacts = (contacts: Contact[]) => {
