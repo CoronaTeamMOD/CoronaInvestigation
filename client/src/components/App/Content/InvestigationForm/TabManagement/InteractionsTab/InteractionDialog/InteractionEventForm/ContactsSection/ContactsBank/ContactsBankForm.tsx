@@ -14,7 +14,7 @@ const ContactsBankForm = (props: Props) => {
     const { existingPersons } = props;
     const classes = useStyles(); 
     const {contactBank} = useContext(contactBankContext);
-    const [query, setQuery] = useState<string>("");
+    const [query, setQuery] = useState<string>('');
     const selectedContactsCount = Array.from(contactBank)
         .filter(contact => contact[1].checked).length
 

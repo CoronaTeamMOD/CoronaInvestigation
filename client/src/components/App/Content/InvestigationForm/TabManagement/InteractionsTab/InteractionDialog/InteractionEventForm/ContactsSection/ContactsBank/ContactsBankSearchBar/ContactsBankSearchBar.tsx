@@ -23,7 +23,7 @@ const stringAlphabet = yup
   .max(50, maxLengthErrorMessage);
 
 const TableSearchBar = (props: Props) => {
-    const [searchQuery, setsearchQueries] = useState<string>("");
+    const [searchQuery, setsearchQueries] = useState<string>('');
 
     const { onSearchClick , ...rest} = props;
     const classes = useStyles();
@@ -38,7 +38,7 @@ const TableSearchBar = (props: Props) => {
             InputProps={{
             endAdornment: (
                 <InputAdornment position='end'>
-                    <IconButton id="searchIconButton" onClick={() => onSearchClick(searchQuery)}>
+                    <IconButton id='searchIconButton' onClick={() => onSearchClick(searchQuery)}>
                         <Search color='primary' />
                     </IconButton>
                 </InputAdornment>
