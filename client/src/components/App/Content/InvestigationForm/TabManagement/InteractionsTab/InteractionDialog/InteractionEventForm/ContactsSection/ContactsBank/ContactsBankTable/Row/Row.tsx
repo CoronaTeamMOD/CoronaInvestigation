@@ -4,27 +4,37 @@ import { TableCell, TableRow, Checkbox, Select, MenuItem, TextField } from '@mat
 import Contact from 'models/Contact';
 
 import UseRow from './useRow';
+import useStyles from './rowStyles';
 
 const Row = (props: Props) => {
-
     const { contact } = props;
+    const classes = useStyles();
 
     const { 
         isPersonChecked,
         handleCheckboxClick, 
         handleContactTypeChange, 
-        handleExtraInfoChange 
+        handleExtraInfoChange,
+        doesPersonExistInEvent 
     } = UseRow({contact});
 
-    const { personInfo } = contact;
 
+    const isChecked = isPersonChecked();
+    const doesExist = doesPersonExistInEvent();
+
+    const rowClass = doesExist
+        ? classes.disabled
+        : isChecked
+            ? classes.selected
+            : '';
+    const { personInfo } = contact;
     return (
-        <TableRow>
+        <TableRow className={rowClass}>
             <TableCell>
                 <Checkbox
-                    disabled={false}
+                    disabled={doesExist}
                     color='primary'
-                    checked={isPersonChecked()}
+                    checked={isChecked}
                     id={`person-checkbox-${personInfo}`}
                     onClick={handleCheckboxClick}
                 />    
@@ -36,6 +46,7 @@ const Row = (props: Props) => {
             <TableCell>
                 <Select
                    id="demo-simple-select"
+                   disabled={doesExist}
                    defaultValue={contact.contactType}
                    onChange={(e) => {handleContactTypeChange(e.target.value)}} 
                 >
@@ -47,6 +58,7 @@ const Row = (props: Props) => {
             <TableCell>
                 <TextField
                     id={`pesron-extraInfo-${personInfo}`}
+                    disabled={doesExist}
                     defaultValue={contact.extraInfo}
                     onChange={(e) => {handleExtraInfoChange(e.target.value)}}
                 />
