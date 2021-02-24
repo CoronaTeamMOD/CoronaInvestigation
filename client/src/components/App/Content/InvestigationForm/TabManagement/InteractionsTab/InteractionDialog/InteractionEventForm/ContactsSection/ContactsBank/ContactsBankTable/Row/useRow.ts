@@ -3,11 +3,13 @@ import React, { useContext } from 'react';
 import Contact from 'models/Contact';
 import {contactBankContext} from 'commons/Contexts/ContactBankContext';
 
+import useStyles from './rowStyles';
+
 const UseRow = (props : Props) => {
-    
     const { contact } = props;
     const { personInfo, contactType, extraInfo } = contact;
 
+    const classes = useStyles();
     const { contactBank , setContactBank, existingEventPersonInfos } = useContext(contactBankContext);
 
     const isPersonChecked = () => {
@@ -80,12 +82,22 @@ const UseRow = (props : Props) => {
         }
     }
 
+    const getRowClass = () => {
+        if(doesPersonExistInEvent()) {
+            return classes.disabled;
+        } else if (isPersonChecked()) {
+            return classes.selected;
+        }
+        return '';
+    }
+
     return {
         isPersonChecked,
         handleCheckboxClick,
         handleContactTypeChange,
         handleExtraInfoChange,
-        doesPersonExistInEvent
+        doesPersonExistInEvent,
+        getRowClass
     }
 }
 

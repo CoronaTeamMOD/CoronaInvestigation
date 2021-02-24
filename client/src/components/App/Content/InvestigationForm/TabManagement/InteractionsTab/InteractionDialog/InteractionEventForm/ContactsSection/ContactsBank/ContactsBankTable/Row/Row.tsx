@@ -4,29 +4,23 @@ import { TableCell, TableRow, Checkbox, Select, MenuItem, TextField } from '@mat
 import Contact from 'models/Contact';
 
 import UseRow from './useRow';
-import useStyles from './rowStyles';
 
 const Row = (props: Props) => {
     const { contact } = props;
-    const classes = useStyles();
+    
 
     const { 
         isPersonChecked,
         handleCheckboxClick, 
         handleContactTypeChange, 
         handleExtraInfoChange,
-        doesPersonExistInEvent 
+        doesPersonExistInEvent,
+        getRowClass
     } = UseRow({contact});
 
-
-    const isChecked = isPersonChecked();
     const doesExist = doesPersonExistInEvent();
+    const rowClass = getRowClass();
 
-    const rowClass = doesExist
-        ? classes.disabled
-        : isChecked
-            ? classes.selected
-            : '';
     const { personInfo } = contact;
     return (
         <TableRow className={rowClass}>
@@ -34,7 +28,7 @@ const Row = (props: Props) => {
                 <Checkbox
                     disabled={doesExist}
                     color='primary'
-                    checked={isChecked}
+                    checked={isPersonChecked()}
                     id={`person-checkbox-${personInfo}`}
                     onClick={handleCheckboxClick}
                 />    

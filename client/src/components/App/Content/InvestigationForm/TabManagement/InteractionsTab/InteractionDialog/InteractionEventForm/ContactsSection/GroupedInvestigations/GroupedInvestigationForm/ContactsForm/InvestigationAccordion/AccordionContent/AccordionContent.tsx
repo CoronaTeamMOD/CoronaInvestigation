@@ -12,7 +12,7 @@ const AccordionContent = (props: Props) => {
     const { events, isGroupReasonFamily, duplicateIds } = props;
     const [query, setQuery] = useState<string>('');
     const { getCurrentSelectedRowsLength, filteredEvents, existingIds } = useAccordionContent({events , query});   
-    console.log(existingIds);
+
     return (
         <AccordionDetails>
             <Grid container id="content-container">
