@@ -10,7 +10,7 @@ AS $BODY$
 declare
 -- Adds contacted persons assigned to specified contacted_eventט
 -- Variables:
-
+-- hi!
 contacts_arr json[];
 contact json;
 extraInfo varchar;
