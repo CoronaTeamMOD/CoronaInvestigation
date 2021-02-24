@@ -11,8 +11,8 @@ import SelectedRowsMessage from './SelectedRowsMessage/SelectedRowsMessage';
 const AccordionContent = (props: Props) => {
     const { events, isGroupReasonFamily, duplicateIds } = props;
     const [query, setQuery] = useState<string>('');
-    const { getCurrentSelectedRowsLength , filteredEvents } = useAccordionContent({events , query});   
-
+    const { getCurrentSelectedRowsLength, filteredEvents, existingIds } = useAccordionContent({events , query});   
+    console.log(existingIds);
     return (
         <AccordionDetails>
             <Grid container id="content-container">
@@ -28,7 +28,7 @@ const AccordionContent = (props: Props) => {
                     <ContactsTable
                         isGroupReasonFamily={isGroupReasonFamily}
                         events={filteredEvents}
-                        existingIds={duplicateIds}
+                        existingIds={existingIds.concat(duplicateIds)}
                     />
                 </Grid>
                 <Grid item xs={12}>

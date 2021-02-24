@@ -219,9 +219,13 @@ const InteractionDialog = (props: Props) => {
         setContactBank, 
         existingEventPersonInfos : getExistingPersonInfos()
     }
+    const getEventContactIds = () => {
+        return interactionData?.contacts.map(contact => contact.identificationNumber);
+    }
     const groupedInvestigationProviderState = {
         groupedInvestigationContacts, 
-        setGroupedInvestigationContacts
+        setGroupedInvestigationContacts,
+        eventContactIds : getEventContactIds()
     }
 
     const validateAndHandleSubmit = methods.handleSubmit(
