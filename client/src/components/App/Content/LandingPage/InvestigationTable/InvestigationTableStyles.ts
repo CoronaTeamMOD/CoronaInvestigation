@@ -7,7 +7,7 @@ export const useTooltipStyles = makeStyles(({
     content: {
         display: 'flex',
         flexDirection: 'column',
-        marginRight: 110,
+        transform: 'translate(-200%, -75%) !important',
         flip: false
     },
 }));
