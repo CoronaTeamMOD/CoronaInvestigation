@@ -43,7 +43,7 @@ const ManualContactsForm = () => {
                             <ContactForm
                                 key={index}
                                 updatedContactIndex={index}
-                                contactStatus={contact.contactStatus}
+                                personInfo={contact.personInfo}
                                 contactCreationTime={contact.creationTime}
                                 contactIdentificationType={contact.identificationType}
                             />

@@ -6,23 +6,27 @@ import Contact from 'models/Contact';
 import UseRow from './useRow';
 
 const Row = (props: Props) => {
-
     const { contact } = props;
+    
 
     const { 
         isPersonChecked,
         handleCheckboxClick, 
         handleContactTypeChange, 
-        handleExtraInfoChange 
+        handleExtraInfoChange,
+        doesPersonExistInEvent,
+        getRowClass
     } = UseRow({contact});
 
-    const { personInfo } = contact;
+    const doesExist = doesPersonExistInEvent();
+    const rowClass = getRowClass();
 
+    const { personInfo } = contact;
     return (
-        <TableRow>
+        <TableRow className={rowClass}>
             <TableCell>
                 <Checkbox
-                    disabled={false}
+                    disabled={doesExist}
                     color='primary'
                     checked={isPersonChecked()}
                     id={`person-checkbox-${personInfo}`}
@@ -36,6 +40,7 @@ const Row = (props: Props) => {
             <TableCell>
                 <Select
                    id="demo-simple-select"
+                   disabled={doesExist}
                    defaultValue={contact.contactType}
                    onChange={(e) => {handleContactTypeChange(e.target.value)}} 
                 >
@@ -47,6 +52,7 @@ const Row = (props: Props) => {
             <TableCell>
                 <TextField
                     id={`pesron-extraInfo-${personInfo}`}
+                    disabled={doesExist}
                     defaultValue={contact.extraInfo}
                     onChange={(e) => {handleExtraInfoChange(e.target.value)}}
                 />
