@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, { useContext, useState } from 'react';
 import { Typography, Grid, Paper } from '@material-ui/core';
 
 import Contact from 'models/Contact';
@@ -6,6 +6,7 @@ import {contactBankContext} from 'commons/Contexts/ContactBankContext';
 
 import useStyles from './contactsBankFormStyles';
 import ContactsBankTable from './ContactsBankTable/ContactsBankTable';
+import ContactsBankSearchBar from './ContactsBankSearchBar/ContactsBankSearchBar';
 
 const headline = 'בנק מגעים:';
 
@@ -13,7 +14,7 @@ const ContactsBankForm = (props: Props) => {
     const { existingPersons } = props;
     const classes = useStyles(); 
     const {contactBank} = useContext(contactBankContext);
-    
+    const [query, setQuery] = useState<string>('');
     const selectedContactsCount = Array.from(contactBank)
         .filter(contact => contact[1].checked).length
 
@@ -26,8 +27,14 @@ const ContactsBankForm = (props: Props) => {
             </Grid>
             <Grid xs={12}>
                 <Paper>
-                    {/* Search bar goes here */}
+                    <ContactsBankSearchBar
+                            id='contacts-bank-search-bar'
+                            onSearchClick={(query) => { 
+                                setQuery(query);
+                            }}
+                    />
                     <ContactsBankTable 
+                        query={query}
                         existingPersons={existingPersons}
                     />
                     <Typography align='right'>

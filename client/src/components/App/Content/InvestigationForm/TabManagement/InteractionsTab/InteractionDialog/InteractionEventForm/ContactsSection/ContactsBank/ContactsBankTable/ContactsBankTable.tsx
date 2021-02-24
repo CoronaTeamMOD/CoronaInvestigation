@@ -5,15 +5,15 @@ import Contact from 'models/Contact';
 
 import Row from './Row/Row';
 import TableHeader from './TableHeader/TableHeader';
+import UseContactsBankTable from './useContactsBankTable';
 
 const ContactsBankTable = (props: Props) => {
-    const { existingPersons } = props;
-    const personsArray = Array.from(existingPersons).map(person => person[1]);
+    const { filteredPersons } = UseContactsBankTable(props);
 
     return (
         <Table>
             <TableHeader />
-            {personsArray.map( contact => {
+            {filteredPersons.map( contact => {
                 return (
                     <Row 
                         contact={contact}
@@ -26,6 +26,7 @@ const ContactsBankTable = (props: Props) => {
 
 interface Props {
     existingPersons: Map<number,Contact>;
+    query:string;
 }
 
 export default ContactsBankTable
