@@ -99,3 +99,14 @@ query groupIdByEpidemiologyNumber($epidemiologynumber: Int!) {
   }
 }
 `;
+
+export const GET_INVESTIGATION_COMPLEXITY_REASONS = gql`
+query getAllInvestigationComplexityReasons {
+  allInvestigationComplexityReasons(orderBy: REASON_ID_ASC) {
+    nodes {
+      description
+      reasonId
+    }
+  }
+} 
+`;

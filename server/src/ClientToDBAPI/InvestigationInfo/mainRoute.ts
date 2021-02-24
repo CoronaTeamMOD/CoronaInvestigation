@@ -8,7 +8,8 @@ import {
     GET_INVESTIGATION_INFO, 
     GET_SUB_STATUSES_BY_STATUS, 
     GET_INVESTIGAION_SETTINGS_FAMILY_DATA,
-    GROUP_ID_BY_EPIDEMIOLOGY_NUMBER 
+    GROUP_ID_BY_EPIDEMIOLOGY_NUMBER,
+    GET_INVESTIGATION_COMPLEXITY_REASONS
 } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
@@ -299,6 +300,16 @@ investigationInfo.get('/groupedInvestigationsId', handleInvestigationRequest, (r
             groupedInvestigationsIdLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         })
+});
+
+investigationInfo.get('/complexityReasons', (request: Request, response: Response) => {
+    return graphqlRequest(GET_INVESTIGATION_COMPLEXITY_REASONS, response.locals)
+    .then((result) => {
+        response.send(result.data.allInvestigationComplexityReasons.nodes);
+    })
+    .catch(error => {
+        response.status(errorStatusCode).send(error);
+    })
 });
 
 export default investigationInfo;
