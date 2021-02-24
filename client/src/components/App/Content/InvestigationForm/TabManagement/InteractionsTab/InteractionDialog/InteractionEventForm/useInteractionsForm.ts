@@ -58,7 +58,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 const createInteractionsLogger = logger.setup('Create Interaction');
                 createInteractionsLogger.info('launching create interaction request', Severity.LOW);
                 axios.post('/intersections/createContactEvent', parsedData)
-                .then(async (response) => {
+                .then((response) => {
                     if (response.data?.data?.updateContactEventFunction) {
                         createInteractionsLogger.info('created interaction successfully', Severity.LOW);
                         const eventId = response.data.data.updateContactEventFunction.integers[0]
