@@ -50,7 +50,7 @@ export const DUPLICATE_PERSON = gql`
 
 export const ADD_CONTACTS_FROM_BANK = gql`
     mutation addContactsFromBank($contactEventId: Int!, $contacts: JSON!) {
-        addContactsFromBank(input: {contactsEventId: $contactEventId, contacts: $contacts}) {
+        addContactsFromBank(input: {contactEventId: $contactEventId, contacts: $contacts}) {
             clientMutationId
         }
     }
