@@ -211,6 +211,15 @@ const InteractionDialog = (props: Props) => {
         return personMap;
     }
 
+    const getExistingPersonInfos = () => {
+        return interactionData?.contacts.map(contact => contact.personInfo);
+    }
+    const contactBankProviderState = {
+        contactBank, 
+        setContactBank, 
+        existingEventPersonInfos : getExistingPersonInfos()
+    }
+
     const validateAndHandleSubmit = methods.handleSubmit(
         () => {
             const datesHaveError =
@@ -243,7 +252,7 @@ const InteractionDialog = (props: Props) => {
                             onPlaceSubTypeChange={onPlaceSubtypeChange}
                         />
                         <GroupedInvestigationsContextProvider value={{groupedInvestigationContacts, setGroupedInvestigationContacts}}>
-                            <ContactBankContextProvider value={{contactBank, setContactBank}}>
+                            <ContactBankContextProvider value={contactBankProviderState}>
                                 <ContactsTabs
                                     isVisible={isAddingContacts}
                                     existingPersons={getPersonMap()}

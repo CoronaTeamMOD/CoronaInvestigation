@@ -8,11 +8,18 @@ const UseRow = (props : Props) => {
     const { contact } = props;
     const { personInfo, contactType, extraInfo } = contact;
 
-    const {contactBank , setContactBank} = useContext(contactBankContext);
+    const { contactBank , setContactBank, existingEventPersonInfos } = useContext(contactBankContext);
 
     const isPersonChecked = () => {
         if(personInfo){
             return contactBank.get(personInfo)?.checked
+        }
+        return false
+    }
+
+    const doesPersonExistInEvent = () => {
+        if(personInfo){
+            return existingEventPersonInfos?.indexOf(personInfo) !== -1;
         }
         return false
     }
@@ -77,7 +84,8 @@ const UseRow = (props : Props) => {
         isPersonChecked,
         handleCheckboxClick,
         handleContactTypeChange,
-        handleExtraInfoChange
+        handleExtraInfoChange,
+        doesPersonExistInEvent
     }
 }
 

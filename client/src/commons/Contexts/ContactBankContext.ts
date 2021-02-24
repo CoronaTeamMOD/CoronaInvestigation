@@ -9,11 +9,13 @@ export interface ContactBankOption {
 export interface ContactBankContext {
     contactBank: Map<number,ContactBankOption>;
     setContactBank: React.Dispatch<React.SetStateAction<Map<number,ContactBankOption>>>;
+    existingEventPersonInfos?: (number | undefined)[];
 };
 
 export const initialContactBank: ContactBankContext = {
     contactBank: new Map(),
-    setContactBank: () => {}
+    setContactBank: () => {},
+    existingEventPersonInfos: []
 };
 
 export const contactBankContext = createContext<ContactBankContext>(initialContactBank);
