@@ -4,6 +4,9 @@ client:
 server:
   - 'server/**/*'
 
+database:
+  - 'db\ scripts/**/*'
+
 tests:
   - 'client/**/*.test.tsx'
   - 'client/**/*.test.ts'
