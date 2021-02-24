@@ -219,6 +219,10 @@ const InteractionDialog = (props: Props) => {
         setContactBank, 
         existingEventPersonInfos : getExistingPersonInfos()
     }
+    const groupedInvestigationProviderState = {
+        groupedInvestigationContacts, 
+        setGroupedInvestigationContacts
+    }
 
     const validateAndHandleSubmit = methods.handleSubmit(
         () => {
@@ -251,7 +255,7 @@ const InteractionDialog = (props: Props) => {
                             isNewInteraction={isNewInteraction}
                             onPlaceSubTypeChange={onPlaceSubtypeChange}
                         />
-                        <GroupedInvestigationsContextProvider value={{groupedInvestigationContacts, setGroupedInvestigationContacts}}>
+                        <GroupedInvestigationsContextProvider value={groupedInvestigationProviderState}>
                             <ContactBankContextProvider value={contactBankProviderState}>
                                 <ContactsTabs
                                     isVisible={isAddingContacts}
