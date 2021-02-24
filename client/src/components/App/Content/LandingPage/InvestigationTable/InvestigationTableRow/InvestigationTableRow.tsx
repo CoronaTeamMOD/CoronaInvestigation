@@ -44,7 +44,7 @@ const RowTooltip = (props: RowTooltipProps) => {
         </>
         : noDataMessage;
 
-    return <Tooltip title={titleOverride ? titleOverride : title} open={true}
+    return <Tooltip title={titleOverride ? titleOverride : title} enterDelay={tooltipEnterDelay} enterNextDelay={tooltipEnterDelay}
         classes={{ tooltip: tooltipClasses.content }}
         PopperProps={{
             placement: 'right',
