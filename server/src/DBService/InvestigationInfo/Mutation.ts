@@ -56,4 +56,11 @@ mutation closeIsolateContacts ($epiNumber: Int!) {
 }
 `;
 
+export const UPDATE_INVESTIGATION_REASON_ID = gql`
+mutation UpdateInvestigationReasonId($newComplexityReasonId: Int!, $epidemiologyNumberInput: Int!) {
+  UpdateInvestigationReasonId(input: {newComplexityReasonId: $newComplexityReasonId, epidemiologyNumberInput: $epidemiologyNumberInput}) {
+    clientMutationId
+  }
+}
+`;
 

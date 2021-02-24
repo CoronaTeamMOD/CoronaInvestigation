@@ -371,6 +371,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 return (
                                     <>
                                         <InvestigationTableRow
+                                            complexityReasonsId={row.complexityReasonsId}
                                             columns={(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols}
                                             groupColor={investigationColor.current.get(indexedRow.groupId)}
                                             selected={selectedRow.epidemiologyNumber === indexedRow.epidemiologyNumber}
@@ -416,6 +417,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                 const isGroupedRowClickable = isInvestigationRowClickable(row.mainStatus);
                                                 return (
                                                     <InvestigationTableRow
+                                                        complexityReasonsId={row.complexityReasonsId}
                                                         columns={(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols}
                                                         groupColor={investigationColor.current.get(indexedRow.groupId)}
                                                         selected={selectedRow.epidemiologyNumber === indexedRow.epidemiologyNumber}

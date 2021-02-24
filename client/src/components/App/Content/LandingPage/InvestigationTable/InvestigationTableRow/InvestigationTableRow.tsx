@@ -57,6 +57,7 @@ const RowTooltip = (props: RowTooltipProps) => {
 };
 
 interface Props {
+    complexityReasonsId: Array<number | null>;
     columns: string[];
     groupColor?: string;
     selected: boolean;
@@ -87,6 +88,7 @@ const showInvestigationGroupText = 'הצג חקירות קשורות';
 const hideInvestigationGroupText = 'הסתר חקירות קשורות';
 
 const InvestigationTableRow = ({
+    complexityReasonsId,
     columns,
     groupColor,
     selected,
@@ -130,6 +132,7 @@ const InvestigationTableRow = ({
                 return (
                     <InvestigationIndicatorsColumn 
                         isComplex={indexedRow.isComplex}
+                        complexityReasonsId={complexityReasonsId}
                         wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
                         transferReason={indexedRow.transferReason}
                         isSelfInvestigated={indexedRow.isSelfInvestigated}
