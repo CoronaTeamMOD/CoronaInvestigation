@@ -52,7 +52,7 @@ const InteractionDetailsFields = ({index, interactionDate, defaultDate}: Props) 
 interface Props {
     index?: number;
     interactionDate: Date;
-    defaultDate?: Boolean;
+    defaultDate: Boolean;
 }
 
 export default InteractionDetailsFields;
