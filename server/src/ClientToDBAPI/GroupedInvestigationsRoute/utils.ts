@@ -4,6 +4,7 @@ import InvestigationMainStatus from '../../Models/InvestigationStatus/Investigat
 interface GroupedInvestigations {
     allInvestigations: {
         nodes: [{
+            complexityReasonsId: Array<number | null>;
             comment: string;
             epidemiologyNumber: number;
             complexityCode: number;
@@ -56,6 +57,7 @@ interface GroupedInvestigations {
 const mappingInvestigationsGroup = (investigation: GroupedInvestigations['allInvestigations']['nodes'][number]) => {
     const newObject = {
         ...investigation,
+        complexityReasonsId: investigation.complexityReasonsId,
         isComplex: investigation.complexityCode !== 2,
         investigatedPatientByInvestigatedPatientId: {
             ...investigation.investigatedPatientByInvestigatedPatientId,

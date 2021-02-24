@@ -7,6 +7,7 @@ interface InvestigationTableRow {
     epidemiologyNumber: number;
     validationDate: string;
     isComplex: boolean;
+    complexityReasonsId: Array<number | null>;
     priority: number;
     mainStatus: InvestigationMainStatus;
     subStatus: string;

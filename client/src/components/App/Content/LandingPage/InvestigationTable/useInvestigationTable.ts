@@ -25,10 +25,10 @@ import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
-import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
 import AllocatedInvestigator from 'models/InvestigationTable/AllocateInvestigatorDialog/AllocatedInvestigator';
+import { resetInvestigationState, setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
 import { filterCreators } from './FilterCreators';
@@ -49,6 +49,7 @@ export const createRowData = (
     epidemiologyNumber: number,
     validationDate: string,
     isComplex: boolean,
+    complexityReasonsId: Array<number | null>,
     priority: number,
     mainStatus: InvestigationMainStatus,
     subStatus: string,
@@ -81,6 +82,7 @@ export const createRowData = (
     epidemiologyNumber,
     validationDate,
     isComplex,
+    complexityReasonsId,
     priority,
     mainStatus,
     subStatus,
@@ -337,6 +339,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
 
     useEffect(() => {
+        resetInvestigationState();
         fetchAllInvestigationStatuses();
         fetchAllInvestigationSubStatuses();
         startWaiting();
@@ -482,6 +485,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     investigation.epidemiologyNumber,
                                     covidPatient.validationDate,
                                     investigation.isComplex,
+                                    investigation.complexityReasonsId,
                                     investigation.priority,
                                     investigation.investigationStatusByInvestigationStatus,
                                     subStatus,
@@ -910,6 +914,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             investigation.epidemiologyNumber,
                             covidPatient.validationDate,
                             investigation.isComplex,
+                            investigation.complexityReasonsId,
                             investigation.priority,
                             investigation.investigationStatusByInvestigationStatus,
                             subStatus,

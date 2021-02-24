@@ -6,12 +6,13 @@ import useDBParser from 'Utils/vendor/useDBParsing';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useContactEvent from 'Utils/ContactEvent/useContactEvent';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { ContactBankOption } from 'commons/Contexts/ContactBankContext';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import GetGroupedInvestigationsIds from 'Utils/GroupedInvestigationsContacts/getGroupedInvestigationIds';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFormOutcome => {
-        const { loadInteractions, loadInvolvedContacts, onDialogClose, groupedInvestigationContacts} = props;
+        const { loadInteractions, loadInvolvedContacts, onDialogClose, groupedInvestigationContacts, contactBank} = props;
         
         const { connectedInvestigationsIds } = GetGroupedInvestigationsIds();
         const { parseLocation } = useDBParser();
@@ -23,6 +24,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS];
 
         const saveInteractions = async (interactionsDataToSave: InteractionEventDialogData) => {
+            // TODO : connect contactBank to new API
             setIsLoading(true)
             const locationAddress = shouldParseLocation(interactionsDataToSave) ?
                 await parseLocation(interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS]) : null;
@@ -116,6 +118,7 @@ interface useInteractionFormIncome {
     loadInvolvedContacts:() => void;
     onDialogClose: () => void;
     groupedInvestigationContacts: number[];
+    contactBank: Map<number, ContactBankOption>;
 }
 
 interface useInteractionFormOutcome {

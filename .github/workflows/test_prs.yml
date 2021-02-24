@@ -82,7 +82,7 @@ jobs:
         with:
           msg: >
             [link to TFS issue](https://dev.azure.com/spectrumFactory/CoronaI/_workitems/edit/${{ steps.vars.outputs.short_ref }}) <br />
-            <sub>This was preforemed automatically accordiong to the branches name</sub>
+            <sub>:robot: I am a bot and this was preforemed automatically :robot: <i>[see more](https://github.com/CoronaTeamMOD/CoronaInvestigation/wiki/Naming-convention)</i></sub>
           check_for_duplicate_msg: true
 
   pr-labeler:

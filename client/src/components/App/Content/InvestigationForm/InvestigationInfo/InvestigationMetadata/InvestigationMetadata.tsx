@@ -28,7 +28,7 @@ const InvestigationMetadata = (props: Props) => {
                 investigationMetaData.userByLastUpdator.userName
             }
             />
-            <InfoItem testId='investigatorPhoneNumber' name='טלפון המבצע' value={investigationMetaData.userByCreator.phoneNumber} />
+            <InfoItem testId='investigatorPhoneNumber' name='טלפון המבצע' value={investigationMetaData.userByLastUpdator.phoneNumber} />
         </Paper>
     );
 };

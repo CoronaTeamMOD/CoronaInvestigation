@@ -3,6 +3,7 @@ import InteractedContact from './InteractedContact';
 
 interface Contact {
     id?: number;
+    personInfo?: number;
     firstName: string;
     lastName: string;
     phoneNumber?: string;
