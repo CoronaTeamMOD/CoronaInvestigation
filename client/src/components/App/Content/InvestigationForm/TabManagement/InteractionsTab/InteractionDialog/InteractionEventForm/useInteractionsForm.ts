@@ -36,17 +36,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 .then((response) => {
                     if (response.data?.data?.updateContactEventFunction) {
                         updateInteractionsLogger.info('updated interaction successfully', Severity.LOW);
-                        const eventId = response.data.data.updateContactEventFunction.integers[0]
-                        Promise.all([saveGroupedInvestigations(eventId), saveBankContacts(eventId)]).then(() => {
-                            loadInteractions();
-                            loadInvolvedContacts();
-                            onDialogClose();
-                            setIsLoading(false);
-                        }).catch(() => {
-                            onDialogClose();
-                            alertError('לא ניתן היה לעדכן אירוע');
-                            setIsLoading(false);
-                        });
+                        saveConnectedInteractions(response.data.data.updateContactEventFunction.integers[0]);
                     }
                 })
                 .catch((error) => {
@@ -61,17 +51,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 .then((response) => {
                     if (response.data?.data?.updateContactEventFunction) {
                         createInteractionsLogger.info('created interaction successfully', Severity.LOW);
-                        const eventId = response.data.data.updateContactEventFunction.integers[0]
-                        Promise.all([saveGroupedInvestigations(eventId), saveBankContacts(eventId)]).then(() => {
-                            loadInteractions();
-                            loadInvolvedContacts();
-                            onDialogClose();
-                            setIsLoading(false);
-                        }).catch(() => {
-                            onDialogClose();
-                            alertError('לא ניתן היה ליצור אירוע חדש');
-                            setIsLoading(false);
-                        });
+                        saveConnectedInteractions(response.data.data.updateContactEventFunction.integers[0]);
                     } else {
                         createInteractionsLogger.info(`response data is not valid data : ${JSON.stringify(response)}`, Severity.LOW);
                     }
@@ -83,6 +63,18 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                     setIsLoading(false);
                 })
             }
+        }
+        
+        const saveConnectedInteractions = async (eventId : number) => {
+            Promise.all([saveGroupedInvestigations(eventId), saveBankContacts(eventId)]).then(() => {
+                loadInteractions();
+                loadInvolvedContacts();
+            }).catch(() => {
+                alertError('חלה שגיאה בקישור מגעים');
+            }).finally(() => {
+                onDialogClose();
+                setIsLoading(false);
+            });
         }
 
         const saveGroupedInvestigations = async (eventId : number) => {
