@@ -9,8 +9,8 @@ import SelfInvestigationIcon from './SelfInvestigationIcon/SelfInvestigationIcon
 const complexInvestigationMessage = 'חקירה מורכבת';
 
 const InvestigationIndicatorsColumn = (props: Props) => {
-    const { isComplex, wasInvestigationTransferred, transferReason , isSelfInvestigated ,selfInvestigationStatus, selfInvestigationUpdateTime} = props;
-
+    const { isComplex, wasInvestigationTransferred, transferReason , isSelfInvestigated ,selfInvestigationStatus, selfInvestigationUpdateTime, complexityReasonsId} = props;
+    const complexInvestigationText = `${complexInvestigationMessage}: ${complexityReasonsId}`
     return (
         <Box display='flex' alignItems='center' flexWrap='nowrap'>
             <Box flex={1} marginX={0.5}>
@@ -24,7 +24,7 @@ const InvestigationIndicatorsColumn = (props: Props) => {
             </Box>
             <Box flex={1} marginX={0.5}>
                 {
-                    isComplex && <ComplexityIcon tooltipText={complexInvestigationMessage} />
+                    isComplex && <ComplexityIcon tooltipText={complexInvestigationText} />
                 }
             </Box>
             <Box flex={1} marginX={0.5}>
@@ -42,6 +42,7 @@ const InvestigationIndicatorsColumn = (props: Props) => {
 interface Props {
     wasInvestigationTransferred: boolean;
     isComplex: boolean;
+    complexityReasonsId: Array<number | null>;
     transferReason: string;
     isSelfInvestigated : boolean;
     selfInvestigationStatus : number;

@@ -132,7 +132,7 @@ const InvestigationTableRow = ({
                 return (
                     <InvestigationIndicatorsColumn 
                         isComplex={indexedRow.isComplex}
-                        complexityReasonsId={complexityReasonsId}
+                        complexityReasonsId={row.complexityReasonsId}
                         wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
                         transferReason={indexedRow.transferReason}
                         isSelfInvestigated={indexedRow.isSelfInvestigated}
