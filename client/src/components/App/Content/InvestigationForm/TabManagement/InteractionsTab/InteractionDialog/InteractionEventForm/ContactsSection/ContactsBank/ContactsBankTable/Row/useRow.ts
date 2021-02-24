@@ -19,7 +19,7 @@ const UseRow = (props : Props) => {
 
     const handleCheckboxClick = () => {
         if(personInfo){
-            let tempBank = contactBank;
+            let tempBank = new Map(contactBank);
             const person = contactBank.get(personInfo);
             const newBankValue = {
                 contactType,
@@ -34,7 +34,7 @@ const UseRow = (props : Props) => {
 
     const handleContactTypeChange = (selectedType? :  number | unknown) => {
         if(personInfo && typeof selectedType === 'number') {
-            let tempBank = contactBank;
+            let tempBank = new Map(contactBank);
             const person = contactBank.get(personInfo);
             const newBankValue = person 
                 ? {
@@ -55,7 +55,7 @@ const UseRow = (props : Props) => {
 
     const handleExtraInfoChange = (selectedInfo : string | unknown) => {
         if(personInfo && typeof selectedInfo === 'string') {
-            let tempBank = contactBank;
+            let tempBank = new Map(contactBank);
             const person = contactBank.get(personInfo);
             const newBankValue = person 
                 ? {

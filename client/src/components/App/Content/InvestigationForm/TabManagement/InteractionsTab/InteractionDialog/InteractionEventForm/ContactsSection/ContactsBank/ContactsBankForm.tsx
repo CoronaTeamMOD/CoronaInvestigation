@@ -1,17 +1,21 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { Typography, Grid, Paper } from '@material-ui/core';
 
 import Contact from 'models/Contact';
+import {contactBankContext} from 'commons/Contexts/ContactBankContext';
 
 import useStyles from './contactsBankFormStyles';
 import ContactsBankTable from './ContactsBankTable/ContactsBankTable';
 
-const headline = ':בנק מגעים';
-const selectedCount = 2;
+const headline = 'בנק מגעים:';
 
 const ContactsBankForm = (props: Props) => {
     const { existingPersons } = props;
     const classes = useStyles(); 
+    const {contactBank} = useContext(contactBankContext);
+    
+    const selectedContactsCount = Array.from(contactBank)
+        .filter(contact => contact[1].checked).length
 
     return (
         <Grid container className={classes.wrapper}>
@@ -27,7 +31,7 @@ const ContactsBankForm = (props: Props) => {
                         existingPersons={existingPersons}
                     />
                     <Typography align='right'>
-                        {`נבחרו ${selectedCount} מגעים מבנק מגעים`}
+                        {`נבחרו ${selectedContactsCount} מגעים מבנק מגעים`}
                     </Typography>
                 </Paper>
             </Grid>
