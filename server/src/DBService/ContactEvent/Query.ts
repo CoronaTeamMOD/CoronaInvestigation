@@ -115,6 +115,7 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!, $minimalDateT
           extraInfo
           creationTime
           involvedContactId
+          personInfo
           personByPersonInfo {
             firstName
             identificationNumber
