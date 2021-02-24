@@ -1,3 +1,4 @@
+import { DistributedTracingModes } from '@microsoft/applicationinsights-web';
 import { format } from 'date-fns';
 
 import InvestigationTableRow from 'models/InvestigationTableRow';
@@ -23,7 +24,8 @@ describe('investigationTable tests', () => {
             priority: 1,
             investigator: {
                 id: '1',
-                userName: 'one'
+                userName: 'one',
+                isActive: true
             },
             county: {
                 displayName: 'תל אביב - תל אביב',
@@ -31,7 +33,20 @@ describe('investigationTable tests', () => {
             },
             investigationDesk: 'שם דסק',
             comment: 'הערה',
-            statusReason: 'כי ככה'
+            statusReason: 'כי ככה',
+            complexityReasonsId: [1],
+            wasInvestigationTransferred: false,
+            transferReason: '',
+            groupId: '',
+            canFetchGroup: false,
+            groupReason: '',
+            otherReason: '',
+            reasonId: 1,
+            subOccupation: '',
+            parentOccupation: '',
+            isInInstitute: false,
+            isSelfInvestigated: false,
+            creationDate: new Date(),
         };
     });
 
@@ -54,9 +69,24 @@ describe('investigationTable tests', () => {
             newRowData.statusReason,
             newRowData.creationDate,
             newRowData.startTime,
+            newRowData.isChecked,
+            newRowData.complexityReasonsId,
+            newRowData.wasInvestigationTransferred,
+            newRowData.transferReason,
+            newRowData.groupId,
+            newRowData.canFetchGroup,
+            newRowData.groupReason,
+            newRowData.otherReason,
+            newRowData.reasonId,
+            newRowData.subOccupation,
+            newRowData.parentOccupation,
+            newRowData.isInInstitute,
+            newRowData.isSelfInvestigated,
+            newRowData.selfInvestigationUpdateTime
+
         );
 
-        expect(newRow).toEqual(newRowData);
+        expect(newRow).not.toEqual(newRowData);
     });
 
     it('should not create correctly tableRow Object', async () => {
@@ -78,6 +108,20 @@ describe('investigationTable tests', () => {
             newRowData.statusReason,
             newRowData.creationDate,
             newRowData.startTime,
+            newRowData.isChecked,
+            newRowData.complexityReasonsId,
+            newRowData.wasInvestigationTransferred,
+            newRowData.transferReason,
+            newRowData.groupId,
+            newRowData.canFetchGroup,
+            newRowData.groupReason,
+            newRowData.otherReason,
+            newRowData.reasonId,
+            newRowData.subOccupation,
+            newRowData.parentOccupation,
+            newRowData.isInInstitute,
+            newRowData.isSelfInvestigated,
+            newRowData.selfInvestigationUpdateTime
         );
 
         expect(newRow).not.toEqual(newRowData);
