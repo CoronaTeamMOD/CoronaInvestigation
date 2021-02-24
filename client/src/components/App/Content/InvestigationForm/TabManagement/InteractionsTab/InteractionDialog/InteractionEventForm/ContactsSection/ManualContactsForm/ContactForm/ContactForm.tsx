@@ -26,19 +26,18 @@ const FIRST_NAME_LABEL = 'שם פרטי*';
 const LAST_NAME_LABEL = 'שם משפחה*';
 const PHONE_NUMBER_LABEL = 'מספר טלפון';
 
-const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, contactCreationTime, contactIdentificationType }: Props): JSX.Element => {
+const ContactForm: React.FC<Props> = ({ updatedContactIndex, personInfo, contactCreationTime, contactIdentificationType }: Props): JSX.Element => {
     const { control, setValue, getValues } = useFormContext();
 
     const classes = useStyles();
 
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
-    const { isFieldDisabled } = useContactFields(contactStatus);
-
+    const isFieldDisabled = Boolean(personInfo);
     const defaultIdentificationType = getValues()?.contacts ? getValues().contacts[updatedContactIndex]?.identificationType : contactIdentificationType;
     const [isPassport, setIsPassport] = useState<boolean>(
         defaultIdentificationType === IdentificationTypes.PASSPORT
     );
-    
+
     const { shouldDisableContact } = useStatusUtils();
 
     useEffect(() => {
@@ -208,7 +207,7 @@ export default ContactForm;
 
 interface Props {
     updatedContactIndex: number;
-    contactStatus?: InteractedContact['contactStatus'];
+    personInfo?: number;
     contactCreationTime?: Date;
     contactIdentificationType?: string;
 };
