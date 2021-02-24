@@ -361,10 +361,11 @@ intersectionsRoute.post('/addContactsFromBank', handleInvestigationRequest, (req
 
     const parameters = {
         contactEventId: request.body.contactEventId,
-        contacts: JSON.stringify({contactEvents: request.body.contacts})
+        contacts: JSON.stringify({contacts: request.body.contacts})
     };
 
     addContactsFromBankLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+    console.log('BANK', parameters);
     graphqlRequest(ADD_CONTACTS_FROM_BANK, response.locals, parameters)
         .then(result => {
             addContactsFromBankLogger.info(validDBResponseLog, Severity.LOW);
