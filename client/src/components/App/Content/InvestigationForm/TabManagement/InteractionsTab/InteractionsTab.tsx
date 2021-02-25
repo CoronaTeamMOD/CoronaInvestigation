@@ -90,11 +90,6 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
     const closeFamilyDialog = () => setUncontactedFamilyMembers([]);
 
-    const filteredInteractionUnInvolved = (interaction: Interaction) => ({
-        ...interaction,
-        contacts: interaction.contacts.filter(contact => !isInvolved(contact.involvedContact?.involvementReason))
-    });
-
     const generateContactCard = (interactionDate: Date) => {
         return (
             <ContactDateCard
@@ -102,7 +97,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                 loadInteractions={loadInteractions}
                 loadInvolvedContacts={loadInvolvedContacts}
                 contactDate={interactionDate}
-                onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(filteredInteractionUnInvolved(interaction))}
+                onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
                 onDeleteClick={handleDeleteContactEvent}
                 onDeleteContactClick={handleDeleteContactedPerson}
                 createNewInteractionEvent={() => setNewInteractionEventDate(interactionDate)}

@@ -1,5 +1,5 @@
+import React, { useEffect } from 'react';
 import { Home } from '@material-ui/icons';
-import React, { useEffect, useMemo, useState } from 'react';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Typography, Tooltip } from '@material-ui/core';
 
 import InvolvedContact from 'models/InvolvedContact';
@@ -13,8 +13,8 @@ const houseMember = 'בן בית';
 const cityCellName = 'isolationCity';
 
 const FamilyMembersTable: React.FC<Props> = (props: Props) => {
+    const { familyMembers, existingFamilyMembers } = props;
 
-    const { familyMembers } = props;
     const classes = useStyles();
 
     const { convertToIndexedRow, getTableCell } = useFamilyContactsUtils();
@@ -27,8 +27,9 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
         });
     }, []);
 
-    const { selectRow, counterDescription, 
-            isRowSelected, isHouseMember } = useFamilyMemebersTable({ familyMembers });
+    const { selectRow, counterDescription, isRowSelected, 
+            isHouseMember, isRowDisabled, getRowClass 
+    } = useFamilyMemebersTable({ familyMembers, existingFamilyMembers });
 
     return (
         <>
@@ -49,10 +50,10 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
                         {
                             familyMembers.map((familyMember: InvolvedContact) => (
                                 <>
-                                    <TableRow className={isRowSelected(familyMember) ? classes.checkedRow  : ''}>
+                                    <TableRow className={getRowClass(familyMember)}>
                                         {
                                             <Checkbox
-                                                //disabled={familyMember.isContactedPerson}
+                                                disabled={isRowDisabled(familyMember.identificationNumber)}
                                                 onClick={() => selectRow(familyMember)}
                                                 color='primary'
                                                 checked={isRowSelected(familyMember)}
@@ -84,6 +85,7 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
 
 interface Props {
     familyMembers: InvolvedContact[];
+    existingFamilyMembers: string[];
 };
 
 export default FamilyMembersTable;
