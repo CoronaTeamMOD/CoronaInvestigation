@@ -31,6 +31,8 @@ interface CellNameSort {
     direction: SortOrder | undefined;
 };
 
+const unassignedUserName = 'לא משויך';
+
 const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUsersManagementInCome): useUsersManagementOutCome => {
     
     const [users, setUsers] = useState<SignUpUser[]>([]);
@@ -168,7 +170,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     }, [page, user.userType]);
 
     useEffect(() => {
-        setCounter(users.length);
+        setCounter(users.filter((user => user.userName !== unassignedUserName)).length);
     }, [users])
     
     const watchUserInfo = (row: any) => {
