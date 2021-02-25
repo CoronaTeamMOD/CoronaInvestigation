@@ -365,7 +365,6 @@ intersectionsRoute.post('/addContactsFromBank', handleInvestigationRequest, (req
     };
 
     addContactsFromBankLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-    console.log('BANK', parameters);
     graphqlRequest(ADD_CONTACTS_FROM_BANK, response.locals, parameters)
         .then(result => {
             addContactsFromBankLogger.info(validDBResponseLog, Severity.LOW);
