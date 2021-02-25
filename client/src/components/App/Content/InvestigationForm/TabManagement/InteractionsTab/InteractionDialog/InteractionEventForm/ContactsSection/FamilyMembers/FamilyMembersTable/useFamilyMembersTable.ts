@@ -5,8 +5,8 @@ import StoreStateType from 'redux/storeStateType';
 import InvolvedContact from 'models/InvolvedContact';
 import FlattenedDBAddress, { DBAddress } from 'models/DBAddress';
 
-const useFamilyMemebersTable = (props: any): any => {
-    const { familyMembers } = props;
+const useFamilyMemebersTable = (parameters: Parameters) => {
+    const { familyMembers } = parameters;
 
 
     const investigatedPatientAddress = useSelector<StoreStateType, FlattenedDBAddress>(state => state.address);
@@ -52,6 +52,10 @@ const useFamilyMemebersTable = (props: any): any => {
         isRowSelected,
         isHouseMember
     }
+};
+
+interface Parameters {
+    familyMembers: InvolvedContact[];
 };
 
 export default useFamilyMemebersTable;

@@ -1,11 +1,8 @@
 import { Home } from '@material-ui/icons';
-import { useSelector } from 'react-redux';
-import StoreStateType from 'redux/storeStateType';
 import React, { useEffect, useMemo, useState } from 'react';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Typography, Tooltip } from '@material-ui/core';
 
 import InvolvedContact from 'models/InvolvedContact';
-import FlattenedDBAddress, { DBAddress } from 'models/DBAddress';
 import useFamilyContactsUtils from 'Utils/FamilyContactsUtils/useFamilyContactsUtils';
 import { FamilyContactsTableHeaders } from 'Utils/FamilyContactsUtils/FamilyContactsTableHeaders';
 
@@ -30,11 +27,8 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
         });
     }, []);
 
-    const {selectRow,
-        counterDescription,
-        isRowSelected,
-        isHouseMember } = useFamilyMemebersTable({ familyMembers });
-
+    const { selectRow, counterDescription, 
+            isRowSelected, isHouseMember } = useFamilyMemebersTable({ familyMembers });
 
     return (
         <>
