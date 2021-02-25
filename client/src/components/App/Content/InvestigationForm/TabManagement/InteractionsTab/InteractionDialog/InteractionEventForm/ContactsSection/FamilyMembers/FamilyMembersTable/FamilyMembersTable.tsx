@@ -10,6 +10,7 @@ import useFamilyContactsUtils from 'Utils/FamilyContactsUtils/useFamilyContactsU
 import { FamilyContactsTableHeaders } from 'Utils/FamilyContactsUtils/FamilyContactsTableHeaders';
 
 import useStyles from './FamilyMembersTableStyles';
+import useFamilyMemebersTable from './useFamilyMembersTable';
 
 const houseMember = 'בן בית';
 const cityCellName = 'isolationCity';
@@ -21,10 +22,6 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
 
     const { convertToIndexedRow, getTableCell } = useFamilyContactsUtils();
 
-    const investigatedPatientAddress = useSelector<StoreStateType, FlattenedDBAddress>(state => state.address);
-
-    const [selectedFamilyMembers, setSelectedFamilyMembers] = useState<InvolvedContact[]>([]);
-
     const FamilyTableHeadersWithCheckbox = [''].concat(Object.values(FamilyContactsTableHeaders));
 
     useEffect(() => {
@@ -33,31 +30,11 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
         });
     }, []);
 
-    const selectRow = (selectedFamilyMember: InvolvedContact) => {
-        const familyMemberIndex = selectedFamilyMembers.findIndex(checkedRow => selectedFamilyMember === checkedRow);
-        if (familyMemberIndex !== -1) {
-            setSelectedFamilyMembers(selectedFamilyMembers.filter(member => member !== selectedFamilyMember));
-            selectedFamilyMember.selected = false;
-        } else {
-            setSelectedFamilyMembers([...selectedFamilyMembers, selectedFamilyMember]);
-            selectedFamilyMember.selected = true;
-        }
-    };
+    const {selectRow,
+        counterDescription,
+        isRowSelected,
+        isHouseMember } = useFamilyMemebersTable({ familyMembers });
 
-    const counterDescription: string = useMemo(() => {
-        return selectedFamilyMembers.length > 0 ?
-            selectedFamilyMembers.length === 1 ?
-                'נבחר מגע משפחה אחד' :
-                'בסה"כ נבחרו ' + selectedFamilyMembers.length + ' מגעי משפחה'
-            : ''
-    }, [selectedFamilyMembers]);
-
-    const isRowSelected = (selectedFamilyMember: InvolvedContact) => selectedFamilyMembers?.includes(selectedFamilyMember);
-
-    const isHouseMember = (familyMemberAddress: DBAddress) => (
-        familyMemberAddress?.city?.id === investigatedPatientAddress.city &&
-        familyMemberAddress?.street?.id === investigatedPatientAddress.street
-    );
 
     return (
         <>
