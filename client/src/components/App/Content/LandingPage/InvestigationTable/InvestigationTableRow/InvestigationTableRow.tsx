@@ -184,8 +184,6 @@ const InvestigationTableRow = ({
                         comment={indexedRow[cellName as keyof typeof TableHeadersNames]}
                     />
                 )
-                // return <ClickableTooltip disabled={disabled} value={indexedRow[cellName as keyof typeof TableHeadersNames]}
-                //     defaultValue='אין הערה' scrollableRef={tableContainerRef.current} InputIcon={Comment} />
 
             case TableHeadersNames.phoneNumber:
                 return <ClickableTooltip disabled={disabled} value={indexedRow[cellName as keyof typeof TableHeadersNames]}
