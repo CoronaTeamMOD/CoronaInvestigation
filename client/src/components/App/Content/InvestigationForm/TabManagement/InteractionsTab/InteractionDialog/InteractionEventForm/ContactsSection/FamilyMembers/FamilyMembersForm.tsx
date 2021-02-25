@@ -1,20 +1,20 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Typography } from '@material-ui/core';
 
-import { familyMembersContext } from 'commons/Contexts/FamilyMembersContext';
-
+import useFamilyMemebersForm from './useFamilyMembersForm';
 import FamilyMembersTable from './FamilyMembersTable/FamilyMembersTable';
 
 const noFamilyMembers = 'לא קיימים נתונים ממרשם האוכלוסין';
 
 const FamilyMembersForm: React.FC = () => {
 
-    const { familyMembers } = useContext(familyMembersContext);
+    const { familyMembers, existingFamilyMembers } = useFamilyMemebersForm();
 
     return (
         familyMembers.length > 0 ?
             <FamilyMembersTable
                 familyMembers={familyMembers}
+                existingFamilyMembers={existingFamilyMembers}
             />
             :
             <Typography variant='h5'>{noFamilyMembers}</Typography>

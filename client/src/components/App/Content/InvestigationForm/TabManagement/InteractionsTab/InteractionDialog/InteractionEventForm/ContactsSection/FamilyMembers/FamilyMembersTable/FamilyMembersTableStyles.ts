@@ -8,7 +8,7 @@ const useStyles = makeStyles({
         backgroundColor: 'rgb(202, 222, 234)',
     },
     disabledRow: {
-        backgroundColor: 'lightgray',
+        backgroundColor: 'rgb(0, 0, 0, 0.15)'
     },
     homeIcon: {
         marginBottom: '-0.8vh',
