@@ -11,6 +11,7 @@ import UserType from 'models/enums/UserType';
 import formatDate from 'Utils/DateUtils/formatDate';
 import InvestigationTableRowType from 'models/InvestigationTableRow';
 
+import CommentCell from './CommentCell/CommentCell';
 import useStyles from './InvestigationTableRowStyles';
 import { useTooltipStyles } from '../InvestigationTableStyles';
 import SettingsActions from '../SettingsActions/SettingsActions';
@@ -178,8 +179,11 @@ const InvestigationTableRow = ({
                     <div>{subOccupation || '-'}</div>
                 </Tooltip>
             case TableHeadersNames.comment:
-                return <ClickableTooltip disabled={disabled} value={indexedRow[cellName as keyof typeof TableHeadersNames]}
-                    defaultValue='אין הערה' scrollableRef={tableContainerRef.current} InputIcon={Comment} />
+                return (
+                    <CommentCell 
+                        comment={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                    />
+                )
 
             case TableHeadersNames.phoneNumber:
                 return <ClickableTooltip disabled={disabled} value={indexedRow[cellName as keyof typeof TableHeadersNames]}
