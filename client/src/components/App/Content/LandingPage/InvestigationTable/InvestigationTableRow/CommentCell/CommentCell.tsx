@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Typography, Button } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 
 import useStyles from './commentCellStyles';
 
@@ -17,17 +17,23 @@ const CommentCell = (props: Props) => {
     const classes = useStyles();
     const isCommentOverflowing = comment && comment.length > MAX_CHARS_BEFORE_CUT;
 
+    const getSlicedMessage = () => {
+        return (
+            <span>
+                {comment.slice(0 , MAX_CHARS_BEFORE_CUT - ellipsis.length - readMoreText.length) + ellipsis}
+                <a href='#' onClick={(e) => { e.preventDefault(); e.stopPropagation(); setReadMore(true)}}>{readMoreText}</a>
+            </span>
+        )
+    }
 
     return (
         <>
         <Typography className={classes.comment}>
-            { isCommentOverflowing 
-                ? <span>
-                    {comment.slice(0 , MAX_CHARS_BEFORE_CUT - ellipsis.length - readMoreText.length) + ellipsis}
-                    <a href='#' onClick={(e) => { e.preventDefault(); e.stopPropagation()}}>{readMoreText}</a>
-                </span>
-
-                : comment }
+            { 
+                isCommentOverflowing && !readMore
+                    ? getSlicedMessage()
+                    : comment 
+            }
         </Typography>
         </>
     )
