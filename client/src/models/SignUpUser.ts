@@ -13,6 +13,7 @@ interface FullName {
 interface SignUpUser {
     [SignUpFields.MABAR_USER_NAME]?: string,
     [SignUpFields.FULL_NAME]?: FullName,
+    [SignUpFields.USER_NAME]?: string,
     [SignUpFields.CITY]?: City,
     [SignUpFields.PHONE_NUMBER]?: string,
     [SignUpFields.ID]?: string,
