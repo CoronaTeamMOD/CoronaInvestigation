@@ -4,10 +4,12 @@ import InvolvedContact from 'models/InvolvedContact';
 
 export interface FamilyMembersContext {
     familyMembers: InvolvedContact[];
+    eventFamilyMembersIds?: (string | undefined)[];
 };
 
 const initialFamilyMembers: FamilyMembersContext = {
-    familyMembers: []
+    familyMembers: [],
+    eventFamilyMembersIds: []
 };
 
 export const familyMembersContext = createContext<FamilyMembersContext>(initialFamilyMembers);
