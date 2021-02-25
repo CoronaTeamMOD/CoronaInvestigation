@@ -13,7 +13,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundColor: 'rgb(202, 222, 234)!important'
     },
     tableCellRoot: {
-        padding: '0'
+        padding: '0',
+        maxWidth: '200px'
     },
     investigationRow: {
         textDecoration: 'none'

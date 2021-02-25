@@ -64,7 +64,7 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.statusReason]: 'סיבה לסטטוס בטיפול',
     [TableHeadersNames.investigationDesk]: 'דסק מבצע',
     [TableHeadersNames.subOccupation]: 'מוסד',
-    [TableHeadersNames.comment]: ' ',
+    [TableHeadersNames.comment]: 'הערה',
     [TableHeadersNames.statusReason]: '',
     [TableHeadersNames.wasInvestigationTransferred]: '',
     [TableHeadersNames.transferReason]: '',
