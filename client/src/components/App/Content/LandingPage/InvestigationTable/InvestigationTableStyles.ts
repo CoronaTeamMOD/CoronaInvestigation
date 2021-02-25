@@ -7,8 +7,21 @@ export const useTooltipStyles = makeStyles(({
     content: {
         display: 'flex',
         flexDirection: 'column',
-        marginRight: 110,
-        flip: false
+        transform: 'translate(-200%, -75%) !important',
+        flip: false,
+
+        '&::before': {
+            content:'""',
+            width: '0px',
+            height: '0px',
+            position: 'absolute',
+            borderLeft: '10px solid rgba(97, 97, 97, 0.9)',
+            borderRight: '10px solid transparent',
+            borderTop: '10px solid rgba(97, 97, 97, 0.9)',
+            borderBottom: '10px solid transparent',
+            bottom: '-20px',
+            right: '20px'
+        }
     },
 }));
 

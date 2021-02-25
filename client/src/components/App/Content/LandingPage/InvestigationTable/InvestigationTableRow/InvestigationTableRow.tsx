@@ -39,8 +39,8 @@ const RowTooltip = (props: RowTooltipProps) => {
 
     const title = (creationDate || startTime)
         ? <>
-            {<InfoItem size='small' name='תאריך הגעת החקירה' value={creationDateLabel} />}
-            {<InfoItem size='small' name='תאריך תחילת החקירה' value={startTimeLabel} />}
+            {<InfoItem size='small' name='הגעת החקירה' value={creationDateLabel} />}
+            {<InfoItem size='small' name='תחילת החקירה' value={startTimeLabel} />}
         </>
         : noDataMessage;
 
