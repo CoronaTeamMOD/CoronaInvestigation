@@ -21,7 +21,7 @@ const CommentCell = (props: Props) => {
         return (
             <span>
                 {comment.slice(0 , MAX_CHARS_BEFORE_CUT - ellipsis.length - readMoreText.length) + ellipsis}
-                <a href='#' onClick={(e) => { e.preventDefault(); e.stopPropagation(); setReadMore(true)}}>{readMoreText}</a>
+                <span className={classes.readMoreLink} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setReadMore(true)}}>{readMoreText}</span>
             </span>
         )
     }
