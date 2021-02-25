@@ -18,7 +18,8 @@ import {
     COMMENT,
     UPDATE_INVESTIGAION_SETTINGS_FAMILY_DATA,
     UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA,
-    CLOSE_ISOLATED_CONTACT
+    CLOSE_ISOLATED_CONTACT,
+    UPDATE_INVESTIGATION_COMPLEXITY_REASON_ID
 } from '../../DBService/InvestigationInfo/Mutation';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
@@ -311,5 +312,18 @@ investigationInfo.get('/complexityReasons', (request: Request, response: Respons
         response.status(errorStatusCode).send(error);
     })
 });
+
+investigationInfo.post('/updateComplexityReason', (request: Request, response: Response) => {
+    const queryVariables = {epidemiologyNumberInput: request.body.epidemiologyNumberInput, newComplexityReasonId: request.body.newComplexityReasonId};
+
+    return graphqlRequest(UPDATE_INVESTIGATION_COMPLEXITY_REASON_ID, response.locals, queryVariables)
+        .then((result) => {
+            response.send(result.data);
+        })
+        .catch(error => {
+            response.status(errorStatusCode).send(error);
+        })
+});
+
 
 export default investigationInfo;
