@@ -1,8 +1,8 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
-import { existingPersonsMap, person } from 'Utils/Testing/ContactsBankForm/state';
 import MockFormProvider from 'Utils/Testing/MockFormProvider';
+import { existingPersonsMap, person } from 'Utils/Testing/ContactsBankForm/state';
 
 import ContactsBankTable from './ContactsBankTable';
 

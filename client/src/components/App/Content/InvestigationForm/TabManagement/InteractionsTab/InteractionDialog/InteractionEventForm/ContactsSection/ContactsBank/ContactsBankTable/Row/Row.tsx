@@ -39,7 +39,7 @@ const Row = (props: Props) => {
             <TableCell>{contact.identificationNumber}</TableCell>
             <TableCell>
                 <Select
-                   id="demo-simple-select"
+                   id={`person-contactType-${personInfo}`}
                    disabled={doesExist}
                    defaultValue={1}
                    onChange={(e) => {handleContactTypeChange(e.target.value)}} 
