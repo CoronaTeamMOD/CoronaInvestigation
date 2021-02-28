@@ -3,12 +3,12 @@ import React from 'react'
 import { ContactBankContextProvider, ContactBankOption } from 'commons/Contexts/ContactBankContext';
 
 const MockBankFormProvider: React.FC<Props> = (props) => {
-    const { contactBank } = props;
+    const { contactBank, setContactBank, existingEventPersonInfos } = props;
 
     const mockedState = {
         contactBank: contactBank || new Map(),
-        setContactBank: () => {},
-        existingEventPersonInfos: []
+        setContactBank: setContactBank || (() => {}),
+        existingEventPersonInfos: existingEventPersonInfos || []
     };
 
     return (
@@ -19,7 +19,8 @@ const MockBankFormProvider: React.FC<Props> = (props) => {
 }
 
 interface Props {
-    contactBank: Map<number,ContactBankOption>;
+    contactBank?: Map<number,ContactBankOption>;
+    setContactBank?: React.Dispatch<React.SetStateAction<Map<number,ContactBankOption>>>; 
     existingEventPersonInfos?: (number | undefined)[];
 }
 

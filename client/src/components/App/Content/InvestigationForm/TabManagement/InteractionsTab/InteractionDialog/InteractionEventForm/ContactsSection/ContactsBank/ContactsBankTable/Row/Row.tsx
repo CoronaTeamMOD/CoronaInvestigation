@@ -23,7 +23,7 @@ const Row = (props: Props) => {
 
     const { personInfo } = contact;
     return (
-        <TableRow className={rowClass}>
+        <TableRow className={rowClass} id={`person-row-${personInfo}`}>
             <TableCell>
                 <Checkbox
                     disabled={doesExist}
@@ -39,7 +39,7 @@ const Row = (props: Props) => {
             <TableCell>{contact.identificationNumber}</TableCell>
             <TableCell>
                 <Select
-                   id="demo-simple-select"
+                   id={`person-contactType-${personInfo}`}
                    disabled={doesExist}
                    defaultValue={1}
                    onChange={(e) => {handleContactTypeChange(e.target.value)}} 
