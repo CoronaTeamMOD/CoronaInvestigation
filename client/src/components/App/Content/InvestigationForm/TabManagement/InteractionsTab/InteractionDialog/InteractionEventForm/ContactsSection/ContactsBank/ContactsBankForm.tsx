@@ -20,24 +20,24 @@ const ContactsBankForm = (props: Props) => {
 
     return (
         <Grid container className={classes.wrapper}>
-            <Grid xs={12}>    
-                <Typography variant='h5'> 
+            <Grid item xs={12}>    
+                <Typography variant='h5' id='contacts-bank-headline'> 
                     {headline}
                 </Typography>
             </Grid>
-            <Grid xs={12}>
+            <Grid item xs={12}>
                 <Paper>
                     <ContactsBankSearchBar
-                            id='contacts-bank-search-bar'
-                            onSearchClick={(query) => { 
-                                setQuery(query);
-                            }}
+                        id='contacts-bank-search-bar'
+                        onSearchClick={(query) => { 
+                            setQuery(query);
+                        }}
                     />
                     <ContactsBankTable 
                         query={query}
                         existingPersons={existingPersons}
                     />
-                    <Typography align='right'>
+                    <Typography align='right' id='contacts-bank-selected-count'>
                         {`נבחרו ${selectedContactsCount} מגעים מבנק מגעים`}
                     </Typography>
                 </Paper>
