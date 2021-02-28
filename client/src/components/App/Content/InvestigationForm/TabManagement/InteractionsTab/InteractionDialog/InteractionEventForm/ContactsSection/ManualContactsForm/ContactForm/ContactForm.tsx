@@ -26,13 +26,14 @@ const FIRST_NAME_LABEL = 'שם פרטי*';
 const LAST_NAME_LABEL = 'שם משפחה*';
 const PHONE_NUMBER_LABEL = 'מספר טלפון';
 
-const ContactForm: React.FC<Props> = ({ updatedContactIndex, personInfo, contactCreationTime, contactIdentificationType }: Props): JSX.Element => {
+const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, personInfo, contactCreationTime, contactIdentificationType }: Props): JSX.Element => {
     const { control, setValue, getValues } = useFormContext();
 
     const classes = useStyles();
 
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
-    const isFieldDisabled = Boolean(personInfo);
+    const { isFieldDisabled } = useContactFields(contactStatus);
+    const isExistingPerson = Boolean(personInfo);
     const defaultIdentificationType = getValues()?.contacts ? getValues().contacts[updatedContactIndex]?.identificationType : contactIdentificationType;
     const [isPassport, setIsPassport] = useState<boolean>(
         defaultIdentificationType === IdentificationTypes.PASSPORT
@@ -59,7 +60,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, personInfo, contact
                         control={control}
                         render={(props) => (
                             <AlphabetWithDashTextField
-                                disabled={isFieldDisabled}
+                                disabled={isExistingPerson}
                                 name={props.name}
                                 key='firstName'
                                 value={props.value}
@@ -77,7 +78,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, personInfo, contact
                         control={control}
                         render={(props) => (
                             <AlphabetWithDashTextField
-                                disabled={isFieldDisabled}
+                                disabled={isExistingPerson}
                                 name={props.name}
                                 key='lastName'
                                 value={props.value}
@@ -95,7 +96,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, personInfo, contact
                         control={control}
                         render={(props) => (
                             <NumericTextField
-                                disabled={isFieldDisabled}
+                                disabled={isExistingPerson}
                                 name={props.name}
                                 value={props.value}
                                 onChange={(newValue: string) => props.onChange(newValue === '' ? null : newValue as String)}
@@ -126,7 +127,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, personInfo, contact
                                         );
                                     }
                                 }}
-                                disabled={isFieldDisabled}
+                                disabled={isExistingPerson}
                                 test-id={InteractionEventContactFields.IDENTIFICATION_TYPE}
                                 onBlur={props.onBlur}
                                 firstOption={IdentificationTypes.ID}
@@ -142,7 +143,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, personInfo, contact
                         render={(props) => (
                             <IdentificationTextField
                                 isPassport={isPassport}
-                                disabled={isFieldDisabled || (contactCreationTime ? shouldDisableContact(contactCreationTime) : false)}
+                                disabled={isExistingPerson || (contactCreationTime ? shouldDisableContact(contactCreationTime) : false)}
                                 name={props.name}
                                 value={props.value}
                                 onChange={(newValue: string) => props.onChange(newValue === '' ? null : newValue as string)}
@@ -208,6 +209,7 @@ export default ContactForm;
 interface Props {
     updatedContactIndex: number;
     personInfo?: number;
+    contactStatus?: InteractedContact['contactStatus'];
     contactCreationTime?: Date;
     contactIdentificationType?: string;
 };
