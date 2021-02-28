@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table } from '@material-ui/core';
+import { Table, TableBody } from '@material-ui/core';
 
 import Contact from 'models/Contact';
 
@@ -13,13 +13,16 @@ const ContactsBankTable = (props: Props) => {
     return (
         <Table>
             <TableHeader />
-            {filteredPersons.map( contact => {
-                return (
-                    <Row 
-                        contact={contact}
-                    />
-                )
-            })}
+            <TableBody>
+                {filteredPersons.map( contact => {
+                    return (
+                        <Row
+                            key={contact.personInfo} 
+                            contact={contact}
+                        />
+                    )
+                })}
+            </TableBody>
         </Table>
     )
 }
