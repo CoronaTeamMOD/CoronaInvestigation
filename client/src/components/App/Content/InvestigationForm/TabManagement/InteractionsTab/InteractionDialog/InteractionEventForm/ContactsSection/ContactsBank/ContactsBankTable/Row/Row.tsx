@@ -23,7 +23,7 @@ const Row = (props: Props) => {
 
     const { personInfo } = contact;
     return (
-        <TableRow className={rowClass}>
+        <TableRow className={rowClass} id={`person-row-${personInfo}`}>
             <TableCell>
                 <Checkbox
                     disabled={doesExist}
