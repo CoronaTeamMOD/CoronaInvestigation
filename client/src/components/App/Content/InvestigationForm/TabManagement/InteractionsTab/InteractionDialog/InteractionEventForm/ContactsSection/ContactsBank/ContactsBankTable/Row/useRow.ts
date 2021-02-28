@@ -7,7 +7,7 @@ import useStyles from './rowStyles';
 
 const UseRow = (props : Props) => {
     const { contact } = props;
-    const { personInfo, contactType, extraInfo } = contact;
+    const { personInfo } = contact;
 
     const classes = useStyles();
     const { contactBank , setContactBank, existingEventPersonInfos } = useContext(contactBankContext);
@@ -31,8 +31,8 @@ const UseRow = (props : Props) => {
             let tempBank = new Map(contactBank);
             const person = contactBank.get(personInfo);
             const newBankValue = {
-                contactType,
-                extraInfo,
+                contactType : person?.contactType || 1,
+                extraInfo : person?.extraInfo || '',
                 checked: person ? !person.checked : true
             }
             tempBank.set(personInfo , newBankValue);
@@ -45,17 +45,11 @@ const UseRow = (props : Props) => {
         if(personInfo && typeof selectedType === 'number') {
             let tempBank = new Map(contactBank);
             const person = contactBank.get(personInfo);
-            const newBankValue = person 
-                ? {
+            const newBankValue = {
                     contactType: selectedType,
-                    extraInfo: person.extraInfo,
-                    checked: person.checked
-                }
-                : {
-                    contactType: selectedType,
-                    extraInfo: contact.extraInfo,
-                    checked: false
-                }
+                    extraInfo: person?.extraInfo || '',
+                    checked: person?.checked || false
+            }
             tempBank.set(personInfo , newBankValue);
 
             setContactBank(tempBank);
@@ -66,15 +60,10 @@ const UseRow = (props : Props) => {
         if(personInfo && typeof selectedInfo === 'string') {
             let tempBank = new Map(contactBank);
             const person = contactBank.get(personInfo);
-            const newBankValue = person 
-                ? {
-                    ...person,
+            const newBankValue = {
+                    contactType: person?.contactType || 1,
+                    checked: person?.checked || false,
                     extraInfo : selectedInfo
-                }
-                : {
-                    contactType,
-                    extraInfo: selectedInfo,
-                    checked: false
                 }
             tempBank.set(personInfo , newBankValue);
 
