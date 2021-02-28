@@ -1,6 +1,6 @@
 import person  from './person';
 
 const existingPersonsMap = new Map();
-existingPersonsMap.set(555 , person);
+existingPersonsMap.set(person.personInfo , person);
 
 export default existingPersonsMap;

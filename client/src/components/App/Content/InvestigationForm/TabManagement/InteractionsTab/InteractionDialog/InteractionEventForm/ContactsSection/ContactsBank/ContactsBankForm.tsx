@@ -21,7 +21,7 @@ const ContactsBankForm = (props: Props) => {
     return (
         <Grid container className={classes.wrapper}>
             <Grid item xs={12}>    
-                <Typography variant='h5' id='healinebruh'> 
+                <Typography variant='h5' id='contacts-bank-headline'> 
                     {headline}
                 </Typography>
             </Grid>
@@ -37,7 +37,7 @@ const ContactsBankForm = (props: Props) => {
                         query={query}
                         existingPersons={existingPersons}
                     />
-                    <Typography align='right' id='contacts-bank-selected-cound'>
+                    <Typography align='right' id='contacts-bank-selected-count'>
                         {`נבחרו ${selectedContactsCount} מגעים מבנק מגעים`}
                     </Typography>
                 </Paper>
