@@ -41,7 +41,7 @@ const Row = (props: Props) => {
                 <Select
                    id="demo-simple-select"
                    disabled={doesExist}
-                   defaultValue={contact.contactType}
+                   defaultValue={1}
                    onChange={(e) => {handleContactTypeChange(e.target.value)}} 
                 >
                     <MenuItem value={1}>הדוק</MenuItem>
@@ -53,7 +53,7 @@ const Row = (props: Props) => {
                 <TextField
                     id={`pesron-extraInfo-${personInfo}`}
                     disabled={doesExist}
-                    defaultValue={contact.extraInfo}
+                    defaultValue={''}
                     onChange={(e) => {handleExtraInfoChange(e.target.value)}}
                 />
             </TableCell>
