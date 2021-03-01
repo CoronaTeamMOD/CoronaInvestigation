@@ -287,6 +287,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         interactedContacts.forEach(contact => {
             const { personInfo } = contact;
             if(personInfo){
+                const existingContactType = (contactsMap.get(personInfo)?.contactType);
                 const newEvent : GroupedInteractedContactEvent = {
                     date : contact.contactDate,
                     name : contact.placeName || '',
@@ -296,6 +297,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 
                 contactsMap.set(personInfo, {
                     ...contact, 
+                    contactType: (existingContactType && +existingContactType === 1) ? existingContactType : contact.contactType,
                     contactEvents : newEventArr,
                 });
             }
