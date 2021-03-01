@@ -29,7 +29,6 @@ const ContactDetails = (props: Props) => {
     const { isGroupedContact } = GetGroupedInvestigationsIds();
 
     const highestContactType = interactedContact.contactEvents.reduce((prev, current) => {
-        console.log(prev,current);
         if(current.contactType === 1)  {
             if(prev.contactType === 1) {
                 return (new Date(prev.date).getTime() > new Date(current.date).getTime()) ? prev : current
