@@ -6,6 +6,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: 'white',
         backgroundColor: theme.palette.primary.dark
     },
+    title: {
+        color: 'white'
+    },
     rightSection: {
         display: 'flex',
         flexDirection: 'row',

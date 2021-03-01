@@ -54,8 +54,10 @@ const AppToolbar: React.FC = (): JSX.Element => {
     <AppBar className={classes.appBar} position='static'>
       <Toolbar>
         <div className={classes.rightSection}>
-          <img alt='logo' src='./assets/img/logo.png' width={48} height={48} />
-          <Typography variant='h4'>אבן יסוד</Typography>
+          <StatePersistentNavLink exact to={indexRoute} >
+            <img alt='logo' src='./assets/img/logo.png' width={48} height={48} />
+            <Typography variant='h4' className={classes.title}>אבן יסוד</Typography>
+          </StatePersistentNavLink>
           {
             navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
             navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&
