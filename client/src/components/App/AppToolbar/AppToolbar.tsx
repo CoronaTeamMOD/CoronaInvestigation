@@ -16,7 +16,7 @@ import { adminLandingPageRoute, landingPageRoute, usersManagementRoute, indexRou
 import useStyles from './AppToolbarStyles';
 import useAppToolbar from './useAppToolbar';
 
-const toggleMessage = 'מה הסטטוס שלך?';
+export const toggleMessage = 'מה הסטטוס שלך?';
 const navButtonsWhitelist = {
     allowedUserTypes: [UserTypeCodes.ADMIN, UserTypeCodes.SUPER_ADMIN],
     allowedRoutes: [landingPageRoute, adminLandingPageRoute, usersManagementRoute, investigationFormRoute]
@@ -79,6 +79,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
                 <Typography className={classes.menuTypo}> ניהול משתמשים</Typography>
               </StatePersistentNavLink>
             </div>
+<<<<<<< HEAD
             <div className={classes.userSection}>
             {isActive !== null &&
                 <Tooltip title={toggleMessage} arrow>
@@ -93,6 +94,18 @@ const AppToolbar: React.FC = (): JSX.Element => {
                 <IconButton color='inherit' onClick={logout}>
                 <ExitToApp />
                 </IconButton>
+=======
+          }
+        </div>
+        <div className={classes.userSection}>
+          {isActive !== null &&
+            <Tooltip title={toggleMessage} arrow id='toggle-tooltip'>
+              <IsActiveToggle
+                value={isActive}
+                onToggle={setUserActivityStatus}
+                exclusive
+              />
+>>>>>>> 659a91e8 (added mock of usehook , dont work now needs fix)
             </Tooltip>
             <Typography className={classes.greetUserText}>
                 שלום, {userName}
