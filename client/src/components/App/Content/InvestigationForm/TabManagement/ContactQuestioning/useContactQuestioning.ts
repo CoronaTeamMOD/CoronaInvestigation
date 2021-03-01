@@ -16,6 +16,7 @@ import {
     useContactQuestioningOutcome,
     useContactQuestioningParameters,
 } from './ContactQuestioningInterfaces';
+import { string } from 'yup';
     
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {
@@ -135,6 +136,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     );
                     const interactedContacts: InteractedContact[] = result.data.map((contact: any) =>
                         ({
+                            personInfo : contact.personInfo,
                             id: contact.id,
                             firstName: contact.personByPersonInfo.firstName,
                             lastName: contact.personByPersonInfo.lastName,
@@ -185,9 +187,10 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             involvementReason: contact.involvementReason,
                             involvedContactId: contact.involvedContactId,
                         })
-                    )
-
-                    setAllContactedInteractions(interactedContacts);
+                    );
+                    const groupedInteractedContacts = groupSimilarContactedPersons(interactedContacts);
+                    console.log(groupedInteractedContacts);
+                    setAllContactedInteractions(groupedInteractedContacts);
                 } else {
                     interactedContactsLogger.warn(
                         'got respond from the server without data',
@@ -275,6 +278,25 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
         return updatedPerson;
     };
+
+    const groupSimilarContactedPersons = (interactedContacts: InteractedContact[]) => {
+        let contactsMap = new Map();
+        interactedContacts.forEach(contact => {
+            const { personInfo } = contact;
+
+            const newEventArr = (contactsMap.get(personInfo)?.contactEvents || []).concat({
+                date : contact.contactDate,
+                contactName : 'stub',
+                contactType : contact.contactType     
+            });
+
+            contactsMap.set(personInfo, {
+                ...contact, 
+                contactEvents : newEventArr,
+            });
+        });
+        return Array.from(contactsMap).map(contact => contact[1]);
+    }
 
     return {
         saveContact,
