@@ -55,6 +55,11 @@ const Row = (props: Props) => {
                     disabled={doesExist}
                     defaultValue={''}
                     onChange={(e) => {handleExtraInfoChange(e.target.value)}}
+                    onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                        }
+                    }}                
                 />
             </TableCell>
         </TableRow>
