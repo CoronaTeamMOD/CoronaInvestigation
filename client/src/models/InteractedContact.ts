@@ -26,6 +26,7 @@ interface InteractedContact extends Person {
     creationTime?: Date;
     involvementReason: number | null;
     involvedContactId: number | null;
+    placeName?: string;
 };
 
 export default InteractedContact;

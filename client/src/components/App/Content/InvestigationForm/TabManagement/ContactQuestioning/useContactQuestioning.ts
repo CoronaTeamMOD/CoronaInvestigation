@@ -139,6 +139,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     const interactedContacts: InteractedContact[] = result.data.map((contact: any) =>
                         ({
                             personInfo : contact.personInfo,
+                            placeName: contact.contactEventByContactEvent.placeName,
                             id: contact.id,
                             firstName: contact.personByPersonInfo.firstName,
                             lastName: contact.personByPersonInfo.lastName,
@@ -288,7 +289,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             if(personInfo){
                 const test : GroupedInteractedContactEvent = {
                     date : contact.contactDate,
-                    name : 'stub',
+                    name : contact.placeName || '',
                     contactType : contact.contactType
                 }
                 const newEventArr = (contactsMap.get(personInfo)?.contactEvents || []).concat(test);

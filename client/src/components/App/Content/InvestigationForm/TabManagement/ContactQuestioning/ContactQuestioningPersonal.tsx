@@ -18,6 +18,8 @@ import IdentificationTextField from 'commons/IdentificationTextField/Identificat
 
 import useStyles from './ContactQuestioningStyles';
 import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
+import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
+import formatDate from '../../../../../../Utils/DateUtils/formatDate';
 
 const passportInfoMessage = 'ניתן להזין בשדה דרכון 10 תווים/ 15 תווים ו-/';
 const idInfoMessage = 'ניתן להזין בשדה תז עד 9 תווים'
@@ -225,6 +227,31 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                         }}
                     />
                 </Grid>
+                <Grid container item>
+                    <Grid item xs={12}>
+                        <Typography >
+                            <b>אירועים בהם בא המגע עם המאומת</b>
+                        </Typography>
+                    </Grid>
+                    {
+                        interactedContact.contactEvents.map((event) => {
+                            return (
+                                <Grid container item xs={12} className={classes.eventRow}>
+                                    <Grid item>
+                                        <Typography>
+                                            {formatDate(event.date)}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography>
+                                            {event.name}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                            )
+                        })
+                    }
+                </Grid>
             </Grid>
         </Grid>
     );
@@ -234,5 +261,5 @@ export default ContactQuestioningPersonal;
 
 interface Props {
     index: number;
-    interactedContact: InteractedContact;
+    interactedContact: GroupedInteractedContact;
 }

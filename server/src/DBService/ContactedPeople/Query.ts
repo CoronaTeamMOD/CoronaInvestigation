@@ -30,6 +30,7 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!, $minimalDateToFi
         apartment
       }
       contactEventByContactEvent {
+        placeName
         startTime
         id
       }
