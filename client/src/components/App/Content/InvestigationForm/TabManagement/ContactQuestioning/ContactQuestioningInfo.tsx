@@ -3,6 +3,7 @@ import { Divider, Grid } from '@material-ui/core';
 
 import ContactStatus from 'models/ContactStatus';
 import InteractedContact from 'models/InteractedContact';
+import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 import ReachContact from './ContactQuestioningInfo/ReachContact';
 import ContactDetails from './ContactQuestioningInfo/ContactDetails';
@@ -46,8 +47,8 @@ export default ContactQuestioningInfo;
 
 interface Props {
     index: number;
-    interactedContact: InteractedContact;
+    interactedContact: GroupedInteractedContact;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;
-    parsePerson: (person: InteractedContact, index: number) => InteractedContact;
+    parsePerson: (person: GroupedInteractedContact, index: number) => InteractedContact;
 }

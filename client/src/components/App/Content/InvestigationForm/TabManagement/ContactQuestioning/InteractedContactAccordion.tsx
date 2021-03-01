@@ -14,6 +14,7 @@ import ContactStatus from 'models/ContactStatus';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningInfo from './ContactQuestioningInfo';
@@ -130,11 +131,11 @@ const InteractedContactAccordion = (props: Props) => {
 export default InteractedContactAccordion;
 
 interface Props {
-    interactedContact: InteractedContact;
+    interactedContact: GroupedInteractedContact;
     index: number;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;
-    parsePerson: (person: InteractedContact, index: number) => InteractedContact;
+    parsePerson: (person: GroupedInteractedContact, index: number) => InteractedContact;
     isFamilyContact: boolean;
     familyRelationships: FamilyRelationship[];
     shouldDisable: (status?: string | number | undefined) => boolean;

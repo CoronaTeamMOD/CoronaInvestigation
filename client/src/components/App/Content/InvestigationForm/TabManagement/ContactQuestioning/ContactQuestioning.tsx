@@ -5,10 +5,10 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import ContactStatus from 'models/ContactStatus';
 import FormTitle from 'commons/FormTitle/FormTitle';
-import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import useContactFields from 'Utils/Contacts/useContactFields';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
+import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 import useStyles from './ContactQuestioningStyles';
 import { FormInputs } from './ContactQuestioningInterfaces';
@@ -18,7 +18,7 @@ import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestionin
 
 const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const [allContactedInteractions, setAllContactedInteractions] = useState<
-        InteractedContact[]
+        GroupedInteractedContact[]
     >([]);
     const [familyRelationships, setFamilyRelationships] = useState<
         FamilyRelationship[]
