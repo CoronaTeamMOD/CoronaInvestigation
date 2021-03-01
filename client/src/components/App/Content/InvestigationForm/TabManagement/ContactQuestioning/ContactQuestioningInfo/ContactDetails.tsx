@@ -5,13 +5,15 @@ import { useFormContext } from 'react-hook-form'
 
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
+import formatDate from 'Utils/DateUtils/formatDate';
 import InvalidFormIcon from 'commons/Icons/InvalidFormIcon';
 import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 import GroupedContactIcon from 'commons/Icons/GroupedContactIcon';
 import GetGroupedInvestigationsIds from 'Utils/GroupedInvestigationsContacts/getGroupedInvestigationIds';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
-import formatDate from 'Utils/DateUtils/formatDate';
+
+const TIGHT_CONTACT_STATUS = 1;
 
 const ContactDetails = (props: Props) => {
     const { errors } = useFormContext();
@@ -29,8 +31,8 @@ const ContactDetails = (props: Props) => {
     const { isGroupedContact } = GetGroupedInvestigationsIds();
 
     const highestContactType = interactedContact.contactEvents.reduce((prev, current) => {
-        if(current.contactType === 1)  {
-            if(prev.contactType === 1) {
+        if(current.contactType === TIGHT_CONTACT_STATUS)  {
+            if(prev.contactType === TIGHT_CONTACT_STATUS) {
                 return (new Date(prev.date).getTime() > new Date(current.date).getTime()) ? prev : current
             }
             return current
@@ -38,7 +40,7 @@ const ContactDetails = (props: Props) => {
         return prev;
     });
 
-    const tooltipText = highestContactType.contactType === 1 
+    const tooltipText = highestContactType.contactType === TIGHT_CONTACT_STATUS 
         ? formatDate(highestContactType.date)
         : '';
     return (

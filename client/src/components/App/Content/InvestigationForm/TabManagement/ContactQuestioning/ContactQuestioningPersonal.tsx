@@ -5,6 +5,7 @@ import { Avatar, Grid, Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
+import formatDate from 'Utils/DateUtils/formatDate';
 import FieldName from 'commons/FieldName/FieldName';
 import HelpIcon from 'commons/Icons/HelpIcon/HelpIcon';
 import InteractedContact from 'models/InteractedContact';
@@ -19,7 +20,6 @@ import IdentificationTextField from 'commons/IdentificationTextField/Identificat
 import useStyles from './ContactQuestioningStyles';
 import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
-import formatDate from '../../../../../../Utils/DateUtils/formatDate';
 
 const passportInfoMessage = 'ניתן להזין בשדה דרכון 10 תווים/ 15 תווים ו-/';
 const idInfoMessage = 'ניתן להזין בשדה תז עד 9 תווים'

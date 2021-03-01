@@ -192,7 +192,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         })
                     );
                     const groupedInteractedContacts = groupSimilarContactedPersons(interactedContacts);
-                    console.log(groupedInteractedContacts);
                     setAllContactedInteractions(groupedInteractedContacts);
                 } else {
                     interactedContactsLogger.warn(
