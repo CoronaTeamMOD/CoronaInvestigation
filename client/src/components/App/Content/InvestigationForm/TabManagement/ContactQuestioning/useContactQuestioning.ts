@@ -9,6 +9,8 @@ import { setFormState } from 'redux/Form/formActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import GroupedInteractedContact,
+       { GroupedInteractedContactEvent } from 'models/ContactQuestioning/GroupedInteractedContact';
 
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 import {
@@ -280,20 +282,22 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const groupSimilarContactedPersons = (interactedContacts: InteractedContact[]) => {
-        let contactsMap = new Map();
+        let contactsMap = new Map<number , GroupedInteractedContact>();
         interactedContacts.forEach(contact => {
             const { personInfo } = contact;
-
-            const newEventArr = (contactsMap.get(personInfo)?.contactEvents || []).concat({
-                date : contact.contactDate,
-                contactName : 'stub',
-                contactType : contact.contactType     
-            });
-
-            contactsMap.set(personInfo, {
-                ...contact, 
-                contactEvents : newEventArr,
-            });
+            if(personInfo){
+                const test : GroupedInteractedContactEvent = {
+                    date : contact.contactDate,
+                    name : 'stub',
+                    contactType : contact.contactType
+                }
+                const newEventArr = (contactsMap.get(personInfo)?.contactEvents || []).concat(test);
+    
+                contactsMap.set(personInfo, {
+                    ...contact, 
+                    contactEvents : newEventArr,
+                });
+            }
         });
         return Array.from(contactsMap).map(contact => contact[1]);
     }

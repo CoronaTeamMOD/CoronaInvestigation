@@ -5,6 +5,7 @@ import ContactStatus from 'models/ContactStatus';
 import InteractedContact from 'models/InteractedContact';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 const useReachContact = (props: Props) => {
     const { errors } = useFormContext();
@@ -55,7 +56,7 @@ export default useReachContact;
 
 interface Props {
     saveContact: (interactedContact: InteractedContact) => boolean;
-    parsePerson: (person: InteractedContact, index: number) => InteractedContact;
+    parsePerson: (person: GroupedInteractedContact, index: number) => InteractedContact;
     formValues: InteractedContact;
     index: number;
 }
