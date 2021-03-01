@@ -32,6 +32,7 @@ const useReachContact = (props: Props) => {
                 }).then((result) => {
                     if (result.value) {
                         onChange(selectedStatus?.id);
+                        saveContact(parsePerson(formValues, index));
                     }
                 });
             } else {
@@ -44,6 +45,7 @@ const useReachContact = (props: Props) => {
             }
         } else if (selectedStatus?.id) {
             onChange(selectedStatus?.id);
+            saveContact(parsePerson(formValues, index));
         }
     };
 
@@ -57,6 +59,6 @@ export default useReachContact;
 interface Props {
     saveContact: (interactedContact: InteractedContact) => boolean;
     parsePerson: (person: GroupedInteractedContact, index: number) => InteractedContact;
-    formValues: InteractedContact;
+    formValues: GroupedInteractedContact;
     index: number;
 }
