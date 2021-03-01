@@ -1,17 +1,17 @@
 import React from 'react';
-import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import { Typography } from '@material-ui/core';
+import { Tooltip, Typography } from '@material-ui/core';
 import { useFormContext } from 'react-hook-form'
 
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
-import InteractedContact from 'models/InteractedContact';
 import InvalidFormIcon from 'commons/Icons/InvalidFormIcon';
 import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 import GroupedContactIcon from 'commons/Icons/GroupedContactIcon';
 import GetGroupedInvestigationsIds from 'Utils/GroupedInvestigationsContacts/getGroupedInvestigationIds';
+import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
+import formatDate from 'Utils/DateUtils/formatDate';
 
 const ContactDetails = (props: Props) => {
     const { errors } = useFormContext();
@@ -28,6 +28,20 @@ const ContactDetails = (props: Props) => {
 
     const { isGroupedContact } = GetGroupedInvestigationsIds();
 
+    const highestContactType = interactedContact.contactEvents.reduce((prev, current) => {
+        console.log(prev,current);
+        if(current.contactType === 1)  {
+            if(prev.contactType === 1) {
+                return (new Date(prev.date).getTime() > new Date(current.date).getTime()) ? prev : current
+            }
+            return current
+        }
+        return prev;
+    });
+
+    const tooltipText = highestContactType.contactType === 1 
+        ? formatDate(highestContactType.date)
+        : '';
     return (
         <>
             {isInvolvedThroughFamily(interactedContact.involvementReason) && (
@@ -46,23 +60,16 @@ const ContactDetails = (props: Props) => {
             <Typography variant='body2'>
                 <b>שם משפחה:</b> {interactedContact.lastName}
             </Typography>
-            <Typography variant='body2'>
-                <b>תאריך המגע:</b>{' '}
-                {format(new Date(interactedContact.contactDate), 'dd/MM/yyyy')}
-            </Typography>
-            {interactedContact.contactType && (
-                <Typography variant='body2'>
-                    <b>סוג מגע:</b>{' '}
-                    {
-                        contactTypes.get(+interactedContact.contactType)
-                            ?.displayName
-                    }
-                </Typography>
-            )}
-            {interactedContact.extraInfo && (
-                <Typography variant='body2'>
-                    <b>פירוט אופי המגע:</b> {interactedContact.extraInfo}
-                </Typography>
+            {interactedContact.contactEvents && (
+                <Tooltip title={tooltipText} placement='top' arrow>
+                    <Typography variant='body2'>
+                        <b>סוג מגע:</b>{' '}
+                            {
+                                contactTypes.get(highestContactType.contactType)
+                                    ?.displayName
+                            }
+                    </Typography>
+                </Tooltip>
             )}
         </>
     );
@@ -71,6 +78,6 @@ const ContactDetails = (props: Props) => {
 export default ContactDetails;
 
 interface Props {
-    interactedContact: InteractedContact;
+    interactedContact: GroupedInteractedContact;
     index : number;
 }

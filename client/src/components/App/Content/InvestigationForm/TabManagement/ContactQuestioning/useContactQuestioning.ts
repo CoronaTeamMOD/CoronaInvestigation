@@ -287,13 +287,13 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         interactedContacts.forEach(contact => {
             const { personInfo } = contact;
             if(personInfo){
-                const test : GroupedInteractedContactEvent = {
+                const newEvent : GroupedInteractedContactEvent = {
                     date : contact.contactDate,
                     name : contact.placeName || '',
-                    contactType : contact.contactType
+                    contactType : +contact.contactType
                 }
-                const newEventArr = (contactsMap.get(personInfo)?.contactEvents || []).concat(test);
-    
+                const newEventArr = (contactsMap.get(personInfo)?.contactEvents || []).concat(newEvent);
+                
                 contactsMap.set(personInfo, {
                     ...contact, 
                     contactEvents : newEventArr,
