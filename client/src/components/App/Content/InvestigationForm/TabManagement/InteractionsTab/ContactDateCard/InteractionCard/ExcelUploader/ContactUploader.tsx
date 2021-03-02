@@ -9,6 +9,7 @@ import ContactStatus from 'models/enums/ContactStatus';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import useDuplicateContactId from 'Utils/Contacts/useDuplicateContactId';
 import { ParsedExcelRow } from 'models/enums/contactQuestioningExcelFields';
 import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFields';
 
@@ -30,12 +31,20 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
     
     const buttonRef = React.useRef<HTMLInputElement>(null);
     
+    const existingContacts : Contact[] = allInteractions
+    .flatMap(interaction => interaction.contacts
+        .map(contact => ({...contact,
+            startTime: interaction.startTime})
+        )
+    );
+
     const onFail = () => alertError('שגיאה בטעינת הקובץ');
 
     const { onFileSelect } = useContactExcel(setData, onFail);
     const { alertError } = useCustomSwal();
     const { validateContact } = useContactFields();
-    
+    const { checkExcelDuplicateKeys } = useDuplicateContactId();
+
     const classes = useStyles();
     
     React.useEffect(() => {
@@ -75,21 +84,23 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
                 alertError(validationErrors.join("\r\n"));
                 dataInFileLogger.info(`failed to upload excel, validation errors on data: ${validationErrors.join(',')}`, Severity.HIGH);
             } else {
-                const contactsData = contacts.map(contact => {
-                    const { rowNum, ...contactData } = contact;
-                    return {...contactData, contactStatus: contactData.contactStatus || ContactStatus.NEW};
-                });
-                setIsLoading(true);
-                axios.post('/contactedPeople/excel', { contactEvent, contacts: contactsData })
-                    .then(() => {
-                        dataInFileLogger.info('contacted people excel was saved successfully', Severity.LOW);
-                        onSave();
-                    })
-                    .catch(error => {
-                        dataInFileLogger.error(`got error from server: ${error}`, Severity.LOW);
-                        alertError('שגיאה בשמירת הנתונים');
-                    })
-                    .finally(() => setIsLoading(false));
+                if (!checkExcelDuplicateKeys(contacts, existingContacts)) {
+                    const contactsData = contacts.map(contact => {
+                        const { rowNum, ...contactData } = contact;
+                        return {...contactData, contactStatus: contactData.contactStatus || ContactStatus.NEW};
+                    });
+                    setIsLoading(true);
+                    axios.post('/contactedPeople/excel', { contactEvent, contacts: contactsData })
+                        .then(() => {
+                            dataInFileLogger.info('contacted people excel was saved successfully', Severity.LOW);
+                            onSave();
+                        })
+                        .catch(error => {
+                            dataInFileLogger.error(`got error from server: ${error}`, Severity.LOW);
+                            alertError('שגיאה בשמירת הנתונים');
+                        })
+                        .finally(() => setIsLoading(false));
+                }
             }
         }
     };
