@@ -4,6 +4,7 @@ import theme from 'styles/theme';
 
 const useStyles = makeStyles(() => ({
     comment : {
+        overflowWrap: 'break-word',
         fontSize: '0.9rem',
         whiteSpace: 'normal',
         overflow: 'hidden',
