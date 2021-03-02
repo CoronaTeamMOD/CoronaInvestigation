@@ -1,4 +1,5 @@
 import User from 'models/User';
+import UserType from 'models/UserType';
 import UserTypeCodes from 'models/enums/UserTypeCodes';
 
 import * as Actions from './userActionTypes';
@@ -7,6 +8,7 @@ export interface UserState {
     data: User;
     isLoggedIn: boolean;
     displayedCounty: number;
+    userTypes: UserType[];
 };
 
 export const initialUserState: UserState = {
@@ -36,7 +38,8 @@ export const initialUserState: UserState = {
         }
     },
     isLoggedIn: false,
-    displayedCounty: -1
+    displayedCounty: -1,
+    userTypes: []
 };
 
 const userReducer = (state = initialUserState, action: Actions.UserAction): UserState => {
@@ -54,6 +57,14 @@ const userReducer = (state = initialUserState, action: Actions.UserAction): User
         case Actions.SET_DISPLAYED_COUNTY: return {
             ...state,
             displayedCounty: action.payload.county
+        };
+        case Actions.SET_USER_TYPES: return {
+            ...state,
+            userTypes: action.payload.userTypes
+        };
+        case Actions.SET_DISPLAYED_USER_TYPE: return {
+            ...state,
+            data: { ...state.data, userType: action.payload.userType }
         };
         default: return state;
     }
