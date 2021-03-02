@@ -21,11 +21,19 @@ const Content: React.FC<Props> = ({ isSignUpOpen, handleSaveUser, handleCloseSig
             <Switch>
                 <Route path={investigationFormRoute} component={InvestigationForm} />
                 <Route path={landingPageRoute} component={LandingPage} />
+                {
+                    (userType === UserTypeCodes.INVESTIGATOR) &&
+                    <Redirect from={adminLandingPageRoute} to={landingPageRoute} /> 
+                }
                 <Route path={adminLandingPageRoute} component={adminLandingPage} />
+                {
+                    (userType === UserTypeCodes.INVESTIGATOR) &&
+                    <Redirect from={usersManagementRoute} to={landingPageRoute} /> 
+                }
                 <Route path={usersManagementRoute} component={UsersManagement} />
                 {
                     (userType === UserTypeCodes.INVESTIGATOR) &&
-                    <Redirect from={indexRoute} to={landingPageRoute} />
+                    <Redirect from={indexRoute} to={landingPageRoute} /> 
                 }
                 {
                     (userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN) &&
