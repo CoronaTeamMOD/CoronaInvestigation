@@ -5,8 +5,9 @@ import { NavLink, NavLinkProps, useLocation, useHistory } from 'react-router-dom
 import { AppBar, Toolbar, Typography, Tooltip, IconButton, Select, MenuItem } from '@material-ui/core';
 
 import County from 'models/County';
-import UserTypeCodes from 'models/enums/UserTypeCodes';
+import UserType from 'models/UserType';
 import StoreStateType from 'redux/storeStateType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { setDisplayedCounty } from 'redux/User/userActionCreators';
 import { adminLandingPageRoute, landingPageRoute, usersManagementRoute, indexRoute } from 'Utils/Routes/Routes';
@@ -42,6 +43,7 @@ const StatePersistentNavLink = (props: NavLinkProps) => {
 const AppToolbar: React.FC = (): JSX.Element => {
     const { user, isActive, logout, setUserActivityStatus } = useAppToolbar();
 
+    const userTypes = useSelector<StoreStateType, UserType[]>(state => state.user.userTypes);
     const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
     const districtCounties = useSelector<StoreStateType, County[]>(state => state.county.districtCounties);
     const countyDisplayName = useSelector<StoreStateType, string>(state => state.user.data.countyByInvestigationGroup.displayName);
@@ -78,11 +80,12 @@ const AppToolbar: React.FC = (): JSX.Element => {
                     }
                 </div>
                 <div className={classes.userSection}>
-                    {/* {user.isDeveloper &&
+                    {user.isDeveloper &&
                         <Select
                             className={classes.select}
                             value={user.userType}
-                            onChange={(event) => setUserType(event.target.value as number)}
+                            //onChange={(event) => setUserType(event.target.value as number)}
+                            onChange={()=>{}}
                             classes={{icon: classes.select}}
                             disableUnderline
                             MenuProps={{
@@ -97,18 +100,18 @@ const AppToolbar: React.FC = (): JSX.Element => {
                             getContentAnchorEl: null
                             }}
                             renderValue={(value) => 
-                                <Typography>נפת <b>{districtCounties.find(county => county.id === value)?.displayName}</b></Typography>
+                                <Typography><b>{userTypes.find(userType => userType.id === value)?.displayName}</b></Typography>
                             }
                         >
                             {
-                            districtCounties.map(county => 
-                                <MenuItem key={county.id} value={county.id}>
-                                    {`נפת  ${county.displayName}`}
-                                </MenuItem>
-                            )
+                                userTypes.map(userType => 
+                                    <MenuItem key={userType.id} value={userType.id}>
+                                        {userType.displayName}
+                                    </MenuItem>
+                                )
                             }
                         </Select>
-                    } */}
+                    }
                     {isActive !== null &&
                         <Tooltip title={toggleMessage} arrow>
                         <IsActiveToggle
