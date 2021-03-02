@@ -7,6 +7,7 @@ const MAX_CHARS_PER_ROWS = 31;
 const MAX_ROWS = 3;
 const ellipsis = '... ';
 const readMoreText = 'קרא עוד';
+const readLessText = 'הצג פחות';
 
 const MAX_CHARS_BEFORE_CUT = MAX_ROWS * MAX_CHARS_PER_ROWS;
 
@@ -18,11 +19,25 @@ const CommentCell = (props: Props) => {
     const isCommentOverflowing = comment && comment.length > MAX_CHARS_BEFORE_CUT;
 
     const getSlicedMessage = () => {
+        if(isCommentOverflowing) {
+            if(!readMore) {
+                return (
+                    <span>
+                        {comment.slice(0 , MAX_CHARS_BEFORE_CUT - ellipsis.length - readMoreText.length) + ellipsis}
+                        <span className={classes.readMoreLink} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setReadMore(true)}}>{readMoreText}</span>
+                    </span>
+                )
+            } else {
+                return (
+                    <span>
+                        {comment}
+                        <span className={classes.readMoreLink} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setReadMore(false)}}>{readLessText}</span>
+                    </span>
+                )
+            }
+        }
         return (
-            <span>
-                {comment.slice(0 , MAX_CHARS_BEFORE_CUT - ellipsis.length - readMoreText.length) + ellipsis}
-                <span className={classes.readMoreLink} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setReadMore(true)}}>{readMoreText}</span>
-            </span>
+            comment
         )
     }
 
@@ -30,9 +45,7 @@ const CommentCell = (props: Props) => {
         <>
         <Typography className={classes.comment}>
             { 
-                isCommentOverflowing && !readMore
-                    ? getSlicedMessage()
-                    : comment 
+                getSlicedMessage()
             }
         </Typography>
         </>
