@@ -5,6 +5,7 @@ import UserType from './enums/UserType';
 interface User {
     id: string;
     isActive: boolean;
+    isDeveloper: boolean;
     investigationGroup: number;
     phoneNumber: string;
     serialNumber: number;
