@@ -19,7 +19,8 @@ import {
     UPDATE_INVESTIGAION_SETTINGS_FAMILY_DATA,
     UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA,
     CLOSE_ISOLATED_CONTACT,
-    UPDATE_INVESTIGATION_COMPLEXITY_REASON_ID
+    UPDATE_INVESTIGATION_COMPLEXITY_REASON_ID,
+    DELETE_INVESTIGATION_COMPLEXITY_REASON_ID
 } from '../../DBService/InvestigationInfo/Mutation';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
@@ -317,6 +318,18 @@ investigationInfo.post('/updateComplexityReason', (request: Request, response: R
     const queryVariables = {epidemiologyNumberInput: request.body.epidemiologyNumberInput, newComplexityReasonId: request.body.newComplexityReasonId};
 
     return graphqlRequest(UPDATE_INVESTIGATION_COMPLEXITY_REASON_ID, response.locals, queryVariables)
+        .then((result) => {
+            response.send(result.data);
+        })
+        .catch(error => {
+            response.status(errorStatusCode).send(error);
+        })
+});
+
+investigationInfo.post('/deleteComplexityReason', (request: Request, response: Response) => {
+    const queryVariables = {epidemiologyNumberInput: request.body.epidemiologyNumberInput, oldComplexityReasonId: request.body.oldComplexityReasonId};
+
+    return graphqlRequest(DELETE_INVESTIGATION_COMPLEXITY_REASON_ID, response.locals, queryVariables)
         .then((result) => {
             response.send(result.data);
         })
