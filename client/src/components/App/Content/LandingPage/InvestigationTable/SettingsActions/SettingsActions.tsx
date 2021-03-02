@@ -23,7 +23,7 @@ interface settingsAction {
     
 const SettingsActions = (props: Props) => {
 
-    const userType = useSelector<StoreStateType, UserType>(state => state.user.data.userType);
+    const userType = useSelector<StoreStateType, UserTypeCodes>(state => state.user.data.userType);
 
     const { epidemiologyNumber, investigationStatus, groupId, allGroupedInvestigations, checkGroupedInvestigationOpen,
             fetchTableData, fetchInvestigationsByGroupId, moveToTheInvestigationForm } = props;
