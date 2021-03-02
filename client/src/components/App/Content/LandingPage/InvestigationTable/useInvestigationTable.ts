@@ -23,6 +23,7 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import getColorByGroupId from 'Utils/GroupedInvestigations/getColorByGroupId';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
@@ -515,13 +516,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         investigationRows
                             .filter((row) => row.groupId !== null && !investigationColor.current.has(row.groupId))
                             .forEach((row) => {
-                                // We have this color range so the group colors aren't too dark nor bright
-                                const minColorValue = 50;
-                                const maxColorValue = 200;
-                                const red = getFlooredRandomNumber(minColorValue, maxColorValue);
-                                const green = getFlooredRandomNumber(minColorValue, maxColorValue);
-                                const blue = getFlooredRandomNumber(minColorValue, maxColorValue);
-                                investigationColor.current.set(row.groupId, `rgb(${red}, ${green}, ${blue})`);
+                                investigationColor.current.set(row.groupId, getColorByGroupId(row.groupId));
                             });
                         setRows(investigationRows);
                         setIsLoading(false);
