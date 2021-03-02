@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: theme.spacing(1),
         marginLeft: theme.spacing(1)
     },
-    countySelect: {
+    select: {
         color: 'white',
         '&:focus': {
             opacity: 1
@@ -76,6 +76,6 @@ export interface AppToolbarClasses {
     menuTypo: string;
     menuItem: string;
     activeItem: string;
-}
+};
 
 export default useStyles;
