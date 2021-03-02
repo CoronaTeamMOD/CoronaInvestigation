@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 
 import { Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
+import handleCountyRequest from '../../middlewares/HandleCountyRequest';
 import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
 import { convertUserInvestigationsData, convertGroupInvestigationsData } from './utils';
 import { CHANGE_DESK_ID, UPDATE_DESK_BY_GROUP_ID } from '../../DBService/LandingPage/Mutation';
@@ -53,7 +54,7 @@ landingPageRoute.post('/investigations', (request: Request, response: Response) 
         });
 })
 
-landingPageRoute.post('/groupInvestigations', adminMiddleWare, (request: Request, response: Response) => {
+landingPageRoute.post('/groupInvestigations', handleCountyRequest, (request: Request, response: Response) => {
     const groupInvestigationsLogger = logger.setup({
         workflow: `query group's Investigations`,
         user: response.locals.user.id,
@@ -156,7 +157,7 @@ landingPageRoute.post('/changeDesk', adminMiddleWare, (request: Request, respons
         });
 })
 
-landingPageRoute.post('/changeGroupDesk', adminMiddleWare, (request: Request, response: Response) => {
+landingPageRoute.post('/changeGroupDesk', handleCountyRequest, (request: Request, response: Response) => {
     const changeGroupDeskLogger = logger.setup({
         workflow: 'change desk for grouped investigatios',
         user: response.locals.user.id,
@@ -181,7 +182,7 @@ landingPageRoute.post('/changeGroupDesk', adminMiddleWare, (request: Request, re
         });
 });
 
-landingPageRoute.post('/investigationStatistics', adminMiddleWare ,(request: Request, response: Response) => {
+landingPageRoute.post('/investigationStatistics', handleCountyRequest, (request: Request, response: Response) => {
     const investigationsStatisticsLogger = logger.setup({
         workflow: 'query investigations statistics',
         user: response.locals.user.id,
