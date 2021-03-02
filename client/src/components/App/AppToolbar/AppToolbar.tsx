@@ -9,7 +9,7 @@ import UserType from 'models/UserType';
 import StoreStateType from 'redux/storeStateType';
 import UserTypeCodes from 'models/enums/UserTypeCodes';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
-import { setDisplayedCounty } from 'redux/User/userActionCreators';
+import { setDisplayedCounty, setDisplayedUserType } from 'redux/User/userActionCreators';
 import { adminLandingPageRoute, landingPageRoute, usersManagementRoute, indexRoute } from 'Utils/Routes/Routes';
 
 import useStyles from './AppToolbarStyles';
@@ -84,8 +84,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
                         <Select
                             className={classes.select}
                             value={user.userType}
-                            //onChange={(event) => setUserType(event.target.value as number)}
-                            onChange={()=>{}}
+                            onChange={(event) => setDisplayedUserType(event.target.value as number)}
                             classes={{icon: classes.select}}
                             disableUnderline
                             MenuProps={{
@@ -100,7 +99,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
                             getContentAnchorEl: null
                             }}
                             renderValue={(value) => 
-                                <Typography><b>{userTypes.find(userType => userType.id === value)?.displayName}</b></Typography>
+                                <Typography>משתמש <b>{userTypes.find(userType => userType.id === value)?.displayName}</b></Typography>
                             }
                         >
                             {
