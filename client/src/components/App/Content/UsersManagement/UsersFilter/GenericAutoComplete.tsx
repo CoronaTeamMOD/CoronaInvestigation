@@ -36,7 +36,7 @@ const GenericAutoComplete: React.FC<GenericAutoCompleteProps> = (props: GenericA
 export default GenericAutoComplete;
 
 interface GenericAutoCompleteProps {
-    options?: SourceOrganization[] | Language[] | County[] | UserType[] | activeStatus[];
+    options: SourceOrganization[] | Language[] | County[] | UserType[] | activeStatus[];
     handleChange: (selectedValues: any) => void;
     inputRootClass?: string;
 };
