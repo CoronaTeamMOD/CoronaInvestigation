@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Desk from 'models/Desk';
 import County from 'models/County';
-import UserType from 'models/enums/UserType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import SearchBar from 'commons/SearchBar/SearchBar';
@@ -230,7 +230,7 @@ const UsersManagement: React.FC = () => {
 
                 <Grid item>
                     {
-                        (userType === UserType.ADMIN) &&
+                        (userType === UserTypeCodes.ADMIN) &&
                         <Button
                             id='deactivate-all-users-button'
                             variant='contained'
