@@ -20,6 +20,7 @@ import educationGradeReducer from './EducationGrade/educationGradeReducer';
 import placetypeReducer from './PlaceTypes/placetypeReducer';
 import countyReducer from './County/countyReducer';
 import deskReducer from './Desk/deskReducer';
+import complexReasonsReducer from './ComplexReasons/complexReasonsReducer';
 
 export default combineReducers<StoreStateType>({
      occupations: occupationsReducer,
@@ -41,4 +42,5 @@ export default combineReducers<StoreStateType>({
      desk: deskReducer,
      groupedInvestigations : groupedInvestigationReducer,
      authorities: authorityReducer,
+     complexReasons: complexReasonsReducer
 }) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;

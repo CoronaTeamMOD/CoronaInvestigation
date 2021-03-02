@@ -65,6 +65,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
     const [allStatuses, setAllStatuses] = useState<InvestigationMainStatus[]>([]);
     const [allSubStatuses, setAllSubStatuses] = useState<InvestigationSubStatus[]>([]);
+    const [allComplexReasons, setAllComplexReasons] = useState<(number|null)[]>([]);
     const [showFilterRow, setShowFilterRow] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(defaultPage);
     const [checkGroupedInvestigationOpen, setCheckGroupedInvestigationOpen] = useState<number[]>([])
@@ -99,7 +100,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter,updateDateFilter, nonContactFilter
     } = useInvestigationTable({
         setSelectedRow, allGroupedInvestigations, setAllStatuses, currentPage, setCurrentPage, setAllGroupedInvestigations,
-        investigationColor, setAllSubStatuses
+        investigationColor, setAllSubStatuses, setAllComplexReasons
     });
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);

@@ -29,6 +29,7 @@ import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCr
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
 import AllocatedInvestigator from 'models/InvestigationTable/AllocateInvestigatorDialog/AllocatedInvestigator';
+import {setComplexReasons} from 'redux/ComplexReasons/complexReasonsActionCreators';
 
 import useStyle from './InvestigationTableStyles';
 import { filterCreators } from './FilterCreators';
@@ -320,6 +321,24 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             })
     }
 
+    const fetchAllInvestigationComplexityReasons = () => {
+        const investigationStatusesLogger = logger.setup('GraphQL GET statuses request to the DB');
+        axios.get('/investigationInfo/complexityReasons').
+            then((result) => {
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    investigationStatusesLogger.info('The investigations complexity reasons were fetched successfully', Severity.LOW);
+                    const allComplexReasons: (number|null)[] = (result.data).map((reason: { description: any; }) => reason.description)
+                    setComplexReasons(allComplexReasons)
+                } else {
+                    investigationStatusesLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
+                }
+            })
+            .catch((err) => {
+                alertError('לא הצלחנו לשלוף את כל הסיבות לחקירות מורכבות');
+                investigationStatusesLogger.error(err, Severity.HIGH);
+            })
+    }
+
     const fetchAllInvestigationSubStatuses = () => {
         const subStatusesLogger = logger.setup('GraphQL GET sub statuses request to the DB');
         axios.get('/landingPage/investigationSubStatuses').
@@ -341,6 +360,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     useEffect(() => {
         fetchAllInvestigationStatuses();
         fetchAllInvestigationSubStatuses();
+        fetchAllInvestigationComplexityReasons();
         startWaiting();
     }, []);
 

@@ -33,4 +33,5 @@ export default interface StoreStateType {
     desk: Desk[];
     groupedInvestigations: GroupedInvestigationReducerType;
     authorities: Map<string, Authority>;
+    complexReasons: (number|null)[];
 };

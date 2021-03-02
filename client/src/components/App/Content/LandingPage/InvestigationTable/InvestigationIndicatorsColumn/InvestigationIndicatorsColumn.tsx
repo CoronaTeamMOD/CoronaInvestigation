@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ReplyAll } from '@material-ui/icons';
 import { Tooltip, Box } from '@material-ui/core';
-import axios from 'axios';
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
 
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 
@@ -11,25 +12,11 @@ const complexInvestigationMessage = 'חקירה מורכבת';
 
 const InvestigationIndicatorsColumn = (props: Props) => {
     const { isComplex, wasInvestigationTransferred, transferReason, isSelfInvestigated, selfInvestigationStatus, selfInvestigationUpdateTime, complexityReasonsId } = props;
-    const [allComplexReasons, setAllComplexReasons] = useState([]);
+    const allComplexReasons = useSelector<StoreStateType, (number|null)[]>(state => state.complexReasons);
 
-    const getInvestigationComplexityReasons = () => {
-        axios.get('/investigationInfo/complexityReasons')
-            .then((result) => {
-                if (result?.data && result.headers['content-type'].includes('application/json')) {
-                    const allComplexReasons = (result.data).map((reason: { description: any; }) => reason.description)
-                    setAllComplexReasons(allComplexReasons)
-                }
-            })
-            .catch((err) => { })
-    }
-
-    useEffect(() => {
-        getInvestigationComplexityReasons();
-    }, []);
 
     const investigationComplexityReasons = !!complexityReasonsId && complexityReasonsId.map((id) => !!id && allComplexReasons[id - 1]).toString()
-    const complexInvestigationText = investigationComplexityReasons ? `${complexInvestigationMessage}: ${investigationComplexityReasons}` : complexInvestigationMessage
+    const complexInvestigationText = investigationComplexityReasons ? `${complexInvestigationMessage}: ${investigationComplexityReasons}` : `${complexInvestigationMessage}: אחר`;
 
     return (
         <Box display='flex' alignItems='center' flexWrap='nowrap'>
