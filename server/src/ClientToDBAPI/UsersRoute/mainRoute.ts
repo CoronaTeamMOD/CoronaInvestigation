@@ -5,7 +5,7 @@ import UserPatch from '../../Models/User/UserPatch';
 import { Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import handleUsersRequest from '../../middlewares/HandleUsersRequest';
-import handleCountyRequest from '../../middlewares/handleCountyRequest';
+import handleCountyRequest from '../../middlewares/HandleCountyRequest';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
 import UpdateUserResponse from '../../Models/User/UpdateUserResponse';
 import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
