@@ -8,7 +8,7 @@ import logger from 'logger/logger';
 import Language from 'models/Language';
 import { Severity } from 'models/Logger';
 import SignUpUser from 'models/SignUpUser';
-import UserTypeModel from 'models/UserType';
+import UserType from 'models/UserType';
 import SortOrder from 'models/enums/SortOrder';
 import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
@@ -37,7 +37,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     
     const [users, setUsers] = useState<SignUpUser[]>([]);
     const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([])
-    const [userTypes, setUserTypes] = useState<UserTypeModel[]>([]);
     const [languages, setLanguages] = useState<Language[]>([]);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [userDialog, setUserDialog] = useState<UserDialog>({ isOpen: false, info: {} });
@@ -47,6 +46,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     const [counter, setCounter] = useState<number>(0);
     
     const user = useSelector<StoreStateType, User>(state => state.user.data);
+    const userTypes = useSelector<StoreStateType, UserType[]>(state => state.user.userTypes);
     const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
     const countyDisplayName = useSelector<StoreStateType, string>(state => state.user.data.countyByInvestigationGroup.displayName);
 
@@ -106,23 +106,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             });
     };
 
-    const fetchUserTypes = () => {
-        const fetchUserTypesLogger = logger.setup('Fetching userTypes');
-        fetchUserTypesLogger.info('launching userTypes request', Severity.LOW);
-        axios.get('/users/userTypes')
-            .then(result => {
-                if (result?.data && result.headers['content-type'].includes('application/json'))
-                {
-                    setUserTypes(result.data);
-                    fetchUserTypesLogger.info('got results back from the server', Severity.LOW);
-                } 
-            })
-            .catch(() => {
-                alertError('לא ניתן היה לקבל סוגי משתמשים');
-                fetchUserTypesLogger.error('didnt get results back from the server', Severity.HIGH);       
-            });
-    };
-
     const fetchLanguages = () => {
         const fetchLanguagesLogger = logger.setup('Fetching languages');
         fetchLanguagesLogger.info('launching languages request', Severity.LOW);
@@ -156,7 +139,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
 
     useEffect(() => {
         fetchSourcesOrganization();
-        fetchUserTypes();
         fetchLanguages();
     }, []);
 
@@ -337,7 +319,7 @@ interface useUsersManagementInCome {
 interface useUsersManagementOutCome {
     users: SignUpUser[];
     sourcesOrganization: SourceOrganization[];
-    userTypes: UserTypeModel[];
+    userTypes: UserType[];
     languages: Language[];
     totalCount: number;
     userDialog: UserDialog;

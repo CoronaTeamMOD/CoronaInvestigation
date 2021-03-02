@@ -9,7 +9,7 @@ import { Severity } from 'models/Logger';
 import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
 import Environment from 'models/enums/Environments';
-import { setUser } from 'redux/User/userActionCreators';
+import { setUser, setUserTypes } from 'redux/User/userActionCreators';
 import { initialUserState } from 'redux/User/userReducer';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setCounties } from 'redux/County/countyActionCreators';
@@ -136,6 +136,22 @@ const useApp = () => {
         });
     }
 
+    const fetchUserTypes = () => {
+        const fetchUserTypesLogger = logger.setup('Fetching userTypes');
+        fetchUserTypesLogger.info('launching userTypes request', Severity.LOW);
+        axios.get('/users/userTypes')
+            .then(result => {
+                if (result?.data) {
+                    setUserTypes(result.data);
+                    fetchUserTypesLogger.info('got results back from the server', Severity.LOW);
+                } 
+            })
+            .catch(() => {
+                alertError('לא ניתן היה לקבל סוגי משתמשים');
+                fetchUserTypesLogger.error('didnt get results back from the server', Severity.HIGH);       
+            });
+    };
+
     useEffect(() => {
         if(!isUserLoggedIn) {
             initUser();
@@ -143,10 +159,10 @@ const useApp = () => {
         fetchDesks();
     }, []);
 
-
     useEffect(() => {
-        if((user !== initialUserState.data && user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) || isSignUpOpen) {
+        if((user !== initialUserState.data && user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) || isSignUpOpen || user.isDeveloper) {
             fetchAllCounties();
+            fetchUserTypes();
         }
     }, [user, isSignUpOpen]);
 
