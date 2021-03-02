@@ -15,6 +15,7 @@ export const initialUserState: UserState = {
         userName: 'XXXXXX',
         investigationGroup: -1,
         isActive: false,
+        isDeveloper: false,
         phoneNumber: '',
         serialNumber: -1,
         activeInvestigationsCount: 0,
