@@ -5,14 +5,14 @@ import { useState, useEffect } from 'react';
 import User from 'models/User';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
+import UserType from 'models/UserType';
 import Language from 'models/Language';
 import { Severity } from 'models/Logger';
 import SignUpUser from 'models/SignUpUser';
-import UserType from 'models/UserType';
 import SortOrder from 'models/enums/SortOrder';
-import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
 import SignUpFields from 'models/enums/SignUpFields';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import SourceOrganization from 'models/SourceOrganization';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
@@ -48,6 +48,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const userTypes = useSelector<StoreStateType, UserType[]>(state => state.user.userTypes);
     const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
+    const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);    
     const countyDisplayName = useSelector<StoreStateType, string>(state => state.user.data.countyByInvestigationGroup.displayName);
 
     const { alertError, alertWarning } = useCustomSwal();
@@ -59,7 +60,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         const fetchUsersLogger = logger.setup('Fetching users');
         fetchUsersLogger.info('launching users request', Severity.LOW);
         setIsLoading(true);
-        if (user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) {
+        if (userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN) {
             axios.post('/users/county', {
                 page: {
                     number: page,
@@ -145,11 +146,11 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     useEffect(() => {
         setPage(defaultPage);
         page === defaultPage && fetchUsers();
-    }, [filterRules, cellNameSort, displayedCounty]);
+    }, [filterRules, cellNameSort, displayedCounty, userType]);
 
     useEffect(() => {
         fetchUsers();
-    }, [page, user.userType]);
+    }, [page, userType]);
 
     useEffect(() => {
         setCounter(users.filter((user => user.userName !== unassignedUserName)).length);
