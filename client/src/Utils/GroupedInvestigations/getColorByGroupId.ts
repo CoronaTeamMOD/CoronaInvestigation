@@ -19,12 +19,12 @@ const squishNumber = (number : number) => {
 }
 
 const getColorByGroupId = (groupid : string) => {
-    const rnd = groupid.slice(-6);
+    const seed = groupid.slice(-6);
 
     // squish the color to a 'pretty' color - V.1
-    const red = squishNumber(parseInt(rnd.slice(0,2), 16));
-    const green = squishNumber(parseInt(rnd.slice(2,4), 16));
-    const blue = squishNumber(parseInt(rnd.slice(4,6), 16));
+    const red = squishNumber(parseInt(seed.slice(0,2), 16));
+    const green = squishNumber(parseInt(seed.slice(2,4), 16));
+    const blue = squishNumber(parseInt(seed.slice(4,6), 16));
     return (`rgb(${red}, ${green}, ${blue})`);
 }
 
