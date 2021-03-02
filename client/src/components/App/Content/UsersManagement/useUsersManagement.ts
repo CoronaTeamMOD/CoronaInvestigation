@@ -46,7 +46,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     const [counter, setCounter] = useState<number>(0);
     
     const user = useSelector<StoreStateType, User>(state => state.user.data);
-    const userTypes = useSelector<StoreStateType, UserType[]>(state => state.user.userTypes);
     const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);    
     const countyDisplayName = useSelector<StoreStateType, string>(state => state.user.data.countyByInvestigationGroup.displayName);
@@ -290,7 +289,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     return {
         users,
         sourcesOrganization,
-        userTypes,
         languages,
         totalCount,
         userDialog,
@@ -320,7 +318,6 @@ interface useUsersManagementInCome {
 interface useUsersManagementOutCome {
     users: SignUpUser[];
     sourcesOrganization: SourceOrganization[];
-    userTypes: UserType[];
     languages: Language[];
     totalCount: number;
     userDialog: UserDialog;

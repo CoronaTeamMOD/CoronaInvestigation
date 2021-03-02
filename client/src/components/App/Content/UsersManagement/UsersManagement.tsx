@@ -11,11 +11,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Desk from 'models/Desk';
 import County from 'models/County';
-import UserTypeCodes from 'models/enums/UserTypeCodes';
+import UserType from 'models/UserType';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import SearchBar from 'commons/SearchBar/SearchBar';
 import useDesksUtils from 'Utils/Desk/useDesksUtils';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import { userValidationSchema } from 'Utils/UsersUtils/userUtils'; 
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
@@ -51,8 +52,9 @@ const UsersManagement: React.FC = () => {
     const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
     const allCounties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
-    
-    const { users, sourcesOrganization, userTypes, languages,totalCount, 
+    const userTypes = useSelector<StoreStateType, UserType[]>(state => state.user.userTypes);
+
+    const { users, sourcesOrganization, languages,totalCount, 
             userDialog, editUserDialog, isBadgeInVisible, watchUserInfo, 
             handleCloseUserDialog, editUserInfo, handleCloseEditUserDialog, 
             handleFilterChange, setUserActivityStatus, setUserSourceOrganization, 
