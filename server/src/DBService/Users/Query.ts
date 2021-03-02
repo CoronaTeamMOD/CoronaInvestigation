@@ -13,6 +13,7 @@ query GetUser($id: String!) {
     userById(id: $id) {
       investigationGroup
       isActive
+      isDeveloper
       phoneNumber
       serialNumber
       userName
