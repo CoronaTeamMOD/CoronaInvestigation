@@ -8,7 +8,7 @@ const TestHookComponent = ({ callback }: any) : null => {
     return null;
 }
 
-export const testHooksFunctionWithRoute = (callback: any, history?: History<History.PoorMansUnknown>): void => {
+export const testHooksFunctionWithRoute = (callback: any, history?: History<any>): void => {
     const WrappingRouterComponent = (props: PropsWithChildren<any>) =>
         history
             ? <Router history={history}></Router>
