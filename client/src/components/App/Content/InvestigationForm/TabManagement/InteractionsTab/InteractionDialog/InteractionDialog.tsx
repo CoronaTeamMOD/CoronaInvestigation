@@ -170,7 +170,7 @@ const InteractionDialog = (props: Props) => {
                 serialId: contact[InteractionEventContactFields.ID]
             })
         });
-        
+
         if (!checkDuplicateIdsForInteractions(existingIds.concat(newIds))) {
             if (isNewInteraction && data.isRepetitive) {
                 fireRepetitiveContactWarning()
@@ -237,7 +237,10 @@ const InteractionDialog = (props: Props) => {
     };
 
     const getEventContactIds = () => {
-        return interactionData?.contacts.map(contact => contact.identificationNumber);
+        const ids = interactions.map(interaction => interaction.contacts).flat().map((contact) => 
+                contact[InteractionEventContactFields.IDENTIFICATION_NUMBER]
+        );
+        return ids;
     };
 
     const groupedInvestigationProviderState = {
