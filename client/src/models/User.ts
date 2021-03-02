@@ -1,6 +1,6 @@
 import Desk from './Desk';
 import Language from './Language';
-import UserType from './enums/UserType';
+import UserTypeCodes from './enums/UserTypeCodes';
 
 interface User {
     id: string;
@@ -14,7 +14,7 @@ interface User {
     activeInvestigationsCount: number;
     pauseInvestigationsCount: number;
     languages: Language[];
-    userType: UserType;
+    userType: UserTypeCodes;
     sourceOrganization: string;
     deskName: string;
     deskname: string;

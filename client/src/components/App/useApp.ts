@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import User from 'models/User';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
-import UserType from 'models/enums/UserType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
 import Environment from 'models/enums/Environments';
 import { setUser } from 'redux/User/userActionCreators';
@@ -145,7 +145,7 @@ const useApp = () => {
 
 
     useEffect(() => {
-        if((user !== initialUserState.data && user.userType === UserType.ADMIN || user.userType === UserType.SUPER_ADMIN) || isSignUpOpen) {
+        if((user !== initialUserState.data && user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) || isSignUpOpen) {
             fetchAllCounties();
         }
     }, [user, isSignUpOpen]);

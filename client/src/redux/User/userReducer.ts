@@ -1,5 +1,5 @@
 import User from 'models/User';
-import UserType from 'models/enums/UserType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 
 import * as Actions from './userActionTypes';
 
@@ -22,7 +22,7 @@ export const initialUserState: UserState = {
         newInvestigationsCount: 0,
         pauseInvestigationsCount: 0,
         languages: [],
-        userType: UserType.NOT_LOGGED_IN,
+        userType: UserTypeCodes.NOT_LOGGED_IN,
         sourceOrganization: '',
         deskName: '',
         deskname: '',

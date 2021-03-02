@@ -10,7 +10,7 @@ import { Severity } from 'models/Logger';
 import SignUpUser from 'models/SignUpUser';
 import UserTypeModel from 'models/UserType';
 import SortOrder from 'models/enums/SortOrder';
-import UserTypeEnum from 'models/enums/UserType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
 import SignUpFields from 'models/enums/SignUpFields';
 import SourceOrganization from 'models/SourceOrganization';
@@ -59,7 +59,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         const fetchUsersLogger = logger.setup('Fetching users');
         fetchUsersLogger.info('launching users request', Severity.LOW);
         setIsLoading(true);
-        if (user.userType === UserTypeEnum.ADMIN || user.userType === UserTypeEnum.SUPER_ADMIN) {
+        if (user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) {
             axios.post('/users/county', {
                 page: {
                     number: page,

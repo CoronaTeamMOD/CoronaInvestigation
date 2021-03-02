@@ -11,7 +11,7 @@ import logger from 'logger/logger';
 import { persistor } from 'redux/store';
 import { Severity } from 'models/Logger';
 import { TimeRange } from 'models/TimeRange';
-import userType from 'models/enums/UserType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import Investigator from 'models/Investigator';
 import StoreStateType from 'redux/storeStateType';
 import { BC_TABS_NAME } from 'models/BroadcastMessage';
@@ -298,7 +298,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const canChangeStatusNewToInProcess = (investigationStatus: Number, investigationInvestigator?: string) => {
         return investigationStatus === InvestigationMainStatusCodes.NEW &&
-            (user.userType === userType.INVESTIGATOR || investigationInvestigator === user.id);
+            (user.userType === UserTypeCodes.INVESTIGATOR || investigationInvestigator === user.id);
     };
 
     const fetchAllInvestigationStatuses = () => {
@@ -380,7 +380,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             filterRules: Object.values(filterRules).reduce((obj, item) => Object.assign(obj, item) , {}),
         };
 
-        if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
+        if (user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) {
             investigationsLogger.info('user is admin so landingPage/groupInvestigations route is chosen', Severity.LOW);
             return axios.post('landingPage/groupInvestigations', {...requestData, county: displayedCounty})
         }
@@ -950,7 +950,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const isAdmin = user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN;
+    const isAdmin = user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN;
 
     const noAdminFilterTitle = rows.length === 0 ? noInvestigationsMessage : welcomeMessage;;
 

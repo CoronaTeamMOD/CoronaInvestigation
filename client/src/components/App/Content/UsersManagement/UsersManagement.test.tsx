@@ -6,7 +6,7 @@ import { act } from 'react-dom/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { Pagination } from '@material-ui/lab';
 
-import UserType from 'models/enums/UserType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import flushPromises from 'Utils/Testing/flushPromises';
 import { user } from 'Utils/Testing/UsersManagement/state';
 import { confirmed , dismissed } from 'Utils/Testing/MockSwal';
@@ -22,7 +22,7 @@ import UsersManagement , { usersManagementTitle, notActiveSortFields } from './U
 const mockAxios = new MockAdapter(axios);
 
 describe('<UsersManagement />', () => {
-    mockSelectors(UserType.ADMIN);
+    mockSelectors(UserTypeCodes.ADMIN);
     const wrapper = mount(
         <MockThemeProvider>
             <UsersManagement />
@@ -130,7 +130,7 @@ describe('<UsersManagement />', () => {
             });
 
             it('investigaitor' , () => {
-                mockSelectors(UserType.INVESTIGATOR);
+                mockSelectors(UserTypeCodes.INVESTIGATOR);
                 const deactivateWrapper = mount(
                     <MockThemeProvider>
                         <UsersManagement />
@@ -143,7 +143,7 @@ describe('<UsersManagement />', () => {
             });
     
             it('admin' , () => {
-                mockSelectors(UserType.ADMIN);
+                mockSelectors(UserTypeCodes.ADMIN);
                 const deactivateWrapper = mount(
                     <MockThemeProvider>
                         <UsersManagement />
@@ -156,7 +156,7 @@ describe('<UsersManagement />', () => {
             });
 
             it('investigaitor' , () => {
-                mockSelectors(UserType.INVESTIGATOR);
+                mockSelectors(UserTypeCodes.INVESTIGATOR);
                 const deactivateWrapper = mount(
                     <MockThemeProvider>
                         <UsersManagement />
@@ -170,11 +170,11 @@ describe('<UsersManagement />', () => {
         });
 
         describe('clicks', () => {
-            const expectedUserCounty = user(UserType.ADMIN).displayedCounty;
+            const expectedUserCounty = user(UserTypeCodes.ADMIN).displayedCounty;
             let deactivateWrapper : any;
 
             beforeEach( async () => {
-                mockSelectors(UserType.ADMIN);
+                mockSelectors(UserTypeCodes.ADMIN);
                 await act( async () => {
                     deactivateWrapper = mount(
                         <MockThemeProvider>

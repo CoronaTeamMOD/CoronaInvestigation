@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
-import UserType from 'models/enums/UserType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
 import LoadingSpinner from 'commons/LoadingSpinner/LoadingSpinner';
 import { investigationFormRoute, landingPageRoute, usersManagementRoute, indexRoute, adminLandingPageRoute } from 'Utils/Routes/Routes';
@@ -24,11 +24,11 @@ const Content: React.FC<Props> = ({ isSignUpOpen, handleSaveUser, handleCloseSig
                 <Route path={adminLandingPageRoute} component={adminLandingPage} />
                 <Route path={usersManagementRoute} component={UsersManagement} />
                 {
-                    (userType === UserType.INVESTIGATOR) &&
+                    (userType === UserTypeCodes.INVESTIGATOR) &&
                     <Redirect from={indexRoute} to={landingPageRoute} />
                 }
                 {
-                    (userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN) &&
+                    (userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN) &&
                     <Redirect from={indexRoute} to={adminLandingPageRoute} />
                 }
             </Switch>

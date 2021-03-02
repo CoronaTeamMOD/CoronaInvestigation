@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Typography, IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
 import { SvgIconComponent, MoreVert, CallSplit, LockOpen } from '@material-ui/icons';
 
-import UserType from 'models/enums/UserType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
@@ -49,7 +49,7 @@ const SettingsActions = (props: Props) => {
             disabledMessage: shouldExcludeDisabled() ? 'לחקירה אין קבוצה או שהקבוצה אינה נפתחה': '',
             displayTitle: 'הוצא חקירה מקבוצה',
             onClick: () => excludeInvestigationFromGroup(epidemiologyNumber, groupId),
-            show: userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN
+            show: userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN
         },
         {
             key: 2,
