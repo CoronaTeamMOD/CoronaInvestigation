@@ -13,7 +13,8 @@ const useStyles = makeStyles(() => ({
     },
     readMoreLink : {
         color: theme.palette.primary.main,
-        textDecoration: 'underline'
+        textDecoration: 'underline',
+        marginLeft: '0.25rem'
     }
 }));
 
