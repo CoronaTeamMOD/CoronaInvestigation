@@ -41,7 +41,7 @@ const Row = (props: Props) => {
                 <Select
                    id={`person-contactType-${personInfo}`}
                    disabled={doesExist}
-                   defaultValue={1}
+                   defaultValue={doesExist ? contact.contactType : 1}
                    onChange={(e) => {handleContactTypeChange(e.target.value)}} 
                 >
                     <MenuItem value={1}>הדוק</MenuItem>
@@ -53,7 +53,7 @@ const Row = (props: Props) => {
                 <TextField
                     id={`pesron-extraInfo-${personInfo}`}
                     disabled={doesExist}
-                    defaultValue={''}
+                    defaultValue={doesExist ? contact.extraInfo : ''}
                     onChange={(e) => {handleExtraInfoChange(e.target.value)}}
                     onKeyPress={(e) => {
                         if (e.key === 'Enter') {
