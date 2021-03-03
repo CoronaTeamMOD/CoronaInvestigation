@@ -8,7 +8,7 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 const useReachContact = (props: Props) => {
-    const { errors } = useFormContext();
+    const { errors, getValues } = useFormContext();
     const { saveContact, parsePerson, formValues, index } = props;
     const { alertWarning , alertError } = useCustomSwal();
 
@@ -32,7 +32,8 @@ const useReachContact = (props: Props) => {
                 }).then((result) => {
                     if (result.value) {
                         onChange(selectedStatus?.id);
-                        saveContact(parsePerson(formValues, index));
+                        let contacted_person = getValues().form[index];
+                        saveContact(parsePerson(contacted_person, index));
                     }
                 });
             } else {
