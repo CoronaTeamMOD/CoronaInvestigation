@@ -494,7 +494,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     patientCity ? patientCity.displayName : '',
                                     desk,
                                     county,
-                                    { id: user.id, userName: user.userName, isActive: user.isActive },
+                                    { id: user.id, userName: user.userName, isActive: user.isActive, authorityName: user.authorityByAuthorityId?.authorityName },
                                     investigation.comment,
                                     statusReason,
                                     wasInvestigationTransferred,
@@ -627,7 +627,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.age]: row.age,
             [TableHeadersNames.city]: row.city,
             [TableHeadersNames.subOccupation]: row.subOccupation,
-            [TableHeadersNames.investigatorName]: row.investigator.userName,
+            [TableHeadersNames.investigatorName]: row.investigator.authorityName ? 
+                                                    row.investigator.userName + " - " + row.investigator.authorityName : 
+                                                    row.investigator.userName,
             [investigatorIdPropertyName]: row.investigator.id,
             [TableHeadersNames.investigationStatus]: row.mainStatus,
             [TableHeadersNames.investigationSubStatus]: row.subStatus,
@@ -916,7 +918,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             patientCity ? patientCity.displayName : '',
                             desk,
                             county,
-                            { id: user.id, userName: user.userName, isActive: user.isActive },
+                            { id: user.id, userName: user.userName, isActive: user.isActive, authorityName: user.authorityByAuthorityId?.authorityName },
                             investigation.comment,
                             statusReason,
                             wasInvestigationTransferred,
