@@ -22,6 +22,7 @@ const useAdminLandingPage = (parameters: Parameters) => {
     const { alertError } = useCustomSwal();
 
     const history = useHistory<HistoryState>();
+    const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
     const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
 
     const getInvestigationInfoFilter = () => {
@@ -71,7 +72,7 @@ const useAdminLandingPage = (parameters: Parameters) => {
     useEffect(() => {
         fetchInvestigationStatistics();
         updateFilterHistory();
-    }, [investigationInfoFilter, displayedCounty])
+    }, [investigationInfoFilter, displayedCounty, userType])
 
     const fetchInvestigationStatistics = () => {
         const unallocatedCountLogger = logger.setup('query investigation statistics');

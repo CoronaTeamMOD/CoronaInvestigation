@@ -11,7 +11,7 @@ import logger from 'logger/logger';
 import { persistor } from 'redux/store';
 import { Severity } from 'models/Logger';
 import { TimeRange } from 'models/TimeRange';
-import userType from 'models/enums/UserType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import Investigator from 'models/Investigator';
 import StoreStateType from 'redux/storeStateType';
 import { BC_TABS_NAME } from 'models/BroadcastMessage';
@@ -194,8 +194,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [isBadgeInVisible, setIsBadgeInVisible] = useState<boolean>(true);
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
-    const isLoggedIn = useSelector<StoreStateType, boolean>(state => state.user.isLoggedIn);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
+    const isLoggedIn = useSelector<StoreStateType, boolean>(state => state.user.isLoggedIn);
+    const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
     const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
@@ -298,7 +299,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const canChangeStatusNewToInProcess = (investigationStatus: Number, investigationInvestigator?: string) => {
         return investigationStatus === InvestigationMainStatusCodes.NEW &&
-            (user.userType === userType.INVESTIGATOR || investigationInvestigator === user.id);
+            (userType === UserTypeCodes.INVESTIGATOR || investigationInvestigator === user.id);
     };
 
     const fetchAllInvestigationStatuses = () => {
@@ -380,7 +381,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             filterRules: Object.values(filterRules).reduce((obj, item) => Object.assign(obj, item) , {}),
         };
 
-        if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
+        if (userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN) {
             investigationsLogger.info('user is admin so landingPage/groupInvestigations route is chosen', Severity.LOW);
             return axios.post('landingPage/groupInvestigations', {...requestData, county: displayedCounty})
         }
@@ -543,7 +544,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             fetchTableData();
         }
         setIsBadgeInVisible(!Boolean(Object.values(filterRules).find(item => item !== null)))
-    }, [isLoggedIn, filterRules, orderBy, currentPage, displayedCounty]);
+    }, [isLoggedIn, filterRules, orderBy, currentPage, displayedCounty, userType]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const investigationClickLogger = logger.setupVerbose({
@@ -950,7 +951,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const isAdmin = user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN;
+    const isAdmin = userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN;
 
     const noAdminFilterTitle = rows.length === 0 ? noInvestigationsMessage : welcomeMessage;;
 

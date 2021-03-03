@@ -7,7 +7,7 @@ import County from 'models/County';
 import Language from 'models/Language';
 import UserTypeModel from 'models/UserType';
 import activeStatus from 'models/ActiveStatus';
-import UserTypeEnum from 'models/enums/UserType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import SourceOrganization from 'models/SourceOrganization';
@@ -55,7 +55,7 @@ const UsersFilter: React.FC<Props> = (props: Props) => {
                 />
             </FormInput>
             {
-                userType === UserTypeEnum.SUPER_ADMIN &&
+                userType === UserTypeCodes.SUPER_ADMIN &&
                 <FormInput fieldName='נפות'>
                     <GenericAutoComplete
                         options={counties}

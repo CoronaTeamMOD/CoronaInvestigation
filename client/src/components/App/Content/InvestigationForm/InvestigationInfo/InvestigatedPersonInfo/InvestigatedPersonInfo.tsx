@@ -5,7 +5,7 @@ import React, { ChangeEvent, useEffect, useMemo } from 'react';
 import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
 import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl, Tooltip } from '@material-ui/core';
 
-import UserType from 'models/enums/UserType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
 import formatDate from 'Utils/DateUtils/formatDate';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
@@ -108,7 +108,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     const isMandatoryInfoMissing: boolean = !birthDate && !fullName && !isLoading;
 
     const isStatusDisable = (status: number) => {
-        if (userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN) {
+        if (userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN) {
             return status === InvestigationMainStatusCodes.NEW && wasInvestigationReopend
         }
         return status === InvestigationMainStatusCodes.NEW;
