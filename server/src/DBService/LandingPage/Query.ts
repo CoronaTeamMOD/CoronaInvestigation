@@ -63,6 +63,10 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
           displayName
           id
         }
+        authorityByAuthorityId{
+          id
+          authorityName
+        }
       }
       investigationGroupByGroupId {
         investigationGroupReasonByReason {
@@ -135,6 +139,10 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
           districtByDistrictId {
             displayName
           }
+        }
+        authorityByAuthorityId{
+          id
+          authorityName
         }
       }
       investigationGroupByGroupId {
