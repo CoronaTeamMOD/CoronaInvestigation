@@ -29,6 +29,7 @@ interface DBExposure extends Omit<Exposure, 'exposureAddress'> {
 const useExposuresSaving = () => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
+    const complexityReasonsId = useSelector<StoreStateType, any>((state) => state.investigation.complexReasonsId);
 
     const saveResortsData = (data : ResortData) : Promise<void> => {
         let { wasInEilat, wasInDeadSea } = data;
@@ -42,11 +43,37 @@ const useExposuresSaving = () => {
         });
     } 
 
+    const updateInvestigationReasonId = (epidemiologyNumber: number, newComplexityReasonId: number) => {
+        axios.post('/investigationInfo/updateComplexityReason', {
+            epidemiologyNumberInput: epidemiologyNumber,
+            newComplexityReasonId: newComplexityReasonId})
+            .then(() => {})
+            .catch((err) => {})
+    }
+
+    const removeInvestigationReasonId = (epidemiologyNumber: number, oldComplexityReasonId: number) => {
+        axios.post('/investigationInfo/deleteComplexityReason', {
+            epidemiologyNumberInput: epidemiologyNumber,
+            oldComplexityReasonId: oldComplexityReasonId})
+            .then(() => {})
+            .catch((err) => {})
+    }
+
+    const checkUpdateInvestigationReasonId = (filteredExposures: (Exposure | DBExposure)[]) => {
+        if (filteredExposures.length > 0  && !(complexityReasonsId.includes(13))) {
+            updateInvestigationReasonId(epidemiologyNumber, 13)
+        }
+        if (filteredExposures.length == 0  && complexityReasonsId.includes(13)) {
+            removeInvestigationReasonId(epidemiologyNumber, 13)
+        }
+    }
+
     const saveExposureAndFlightData = async (data : FormData , ids : (number | null)[]) : Promise<void> => {
         let { exposures, wereFlights, wereConfirmedExposures } = data;
         const formattedExposure = exposures ? formatExposures(exposures , ids) : [];
         let exposuresToDelete : number[] = [];
         let filteredExposures : (Exposure | DBExposure)[] = [];
+
         const saveExposureAndFlightDataLogger = logger.setup('Saving Exposures And Flights');
 
         if (!wereFlights && !wereConfirmedExposures) {
@@ -63,7 +90,7 @@ const useExposuresSaving = () => {
             filteredExposures = (filteredExposures as Exposure[]).map(extractExposureData);
         }
         saveExposureAndFlightDataLogger.info('launching the server request', Severity.LOW);
-
+        checkUpdateInvestigationReasonId(filteredExposures)
         return axios.post('/exposure/updateExposures', {
             exposures: filteredExposures,
             investigationId: epidemiologyNumber,
