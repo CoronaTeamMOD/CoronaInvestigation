@@ -29,7 +29,7 @@ const ReachContact = (props: Props) => {
     const { isFieldDisabled } = useContactFields(formValues.contactStatus);
 
     const { changeContactStatus } = useReachContact({
-        saveContact, parsePerson, formValues, index,
+        saveContact, parsePerson, formValues, index
     });
 
     return (
