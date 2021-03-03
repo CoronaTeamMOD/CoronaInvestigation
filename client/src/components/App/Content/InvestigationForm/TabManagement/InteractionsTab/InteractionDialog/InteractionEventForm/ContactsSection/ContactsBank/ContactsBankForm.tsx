@@ -26,7 +26,7 @@ const ContactsBankForm = (props: Props) => {
                 </Typography>
             </Grid>
             <Grid item xs={12}>
-                <Paper>
+                <Paper className={classes.wrapper}>
                     <ContactsBankSearchBar
                         id='contacts-bank-search-bar'
                         onSearchClick={(query) => { 
