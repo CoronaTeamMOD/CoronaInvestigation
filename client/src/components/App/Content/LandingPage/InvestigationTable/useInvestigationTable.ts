@@ -29,7 +29,8 @@ import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCr
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
 import AllocatedInvestigator from 'models/InvestigationTable/AllocateInvestigatorDialog/AllocatedInvestigator';
-import {setComplexReasons} from 'redux/ComplexReasons/complexReasonsActionCreators';
+import { setComplexReasons } from 'redux/ComplexReasons/complexReasonsActionCreators';
+import { setComplexReasonsId } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
 import { filterCreators } from './FilterCreators';
@@ -572,7 +573,16 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setIsBadgeInVisible(!Boolean(Object.values(filterRules).find(item => item !== null)))
     }, [isLoggedIn, filterRules, orderBy, currentPage, displayedCounty]);
 
-    const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
+    const onInvestigationRowClick = async (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
+        const epidemiologyNum :number = investigationRow.epidemiologyNumber
+        await axios.get('/investigationInfo/getComplexityReason/'+ epidemiologyNum)
+            .then((result) => {
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    setComplexReasonsId(result.data)
+                } else { setComplexReasonsId([]) }
+            })
+            .catch((err) => {})
+
         const investigationClickLogger = logger.setupVerbose({
             workflow: 'opening an investigation',
             investigation: investigationRow.epidemiologyNumber,

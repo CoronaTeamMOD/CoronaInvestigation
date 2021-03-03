@@ -9,7 +9,8 @@ import {
     GET_SUB_STATUSES_BY_STATUS, 
     GET_INVESTIGAION_SETTINGS_FAMILY_DATA,
     GROUP_ID_BY_EPIDEMIOLOGY_NUMBER,
-    GET_INVESTIGATION_COMPLEXITY_REASONS
+    GET_INVESTIGATION_COMPLEXITY_REASONS,
+    GET_INVESTIGATION_COMPLEXITY_REASON_ID
 } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
@@ -336,6 +337,17 @@ investigationInfo.post('/deleteComplexityReason', (request: Request, response: R
         .catch(error => {
             response.status(errorStatusCode).send(error);
         })
+});
+
+investigationInfo.get('/getComplexityReason/:epidemiologyNumber', (request: Request, response: Response) => {
+    const queryVariables = { epidemiologyNumber: parseInt(request.params.epidemiologyNumber) }
+    return graphqlRequest(GET_INVESTIGATION_COMPLEXITY_REASON_ID, response.locals, queryVariables)
+    .then((result) => {
+        response.send(result.data.investigationByEpidemiologyNumber.complexityReasonsId);
+    })
+    .catch(error => {
+        response.status(errorStatusCode).send(error);
+    })
 });
 
 

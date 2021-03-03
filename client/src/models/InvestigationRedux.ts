@@ -4,6 +4,7 @@ import SymptomsExistenceInfo from './SymptomsExistenceInfo';
 
 interface InvestigationRedux extends SymptomsExistenceInfo {
     epidemiologyNumber: number;
+    complexReasonsId: (number|null)[];
     investigationStatus: InvestigationStatus;
     investigatedPatient: InvestigatedPatient;
     creator: string;

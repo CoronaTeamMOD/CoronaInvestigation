@@ -110,3 +110,11 @@ query getAllInvestigationComplexityReasons {
   }
 } 
 `;
+
+export const GET_INVESTIGATION_COMPLEXITY_REASON_ID = gql`
+query getinvestigationReasonId ($epidemiologyNumber: Int!) {
+  investigationByEpidemiologyNumber(epidemiologyNumber: $epidemiologyNumber) {
+    complexityReasonsId
+  }
+}
+`;
