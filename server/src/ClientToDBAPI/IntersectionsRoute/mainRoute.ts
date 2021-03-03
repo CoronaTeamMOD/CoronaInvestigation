@@ -9,12 +9,16 @@ import { GetInvolvedContactsResponse, InvolvedContactDB} from '../../Models/Cont
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
 import {
-    CREATE_OR_EDIT_CONTACT_EVENT, DELETE_CONTACT_EVENT, DELETE_CONTACT_EVENTS_BY_DATE, DELETE_CONTACTED_PERSON, 
-    CREATE_CONTACTED_PERSON, DUPLICATE_PERSON
+    CREATE_OR_EDIT_CONTACT_EVENT, DELETE_CONTACT_EVENT, 
+    DELETE_CONTACT_EVENTS_BY_DATE, DELETE_CONTACTED_PERSON, 
+    CREATE_CONTACTED_PERSON, DUPLICATE_PERSON, 
+    ADD_CONTACTS_FROM_BANK
 } from '../../DBService/ContactEvent/Mutation';
 import {
-    GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_ALL_CONTACT_TYPES,
-    GET_ALL_INVOLVED_CONTACTS, CONTACTS_BY_GROUP_ID, CONTACTS_BY_CONTACTS_IDS
+    GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, 
+    GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_ALL_CONTACT_TYPES,
+    GET_ALL_INVOLVED_CONTACTS, CONTACTS_BY_GROUP_ID, 
+    CONTACTS_BY_CONTACTS_IDS
 } from '../../DBService/ContactEvent/Query';
 
 const intersectionsRoute = Router();
@@ -123,14 +127,12 @@ intersectionsRoute.post('/createContactEvent', handleInvestigationRequest, (requ
         user: response.locals.user.id,
         investigation: epidemiologyNumber
     });
-
     const parameters = {
         event: JSON.stringify({
             contactEvents: extractInteractions(request.body),
             investigationId: epidemiologyNumber
         })
     };
-
     createContactEventLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     graphqlRequest(CREATE_OR_EDIT_CONTACT_EVENT, response.locals, parameters)
         .then(result => {
@@ -347,6 +349,31 @@ intersectionsRoute.delete('/deleteContactEventsByDate', (request: Request, respo
         deleteEventsByDateLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.status(errorStatusCode).send(error);
     });
+});
+
+intersectionsRoute.post('/addContactsFromBank', handleInvestigationRequest, (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
+    const addContactsFromBankLogger = logger.setup({
+        workflow: 'add contacts to event from contacts bank',
+        user: response.locals.user.id,
+        investigation: epidemiologyNumber
+    });
+
+    const parameters = {
+        contactEventId: request.body.contactEventId,
+        contacts: JSON.stringify({contacts: request.body.contacts})
+    };
+
+    addContactsFromBankLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+    graphqlRequest(ADD_CONTACTS_FROM_BANK, response.locals, parameters)
+        .then(result => {
+            addContactsFromBankLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result);
+        })
+        .catch(error => {
+            addContactsFromBankLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
 });
 
 export default intersectionsRoute;

@@ -4,6 +4,8 @@ import User from '../../Models/User/User';
 import UserPatch from '../../Models/User/UserPatch';
 import { Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
+import handleUsersRequest from '../../middlewares/HandleUsersRequest';
+import handleCountyRequest from '../../middlewares/HandleCountyRequest';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
 import UpdateUserResponse from '../../Models/User/UpdateUserResponse';
 import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
@@ -42,7 +44,7 @@ usersRoute.get('/userActivityStatus', (request: Request, response: Response) => 
         })
 })
 
-usersRoute.post('/updateSourceOrganizationById', adminMiddleWare, (request: Request, response: Response) => {
+usersRoute.post('/updateSourceOrganizationById', handleUsersRequest, (request: Request, response: Response) => {
     const updateSourceOrganizationLogger = logger.setup({
         workflow: 'update user source organization',
         user: response.locals.user.id,
@@ -64,7 +66,7 @@ usersRoute.post('/updateSourceOrganizationById', adminMiddleWare, (request: Requ
         })
 })
 
-usersRoute.post('/updateDesk', adminMiddleWare, (request: Request, response: Response) => {
+usersRoute.post('/updateDesk', handleUsersRequest, (request: Request, response: Response) => {
     const updateDeskLogger = logger.setup({
         workflow: 'update user desk',
         user: response.locals.user.id,
@@ -86,7 +88,7 @@ usersRoute.post('/updateDesk', adminMiddleWare, (request: Request, response: Res
         })
 })
 
-usersRoute.post('/updateCounty', adminMiddleWare, (request: Request, response: Response) => {
+usersRoute.post('/updateCounty', handleUsersRequest, (request: Request, response: Response) => {
     const updateCountyLogger = logger.setup({
         workflow: 'update user county',
         user: response.locals.user.id,
@@ -136,7 +138,7 @@ usersRoute.post('/updateIsUserActive', (request: Request, response: Response) =>
     updateIsUserActive(response, response.locals.user.id, request.body.isActive);
 })
 
-usersRoute.post('/updateIsUserActiveById', adminMiddleWare, (request: Request, response: Response) => {
+usersRoute.post('/updateIsUserActiveById', handleUsersRequest, (request: Request, response: Response) => {
     updateIsUserActive(response, request.body.userId, request.body.isActive);
 })
 
@@ -409,7 +411,7 @@ usersRoute.put('', (request: Request, response: Response) => {
         });
 });
 
-usersRoute.post('/county', adminMiddleWare, (request: Request, response: Response) => {
+usersRoute.post('/county', handleCountyRequest, (request: Request, response: Response) => {
     const countyLogger = logger.setup({
         workflow: 'query users by current user\'s county id',
         user: response.locals.user.id

@@ -5,14 +5,14 @@ import { useState, useEffect } from 'react';
 import User from 'models/User';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
+import UserType from 'models/UserType';
 import Language from 'models/Language';
 import { Severity } from 'models/Logger';
 import SignUpUser from 'models/SignUpUser';
-import UserTypeModel from 'models/UserType';
 import SortOrder from 'models/enums/SortOrder';
-import UserTypeEnum from 'models/enums/UserType';
 import StoreStateType from 'redux/storeStateType';
 import SignUpFields from 'models/enums/SignUpFields';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import SourceOrganization from 'models/SourceOrganization';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
@@ -31,11 +31,12 @@ interface CellNameSort {
     direction: SortOrder | undefined;
 };
 
+const unassignedUserName = 'לא משויך';
+
 const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUsersManagementInCome): useUsersManagementOutCome => {
     
     const [users, setUsers] = useState<SignUpUser[]>([]);
     const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([])
-    const [userTypes, setUserTypes] = useState<UserTypeModel[]>([]);
     const [languages, setLanguages] = useState<Language[]>([]);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [userDialog, setUserDialog] = useState<UserDialog>({ isOpen: false, info: {} });
@@ -46,6 +47,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
+    const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);    
     const countyDisplayName = useSelector<StoreStateType, string>(state => state.user.data.countyByInvestigationGroup.displayName);
 
     const { alertError, alertWarning } = useCustomSwal();
@@ -57,7 +59,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         const fetchUsersLogger = logger.setup('Fetching users');
         fetchUsersLogger.info('launching users request', Severity.LOW);
         setIsLoading(true);
-        if (user.userType === UserTypeEnum.ADMIN || user.userType === UserTypeEnum.SUPER_ADMIN) {
+        if (userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN) {
             axios.post('/users/county', {
                 page: {
                     number: page,
@@ -104,23 +106,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             });
     };
 
-    const fetchUserTypes = () => {
-        const fetchUserTypesLogger = logger.setup('Fetching userTypes');
-        fetchUserTypesLogger.info('launching userTypes request', Severity.LOW);
-        axios.get('/users/userTypes')
-            .then(result => {
-                if (result?.data && result.headers['content-type'].includes('application/json'))
-                {
-                    setUserTypes(result.data);
-                    fetchUserTypesLogger.info('got results back from the server', Severity.LOW);
-                } 
-            })
-            .catch(() => {
-                alertError('לא ניתן היה לקבל סוגי משתמשים');
-                fetchUserTypesLogger.error('didnt get results back from the server', Severity.HIGH);       
-            });
-    };
-
     const fetchLanguages = () => {
         const fetchLanguagesLogger = logger.setup('Fetching languages');
         fetchLanguagesLogger.info('launching languages request', Severity.LOW);
@@ -154,21 +139,20 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
 
     useEffect(() => {
         fetchSourcesOrganization();
-        fetchUserTypes();
         fetchLanguages();
     }, []);
 
     useEffect(() => {
         setPage(defaultPage);
         page === defaultPage && fetchUsers();
-    }, [filterRules, cellNameSort, displayedCounty]);
+    }, [filterRules, cellNameSort, displayedCounty, userType]);
 
     useEffect(() => {
         fetchUsers();
-    }, [page, user.userType]);
+    }, [page, userType]);
 
     useEffect(() => {
-        setCounter(users.length);
+        setCounter(users.filter((user => user.userName !== unassignedUserName)).length);
     }, [users])
     
     const watchUserInfo = (row: any) => {
@@ -305,7 +289,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     return {
         users,
         sourcesOrganization,
-        userTypes,
         languages,
         totalCount,
         userDialog,
@@ -335,7 +318,6 @@ interface useUsersManagementInCome {
 interface useUsersManagementOutCome {
     users: SignUpUser[];
     sourcesOrganization: SourceOrganization[];
-    userTypes: UserTypeModel[];
     languages: Language[];
     totalCount: number;
     userDialog: UserDialog;

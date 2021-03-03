@@ -3,13 +3,13 @@ import { useContext } from 'react';
 import { groupedInvestigationsContext } from 'commons/Contexts/GroupedInvestigationFormContext';
 
 const useTableRows = () => {
-    const groupedInvestigationsContextState = useContext(groupedInvestigationsContext);
+    const {groupedInvestigationContacts , setGroupedInvestigationContacts} = useContext(groupedInvestigationsContext);
     const handleCheckboxToggle = (id : number) => {
-        const rowIndex = groupedInvestigationsContextState.groupedInvestigationContacts.indexOf(id);
+        const rowIndex = groupedInvestigationContacts.indexOf(id);
         if(rowIndex === -1) {
-            groupedInvestigationsContextState.setGroupedInvestigationContacts([...groupedInvestigationsContextState.groupedInvestigationContacts , id]);
+            setGroupedInvestigationContacts([...groupedInvestigationContacts , id]);
         } else {
-            groupedInvestigationsContextState.setGroupedInvestigationContacts(groupedInvestigationsContextState.groupedInvestigationContacts.filter(row => row !== id));
+            setGroupedInvestigationContacts(groupedInvestigationContacts.filter(row => row !== id));
         }
     }
 

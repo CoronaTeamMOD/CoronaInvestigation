@@ -11,7 +11,7 @@ import TimeForm from './InteractionTimeForm/InteractionTimeForm';
 import ExternalizationForm from './InteractionExternalizationForm/InteractionExternalizationForm';
 import repetitiveFieldTools from '../RepetitiveEventForm/hooks/repetitiveFieldTools';
 
-const InteractionDetailsFields = ({index, interactionDate}: Props) => {
+const InteractionDetailsFields = ({index, interactionDate, defaultDate}: Props) => {
     const {control, watch} = useFormContext();
 
     const placeType = watch(InteractionEventDialogFields.PLACE_TYPE);
@@ -41,7 +41,10 @@ const InteractionDetailsFields = ({index, interactionDate}: Props) => {
                 </FormInput>
             }
 
-            <ExternalizationForm occurrenceIndex={index}/>
+            {
+                defaultDate &&
+                <ExternalizationForm occurrenceIndex={index}/>
+            }
         </>
     );
 };
@@ -49,6 +52,7 @@ const InteractionDetailsFields = ({index, interactionDate}: Props) => {
 interface Props {
     index?: number;
     interactionDate: Date;
+    defaultDate: Boolean;
 }
 
 export default InteractionDetailsFields;

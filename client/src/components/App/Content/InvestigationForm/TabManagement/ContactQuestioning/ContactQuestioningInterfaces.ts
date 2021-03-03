@@ -2,13 +2,15 @@ import { Dispatch, SetStateAction } from 'react';
 
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
+import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
+
 export interface FormInputs {
     form : InteractedContact[]
 }
 export interface useContactQuestioningParameters {
     id: number;
-    allContactedInteractions: InteractedContact[];
-    setAllContactedInteractions: Dispatch<SetStateAction<InteractedContact[]>>;
+    allContactedInteractions: GroupedInteractedContact[];
+    setAllContactedInteractions: Dispatch<SetStateAction<GroupedInteractedContact[]>>;
     setFamilyRelationships: Dispatch<SetStateAction<FamilyRelationship[]>>;
     setContactStatuses: Dispatch<SetStateAction<FamilyRelationship[]>>;
     getValues: () => FormInputs;
@@ -25,7 +27,7 @@ export interface useContactQuestioningOutcome {
     checkAllContactsForDuplicateIds: () => boolean;
     onSubmit: (data: React.FormEvent) => void;
     parsePerson: (
-        person: InteractedContact,
+        person: GroupedInteractedContact,
         index: number
     ) => InteractedContact;
 }

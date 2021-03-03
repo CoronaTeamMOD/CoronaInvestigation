@@ -9,6 +9,8 @@ import { setFormState } from 'redux/Form/formActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import GroupedInteractedContact,
+       { GroupedInteractedContactEvent } from 'models/ContactQuestioning/GroupedInteractedContact';
 
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 import {
@@ -16,6 +18,7 @@ import {
     useContactQuestioningOutcome,
     useContactQuestioningParameters,
 } from './ContactQuestioningInterfaces';
+import { string } from 'yup';
     
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {
@@ -135,6 +138,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     );
                     const interactedContacts: InteractedContact[] = result.data.map((contact: any) =>
                         ({
+                            personInfo : contact.personInfo,
+                            placeName: contact.contactEventByContactEvent.placeName,
                             id: contact.id,
                             firstName: contact.personByPersonInfo.firstName,
                             lastName: contact.personByPersonInfo.lastName,
@@ -185,9 +190,9 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             involvementReason: contact.involvementReason,
                             involvedContactId: contact.involvedContactId,
                         })
-                    )
-
-                    setAllContactedInteractions(interactedContacts);
+                    );
+                    const groupedInteractedContacts = groupSimilarContactedPersons(interactedContacts);
+                    setAllContactedInteractions(groupedInteractedContacts);
                 } else {
                     interactedContactsLogger.warn(
                         'got respond from the server without data',
@@ -258,23 +263,42 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const parsePerson = (person: InteractedContact, index: number) => {
         let updatedPerson = person;
         updatedPerson.contactDate = allContactedInteractions[index].contactDate;
-        updatedPerson.contactEvent =
-            allContactedInteractions[index].contactEvent;
+        updatedPerson.contactEvent = allContactedInteractions[index].contactEvent;
         updatedPerson.contactType = allContactedInteractions[index].contactType;
-        updatedPerson.creationTime =
-            allContactedInteractions[index].creationTime;
+        updatedPerson.creationTime = allContactedInteractions[index].creationTime;
         updatedPerson.extraInfo = allContactedInteractions[index].extraInfo;
         updatedPerson.firstName = allContactedInteractions[index].firstName;
         updatedPerson.gender = allContactedInteractions[index].gender;
         updatedPerson.id = allContactedInteractions[index].id;
-        updatedPerson.involvedContactId =
-            allContactedInteractions[index].involvedContactId;
-        updatedPerson.involvementReason =
-            allContactedInteractions[index].involvementReason;
+        updatedPerson.involvedContactId = allContactedInteractions[index].involvedContactId;
+        updatedPerson.involvementReason = allContactedInteractions[index].involvementReason;
         updatedPerson.lastName = allContactedInteractions[index].lastName;
 
         return updatedPerson;
     };
+
+    const groupSimilarContactedPersons = (interactedContacts: InteractedContact[]) => {
+        let contactsMap = new Map<number , GroupedInteractedContact>();
+        interactedContacts.forEach(contact => {
+            const { personInfo } = contact;
+            if(personInfo){
+                const existingContactType = (contactsMap.get(personInfo)?.contactType);
+                const newEvent : GroupedInteractedContactEvent = {
+                    date : contact.contactDate,
+                    name : contact.placeName || '',
+                    contactType : +contact.contactType
+                }
+                const newEventArr = (contactsMap.get(personInfo)?.contactEvents || []).concat(newEvent);
+                
+                contactsMap.set(personInfo, {
+                    ...contact, 
+                    contactType: (existingContactType && +existingContactType === 1) ? existingContactType : contact.contactType,
+                    contactEvents : newEventArr,
+                });
+            }
+        });
+        return Array.from(contactsMap).map(contact => contact[1]);
+    }
 
     return {
         saveContact,

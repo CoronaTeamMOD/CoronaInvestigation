@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 import { ALPHANUMERIC_TEXT_REGEX } from 'commons/Regex/Regex';
 import InteractedContactFields from 'models/enums/InteractedContact';
-import ContactStatusCodes from 'models/enums/ContactStatusCodes';
+import ContactType from 'models/enums/ContactType';
 
 export const contactQuestioningClinical = {
     [InteractedContactFields.FAMILY_RELATIONSHIP]: yup.number().nullable(),
@@ -11,11 +11,11 @@ export const contactQuestioningClinical = {
         .boolean()
         .nullable(),
     [InteractedContactFields.ISOLATION_ADDRESS]: yup.object()
-    .when(InteractedContactFields.CONTACT_STATUS, {
-        is: ContactStatusCodes.COMPLETED,
-        then: yup.object().nullable(),
-        otherwise: yup.object().shape({
-                 'city': yup.string().nullable()
-             })
+    .when(InteractedContactFields.DOES_NEED_ISOLATION, {
+        is: true,
+        then: yup.object().shape({
+            'city': yup.string().nullable().required('שגיאה: שדה חובה')
+        }),
+        otherwise: yup.object().nullable()
     })
 };

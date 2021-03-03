@@ -71,6 +71,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     fieldNameWithIcon: {
         display: 'flex',
         alignItems: 'center'
+    },
+    eventRow: {
+        fontSize: '20px',
+        '& p': {
+            marginRight: '15px'
+        }
     }
 }));
 

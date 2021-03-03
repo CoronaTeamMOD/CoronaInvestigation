@@ -147,7 +147,10 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                                     ? <RepetitiveEventForm selectedDate={interactionData.startTime}/>
                                     : <>
                                         <DetailsFieldsTitle date={interactionData.startTime}/>
-                                        <InteractionDetailsFields interactionDate={interactionData.startTime}/>
+                                        <InteractionDetailsFields 
+                                            interactionDate={interactionData.startTime} 
+                                            defaultDate={true}
+                                        />
                                     </>
                             )
                         }

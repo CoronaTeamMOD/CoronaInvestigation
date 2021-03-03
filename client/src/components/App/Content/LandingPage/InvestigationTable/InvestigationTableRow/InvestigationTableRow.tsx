@@ -7,10 +7,11 @@ import { Checkbox, IconButton, TableCell, TableRow, TextField, Tooltip } from '@
 
 import Desk from 'models/Desk';
 import User from 'models/User';
-import UserType from 'models/enums/UserType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import formatDate from 'Utils/DateUtils/formatDate';
 import InvestigationTableRowType from 'models/InvestigationTableRow';
 
+import CommentCell from './CommentCell/CommentCell';
 import useStyles from './InvestigationTableRowStyles';
 import { useTooltipStyles } from '../InvestigationTableStyles';
 import SettingsActions from '../SettingsActions/SettingsActions';
@@ -39,8 +40,8 @@ const RowTooltip = (props: RowTooltipProps) => {
 
     const title = (creationDate || startTime)
         ? <>
-            {<InfoItem size='small' name='תאריך הגעת החקירה' value={creationDateLabel} />}
-            {<InfoItem size='small' name='תאריך תחילת החקירה' value={startTimeLabel} />}
+            {<InfoItem size='small' name='הגעת החקירה' value={creationDateLabel} />}
+            {<InfoItem size='small' name='תחילת החקירה' value={startTimeLabel} />}
         </>
         : noDataMessage;
 
@@ -122,7 +123,7 @@ const InvestigationTableRow = ({
             case TableHeadersNames.color:
                 return (
                     Boolean(indexedRow.groupId) ?
-                        <Tooltip arrow placement='top' title={indexedRow.otherReason !== '' ? indexedRow.otherReason : indexedRow.groupReason}>
+                        <Tooltip arrow placement='top' title={indexedRow.otherReason !== '' && indexedRow.otherReason !== ' ' ? indexedRow.otherReason : indexedRow.groupReason}>
                             <div className={classes.groupColor}
                                 style={{ backgroundColor: groupColor }}
                             />
@@ -150,7 +151,7 @@ const InvestigationTableRow = ({
                 )
             case TableHeadersNames.investigationDesk:
                 if (selected && deskAutoCompleteClicked && !disabled &&
-                    (user.userType === UserType.ADMIN || user.userType === UserType.SUPER_ADMIN) && !wasInvestigationFetchedByGroup) {
+                    (user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) && !wasInvestigationFetchedByGroup) {
                     return (
                         <Autocomplete
                             options={desks}
@@ -181,8 +182,11 @@ const InvestigationTableRow = ({
                     <div>{subOccupation || '-'}</div>
                 </Tooltip>
             case TableHeadersNames.comment:
-                return <ClickableTooltip disabled={disabled} value={indexedRow[cellName as keyof typeof TableHeadersNames]}
-                    defaultValue='אין הערה' scrollableRef={tableContainerRef.current} InputIcon={Comment} />
+                return (
+                    <CommentCell 
+                        comment={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                    />
+                )
 
             case TableHeadersNames.phoneNumber:
                 return <ClickableTooltip disabled={disabled} value={indexedRow[cellName as keyof typeof TableHeadersNames]}
@@ -197,7 +201,7 @@ const InvestigationTableRow = ({
             case TableHeadersNames.multipleCheck:
                 return (
                     <>
-                        {(!wasInvestigationFetchedByGroup) && user.userType !== UserType.INVESTIGATOR &&
+                        {(!wasInvestigationFetchedByGroup) && user.userType !== UserTypeCodes.INVESTIGATOR &&
                             <Checkbox onClick={onMultiCheckClick} color='primary' checked={checked} size='small'
                                 className={indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup} />}
                         {indexedRow.canFetchGroup &&

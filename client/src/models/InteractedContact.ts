@@ -4,6 +4,7 @@ import ContactType from './enums/ContactType';
 import Occupations from './enums/Occupations';
 
 interface InteractedContact extends Person {
+    personInfo?: number;
     id: number;
     contactDate: Date;
     contactEvent: number;
@@ -25,6 +26,7 @@ interface InteractedContact extends Person {
     creationTime?: Date;
     involvementReason: number | null;
     involvedContactId: number | null;
+    placeName?: string;
 };
 
 export default InteractedContact;

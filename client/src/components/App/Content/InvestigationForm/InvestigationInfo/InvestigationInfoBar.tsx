@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
-import UserType from 'models/enums/UserType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
@@ -121,7 +121,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
             showConfirmButton: false
         });
         timeout(LandingPageTimer).then(() =>
-            (userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN) ? history.push(adminLandingPageRoute) : history.push(landingPageRoute));
+            (userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN) ? history.push(adminLandingPageRoute) : history.push(landingPageRoute));
     };
 
     const updateComment = (comment: string | null) => {

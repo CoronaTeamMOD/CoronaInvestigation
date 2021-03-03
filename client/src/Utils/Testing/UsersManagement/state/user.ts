@@ -7,6 +7,9 @@ const user = (userType : number) => {
             }
         },
         displayedCounty: 555,
+        userTypes: [
+            {id: 1, displayName: 'חוקר'}
+        ]
     }
 }
 

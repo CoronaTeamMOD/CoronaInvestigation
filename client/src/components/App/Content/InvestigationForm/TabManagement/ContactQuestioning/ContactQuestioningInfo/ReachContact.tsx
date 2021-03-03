@@ -8,6 +8,7 @@ import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InteractedContact from 'models/InteractedContact';
 import useContactFields from 'Utils/Contacts/useContactFields';
 import InteractedContactFields from 'models/enums/InteractedContact';
+import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 import useReachContact from './useReachContact';
 import useStyles from '../ContactQuestioningStyles';
@@ -28,7 +29,7 @@ const ReachContact = (props: Props) => {
     const { isFieldDisabled } = useContactFields(formValues.contactStatus);
 
     const { changeContactStatus } = useReachContact({
-        saveContact, parsePerson, formValues, index,
+        saveContact, parsePerson, formValues, index
     });
 
     return (
@@ -96,5 +97,5 @@ interface Props {
     index: number;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;
-    parsePerson: (person: InteractedContact, index: number) => InteractedContact;
+    parsePerson: (person: GroupedInteractedContact, index: number) => InteractedContact;
 }

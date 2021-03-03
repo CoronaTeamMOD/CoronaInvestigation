@@ -5,9 +5,10 @@ import ContactStatus from 'models/ContactStatus';
 import InteractedContact from 'models/InteractedContact';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 const useReachContact = (props: Props) => {
-    const { errors } = useFormContext();
+    const { errors, getValues } = useFormContext();
     const { saveContact, parsePerson, formValues, index } = props;
     const { alertWarning , alertError } = useCustomSwal();
 
@@ -31,6 +32,8 @@ const useReachContact = (props: Props) => {
                 }).then((result) => {
                     if (result.value) {
                         onChange(selectedStatus?.id);
+                        let contacted_person = getValues().form[index];
+                        saveContact(parsePerson(contacted_person, index));
                     }
                 });
             } else {
@@ -43,6 +46,7 @@ const useReachContact = (props: Props) => {
             }
         } else if (selectedStatus?.id) {
             onChange(selectedStatus?.id);
+            saveContact(parsePerson(formValues, index));
         }
     };
 
@@ -55,7 +59,7 @@ export default useReachContact;
 
 interface Props {
     saveContact: (interactedContact: InteractedContact) => boolean;
-    parsePerson: (person: InteractedContact, index: number) => InteractedContact;
-    formValues: InteractedContact;
+    parsePerson: (person: GroupedInteractedContact, index: number) => InteractedContact;
+    formValues: GroupedInteractedContact;
     index: number;
 }

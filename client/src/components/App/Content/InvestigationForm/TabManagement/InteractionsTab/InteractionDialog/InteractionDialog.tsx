@@ -4,27 +4,27 @@ import React, {useContext, useMemo, useState} from 'react';
 import {FormProvider, useForm,} from 'react-hook-form';
 import {Dialog, DialogTitle, DialogContent, DialogActions, Button, Tooltip} from '@material-ui/core';
 
+import theme from 'styles/theme';
 import Contact from 'models/Contact';
-import InvolvedContact from 'models/InvolvedContact';
 import PlaceSubType from 'models/PlaceSubType';
-import {groupedInvestigationsContext} from 'commons/Contexts/GroupedInvestigationFormContext';
+import InvolvedContact from 'models/InvolvedContact';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import {ContactBankContextProvider , ContactBankOption} from 'commons/Contexts/ContactBankContext';
+import {GroupedInvestigationsContextProvider} from 'commons/Contexts/GroupedInvestigationFormContext';
+import {familyMembersContext, FamilyMembersDataContextProvider} from 'commons/Contexts/FamilyMembersContext';
 import InteractionEventDialogData, {DateData, OccuranceData} from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
-import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import {familyMembersContext} from 'commons/Contexts/FamilyMembersContext';
 
 import useStyles from './InteractionDialogStyles';
 import useInteractionsForm from './InteractionEventForm/useInteractionsForm';
+import InteractionFormTabSwitchButton from './InteractionFormTabSwitchButton';
 import ContactsTabs from './InteractionEventForm/ContactsSection/ContactsTabs';
 import InteractionEventSchema from './InteractionEventForm/InteractionSection/InteractionEventSchema';
 import ContactTypeKeys from './InteractionEventForm/ContactsSection/ManualContactsForm/ContactForm/ContactTypeKeys';
+import repetitiveFieldTools from './InteractionEventForm/InteractionSection/RepetitiveEventForm/hooks/repetitiveFieldTools';
 import InteractionEventForm, {InteractionEventFormProps} from './InteractionEventForm/InteractionSection/InteractionEventForm';
-import InteractionFormTabSwitchButton from './InteractionFormTabSwitchButton';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import repetitiveFieldTools
-    from './InteractionEventForm/InteractionSection/RepetitiveEventForm/hooks/repetitiveFieldTools';
-import theme from 'styles/theme';
 
 const filTimeValidationMessage = 'יש למלא שעה';
 const repetitiveWithoutDatesSelectedErrorMessage = 'שים לב שלא ניתן לשמור אירוע מחזורי עם תאריך אחד בלבד';
@@ -34,9 +34,8 @@ const InteractionDialog = (props: Props) => {
     const {isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction} = props;
     const [isAddingContacts, setIsAddingContacts] = React.useState(false);
     const [groupedInvestigationContacts, setGroupedInvestigationContacts] = useState<number[]>([]);
-    const groupedInvestigationsContextState = useContext(groupedInvestigationsContext);
-    groupedInvestigationsContextState.groupedInvestigationContacts = groupedInvestigationContacts;
-    groupedInvestigationsContextState.setGroupedInvestigationContacts = setGroupedInvestigationContacts;
+    const [contactBank, setContactBank] = useState<Map<number, ContactBankOption>>(new Map());
+    
     const { alertWarning } = useCustomSwal();
 
     const methods = useForm<InteractionEventDialogData>({
@@ -72,7 +71,8 @@ const InteractionDialog = (props: Props) => {
         loadInteractions,
         loadInvolvedContacts,
         onDialogClose,
-        groupedInvestigationContacts
+        groupedInvestigationContacts,
+        contactBank
     });
 
     const addFamilyMemberContacts = (contacts: Contact[]) => {
@@ -200,6 +200,45 @@ const InteractionDialog = (props: Props) => {
         return (!data.unknownTime && (!data.startTime || !data.endTime));
     };
 
+    const getPersonMap = () => {
+        const allInteractionPersons = interactions.flatMap(interaction => interaction.contacts);
+        const personMap = new Map<number,Contact>();
+        allInteractionPersons.forEach(person => {
+            const {personInfo} = person;
+            personInfo && personMap.set(personInfo, person);
+        });
+        return personMap;
+    }
+
+    const getExistingPersonInfos = () => {
+        return interactionData?.contacts.map(contact => contact.personInfo);
+    };
+
+    const contactBankProviderState = {
+        contactBank, 
+        setContactBank, 
+        existingEventPersonInfos : getExistingPersonInfos()
+    };
+
+    const getEventContactIds = () => {
+        return interactionData?.contacts.map(contact => contact.identificationNumber);
+    };
+
+    const groupedInvestigationProviderState = {
+        groupedInvestigationContacts, 
+        setGroupedInvestigationContacts,
+        eventContactIds : getEventContactIds()
+    };
+
+    const getEventFamilyMembersIds = () => {
+        return interactionData?.contacts.map(contact => contact.identificationNumber);
+    };
+
+    const familyMembersDataProviderState = {
+        familyMembers, 
+        eventFamilyMembersIds : getEventFamilyMembersIds()
+    };
+
     const validateAndHandleSubmit = methods.handleSubmit(
         () => {
             const datesHaveError =
@@ -231,9 +270,16 @@ const InteractionDialog = (props: Props) => {
                             isNewInteraction={isNewInteraction}
                             onPlaceSubTypeChange={onPlaceSubtypeChange}
                         />
-                        <ContactsTabs
-                            isVisible={isAddingContacts}
-                        />
+                        <GroupedInvestigationsContextProvider value={groupedInvestigationProviderState}>
+                            <FamilyMembersDataContextProvider value={familyMembersDataProviderState}>
+                                <ContactBankContextProvider value={contactBankProviderState}>
+                                    <ContactsTabs
+                                        isVisible={isAddingContacts}
+                                        existingPersons={getPersonMap()}
+                                    />
+                                </ContactBankContextProvider>
+                            </FamilyMembersDataContextProvider>
+                        </GroupedInvestigationsContextProvider>
                     </form>
                 </DialogContent>
                 <DialogActions className={`${classes.dialogFooter}`}>

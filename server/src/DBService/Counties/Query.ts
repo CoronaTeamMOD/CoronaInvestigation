@@ -14,3 +14,11 @@ query allCounties {
   }
 }
 `;
+
+export const DISTRICT_BY_COUNTY = gql`
+query DistrictByCounty($id : Int!) {
+  countyById(id: $id){
+    districtId
+  }
+}
+`;

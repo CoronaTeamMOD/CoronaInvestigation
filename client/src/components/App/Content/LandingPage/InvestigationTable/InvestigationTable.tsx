@@ -14,7 +14,7 @@ import React, { useMemo, useState, useRef, useEffect } from 'react';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
-import userType from 'models/enums/UserType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import SearchBar from 'commons/SearchBar/SearchBar';
@@ -209,11 +209,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }
 
     const isInvestigationRowClickable = (investigationStatus: InvestigationMainStatus) =>
-        !(user.userType === userType.INVESTIGATOR && investigationStatus.id === InvestigationMainStatusCodes.DONE)
+        !(user.userType === UserTypeCodes.INVESTIGATOR && investigationStatus.id === InvestigationMainStatusCodes.DONE)
 
     const counterDescription: string = useMemo(() => {
         const adminMessage = `, ${unassignedInvestigationsCount} לא מוקצות`;
-        return `${totalCount} חקירות סה"כ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
+        return `${totalCount} חקירות סה"כ${(user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) ? adminMessage : ``}`;
 
     }, [tableRows, unassignedInvestigationsCount]);
 
@@ -258,7 +258,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             <Grid className={classes.title} container alignItems='center'>
                 <Grid container xs={9} direction='row' alignItems='center'>
                     {
-                        (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) &&
+                        (user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) &&
                         <Tooltip title={returnToAdminLandingPage}>
                             <IconButton color='primary' onClick={() => history.push(adminLandingPageRoute , { deskFilter, timeRangeFilter })}>
                                 <ArrowForward />
@@ -341,7 +341,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         <TableHead>
                             <TableRow>
                                 {
-                                    Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key) => (
+                                    Object.values((user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) ? adminCols : userCols).map((key) => (
                                         <TableCell
                                             classes={{ stickyHeader: classes.horizontalSticky }}
                                             className={classes.tableHeaderCell + ' ' + (key === TableHeadersNames.investigatorName ? classes.columnBorder : '')}
@@ -373,7 +373,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     <>
                                         <InvestigationTableRow
                                             complexityReasonsId={row.complexityReasonsId}
-                                            columns={(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols}
+                                            columns={(user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) ? adminCols : userCols}
                                             groupColor={investigationColor.current.get(indexedRow.groupId)}
                                             selected={selectedRow.epidemiologyNumber === indexedRow.epidemiologyNumber}
                                             deskAutoCompleteClicked={deskAutoCompleteClicked}
@@ -419,7 +419,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                 return (
                                                     <InvestigationTableRow
                                                         complexityReasonsId={row.complexityReasonsId}
-                                                        columns={(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols}
+                                                        columns={(user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) ? adminCols : userCols}
                                                         groupColor={investigationColor.current.get(indexedRow.groupId)}
                                                         selected={selectedRow.epidemiologyNumber === indexedRow.epidemiologyNumber}
                                                         deskAutoCompleteClicked={deskAutoCompleteClicked}

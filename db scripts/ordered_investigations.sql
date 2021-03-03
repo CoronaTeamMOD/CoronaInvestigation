@@ -1,3 +1,5 @@
+-- DROP FUNCTION public.ordered_investigations(order_by character varying)
+
 CREATE OR REPLACE FUNCTION public.ordered_investigations(order_by character varying)
  RETURNS SETOF investigation
  LANGUAGE sql
@@ -58,6 +60,24 @@ order by
 	CASE WHEN order_by='investigationStatusASC' THEN (select display_name from
 															public.investigation_status
 															where id = investigation.investigation_status)  END ASC,
+	CASE WHEN order_by='subOccupationDESC' THEN (
+	select sub_occupation.display_name FROM public.sub_occupation
+	join public.investigated_patient ON sub_occupation.id = investigated_patient.sub_occupation
+	where investigated_patient.id = investigation.investigated_patient_id
+	) END DESC,
+	CASE WHEN order_by='subOccupationASC' THEN (
+	select sub_occupation.display_name FROM public.sub_occupation
+	join public.investigated_patient ON sub_occupation.id = investigated_patient.sub_occupation
+	where investigated_patient.id = investigation.investigated_patient_id
+	) END ASC,
+	CASE WHEN order_by='investigationDeskDESC' THEN (
+	select desk_name FROM public.desks
+	where id = investigation.desk_id
+	) END DESC,
+	CASE WHEN order_by='investigationDeskASC' THEN (
+	select desk_name FROM public.desks
+	where id = investigation.desk_id
+	) END ASC,
 	CASE WHEN order_by='investigatorNameDESC' THEN (
 	select user_name from public.user
 	where id = investigation.creator

@@ -13,6 +13,7 @@ export const SET_INVESTIGATION_STATUS = 'SET_INVESTIGATION_STATUS';
 export const SET_END_TIME = 'SET_END_TIME';
 export const SET_CREATOR = 'SET_CREATOR';
 export const SET_DATES_TO_INVESTIGATE_PARAMS = 'SET_DATES_TO_INVESTIGATE_PARAMS';
+export const RESET_STATE = 'RESET_STATE';
 
 interface SetEpidemiologyNum {
     type: typeof SET_EPIDEMIOLOGY_NUM,
@@ -74,6 +75,10 @@ interface SetDatesToInvestigateParams {
     payload: {symptomsExistenceInfo?: SymptomsExistenceInfo, validationDate?: Date}
 }
 
+interface ResetStateParams {
+    type: typeof RESET_STATE,
+}
+
 export type InvestigationAction = SetEpidemiologyNum | SetComplexReasonsId | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId
  | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetEndTime 
- | SetCreator | SetDatesToInvestigateParams;
+ | SetCreator | SetDatesToInvestigateParams |  ResetStateParams;

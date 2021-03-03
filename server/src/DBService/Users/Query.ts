@@ -1,5 +1,4 @@
 import { gql } from 'postgraphile';
-import InvestigationMainStatusCodes from '../../Models/InvestigationStatus/InvestigationMainStatusCodes';
 
 export const GET_IS_USER_ACTIVE = gql`
     query isUserActive($id: String!){
@@ -14,6 +13,7 @@ query GetUser($id: String!) {
     userById(id: $id) {
       investigationGroup
       isActive
+      isDeveloper
       phoneNumber
       serialNumber
       userName
@@ -119,11 +119,22 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter:
 
 export const GET_ALL_USER_TYPES = gql`
 query allUserTypes {
-  allUserTypes(orderBy: DISPLAY_NAME_ASC) {
+  allUserTypes(orderBy: ID_ASC) {
     nodes {
       displayName
     	id
     }
   }
 }
+`;
+
+export const DISTRICT_COUNTY_BY_USER = gql`
+query GetUser($id: String!) {
+    userById(id: $id) {
+      investigationGroup
+      countyByInvestigationGroup {
+        districtId
+      }
+    }
+  }   
 `;

@@ -4,7 +4,7 @@ import { Autocomplete } from '@material-ui/lab';
 
 import County from 'models/County';
 import Language from 'models/Language';
-import UserTypeModel from 'models/UserType';
+import UserType from 'models/UserType';
 import activeStatus from 'models/ActiveStatus';
 import SourceOrganization from 'models/SourceOrganization';
 
@@ -36,7 +36,7 @@ const GenericAutoComplete: React.FC<GenericAutoCompleteProps> = (props: GenericA
 export default GenericAutoComplete;
 
 interface GenericAutoCompleteProps {
-    options: SourceOrganization[] | Language[] | County[] | UserTypeModel[] | activeStatus[];
+    options: SourceOrganization[] | Language[] | County[] | UserType[] | activeStatus[];
     handleChange: (selectedValues: any) => void;
     inputRootClass?: string;
 };
