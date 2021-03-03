@@ -5,7 +5,8 @@ const filterCreators = {
             search: {
                 or: [
                     { userName: { includes: value } },
-                    { id: { includes: value } }
+                    { id: { includes: value } },
+                    { authorityByAuthorityId: {authorityName : { includes: value }}}
                 ]
             }
         } 

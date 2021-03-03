@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: 'center'
     },
     tableContainer: {
-        width: '90vw',
+        width: '95vw',
         height: '70vh',
     },
     autoComplete: {

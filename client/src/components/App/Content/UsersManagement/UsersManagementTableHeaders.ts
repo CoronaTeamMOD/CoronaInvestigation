@@ -1,7 +1,10 @@
+import authorityReducer from "redux/Authority/authorityReducer";
+
 export enum UsersManagementTableHeadersNames {
     FULL_NAME = 'fullName',
     USER_NAME = 'userName',
     SOURCE_ORGANIZATION = 'sourceOrganization',
+    AUTHORITY  = 'authority',
     LANGUAGES = 'languages',
     MABAR_USER_NAME = 'id',
     COUNTY = 'investigationGroup',
@@ -15,6 +18,7 @@ export enum UsersManagementTableHeadersNames {
 export const UsersManagementTableHeaders = {
     [UsersManagementTableHeadersNames.USER_NAME]: 'שם',
     [UsersManagementTableHeadersNames.SOURCE_ORGANIZATION]: 'מסגרת',
+    [UsersManagementTableHeadersNames.AUTHORITY]: 'שם הרשות',
     [UsersManagementTableHeadersNames.LANGUAGES]: 'שפות מדוברות',
     [UsersManagementTableHeadersNames.MABAR_USER_NAME]: 'מזהה',
     [UsersManagementTableHeadersNames.COUNTY]: 'נפה',

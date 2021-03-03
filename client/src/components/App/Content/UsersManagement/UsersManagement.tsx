@@ -39,12 +39,13 @@ interface CellNameSort {
 
 export const usersManagementTitle = 'ניהול משתמשים';
 const sourceOrganizationLabel = 'מסגרת';
-const searchBarLabel = 'הכנס שם או שם משתמש...';
+const searchBarLabel = 'הכנס שם, שם משתמש או שם רשות...';
 const deactivateAllCountyUsersText = 'כיבוי כל החוקרים בנפה';
 
 export const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, UsersManagementTableHeadersNames.LANGUAGES,
                                        UsersManagementTableHeadersNames.COUNTY, UsersManagementTableHeadersNames.USER_TYPE,
-                                       UsersManagementTableHeadersNames.DESK, UsersManagementTableHeadersNames.EDIT];
+                                       UsersManagementTableHeadersNames.DESK, UsersManagementTableHeadersNames.EDIT,
+                                       UsersManagementTableHeadersNames.AUTHORITY];
 
 const UsersManagement: React.FC = () => {
     const [page, setPage] = useState<number>(defaultPage);
@@ -107,6 +108,9 @@ const UsersManagement: React.FC = () => {
                         </IconButton>
                     </Tooltip>
                 )
+            }
+            case UsersManagementTableHeadersNames.AUTHORITY:{
+                return row[cellName]?.authorityName
             }
             case UsersManagementTableHeadersNames.DESK: {
                 return (
