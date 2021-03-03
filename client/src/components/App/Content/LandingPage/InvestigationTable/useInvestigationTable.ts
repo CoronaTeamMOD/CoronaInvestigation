@@ -40,7 +40,6 @@ import {
 } from './InvestigationTablesHeaders';
 import { DeskFilter, HistoryState, StatusFilter, SubStatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
 import InvestigationSubStatus from 'models/InvestigationSubStatus';
-import { investigators } from 'Utils/Testing/InvestigatorAllocation/state';
 
 const investigationURL = '/investigation';
 const getFlooredRandomNumber = (min: number, max: number): number => (
