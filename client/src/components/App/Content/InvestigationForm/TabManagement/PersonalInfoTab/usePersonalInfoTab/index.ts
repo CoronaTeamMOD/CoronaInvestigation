@@ -35,7 +35,7 @@ const usePersonalInfoTab = (): usePersonalInfoTabOutcome => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>((state) => state.investigation.investigationStatus);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
-    const complexityReasonsId = useSelector<StoreStateType, any>((state) => state.investigation.complexReasonsId);
+    const complexityReasonsId = useSelector<StoreStateType,(number|null)[]>((state) => state.investigation.complexReasonsId);
 
     const getSubOccupations = (parentOccupation: string) => {
         const subOccupationsLogger = logger.setup('Fetching Sub Occupation by Parent Occupation');

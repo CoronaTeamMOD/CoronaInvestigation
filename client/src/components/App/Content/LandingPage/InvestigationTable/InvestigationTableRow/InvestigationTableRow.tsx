@@ -58,7 +58,7 @@ const RowTooltip = (props: RowTooltipProps) => {
 };
 
 interface Props {
-    complexityReasonsId: Array<number | null>;
+    complexityReasonsId: (number|null)[];
     columns: string[];
     groupColor?: string;
     selected: boolean;

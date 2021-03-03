@@ -1,4 +1,4 @@
-DROP FUNCTION public.delete_investigation_reasons_id(integer, integer);
+-- DROP FUNCTION public.delete_investigation_reasons_id(integer, integer);
 
 CREATE OR REPLACE FUNCTION public.delete_investigation_reasons_id(
 	IN oldComplexityReasonId integer,

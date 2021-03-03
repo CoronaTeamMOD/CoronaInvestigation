@@ -4,7 +4,7 @@ import InvestigationMainStatus from '../../Models/InvestigationStatus/Investigat
 interface GroupedInvestigations {
     allInvestigations: {
         nodes: [{
-            complexityReasonsId: Array<number | null>;
+            complexityReasonsId: (number|null)[];
             comment: string;
             epidemiologyNumber: number;
             complexityCode: number;

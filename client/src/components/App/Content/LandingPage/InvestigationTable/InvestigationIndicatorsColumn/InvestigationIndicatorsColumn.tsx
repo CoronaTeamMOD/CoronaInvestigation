@@ -13,7 +13,7 @@ const complexInvestigationMessage = 'חקירה מורכבת';
 const InvestigationIndicatorsColumn = (props: Props) => {
     const { isComplex, wasInvestigationTransferred, transferReason, isSelfInvestigated, selfInvestigationStatus, selfInvestigationUpdateTime, complexityReasonsId } = props;
     const allComplexReasons = useSelector<StoreStateType, (number|null)[]>(state => state.complexReasons);
-    const investigationComplexityReasons = !!complexityReasonsId && complexityReasonsId.map((id) => !!id && allComplexReasons[id - 1]).toString()
+    const investigationComplexityReasons = (complexityReasonsId) && complexityReasonsId.map((id) => (id) && allComplexReasons[id - 1]).toString()
     const complexInvestigationText = investigationComplexityReasons ? `${complexInvestigationMessage}: ${investigationComplexityReasons}` : `${complexInvestigationMessage}: אחר`;
 
     return (
@@ -47,7 +47,7 @@ const InvestigationIndicatorsColumn = (props: Props) => {
 interface Props {
     wasInvestigationTransferred: boolean;
     isComplex: boolean;
-    complexityReasonsId: Array<number | null>;
+    complexityReasonsId: (number|null)[];
     transferReason: string;
     isSelfInvestigated: boolean;
     selfInvestigationStatus: number;
