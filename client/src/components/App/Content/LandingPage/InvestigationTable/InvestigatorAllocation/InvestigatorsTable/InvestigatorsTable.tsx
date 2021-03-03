@@ -74,7 +74,7 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
             case TableHeadersNames.sourceOrganization:
                 const sourceOrganization: string = get(investigator, cellName);
                 const authorityName: string | null = investigator.authorityName;
-                return (sourceOrganization === authoritySourceOrganization && authorityName) ? `${get(investigator, cellName)}-${authorityName}` : get(investigator, cellName);
+                return (sourceOrganization === authoritySourceOrganization && authorityName) ? `${get(investigator, cellName)} - ${authorityName}` : get(investigator, cellName);
             case TableHeadersNames.languages: {
                 const languages: string[] = get(investigator, cellName);
                 if (languages?.length > 2) {
