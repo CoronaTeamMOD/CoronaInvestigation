@@ -1,7 +1,5 @@
 import axios from 'axios';
-import { useSelector } from 'react-redux';
 
-import StoreStateType from 'redux/storeStateType';
 import { PersonalInfoDbData } from 'models/Contexts/PersonalInfoContextData';
 import { Exposure } from 'commons/Contexts/ExposuresAndFlights';
 import logger from 'logger/logger';
