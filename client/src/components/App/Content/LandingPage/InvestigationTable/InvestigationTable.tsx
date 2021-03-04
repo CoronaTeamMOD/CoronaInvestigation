@@ -96,7 +96,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
         statusFilter, subStatusFilter, changeStatusFilter, changeSubStatusFilter, deskFilter, changeDeskFilter, changeSearchFilter,
         changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers,
-        tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter,updateDateFilter, nonContactFilter
+        tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter,updateDateFilter, nonContactFilter, fetchAllGroupedInvestigations
     } = useInvestigationTable({
         setSelectedRow, allGroupedInvestigations, setAllStatuses, currentPage, setCurrentPage, setAllGroupedInvestigations,
         investigationColor, setAllSubStatuses
@@ -206,6 +206,25 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             setCheckGroupedInvestigationOpen(checkGroupedInvestigationOpen.filter(rowId => rowId !== epidemiologyNumber)) :
             setCheckGroupedInvestigationOpen([...checkGroupedInvestigationOpen, epidemiologyNumber])
     }
+
+    const expandAllGroupedInvestigations = async () => {
+        await fetchAllGroupedInvestigations();
+
+        const InvestigationsToExpand = Array.from(allGroupedInvestigations)
+            .flatMap(groupedInvestigations => groupedInvestigations[1]
+                .map(investigation => investigation.epidemiologyNumber)
+            )
+
+        setCheckGroupedInvestigationOpen(InvestigationsToExpand);
+    }
+
+    const collapseAllGroupedInvestigations = async () => {
+        setCheckGroupedInvestigationOpen([]);
+    }
+
+    useEffect(() => {
+        expandAllGroupedInvestigations();
+    }, [tableRows])
 
     const isInvestigationRowClickable = (investigationStatus: InvestigationMainStatus) =>
         !(user.userType === UserTypeCodes.INVESTIGATOR && investigationStatus.id === InvestigationMainStatusCodes.DONE)
