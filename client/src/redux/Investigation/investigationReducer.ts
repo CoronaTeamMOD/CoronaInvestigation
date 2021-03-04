@@ -6,6 +6,7 @@ import * as Actions from './investigationActionTypes';
 
 const initialState: InvestigationRedux = {
     epidemiologyNumber: defaultEpidemiologyNumber,
+    complexReasonsId: [null],
     investigationStatus: {
         mainStatus: -1,
         subStatus: '',
@@ -31,6 +32,7 @@ const initialState: InvestigationRedux = {
 const investigationReducer = (state = initialState, action: Actions.InvestigationAction): InvestigationRedux => {
     switch (action.type) {
         case Actions.SET_EPIDEMIOLOGY_NUM: return { ...state, epidemiologyNumber: action.payload.epidemiologyNumber }
+        case Actions.SET_COMPLEX_REASONS_ID: return { ...state, complexReasonsId: action.payload.complexReasonsId }
         case Actions.SET_INVESTIGATED_PATIENT_ID: return { ...state, investigatedPatient: { ...state.investigatedPatient, investigatedPatientId: action.payload.investigatedPatientId } }
         case Actions.SET_IS_DECEASED: return { ...state, investigatedPatient: { ...state.investigatedPatient, isDeceased: action.payload.isDeceased } }
         case Actions.SET_IS_CURRENTLY_HOSPITIALIZED: return { ...state, investigatedPatient: { ...state.investigatedPatient, isCurrentlyHospitialized: action.payload.isCurrentlyHospitialized } }

@@ -37,6 +37,7 @@ export interface useInvestigationTableParameters {
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     setSelectedRow: React.Dispatch<React.SetStateAction<SelectedRow>>;
     setAllStatuses: React.Dispatch<React.SetStateAction<InvestigationMainStatus[]>>;
+    setAllComplexReasons: React.Dispatch<React.SetStateAction<(number|null)[]>>;
     setAllSubStatuses: React.Dispatch<React.SetStateAction<InvestigationSubStatus[]>>;
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
     setAllGroupedInvestigations: React.Dispatch<React.SetStateAction<Map<string, InvestigationTableRow[]>>>;

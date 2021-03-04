@@ -3,6 +3,7 @@ import { gql } from 'postgraphile';
 export const GET_INVESTIGATION_INFO = gql`
 query InvestigationStaticDetails($investigationId: Int!) {
   investigationByEpidemiologyNumber(epidemiologyNumber: $investigationId) {
+    complexityReasonsId
     comment
     startTime
     lastUpdateTime
@@ -95,6 +96,25 @@ export const GROUP_ID_BY_EPIDEMIOLOGY_NUMBER = gql`
 query groupIdByEpidemiologyNumber($epidemiologynumber: Int!) {
   investigationByEpidemiologyNumber(epidemiologyNumber: $epidemiologynumber) {
     groupId
+  }
+}
+`;
+
+export const GET_INVESTIGATION_COMPLEXITY_REASONS = gql`
+query getAllInvestigationComplexityReasons {
+  allInvestigationComplexityReasons(orderBy: REASON_ID_ASC) {
+    nodes {
+      description
+      reasonId
+    }
+  }
+} 
+`;
+
+export const GET_INVESTIGATION_COMPLEXITY_REASON_ID = gql`
+query getinvestigationReasonId ($epidemiologyNumber: Int!) {
+  investigationByEpidemiologyNumber(epidemiologyNumber: $epidemiologyNumber) {
+    complexityReasonsId
   }
 }
 `;

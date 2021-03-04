@@ -2,6 +2,7 @@ import { InvestigationStatus } from 'models/InvestigationStatus';
 import SymptomsExistenceInfo from 'models/SymptomsExistenceInfo';
 
 export const SET_EPIDEMIOLOGY_NUM = 'SET_EPIDEMIOLOGY_NUM';
+export const SET_COMPLEX_REASONS_ID = 'SET_COMPLEX_REASONS_ID';
 export const SET_INVESTIGATED_PATIENT_ID = 'SET_INVESTIGATED_PATIENT_ID';
 export const SET_IS_DECEASED = 'SET_IS_DECEASED';
 export const SET_IS_CURRENTLY_HOSPITIALIZED = 'SET_IS_CURRENTLY_HOSPITIALIZED';
@@ -17,6 +18,11 @@ export const RESET_STATE = 'RESET_STATE';
 interface SetEpidemiologyNum {
     type: typeof SET_EPIDEMIOLOGY_NUM,
     payload: {epidemiologyNumber: number}
+}
+
+interface SetComplexReasonsId {
+    type: typeof SET_COMPLEX_REASONS_ID,
+    payload: {complexReasonsId: (number|null)[]}
 }
 
 interface SetInvestigatedPatientId {
@@ -73,6 +79,6 @@ interface ResetStateParams {
     type: typeof RESET_STATE,
 }
 
-export type InvestigationAction = SetEpidemiologyNum | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId
+export type InvestigationAction = SetEpidemiologyNum | SetComplexReasonsId | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId
  | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetEndTime 
  | SetCreator | SetDatesToInvestigateParams |  ResetStateParams;

@@ -29,6 +29,8 @@ import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCo
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
 import AllocatedInvestigator from 'models/InvestigationTable/AllocateInvestigatorDialog/AllocatedInvestigator';
+import { setComplexReasons } from 'redux/ComplexReasons/complexReasonsActionCreators';
+import { setComplexReasonsId } from 'redux/Investigation/investigationActionCreators';
 import { resetInvestigationState, setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
@@ -50,6 +52,7 @@ export const createRowData = (
     epidemiologyNumber: number,
     validationDate: string,
     isComplex: boolean,
+    complexityReasonsId: (number|null)[],
     priority: number,
     mainStatus: InvestigationMainStatus,
     subStatus: string,
@@ -82,6 +85,7 @@ export const createRowData = (
     epidemiologyNumber,
     validationDate,
     isComplex,
+    complexityReasonsId,
     priority,
     mainStatus,
     subStatus,
@@ -320,6 +324,24 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             })
     }
 
+    const fetchAllInvestigationComplexityReasons = () => {
+        const investigationStatusesLogger = logger.setup('GraphQL GET statuses request to the DB');
+        axios.get('/investigationInfo/complexityReasons').
+            then((result) => {
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    investigationStatusesLogger.info('The investigations complexity reasons were fetched successfully', Severity.LOW);
+                    const allComplexReasons: (number|null)[] = (result.data).map((reason: { description: any; }) => reason.description)
+                    setComplexReasons(allComplexReasons)
+                } else {
+                    investigationStatusesLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
+                }
+            })
+            .catch((err) => {
+                alertError('לא הצלחנו לשלוף את כל הסיבות לחקירות מורכבות');
+                investigationStatusesLogger.error(err, Severity.HIGH);
+            })
+    }
+
     const fetchAllInvestigationSubStatuses = () => {
         const subStatusesLogger = logger.setup('GraphQL GET sub statuses request to the DB');
         axios.get('/landingPage/investigationSubStatuses').
@@ -342,6 +364,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         resetInvestigationState();
         fetchAllInvestigationStatuses();
         fetchAllInvestigationSubStatuses();
+        fetchAllInvestigationComplexityReasons();
         startWaiting();
     }, []);
 
@@ -485,6 +508,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     investigation.epidemiologyNumber,
                                     covidPatient.validationDate,
                                     investigation.isComplex,
+                                    investigation.complexityReasonsId,
                                     investigation.priority,
                                     investigation.investigationStatusByInvestigationStatus,
                                     subStatus,
@@ -546,7 +570,25 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setIsBadgeInVisible(!Boolean(Object.values(filterRules).find(item => item !== null)))
     }, [isLoggedIn, filterRules, orderBy, currentPage, displayedCounty, userType]);
 
-    const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
+    const onInvestigationRowClick = async (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
+        const epidemiologyNum :number = investigationRow.epidemiologyNumber
+        const getComplexityReasonClickLogger = logger.setupVerbose({
+            workflow: 'get Complexity Reason when opening an investigation',
+            investigation: investigationRow.epidemiologyNumber,
+            user: user.id
+        });
+        await axios.get('/investigationInfo/getComplexityReason/'+ epidemiologyNum)
+            .then((result) => {
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    setComplexReasonsId(result.data)
+                    getComplexityReasonClickLogger.info('the chosen investigation have complexity reasons', Severity.LOW);
+                } else { 
+                    setComplexReasonsId([]) 
+                    getComplexityReasonClickLogger.info('the chosen investigation dont have complexity reasons', Severity.LOW);
+                    }
+            })
+            .catch((errorMessage) => { getComplexityReasonClickLogger.error(errorMessage, Severity.HIGH); })
+
         const investigationClickLogger = logger.setupVerbose({
             workflow: 'opening an investigation',
             investigation: investigationRow.epidemiologyNumber,
@@ -909,6 +951,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             investigation.epidemiologyNumber,
                             covidPatient.validationDate,
                             investigation.isComplex,
+                            investigation.complexityReasonsId,
                             investigation.priority,
                             investigation.investigationStatusByInvestigationStatus,
                             subStatus,

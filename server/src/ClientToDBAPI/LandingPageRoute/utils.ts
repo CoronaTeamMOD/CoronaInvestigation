@@ -6,6 +6,7 @@ import InvestigationMainStatus from '../../Models/InvestigationStatus/Investigat
 interface UserInvestigations {
     orderedInvestigations: {
         nodes: [{
+            complexityReasonsId: (number|null)[];
             comment: string;
             epidemiologyNumber: number;
             complexityCode: number;
@@ -60,6 +61,7 @@ interface UserInvestigations {
 interface GroupIvestigations {
     orderedInvestigations: {
         nodes: [{
+            complexityReasonsId: (number|null)[];
             comment: string;
             epidemiologyNumber: number;
             complexityCode: number;

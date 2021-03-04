@@ -8,7 +8,9 @@ import {
     GET_INVESTIGATION_INFO, 
     GET_SUB_STATUSES_BY_STATUS, 
     GET_INVESTIGAION_SETTINGS_FAMILY_DATA,
-    GROUP_ID_BY_EPIDEMIOLOGY_NUMBER 
+    GROUP_ID_BY_EPIDEMIOLOGY_NUMBER,
+    GET_INVESTIGATION_COMPLEXITY_REASONS,
+    GET_INVESTIGATION_COMPLEXITY_REASON_ID
 } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
@@ -17,7 +19,9 @@ import {
     COMMENT,
     UPDATE_INVESTIGAION_SETTINGS_FAMILY_DATA,
     UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA,
-    CLOSE_ISOLATED_CONTACT
+    CLOSE_ISOLATED_CONTACT,
+    UPDATE_INVESTIGATION_COMPLEXITY_REASON_ID,
+    DELETE_INVESTIGATION_COMPLEXITY_REASON_ID
 } from '../../DBService/InvestigationInfo/Mutation';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
@@ -300,5 +304,81 @@ investigationInfo.get('/groupedInvestigationsId', handleInvestigationRequest, (r
             response.status(errorStatusCode).send(error);
         })
 });
+
+investigationInfo.get('/complexityReasons', (request: Request, response: Response) => {
+    const investigationComplexityReasonsLogger = logger.setup({
+        workflow: 'get all descriptions of investigations complexity reasons',
+        user: response.locals.user.id,
+    });
+    investigationComplexityReasonsLogger.info(launchingDBRequestLog() , Severity.LOW);
+
+    return graphqlRequest(GET_INVESTIGATION_COMPLEXITY_REASONS, response.locals)
+    .then((result) => {
+        investigationComplexityReasonsLogger.info('query from db successfully', Severity.LOW)
+        response.send(result.data.allInvestigationComplexityReasons.nodes);
+    })
+    .catch(error => {
+        investigationComplexityReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+        response.status(errorStatusCode).send(error);
+    })
+});
+
+investigationInfo.post('/updateComplexityReason', (request: Request, response: Response) => {
+    const queryVariables = {epidemiologyNumberInput: request.body.epidemiologyNumberInput, newComplexityReasonId: request.body.newComplexityReasonId};
+    const updateInvestigationComplexityReasonsLogger = logger.setup({
+        workflow: 'get all descriptions of investigations complexity reasons',
+        user: response.locals.user.id,
+        investigation: request.body.epidemiologyNumberInput,
+    });
+    updateInvestigationComplexityReasonsLogger.info(launchingDBRequestLog(queryVariables) , Severity.LOW);
+    return graphqlRequest(UPDATE_INVESTIGATION_COMPLEXITY_REASON_ID, response.locals, queryVariables)
+        .then((result) => {
+            updateInvestigationComplexityReasonsLogger.info('query from db successfully', Severity.LOW)
+            response.send(result.data);
+        })
+        .catch(error => {
+            updateInvestigationComplexityReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        })
+});
+
+investigationInfo.post('/deleteComplexityReason', (request: Request, response: Response) => {
+    const queryVariables = {epidemiologyNumberInput: request.body.epidemiologyNumberInput, oldComplexityReasonId: request.body.oldComplexityReasonId};
+    const deleteInvestigationComplexityReasonsLogger = logger.setup({
+        workflow: 'get all descriptions of investigations complexity reasons',
+        user: response.locals.user.id,
+        investigation: request.body.epidemiologyNumberInput,
+    });
+    deleteInvestigationComplexityReasonsLogger.info(launchingDBRequestLog(queryVariables) , Severity.LOW);
+    return graphqlRequest(DELETE_INVESTIGATION_COMPLEXITY_REASON_ID, response.locals, queryVariables)
+        .then((result) => {
+            deleteInvestigationComplexityReasonsLogger.info('query from db successfully', Severity.LOW)
+            response.send(result.data);
+        })
+        .catch(error => {
+            deleteInvestigationComplexityReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        })
+});
+
+investigationInfo.get('/getComplexityReason/:epidemiologyNumber', (request: Request, response: Response) => {
+    const queryVariables = { epidemiologyNumber: parseInt(request.params.epidemiologyNumber) }
+    const getInvestigationComplexityReasonsLogger = logger.setup({
+        workflow: 'get all descriptions of investigations complexity reasons',
+        user: response.locals.user.id,
+        investigation: request.body.epidemiologyNumberInput,
+    });
+    getInvestigationComplexityReasonsLogger.info(launchingDBRequestLog(queryVariables) , Severity.LOW);
+    return graphqlRequest(GET_INVESTIGATION_COMPLEXITY_REASON_ID, response.locals, queryVariables)
+    .then((result) => {
+        getInvestigationComplexityReasonsLogger.info('query from db successfully', Severity.LOW)
+        response.send(result.data.investigationByEpidemiologyNumber.complexityReasonsId);
+    })
+    .catch(error => {
+        getInvestigationComplexityReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+        response.status(errorStatusCode).send(error);
+    })
+});
+
 
 export default investigationInfo;

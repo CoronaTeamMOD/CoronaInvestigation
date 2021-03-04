@@ -56,4 +56,19 @@ mutation closeIsolateContacts ($epiNumber: Int!) {
 }
 `;
 
+export const UPDATE_INVESTIGATION_COMPLEXITY_REASON_ID = gql`
+mutation investigationReasonId ($epidemiologyNumberInput: Int!, $newComplexityReasonId: Int!) {
+  updateInvestigationReasonsId(input: {epidemiologyNumberInput: $epidemiologyNumberInput, newComplexityReasonId: $newComplexityReasonId}) {
+    clientMutationId
+  }
+}
+`;
+
+export const DELETE_INVESTIGATION_COMPLEXITY_REASON_ID = gql`
+mutation deleteinvestigationReasonId ($epidemiologyNumberInput: Int!, $oldComplexityReasonId: Int!) {
+  deleteInvestigationReasonsId(input: {epidemiologyNumberInput: $epidemiologyNumberInput, oldComplexityReasonId: $oldComplexityReasonId}) {
+    clientMutationId
+  }
+}
+`;
 

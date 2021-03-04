@@ -4,6 +4,7 @@ import {useSelector} from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import {fieldsNames, Exposure } from 'commons/Contexts/ExposuresAndFlights';
+import { checkUpdateInvestigationExposureReasonId } from 'Utils/ComplexityReasons/ComplexityReasonsFunctions';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
@@ -29,6 +30,7 @@ interface DBExposure extends Omit<Exposure, 'exposureAddress'> {
 const useExposuresSaving = () => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
+    const complexityReasonsId = useSelector<StoreStateType, (number|null)[]>((state) => state.investigation.complexReasonsId);
 
     const saveResortsData = (data : ResortData) : Promise<void> => {
         let { wasInEilat, wasInDeadSea } = data;
@@ -40,13 +42,14 @@ const useExposuresSaving = () => {
             wasInDeadSea,
             id: investigatedPatientId,
         });
-    } 
+    }
 
     const saveExposureAndFlightData = async (data : FormData , ids : (number | null)[]) : Promise<void> => {
         let { exposures, wereFlights, wereConfirmedExposures } = data;
         const formattedExposure = exposures ? formatExposures(exposures , ids) : [];
         let exposuresToDelete : number[] = [];
         let filteredExposures : (Exposure | DBExposure)[] = [];
+
         const saveExposureAndFlightDataLogger = logger.setup('Saving Exposures And Flights');
 
         if (!wereFlights && !wereConfirmedExposures) {
@@ -63,7 +66,7 @@ const useExposuresSaving = () => {
             filteredExposures = (filteredExposures as Exposure[]).map(extractExposureData);
         }
         saveExposureAndFlightDataLogger.info('launching the server request', Severity.LOW);
-
+        checkUpdateInvestigationExposureReasonId(filteredExposures, epidemiologyNumber, complexityReasonsId)
         return axios.post('/exposure/updateExposures', {
             exposures: filteredExposures,
             investigationId: epidemiologyNumber,

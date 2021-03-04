@@ -18,6 +18,7 @@ import { PersonalInfoDbData } from 'models/Contexts/PersonalInfoContextData';
 import { setOccupations } from 'redux/Occupations/occupationsActionCreators';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
+import {checkUpdateInvestigationPersonalReasonId} from 'Utils/ComplexityReasons/ComplexityReasonsFunctions';
 
 import { PersonalInfoTabState } from '../PersonalInfoTabInterfaces';
 import { usePersonalInfoTabOutcome } from './usePersonalInfoTabInterfaces';
@@ -35,6 +36,7 @@ const usePersonalInfoTab = (): usePersonalInfoTabOutcome => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>((state) => state.investigation.investigationStatus);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
+    const complexityReasonsId = useSelector<StoreStateType,(number|null)[]>((state) => state.investigation.complexReasonsId);
 
     const getSubOccupations = (parentOccupation: string) => {
         const subOccupationsLogger = logger.setup('Fetching Sub Occupation by Parent Occupation');
@@ -177,6 +179,7 @@ const usePersonalInfoTab = (): usePersonalInfoTabOutcome => {
             personalInfoTabValidationSchema.isValid(data).then(valid => {
                 setFormState(epidemiologyNumber, id, valid);
             })
+            checkUpdateInvestigationPersonalReasonId(personalInfoData, epidemiologyNumber, complexityReasonsId)
         })
     }
 

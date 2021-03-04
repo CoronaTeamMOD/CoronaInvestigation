@@ -11,6 +11,7 @@ export const USER_INVESTIGATIONS = gql`
 query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter) {
   orderedInvestigations(orderBy: $orderBy, filter: $filter, offset: $offset, first: $size) {
     nodes {
+      complexityReasonsId
       comment
       isSelfInvestigated
       selfInvestigationStatus
@@ -85,6 +86,7 @@ export const GROUP_INVESTIGATIONS = (investigationGroup: number) => gql`
 query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter, $unassignedFilter: [InvestigationFilter!]) {
   orderedInvestigations(orderBy: $orderBy, filter: $filter, offset: $offset, first: $size) {
     nodes {
+      complexityReasonsId
       comment
       isSelfInvestigated
       selfInvestigationStatus
