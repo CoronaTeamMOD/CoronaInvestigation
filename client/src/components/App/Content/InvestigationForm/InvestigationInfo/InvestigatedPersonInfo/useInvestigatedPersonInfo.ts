@@ -37,12 +37,12 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         });
     };
 
-    const updateInvestigationStatus = (epidemiologyNumber: number) => {
+    const updateInvestigationStatus = async (epidemiologyNumber: number) => {
         const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
         const statusReason = investigationStatus.statusReason === '' ? null : investigationStatus.statusReason;
         const updateInvestigationStatusLogger = logger.setup('Update Investigation Status');
         updateInvestigationStatusLogger.info('launching investigation status request', Severity.LOW);
-        axios.post('/investigationInfo/updateInvestigationStatus', {
+        await axios.post('/investigationInfo/updateInvestigationStatus', {
             investigationMainStatus: investigationStatus.mainStatus,
             investigationSubStatus: subStatus !== inProcess ? subStatus : null,
             statusReason: statusReason,
@@ -69,13 +69,13 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                 cancelButtonColor: theme.palette.error.main,
                 confirmButtonColor: theme.palette.primary.main,
                 confirmButtonText: 'כן, המשך'
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.value) {
-                    updateInvestigationStatus(epidemiologyNumber);
+                    await updateInvestigationStatus(epidemiologyNumber);
                     if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
-                        updateIsDeceased(handleInvestigationFinish);
+                        await updateIsDeceased(handleInvestigationFinish);
                     } else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
-                        updateIsCurrentlyHospitialized(handleInvestigationFinish);
+                        await updateIsCurrentlyHospitialized(handleInvestigationFinish);
                     } else {
                         handleInvestigationFinish();
                     }

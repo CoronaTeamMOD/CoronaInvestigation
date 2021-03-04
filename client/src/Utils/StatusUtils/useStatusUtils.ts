@@ -17,11 +17,11 @@ const useStatusUtils = () => {
     const investigationEndTime = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime);
     const wasInvestigationReopend = investigationEndTime !== null;
 
-    const updateIsDeceased = (onInvestigationFinish: Function) => {
+    const updateIsDeceased = async (onInvestigationFinish: Function) => {
         const updateIsDeceasedLogger = logger.setup('Update isDeceased');
         if (!investigatedPatient.isDeceased) {
             setIsLoading(true);
-            axios.get('/clinicalDetails/isDeceased/' + investigatedPatient.investigatedPatientId + '/' + true)
+            await axios.get('/clinicalDetails/isDeceased/' + investigatedPatient.investigatedPatientId + '/' + true)
                 .then((result: any) => {
                     updateIsDeceasedLogger.info(`launching isDeceased request succssesfully ${result}`, Severity.LOW);
                     onInvestigationFinish();
@@ -36,11 +36,11 @@ const useStatusUtils = () => {
         }
     }
 
-    const updateIsCurrentlyHospitialized = (onInvestigationFinish: Function) => {
+    const updateIsCurrentlyHospitialized = async (onInvestigationFinish: Function) => {
         const updateIsCurrentlyHospitializedLogger = logger.setup('Update isCurrentlyHospitialized');
         if (!investigatedPatient.isCurrentlyHospitialized) {
             setIsLoading(true);
-            axios.get('/clinicalDetails/isCurrentlyHospitialized/' + investigatedPatient.investigatedPatientId + '/' + true)
+            await axios.get('/clinicalDetails/isCurrentlyHospitialized/' + investigatedPatient.investigatedPatientId + '/' + true)
                 .then((result: any) => {
                     updateIsCurrentlyHospitializedLogger.info(`launching isCurrentlyHospitialized request succssesfully ${result}`, Severity.LOW);
                     onInvestigationFinish();
