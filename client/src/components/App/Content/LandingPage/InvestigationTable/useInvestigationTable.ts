@@ -558,7 +558,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     useEffect(() => {
-        windowTabsBroadcastChannel.current.onmessage = () => fetchTableData();
+        windowTabsBroadcastChannel.current.onmessage = () => {
+            fetchAllGroupedInvestigations();
+            fetchTableData();
+        };
     });
 
     const { startWaiting, onCancel, onOk, snackbarOpen } = usePageRefresh(fetchTableData, TABLE_REFRESH_INTERVAL);
