@@ -377,7 +377,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             }
                                             {
                                                 key === TableHeadersNames.multipleCheck &&
-                                                <Tooltip title={isGroupedExpanded ? 'א' : 'ב'} placement='top' arrow>
+                                                <Tooltip title={(isGroupedExpanded ? 'הסתר' : 'הצג') + ' ' + 'את כל החקירות המקושרות'} placement='top' arrow>
                                                     <IconButton onClick={
                                                         isGroupedExpanded ? collapseAllGroupedInvestigations : expandAllGroupedInvestigations
                                                     }>
