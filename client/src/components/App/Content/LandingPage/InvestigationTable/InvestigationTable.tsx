@@ -7,7 +7,7 @@ import {
     useMediaQuery, Collapse, IconButton, Badge, Grid,
     Slide, Box, useTheme, Popover, Tooltip
 } from '@material-ui/core';
-import { Refresh, ArrowForward } from '@material-ui/icons';
+import { Refresh, ArrowForward, KeyboardArrowDown, KeyboardArrowLeft } from '@material-ui/icons';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useMemo, useState, useRef, useEffect } from 'react';
@@ -72,6 +72,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [shouldOpenPopover, setShouldOpenPopover] = useState<boolean>(false);
     const [isInvestigatorAllocationDialogOpen, setIsInvestigatorAllocationDialogOpen] = useState<boolean>(false);
+    const [isGroupedExpanded, setIsGroupedExpanded] = useState<boolean>(false);
 
     const handleOpenGroupClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -214,17 +215,14 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             .flatMap(groupedInvestigations => groupedInvestigations[1]
                 .map(investigation => investigation.epidemiologyNumber)
             )
-
+        setIsGroupedExpanded(true);
         setCheckGroupedInvestigationOpen(InvestigationsToExpand);
     }
 
     const collapseAllGroupedInvestigations = async () => {
+        setIsGroupedExpanded(false);
         setCheckGroupedInvestigationOpen([]);
     }
-
-    useEffect(() => {
-        expandAllGroupedInvestigations();
-    }, [tableRows])
 
     const isInvestigationRowClickable = (investigationStatus: InvestigationMainStatus) =>
         !(user.userType === UserTypeCodes.INVESTIGATOR && investigationStatus.id === InvestigationMainStatusCodes.DONE)
@@ -376,6 +374,18 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                     direction={orderBy === key ? order : SortOrder.asc}
                                                     onClick={(event: any) => handleRequestSort(event, key)}>
                                                 </TableSortLabel>
+                                            }
+                                            {
+                                                key === TableHeadersNames.multipleCheck &&
+                                                <Tooltip title={isGroupedExpanded ? 'א' : 'ב'} placement='top' arrow>
+                                                    <IconButton onClick={
+                                                        isGroupedExpanded ? collapseAllGroupedInvestigations : expandAllGroupedInvestigations
+                                                    }>
+                                                        {isGroupedExpanded ?
+                                                            <KeyboardArrowDown /> :
+                                                            <KeyboardArrowLeft />}
+                                                    </IconButton>
+                                                </Tooltip>
                                             }
                                         </TableCell>
                                     ))
