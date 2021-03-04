@@ -11,7 +11,7 @@ export const setEpidemiologyNum = (epidemiologyNumber: number): void => {
     })
 };
 
-export const setComplexReasonsId = (complexReasonsId: (number | null)[]): void => {
+export const setComplexReasonsId = (complexReasonsId: (number|null)[]): void => {
     store.dispatch({
         type: actionTypes.SET_COMPLEX_REASONS_ID,
         payload: { complexReasonsId }
