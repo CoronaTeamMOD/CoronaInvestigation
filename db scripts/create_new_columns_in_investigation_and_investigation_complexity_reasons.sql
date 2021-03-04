@@ -14,3 +14,7 @@ values(12, 'מוטציה');
 
 insert into public.investigation_complexity_reasons
 values(13, 'חזר מחו"ל');
+
+UPDATE public.investigation_complexity_reasons 
+SET description = 'מערכת הבריאות' 
+WHERE reason_id = 9;

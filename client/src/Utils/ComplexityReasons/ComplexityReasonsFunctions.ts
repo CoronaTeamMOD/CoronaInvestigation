@@ -43,7 +43,7 @@ export const checkUpdateInvestigationPersonalReasonId = (personalInfoData: Perso
     if (personalInfoData.insuranceCompany === null || personalInfoData.insuranceCompany === `אף אחד מהנ"ל` && !(complexityReasonsId.includes(6))) {
         updateInvestigationReasonId(epidemiologyNumber, 6);
     }
-    if (personalInfoData.institutionName !== ''  && !(complexityReasonsId.includes(7))) {
+    if (personalInfoData.role === 4  && !(complexityReasonsId.includes(7))) {
         updateInvestigationReasonId(epidemiologyNumber, 7);
     }
     if (personalInfoData.relevantOccupation === "מערכת החינוך"  && !(complexityReasonsId.includes(8))) {
@@ -56,7 +56,7 @@ export const checkUpdateInvestigationPersonalReasonId = (personalInfoData: Perso
     if (personalInfoData.insuranceCompany !== null && personalInfoData.insuranceCompany !== `אף אחד מהנ"ל` && complexityReasonsId.includes(6)) {
         removeInvestigationReasonId(epidemiologyNumber, 6);
     }
-    if (personalInfoData.institutionName == ''  && complexityReasonsId.includes(7)) {
+    if (personalInfoData.role !== 4  && complexityReasonsId.includes(7)) {
         removeInvestigationReasonId(epidemiologyNumber, 7);
     }
     if (personalInfoData.relevantOccupation !== "מערכת החינוך"  && complexityReasonsId.includes(8)) {
