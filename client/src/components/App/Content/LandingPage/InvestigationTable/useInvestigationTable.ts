@@ -572,13 +572,22 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const onInvestigationRowClick = async (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const epidemiologyNum :number = investigationRow.epidemiologyNumber
+        const getComplexityReasonClickLogger = logger.setupVerbose({
+            workflow: 'get Complexity Reason when opening an investigation',
+            investigation: investigationRow.epidemiologyNumber,
+            user: user.id
+        });
         await axios.get('/investigationInfo/getComplexityReason/'+ epidemiologyNum)
             .then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     setComplexReasonsId(result.data)
-                } else { setComplexReasonsId([]) }
+                    getComplexityReasonClickLogger.info('the chosen investigation have complexity reasons', Severity.LOW);
+                } else { 
+                    setComplexReasonsId([]) 
+                    getComplexityReasonClickLogger.info('the chosen investigation dont have complexity reasons', Severity.LOW);
+                    }
             })
-            .catch((err) => {})
+            .catch((errorMessage) => { getComplexityReasonClickLogger.error(errorMessage, Severity.HIGH); })
 
         const investigationClickLogger = logger.setupVerbose({
             workflow: 'opening an investigation',

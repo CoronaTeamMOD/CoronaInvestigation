@@ -4,6 +4,7 @@ import {useSelector} from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import {fieldsNames, Exposure } from 'commons/Contexts/ExposuresAndFlights';
+import { checkUpdateInvestigationExposureReasonId } from 'Utils/ComplexityReasons/ComplexityReasonsFunctions';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
@@ -41,31 +42,6 @@ const useExposuresSaving = () => {
             wasInDeadSea,
             id: investigatedPatientId,
         });
-    } 
-
-    const updateInvestigationReasonId = (epidemiologyNumber: number, newComplexityReasonId: number) => {
-        axios.post('/investigationInfo/updateComplexityReason', {
-            epidemiologyNumberInput: epidemiologyNumber,
-            newComplexityReasonId: newComplexityReasonId})
-            .then(() => {})
-            .catch((err) => {})
-    }
-
-    const removeInvestigationReasonId = (epidemiologyNumber: number, oldComplexityReasonId: number) => {
-        axios.post('/investigationInfo/deleteComplexityReason', {
-            epidemiologyNumberInput: epidemiologyNumber,
-            oldComplexityReasonId: oldComplexityReasonId})
-            .then(() => {})
-            .catch((err) => {})
-    }
-
-    const checkUpdateInvestigationReasonId = (filteredExposures: (Exposure | DBExposure)[]) => {
-        if (filteredExposures.length > 0  && !(complexityReasonsId.includes(13))) {
-            updateInvestigationReasonId(epidemiologyNumber, 13)
-        }
-        if (filteredExposures.length == 0  && complexityReasonsId.includes(13)) {
-            removeInvestigationReasonId(epidemiologyNumber, 13)
-        }
     }
 
     const saveExposureAndFlightData = async (data : FormData , ids : (number | null)[]) : Promise<void> => {
@@ -90,7 +66,7 @@ const useExposuresSaving = () => {
             filteredExposures = (filteredExposures as Exposure[]).map(extractExposureData);
         }
         saveExposureAndFlightDataLogger.info('launching the server request', Severity.LOW);
-        checkUpdateInvestigationReasonId(filteredExposures)
+        checkUpdateInvestigationExposureReasonId(filteredExposures, epidemiologyNumber, complexityReasonsId)
         return axios.post('/exposure/updateExposures', {
             exposures: filteredExposures,
             investigationId: epidemiologyNumber,

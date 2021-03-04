@@ -18,6 +18,7 @@ import { PersonalInfoDbData } from 'models/Contexts/PersonalInfoContextData';
 import { setOccupations } from 'redux/Occupations/occupationsActionCreators';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
+import {checkUpdateInvestigationPersonalReasonId} from 'Utils/ComplexityReasons/ComplexityReasonsFunctions';
 
 import { PersonalInfoTabState } from '../PersonalInfoTabInterfaces';
 import { usePersonalInfoTabOutcome } from './usePersonalInfoTabInterfaces';
@@ -157,50 +158,6 @@ const usePersonalInfoTab = (): usePersonalInfoTabOutcome => {
 
     const clearSubOccupations = () => setSubOccupations([]);
 
-    const updateInvestigationReasonId = (epidemiologyNumber: number, newComplexityReasonId: number) => {
-        axios.post('/investigationInfo/updateComplexityReason', {
-            epidemiologyNumberInput: epidemiologyNumber,
-            newComplexityReasonId: newComplexityReasonId})
-            .then(() => {})
-            .catch((err) => {console.log(err)})
-    }
-
-    const removeInvestigationReasonId = (epidemiologyNumber: number, oldComplexityReasonId: number) => {
-        axios.post('/investigationInfo/deleteComplexityReason', {
-            epidemiologyNumberInput: epidemiologyNumber,
-            oldComplexityReasonId: oldComplexityReasonId})
-            .then(() => {})
-            .catch((err) => {console.log(err)})
-    }
-
-    const checkUpdateInvestigationReasonId = (personalInfoData: PersonalInfoDbData) => {
-        if (personalInfoData.insuranceCompany === null || personalInfoData.insuranceCompany === `אף אחד מהנ"ל` && !(complexityReasonsId.includes(6))) {
-            updateInvestigationReasonId(epidemiologyNumber, 6)
-        }
-        if (personalInfoData.institutionName !== ''  && !(complexityReasonsId.includes(7))) {
-            updateInvestigationReasonId(epidemiologyNumber, 7)
-        }
-        if (personalInfoData.relevantOccupation === "מערכת החינוך"  && !(complexityReasonsId.includes(8))) {
-            updateInvestigationReasonId(epidemiologyNumber, 8)
-        }
-        if (personalInfoData.relevantOccupation === "מערכת הבריאות"  && !(complexityReasonsId.includes(9))) {
-            updateInvestigationReasonId(epidemiologyNumber, 9)
-        }
-
-        if (personalInfoData.insuranceCompany !== null && personalInfoData.insuranceCompany !== `אף אחד מהנ"ל` && complexityReasonsId.includes(6)) {
-            removeInvestigationReasonId(epidemiologyNumber, 6)
-        }
-        if (personalInfoData.institutionName == ''  && complexityReasonsId.includes(7)) {
-            removeInvestigationReasonId(epidemiologyNumber, 7)
-        }
-        if (personalInfoData.relevantOccupation !== "מערכת החינוך"  && complexityReasonsId.includes(8)) {
-            removeInvestigationReasonId(epidemiologyNumber, 8)
-        }
-        if (personalInfoData.relevantOccupation !== "מערכת הבריאות"  && complexityReasonsId.includes(9)) {
-            removeInvestigationReasonId(epidemiologyNumber, 9)
-        }
-    }
-
     const savePersonalData = (personalInfoData: PersonalInfoDbData, data: { [x: string]: any }, id: number) => {
         const savePersonalDataLogger = logger.setup('Saving personal details tab');
         savePersonalDataLogger.info('launching the server request', Severity.LOW);
@@ -222,7 +179,7 @@ const usePersonalInfoTab = (): usePersonalInfoTabOutcome => {
             personalInfoTabValidationSchema.isValid(data).then(valid => {
                 setFormState(epidemiologyNumber, id, valid);
             })
-            checkUpdateInvestigationReasonId(personalInfoData)
+            checkUpdateInvestigationPersonalReasonId(personalInfoData, epidemiologyNumber, complexityReasonsId)
         })
     }
 
