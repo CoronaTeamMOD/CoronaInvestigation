@@ -1008,6 +1008,24 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return filterTitle || noAdminFilterTitle;
     }, [rows])
 
+    const fetchAllGroupedInvestigations = async () => {
+        const allGroupIds = new Set<string>();
+        rows.forEach(row => {
+            const {groupId} = row;
+            groupId && allGroupIds.add(groupId)
+        });
+        const allGroupIdsArr = Array.from(allGroupIds);
+
+        if (allGroupIdsArr[0]) {
+            await Promise.all(
+                allGroupIdsArr.map(async (groupId: string) => {
+                    await fetchInvestigationsByGroupId(groupId);
+                })
+            );
+        }
+    }
+
+
     return {
         tableRows: rows,
         fetchTableData,
@@ -1050,6 +1068,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeNonContactFilter,
         updateDateFilter,
         changeUpdateDateFilter,
+        fetchAllGroupedInvestigations
     };
 };
 

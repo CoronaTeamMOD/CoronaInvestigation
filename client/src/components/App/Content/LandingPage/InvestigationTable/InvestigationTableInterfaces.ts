@@ -86,4 +86,5 @@ export interface useInvestigationTableOutcome {
     changeNonContactFilter: (isNonContact: boolean) => void;
     isBadgeInVisible: boolean;
     changeTimeRangeFilter: (timeRange: TimeRange) => void;
+    fetchAllGroupedInvestigations: () => void;
 };

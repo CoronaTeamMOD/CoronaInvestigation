@@ -7,7 +7,7 @@ import {
     useMediaQuery, Collapse, IconButton, Badge, Grid,
     Slide, Box, useTheme, Popover, Tooltip
 } from '@material-ui/core';
-import { Refresh, ArrowForward } from '@material-ui/icons';
+import { Refresh, ArrowForward, KeyboardArrowDown, KeyboardArrowLeft } from '@material-ui/icons';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useMemo, useState, useRef, useEffect } from 'react';
@@ -73,6 +73,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [shouldOpenPopover, setShouldOpenPopover] = useState<boolean>(false);
     const [isInvestigatorAllocationDialogOpen, setIsInvestigatorAllocationDialogOpen] = useState<boolean>(false);
+    const [isGroupedExpanded, setIsGroupedExpanded] = useState<boolean>(false);
 
     const handleOpenGroupClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -97,7 +98,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
         statusFilter, subStatusFilter, changeStatusFilter, changeSubStatusFilter, deskFilter, changeDeskFilter, changeSearchFilter,
         changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers,
-        tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter,updateDateFilter, nonContactFilter
+        tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter,updateDateFilter, nonContactFilter, fetchAllGroupedInvestigations
     } = useInvestigationTable({
         setSelectedRow, allGroupedInvestigations, setAllStatuses, currentPage, setCurrentPage, setAllGroupedInvestigations,
         investigationColor, setAllSubStatuses, setAllComplexReasons
@@ -206,6 +207,22 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         checkGroupedInvestigationOpen.includes(epidemiologyNumber) ?
             setCheckGroupedInvestigationOpen(checkGroupedInvestigationOpen.filter(rowId => rowId !== epidemiologyNumber)) :
             setCheckGroupedInvestigationOpen([...checkGroupedInvestigationOpen, epidemiologyNumber])
+    }
+
+    const expandAllGroupedInvestigations = async () => {
+        await fetchAllGroupedInvestigations();
+
+        const InvestigationsToExpand = Array.from(allGroupedInvestigations)
+            .flatMap(groupedInvestigations => groupedInvestigations[1]
+                .map(investigation => investigation.epidemiologyNumber)
+            )
+        setIsGroupedExpanded(true);
+        setCheckGroupedInvestigationOpen(InvestigationsToExpand);
+    }
+
+    const collapseAllGroupedInvestigations = async () => {
+        setIsGroupedExpanded(false);
+        setCheckGroupedInvestigationOpen([]);
     }
 
     const isInvestigationRowClickable = (investigationStatus: InvestigationMainStatus) =>
@@ -358,6 +375,18 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                     direction={orderBy === key ? order : SortOrder.asc}
                                                     onClick={(event: any) => handleRequestSort(event, key)}>
                                                 </TableSortLabel>
+                                            }
+                                            {
+                                                key === TableHeadersNames.multipleCheck &&
+                                                <Tooltip title={(isGroupedExpanded ? 'הסתר' : 'הצג') + ' ' + 'את כל החקירות המקושרות'} placement='top' arrow>
+                                                    <IconButton onClick={
+                                                        isGroupedExpanded ? collapseAllGroupedInvestigations : expandAllGroupedInvestigations
+                                                    }>
+                                                        {isGroupedExpanded ?
+                                                            <KeyboardArrowDown /> :
+                                                            <KeyboardArrowLeft />}
+                                                    </IconButton>
+                                                </Tooltip>
                                             }
                                         </TableCell>
                                     ))
