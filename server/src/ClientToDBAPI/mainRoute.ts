@@ -15,6 +15,7 @@ import intersectionsRoute from './IntersectionsRoute/mainRoute';
 import personalDetailsRoute from './PersonalDetailsRoute/mainRoute';
 import clinicalDetailsRoute from './ClinicalDetailsRoute/mainRoute';
 import groupedInvestigationsRoute from './GroupedInvestigationsRoute/mainRoute';
+import complexityReasonsRoute from './ComplexityReasons/mainRoute'
 
 
 const clientToDBRouter = Router();
@@ -33,5 +34,6 @@ clientToDBRouter.use('/counties', countiesRoute);
 clientToDBRouter.use('/groupedInvestigations', groupedInvestigationsRoute);
 clientToDBRouter.use('/education', educationRoute);
 clientToDBRouter.use('/authorities', AuthorityRoute);
+clientToDBRouter.use('/complexityReasons', complexityReasonsRoute);
 
 export default clientToDBRouter;

@@ -9,7 +9,6 @@ CREATE OR REPLACE FUNCTION public.delete_investigation_reasons_id(
     PARALLEL UNSAFE
     COST 100
 AS $BODY$	
-declare
 BEGIN
 UPDATE public.investigation
 SET complexity_reasons_id = array_remove(complexity_reasons_id, oldComplexityReasonId)

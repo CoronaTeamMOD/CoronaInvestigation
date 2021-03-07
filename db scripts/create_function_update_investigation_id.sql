@@ -8,8 +8,7 @@ CREATE OR REPLACE FUNCTION public.update_investigation_reasons_id(
 	VOLATILE
     PARALLEL UNSAFE
     COST 100
-AS $BODY$	
-declare
+AS $BODY$
 BEGIN
 UPDATE public.investigation
 SET complexity_reasons_id = array_append(complexity_reasons_id, new_complexity_reason_id)
