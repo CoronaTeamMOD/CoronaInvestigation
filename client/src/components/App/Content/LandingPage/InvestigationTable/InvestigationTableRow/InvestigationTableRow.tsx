@@ -123,7 +123,7 @@ const InvestigationTableRow = ({
             case TableHeadersNames.color:
                 return (
                     Boolean(indexedRow.groupId) ?
-                        <Tooltip arrow placement='top' title={indexedRow.otherReason !== '' && indexedRow.otherReason !== ' ' ? indexedRow.otherReason : indexedRow.groupReason}>
+                        <Tooltip arrow placement='top' title={indexedRow.otherReason !== null && indexedRow.otherReason !== '' && indexedRow.otherReason !== ' ' ? indexedRow.otherReason : indexedRow.groupReason}>
                             <div className={classes.groupColor}
                                 style={{ backgroundColor: groupColor }}
                             />
