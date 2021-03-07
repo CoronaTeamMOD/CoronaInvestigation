@@ -40,7 +40,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                         }
                     </div>
                     <Typography variant='body1'>
-                        יום {DayOfWeek[contactDate.getUTCDay()] + ' '}
+                        יום {DayOfWeek[contactDate.getDay()] + ' '}
                         {format(contactDate, 'dd/MM/yyyy')}
                     </Typography>
                     {interactions?.some(interaction => interaction.isRepetitive) && <RepetitiveEventIcon/>}
