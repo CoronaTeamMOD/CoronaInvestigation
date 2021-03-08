@@ -50,6 +50,7 @@ const userReducer = (state = initialUserState, action: Actions.UserAction): User
             ...state,
             data: action.payload.user,
             isLoggedIn: true,
+            displayedDistrict: action.payload.user.countyByInvestigationGroup.districtId,
             displayedCounty: action.payload.user.investigationGroup
         };
         case Actions.SET_IS_ACTIVE: return {
