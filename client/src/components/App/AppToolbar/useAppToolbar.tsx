@@ -18,6 +18,7 @@ export interface useTopToolbarOutcome  {
     setUserActivityStatus: (isActive: boolean) => Promise<any>;
     user: User;
     isActive: boolean | null;
+    changeUserDistrict: (district: number) => Promise<any>;
 }
 
 const useAppToolbar = () :  useTopToolbarOutcome => {
@@ -25,7 +26,6 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     const history = useHistory();
     const { alertError } = useCustomSwal();
     
-    const getUserActivityStatusLogger = logger.setup('GraphQL request to the DB');
 
     React.useEffect(() => {
         if (user.isLoggedIn) {
@@ -34,6 +34,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     }, [user.isLoggedIn]);
 
     const getUserActivityStatus = () => {
+        const getUserActivityStatusLogger = logger.setup('GraphQL request to the DB');
         getUserActivityStatusLogger.info('started user activity status fetching', Severity.LOW);
         axios.get(`/users/userActivityStatus`)
         .then((result) => { 
@@ -47,34 +48,51 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
             alertError('לא הצלחנו לקבל את הסטטוס הנוכחי שלך');
             getUserActivityStatusLogger.error(`error in fetching user activity status ${error}`, Severity.HIGH);
         });
-    }
+    };
 
     const logout = async () => {
         await setUserActivityStatus(false);
         await persistor.purge();
         history.replace({state: {}});
         window.location.href = `${window.location.protocol}//${window.location.hostname}/.auth/logout?post_logout_redirect_uri=${indexRoute}`;
-    }
+    };
 
     const setUserActivityStatus = (isActive: boolean) : Promise<any> => {
-        getUserActivityStatusLogger.info('started is user active updating', Severity.LOW);
+        const setUserActivityStatusLogger = logger.setup('GraphQL request to the DB');
+        setUserActivityStatusLogger.info('started is user active updating', Severity.LOW);
         return axios.post('users/updateIsUserActive', {
             isActive
         }).then((result) => {
             if(result.data)
                 setIsActive(result.data.isActive);
-                getUserActivityStatusLogger.info('updated is user active successfully', Severity.LOW);
+                setUserActivityStatusLogger.info('updated is user active successfully', Severity.LOW);
         }).catch((error) => {
             alertError('לא הצלחנו לעדכן את הסטטוס שלך');
-            getUserActivityStatusLogger.error(`error in updating is user active ${error}`, Severity.HIGH);
+            setUserActivityStatusLogger.error(`error in updating is user active ${error}`, Severity.HIGH);
         });
-    }
+    };
+
+    const changeUserDistrict = (district: number) : Promise<any> => {
+        const changeUserDistrictLogger = logger.setup('GraphQL request to the DB');
+        changeUserDistrictLogger.info('changing user district', Severity.LOW);
+        return axios.post('users/updateDistrict', {
+            district
+        }).then((result) => {
+            if(result.data)
+                setIsActive(result.data.isActive);
+                changeUserDistrictLogger.info('updated user district successfully', Severity.LOW);
+        }).catch((error) => {
+            alertError('לא הצלחנו לשנות את המחוז שלך');
+            changeUserDistrictLogger.error(`error in updating user district ${error}`, Severity.HIGH);
+        });
+    };
 
     return {
         user: user.data,
         isActive: user.data.isActive,
         logout,
         setUserActivityStatus,
+        changeUserDistrict
     }
 };
 

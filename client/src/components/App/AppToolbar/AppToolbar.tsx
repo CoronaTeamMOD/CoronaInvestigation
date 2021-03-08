@@ -5,6 +5,7 @@ import { NavLink, NavLinkProps, useLocation, useHistory } from 'react-router-dom
 import { AppBar, Toolbar, Typography, Tooltip, IconButton, Select, MenuItem } from '@material-ui/core';
 
 import County from 'models/County';
+import District from 'models/District';
 import UserType from 'models/UserType';
 import StoreStateType from 'redux/storeStateType';
 import UserTypeCodes from 'models/enums/UserTypeCodes';
@@ -41,13 +42,14 @@ const StatePersistentNavLink = (props: NavLinkProps) => {
 };
 
 const AppToolbar: React.FC = (): JSX.Element => {
-    const { user, isActive, logout, setUserActivityStatus } = useAppToolbar();
+    const { user, isActive, logout, setUserActivityStatus, changeUserDistrict } = useAppToolbar();
 
     const userTypes = useSelector<StoreStateType, UserType[]>(state => state.user.userTypes);
+    const displayedDistrict = useSelector<StoreStateType, number>(state => state.user.displayedDistrict);
+    const districts = useSelector<StoreStateType, District[]>(state => state.district);
     const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
     const districtCounties = useSelector<StoreStateType, County[]>(state => state.county.districtCounties);
     const countyDisplayName = useSelector<StoreStateType, string>(state => state.user.data.countyByInvestigationGroup.displayName);
-
     const classes = useStyles();
     const location = useLocation();
     const userName = user.authorityByAuthorityId?.authorityName ? 
@@ -128,6 +130,37 @@ const AppToolbar: React.FC = (): JSX.Element => {
                     <Typography className={classes.greetUserText}>
                         שלום, {userName}
                     </Typography>
+                    {user.userType === UserTypeCodes.SUPER_ADMIN && user.isDeveloper &&
+                        <Select
+                            className={classes.select}
+                            value={displayedDistrict}
+                            onChange={(event) => changeUserDistrict(event.target.value as number)}
+                            classes={{icon: classes.select}}
+                            disableUnderline
+                            MenuProps={{
+                            anchorOrigin: {
+                                vertical: 'bottom',
+                                horizontal: 'left'
+                            },
+                            transformOrigin: {
+                                vertical: 'top',
+                                horizontal: 'left'
+                            },
+                            getContentAnchorEl: null
+                            }}
+                            renderValue={(value) => 
+                                <Typography>מחוז <b>{districts.find(district => district.id === value)?.displayName}</b></Typography>
+                            }
+                        >
+                        {
+                            districts.map(district => 
+                                <MenuItem key={district.id} value={district.id}>
+                                    {`מחוז  ${district.displayName}`}
+                                </MenuItem>
+                            )
+                        }
+                    </Select>
+                    }
                     {user.userType === UserTypeCodes.SUPER_ADMIN ?
                         <Select
                             className={classes.select}
