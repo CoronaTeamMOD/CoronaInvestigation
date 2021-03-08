@@ -571,7 +571,15 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             fetchTableData();
         }
         setIsBadgeInVisible(!Boolean(Object.values(filterRules).find(item => item !== null)))
-    }, [isLoggedIn, filterRules, orderBy, currentPage, displayedCounty, userType]);
+    }, [isLoggedIn, filterRules, orderBy, currentPage]);
+
+    useEffect(() => {
+        setCurrentPage(defaultPage);
+        if (isLoggedIn) {
+            fetchTableData();
+        }
+        setIsBadgeInVisible(!Boolean(Object.values(filterRules).find(item => item !== null)))
+    }, [displayedCounty, userType]);
 
     const onInvestigationRowClick = async (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const epidemiologyNum :number = investigationRow.epidemiologyNumber
