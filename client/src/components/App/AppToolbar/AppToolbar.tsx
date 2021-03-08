@@ -65,10 +65,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
                     navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
                     navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&
                         <div className={classes.navButtons}>
-                            <StatePersistentNavLink exact to={landingPageRoute} 
-                                isActive={(match, location) => 
-                                location.pathname  === landingPageRoute}
-                            >
+                            <StatePersistentNavLink exact to={landingPageRoute} >
                                 <Typography className={classes.menuTypo}>  ניהול חקירות</Typography>
                             </StatePersistentNavLink>
                             <StatePersistentNavLink exact to={usersManagementRoute}>
