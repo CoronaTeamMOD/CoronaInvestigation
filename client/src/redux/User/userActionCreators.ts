@@ -25,6 +25,13 @@ export const setDisplayedCounty = (county: number) => {
     });
 };
 
+export const setDisplayedDistrict = (district: number) => {
+    store.dispatch({
+        type: actionTypes.SET_DISPLAYED_DISTRICT,
+        payload: {district}
+    });
+};
+
 export const setUserTypes = (userTypes: UserType): void => {
     store.dispatch({
         type: actionTypes.SET_USER_TYPES,
