@@ -6,15 +6,16 @@ import { useEffect, useState } from 'react';
 import User from 'models/User';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
-import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
 import Environment from 'models/enums/Environments';
-import { setUser, setUserTypes } from 'redux/User/userActionCreators';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
+import { setDesks } from 'redux/Desk/deskActionCreators';
 import { initialUserState } from 'redux/User/userReducer';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setCounties } from 'redux/County/countyActionCreators';
+import { setDistricts } from 'redux/District/districtActionCreators';
+import { setUser, setUserTypes } from 'redux/User/userActionCreators';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
-import { setDesks } from 'redux/Desk/deskActionCreators';
 
 config();
 
@@ -102,7 +103,23 @@ const useApp = () => {
             fetchUserLogger.warn(`got error from the server: ${err}`, Severity.MEDIUM);
             setIsLoading(false);
         })
-    }
+    };
+
+    const fetchDistricts = () => {
+        const fetchDistrictsLogger = logger.setup('GraphQL request to the DB');
+        axios.get('/districts')
+        .then((result: any) => {
+            if (result.data) {
+                fetchDistrictsLogger.info('fetched all the districts successfully', Severity.LOW);
+                setDistricts(result.data);
+            } else {
+                fetchDistrictsLogger.info('got 200 but bad structure', Severity.LOW);
+            }
+        }).catch(err => {
+            fetchDistrictsLogger.error(err, Severity.HIGH);
+            alertError('לא ניתן לשלוף את המחוזות של המחוז');
+        });
+    };
 
     const fetchAllCounties = () => {
         const fetchAllCountiesLogger = logger.setup('GraphQL request to the DB');
@@ -118,7 +135,7 @@ const useApp = () => {
             fetchAllCountiesLogger.error(err, Severity.HIGH);
             alertError('לא ניתן לשלוף את הנפות של המחוז');
         });
-    }
+    };
     
     const fetchDesks = () => {
         const fetchDesksLogger = logger.setup('Getting desks');
@@ -134,7 +151,7 @@ const useApp = () => {
         }).catch(err => {
             fetchDesksLogger.error(`got error from the server: ${err}`, Severity.HIGH);
         });
-    }
+    };
 
     const fetchUserTypes = () => {
         const fetchUserTypesLogger = logger.setup('Fetching userTypes');
@@ -161,6 +178,7 @@ const useApp = () => {
 
     useEffect(() => {
         if((user !== initialUserState.data && user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) || isSignUpOpen || user.isDeveloper) {
+            fetchDistricts();
             fetchAllCounties();
             fetchUserTypes();
         }
@@ -170,7 +188,7 @@ const useApp = () => {
         isSignUpOpen,
         handleSaveUser, 
         handleCloseSignUp
-    }
+    };
 }
 
 export default useApp;
