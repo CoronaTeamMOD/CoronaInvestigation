@@ -48,9 +48,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         height: isWide ? '67vh' : '61vh',
         marginBottom: '2vh'
     },
-    welcomeMessage: {
-        fontSize: '2vw',
-    },
     errorAlertTitle: {
         fontFamily: 'Assistant'
     },

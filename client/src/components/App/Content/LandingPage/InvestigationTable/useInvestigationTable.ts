@@ -131,7 +131,7 @@ const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החק
 const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף'
 export const transferredSubStatus = 'נדרשת העברה';
 
-const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך היום. בואו נקטע את שרשראות ההדבקה!';
+const welcomeMessage = 'ניהול חקירות';
 const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
