@@ -32,8 +32,6 @@ const ReachContact = (props: Props) => {
         saveContact, parsePerson, formValues, index
     });
 
-    console.log('rendered!');
-
     return (
         <div className={classes.reachContact}>
             <Grid container spacing={2}>
