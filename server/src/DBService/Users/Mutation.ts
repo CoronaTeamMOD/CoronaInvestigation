@@ -56,7 +56,7 @@ mutation updateCounty($id: String!, $investigationGroup: Int!) {
 export const UPDATE_INVESTIGATOR = gql`
 mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!, $transferReason: String) {
     updateInvestigationByEpidemiologyNumber(
-      input: {investigationPatch: {creator: $newUser, lastUpdator: $newUser, transferReason: $transferReason}, epidemiologyNumber: $epidemiologyNumber}
+      input: {investigationPatch: {creator: $newUser, transferReason: $transferReason}, epidemiologyNumber: $epidemiologyNumber}
     ) {
       clientMutationId
     }
