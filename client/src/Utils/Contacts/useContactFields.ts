@@ -49,13 +49,14 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         : contactType !== ContactType.TIGHT;
 
     const validateContact = (contact: InteractedContact, validationReason: ValidationReason): validValidation | invalidValidation => {
-        const isIdentificationValid = contact.identificationType === IdentificationTypes.ID
-            ? isIdValid(contact.identificationNumber)
-            : isPassportValid(contact.identificationNumber)
-        if(!isIdentificationValid) {
+        if (contact.identificationType === IdentificationTypes.ID && isIdValid(contact.identificationNumber)) {
             return { valid: false, error: 'שדה ת.ז. אינו תקין' };
-        }
-        
+        };
+
+        if (contact.identificationType === IdentificationTypes.PASSPORT && isPassportValid(contact.identificationNumber)) {
+            return { valid: false, error: 'שדה דרכון אינו תקין' };
+        };
+
         if(!contact.doesNeedIsolation) {
             if (contact.contactType === ContactType.TIGHT) {
                 return { valid: false, error: 'המגע סומן כהדוק אך לא הוקם לו בידוד'};
