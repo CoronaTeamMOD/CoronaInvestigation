@@ -9,6 +9,7 @@ import { setFormState } from 'redux/Form/formActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import useDuplicateContactId from 'Utils/Contacts/useDuplicateContactId';
 import GroupedInteractedContact,
        { GroupedInteractedContactEvent } from 'models/ContactQuestioning/GroupedInteractedContact';
 
@@ -18,7 +19,6 @@ import {
     useContactQuestioningOutcome,
     useContactQuestioningParameters,
 } from './ContactQuestioningInterfaces';
-import { string } from 'yup';
     
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {
@@ -33,6 +33,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
 
+    const { checkDuplicateIds } = useDuplicateContactId();
     const { alertError } = useCustomSwal();
 
     const createSaveContactRequest = (contactsSavingVariable: { unSavedContacts: { contacts: InteractedContact[] } },
@@ -55,26 +56,44 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const saveContact = (interactedContact: InteractedContact): boolean => {
-        const contacts = [interactedContact];
-        const contactsSavingVariable = {
-            unSavedContacts: { contacts },
-        };
-
-        createSaveContactRequest(contactsSavingVariable, 'Saving single contact');
-        return true;
+        if (
+            checkDuplicateIds(
+                allContactedInteractions.map(
+                    (contact: InteractedContact) => contact.identificationNumber
+                )
+            )
+        ) {
+            return false
+        } else {
+            const contacts = [interactedContact];
+            const contactsSavingVariable = {
+                unSavedContacts: { contacts },
+            };
+    
+            createSaveContactRequest(contactsSavingVariable, 'Saving single contact');
+            return true; 
+        }
     };
 
     const saveContactQuestioning = (parsedFormData: InteractedContact[] , originalFormData: FormInputs) => {
-        const contactsSavingVariable = {
-            unSavedContacts: {contacts: parsedFormData}
-        };
+        if (
+            !checkDuplicateIds(
+                allContactedInteractions.map(
+                    (contact: InteractedContact) => contact.identificationNumber
+                )
+            )
+        ) {
+            const contactsSavingVariable = {
+                unSavedContacts: {contacts: parsedFormData}
+            };
 
-        createSaveContactRequest(contactsSavingVariable, 'Saving all contacts')
-        .finally(() => {
-            ContactQuestioningSchema.isValid(originalFormData).then(valid => {
-                setFormState(epidemiologyNumber, id, valid);
-            })
-        })    
+            createSaveContactRequest(contactsSavingVariable, 'Saving all contacts')
+            .finally(() => {
+                ContactQuestioningSchema.isValid(originalFormData).then(valid => {
+                    setFormState(epidemiologyNumber, id, valid);
+                })
+            });
+        }
     };
 
     const loadFamilyRelationships = () => {
