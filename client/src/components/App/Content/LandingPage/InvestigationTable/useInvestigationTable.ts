@@ -1001,7 +1001,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const isAdmin = userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN;
 
-    const noAdminFilterTitle = rows.length === 0 ? noInvestigationsMessage : welcomeMessage;;
+    const noAdminFilterTitle = rows.length === 0 ? noInvestigationsMessage : welcomeMessage;
 
     const tableTitle = useMemo(() => {
         if (rows.length === 0) return noInvestigationsMessage;

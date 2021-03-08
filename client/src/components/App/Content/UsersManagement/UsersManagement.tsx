@@ -217,8 +217,8 @@ const UsersManagement: React.FC = () => {
 
     return (
         <Grid className={classes.content}>
-            <Grid>
-                <Typography color='textPrimary' id='user-management-title' className={classes.header}>
+            <Grid item  className={classes.header}>
+                <Typography color='textPrimary' id='user-management-title'>
                     {usersManagementTitle}
                 </Typography>
             </Grid>
