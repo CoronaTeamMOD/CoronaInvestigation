@@ -1,6 +1,7 @@
 import Desk from 'models/Desk';
 import City from 'models/City';
 import Country from 'models/Country';
+import District from 'models/District';
 import Authority from 'models/Authority';
 import ContactType from 'models/ContactType';
 import CountyReducer from 'models/CountyReducer';
@@ -29,6 +30,7 @@ export default interface StoreStateType {
     formsValidations: { [key: number]: (boolean | null)[] };
     address: FlattenedDBAddress;
     educationGrades: EducationGrade[];
+    district: District[];
     county: CountyReducer;
     desk: Desk[];
     groupedInvestigations: GroupedInvestigationReducerType;
