@@ -27,6 +27,7 @@ const idInfoMessage = 'ניתן להזין בשדה תז עד 9 תווים'
 const ContactQuestioningPersonal: React.FC<Props> = (
     props: Props
 ): JSX.Element => {
+    // TODO : find a way to seperate those fields outward to Accordion - so we can selectivly render them
     const { control, getValues , errors, trigger} = useFormContext();
     const { index, interactedContact } = props;
 
