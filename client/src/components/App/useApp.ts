@@ -57,6 +57,7 @@ const useApp = () => {
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const isUserLoggedIn = useSelector<StoreStateType, boolean>(state => state.user.isLoggedIn);
+    const displayedDistrict = useSelector<StoreStateType, number>(state => state.user.displayedDistrict);
 
     const [isSignUpOpen, setIsSignUpOpen] = useState<boolean>(false);
     const { alertError } = useCustomSwal();
@@ -175,6 +176,10 @@ const useApp = () => {
         }
         fetchDesks();
     }, []);
+
+    useEffect(() => {
+        fetchAllCounties();
+    }, [displayedDistrict]);
 
     useEffect(() => {
         if((user !== initialUserState.data && user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) || isSignUpOpen || user.isDeveloper) {

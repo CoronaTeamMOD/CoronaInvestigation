@@ -10,8 +10,8 @@ import { Severity } from 'models/Logger';
 import { indexRoute } from 'Utils/Routes/Routes';
 import StoreStateType from 'redux/storeStateType';
 import { UserState } from 'redux/User/userReducer';
-import { setDisplayedCounty, setDisplayedDistrict, setIsActive } from 'redux/User/userActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import { setDisplayedCounty, setDisplayedDistrict, setInvestigationGroup, setIsActive } from 'redux/User/userActionCreators';
 
 export interface useTopToolbarOutcome  {
     logout: () => void;
@@ -23,11 +23,13 @@ export interface useTopToolbarOutcome  {
 }
 
 const useAppToolbar = () :  useTopToolbarOutcome => {
+
     const user = useSelector<StoreStateType, UserState>(state => state.user);
+    const displayedDistrict = useSelector<StoreStateType, number>(state => state.user.displayedDistrict);
+
     const history = useHistory();
     const { alertError } = useCustomSwal();
     
-
     React.useEffect(() => {
         if (user.isLoggedIn) {
             getUserActivityStatus();
@@ -80,8 +82,9 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
             district
         }).then((result) => {
             if(result.data){
+                setInvestigationGroup(district, result.data.countyDisplayName);
                 setDisplayedDistrict(district);
-                setDisplayedCounty(result.data.investigationGroup);
+                setDisplayedCounty(result.data.user.investigationGroup);
             }    
             changeUserDistrictLogger.info('updated user district successfully', Severity.LOW);
         }).catch((error) => {
@@ -101,6 +104,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                     userId: user.data.id
             }).then((result) => {
                 if(result.data){
+                    setInvestigationGroup(displayedDistrict, result.data.countyByInvestigationGroup.displayName);
                     setDisplayedCounty(county);
                 }    
                 changeUserCountyLogger.info('updated user county successfully', Severity.LOW);
@@ -110,7 +114,6 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
             });
         };
     };
-
 
     return {
         user: user.data,
