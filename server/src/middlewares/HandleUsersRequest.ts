@@ -8,16 +8,18 @@ import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog
 
 const handleUsersRequest = async (request: Request, response: Response, next: NextFunction) => {
     const currentUser = response.locals.user;
-    const { userType } = currentUser;
+    const { userType, isDeveloper } = currentUser;
     const { userId } = request.body;
 
     const usersMiddlewareLogger = logger.setup({
         workflow: 'InvestigationMiddleware',
         investigation: currentUser.epidemiologynumber,
     });
-
-    const questionedUser = await getUserDistrictCounty(userId, response.locals);
-    if (userType === UserType.SUPER_ADMIN) {
+    if (isDeveloper) {
+        return next();
+    };
+    const questionedUser = await getUserDistrictCounty(userId, response.locals);    
+        if (userType === UserType.SUPER_ADMIN) {
         if (currentUser.countyByInvestigationGroup.districtId === questionedUser.countyByInvestigationGroup.districtId) {
             usersMiddlewareLogger.info(
                 'requesting user is super admin and questioned user is in user district , redirecting',

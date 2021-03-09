@@ -47,7 +47,8 @@ const handleConfidentialAuth = (
             investigationGroup: result.data.userById?.investigationGroup,
             countyByInvestigationGroup: {
                 districtId: result.data.userById?.countyByInvestigationGroup?.districtId
-            }
+            },
+            isDeveloper: result.isDeveloper
         };
         return next();
     }).catch(error => {
@@ -89,7 +90,8 @@ const authMiddleware = (
                     investigationGroup: result.data.userById?.investigationGroup,
                     countyByInvestigationGroup: {
                         districtId: result.data.userById?.countyByInvestigationGroup?.districtId
-                    }
+                    },
+                    isDeveloper: result.data.userById?.isDeveloper
                 };
                 return next();
             }).catch(error => {
@@ -139,4 +141,5 @@ export const superAdminMiddleWare = (
         response.status(401).json({ error: "unauthorized non super admin user" })
     }
 };
+
 export default authMiddleware;

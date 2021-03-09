@@ -114,7 +114,7 @@ usersRoute.post('/updateCounty', handleUsersRequest, (request: Request, response
 });
 
 
-usersRoute.post('/updateDistrict', (request: Request, response: Response) => {
+usersRoute.post('/updateDistrict', handleUsersRequest, (request: Request, response: Response) => {
     const updateDistrictLogger = logger.setup({
         workflow: 'update user district',
         user: response.locals.user.id,
