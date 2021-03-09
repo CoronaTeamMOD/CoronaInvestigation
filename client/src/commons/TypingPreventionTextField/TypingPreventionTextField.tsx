@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ValidationError } from 'yup';
 import { TextField } from '@material-ui/core';
 import { useFormContext } from 'react-hook-form';
@@ -30,16 +30,23 @@ const TypePreventiveTextField: TypePreventiveTextFieldType = (props) => {
 
     const errorObject = get(errors, name);
 
+    const getTextField = useMemo(() => {
+        return (
+            <TextField
+                test-id={testId}
+                name={name}
+                value={value}
+                onChange={conditionalyTriggerOnChange}
+                error={errorObject ? true : false}
+                label={errorObject ? errorObject.message : label}
+                {...textFieldProps}
+            />
+        )
+
+    } , [value , name , errorObject])
+    
     return (
-        <TextField
-            test-id={testId}
-            name={name}
-            value={value}
-            onChange={conditionalyTriggerOnChange}
-            error={errorObject ? true : false}
-            label={errorObject ? errorObject.message : label}
-            {...textFieldProps}
-        />
+        getTextField
     );
 };
 
