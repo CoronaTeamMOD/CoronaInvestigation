@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {passportSchema , idSchema} from 'Utils/Schemas/identification';
-import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
+import TypePreventiveTextField from './TypingPreventionTextField';
 
 const IdentificationTextField = (props : Props) => {
   const { isPassport } = props;
@@ -12,6 +12,7 @@ const IdentificationTextField = (props : Props) => {
   return (
     <TypePreventiveTextField
         {...props}
+        error={'e'}
         value={props.value || ''}
         validationSchema={schema}
     />
