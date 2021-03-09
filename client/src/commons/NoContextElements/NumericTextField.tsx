@@ -13,12 +13,12 @@ const stringAlphabet = yup.string().matches(NUMERIC_TEXT_REGEX, alphabeticErrorM
 
 const NumericTextField: NumericTextFieldType = (props) => {
 
-  const { value } = props;
+  const { value, error } = props;
 
   return (
     <TypePreventiveTextField
       {...props}
-      error={'o'}
+      error={error ?? ''}
       value={value || ''}
       validationSchema={stringAlphabet}
     />

@@ -12,7 +12,6 @@ const IdentificationTextField = (props : Props) => {
   return (
     <TypePreventiveTextField
         {...props}
-        error={'e'}
         value={props.value || ''}
         validationSchema={schema}
     />
@@ -29,7 +28,8 @@ interface Props{
     placeholder?: string,
     label?: string,
     className?: string,
-    isPassport: boolean
+    isPassport: boolean,
+    error: string
 }
 
 

@@ -19,7 +19,7 @@ const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
   return (
     <TypePreventiveTextField
         {...props}
-        error={'a'}
+        error={props.error ?? ''}
         value={props.value || ''}
         validationSchema={stringAlphanum}
     />

@@ -9,7 +9,7 @@ export interface AlphanumericTextFieldProps<T> {
     onBlur?: (event: React.ChangeEvent<{}>) => void,
     placeholder?: string,
     label?: string,
-    error? : boolean,
+    error? : string,
     className?: string,
     disabled?: boolean,
     InputProps?: TextFieldProps['InputProps'];

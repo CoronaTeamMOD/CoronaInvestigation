@@ -136,6 +136,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                 return (
                                     <IdentificationTextField
                                         {...props}
+                                        error={currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_NUMBER]?.message}
                                         isPassport={isPassport}
                                         disabled={shouldIdDisable}
                                         testId='identificationNumber'
@@ -198,6 +199,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                             return (
                                 <NumericTextField
                                     {...props}
+                                    error={currentFormErrors && currentFormErrors[InteractedContactFields.PHONE_NUMBER]?.message}
                                     disabled={isFieldDisabled}
                                     testId='phoneNumber'
                                     placeholder='הכנס טלפון:'
@@ -217,6 +219,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                 <NumericTextField
                                     {...props}
                                     disabled={isFieldDisabled}
+                                    error={currentFormErrors && currentFormErrors[InteractedContactFields.ADDITIONAL_PHONE_NUMBER]?.message}
                                     testId='additionalPhoneNumber'
                                     onChange={(newValue: string) => {
                                         props.onChange(newValue);
