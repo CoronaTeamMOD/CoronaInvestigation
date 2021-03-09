@@ -10,7 +10,7 @@ import { Severity } from 'models/Logger';
 import { indexRoute } from 'Utils/Routes/Routes';
 import StoreStateType from 'redux/storeStateType';
 import { UserState } from 'redux/User/userReducer';
-import { setIsActive } from 'redux/User/userActionCreators';
+import { setDisplayedCounty, setDisplayedDistrict, setIsActive } from 'redux/User/userActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 export interface useTopToolbarOutcome  {
@@ -19,6 +19,7 @@ export interface useTopToolbarOutcome  {
     user: User;
     isActive: boolean | null;
     changeUserDistrict: (district: number) => Promise<any>;
+    changeUserCounty: (county: number) => void;
 }
 
 const useAppToolbar = () :  useTopToolbarOutcome => {
@@ -78,21 +79,46 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
         return axios.post('users/updateDistrict', {
             district
         }).then((result) => {
-            if(result.data)
-                setIsActive(result.data.isActive);
-                changeUserDistrictLogger.info('updated user district successfully', Severity.LOW);
+            if(result.data){
+                setDisplayedDistrict(district);
+                setDisplayedCounty(result.data.investigationGroup);
+            }    
+            changeUserDistrictLogger.info('updated user district successfully', Severity.LOW);
         }).catch((error) => {
             alertError('לא הצלחנו לשנות את המחוז שלך');
             changeUserDistrictLogger.error(`error in updating user district ${error}`, Severity.HIGH);
         });
     };
 
+    const changeUserCounty = (county: number) => {
+        if (!user.data.isDeveloper){
+            setDisplayedCounty(county);
+        } else {
+            const changeUserCountyLogger = logger.setup('GraphQL request to the DB');
+            changeUserCountyLogger.info('changing user county', Severity.LOW);
+            axios.post('users/updateCounty', {
+                    investigationGroup: county,
+                    userId: user.data.id
+            }).then((result) => {
+                if(result.data){
+                    setDisplayedCounty(county);
+                }    
+                changeUserCountyLogger.info('updated user county successfully', Severity.LOW);
+            }).catch((error) => {
+                alertError('לא הצלחנו לשנות את הנפה שלך');
+                changeUserCountyLogger.error(`error in updating user district ${error}`, Severity.HIGH);
+            });
+        };
+    };
+
+
     return {
         user: user.data,
         isActive: user.data.isActive,
         logout,
         setUserActivityStatus,
-        changeUserDistrict
+        changeUserDistrict,
+        changeUserCounty
     }
 };
 

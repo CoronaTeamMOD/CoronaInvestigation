@@ -132,7 +132,6 @@ usersRoute.post('/updateDistrict', handleUsersRequest, (request: Request, respon
         };
 
         updateDistrictLogger.info(launchingDBRequestLog(updateCountyVariables), Severity.LOW);
-
         graphqlRequest(UPDATE_COUNTY, response.locals, updateCountyVariables)
             .then(result => {
                 updateDistrictLogger.info(validDBResponseLog, Severity.LOW);

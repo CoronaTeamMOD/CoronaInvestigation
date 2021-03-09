@@ -42,7 +42,7 @@ const StatePersistentNavLink = (props: NavLinkProps) => {
 };
 
 const AppToolbar: React.FC = (): JSX.Element => {
-    const { user, isActive, logout, setUserActivityStatus, changeUserDistrict } = useAppToolbar();
+    const { user, isActive, logout, setUserActivityStatus, changeUserDistrict, changeUserCounty } = useAppToolbar();
 
     const userTypes = useSelector<StoreStateType, UserType[]>(state => state.user.userTypes);
     const displayedDistrict = useSelector<StoreStateType, number>(state => state.user.displayedDistrict);
@@ -165,7 +165,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
                         <Select
                             className={classes.select}
                             value={displayedCounty}
-                            onChange={(event) => setDisplayedCounty(event.target.value as number)}
+                            onChange={(event) => changeUserCounty(event.target.value as number)}
                             classes={{icon: classes.select}}
                             disableUnderline
                             MenuProps={{
