@@ -125,7 +125,8 @@ usersRoute.post('/updateDistrict', handleUsersRequest, (request: Request, respon
     updateDistrictLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     graphqlRequest(GET_ALL_COUNTIES_OF_DISTRICT, response.locals, parameters)
     .then(result => {
-        const investigationGroup = result.data.allCounties.nodes[0].id
+        const investigationGroup = result.data.allCounties.nodes[0].id;
+        const countyDisplayName =result.data.allCounties.nodes[0].displayName
         const updateCountyVariables = {
             id: response.locals.user.id,
             investigationGroup
@@ -135,11 +136,10 @@ usersRoute.post('/updateDistrict', handleUsersRequest, (request: Request, respon
         graphqlRequest(UPDATE_COUNTY, response.locals, updateCountyVariables)
             .then(result => {
                 updateDistrictLogger.info(validDBResponseLog, Severity.LOW);
-                response.send(result.data.updateUserById.user);
+                response.send({user: result.data.updateUserById.user, countyDisplayName});
             })
             .catch(error => {
                 updateDistrictLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-                response.sendStatus(errorStatusCode).send(error);
             })
     })
     .catch(error => {
