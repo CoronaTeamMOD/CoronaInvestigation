@@ -18,6 +18,13 @@ export const setIsActive = (isActive: boolean) => {
     });
 };
 
+export const setInvestigationGroup = (districtId: number, countyDisplayName: string) => {
+    store.dispatch({
+        type: actionTypes.SET_INVESTIGATION_GROUP,
+        payload: {districtId, countyDisplayName}
+    });
+};
+
 export const setDisplayedCounty = (county: number) => {
     store.dispatch({
         type: actionTypes.SET_DISPLAYED_COUNTY,

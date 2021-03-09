@@ -3,6 +3,7 @@ import UserType from 'models/UserType';
 
 export const SET_USER = 'SET_USER';
 export const SET_IS_ACTIVE = 'SET_IS_ACTIVE';
+export const SET_INVESTIGATION_GROUP = 'SET_INVESTIGATION_GROUP';
 export const SET_USER_TYPES = 'SET_USER_TYPES';
 export const SET_DISPLAYED_COUNTY = 'SET_DISPLAYED_COUNTY';
 export const SET_DISPLAYED_DISTRICT = 'SET_DISPLAYED_DISTRICT';
@@ -16,6 +17,11 @@ interface SetUser {
 interface SetIsActive {
     type: typeof SET_IS_ACTIVE,
     payload: { isActive: boolean }
+};
+
+interface SetInvestigationGroup {
+    type: typeof SET_INVESTIGATION_GROUP,
+    payload: { districtId: number, countyDisplayName: string }
 };
 
 interface SetDisplayedCounty {
@@ -38,4 +44,4 @@ interface SetDisplayedUserType {
     payload: { userType: number }
 };
 
-export type UserAction = SetUser | SetIsActive | SetDisplayedCounty | SetDisplayedDistrict | SetUserTypes | SetDisplayedUserType;
+export type UserAction = SetUser | SetIsActive | SetInvestigationGroup | SetDisplayedCounty | SetDisplayedDistrict | SetUserTypes | SetDisplayedUserType;

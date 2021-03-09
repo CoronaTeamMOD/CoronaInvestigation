@@ -57,6 +57,10 @@ const userReducer = (state = initialUserState, action: Actions.UserAction): User
             ...state,
             data: { ...state.data, isActive: action.payload.isActive }
         };
+        case Actions.SET_INVESTIGATION_GROUP: return {
+            ...state,
+            data: { ...state.data, countyByInvestigationGroup: {districtId: action.payload.districtId, displayName: action.payload.countyDisplayName} }
+        };
         case Actions.SET_DISPLAYED_COUNTY: return {
             ...state,
             displayedCounty: action.payload.county
