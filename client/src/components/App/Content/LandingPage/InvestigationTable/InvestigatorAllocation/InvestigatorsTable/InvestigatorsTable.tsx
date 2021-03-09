@@ -15,6 +15,7 @@ export const defaultOrderBy = 'defaultOrder';
 const pauseInvestigationsCountTitle = 'חקירות הממתינות להשלמת מידע/העברה';
 const searchBarLabel = 'הכנס שם של חוקר או שם רשות...';
 const authoritySourceOrganization = 'חוקר רשות';
+const orderByAvailabilityText = 'מיון לפי זמינות'
 
 const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSelectedRow }) => {
 
@@ -22,14 +23,14 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
     const [investigatorInput, setInvestigatorInput] = useState<string>('');
     const [filteredInvestigators, setFilteredInvestigators] = useState<User[]>(investigators);
     const orderBytype = filteredInvestigators[0]
-    const [sortedInvestigators, setStortedInvestigators] = useState<User[]>(filteredInvestigators);
+    const [sortedInvestigators, setSortedInvestigators] = useState<User[]>(filteredInvestigators);
     const [order, setOrder] = useState<Order>(SortOrder.asc);
     const [orderBy, setOrderBy] = useState<keyof typeof orderBytype | 'defaultOrder'>(defaultOrderBy);
     const [orderByValue, setOrderByValue] = useState<string>(defaultOrderBy);
 
     useEffect(() => {
         setFilteredInvestigators(investigators)
-        setStortedInvestigators(investigators)
+        setSortedInvestigators(investigators)
     }, [investigators]);
 
     useEffect(() => {
@@ -41,7 +42,7 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
             sortInvestigators(filteredInvestigators)
         } else {
             setFilteredInvestigators(investigators)
-            setStortedInvestigators(investigators)
+            setSortedInvestigators(investigators)
             sortInvestigators(investigators)
         }
     }, [investigatorInput]);
@@ -53,9 +54,9 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
     const sortInvestigators = (investigatorsToOrder: User[]) => {
         if(orderBy !== defaultOrderBy){
             const orderd = _.orderBy(investigatorsToOrder, [investigator => investigator[orderBy]], [order])
-            setStortedInvestigators(orderd)
+            setSortedInvestigators(orderd)
         } else {
-            setStortedInvestigators(investigatorsToOrder)
+            setSortedInvestigators(investigatorsToOrder)
         }
     }
 
@@ -96,13 +97,20 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
 
     return (
         <>
-            <SearchBar
-                id='search-bar'
-                searchBarLabel={searchBarLabel}
-                onClick={(value: string) => setInvestigatorInput(value)}
-                onChange={(value: string) => setInvestigatorInput(value)}
-                validationSchema={userValidationSchema}
-            />
+            <div className={classes.investigatorAllocationTopBar}>
+                <SearchBar
+                    id='search-bar'
+                    searchBarLabel={searchBarLabel}
+                    onClick={(value: string) => setInvestigatorInput(value)}
+                    onChange={(value: string) => setInvestigatorInput(value)}
+                    validationSchema={userValidationSchema}
+                />
+                <button 
+                    onClick={() => handleRequestSort(defaultOrderBy)}
+                    className={classes.orderByAvailabilityButton}>
+                    {orderByAvailabilityText}
+                </button>
+            </div>
             <TableContainer component={Paper}>
                 <Table stickyHeader>
                     <TableHead id='investigators-table-header'>
