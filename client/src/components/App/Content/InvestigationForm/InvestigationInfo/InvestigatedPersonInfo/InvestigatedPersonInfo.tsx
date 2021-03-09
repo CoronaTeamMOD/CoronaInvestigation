@@ -113,6 +113,7 @@ const InvestigatedPersonInfo = (props: Props) => {
         }
         return status === InvestigationMainStatusCodes.NEW;
     };
+
     return (
         <Paper className={classes.paper}>
             <div className={classes.headerTopPart}>
