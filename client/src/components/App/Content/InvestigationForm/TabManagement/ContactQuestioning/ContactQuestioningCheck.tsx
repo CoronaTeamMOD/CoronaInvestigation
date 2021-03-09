@@ -22,15 +22,14 @@ import useStyles from './ContactQuestioningStyles';
 import { OCCUPATION_LABEL, RELEVANT_OCCUPATION_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
 
 const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => {
-    const {control , getValues} = useFormContext();
-
+    const {formErrors , contactStatus , control} = props;
+    console.log('cqc rerendered', formErrors);
     const classes = useStyles();
 
     const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
     const { index , interactedContact } = props;
 
-    const formValues = getValues().form ? getValues().form[index] : interactedContact
-    const { isFieldDisabled } = useContactFields(formValues.contactStatus);
+    const { isFieldDisabled } = useContactFields(contactStatus);
 
     return (
         <Grid item xs={4}>
@@ -210,4 +209,7 @@ export default ContactQuestioningCheck;
 interface Props {
     index: number,
     interactedContact: InteractedContact;
+    formErrors: any;
+    control: any;
+    contactStatus: number;
 };

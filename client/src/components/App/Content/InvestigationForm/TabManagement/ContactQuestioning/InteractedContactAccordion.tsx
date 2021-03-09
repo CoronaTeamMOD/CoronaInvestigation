@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ExpandMore } from '@material-ui/icons';
 import { useFormContext } from 'react-hook-form';
 import {
@@ -25,6 +25,7 @@ import InteractedContactFields from 'models/enums/InteractedContact';
 
 const InteractedContactAccordion = (props: Props) => {
     const {errors, watch, ...methods} = useFormContext();
+
     const classes = useStyles();
 
     const {
@@ -40,11 +41,12 @@ const InteractedContactAccordion = (props: Props) => {
 
     const watchCurrentStatus = watch(`form[${index}].${InteractedContactFields.CONTACT_STATUS}`)
 
+    const formErrors = errors.form ? (errors.form[index] ? errors.form[index] : {}) : {};
+
     const getAccordionClasses = () : string => {
         let classesList : string[] = [];
         classesList.push(classes.accordion);
 
-        const formErrors = errors.form ? (errors.form[index] ? errors.form[index] : {}) : {};
         const formHasErrors = Object.entries(formErrors)
             .some(([key, value]) => (
                 value !== undefined
@@ -109,6 +111,9 @@ const InteractedContactAccordion = (props: Props) => {
                             <ContactQuestioningCheck
                                 index={index}
                                 interactedContact={interactedContact}
+                                formErrors={formErrors}
+                                control={methods.control}
+                                contactStatus={watchCurrentStatus}
                             />
                         </Grid>
                     </AccordionDetails>
@@ -129,7 +134,7 @@ const InteractedContactAccordion = (props: Props) => {
                     </AccordionActions>
                 </Accordion>
             </div>
-        )    
+        )
     } , [formValues]);
 
     return (
