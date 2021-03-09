@@ -83,14 +83,6 @@ const UsersManagement: React.FC = () => {
             case UsersManagementTableHeadersNames.LANGUAGES: {
                 return row[cellName]?.join(', ')
             }
-            case UsersManagementTableHeadersNames.USER_STATUS: {
-                return (
-                    <IsActiveToggle
-                        value={row[cellName]}
-                        onToggle={(isActive) => setUserActivityStatus(isActive, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
-                    />
-                )
-            }
             case UsersManagementTableHeadersNames.WATCH: {
                 return (
                     <Tooltip title='צפייה בפרטי המשתמש'>
