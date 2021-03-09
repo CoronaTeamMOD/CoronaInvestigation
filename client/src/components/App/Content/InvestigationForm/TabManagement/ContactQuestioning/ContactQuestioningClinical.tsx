@@ -205,7 +205,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                                 props.onChange(booleanValue);
                                             }
                                         }
-                                        } />
+                                    } />
                                 )
                             }}
                         />

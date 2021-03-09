@@ -23,7 +23,7 @@ import { OCCUPATION_LABEL, RELEVANT_OCCUPATION_LABEL } from '../PersonalInfoTab/
 
 const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => {
     const {formErrors , contactStatus , control} = props;
-    console.log('cqc rerendered', formErrors);
+
     const classes = useStyles();
 
     const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);

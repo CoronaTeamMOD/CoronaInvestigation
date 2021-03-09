@@ -13,8 +13,8 @@ import useContactFields from 'Utils/Contacts/useContactFields';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
-import NumericTextField from 'commons/NumericTextField/NumericTextField';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import NumericTextField from 'commons/NoContextElements/NumericTextField';
+import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextField';
 import IdentificationTextField from 'commons/NoContextElements/IdentificationTextField';
 
 import useStyles from './ContactQuestioningStyles';
