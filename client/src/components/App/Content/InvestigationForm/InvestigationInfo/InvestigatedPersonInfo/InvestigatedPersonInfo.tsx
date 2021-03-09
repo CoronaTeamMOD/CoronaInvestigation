@@ -113,7 +113,6 @@ const InvestigatedPersonInfo = (props: Props) => {
         }
         return status === InvestigationMainStatusCodes.NEW;
     };
-console.log(age, investigationStaticInfo)
     return (
         <Paper className={classes.paper}>
             <div className={classes.headerTopPart}>
@@ -267,7 +266,7 @@ console.log(age, investigationStaticInfo)
                         <>
                             <InfoItemWithIcon testId='age' name='גיל' value={+age < 1 ? 'פחות משנה' : age} icon={CakeOutlined} />
                             {
-                                +age <= maxComplexityAge && <ComplexityIcon tooltipText='המאומת מתחת לגיל 14' />
+                                +age <= maxComplexityAge && <ComplexityIcon tooltipText='המאומת מתחת לגיל 15' />
                             }
                             <Divider />
                         </>
