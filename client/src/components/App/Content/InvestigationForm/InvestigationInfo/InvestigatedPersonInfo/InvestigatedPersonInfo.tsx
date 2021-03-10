@@ -13,6 +13,7 @@ import InvestigationInfo from 'models/InvestigationInfo';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import MutationIcon from 'commons/Icons/customIcons/MutationIcon';
+import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import ReturnSickIcon from 'commons/Icons/customIcons/ReturnSickIcon';
 import VaccinationIcon from 'commons/Icons/customIcons/VaccinationIcon';
@@ -128,7 +129,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 {'שם:'}
                             </Typography>
                             <TextField>
-                                
+
                             </TextField>
                         </>
                         :
@@ -314,8 +315,30 @@ const InvestigatedPersonInfo = (props: Props) => {
                             <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value=''
                                 icon={Edit}
                             />
-                            <Select>
-
+                            <Select
+                                value={identityType}
+                                onChange={(event) => console.log(event.target.value as number)}
+                                MenuProps={{
+                                anchorOrigin: {
+                                    vertical: 'bottom',
+                                    horizontal: 'left'
+                                },
+                                transformOrigin: {
+                                    vertical: 'top',
+                                    horizontal: 'left'
+                                },
+                                getContentAnchorEl: null
+                                }}
+                            >
+                                {
+                                    Object.values(IdentificationTypes).map((identificationType: string) => (
+                                        <MenuItem
+                                            key={identificationType}
+                                            value={identificationType}>
+                                            {identificationType}
+                                        </MenuItem>
+                                    ))
+                                }
                             </Select>
                         </>
                         :
