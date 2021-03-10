@@ -39,9 +39,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: '90vw',
     },
     header: {
-        fontSize: '4vh',
-        display: 'flex',
-        justifyContent: 'center'
+        alignSelf:'flex-start',
+        '& p': {
+            marginLeft: theme.spacing(2),   
+            marginTop: theme.spacing(1)
+        }
     },
     filtersContent: {
         width: '90vw',

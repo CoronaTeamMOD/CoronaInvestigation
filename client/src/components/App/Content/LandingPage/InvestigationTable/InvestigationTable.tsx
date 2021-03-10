@@ -282,7 +282,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             </IconButton>
                         </Tooltip>
                     }
-                    <Typography color='textPrimary' className={classes.welcomeMessage}>
+                    <Typography color='textPrimary'>
                         {tableTitle}
                     </Typography>
                 </Grid>

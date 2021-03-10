@@ -131,7 +131,7 @@ const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החק
 const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף'
 export const transferredSubStatus = 'נדרשת העברה';
 
-const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך היום. בואו נקטע את שרשראות ההדבקה!';
+const welcomeMessage = 'ניהול חקירות';
 const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
@@ -1003,7 +1003,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const isAdmin = userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN;
 
-    const noAdminFilterTitle = rows.length === 0 ? noInvestigationsMessage : welcomeMessage;;
+    const noAdminFilterTitle = rows.length === 0 ? noInvestigationsMessage : welcomeMessage;
 
     const tableTitle = useMemo(() => {
         if (rows.length === 0) return noInvestigationsMessage;

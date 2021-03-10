@@ -40,22 +40,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     menuTypo: {
         color: 'white',
         fontFamily: 'Assistant',
-        marginRight: theme.spacing(2)
     },
     menuItem: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
         textDecoration: 'none',
-        paddingTop: theme.spacing(1)
+        padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`
     },
     activeItem: {
         flip: false,
         borderRadius: 20,
         background: '#5FB1CB',
         color: 'white',
-        padding: theme.spacing(1),
-        marginLeft: theme.spacing(1)
     },
     select: {
         color: 'white',
