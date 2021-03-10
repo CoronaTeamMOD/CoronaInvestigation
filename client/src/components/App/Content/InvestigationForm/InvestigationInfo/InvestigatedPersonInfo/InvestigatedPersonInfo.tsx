@@ -2,8 +2,8 @@ import * as yup from 'yup';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import React, { ChangeEvent, useEffect, useMemo } from 'react';
-import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
-import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl, Tooltip } from '@material-ui/core';
+import { Edit, CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
+import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl, Tooltip, IconButton } from '@material-ui/core';
 
 import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
@@ -119,9 +119,20 @@ const InvestigatedPersonInfo = (props: Props) => {
             <div className={classes.headerTopPart}>
                 <div className={classes.investigationHeaderInfo}>
                     <InvestigationMenu />
-                    <Typography variant='h6' className={classes.investigationTitle}>
-                        {`שם: ${fullName}`}
-                    </Typography>
+                    {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ? 
+                        <>
+                            <IconButton size='small'>
+                                <Edit />
+                            </IconButton>
+                            <Typography variant='h6' className={classes.investigationTitle}>
+                                {`שם: ${fullName}`}
+                            </Typography>
+                        </>
+                        :
+                        <Typography variant='h6' className={classes.investigationTitle}>
+                            {`שם: ${fullName}`}
+                        </Typography>
+                    }
                     {isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל' />}
                     <PhoneDial
                         phoneNumber={primaryPhone}
@@ -296,11 +307,11 @@ const InvestigatedPersonInfo = (props: Props) => {
                     />
                     <Divider />
                     <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value={identityType}
-                        icon={Help}
+                        icon={userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ? Edit : Help}
                     />
                     <Divider />
                     <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value={identityNumber}
-                        icon={Help}
+                        icon={userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ? Edit : Help}
                     />
                     <Divider />
                     <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={indication((isDeceased || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED))}
