@@ -8,6 +8,17 @@ import { SET_COMPLEXITY_REASONS_ARRAY } from '../../DBService/ComplexityReasons/
 
 const complexityReasonsRoute = Router();
 
+const isBirthDateUnder14 = (birthDate: Date) => {
+    if (birthDate === null) { 
+        return false
+    } else {
+        const today = new Date();
+        let birthday = new Date(birthDate);
+        birthday.setFullYear(birthday.getFullYear() + 14);
+        return birthday > today
+    }
+}
+
 complexityReasonsRoute.get('/investigations', (request: Request, response: Response) => {
     const complexityReasonsLogger = logger.setup({
         workflow: 'set complexity Reasons for all investigations Logger',
@@ -26,7 +37,7 @@ complexityReasonsRoute.get('/investigations', (request: Request, response: Respo
                 if (covidPatient.fullName === null && covidPatient.birthDate === null) {
                     complexityReasonsArray.push(2);
                 }
-                if (covidPatient.age <= 14) {
+                if (covidPatient.age <= 14 || isBirthDateUnder14(covidPatient.birthDate)) {
                     complexityReasonsArray.push(3);
                 }
                 if (investigatedPatient.isDeceased === true) {
