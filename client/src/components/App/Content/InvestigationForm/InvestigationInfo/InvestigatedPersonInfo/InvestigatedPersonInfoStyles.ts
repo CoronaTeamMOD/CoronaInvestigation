@@ -71,7 +71,7 @@ const useStyles = makeStyles({
     },
     subStatusLabel: {
     },
-    select: {
+    smallSizeText: {
         fontSize: '1rem'
     }
 });

@@ -122,15 +122,13 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <InvestigationMenu />
                     {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ? 
                         <>
-                            <IconButton size='small'>
-                                <Edit />
-                            </IconButton>
+                            <Edit />
                             <Typography variant='h6' className={classes.investigationTitle}>
                                 {'שם:'}
                             </Typography>
-                            <TextField>
-
-                            </TextField>
+                            <TextField 
+                                value={fullName} 
+                            />
                         </>
                         :
                         <Typography variant='h6' className={classes.investigationTitle}>
@@ -316,7 +314,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 icon={Edit}
                             />
                             <Select
-                                className={classes.select}
+                                className={classes.smallSizeText}
                                 value={identityType}
                                 onChange={(event) => console.log(event.target.value as number)}
                                 MenuProps={{
@@ -334,7 +332,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 {
                                     Object.values(IdentificationTypes).map((identificationType: string) => (
                                         <MenuItem
-                                            className={classes.select}
+                                            className={classes.smallSizeText}
                                             key={identificationType}
                                             value={identificationType}>
                                             {identificationType}
@@ -354,9 +352,11 @@ const InvestigatedPersonInfo = (props: Props) => {
                             <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value=''
                                 icon={Edit}
                             />
-                            <TextField>
-
-                            </TextField>
+                            <TextField 
+                                className={classes.smallSizeText}
+                                InputProps={{className: classes.smallSizeText}}
+                                value={identityNumber} 
+                            />
                         </>
                         :
                         <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value={identityNumber}
