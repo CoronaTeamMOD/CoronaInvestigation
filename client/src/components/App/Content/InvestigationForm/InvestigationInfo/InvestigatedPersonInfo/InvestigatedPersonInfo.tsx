@@ -125,8 +125,11 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 <Edit />
                             </IconButton>
                             <Typography variant='h6' className={classes.investigationTitle}>
-                                {`שם: ${fullName}`}
+                                {'שם:'}
                             </Typography>
+                            <TextField>
+                                
+                            </TextField>
                         </>
                         :
                         <Typography variant='h6' className={classes.investigationTitle}>
@@ -306,13 +309,36 @@ const InvestigatedPersonInfo = (props: Props) => {
                         icon={Help}
                     />
                     <Divider />
-                    <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value={identityType}
-                        icon={userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ? Edit : Help}
-                    />
+                    {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ?
+                        <>
+                            <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value=''
+                                icon={Edit}
+                            />
+                            <Select>
+
+                            </Select>
+                        </>
+                        :
+                        <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value={identityType}
+                            icon={Help}
+                        />
+                    }
                     <Divider />
-                    <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value={identityNumber}
-                        icon={userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ? Edit : Help}
-                    />
+                    {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ?
+                        <>
+                            <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value=''
+                                icon={Edit}
+                            />
+                            <TextField>
+
+                            </TextField>
+                        </>
+                        :
+                        <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value={identityNumber}
+                            icon={Help}
+                        />
+                    }
+                    
                     <Divider />
                     <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={indication((isDeceased || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED))}
                         icon={Help}
