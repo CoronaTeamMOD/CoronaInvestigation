@@ -120,12 +120,15 @@ const InvestigatedPersonInfo = (props: Props) => {
                 <div className={classes.investigationHeaderInfo}>
                     <InvestigationMenu />
                     <Typography variant='h6' className={classes.investigationTitle}>
-                        {`${fullName} ${epedemioligyNumber}`}
+                        {`שם: ${fullName}`}
                     </Typography>
                     {isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל' />}
                     <PhoneDial
                         phoneNumber={primaryPhone}
                     />
+                    <Typography variant='h6' className={classes.investigationTitle}>
+                        {`מספר אפדימיולוגי: ${epedemioligyNumber}`}
+                    </Typography>
                 </div>
                 <PrimaryButton
                     onClick={(event) => {
