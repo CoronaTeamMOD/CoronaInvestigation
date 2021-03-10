@@ -70,6 +70,9 @@ const useStyles = makeStyles({
         fontFamily: 'Assistant',
     },
     subStatusLabel: {
+    },
+    select: {
+        fontSize: '1rem'
     }
 });
 

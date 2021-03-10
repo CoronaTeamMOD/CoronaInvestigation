@@ -316,6 +316,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 icon={Edit}
                             />
                             <Select
+                                className={classes.select}
                                 value={identityType}
                                 onChange={(event) => console.log(event.target.value as number)}
                                 MenuProps={{
@@ -333,6 +334,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 {
                                     Object.values(IdentificationTypes).map((identificationType: string) => (
                                         <MenuItem
+                                            className={classes.select}
                                             key={identificationType}
                                             value={identificationType}>
                                             {identificationType}
