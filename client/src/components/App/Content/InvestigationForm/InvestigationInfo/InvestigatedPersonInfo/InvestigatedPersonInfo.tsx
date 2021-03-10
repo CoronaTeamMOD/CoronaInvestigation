@@ -267,7 +267,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                         <>
                             <InfoItemWithIcon testId='age' name='גיל' value={+age < 1 ? 'פחות משנה' : age} icon={CakeOutlined} />
                             {
-                                +age <= maxComplexityAge && <ComplexityIcon tooltipText='המאומת מתחת לגיל 15' />
+                                +age <= maxComplexityAge && <ComplexityIcon tooltipText='המאומת מתחת לגיל 14' />
                             }
                             <Divider />
                         </>
