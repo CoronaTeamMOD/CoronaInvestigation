@@ -567,11 +567,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const { startWaiting, onCancel, onOk, snackbarOpen } = usePageRefresh(fetchTableData, TABLE_REFRESH_INTERVAL);
 
     useEffect(() => {
-        if (isLoggedIn) {
-            fetchTableData();
-        }
+        fetchTableData();
         setIsBadgeInVisible(!Boolean(Object.values(filterRules).find(item => item !== null)))
     }, [isLoggedIn, filterRules, orderBy, currentPage, displayedCounty, userType]);
+
+    useEffect(() => {
+        setCurrentPage(defaultPage);
+    }, [displayedCounty, userType]);
 
     const onInvestigationRowClick = async (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const epidemiologyNum :number = investigationRow.epidemiologyNumber
