@@ -230,7 +230,6 @@ const InvestigationTableRow = ({
                     />
                 );
             case TableHeadersNames.age:
-                const age = indexedRow[cellName as keyof typeof TableHeadersNames]
                 return  indexedRow[cellName as keyof typeof TableHeadersNames] ?? '-';
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames];
