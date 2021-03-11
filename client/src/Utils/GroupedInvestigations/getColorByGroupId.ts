@@ -19,7 +19,7 @@ const squishNumber = (number : number) => {
 }
 
 const getColorByGroupId = (groupid : string) => {
-    const seed = groupid.slice(-6);
+    const seed = groupid.slice(0,6);
 
     // squish the color to a 'pretty' color - V.1
     const red = squishNumber(parseInt(seed.slice(0,2), 16));
