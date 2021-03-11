@@ -7,5 +7,5 @@ export const setDesks = (desks: County[]): void => {
     store.dispatch({
         type: actionTypes.SET_DESKS,
         payload: {desks}
-    })
-}
+    });
+};

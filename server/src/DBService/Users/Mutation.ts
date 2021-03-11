@@ -47,6 +47,9 @@ mutation updateCounty($id: String!, $investigationGroup: Int!) {
     user {
       id
       investigationGroup
+      countyByInvestigationGroup {
+        displayName
+      }
     }
   }
 }
