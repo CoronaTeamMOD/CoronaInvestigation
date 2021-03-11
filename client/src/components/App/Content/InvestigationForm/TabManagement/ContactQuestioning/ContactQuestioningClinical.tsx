@@ -35,7 +35,6 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const { alertError, alertWarning } = useCustomSwal();
 
-    //const formValues = getValues().form ? getValues().form[index] : interactedContact;
     const { isFieldDisabled, validateContact } = useContactFields(formValues.contactStatus);
     
     const daysToIsolate = 14;
@@ -257,7 +256,6 @@ export default ContactQuestioningClinical;
 interface Props {
     index: number;
     familyRelationships: FamilyRelationship[];
-    //TODO : figure out why InteractedContact exists in the first place
     interactedContact: InteractedContact;
     isFamilyContact: boolean;
     control: any;
