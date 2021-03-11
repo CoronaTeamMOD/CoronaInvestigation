@@ -2,6 +2,8 @@ import * as yup from 'yup';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import React, { useState } from 'react';
+import { yupResolver } from '@hookform/resolvers';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { Edit, CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
 import { Typography, Paper, TextField, Select, MenuItem, Tooltip } from '@material-ui/core';
 
@@ -9,6 +11,7 @@ import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
 import formatDate from 'Utils/DateUtils/formatDate';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
+import StaticFields from 'models/enums/StaticFields';
 import InvestigationInfo from 'models/InvestigationInfo';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import MutationIcon from 'commons/Icons/customIcons/MutationIcon';
@@ -26,8 +29,6 @@ import useStyles from './InvestigatedPersonInfoStyles';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 import InvestigationMenu from './InvestigationMenu/InvestigationMenu';
-import { FormProvider, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers';
 import InvestigationStatusInfo from './InvestigationStatusInfo/InvestigationStatusInfo';
 
 const leaveInvestigationMessage = 'צא מחקירה';
@@ -117,9 +118,18 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     <Typography variant='h6' className={classes.investigationTitle}>
                                         {'שם:'}
                                     </Typography>
-                                    <TextField 
-                                        value={fullName} 
-                                        onChange={() => setStaticFieldsChange(true)}
+                                    <Controller 
+                                        name={StaticFields.FULL_NAME}
+                                        control={methods.control}
+                                        render={(props) => (
+                                            <TextField
+                                                test-id={props.name}
+                                                value={props.value}
+                                                onChange={(event) => props.onChange(event.target.value as string)}
+                                                //error={get(methods.errors, props.name)}
+                                                //label={get(methods.errors, props.name)?.message || MABAR_USER_NAME}
+                                            />
+                                        )}
                                     />
                                 </>
                                 :
@@ -188,33 +198,41 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value=''
                                         icon={Edit}
                                     />
-                                    <Select
-                                        className={classes.smallSizeText}
-                                        value={identityType}
-                                        onChange={() => setStaticFieldsChange(true)}
-                                        MenuProps={{
-                                        anchorOrigin: {
-                                            vertical: 'bottom',
-                                            horizontal: 'left'
-                                        },
-                                        transformOrigin: {
-                                            vertical: 'top',
-                                            horizontal: 'left'
-                                        },
-                                        getContentAnchorEl: null
-                                        }}
-                                    >
-                                        {
-                                            Object.values(IdentificationTypes).map((identificationType: string) => (
-                                                <MenuItem
-                                                    className={classes.smallSizeText}
-                                                    key={identificationType}
-                                                    value={identificationType}>
-                                                    {identificationType}
-                                                </MenuItem>
-                                            ))
-                                        }
-                                    </Select>
+                                    <Controller
+                                        control={methods.control}
+                                        name={StaticFields.IDENTIFICATION_TYPE}
+                                        defaultValue={identityType}
+                                        render={(props) => (
+                                            <Select
+                                                {...props}
+                                                className={classes.smallSizeText}
+                                                onChange={(event) => {
+                                                    props.onChange(event.target.value)
+                                                    setStaticFieldsChange(true)
+                                                }}
+                                                MenuProps={{
+                                                    anchorOrigin: {
+                                                        vertical: 'bottom',
+                                                        horizontal: 'left'
+                                                    },
+                                                    transformOrigin: {
+                                                        vertical: 'top',
+                                                        horizontal: 'left'
+                                                    },
+                                                    getContentAnchorEl: null
+                                                    }}
+                                            >
+                                                {Object.values(IdentificationTypes).map((identificationType: string) => (
+                                                    <MenuItem
+                                                        className={classes.smallSizeText}
+                                                        key={identificationType}
+                                                        value={identificationType}>
+                                                        {identificationType}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        )}
+                                    />
                                 </>
                                 :
                                 <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value={identityType}
@@ -227,11 +245,21 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value=''
                                         icon={Edit}
                                     />
-                                    <TextField 
-                                        className={classes.smallSizeText}
-                                        InputProps={{className: classes.smallSizeText}}
-                                        value={identityNumber} 
-                                        onChange={() => setStaticFieldsChange(true)}
+                                    <Controller 
+                                        name={StaticFields.ID}
+                                        control={methods.control}
+                                        defaultValue={identityNumber}
+                                        render={(props) => (
+                                            <TextField
+                                                className={classes.smallSizeText}
+                                                InputProps={{className: classes.smallSizeText}}
+                                                test-id={props.name}
+                                                value={props.value}
+                                                onChange={(event) => props.onChange(event.target.value as string)}
+                                                //error={get(methods.errors, props.name)}
+                                                //label={get(methods.errors, props.name)?.message || MABAR_USER_NAME}
+                                            />
+                                        )}
                                     />
                                 </>
                                 :
