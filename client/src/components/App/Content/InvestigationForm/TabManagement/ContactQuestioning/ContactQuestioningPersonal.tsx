@@ -1,7 +1,7 @@
 import { differenceInYears } from 'date-fns';
 import React, { useState, useEffect } from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
 import { Avatar, Grid, Typography } from '@material-ui/core';
+import { Controller, DeepMap, FieldError } from 'react-hook-form';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
@@ -27,11 +27,7 @@ const idInfoMessage = 'ניתן להזין בשדה תז עד 9 תווים'
 const ContactQuestioningPersonal: React.FC<Props> = (
     props: Props
 ): JSX.Element => {
-    // TODO : find a way to seperate those fields outward to Accordion - so we can selectivly render them
-    //const { control, getValues , errors, trigger} = useFormContext();
     const { index, interactedContact, currentFormErrors, formValues, control, trigger } = props;
-
-    //const currentFormErrors = errors?.form && errors?.form[index];
     
     const calcAge = (birthDate: Date) => {
         const newAge: number = differenceInYears(new Date(),new Date(birthDate));
@@ -45,9 +41,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (
     const [shouldIdDisable, setShouldIdDisable] = useState<boolean>(false);
     const [age, setAge] = useState<string>(calcAge(interactedContact.birthDate));
 
-    // const formValues = getValues().form
-    //     ? getValues().form[index]
-    //     : interactedContact;
     const { isFieldDisabled } = useContactFields(formValues.contactStatus);
     const [isPassport, setIsPassport] = useState<boolean>(
         formValues.identificationType === IdentificationTypes.PASSPORT
@@ -120,7 +113,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                             <HelpIcon 
                                 title={idTooltipText} 
                                 isWarning={
-                                    currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_NUMBER]
+                                    Boolean(currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_NUMBER])
                                 } 
                             />
                         }
@@ -137,7 +130,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                 return (
                                     <IdentificationTextField
                                         {...props}
-                                        error={currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_NUMBER]?.message}
+                                        error={(currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_NUMBER]?.message ) || ''}
                                         isPassport={isPassport}
                                         disabled={shouldIdDisable}
                                         testId='identificationNumber'
@@ -267,7 +260,7 @@ interface Props {
     index: number;
     interactedContact: GroupedInteractedContact;
     control: any;
-    formValues: any;
+    formValues: InteractedContact;
     trigger: (fieldname : string) => {};
-    currentFormErrors: any;
+    currentFormErrors?: DeepMap<InteractedContact, FieldError>;
 }

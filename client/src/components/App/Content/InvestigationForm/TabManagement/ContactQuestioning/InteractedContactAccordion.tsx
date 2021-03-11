@@ -17,6 +17,7 @@ import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 import useStyles from './ContactQuestioningStyles';
+import { FormInputs } from './ContactQuestioningInterfaces';
 import ContactQuestioningInfo from './ContactQuestioningInfo';
 import ContactQuestioningCheck from './ContactQuestioningCheck';
 import ContactQuestioningPersonal from './ContactQuestioningPersonal';
@@ -24,7 +25,7 @@ import ContactQuestioningClinical from './ContactQuestioningClinical';
 import InteractedContactFields from 'models/enums/InteractedContact';
 
 const InteractedContactAccordion = (props: Props) => {
-    const {errors, watch, ...methods} = useFormContext();
+    const {errors, watch, ...methods} = useFormContext<FormInputs>();
 
     const classes = useStyles();
 
@@ -39,23 +40,23 @@ const InteractedContactAccordion = (props: Props) => {
         shouldDisable,
     } = props;
 
-    const watchCurrentStatus = watch(`form[${index}].${InteractedContactFields.CONTACT_STATUS}`)
+    const watchCurrentStatus: number = watch(`form[${index}].${InteractedContactFields.CONTACT_STATUS}`)
 
-    const formErrors = errors.form ? (errors.form[index] ? errors.form[index] : {}) : {};
+    const formErrors = errors?.form && errors?.form[index];
 
     const getAccordionClasses = () : string => {
         let classesList : string[] = [];
         classesList.push(classes.accordion);
 
-        const formHasErrors = Object.entries(formErrors)
+        const formHasErrors = Object.entries(formErrors || {})
             .some(([key, value]) => (
                 value !== undefined
             ));
     
         if(formHasErrors) {
-            classesList.push(classes.errorAccordion)
+            classesList.push(classes.errorAccordion);
         }
-        return classesList.join(" ")
+        return classesList.join(" ");
     }
 
     const formValues = methods.getValues().form
@@ -127,7 +128,7 @@ const InteractedContactAccordion = (props: Props) => {
                             test-id='saveContact'
                             onClick={() => {
                                 const currentParsedPerson = parsePerson(
-                                    methods.getValues().form[index],
+                                    methods.getValues().form[index] as GroupedInteractedContact,
                                     index
                                 );
                                 saveContact(currentParsedPerson);
