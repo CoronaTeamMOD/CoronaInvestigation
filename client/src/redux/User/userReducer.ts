@@ -8,6 +8,7 @@ export interface UserState {
     data: User;
     isLoggedIn: boolean;
     displayedCounty: number;
+    displayedDistrict: number;
     userTypes: UserType[];
 };
 
@@ -39,6 +40,7 @@ export const initialUserState: UserState = {
     },
     isLoggedIn: false,
     displayedCounty: -1,
+    displayedDistrict: -1,
     userTypes: []
 };
 
@@ -48,15 +50,24 @@ const userReducer = (state = initialUserState, action: Actions.UserAction): User
             ...state,
             data: action.payload.user,
             isLoggedIn: true,
+            displayedDistrict: action.payload.user.countyByInvestigationGroup.districtId,
             displayedCounty: action.payload.user.investigationGroup
         };
         case Actions.SET_IS_ACTIVE: return {
             ...state,
             data: { ...state.data, isActive: action.payload.isActive }
         };
+        case Actions.SET_INVESTIGATION_GROUP: return {
+            ...state,
+            data: { ...state.data, countyByInvestigationGroup: {districtId: action.payload.districtId, displayName: action.payload.countyDisplayName} }
+        };
         case Actions.SET_DISPLAYED_COUNTY: return {
             ...state,
             displayedCounty: action.payload.county
+        };
+        case Actions.SET_DISPLAYED_DISTRICT: return {
+            ...state,
+            displayedDistrict: action.payload.district
         };
         case Actions.SET_USER_TYPES: return {
             ...state,

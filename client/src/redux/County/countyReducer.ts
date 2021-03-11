@@ -10,10 +10,10 @@ const countyReducer = (state = initialState, action: Actions.countyAction): Coun
             return {
                 allCounties: action.payload.counties,
                 districtCounties: action.payload.counties.filter(county => county.district.id === action.payload.userDistrict)
-            }
-        }
+            };
+        };
         default: return state;
-    }
-}
+    };
+};
 
 export default countyReducer;

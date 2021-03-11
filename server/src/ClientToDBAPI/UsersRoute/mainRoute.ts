@@ -9,6 +9,7 @@ import handleCountyRequest from '../../middlewares/HandleCountyRequest';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
 import UpdateUserResponse from '../../Models/User/UpdateUserResponse';
 import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
+import { GET_ALL_COUNTIES_OF_DISTRICT } from '../../DBService/Counties/Query';
 import GetAllUserTypesResponse from '../../Models/User/GetAllUserTypesResponse';
 import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
@@ -110,7 +111,42 @@ usersRoute.post('/updateCounty', handleUsersRequest, (request: Request, response
             updateCountyLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.sendStatus(errorStatusCode).send(error);
         })
-})
+});
+
+
+usersRoute.post('/updateDistrict', handleUsersRequest, (request: Request, response: Response) => {
+    const updateDistrictLogger = logger.setup({
+        workflow: 'update user district',
+        user: response.locals.user.id,
+    });
+    const parameters = {
+        district: request.body.district
+    };
+    updateDistrictLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+    graphqlRequest(GET_ALL_COUNTIES_OF_DISTRICT, response.locals, parameters)
+    .then(result => {
+        const investigationGroup = result.data.allCounties.nodes[0].id;
+        const countyDisplayName =result.data.allCounties.nodes[0].displayName
+        const updateCountyVariables = {
+            id: response.locals.user.id,
+            investigationGroup
+        };
+
+        updateDistrictLogger.info(launchingDBRequestLog(updateCountyVariables), Severity.LOW);
+        graphqlRequest(UPDATE_COUNTY, response.locals, updateCountyVariables)
+            .then(result => {
+                updateDistrictLogger.info(validDBResponseLog, Severity.LOW);
+                response.send({user: result.data.updateUserById.user, countyDisplayName});
+            })
+            .catch(error => {
+                updateDistrictLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            })
+    })
+    .catch(error => {
+        updateDistrictLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+        response.sendStatus(errorStatusCode).send(error);
+    })
+});
 
 const updateIsUserActive = (response: Response, id: string, isActive: Boolean) => {
     const updateIsActiveStatusVariables = {

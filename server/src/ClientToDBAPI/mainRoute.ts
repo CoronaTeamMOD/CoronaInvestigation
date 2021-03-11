@@ -7,6 +7,7 @@ import exposureRoute from './ExposureRoute/mainRoute';
 import countiesRoute from './CountiesRoute/mainRoute';
 import educationRoute from './EducationRoute/mainRoute';
 import AuthorityRoute from './AuthorityRoute/mainRoute';
+import districtsRoute from './DistrictsRoute/mainRoute';
 import authMiddleware from '../middlewares/Authentication';
 import landingPageRoute from './LandingPageRoute/mainRoute';
 import investigationInfo from './InvestigationInfo/mainRoute';
@@ -17,23 +18,23 @@ import clinicalDetailsRoute from './ClinicalDetailsRoute/mainRoute';
 import groupedInvestigationsRoute from './GroupedInvestigationsRoute/mainRoute';
 import complexityReasonsRoute from './ComplexityReasons/mainRoute'
 
-
 const clientToDBRouter = Router();
 clientToDBRouter.use(authMiddleware);
+clientToDBRouter.use('/users', usersRoute);
 clientToDBRouter.use('/desks', desksRoute);
+clientToDBRouter.use('/counties', countiesRoute);
 clientToDBRouter.use('/exposure', exposureRoute);
+clientToDBRouter.use('/education', educationRoute);
+clientToDBRouter.use('/districts', districtsRoute);
+clientToDBRouter.use('/authorities', AuthorityRoute);
+clientToDBRouter.use('/addressDetails', addressRoute);
 clientToDBRouter.use('/landingPage', landingPageRoute);
 clientToDBRouter.use('/intersections', intersectionsRoute);
 clientToDBRouter.use('/investigationInfo', investigationInfo);
 clientToDBRouter.use('/personalDetails', personalDetailsRoute);
 clientToDBRouter.use('/clinicalDetails', clinicalDetailsRoute);
-clientToDBRouter.use('/addressDetails', addressRoute);
 clientToDBRouter.use('/contactedPeople', contactedPeopleRoute);
-clientToDBRouter.use('/users', usersRoute);
-clientToDBRouter.use('/counties', countiesRoute);
-clientToDBRouter.use('/groupedInvestigations', groupedInvestigationsRoute);
-clientToDBRouter.use('/education', educationRoute);
-clientToDBRouter.use('/authorities', AuthorityRoute);
 clientToDBRouter.use('/complexityReasons', complexityReasonsRoute);
+clientToDBRouter.use('/groupedInvestigations', groupedInvestigationsRoute);
 
 export default clientToDBRouter;
