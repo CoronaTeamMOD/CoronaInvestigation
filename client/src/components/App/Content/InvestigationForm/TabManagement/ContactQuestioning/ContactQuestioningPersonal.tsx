@@ -28,10 +28,10 @@ const ContactQuestioningPersonal: React.FC<Props> = (
     props: Props
 ): JSX.Element => {
     // TODO : find a way to seperate those fields outward to Accordion - so we can selectivly render them
-    const { control, getValues , errors, trigger} = useFormContext();
-    const { index, interactedContact } = props;
+    //const { control, getValues , errors, trigger} = useFormContext();
+    const { index, interactedContact, currentFormErrors, formValues, control, trigger } = props;
 
-    const currentFormErrors = errors?.form && errors?.form[index];
+    //const currentFormErrors = errors?.form && errors?.form[index];
     
     const calcAge = (birthDate: Date) => {
         const newAge: number = differenceInYears(new Date(),new Date(birthDate));
@@ -45,9 +45,9 @@ const ContactQuestioningPersonal: React.FC<Props> = (
     const [shouldIdDisable, setShouldIdDisable] = useState<boolean>(false);
     const [age, setAge] = useState<string>(calcAge(interactedContact.birthDate));
 
-    const formValues = getValues().form
-        ? getValues().form[index]
-        : interactedContact;
+    // const formValues = getValues().form
+    //     ? getValues().form[index]
+    //     : interactedContact;
     const { isFieldDisabled } = useContactFields(formValues.contactStatus);
     const [isPassport, setIsPassport] = useState<boolean>(
         formValues.identificationType === IdentificationTypes.PASSPORT
@@ -266,4 +266,8 @@ export default ContactQuestioningPersonal;
 interface Props {
     index: number;
     interactedContact: GroupedInteractedContact;
+    control: any;
+    formValues: any;
+    trigger: (fieldname : string) => {};
+    currentFormErrors: any;
 }

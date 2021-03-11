@@ -59,7 +59,7 @@ const InteractedContactAccordion = (props: Props) => {
     }
 
     const formValues = methods.getValues().form
-        ? JSON.stringify(methods.getValues().form[index])
+        ? methods.getValues().form[index]
         : interactedContact;
 
     const getAccordion = React.useMemo(() => {
@@ -89,6 +89,10 @@ const InteractedContactAccordion = (props: Props) => {
                             <ContactQuestioningPersonal
                                 index={index}
                                 interactedContact={interactedContact}
+                                control={methods.control}
+                                formValues={formValues}
+                                trigger={methods.trigger}
+                                currentFormErrors={formErrors}
                             />
                             <Divider
                                 orientation='vertical'
@@ -135,7 +139,7 @@ const InteractedContactAccordion = (props: Props) => {
                 </Accordion>
             </div>
         )
-    } , [formValues]);
+    } , [JSON.stringify(formValues)]);
 
     return (
         getAccordion
