@@ -47,11 +47,13 @@ const InteractedContactAccordion = (props: Props) => {
     const getAccordionClasses = () : string => {
         let classesList : string[] = [];
         classesList.push(classes.accordion);
-
-        const formHasErrors = Object.entries(formErrors || {})
-            .some(([key, value]) => (
-                value !== undefined
-            ));
+        
+        const formHasErrors = formErrors 
+            ? Object.entries(formErrors)
+                .some(([key, value]) => (
+                    value !== undefined
+                ))
+            : false
     
         if(formHasErrors) {
             classesList.push(classes.errorAccordion);
@@ -107,6 +109,9 @@ const InteractedContactAccordion = (props: Props) => {
                                 }
                                 interactedContact={interactedContact}
                                 isFamilyContact={isFamilyContact}
+                                control={methods.control}
+                                formValues={formValues}
+                                formErrors={formErrors}
                             />
                             <Divider
                                 orientation='vertical'

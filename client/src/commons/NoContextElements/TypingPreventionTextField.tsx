@@ -6,13 +6,12 @@ import TypePreventiveTextFieldType from './TypingPreventionTextFieldTypes';
 const TypePreventiveTextField: TypePreventiveTextFieldType = (props) => {
     const {  error, testId, name, onChange,  validationSchema,  label,...textFieldProps } = props;
 
-    const value = !props.value ? '' : props.value;
+    const value = props.value ?? '';
     
     const conditionalyTriggerOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = event.target.value;
         try {
             validationSchema.validateSync(newValue);
-            
             onChange(newValue);
         } catch (error) {
 

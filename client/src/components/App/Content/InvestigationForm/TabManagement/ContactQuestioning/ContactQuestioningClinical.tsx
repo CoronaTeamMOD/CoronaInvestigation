@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { addDays, format } from 'date-fns';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller, DeepMap, FieldError } from 'react-hook-form';
 import { Avatar, FormControl, Grid, MenuItem, Select, Typography } from '@material-ui/core';
 
 import theme from 'styles/theme';
@@ -11,7 +11,7 @@ import FamilyRelationship from 'models/FamilyRelationship';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import InteractedContactFields from 'models/enums/InteractedContact';
-import HebrewTextField from 'commons/HebrewTextField/HebrewTextField';
+import HebrewTextField from 'commons/NoContextElements/HebrewTextField';
 import AddressForm, { AddressFormFields } from 'commons/Forms/AddressForm/AddressForm';
 import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFields';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
@@ -24,8 +24,8 @@ const emptyFamilyRelationship: FamilyRelationship = {
 };
 
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
-    const { control , getValues , errors, setValue } = useFormContext();
-    const { index, familyRelationships, interactedContact, isFamilyContact } = props;
+    const { index, familyRelationships, interactedContact, isFamilyContact, 
+            control, formValues, formErrors } = props;
 
     const classes = useStyles();
 
@@ -35,7 +35,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const { alertError, alertWarning } = useCustomSwal();
 
-    const formValues = getValues().form ? getValues().form[index] : interactedContact;
+    //const formValues = getValues().form ? getValues().form[index] : interactedContact;
     const { isFieldDisabled, validateContact } = useContactFields(formValues.contactStatus);
     
     const daysToIsolate = 14;
@@ -75,11 +75,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     }
 
     const isIdAndPhoneNumValid = (): boolean => {
-        const formErrors = errors.form;
         if (formErrors) {
-            const currentFormErrors = formErrors[index];
-            if (currentFormErrors) {
-                return Boolean(formErrors[index].id) || Boolean(formErrors[index].phoneNumber)
+            if (formErrors) {
+                return Boolean(formErrors.id) || Boolean(formErrors.phoneNumber)
             }
         }
         return true;
@@ -164,6 +162,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                 return (
                                     <HebrewTextField
                                         {...props}
+                                        error={formErrors && formErrors[InteractedContactFields.ADDITIONAL_PHONE_NUMBER]?.message}
                                         disabled={isFieldDisabled}
                                         testId='relationship'
                                         onChange={(newValue: string) => {
@@ -258,6 +257,10 @@ export default ContactQuestioningClinical;
 interface Props {
     index: number;
     familyRelationships: FamilyRelationship[];
+    //TODO : figure out why InteractedContact exists in the first place
     interactedContact: InteractedContact;
     isFamilyContact: boolean;
+    control: any;
+    formValues: InteractedContact;
+    formErrors?: DeepMap<InteractedContact, FieldError>;
 };
