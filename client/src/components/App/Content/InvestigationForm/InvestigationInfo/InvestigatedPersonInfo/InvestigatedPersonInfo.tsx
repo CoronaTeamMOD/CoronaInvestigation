@@ -1,9 +1,9 @@
 import * as yup from 'yup';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import React, { ChangeEvent, useEffect, useMemo } from 'react';
+import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { Edit, CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
-import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl, Tooltip, IconButton } from '@material-ui/core';
+import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl, Tooltip, IconButton, Button } from '@material-ui/core';
 
 import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
@@ -30,8 +30,11 @@ import useStyles from './InvestigatedPersonInfoStyles';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 import InvestigationMenu from './InvestigationMenu/InvestigationMenu';
+import { FormProvider, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers';
 
 const leaveInvestigationMessage = 'צא מחקירה';
+const saveStaticDetailsMessage = 'שמירת שינויים';
 const displayDateFormat = 'dd/MM/yyyy';
 const maxComplexityAge = 14;
 const yes = 'כן';
@@ -47,6 +50,8 @@ export const inProcess = 'בטיפול';
 
 const InvestigatedPersonInfo = (props: Props) => {
     const { currentTab, investigationStaticInfo, epedemioligyNumber } = props;
+
+    const [staticFieldsChange, setStaticFieldsChange] = useState<boolean>(false);
 
     const classes = useStyles();
 
@@ -115,320 +120,349 @@ const InvestigatedPersonInfo = (props: Props) => {
         return status === InvestigationMainStatusCodes.NEW;
     };
 
+    const methods = useForm({
+        mode: 'all',
+        //resolver: yupResolver(mode === FormMode.CREATE ? SignUpSchema : EditSchema)
+    });
+
+    const onSubmit = () => {
+        const data = methods.getValues();
+        console.log(data);
+    };
+    
+
     return (
-        <Paper className={classes.paper}>
-            <div className={classes.headerTopPart}>
-                <div className={classes.investigationHeaderInfo}>
-                    <InvestigationMenu />
-                    {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ? 
-                        <>
-                            <Edit />
-                            <Typography variant='h6' className={classes.investigationTitle}>
-                                {'שם:'}
-                            </Typography>
-                            <TextField 
-                                value={fullName} 
+        <FormProvider {...methods}>
+            <form id='staticFields' onSubmit={methods.handleSubmit(onSubmit)}>
+                <Paper className={classes.paper}>
+                    <div className={classes.headerTopPart}>
+                        <div className={classes.investigationHeaderInfo}>
+                            <InvestigationMenu />
+                            {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ? 
+                                <>
+                                    <Edit />
+                                    <Typography variant='h6' className={classes.investigationTitle}>
+                                        {'שם:'}
+                                    </Typography>
+                                    <TextField 
+                                        value={fullName} 
+                                        onChange={() => setStaticFieldsChange(true)}
+                                    />
+                                </>
+                                :
+                                <Typography variant='h6' className={classes.investigationTitle}>
+                                    {`שם: ${fullName}`}
+                                </Typography>
+                            }
+                            {isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל' />}
+                            <PhoneDial
+                                phoneNumber={primaryPhone}
                             />
-                        </>
-                        :
-                        <Typography variant='h6' className={classes.investigationTitle}>
-                            {`שם: ${fullName}`}
-                        </Typography>
-                    }
-                    {isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל' />}
-                    <PhoneDial
-                        phoneNumber={primaryPhone}
-                    />
-                    <Typography variant='h6' className={classes.investigationTitle}>
-                        {`מספר אפדימיולוגי: ${epedemioligyNumber}`}
-                    </Typography>
-                </div>
-                <PrimaryButton
-                    onClick={(event) => {
-                        handleLeaveInvestigationClick(event);
-                        validateStatusReason(investigationStatus.statusReason)
-                    }}
-                    type='submit'
-                    form={`form-${currentTab}`}
-                >
-                    {leaveInvestigationMessage}
-                </PrimaryButton>
-            </div>
-            <div className={classes.managementControllers}>
-                <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                    <Grid item xs={12} className={classes.fieldLabel}>
-                        <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                            <Typography>
-                                <b><bdi>{statusLabel}</bdi>: </b>
+                            <Typography variant='h6' className={classes.investigationTitle}>
+                                {`מספר אפדימיולוגי: ${epedemioligyNumber}`}
                             </Typography>
-                            <Grid item className={classes.statusSelectGrid}>
-                                <FormControl variant='outlined' className={classes.statusSelect}>
-                                    <InputLabel className={classes.statusSelect} id='status-label'>{statusLabel}</InputLabel>
+                        </div>
+                        <PrimaryButton
+                            onClick={(event) => {
+                                handleLeaveInvestigationClick(event);
+                                validateStatusReason(investigationStatus.statusReason)
+                            }}
+                            type='submit'
+                            form={`form-${currentTab}`}
+                        >
+                            {leaveInvestigationMessage}
+                        </PrimaryButton>
+                    </div>
+                    <div className={classes.managementControllers}>
+                        <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+                            <Grid item xs={12} className={classes.fieldLabel}>
+                                <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+                                    <Typography>
+                                        <b><bdi>{statusLabel}</bdi>: </b>
+                                    </Typography>
+                                    <Grid item className={classes.statusSelectGrid}>
+                                        <FormControl variant='outlined' className={classes.statusSelect}>
+                                            <InputLabel className={classes.statusSelect} id='status-label'>{statusLabel}</InputLabel>
+                                            <Select
+                                                MenuProps={{
+                                                    anchorOrigin: {
+                                                        vertical: 'bottom',
+                                                        horizontal: 'left'
+                                                    },
+                                                    transformOrigin: {
+                                                        vertical: 'top',
+                                                        horizontal: 'left'
+                                                    },
+                                                    getContentAnchorEl: null
+                                                }}
+                                                labelId='status-label'
+                                                test-id='currentStatus'
+                                                variant='outlined'
+                                                label={statusLabel}
+                                                value={investigationStatus.mainStatus}
+                                                onChange={(event) => {
+                                                    const newStatus = event.target.value as string
+                                                    if (newStatus) {
+                                                        setInvestigationStatus({
+                                                            mainStatus: +newStatus,
+                                                            subStatus: '',
+                                                            statusReason: ''
+                                                        });
+                                                    }
+                                                }}
+                                            >
+                                                {
+                                                    permittedStatuses.map(status => (
+                                                        <MenuItem
+                                                            key={status.id}
+                                                            disabled={isStatusDisable(status.id)}
+                                                            value={status.id}>
+                                                            {status.displayName}
+                                                        </MenuItem>
+                                                    ))
+                                                }
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Collapse in={investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE ||
+                                        investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS}>
+                                        <Grid item className={classes.statusSelectGrid}>
+                                            <FormControl variant='outlined' className={classes.subStatusSelect}>
+                                                <InputLabel className={classes.subStatusLabel} id='sub-status-label'>{subStatusLabel}</InputLabel>
+                                                <Select
+                                                    MenuProps={{
+                                                        anchorOrigin: {
+                                                            vertical: 'bottom',
+                                                            horizontal: 'left'
+                                                        },
+                                                        transformOrigin: {
+                                                            vertical: 'top',
+                                                            horizontal: 'left'
+                                                        },
+                                                        getContentAnchorEl: null
+                                                    }}
+                                                    labelId='sub-status-label'
+                                                    test-id='currentSubStatus'
+                                                    label={subStatusLabel}
+                                                    value={investigationStatus.subStatus as string | undefined}
+                                                    onChange={(event) => {
+                                                        const newSubStatus = event.target.value as string
+                                                        setInvestigationStatus({
+                                                            mainStatus: investigationStatus.mainStatus,
+                                                            subStatus: newSubStatus ? String(newSubStatus) : null,
+                                                            statusReason: ''
+                                                        });
+                                                    }}
+                                                >
+                                                    {
+                                                        updatedSubStatuses.map((subStatus: string) => (
+                                                            <MenuItem
+                                                                key={subStatus}
+                                                                value={subStatus}>
+                                                                {subStatus}
+                                                            </MenuItem>
+                                                        ))
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                    </Collapse>
+                                    <Collapse in={investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS && investigationStatus.subStatus !== '' && investigationStatus.subStatus !== inProcess}>
+                                        <Grid item className={classes.statusSelectGrid}>
+                                            <TextField
+                                                className={classes.subStatusSelect}
+                                                value={investigationStatus.statusReason}
+                                                required={investigationStatus.subStatus === transferredSubStatus}
+                                                placeholder={statusReasonLabel}
+                                                error={statusReasonError ? true : false}
+                                                label={statusReasonError ? statusReasonError[0] : statusReasonLabel}
+                                                onChange={async (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+                                                    const newStatusReason: string = event.target.value;
+                                                    const isValid = validationSchema.isValidSync(newStatusReason);
+                                                    validateStatusReason(newStatusReason)
+                                                    if (isValid || newStatusReason === '') {
+                                                        setInvestigationStatus({
+                                                            mainStatus: investigationStatus.mainStatus,
+                                                            subStatus: investigationStatus.subStatus,
+                                                            statusReason: newStatusReason
+                                                        });
+                                                    }
+                                                }}
+                                            />
+                                        </Grid>
+                                    </Collapse>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </div>
+                    <div className={classes.informationBar}>
+                        <div className={classes.additionalInfo}>
+                            {
+                                age !== null &&
+                                <>
+                                    <InfoItemWithIcon testId='age' name='גיל' value={+age < 1 ? 'פחות משנה' : age} icon={CakeOutlined} />
+                                    {
+                                        +age <= maxComplexityAge && <ComplexityIcon tooltipText='המאומת מתחת לגיל 14' />
+                                    }
+                                    <Divider />
+                                </>
+                            }
+                            <InfoItemWithIcon testId='birthdate' name='תאריך לידה' value={
+                                birthDate ? format(new Date(birthDate), displayDateFormat) : 'אין תאריך'
+                            }
+                                icon={CalendarToday}
+                            />
+                            {
+                                isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל' />
+                            }
+                            <Divider />
+                            <InfoItemWithIcon testId='examinationDate' name='תאריך תחילת מחלה' value=
+                                {
+                                    format(validationDate, displayDateFormat)
+                                }
+                                icon={EventOutlined}
+                            />
+                            <Divider />
+                            <InfoItemWithIcon testId='gender' name='מין' value={gender}
+                                icon={Help}
+                            />
+                            <Divider />
+                            {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ?
+                                <>
+                                    <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value=''
+                                        icon={Edit}
+                                    />
                                     <Select
+                                        className={classes.smallSizeText}
+                                        value={identityType}
+                                        onChange={() => setStaticFieldsChange(true)}
                                         MenuProps={{
-                                            anchorOrigin: {
-                                                vertical: 'bottom',
-                                                horizontal: 'left'
-                                            },
-                                            transformOrigin: {
-                                                vertical: 'top',
-                                                horizontal: 'left'
-                                            },
-                                            getContentAnchorEl: null
-                                        }}
-                                        labelId='status-label'
-                                        test-id='currentStatus'
-                                        variant='outlined'
-                                        label={statusLabel}
-                                        value={investigationStatus.mainStatus}
-                                        onChange={(event) => {
-                                            const newStatus = event.target.value as string
-                                            if (newStatus) {
-                                                setInvestigationStatus({
-                                                    mainStatus: +newStatus,
-                                                    subStatus: '',
-                                                    statusReason: ''
-                                                });
-                                            }
+                                        anchorOrigin: {
+                                            vertical: 'bottom',
+                                            horizontal: 'left'
+                                        },
+                                        transformOrigin: {
+                                            vertical: 'top',
+                                            horizontal: 'left'
+                                        },
+                                        getContentAnchorEl: null
                                         }}
                                     >
                                         {
-                                            permittedStatuses.map(status => (
+                                            Object.values(IdentificationTypes).map((identificationType: string) => (
                                                 <MenuItem
-                                                    key={status.id}
-                                                    disabled={isStatusDisable(status.id)}
-                                                    value={status.id}>
-                                                    {status.displayName}
+                                                    className={classes.smallSizeText}
+                                                    key={identificationType}
+                                                    value={identificationType}>
+                                                    {identificationType}
                                                 </MenuItem>
                                             ))
                                         }
                                     </Select>
-                                </FormControl>
-                            </Grid>
-                            <Collapse in={investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE ||
-                                investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS}>
-                                <Grid item className={classes.statusSelectGrid}>
-                                    <FormControl variant='outlined' className={classes.subStatusSelect}>
-                                        <InputLabel className={classes.subStatusLabel} id='sub-status-label'>{subStatusLabel}</InputLabel>
-                                        <Select
-                                            MenuProps={{
-                                                anchorOrigin: {
-                                                    vertical: 'bottom',
-                                                    horizontal: 'left'
-                                                },
-                                                transformOrigin: {
-                                                    vertical: 'top',
-                                                    horizontal: 'left'
-                                                },
-                                                getContentAnchorEl: null
-                                            }}
-                                            labelId='sub-status-label'
-                                            test-id='currentSubStatus'
-                                            label={subStatusLabel}
-                                            value={investigationStatus.subStatus as string | undefined}
-                                            onChange={(event) => {
-                                                const newSubStatus = event.target.value as string
-                                                setInvestigationStatus({
-                                                    mainStatus: investigationStatus.mainStatus,
-                                                    subStatus: newSubStatus ? String(newSubStatus) : null,
-                                                    statusReason: ''
-                                                });
-                                            }}
-                                        >
-                                            {
-                                                updatedSubStatuses.map((subStatus: string) => (
-                                                    <MenuItem
-                                                        key={subStatus}
-                                                        value={subStatus}>
-                                                        {subStatus}
-                                                    </MenuItem>
-                                                ))
-                                            }
-                                        </Select>
-                                    </FormControl>
-                                </Grid>
-                            </Collapse>
-                            <Collapse in={investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS && investigationStatus.subStatus !== '' && investigationStatus.subStatus !== inProcess}>
-                                <Grid item className={classes.statusSelectGrid}>
-                                    <TextField
-                                        className={classes.subStatusSelect}
-                                        value={investigationStatus.statusReason}
-                                        required={investigationStatus.subStatus === transferredSubStatus}
-                                        placeholder={statusReasonLabel}
-                                        error={statusReasonError ? true : false}
-                                        label={statusReasonError ? statusReasonError[0] : statusReasonLabel}
-                                        onChange={async (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-                                            const newStatusReason: string = event.target.value;
-                                            const isValid = validationSchema.isValidSync(newStatusReason);
-                                            validateStatusReason(newStatusReason)
-                                            if (isValid || newStatusReason === '') {
-                                                setInvestigationStatus({
-                                                    mainStatus: investigationStatus.mainStatus,
-                                                    subStatus: investigationStatus.subStatus,
-                                                    statusReason: newStatusReason
-                                                });
-                                            }
-                                        }}
-                                    />
-                                </Grid>
-                            </Collapse>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </div>
-            <div className={classes.informationBar}>
-                <div className={classes.additionalInfo}>
-                    {
-                        age !== null &&
-                        <>
-                            <InfoItemWithIcon testId='age' name='גיל' value={+age < 1 ? 'פחות משנה' : age} icon={CakeOutlined} />
-                            {
-                                +age <= maxComplexityAge && <ComplexityIcon tooltipText='המאומת מתחת לגיל 14' />
+                                </>
+                                :
+                                <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value={identityType}
+                                    icon={Help}
+                                />
                             }
                             <Divider />
-                        </>
-                    }
-                    <InfoItemWithIcon testId='birthdate' name='תאריך לידה' value={
-                        birthDate ? format(new Date(birthDate), displayDateFormat) : 'אין תאריך'
-                    }
-                        icon={CalendarToday}
-                    />
-                    {
-                        isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל' />
-                    }
-                    <Divider />
-                    <InfoItemWithIcon testId='examinationDate' name='תאריך תחילת מחלה' value=
-                        {
-                            format(validationDate, displayDateFormat)
-                        }
-                        icon={EventOutlined}
-                    />
-                    <Divider />
-                    <InfoItemWithIcon testId='gender' name='מין' value={gender}
-                        icon={Help}
-                    />
-                    <Divider />
-                    {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ?
-                        <>
-                            <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value=''
-                                icon={Edit}
+                            {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ?
+                                <>
+                                    <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value=''
+                                        icon={Edit}
+                                    />
+                                    <TextField 
+                                        className={classes.smallSizeText}
+                                        InputProps={{className: classes.smallSizeText}}
+                                        value={identityNumber} 
+                                        onChange={() => setStaticFieldsChange(true)}
+                                    />
+                                </>
+                                :
+                                <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value={identityNumber}
+                                    icon={Help}
+                                />
+                            }
+                            
+                            <Divider />
+                            <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={indication((isDeceased || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED))}
+                                icon={Help}
                             />
-                            <Select
-                                className={classes.smallSizeText}
-                                value={identityType}
-                                onChange={(event) => console.log(event.target.value as number)}
-                                MenuProps={{
-                                anchorOrigin: {
-                                    vertical: 'bottom',
-                                    horizontal: 'left'
-                                },
-                                transformOrigin: {
-                                    vertical: 'top',
-                                    horizontal: 'left'
-                                },
-                                getContentAnchorEl: null
-                                }}
+                            {
+                                (isDeceased ||
+                                    (investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE &&
+                                        investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED)) &&
+                                <ComplexityIcon tooltipText='המאומת נפטר' />
+                            }
+                            <Divider />
+                            <InfoItemWithIcon testId='isCurrentlyHospitalized' name='האם מאושפז' value={indication((isCurrentlyHospitalized || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED))}
+                                icon={Help}
+                            />
+                            {
+                                (isCurrentlyHospitalized ||
+                                    (investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE &&
+                                        investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED)) &&
+                                <ComplexityIcon tooltipText='המאומת מאושפז' />
+                            }
+                            <Divider />
+                            <InfoItemWithIcon testId='isInInstitution' name='שוהה במוסד' value={indication(isInClosedInstitution)}
+                                icon={Help}
+                            />
+                            {
+                                isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
+                            }
+                            <Divider />
+                            <Tooltip title={isVaccinated ? vaccinationEffectiveFrom ? formatDate(vaccinationEffectiveFrom) : noInfo : ''}>
+                                <div>
+                                    <InfoItemWithIcon testId='isVaccinated' name='האם מחוסן' value={isVaccinated ? yes : noInfo}
+                                        icon={VaccinationIcon}
+                                    />  
+                                </div>
+                                
+                            </Tooltip>
+                            {
+                                isVaccinated && <ComplexityIcon tooltipText={formatDate(vaccinationEffectiveFrom)} />
+                            }
+                            <Divider />
+                            <Tooltip title={isSuspicionOfMutation ? mutationName ? mutationName : noInfo : ''}>
+                                <div>
+                                    <InfoItemWithIcon testId='isSuspicionOfMutation' name='חשד למוטציה' value={isSuspicionOfMutation ? yes : noInfo}
+                                        icon={MutationIcon}
+                                    />    
+                                </div>
+                                
+                            </Tooltip>
+                            {
+                                isSuspicionOfMutation && <ComplexityIcon tooltipText={mutationName ? mutationName : noInfo} />
+                            }
+                            <Divider />
+                            <Tooltip title={isReturnSick ? previousDiseaseStartDate ? formatDate(previousDiseaseStartDate) : noInfo : ''}>
+                                <div>
+                                    <InfoItemWithIcon testId='isReturnSick' name='חולה חוזר' value={isReturnSick ? yes : noInfo}
+                                        icon={ReturnSickIcon}
+                                    />   
+                                </div>
+                            </Tooltip>
+                            {
+                                isReturnSick && <ComplexityIcon tooltipText={formatDate(previousDiseaseStartDate)} />
+                            }
+                        </div>
+                    </div>
+                    {staticFieldsChange &&
+                        <div className={classes.saveButton}>
+                            <PrimaryButton
+                                test-id='staticFields'
+                                form='staticFields'
+                                type='submit'
                             >
-                                {
-                                    Object.values(IdentificationTypes).map((identificationType: string) => (
-                                        <MenuItem
-                                            className={classes.smallSizeText}
-                                            key={identificationType}
-                                            value={identificationType}>
-                                            {identificationType}
-                                        </MenuItem>
-                                    ))
-                                }
-                            </Select>
-                        </>
-                        :
-                        <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value={identityType}
-                            icon={Help}
-                        />
-                    }
-                    <Divider />
-                    {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ?
-                        <>
-                            <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value=''
-                                icon={Edit}
-                            />
-                            <TextField 
-                                className={classes.smallSizeText}
-                                InputProps={{className: classes.smallSizeText}}
-                                value={identityNumber} 
-                            />
-                        </>
-                        :
-                        <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value={identityNumber}
-                            icon={Help}
-                        />
-                    }
-                    
-                    <Divider />
-                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={indication((isDeceased || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED))}
-                        icon={Help}
-                    />
-                    {
-                        (isDeceased ||
-                            (investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE &&
-                                investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED)) &&
-                        <ComplexityIcon tooltipText='המאומת נפטר' />
-                    }
-                    <Divider />
-                    <InfoItemWithIcon testId='isCurrentlyHospitalized' name='האם מאושפז' value={indication((isCurrentlyHospitalized || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED))}
-                        icon={Help}
-                    />
-                    {
-                        (isCurrentlyHospitalized ||
-                            (investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE &&
-                                investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED)) &&
-                        <ComplexityIcon tooltipText='המאומת מאושפז' />
-                    }
-                    <Divider />
-                    <InfoItemWithIcon testId='isInInstitution' name='שוהה במוסד' value={indication(isInClosedInstitution)}
-                        icon={Help}
-                    />
-                    {
-                        isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
-                    }
-                    <Divider />
-                    <Tooltip title={isVaccinated ? vaccinationEffectiveFrom ? formatDate(vaccinationEffectiveFrom) : noInfo : ''}>
-                        <div>
-                            <InfoItemWithIcon testId='isVaccinated' name='האם מחוסן' value={isVaccinated ? yes : noInfo}
-                                icon={VaccinationIcon}
-                            />  
+                                {saveStaticDetailsMessage}
+                            </PrimaryButton>
                         </div>
-                        
-                    </Tooltip>
-                    {
-                        isVaccinated && <ComplexityIcon tooltipText={formatDate(vaccinationEffectiveFrom)} />
-                    }
-                    <Divider />
-                    <Tooltip title={isSuspicionOfMutation ? mutationName ? mutationName : noInfo : ''}>
-                        <div>
-                            <InfoItemWithIcon testId='isSuspicionOfMutation' name='חשד למוטציה' value={isSuspicionOfMutation ? yes : noInfo}
-                                icon={MutationIcon}
-                            />    
-                        </div>
-                         
-                    </Tooltip>
-                    {
-                        isSuspicionOfMutation && <ComplexityIcon tooltipText={mutationName ? mutationName : noInfo} />
-                    }
-                    <Divider />
-                    <Tooltip title={isReturnSick ? previousDiseaseStartDate ? formatDate(previousDiseaseStartDate) : noInfo : ''}>
-                        <div>
-                            <InfoItemWithIcon testId='isReturnSick' name='חולה חוזר' value={isReturnSick ? yes : noInfo}
-                                icon={ReturnSickIcon}
-                            />   
-                        </div>
-                    </Tooltip>
-                    {
-                        isReturnSick && <ComplexityIcon tooltipText={formatDate(previousDiseaseStartDate)} />
-                    }
-                </div>
-            </div>
-        </Paper>
+                
+                    }                  
+                </Paper>
+            </form>
+        </FormProvider>
     );
 };
 

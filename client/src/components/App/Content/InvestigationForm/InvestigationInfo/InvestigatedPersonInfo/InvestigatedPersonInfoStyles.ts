@@ -73,6 +73,9 @@ const useStyles = makeStyles({
     },
     smallSizeText: {
         fontSize: '1rem'
+    },
+    saveButton: {
+        direction: 'rtl'
     }
 });
 
