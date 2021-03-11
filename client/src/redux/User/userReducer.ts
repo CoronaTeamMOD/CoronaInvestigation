@@ -11,7 +11,7 @@ export interface UserState {
     displayedDistrict: number;
     userTypes: UserType[];
 };
-
+export const initialDisplayedCounty = -1;
 export const initialUserState: UserState = {
     data: {
         id: '1',
@@ -39,7 +39,7 @@ export const initialUserState: UserState = {
         }
     },
     isLoggedIn: false,
-    displayedCounty: -1,
+    displayedCounty: initialDisplayedCounty,
     displayedDistrict: -1,
     userTypes: []
 };
