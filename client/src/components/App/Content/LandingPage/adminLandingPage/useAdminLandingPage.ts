@@ -70,8 +70,10 @@ const useAdminLandingPage = (parameters: Parameters) => {
     };
     
     useEffect(() => {
-        fetchInvestigationStatistics();
-        updateFilterHistory();
+        if(displayedCounty !== -1) {
+            fetchInvestigationStatistics();
+            updateFilterHistory();
+        }
     }, [investigationInfoFilter, displayedCounty, userType])
 
     const fetchInvestigationStatistics = () => {
