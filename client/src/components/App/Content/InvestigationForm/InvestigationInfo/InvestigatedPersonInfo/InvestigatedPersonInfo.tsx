@@ -1,27 +1,23 @@
 import * as yup from 'yup';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Edit, CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
-import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl, Tooltip, IconButton, Button } from '@material-ui/core';
+import { Typography, Paper, TextField, Select, MenuItem, Tooltip } from '@material-ui/core';
 
 import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
 import formatDate from 'Utils/DateUtils/formatDate';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InvestigationInfo from 'models/InvestigationInfo';
-import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import MutationIcon from 'commons/Icons/customIcons/MutationIcon';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
-import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import ReturnSickIcon from 'commons/Icons/customIcons/ReturnSickIcon';
 import VaccinationIcon from 'commons/Icons/customIcons/VaccinationIcon';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import { ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX } from 'commons/Regex/Regex';
-import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
-import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
@@ -32,6 +28,7 @@ import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 import InvestigationMenu from './InvestigationMenu/InvestigationMenu';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers';
+import InvestigationStatusInfo from './InvestigationStatusInfo/InvestigationStatusInfo';
 
 const leaveInvestigationMessage = 'צא מחקירה';
 const saveStaticDetailsMessage = 'שמירת שינויים';
@@ -40,52 +37,36 @@ const maxComplexityAge = 14;
 const yes = 'כן';
 const no = 'לא';
 const noInfo = 'אין מידע';
-const statusLabel = 'סטטוס';
-const subStatusLabel = 'סיבה';
-const statusReasonLabel = 'פירוט'
 const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
 const errorMessage = 'השדה יכול להכניס רק תווים חוקיים';
 const requiredMessage = 'שדה זה הינו שדה חובה';
 export const inProcess = 'בטיפול';
 
 const InvestigatedPersonInfo = (props: Props) => {
-    const { currentTab, investigationStaticInfo, epedemioligyNumber } = props;
 
-    const [staticFieldsChange, setStaticFieldsChange] = useState<boolean>(false);
+    const { currentTab, investigationStaticInfo, epedemioligyNumber } = props;
 
     const classes = useStyles();
 
-    const [statusReasonError, setStatusReasonError] = React.useState<string[] | null>(null);
+    const [statusReasonError, setStatusReasonError] = useState<string[] | null>(null);
+    const [staticFieldsChange, setStaticFieldsChange] = useState<boolean>(false);
+    
     const { identityType, gender, isDeceased, isCurrentlyHospitalized, isInClosedInstitution, age, identityNumber, 
         fullName, primaryPhone, birthDate, validationDate, isReturnSick, previousDiseaseStartDate, 
         isVaccinated, vaccinationEffectiveFrom, isSuspicionOfMutation, mutationName } = investigationStaticInfo;
+
     const Divider = () => <span className={classes.divider}> | </span>;
-    const { wasInvestigationReopend } = useStatusUtils();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
-    const statuses = useSelector<StoreStateType, InvestigationMainStatus[]>(state => state.statuses);
-    const subStatuses = useSelector<StoreStateType, string[]>(state => state.subStatuses);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
 
-    const validationSchema = investigationStatus.subStatus === transferredSubStatus ?
+    const validationStatusSchema = investigationStatus.subStatus === transferredSubStatus ?
         yup.string().required(requiredMessage).matches(ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX, errorMessage).max(50, maxLengthErrorMessage).nullable() :
         yup.string().matches(ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX, errorMessage).max(50, maxLengthErrorMessage).nullable();
 
     const { confirmExitUnfinishedInvestigation } = useInvestigatedPersonInfo();
-
-    useEffect(() => {
-        if (investigationStatus.subStatus !== transferredSubStatus) {
-            validateStatusReason(investigationStatus.statusReason)
-        }
-    }, [investigationStatus.subStatus]);
-
-    const updatedSubStatuses = useMemo(() =>
-        investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ? [inProcess , ...subStatuses] : subStatuses,
-        [subStatuses, investigationStatus]);
-
-    const permittedStatuses = statuses.filter(status => status.id !== InvestigationMainStatusCodes.DONE);
 
     const handleLeaveInvestigationClick = (event: React.ChangeEvent<{}>) => {
         if (isEventTrigeredByMouseClicking(event)) {
@@ -104,7 +85,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const validateStatusReason = (newStatusReason: string | null) => {
         try {
-            validationSchema.validateSync(newStatusReason);
+            validationStatusSchema.validateSync(newStatusReason);
             setStatusReasonError(null)
         } catch (err) {
             setStatusReasonError(err.errors)
@@ -112,13 +93,6 @@ const InvestigatedPersonInfo = (props: Props) => {
     }
 
     const isMandatoryInfoMissing: boolean = !birthDate && !fullName && !isLoading;
-
-    const isStatusDisable = (status: number) => {
-        if (userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN) {
-            return status === InvestigationMainStatusCodes.NEW && wasInvestigationReopend
-        }
-        return status === InvestigationMainStatusCodes.NEW;
-    };
 
     const methods = useForm({
         mode: 'all',
@@ -130,7 +104,6 @@ const InvestigatedPersonInfo = (props: Props) => {
         console.log(data);
     };
     
-
     return (
         <FormProvider {...methods}>
             <form id='staticFields' onSubmit={methods.handleSubmit(onSubmit)}>
@@ -173,128 +146,11 @@ const InvestigatedPersonInfo = (props: Props) => {
                             {leaveInvestigationMessage}
                         </PrimaryButton>
                     </div>
-                    <div className={classes.managementControllers}>
-                        <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                            <Grid item xs={12} className={classes.fieldLabel}>
-                                <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                                    <Typography>
-                                        <b><bdi>{statusLabel}</bdi>: </b>
-                                    </Typography>
-                                    <Grid item className={classes.statusSelectGrid}>
-                                        <FormControl variant='outlined' className={classes.statusSelect}>
-                                            <InputLabel className={classes.statusSelect} id='status-label'>{statusLabel}</InputLabel>
-                                            <Select
-                                                MenuProps={{
-                                                    anchorOrigin: {
-                                                        vertical: 'bottom',
-                                                        horizontal: 'left'
-                                                    },
-                                                    transformOrigin: {
-                                                        vertical: 'top',
-                                                        horizontal: 'left'
-                                                    },
-                                                    getContentAnchorEl: null
-                                                }}
-                                                labelId='status-label'
-                                                test-id='currentStatus'
-                                                variant='outlined'
-                                                label={statusLabel}
-                                                value={investigationStatus.mainStatus}
-                                                onChange={(event) => {
-                                                    const newStatus = event.target.value as string
-                                                    if (newStatus) {
-                                                        setInvestigationStatus({
-                                                            mainStatus: +newStatus,
-                                                            subStatus: '',
-                                                            statusReason: ''
-                                                        });
-                                                    }
-                                                }}
-                                            >
-                                                {
-                                                    permittedStatuses.map(status => (
-                                                        <MenuItem
-                                                            key={status.id}
-                                                            disabled={isStatusDisable(status.id)}
-                                                            value={status.id}>
-                                                            {status.displayName}
-                                                        </MenuItem>
-                                                    ))
-                                                }
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Collapse in={investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE ||
-                                        investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS}>
-                                        <Grid item className={classes.statusSelectGrid}>
-                                            <FormControl variant='outlined' className={classes.subStatusSelect}>
-                                                <InputLabel className={classes.subStatusLabel} id='sub-status-label'>{subStatusLabel}</InputLabel>
-                                                <Select
-                                                    MenuProps={{
-                                                        anchorOrigin: {
-                                                            vertical: 'bottom',
-                                                            horizontal: 'left'
-                                                        },
-                                                        transformOrigin: {
-                                                            vertical: 'top',
-                                                            horizontal: 'left'
-                                                        },
-                                                        getContentAnchorEl: null
-                                                    }}
-                                                    labelId='sub-status-label'
-                                                    test-id='currentSubStatus'
-                                                    label={subStatusLabel}
-                                                    value={investigationStatus.subStatus as string | undefined}
-                                                    onChange={(event) => {
-                                                        const newSubStatus = event.target.value as string
-                                                        setInvestigationStatus({
-                                                            mainStatus: investigationStatus.mainStatus,
-                                                            subStatus: newSubStatus ? String(newSubStatus) : null,
-                                                            statusReason: ''
-                                                        });
-                                                    }}
-                                                >
-                                                    {
-                                                        updatedSubStatuses.map((subStatus: string) => (
-                                                            <MenuItem
-                                                                key={subStatus}
-                                                                value={subStatus}>
-                                                                {subStatus}
-                                                            </MenuItem>
-                                                        ))
-                                                    }
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
-                                    </Collapse>
-                                    <Collapse in={investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS && investigationStatus.subStatus !== '' && investigationStatus.subStatus !== inProcess}>
-                                        <Grid item className={classes.statusSelectGrid}>
-                                            <TextField
-                                                className={classes.subStatusSelect}
-                                                value={investigationStatus.statusReason}
-                                                required={investigationStatus.subStatus === transferredSubStatus}
-                                                placeholder={statusReasonLabel}
-                                                error={statusReasonError ? true : false}
-                                                label={statusReasonError ? statusReasonError[0] : statusReasonLabel}
-                                                onChange={async (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-                                                    const newStatusReason: string = event.target.value;
-                                                    const isValid = validationSchema.isValidSync(newStatusReason);
-                                                    validateStatusReason(newStatusReason)
-                                                    if (isValid || newStatusReason === '') {
-                                                        setInvestigationStatus({
-                                                            mainStatus: investigationStatus.mainStatus,
-                                                            subStatus: investigationStatus.subStatus,
-                                                            statusReason: newStatusReason
-                                                        });
-                                                    }
-                                                }}
-                                            />
-                                        </Grid>
-                                    </Collapse>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </div>
+                    <InvestigationStatusInfo 
+                        statusReasonError={statusReasonError}
+                        validateStatusReason={validateStatusReason}
+                        validationStatusSchema={validationStatusSchema}
+                    />
                     <div className={classes.informationBar}>
                         <div className={classes.additionalInfo}>
                             {

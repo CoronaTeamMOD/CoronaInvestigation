@@ -37,40 +37,6 @@ const useStyles = makeStyles({
         whiteSpace: 'pre',
         flex: 12
     },
-    managementControllers: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        flex: 5,
-        marginBottom: '0.5vh'
-    },
-    containerGrid: {
-        maxWidth: '100vw',
-    },
-    fieldLabel: {
-        '@media screen and (min-width: 1870px)': {
-            marginRight: '-6vw',
-        },
-        marginRight: '-2vw',
-    },
-    statusSelect: {
-        width: '14vw',
-        height: '2vw'
-    },
-    subStatusSelect: {
-        width: '14vw',
-        height: '2vw'
-    },
-    statusSelectGrid: {
-        flip: false,
-        marginRight: '1vw'
-    },
-    swalTitle: {
-        fontSize: '1.5vw',
-        fontFamily: 'Assistant',
-    },
-    subStatusLabel: {
-    },
     smallSizeText: {
         fontSize: '1rem'
     },
