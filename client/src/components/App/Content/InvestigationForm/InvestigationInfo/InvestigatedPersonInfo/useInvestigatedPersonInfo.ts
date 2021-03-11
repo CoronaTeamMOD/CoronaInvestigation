@@ -83,20 +83,9 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
             });
         }
     };
-
-    const getPersonAge = (birthDate: Date) => {
-
-        const currentDate = new Date();
-        let personAge = currentDate.getFullYear() - birthDate.getFullYear();
-        const monthDelta = currentDate.getMonth() - birthDate.getMonth();
-        if (monthDelta < 0 || (monthDelta === 0 && currentDate.getDate() < birthDate.getDate())) {
-            personAge--;
-        }
-        return String(personAge);
-    }
+  
     return {
         confirmExitUnfinishedInvestigation,
-        getPersonAge
     }
 };
 
