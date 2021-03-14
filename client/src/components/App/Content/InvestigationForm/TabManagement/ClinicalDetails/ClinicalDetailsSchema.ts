@@ -84,7 +84,7 @@ const ClinicalDetailsSchema = (validationDate: Date) => yup.object().shape({
         [ClinicalDetailsFields.ISOLATION_FLOOR]: yup.string().nullable(),
         [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.string().nullable()
     }).required(),
-    [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().nullable().required(),
+    [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().nullable(),
     [ClinicalDetailsFields.ISOLATION_START_DATE]: isInIsolationStartDateSchema(validationDate),
     [ClinicalDetailsFields.ISOLATION_END_DATE]: isInIsolationEndDateSchema(validationDate),
     [ClinicalDetailsFields.ISOLATION_SOURCE]: yup.number().when(
@@ -94,14 +94,14 @@ const ClinicalDetailsSchema = (validationDate: Date) => yup.object().shape({
             otherwise: yup.number().nullable()
         }
     ),
-    [ClinicalDetailsFields.IS_ISOLATION_PROBLEM]: yup.boolean().nullable().required(),
+    [ClinicalDetailsFields.IS_ISOLATION_PROBLEM]: yup.boolean().required(requiredText).nullable(),
     [ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO]: yup.string().when(
         ClinicalDetailsFields.IS_ISOLATION_PROBLEM, {
             is: true,
             then: yup.string().required(requiredText),
             otherwise: yup.string().nullable()
         }),
-    [ClinicalDetailsFields.DOES_HAVE_SYMPTOMS]: yup.boolean().nullable().required(),
+    [ClinicalDetailsFields.DOES_HAVE_SYMPTOMS]: yup.boolean().required(requiredText).nullable(),
     [ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN]: yup.boolean().nullable().when(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, {
         is: true,
         then: yup.boolean().nullable().required(),
@@ -124,7 +124,7 @@ const ClinicalDetailsSchema = (validationDate: Date) => yup.object().shape({
             otherwise: yup.array().of(yup.string())
         }),
     [ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO]: symptomsMoreInfoSchema,
-    [ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES]: yup.boolean().nullable().required(),
+    [ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES]: yup.boolean().required(requiredText).nullable(),
     [ClinicalDetailsFields.BACKGROUND_DESEASSES]: yup.array().of(yup.string()).when(
         ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES, {
             is: true,

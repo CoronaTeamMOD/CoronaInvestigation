@@ -8,6 +8,7 @@ import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
+import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import { getMinimalSymptomsStartDate } from 'Utils/ClinicalDetails/symptomsUtils';
@@ -50,6 +51,9 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                             />
                         )}
                     />
+                <InlineErrorText 
+                    error={errors[ClinicalDetailsFields.DOES_HAVE_SYMPTOMS]}
+                />
                 </Grid>
             </FormRowWithInput>
 

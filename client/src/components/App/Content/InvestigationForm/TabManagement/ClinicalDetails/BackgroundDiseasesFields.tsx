@@ -4,6 +4,7 @@ import { Collapse, Grid, Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
+import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
@@ -40,6 +41,9 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
                                 }}
                             />
                         )}
+                    />
+                    <InlineErrorText 
+                        error={errors[ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES]}
                     />
                 </Grid>
             </FormRowWithInput>
