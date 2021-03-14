@@ -3,15 +3,16 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { Collapse, Grid } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
+import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 
 const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
     const { classes, watchIsIsolationProblem } = props;
-    const { control } = useFormContext();
+    const { control, errors } = useFormContext();
 
     return (
         <FormRowWithInput fieldName='האם בעייתי לקיים בידוד:'>
@@ -31,6 +32,9 @@ const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 }}
                             />
                         )}
+                    />
+                    <InlineErrorText 
+                        error={errors[ClinicalDetailsFields.IS_ISOLATION_PROBLEM]}
                     />
                 </Grid>
                 <Grid item xs={2}>

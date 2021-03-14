@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useState} from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 
 import theme from 'styles/theme';
@@ -28,11 +28,11 @@ export const initialClinicalDetails: ClinicalDetailsData = {
     isolationSource: null,
     isolationAddress: initDBAddress,
     isInIsolation: false,
-    isIsolationProblem: false,
+    isIsolationProblem: null,
     isIsolationProblemMoreInfo: '',
     symptomsStartDate: null,
     symptoms: [],
-    doesHaveBackgroundDiseases: false,
+    doesHaveBackgroundDiseases: null,
     backgroundDeseases: [],
     hospital: '',
     hospitalizationStartDate: null,
@@ -146,12 +146,12 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         ...initialClinicalDetails,
                         isPregnant: Boolean(patientClinicalDetails.isPregnant),
                         backgroundDeseases: patientClinicalDetails.backgroundDiseases,
-                        doesHaveBackgroundDiseases: Boolean(patientClinicalDetails.doesHaveBackgroundDiseases),
+                        doesHaveBackgroundDiseases: patientClinicalDetails.doesHaveBackgroundDiseases,
                         hospital: patientClinicalDetails.hospital !== null ? patientClinicalDetails.hospital : '',
                         hospitalizationStartDate: convertDate(patientClinicalDetails.hospitalizationStartTime),
                         hospitalizationEndDate: convertDate(patientClinicalDetails.hospitalizationEndTime),
                         isInIsolation: Boolean(patientClinicalDetails.isInIsolation),
-                        isIsolationProblem: Boolean(patientClinicalDetails.isIsolationProblem),
+                        isIsolationProblem: patientClinicalDetails.isIsolationProblem,
                         isIsolationProblemMoreInfo: patientClinicalDetails.isIsolationProblemMoreInfo !== null ?
                             patientClinicalDetails.isIsolationProblemMoreInfo : '',
                         isolationStartDate: convertDate(patientClinicalDetails.isolationStartTime),
@@ -160,7 +160,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         symptoms: patientClinicalDetails.symptoms,
                         symptomsStartDate: convertDate(patientClinicalDetails.symptomsStartDate),
                         isSymptomsStartDateUnknown: patientClinicalDetails.symptomsStartTime === null,
-                        doesHaveSymptoms: Boolean(patientClinicalDetails.doesHaveSymptoms),
+                        doesHaveSymptoms: patientClinicalDetails.doesHaveSymptoms,
                         wasHospitalized: Boolean(patientClinicalDetails.wasHospitalized),
                         isolationAddress: patientAddress,
                         otherSymptomsMoreInfo: patientClinicalDetails.otherSymptomsMoreInfo !== null ?
