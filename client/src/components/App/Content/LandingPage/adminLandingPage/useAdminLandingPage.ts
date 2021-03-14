@@ -11,6 +11,7 @@ import { defaultTimeRange } from 'models/enums/timeRanges'
 import { TimeRange, TimeRangeDates } from 'models/TimeRange';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import FilterRulesVariables from 'models/FilterRulesVariables';
+import { initialDisplayedCounty } from 'redux/User/userReducer';
 import InvesitgationStatistics from 'models/InvestigationStatistics';
 import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 
@@ -70,8 +71,10 @@ const useAdminLandingPage = (parameters: Parameters) => {
     };
     
     useEffect(() => {
-        fetchInvestigationStatistics();
-        updateFilterHistory();
+        if(displayedCounty !== initialDisplayedCounty) {
+            fetchInvestigationStatistics();
+            updateFilterHistory();
+        }
     }, [investigationInfoFilter, displayedCounty, userType])
 
     const fetchInvestigationStatistics = () => {
