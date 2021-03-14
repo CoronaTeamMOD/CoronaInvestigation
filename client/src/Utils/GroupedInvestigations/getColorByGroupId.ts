@@ -18,8 +18,10 @@ const squishNumber = (number : number) => {
     return number
 }
 
-const getColorByGroupId = (groupid : string) => {
-    const seed = groupid.slice(0,6);
+const hashString = (s : string) => Math.abs(s.split('').reduce((a,b) => (((a << 5) - a) + b.charCodeAt(0))|0, 0)).toString(16)
+
+const getColorByGroupId = (groupid : string) => { 
+    const seed = hashString(groupid);
 
     // squish the color to a 'pretty' color - V.1
     const red = squishNumber(parseInt(seed.slice(0,2), 16));
