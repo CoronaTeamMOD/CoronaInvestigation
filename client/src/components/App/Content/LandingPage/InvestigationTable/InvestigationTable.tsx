@@ -274,14 +274,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         <div onClick={closeDropdowns} >
             <Grid className={classes.title} container alignItems='center'>
                 <Grid container xs={9} direction='row' alignItems='center'>
-                    {
-                        (user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) &&
-                        <Tooltip title={returnToAdminLandingPage}>
-                            <IconButton color='primary' onClick={() => history.push(adminLandingPageRoute , { deskFilter, timeRangeFilter })}>
-                                <ArrowForward />
-                            </IconButton>
-                        </Tooltip>
-                    }
                     <Typography color='textPrimary'>
                         {tableTitle}
                     </Typography>
