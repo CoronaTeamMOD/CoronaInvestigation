@@ -3,7 +3,8 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
     text: {
-        color: theme.palette.error.main
+        color: theme.palette.error.main,
+        display: 'inline'
     }
 }));
 
