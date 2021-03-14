@@ -1,7 +1,7 @@
 import { differenceInYears } from 'date-fns';
 import React, { useState, useEffect } from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
 import { Avatar, Grid, Typography } from '@material-ui/core';
+import { Controller, DeepMap, FieldError } from 'react-hook-form';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
@@ -13,9 +13,9 @@ import useContactFields from 'Utils/Contacts/useContactFields';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
-import NumericTextField from 'commons/NumericTextField/NumericTextField';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import IdentificationTextField from 'commons/IdentificationTextField/IdentificationTextField';
+import NumericTextField from 'commons/NoContextElements/NumericTextField';
+import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextField';
+import IdentificationTextField from 'commons/NoContextElements/IdentificationTextField';
 
 import useStyles from './ContactQuestioningStyles';
 import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
@@ -27,10 +27,7 @@ const idInfoMessage = 'ניתן להזין בשדה תז עד 9 תווים'
 const ContactQuestioningPersonal: React.FC<Props> = (
     props: Props
 ): JSX.Element => {
-    const { control, getValues , errors, trigger} = useFormContext();
-    const { index, interactedContact } = props;
-
-    const currentFormErrors = errors?.form && errors?.form[index];
+    const { index, interactedContact, currentFormErrors, formValues, control, trigger } = props;
     
     const calcAge = (birthDate: Date) => {
         const newAge: number = differenceInYears(new Date(),new Date(birthDate));
@@ -44,9 +41,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (
     const [shouldIdDisable, setShouldIdDisable] = useState<boolean>(false);
     const [age, setAge] = useState<string>(calcAge(interactedContact.birthDate));
 
-    const formValues = getValues().form
-        ? getValues().form[index]
-        : interactedContact;
     const { isFieldDisabled } = useContactFields(formValues.contactStatus);
     const [isPassport, setIsPassport] = useState<boolean>(
         formValues.identificationType === IdentificationTypes.PASSPORT
@@ -119,7 +113,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                             <HelpIcon 
                                 title={idTooltipText} 
                                 isWarning={
-                                    currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_NUMBER]
+                                    Boolean(currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_NUMBER])
                                 } 
                             />
                         }
@@ -136,6 +130,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                 return (
                                     <IdentificationTextField
                                         {...props}
+                                        error={(currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_NUMBER]?.message ) || ''}
                                         isPassport={isPassport}
                                         disabled={shouldIdDisable}
                                         testId='identificationNumber'
@@ -198,6 +193,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                             return (
                                 <NumericTextField
                                     {...props}
+                                    error={currentFormErrors && currentFormErrors[InteractedContactFields.PHONE_NUMBER]?.message}
                                     disabled={isFieldDisabled}
                                     testId='phoneNumber'
                                     placeholder='הכנס טלפון:'
@@ -217,6 +213,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                 <NumericTextField
                                     {...props}
                                     disabled={isFieldDisabled}
+                                    error={currentFormErrors && currentFormErrors[InteractedContactFields.ADDITIONAL_PHONE_NUMBER]?.message}
                                     testId='additionalPhoneNumber'
                                     onChange={(newValue: string) => {
                                         props.onChange(newValue);
@@ -262,4 +259,8 @@ export default ContactQuestioningPersonal;
 interface Props {
     index: number;
     interactedContact: GroupedInteractedContact;
+    control: any;
+    formValues: InteractedContact;
+    trigger: (fieldname : string) => {};
+    currentFormErrors?: DeepMap<InteractedContact, FieldError>;
 }
