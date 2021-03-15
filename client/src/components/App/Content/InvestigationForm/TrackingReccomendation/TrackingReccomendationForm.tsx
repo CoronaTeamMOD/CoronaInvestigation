@@ -3,6 +3,7 @@ import { Grid , Collapse, Select, MenuItem, FormControl, InputLabel } from '@mat
 
 import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextField';
 
+import useStyles from './trackingReccomendationStyles';
 import { Option } from './trackingReccomendationTypes';
 import UseTrackingReccomendationForm from './useTrackingReccomendationForm';
 
@@ -15,6 +16,8 @@ const trackingOptions = [
 const defaultTrackingReason = 0;
 
 const TrackingReccomendationForm = (props: Props) => {
+    const classes = useStyles();
+
     const [trackingSubReasons, setTrackingSubReasons] = useState<Option[]>([]);
     const [trackingReason, setTrackingReason] = useState<number>(defaultTrackingReason) 
     const [trackingSubReason, setTrackingSubReason] = useState<number>(0);
@@ -22,7 +25,7 @@ const TrackingReccomendationForm = (props: Props) => {
 
     const { fetchSubReasons } = UseTrackingReccomendationForm({});
     return (
-        <Grid container>
+        <Grid container className={classes.container}>
             <Grid item>
             <FormControl variant='outlined'>
                 <Select

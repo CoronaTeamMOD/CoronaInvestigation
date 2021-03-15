@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, Paper } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -86,10 +86,12 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                 currentTab={currentTab}
                                 setNextTab={setNextTab}
                             />
-                            <Grid container className={classes.buttonSection}>
+                            <Grid container alignItems='center' className={classes.buttonSection}>
                                 <Grid item>
                                     {/* TODO : change to display on last tab */}
-                                    <TrackingReccomendationForm />
+                                    <Paper className={classes.trackingForm}>
+                                        <TrackingReccomendationForm/>
+                                    </Paper>
                                 </Grid>
                                 <Grid item className={classes.nextButton}>
                                     <PrimaryButton

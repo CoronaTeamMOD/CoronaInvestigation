@@ -21,6 +21,9 @@ const useStyles = makeStyles({
     },
     swalText: {
         fontFamily: 'Assistant',
+    },
+    trackingForm: {
+        padding : '1vh 1vw'
     }
 });
 
