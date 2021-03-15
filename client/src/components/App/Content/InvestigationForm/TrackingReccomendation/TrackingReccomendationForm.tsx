@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Grid , Collapse, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core';
 
 import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextField';
+import { setTrackingReccomendation } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './trackingReccomendationStyles';
 import { Option } from './trackingReccomendationTypes';
@@ -32,6 +33,9 @@ const TrackingReccomendationForm = (props: Props) => {
                     defaultValue={defaultTrackingReason}
                     onChange={(e) => {
                         setTrackingReason(e.target.value as number)
+                        setTrackingReccomendation({
+                            reason: e.target.value as number,
+                        })
                         setTrackingSubReasons(fetchSubReasons());
                     }}
                 >
@@ -52,6 +56,10 @@ const TrackingReccomendationForm = (props: Props) => {
                     <Select
                         onChange={(e) => {
                             setTrackingSubReason(e.target.value as number)
+                            setTrackingReccomendation({
+                                reason: trackingReason,
+                                subReason: e.target.value as number
+                            });
                             setExtraInfo('');
                         }}
                     >
@@ -72,6 +80,11 @@ const TrackingReccomendationForm = (props: Props) => {
                             value={extraInfo}
                             onChange={(value) => {
                                 setExtraInfo(value);
+                                setTrackingReccomendation({
+                                    reason: trackingReason,
+                                    subReason: trackingSubReason,
+                                    extraInfo: value
+                                });
                             }}
                         />
                     </FormControl>
