@@ -389,6 +389,7 @@ investigationInfo.get('/trackingSubReasons/:reasonId', (request: Request, respon
         user: response.locals.user.id,
         investigation: request.body.epidemiologyNumberInput,
     });
+    trackingSubReasonsLogger.info(launchingDBRequestLog({reasonId}) , Severity.LOW);
     return graphqlRequest(TRACKING_SUB_REASONS_BY_REASON_ID, response.locals, {reasonId})
     .then((result) => {
         trackingSubReasonsLogger.info('query from db successfully', Severity.LOW)
@@ -412,13 +413,20 @@ investigationInfo.post('/updateTrackingRecommendation', (request: Request, respo
         extraInfo
     }
 
+    const updateTrackingRecommendationLogger = logger.setup({
+        workflow: 'get trackingSubReasonBy',
+        user: response.locals.user.id,
+        investigation: request.body.epidemiologyNumberInput,
+    });
+
+    updateTrackingRecommendationLogger.info(launchingDBRequestLog({parameters}) , Severity.LOW);
     return graphqlRequest(UPDATE_INVESTIGATION_TRACKING, response.locals, parameters)
     .then(result => {
-        //updateCommentLogger.info(validDBResponseLog, Severity.LOW);
+        updateTrackingRecommendationLogger.info(validDBResponseLog, Severity.LOW);
         return response.send(result);
     })
     .catch((error) => {
-        //updateCommentLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+        updateTrackingRecommendationLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.status(errorStatusCode).send(error);
     });
 });
