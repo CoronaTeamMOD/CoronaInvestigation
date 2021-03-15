@@ -10,7 +10,7 @@ import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import BroadcastMessage, { BC_TABS_NAME } from 'models/BroadcastMessage';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
-import UdpateTrackingReccomendation from 'Utils/TrackingReccomendation/updateTrackingReccomendation';
+import UdpateTrackingRecommendation from 'Utils/TrackingRecommendation/updateTrackingRecommendation';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
 import { inProcess } from './InvestigatedPersonInfo';
@@ -20,7 +20,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
     const { alertSuccess, alertWarning, alertError } = useCustomSwal();
-    const { updateTrackingReccomentaion } = UdpateTrackingReccomendation();
+    const { updateTrackingReccomentaion } = UdpateTrackingRecommendation();
 
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 

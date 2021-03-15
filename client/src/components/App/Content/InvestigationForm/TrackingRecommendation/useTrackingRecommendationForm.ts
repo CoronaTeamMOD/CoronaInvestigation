@@ -4,7 +4,7 @@ import axios from 'axios';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 
-const UseTrackingReccomendationForm = (props: Props) => {
+const UseTrackingRecommendationForm = (props: Props) => {
     const fetchSubReasonsByReason = async (reasonId : number) => {
         const subReasonsByReasonLogger = logger.setup('getting sub reasons by reason');
         const subReasons = await axios.get(`/investigationInfo/trackingSubReasons/${reasonId}`)
@@ -27,4 +27,4 @@ interface Props {
         
 }
     
-export default UseTrackingReccomendationForm
+export default UseTrackingRecommendationForm

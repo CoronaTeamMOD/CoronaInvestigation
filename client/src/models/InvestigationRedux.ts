@@ -1,7 +1,7 @@
 import InvestigatedPatient from './InvestigatedPatient';
 import { InvestigationStatus } from './InvestigationStatus';
 import SymptomsExistenceInfo from './SymptomsExistenceInfo';
-import TrackingReccomendation from './TrackingReccomendation';
+import TrackingRecommendation from './TrackingRecommendation';
 
 interface InvestigationRedux extends SymptomsExistenceInfo {
     epidemiologyNumber: number;
@@ -16,7 +16,7 @@ interface InvestigationRedux extends SymptomsExistenceInfo {
     datesToInvestigate: Date[];
     validationDate: Date;
     endTime: Date | null;
-    trackingReccomendation: TrackingReccomendation;
+    trackingRecommendation: TrackingRecommendation;
 }
 
 export default InvestigationRedux;

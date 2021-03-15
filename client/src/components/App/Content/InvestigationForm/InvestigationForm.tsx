@@ -17,7 +17,7 @@ import useGroupedInvestigationContacts from './useGroupedInvestigationContacts';
 import useTabManagement ,{ LAST_TAB_ID } from './TabManagement/useTabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import TabManagement from './TabManagement/TabManagement';
-import TrackingReccomendationForm from './TrackingReccomendation/TrackingReccomendationForm';
+import TrackingRecommendationForm from './TrackingRecommendation/TrackingRecommendationForm';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 
 const END_INVESTIGATION = 'סיים חקירה';
@@ -92,7 +92,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                 {isLastTabDisplayed && 
                                     <Grid item>
                                         <Paper className={classes.trackingForm}>
-                                            <TrackingReccomendationForm/>
+                                            <TrackingRecommendationForm/>
                                         </Paper>
                                     </Grid>
                                 }

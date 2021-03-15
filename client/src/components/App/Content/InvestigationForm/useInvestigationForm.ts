@@ -24,14 +24,14 @@ import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setEducationGrade } from 'redux/EducationGrade/educationGradeActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
-import UpdateTrackingReccomendation from 'Utils/TrackingReccomendation/updateTrackingReccomendation'; 
+import UpdateTrackingRecommendation from 'Utils/TrackingRecommendation/updateTrackingRecommendation'; 
 
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
-    const { updateTrackingReccomentaion } = UpdateTrackingReccomendation();
+    const { updateTrackingReccomentaion } = UpdateTrackingRecommendation();
     const { alertError, alertWarning, alertSuccess } = useCustomSwal();
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);

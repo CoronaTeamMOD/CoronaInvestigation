@@ -400,7 +400,7 @@ investigationInfo.get('/trackingSubReasons/:reasonId', (request: Request, respon
     })
 });
 
-investigationInfo.post('/updateTrackingReccomentaion', (request: Request, response: Response) => {
+investigationInfo.post('/updateTrackingRecommendation', (request: Request, response: Response) => {
     const {reason} = request.body;
     const subReason = request.body.subReason ?? null;
     const extraInfo = request.body.extraInfo ?? null;

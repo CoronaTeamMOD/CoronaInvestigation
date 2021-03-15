@@ -1,6 +1,6 @@
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import SymptomsExistenceInfo from 'models/SymptomsExistenceInfo';
-import TrackingReccomendation from 'models/TrackingReccomendation';
+import TrackingRecommendation from 'models/TrackingRecommendation';
 
 export const SET_EPIDEMIOLOGY_NUM = 'SET_EPIDEMIOLOGY_NUM';
 export const SET_COMPLEX_REASONS_ID = 'SET_COMPLEX_REASONS_ID';
@@ -14,7 +14,7 @@ export const SET_INVESTIGATION_STATUS = 'SET_INVESTIGATION_STATUS';
 export const SET_END_TIME = 'SET_END_TIME';
 export const SET_CREATOR = 'SET_CREATOR';
 export const SET_DATES_TO_INVESTIGATE_PARAMS = 'SET_DATES_TO_INVESTIGATE_PARAMS';
-export const SET_TRACKING_RECCOMENDATION = 'SET_TRACKING_RECOMMENDATION';
+export const SET_TRACKING_RECOMMENDATION = 'SET_TRACKING_RECOMMENDATION';
 export const RESET_STATE = 'RESET_STATE';
 
 interface SetEpidemiologyNum {
@@ -81,11 +81,11 @@ interface ResetStateParams {
     type: typeof RESET_STATE,
 }
 
-interface SetTrackingReccomendation {
-    type: typeof SET_TRACKING_RECCOMENDATION,
-    payload: {trackingReccomendation : TrackingReccomendation}
+interface SetTrackingRecommendation {
+    type: typeof SET_TRACKING_RECOMMENDATION,
+    payload: {trackingRecommendation : TrackingRecommendation}
 }
 
 export type InvestigationAction = SetEpidemiologyNum | SetComplexReasonsId | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId
  | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetEndTime 
- | SetCreator | SetDatesToInvestigateParams |  ResetStateParams | SetTrackingReccomendation;
+ | SetCreator | SetDatesToInvestigateParams |  ResetStateParams | SetTrackingRecommendation;

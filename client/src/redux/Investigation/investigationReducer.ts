@@ -27,7 +27,7 @@ const initialState: InvestigationRedux = {
     axiosInterceptorId: -1,
     validationDate: new Date(),
     endTime: null,
-    trackingReccomendation: {
+    trackingRecommendation: {
         reason: null,
     }
 }
@@ -57,7 +57,7 @@ const investigationReducer = (state = initialState, action: Actions.Investigatio
             }
         }
         case Actions.SET_END_TIME: return { ...state, endTime: action.payload.endTime }
-        case Actions.SET_TRACKING_RECCOMENDATION: return {...state, trackingReccomendation: action.payload.trackingReccomendation}
+        case Actions.SET_TRACKING_RECOMMENDATION: return {...state, trackingRecommendation: action.payload.trackingRecommendation}
         case Actions.SET_CREATOR: return  { ...state, creator: action.payload.creator }
         case Actions.RESET_STATE: return  initialState
         default: return state;

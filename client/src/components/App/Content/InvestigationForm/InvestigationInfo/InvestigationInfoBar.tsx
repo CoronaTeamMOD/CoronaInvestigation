@@ -17,7 +17,7 @@ import { CommentContextProvider } from './Context/CommentContext';
 import { landingPageRoute, adminLandingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationInfo , { InvestigationInfoData } from 'models/InvestigationInfo';
 import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setDatesToInvestigateParams } from 'redux/Investigation/investigationActionCreators';
-import { setInvestigatedPatientId , setIsCurrentlyHospitialized, setIsDeceased, setEndTime, setTrackingReccomendation } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigatedPatientId , setIsCurrentlyHospitialized, setIsDeceased, setEndTime, setTrackingRecommendation } from 'redux/Investigation/investigationActionCreators';
 
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
@@ -104,7 +104,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                     );
                     setEndTime(investigationInfo.endTime);
                     setInvestigationStaticInfo(formattedInvestigationInfo);
-                    setTrackingReccomendation({
+                    setTrackingRecommendation({
                         reason: investigationInfo.trackingSubReasonByTrackingSubReason.reasonId,
                         subReason: investigationInfo.trackingSubReasonByTrackingSubReason.subReasonId,
                         extraInfo: investigationInfo.trackingExtraInfo

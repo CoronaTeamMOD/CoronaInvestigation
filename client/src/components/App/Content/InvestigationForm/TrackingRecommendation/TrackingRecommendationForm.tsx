@@ -3,13 +3,13 @@ import { useSelector } from 'react-redux';
 import { Grid , Collapse, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core';
 
 import StoreStateType from 'redux/storeStateType';
-import TrackingReccomendation from 'models/TrackingReccomendation';
+import TrackingRecommendation from 'models/TrackingRecommendation';
 import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextField';
-import { setTrackingReccomendation } from 'redux/Investigation/investigationActionCreators';
+import { setTrackingRecommendation } from 'redux/Investigation/investigationActionCreators';
 
-import useStyles from './trackingReccomendationStyles';
-import { Option } from './trackingReccomendationTypes';
-import UseTrackingReccomendationForm from './useTrackingReccomendationForm';
+import useStyles from './trackingRecommendationStyles';
+import { Option } from './trackingRecommendationTypes';
+import UseTrackingRecommendationForm from './useTrackingRecommendationForm';
 
 const otherSubReason = 99;
 const defaultTrackingReason = 0;
@@ -20,16 +20,16 @@ const trackingOptions = [
 ];
 
 
-const TrackingReccomendationForm = (props: Props) => {
-    const trackingReccomendation = useSelector<StoreStateType, TrackingReccomendation>(state => state.investigation.trackingReccomendation);
+const TrackingRecommendationForm = (props: Props) => {
+    const trackingRecommendation = useSelector<StoreStateType, TrackingRecommendation>(state => state.investigation.trackingRecommendation);
     const classes = useStyles();
 
     const [trackingSubReasons, setTrackingSubReasons] = useState<Option[]>([]);
     const [trackingReason, setTrackingReason] = useState<number | null>(defaultTrackingReason) 
     const [trackingSubReason, setTrackingSubReason] = useState<number>(0);
-    const [extraInfo , setExtraInfo] = useState<string>(trackingReccomendation.extraInfo || '');
+    const [extraInfo , setExtraInfo] = useState<string>(trackingRecommendation.extraInfo || '');
 
-    const { fetchSubReasonsByReason } = UseTrackingReccomendationForm({});
+    const { fetchSubReasonsByReason } = UseTrackingRecommendationForm({});
 
     useEffect(() => {
         const fetchSubReasonsByReasonAsync = async () => {
@@ -39,12 +39,12 @@ const TrackingReccomendationForm = (props: Props) => {
     }, [trackingReason]);
 
     useEffect( () => {
-        const { reason, subReason, extraInfo } = trackingReccomendation;
+        const { reason, subReason, extraInfo } = trackingRecommendation;
         setTrackingReason(reason);
         subReason && setTrackingSubReason(subReason);
         extraInfo && setExtraInfo(extraInfo);
     }
-    , [trackingReccomendation])
+    , [trackingRecommendation])
 
     return (
         <Grid container className={classes.container}>
@@ -55,7 +55,7 @@ const TrackingReccomendationForm = (props: Props) => {
                     onChange={async (e) => {
                         const newReason : number = e.target.value as number;
                         setTrackingReason(newReason)
-                        setTrackingReccomendation({
+                        setTrackingRecommendation({
                             reason: newReason,
                         });
                         
@@ -81,7 +81,7 @@ const TrackingReccomendationForm = (props: Props) => {
                                 defaultValue={trackingSubReason}
                                 onChange={(e) => {
                                     setTrackingSubReason(e.target.value as number)
-                                    setTrackingReccomendation({
+                                    setTrackingRecommendation({
                                         reason: trackingReason,
                                         subReason: e.target.value as number
                                     });
@@ -106,7 +106,7 @@ const TrackingReccomendationForm = (props: Props) => {
                             value={extraInfo}
                             onChange={(value) => {
                                 setExtraInfo(value);
-                                setTrackingReccomendation({
+                                setTrackingRecommendation({
                                     reason: trackingReason,
                                     subReason: otherSubReason,
                                     extraInfo: value
@@ -124,4 +124,4 @@ interface Props {
     
 }
 
-export default TrackingReccomendationForm
+export default TrackingRecommendationForm
