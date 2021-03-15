@@ -24,13 +24,14 @@ import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setEducationGrade } from 'redux/EducationGrade/educationGradeActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
+import UpdateTrackingReccomendation from 'Utils/TrackingReccomendation/updateTrackingReccomendation'; 
 
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
-
+    const { updateTrackingReccomentaion } = UpdateTrackingReccomendation();
     const { alertError, alertWarning, alertSuccess } = useCustomSwal();
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
@@ -197,9 +198,10 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                     investigationSubStatus: null,
                     statusReason: null,
                     epidemiologyNumber: epidemiologyNumber
-                }).then(() => {
+                }).then(async () => {
                     finishInvestigationLogger.info('update investigation status request was successful', Severity.LOW);
                     finishInvestigationLogger.info('launching investigation end time request', Severity.LOW);
+                    await updateTrackingReccomentaion();
                     if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
                         updateIsDeceased(handleInvestigationFinish);
                     } else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
