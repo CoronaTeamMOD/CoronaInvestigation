@@ -23,42 +23,32 @@ const trackingOptions = [
 const TrackingRecommendationForm = (props: Props) => {
     const trackingRecommendation = useSelector<StoreStateType, TrackingRecommendation>(state => state.investigation.trackingRecommendation);
     const classes = useStyles();
+    const { reason, subReason, extraInfo } = trackingRecommendation;
 
     const [trackingSubReasons, setTrackingSubReasons] = useState<Option[]>([]);
-    const [trackingReason, setTrackingReason] = useState<number | null>(defaultTrackingReason) 
-    const [trackingSubReason, setTrackingSubReason] = useState<number>(0);
-    const [extraInfo , setExtraInfo] = useState<string>(trackingRecommendation.extraInfo || '');
 
     const { fetchSubReasonsByReason } = UseTrackingRecommendationForm({});
 
     useEffect(() => {
+        console.log(reason);
         const fetchSubReasonsByReasonAsync = async () => {
-            trackingReason !== null && setTrackingSubReasons(await fetchSubReasonsByReason(trackingReason));
+            reason !== null && setTrackingSubReasons(await fetchSubReasonsByReason(reason));
         };
         fetchSubReasonsByReasonAsync();
-    }, [trackingReason]);
-
-    useEffect( () => {
-        const { reason, subReason, extraInfo } = trackingRecommendation;
-        setTrackingReason(reason);
-        subReason && setTrackingSubReason(subReason);
-        extraInfo && setExtraInfo(extraInfo);
-    }
-    , [trackingRecommendation])
+    }, [reason]);
 
     return (
         <Grid container className={classes.container}>
             <Grid item>
             <FormControl variant='outlined'>
                 <Select
-                    defaultValue={trackingReason}
+                    value={reason}
                     onChange={async (e) => {
                         const newReason : number = e.target.value as number;
-                        setTrackingReason(newReason)
+                        reason !== null && setTrackingSubReasons(await fetchSubReasonsByReason(reason));
                         setTrackingRecommendation({
                             reason: newReason,
                         });
-                        
                     }}
                 >
                     {trackingOptions.map(
@@ -71,21 +61,19 @@ const TrackingRecommendationForm = (props: Props) => {
                 </Select>
             </FormControl>
             </Grid>
-            <Collapse in={trackingReason !== defaultTrackingReason}>
+            <Collapse in={reason !== defaultTrackingReason}>
                 <Grid item>
                     {
                         trackingSubReasons.length > 0 && 
                         <FormControl variant='outlined'>
                             <InputLabel>סיבה</InputLabel>
                             <Select
-                                defaultValue={trackingSubReason}
+                                value={subReason}
                                 onChange={(e) => {
-                                    setTrackingSubReason(e.target.value as number)
                                     setTrackingRecommendation({
-                                        reason: trackingReason,
+                                        reason,
                                         subReason: e.target.value as number
                                     });
-                                    setExtraInfo('');
                                 }}
                             >
                                 {trackingSubReasons.map(subReason => (
@@ -98,16 +86,15 @@ const TrackingRecommendationForm = (props: Props) => {
                     }
                 </Grid>
             </Collapse>
-            <Collapse in={trackingSubReason === otherSubReason}>
+            <Collapse in={subReason === otherSubReason}>
                 <Grid item>
                     <FormControl variant='outlined'>
                         <AlphanumericTextField
                             name='trackingExtraInfo'
                             value={extraInfo}
                             onChange={(value) => {
-                                setExtraInfo(value);
                                 setTrackingRecommendation({
-                                    reason: trackingReason,
+                                    reason,
                                     subReason: otherSubReason,
                                     extraInfo: value
                                 });
