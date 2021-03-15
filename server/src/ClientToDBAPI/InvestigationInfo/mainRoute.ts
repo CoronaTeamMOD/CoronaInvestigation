@@ -380,5 +380,13 @@ investigationInfo.get('/getComplexityReason/:epidemiologyNumber', (request: Requ
     })
 });
 
+investigationInfo.post('/updateTrackingReccomentaion', (request: Request, response: Response) => {
+    const {reason} = request.body;
+    const subReason = request.body.subReason ?? null;
+    const extraInfo = request.body.extraInfo ?? null;
+
+    response.sendStatus(200);
+});
+
 
 export default investigationInfo;

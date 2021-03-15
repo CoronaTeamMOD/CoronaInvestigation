@@ -73,8 +73,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                 confirmButtonText: 'כן, המשך'
             }).then(async (result) => {
                 if (result.value) {
-                    // TODO : remove once comment backend is done
-                    // await updateTrackingReccomentaion();
+                    await updateTrackingReccomentaion();
                     await updateInvestigationStatus(epidemiologyNumber);
                     if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
                         await updateIsDeceased(handleInvestigationFinish);
