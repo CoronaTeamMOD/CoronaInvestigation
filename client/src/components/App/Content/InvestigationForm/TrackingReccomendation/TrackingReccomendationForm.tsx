@@ -49,6 +49,7 @@ const TrackingReccomendationForm = (props: Props) => {
                     <Select
                         onChange={(e) => {
                             setTrackingSubReason(e.target.value as number)
+                            setExtraInfo('');
                         }}
                     >
                         {trackingSubReasons.map( subReason => (
