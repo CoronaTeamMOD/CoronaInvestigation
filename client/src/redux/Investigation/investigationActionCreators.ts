@@ -1,5 +1,6 @@
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import SymptomsExistenceInfo from 'models/SymptomsExistenceInfo';
+import TrackingReccomendation from 'models/TrackingReccomendation';
 
 import { store } from '../store';
 import * as actionTypes from './investigationActionTypes';
@@ -87,6 +88,13 @@ export const setDatesToInvestigateParams = (symptomsExistenceInfo?: SymptomsExis
         payload: { symptomsExistenceInfo, validationDate }
     })
 };
+
+export const setTrackingReccomendation = (trackingReccomendation : TrackingReccomendation) => {
+    store.dispatch({
+        type: actionTypes.SET_TRACKING_RECCOMENDATION,
+        payload: { trackingReccomendation }
+    })
+}
 
 export const resetInvestigationState = () => {
     store.dispatch({
