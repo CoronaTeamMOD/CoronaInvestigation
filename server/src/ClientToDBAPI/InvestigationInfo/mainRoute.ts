@@ -22,7 +22,8 @@ import {
     UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA,
     CLOSE_ISOLATED_CONTACT,
     UPDATE_INVESTIGATION_COMPLEXITY_REASON_ID,
-    DELETE_INVESTIGATION_COMPLEXITY_REASON_ID
+    DELETE_INVESTIGATION_COMPLEXITY_REASON_ID,
+    UPDATE_INVESTIGATION_TRACKING
 } from '../../DBService/InvestigationInfo/Mutation';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
@@ -404,7 +405,22 @@ investigationInfo.post('/updateTrackingReccomentaion', (request: Request, respon
     const subReason = request.body.subReason ?? null;
     const extraInfo = request.body.extraInfo ?? null;
 
-    response.sendStatus(200);
+    const parameters = {
+        inputEpidemiologyNumber: parseInt(response.locals.epidemiologynumber),
+        reason,
+        subReason,
+        extraInfo
+    }
+
+    return graphqlRequest(UPDATE_INVESTIGATION_TRACKING, response.locals, parameters)
+    .then(result => {
+        //updateCommentLogger.info(validDBResponseLog, Severity.LOW);
+        return response.send(result);
+    })
+    .catch((error) => {
+        //updateCommentLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+        response.status(errorStatusCode).send(error);
+    });
 });
 
 
