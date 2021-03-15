@@ -10,7 +10,8 @@ import {
     GET_INVESTIGAION_SETTINGS_FAMILY_DATA,
     GROUP_ID_BY_EPIDEMIOLOGY_NUMBER,
     GET_INVESTIGATION_COMPLEXITY_REASONS,
-    GET_INVESTIGATION_COMPLEXITY_REASON_ID
+    GET_INVESTIGATION_COMPLEXITY_REASON_ID,
+    TRACKING_SUB_REASONS_BY_REASON_ID
 } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
@@ -376,6 +377,24 @@ investigationInfo.get('/getComplexityReason/:epidemiologyNumber', (request: Requ
     })
     .catch(error => {
         getInvestigationComplexityReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+        response.status(errorStatusCode).send(error);
+    })
+});
+
+investigationInfo.get('/trackingSubReasons/:reasonId', (request: Request, response: Response) => {
+    const reasonId = parseInt(request.params.reasonId);
+    const trackingSubReasonsLogger = logger.setup({
+        workflow: 'get trackingSubReasonBy',
+        user: response.locals.user.id,
+        investigation: request.body.epidemiologyNumberInput,
+    });
+    return graphqlRequest(TRACKING_SUB_REASONS_BY_REASON_ID, response.locals, {reasonId})
+    .then((result) => {
+        trackingSubReasonsLogger.info('query from db successfully', Severity.LOW)
+        response.send(result.data.allTrackingSubReasons.nodes);
+    })
+    .catch(error => {
+        trackingSubReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.status(errorStatusCode).send(error);
     })
 });

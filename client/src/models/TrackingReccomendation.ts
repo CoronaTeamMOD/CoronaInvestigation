@@ -1,5 +1,5 @@
 export default interface TrackingReccomendation {
-    reason : number;
+    reason : number | null;
     subReason? : number;
     extraInfo? : string;
 }
