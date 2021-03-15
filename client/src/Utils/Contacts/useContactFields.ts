@@ -49,11 +49,11 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         : contactType !== ContactType.TIGHT;
 
     const validateContact = (contact: InteractedContact, validationReason: ValidationReason): validValidation | invalidValidation => {
-        if (contact.identificationType === IdentificationTypes.ID && isIdValid(contact.identificationNumber)) {
+        if (contact.identificationType === IdentificationTypes.ID && !isIdValid(contact.identificationNumber)) {
             return { valid: false, error: 'שדה ת.ז. אינו תקין' };
         };
 
-        if (contact.identificationType === IdentificationTypes.PASSPORT && isPassportValid(contact.identificationNumber)) {
+        if (contact.identificationType === IdentificationTypes.PASSPORT && !isPassportValid(contact.identificationNumber)) {
             return { valid: false, error: 'שדה דרכון אינו תקין' };
         };
 
