@@ -22,14 +22,13 @@ const trackingOptions = [
 
 const TrackingReccomendationForm = (props: Props) => {
     const trackingReccomendation = useSelector<StoreStateType, TrackingReccomendation>(state => state.investigation.trackingReccomendation);
-    console.log(trackingReccomendation);
     const classes = useStyles();
 
     const [trackingSubReasons, setTrackingSubReasons] = useState<Option[]>([]);
     const [trackingReason, setTrackingReason] = useState<number | null>(defaultTrackingReason) 
     const [trackingSubReason, setTrackingSubReason] = useState<number>(0);
     const [extraInfo , setExtraInfo] = useState<string>(trackingReccomendation.extraInfo || '');
-    console.log(trackingReason);
+
     const { fetchSubReasonsByReason } = UseTrackingReccomendationForm({});
 
     useEffect(() => {

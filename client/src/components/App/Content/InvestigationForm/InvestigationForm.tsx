@@ -72,6 +72,8 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         setGroupedInvestigationsDetailsAsync();
     }, []);
     
+    const isLastTabDisplayed = currentTab === lastTabDisplayedId;
+
     return (
         <div className={classes.content}>
             <ExposureAndFlightsContextProvider value={exposuresAndFlightsVariables}>
@@ -87,20 +89,21 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                 setNextTab={setNextTab}
                             />
                             <Grid container alignItems='center' className={classes.buttonSection}>
-                                <Grid item>
-                                    {/* TODO : change to display on last tab */}
-                                    <Paper className={classes.trackingForm}>
-                                        <TrackingReccomendationForm/>
-                                    </Paper>
-                                </Grid>
+                                {isLastTabDisplayed && 
+                                    <Grid item>
+                                        <Paper className={classes.trackingForm}>
+                                            <TrackingReccomendationForm/>
+                                        </Paper>
+                                    </Grid>
+                                }
                                 <Grid item className={classes.nextButton}>
                                     <PrimaryButton
                                         type='submit'
                                         form={`form-${currentTab}`}
-                                        test-id={currentTab === lastTabDisplayedId ? 'endInvestigation' : 'continueToNextStage'}
+                                        test-id={isLastTabDisplayed ? 'endInvestigation' : 'continueToNextStage'}
                                         onClick={() => setNextTab(currentTab + 1)}                                    
                                     >
-                                    {currentTab === lastTabDisplayedId ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
+                                    {isLastTabDisplayed ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                     </PrimaryButton>
                                 </Grid>
                             </Grid>
