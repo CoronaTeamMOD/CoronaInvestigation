@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Grid } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -16,6 +17,7 @@ import useGroupedInvestigationContacts from './useGroupedInvestigationContacts';
 import useTabManagement ,{ LAST_TAB_ID } from './TabManagement/useTabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import TabManagement from './TabManagement/TabManagement';
+import TrackingReccomendationForm from './TrackingReccomendation/TrackingReccomendationForm';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 
 const END_INVESTIGATION = 'סיים חקירה';
@@ -84,16 +86,22 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                 currentTab={currentTab}
                                 setNextTab={setNextTab}
                             />
-                            <div className={classes.buttonSection}>
-                                <PrimaryButton 
-                                    type='submit'
-                                    form={`form-${currentTab}`}
-                                    test-id={currentTab === lastTabDisplayedId ? 'endInvestigation' : 'continueToNextStage'}
-                                    onClick={() => setNextTab(currentTab + 1)}                                    
-                                >
-                                {currentTab === lastTabDisplayedId ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
-                                </PrimaryButton>
-                            </div>
+                            <Grid container className={classes.buttonSection}>
+                                <Grid item>
+                                    {/* TODO : change to display on last tab */}
+                                    <TrackingReccomendationForm />
+                                </Grid>
+                                <Grid item className={classes.nextButton}>
+                                    <PrimaryButton
+                                        type='submit'
+                                        form={`form-${currentTab}`}
+                                        test-id={currentTab === lastTabDisplayedId ? 'endInvestigation' : 'continueToNextStage'}
+                                        onClick={() => setNextTab(currentTab + 1)}                                    
+                                    >
+                                    {currentTab === lastTabDisplayedId ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
+                                    </PrimaryButton>
+                                </Grid>
+                            </Grid>
                         </div>
                 </StartInvestigationDateVariablesProvider>
             </ExposureAndFlightsContextProvider>
