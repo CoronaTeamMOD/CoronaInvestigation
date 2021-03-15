@@ -28,7 +28,7 @@ const initialState: InvestigationRedux = {
     validationDate: new Date(),
     endTime: null,
     trackingReccomendation: {
-        reason: 0,
+        reason: null,
     }
 }
 

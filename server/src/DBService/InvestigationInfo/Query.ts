@@ -47,6 +47,11 @@ query InvestigationStaticDetails($investigationId: Int!) {
       serialNumber
       investigationGroup
     }
+    trackingSubReasonByTrackingSubReason {
+      reasonId
+      subReasonId
+    }
+    trackingExtraInfo
   }
 }
 `;
