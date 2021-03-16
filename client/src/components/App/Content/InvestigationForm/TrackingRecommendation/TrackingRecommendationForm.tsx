@@ -33,7 +33,7 @@ const TrackingRecommendationForm = (props: Props) => {
             <Grid item>
             <FormControl variant='outlined'>
                 <Select
-                    value={reason}
+                    value={reason || 0}
                     onChange={async (e) => {
                         const newReason : number = e.target.value as number;
                         reason !== null && setTrackingSubReasons(await fetchSubReasonsByReason(reason));
@@ -59,7 +59,7 @@ const TrackingRecommendationForm = (props: Props) => {
                         <FormControl variant='outlined'>
                             <InputLabel>סיבה</InputLabel>
                             <Select
-                                value={subReason}
+                                value={subReason || 0}
                                 onChange={(e) => {
                                     setTrackingRecommendation({
                                         reason,
@@ -82,7 +82,7 @@ const TrackingRecommendationForm = (props: Props) => {
                     <FormControl variant='outlined'>
                         <AlphanumericTextField
                             name='trackingExtraInfo'
-                            value={extraInfo}
+                            value={extraInfo || ''}
                             onChange={(value) => {
                                 setTrackingRecommendation({
                                     reason,
