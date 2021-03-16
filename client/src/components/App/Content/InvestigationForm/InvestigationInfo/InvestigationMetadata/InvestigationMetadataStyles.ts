@@ -5,8 +5,9 @@ const useStyles = makeStyles({
         display: 'flex',
         flexWrap: 'wrap',
         whiteSpace: 'pre',
-        padding: '1vh 0 1vh 0',
+        padding: '1vh 0 1vh 2.5vh',
         background: '#E5E5E5',
+        margin: '2vh 2vh 0 2vh',
     },
 });
 

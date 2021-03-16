@@ -42,7 +42,7 @@ const CommentInput = ({ commentInput, handleInput }: Props) => {
 };
 
 interface Props {
-    commentInput: string;
+    commentInput: string | null;
     handleInput: (input: string) => void;
 };
 

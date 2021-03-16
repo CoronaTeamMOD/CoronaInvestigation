@@ -1,10 +1,12 @@
+import axios from 'axios';
 import * as yup from 'yup';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import React, { ChangeEvent, useEffect, useMemo } from 'react';
-import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
-import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl, Tooltip } from '@material-ui/core';
+import React, { ChangeEvent, useEffect, useMemo, useContext } from 'react';
+import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl, Tooltip, Button } from '@material-ui/core';
 
+import logger from 'logger/logger';
+import { Severity } from 'models/Logger';
 import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
 import formatDate from 'Utils/DateUtils/formatDate';
@@ -12,13 +14,9 @@ import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InvestigationInfo from 'models/InvestigationInfo';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
-import MutationIcon from 'commons/Icons/customIcons/MutationIcon';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
-import ReturnSickIcon from 'commons/Icons/customIcons/ReturnSickIcon';
-import VaccinationIcon from 'commons/Icons/customIcons/VaccinationIcon';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import { ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX } from 'commons/Regex/Regex';
-import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
@@ -26,9 +24,10 @@ import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexit
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
 import useStyles from './InvestigatedPersonInfoStyles';
-import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
+import PatientInfoItem from './PatientInfoItem/PatientInfoItem';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
-import InvestigationMenu from './InvestigationMenu/InvestigationMenu';
+import CommentInput from './InvestigationMenu/CommentDialog/CommentInput';
+import { commentContext } from '../Context/CommentContext';
 
 const leaveInvestigationMessage = 'צא מחקירה';
 const displayDateFormat = 'dd/MM/yyyy';
@@ -42,6 +41,8 @@ const statusReasonLabel = 'פירוט'
 const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
 const errorMessage = 'השדה יכול להכניס רק תווים חוקיים';
 const requiredMessage = 'שדה זה הינו שדה חובה';
+const commentLabel = 'הערה'
+const SAVE_BUTTON_TEXT = 'שמור הערה';
 export const inProcess = 'בטיפול';
 
 const InvestigatedPersonInfo = (props: Props) => {
@@ -53,7 +54,6 @@ const InvestigatedPersonInfo = (props: Props) => {
     const { identityType, gender, isDeceased, isCurrentlyHospitalized, isInClosedInstitution, age, identityNumber, 
         fullName, primaryPhone, birthDate, validationDate, isReturnSick, previousDiseaseStartDate, 
         isVaccinated, vaccinationEffectiveFrom, isSuspicionOfMutation, mutationName } = investigationStaticInfo;
-    const Divider = () => <span className={classes.divider}> | </span>;
     const { wasInvestigationReopend } = useStatusUtils();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -62,6 +62,8 @@ const InvestigatedPersonInfo = (props: Props) => {
     const subStatuses = useSelector<StoreStateType, string[]>(state => state.subStatuses);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
+    const { comment, setComment } = useContext(commentContext);
+    const [commentInput, setCommentInput] = React.useState<string|null>('');
 
     const validationSchema = investigationStatus.subStatus === transferredSubStatus ?
         yup.string().required(requiredMessage).matches(ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX, errorMessage).max(50, maxLengthErrorMessage).nullable() :
@@ -69,6 +71,9 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const { confirmExitUnfinishedInvestigation } = useInvestigatedPersonInfo();
 
+    useEffect(() => {
+        setCommentInput(comment);
+    }, [comment])
     useEffect(() => {
         if (investigationStatus.subStatus !== transferredSubStatus) {
             validateStatusReason(investigationStatus.statusReason)
@@ -114,11 +119,23 @@ const InvestigatedPersonInfo = (props: Props) => {
         return status === InvestigationMainStatusCodes.NEW;
     };
 
+    const sendComment = (commentToSend: string | null) => {
+        const sendCommentLogger = logger.setup(`POST request add comment to investigation ${epidemiologyNumber}`);
+        axios.post('/investigationInfo/comment', { comment: commentToSend, epidemiologyNumber })
+            .then(() => {
+                setComment(commentToSend);
+                sendCommentLogger.info('Successfully added comment to investigation', Severity.LOW);
+            })
+            .catch(() => {
+                sendCommentLogger.error('Error occured in adding comment to investigation', Severity.HIGH);
+            })
+            .finally();
+    };
+
     return (
         <Paper className={classes.paper}>
             <div className={classes.headerTopPart}>
                 <div className={classes.investigationHeaderInfo}>
-                    <InvestigationMenu />
                     <Typography variant='h6' className={classes.investigationTitle}>
                         {`${fullName} ${epedemioligyNumber}`}
                     </Typography>
@@ -262,106 +279,91 @@ const InvestigatedPersonInfo = (props: Props) => {
             </div>
             <div className={classes.informationBar}>
                 <div className={classes.additionalInfo}>
+                    <div className={classes.line}>
                     {
                         age !== null &&
                         <>
-                            <InfoItemWithIcon testId='age' name='גיל' value={+age < 1 ? 'פחות משנה' : age} icon={CakeOutlined} />
+                            <PatientInfoItem testId='age' name='גיל' value={+age < 1 ? 'פחות משנה' : age} />
                             {
                                 +age <= maxComplexityAge && <ComplexityIcon tooltipText='המאומת מתחת לגיל 14' />
                             }
-                            <Divider />
                         </>
                     }
-                    <InfoItemWithIcon testId='birthdate' name='תאריך לידה' value={
-                        birthDate ? format(new Date(birthDate), displayDateFormat) : 'אין תאריך'
-                    }
-                        icon={CalendarToday}
-                    />
                     {
                         isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל' />
                     }
-                    <Divider />
-                    <InfoItemWithIcon testId='examinationDate' name='תאריך תחילת מחלה' value=
+                    <PatientInfoItem testId='examinationDate' name='תחילת מחלה' value=
                         {
                             format(validationDate, displayDateFormat)
                         }
-                        icon={EventOutlined}
                     />
-                    <Divider />
-                    <InfoItemWithIcon testId='gender' name='מין' value={gender}
-                        icon={Help}
-                    />
-                    <Divider />
-                    <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value={identityType}
-                        icon={Help}
-                    />
-                    <Divider />
-                    <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value={identityNumber}
-                        icon={Help}
-                    />
-                    <Divider />
-                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={indication((isDeceased || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED))}
-                        icon={Help}
-                    />
+                    <PatientInfoItem testId='gender' name='מין' value={gender==='נקבה'?'נ':'ז'} />
+                    <PatientInfoItem testId='idType' name='סוג תעודה מזהה' value={identityType}  />
+                    <PatientInfoItem testId='idNumber' name='מספר תעודה מזהה' value={identityNumber} />
+                    </div>
+                    <div className={classes.line}>
+                    <PatientInfoItem testId='isDeceased' name='נפטר' value={indication((isDeceased || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED))} />
                     {
                         (isDeceased ||
                             (investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE &&
                                 investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED)) &&
                         <ComplexityIcon tooltipText='המאומת נפטר' />
                     }
-                    <Divider />
-                    <InfoItemWithIcon testId='isCurrentlyHospitalized' name='האם מאושפז' value={indication((isCurrentlyHospitalized || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED))}
-                        icon={Help}
-                    />
+                    <PatientInfoItem testId='isCurrentlyHospitalized' name='מאושפז' value={indication((isCurrentlyHospitalized || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED))} />
                     {
                         (isCurrentlyHospitalized ||
                             (investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE &&
                                 investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED)) &&
                         <ComplexityIcon tooltipText='המאומת מאושפז' />
                     }
-                    <Divider />
-                    <InfoItemWithIcon testId='isInInstitution' name='שוהה במוסד' value={indication(isInClosedInstitution)}
-                        icon={Help}
-                    />
+                    <PatientInfoItem testId='isInInstitution' name='שוהה במוסד' value={indication(isInClosedInstitution)} />
                     {
                         isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
                     }
-                    <Divider />
                     <Tooltip title={isVaccinated ? vaccinationEffectiveFrom ? formatDate(vaccinationEffectiveFrom) : noInfo : ''}>
                         <div>
-                            <InfoItemWithIcon testId='isVaccinated' name='האם מחוסן' value={isVaccinated ? yes : noInfo}
-                                icon={VaccinationIcon}
-                            />  
+                            <PatientInfoItem testId='isVaccinated' name='מחוסן' value={isVaccinated ? yes : noInfo} />  
                         </div>
                         
                     </Tooltip>
                     {
                         isVaccinated && <ComplexityIcon tooltipText={formatDate(vaccinationEffectiveFrom)} />
                     }
-                    <Divider />
                     <Tooltip title={isSuspicionOfMutation ? mutationName ? mutationName : noInfo : ''}>
                         <div>
-                            <InfoItemWithIcon testId='isSuspicionOfMutation' name='חשד למוטציה' value={isSuspicionOfMutation ? yes : noInfo}
-                                icon={MutationIcon}
-                            />    
+                            <PatientInfoItem testId='isSuspicionOfMutation' name='חשד למוטציה' value={isSuspicionOfMutation ? yes : noInfo} />    
                         </div>
                          
                     </Tooltip>
                     {
                         isSuspicionOfMutation && <ComplexityIcon tooltipText={mutationName ? mutationName : noInfo} />
                     }
-                    <Divider />
-                    <Tooltip title={isReturnSick ? previousDiseaseStartDate ? formatDate(previousDiseaseStartDate) : noInfo : ''}>
+                    <Tooltip title={isReturnSick ? previousDiseaseStartDate ? formatDate(previousDiseaseStartDate) : noInfo : ''} >
                         <div>
-                            <InfoItemWithIcon testId='isReturnSick' name='חולה חוזר' value={isReturnSick ? yes : noInfo}
-                                icon={ReturnSickIcon}
-                            />   
+                            <PatientInfoItem testId='isReturnSick' name='חולה חוזר' value={isReturnSick ? yes : noInfo}/>   
                         </div>
                     </Tooltip>
                     {
                         isReturnSick && <ComplexityIcon tooltipText={formatDate(previousDiseaseStartDate)} />
                     }
+                    </div>
                 </div>
+            </div>
+            <div className={classes.commentControllers}>
+                <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+                    <div className={classes.commentLine}>
+                        <Typography className={classes.commentTitle}>
+                            <b><bdi>{commentLabel}</bdi>: </b>
+                        </Typography>
+                        <CommentInput commentInput={commentInput} handleInput={setCommentInput} />
+                        <Button 
+                            className={classes.button} 
+                            onClick={()=>{sendComment(commentInput as string)}}
+                            disabled={!(commentInput && commentInput !== comment)}>
+                                {SAVE_BUTTON_TEXT}
+                        </Button>
+                    </div>
+                </Grid>
             </div>
         </Paper>
     );
