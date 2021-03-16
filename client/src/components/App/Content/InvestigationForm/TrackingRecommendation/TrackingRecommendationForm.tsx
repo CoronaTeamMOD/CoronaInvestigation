@@ -82,6 +82,7 @@ const TrackingRecommendationForm = (props: Props) => {
                     <FormControl variant='outlined'>
                         <AlphanumericTextField
                             name='trackingExtraInfo'
+                            key={reason || ''}
                             value={extraInfo || ''}
                             onChange={(value) => {
                                 setTrackingRecommendation({
