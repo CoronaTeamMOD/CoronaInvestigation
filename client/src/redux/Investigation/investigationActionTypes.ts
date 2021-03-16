@@ -1,6 +1,6 @@
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import SymptomsExistenceInfo from 'models/SymptomsExistenceInfo';
-import TrackingRecommendation from 'models/TrackingRecommendation';
+import TrackingRecommendation from 'models/TrackingRecommendation/TrackingRecommendation';
 
 export const SET_EPIDEMIOLOGY_NUM = 'SET_EPIDEMIOLOGY_NUM';
 export const SET_COMPLEX_REASONS_ID = 'SET_COMPLEX_REASONS_ID';

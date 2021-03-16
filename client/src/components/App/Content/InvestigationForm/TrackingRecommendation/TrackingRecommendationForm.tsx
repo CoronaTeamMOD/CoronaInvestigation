@@ -3,22 +3,14 @@ import { useSelector } from 'react-redux';
 import { Grid , Collapse, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core';
 
 import StoreStateType from 'redux/storeStateType';
-import TrackingRecommendation from 'models/TrackingRecommendation';
+import TrackingRecommendation from 'models/TrackingRecommendation/TrackingRecommendation';
 import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextField';
 import { setTrackingRecommendation } from 'redux/Investigation/investigationActionCreators';
+import { trackingOptions, defaultTrackingReason, otherSubReason } from 'models/TrackingRecommendation/trackingOptions';
 
 import useStyles from './trackingRecommendationStyles';
 import { Option } from './trackingRecommendationTypes';
 import UseTrackingRecommendationForm from './useTrackingRecommendationForm';
-
-const otherSubReason = 99;
-const defaultTrackingReason = 0;
-const trackingOptions = [
-    { id: defaultTrackingReason , displayName: 'ללא המלצה לאיתור מגעים ממוכן'},
-    { id: 1 , displayName: 'המלצה לאיתר מגעים ממוכן'},
-    { id: 2 , displayName: 'אין צורך באיתור מגעים ממוכן'}
-];
-
 
 const TrackingRecommendationForm = (props: Props) => {
     const trackingRecommendation = useSelector<StoreStateType, TrackingRecommendation>(state => state.investigation.trackingRecommendation);
@@ -111,4 +103,4 @@ interface Props {
     
 }
 
-export default TrackingRecommendationForm
+export default TrackingRecommendationForm;

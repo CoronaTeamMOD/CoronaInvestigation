@@ -5,7 +5,9 @@ import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import TrackingRecommendation from 'models/TrackingRecommendation';
+import TrackingRecommendation from 'models/TrackingRecommendation/TrackingRecommendation';
+
+const trackingUpdateErrorText = 'לא היה ניתן לעדכן את סיבת האיכון';
 
 const UdpateTrackingRecommendation = () => {
     const { alertError } = useCustomSwal();
@@ -20,7 +22,7 @@ const UdpateTrackingRecommendation = () => {
             })
             .catch((error) => {
                 updateInvestigationTrackingLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-                alertError('לא היה ניתן לעדכן את סיבת האיכון');
+                alertError(trackingUpdateErrorText);
             });
     }
 

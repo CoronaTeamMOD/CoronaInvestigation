@@ -1,7 +1,7 @@
 import InvestigatedPatient from './InvestigatedPatient';
 import { InvestigationStatus } from './InvestigationStatus';
 import SymptomsExistenceInfo from './SymptomsExistenceInfo';
-import TrackingRecommendation from './TrackingRecommendation';
+import TrackingRecommendation from './TrackingRecommendation/TrackingRecommendation';
 
 interface InvestigationRedux extends SymptomsExistenceInfo {
     epidemiologyNumber: number;
