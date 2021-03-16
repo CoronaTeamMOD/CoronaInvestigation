@@ -87,14 +87,14 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
     };
 
     const staticFieldsSubmit = (data: StaticFieldsFormInputs) => {
-        const updateStaticFieldsLogger = logger.setup('Updating static fields');
+        const updateStaticFieldsLogger = logger.setup('Updating static info');
         updateStaticFieldsLogger.info('launching the server request', Severity.LOW);
         setIsLoading(true);
-        axios.post('/investigationInfo/updateStaticFields', ({
+        axios.post('/investigationInfo/updateStaticInfo', ({
             data
         }))
         .then(() => {
-            updateStaticFieldsLogger.info('updated static fields successfully', Severity.LOW);
+            updateStaticFieldsLogger.info('updated static info successfully', Severity.LOW);
             setIsLoading(false);
             setStaticFieldsChange(false);
         })
