@@ -24,7 +24,7 @@ const useStyles = makeStyles({
         }
     },
     contactDescription: {
-        marginLeft: '1vw',
+        margin: '2vw 3vw 2vw 0.5vw',
     },
     personalInfoFieldContainer: {
         display: 'flex',
@@ -136,6 +136,13 @@ const useStyles = makeStyles({
         '&.MuiOutlinedInput-root': {
             minHeight: '43px'
         }
+    },
+    addPersonButton: {
+        padding: '0',
+        marginLeft: '2vw',
+    },
+    alignRight: {
+        marginLeft: '-3vw',
     }
 });
 
