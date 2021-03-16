@@ -11,6 +11,7 @@ import InvolvedContact from 'models/InvolvedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import useDuplicateContactId, {IdToCheck} from 'Utils/Contacts/useDuplicateContactId';
+import {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import {ContactBankContextProvider , ContactBankOption} from 'commons/Contexts/ContactBankContext';
 import {GroupedInvestigationsContextProvider} from 'commons/Contexts/GroupedInvestigationFormContext';
 import {familyMembersContext, FamilyMembersDataContextProvider} from 'commons/Contexts/FamilyMembersContext';
@@ -112,6 +113,7 @@ const InteractionDialog = (props: Props) => {
     });
 
     const convertData = (data: InteractionEventDialogData) => {
+        const { isNamedLocation } = getOptionsByPlaceAndSubplaceType(data.placeType, data.placeSubType);
         initialInteractionDate.current.setHours(0, 0, 0, 0);
         const startTimeToSave = isUnknownTime ? initialInteractionDate.current : data.startTime;
         const endTimeToSave = isUnknownTime ? initialInteractionDate.current : data.endTime;
@@ -122,8 +124,10 @@ const InteractionDialog = (props: Props) => {
             [InteractionEventDialogFields.END_TIME]: endTimeToSave,
             [InteractionEventDialogFields.UNKNOWN_TIME]: Boolean(data[InteractionEventDialogFields.UNKNOWN_TIME]),
             [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
-            [InteractionEventDialogFields.PLACE_NAME]: Boolean(data[InteractionEventDialogFields.PLACE_NAME]) ?
-                data[InteractionEventDialogFields.PLACE_NAME] : generatePlacenameByPlaceSubType(placeSubtypeName),
+            [InteractionEventDialogFields.PLACE_NAME]: 
+                isNamedLocation && Boolean(data[InteractionEventDialogFields.PLACE_NAME])
+                    ? data[InteractionEventDialogFields.PLACE_NAME]
+                    : generatePlacenameByPlaceSubType(placeSubtypeName),
             [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: Boolean(data[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]),
             [InteractionEventDialogFields.ADDITIONAL_OCCURRENCES]:
             data[InteractionEventDialogFields.ADDITIONAL_OCCURRENCES]?.map(convertAdditionalOccurances) || [],
