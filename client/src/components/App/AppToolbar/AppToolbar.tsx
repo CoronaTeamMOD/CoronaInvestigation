@@ -11,7 +11,7 @@ import StoreStateType from 'redux/storeStateType';
 import UserTypeCodes from 'models/enums/UserTypeCodes';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { setDisplayedCounty, setDisplayedUserType } from 'redux/User/userActionCreators';
-import { adminLandingPageRoute, landingPageRoute, usersManagementRoute, indexRoute } from 'Utils/Routes/Routes';
+import { adminLandingPageRoute, landingPageRoute, usersManagementRoute, indexRoute, investigationFormRoute } from 'Utils/Routes/Routes';
 
 import useStyles from './AppToolbarStyles';
 import useAppToolbar from './useAppToolbar';
@@ -19,7 +19,7 @@ import useAppToolbar from './useAppToolbar';
 const toggleMessage = 'מה הסטטוס שלך?';
 const navButtonsWhitelist = {
     allowedUserTypes: [UserTypeCodes.ADMIN, UserTypeCodes.SUPER_ADMIN],
-    allowedRoutes: [landingPageRoute, adminLandingPageRoute, usersManagementRoute]
+    allowedRoutes: [landingPageRoute, adminLandingPageRoute, usersManagementRoute, investigationFormRoute]
 };
 
 const StatePersistentNavLink = (props: NavLinkProps) => {
