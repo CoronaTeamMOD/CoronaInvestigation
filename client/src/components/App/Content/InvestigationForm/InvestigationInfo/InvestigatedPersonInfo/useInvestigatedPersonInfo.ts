@@ -90,7 +90,7 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
         const updateStaticFieldsLogger = logger.setup('Updating static fields');
         updateStaticFieldsLogger.info('launching the server request', Severity.LOW);
         setIsLoading(true);
-        axios.post('/investigation/updateStaticFields', ({
+        axios.post('/investigationInfo/updateStaticFields', ({
             data
         }))
         .then(() => {
@@ -108,7 +108,7 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
     return {
         confirmExitUnfinishedInvestigation,
         staticFieldsSubmit
-    }
+    };
 };
 
 export default useInvestigatedPersonInfo;
