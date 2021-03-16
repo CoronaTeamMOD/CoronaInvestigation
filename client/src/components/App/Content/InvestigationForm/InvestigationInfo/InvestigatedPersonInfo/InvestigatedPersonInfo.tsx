@@ -62,8 +62,8 @@ const InvestigatedPersonInfo = (props: Props) => {
     const subStatuses = useSelector<StoreStateType, string[]>(state => state.subStatuses);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
-    const [commentInput, setCommentInput] = React.useState<string>('');
     const { comment, setComment } = useContext(commentContext);
+    const [commentInput, setCommentInput] = React.useState<string|null>('');
 
     const validationSchema = investigationStatus.subStatus === transferredSubStatus ?
         yup.string().required(requiredMessage).matches(ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX, errorMessage).max(50, maxLengthErrorMessage).nullable() :
@@ -71,6 +71,9 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const { confirmExitUnfinishedInvestigation } = useInvestigatedPersonInfo();
 
+    useEffect(() => {
+        setCommentInput(comment);
+    }, [comment])
     useEffect(() => {
         if (investigationStatus.subStatus !== transferredSubStatus) {
             validateStatusReason(investigationStatus.statusReason)
