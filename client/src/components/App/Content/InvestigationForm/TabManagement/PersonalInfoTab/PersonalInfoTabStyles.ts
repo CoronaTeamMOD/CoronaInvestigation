@@ -6,7 +6,7 @@ const useStyles = makeStyles({
         height: '64vh'
     },
     personalInfoItem: {
-        marginLeft: '-4vw',
+        marginLeft: '-10vw',
         '@media screen and (max-width: 1700px)': {
             marginRight: '2vw',
         },
@@ -24,7 +24,7 @@ const useStyles = makeStyles({
         }
     },
     contactDescription: {
-        margin: '2vw 3vw 2vw 0.5vw',
+        margin: '2vw 3vw 2vw 0',
     },
     personalInfoFieldContainer: {
         display: 'flex',
@@ -142,7 +142,7 @@ const useStyles = makeStyles({
         marginLeft: '2vw',
     },
     alignRight: {
-        marginLeft: '-3vw',
+        marginLeft: '-9vw',
     }
 });
 
