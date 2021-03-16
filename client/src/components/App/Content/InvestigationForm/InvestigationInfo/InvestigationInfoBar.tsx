@@ -105,9 +105,9 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                     setEndTime(investigationInfo.endTime);
                     setInvestigationStaticInfo(formattedInvestigationInfo);
                     setTrackingRecommendation({
-                        reason: investigationInfo.trackingSubReasonByTrackingSubReason.reasonId,
-                        subReason: investigationInfo.trackingSubReasonByTrackingSubReason.subReasonId,
-                        extraInfo: investigationInfo.trackingExtraInfo
+                        reason: investigationInfo.trackingSubReasonByTrackingSubReason?.reasonId ?? null,
+                        subReason: investigationInfo.trackingSubReasonByTrackingSubReason?.subReasonId,
+                        extraInfo: investigationInfo.trackingExtraInfo 
                     })
                 }
                 else {
