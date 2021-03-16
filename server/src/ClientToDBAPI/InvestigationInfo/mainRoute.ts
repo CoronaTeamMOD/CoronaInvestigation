@@ -21,7 +21,8 @@ import {
     UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA,
     CLOSE_ISOLATED_CONTACT,
     UPDATE_INVESTIGATION_COMPLEXITY_REASON_ID,
-    DELETE_INVESTIGATION_COMPLEXITY_REASON_ID
+    DELETE_INVESTIGATION_COMPLEXITY_REASON_ID,
+    UPDATE_INVESTIGATION_STATIC_INFO
 } from '../../DBService/InvestigationInfo/Mutation';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
@@ -377,8 +378,36 @@ investigationInfo.get('/getComplexityReason/:epidemiologyNumber', (request: Requ
     .catch(error => {
         getInvestigationComplexityReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.status(errorStatusCode).send(error);
-    })
+    });
 });
 
+
+investigationInfo.post('/updateStaticInfo', handleInvestigationRequest, (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
+    const updateStaticInfoLogger = logger.setup({
+        workflow: 'updating static info of investigation',
+        user: response.locals.user.id,
+        investigation: epidemiologyNumber,
+    });
+
+    const parameters = { 
+        fullNameInput: request.body.data.fullName === '' ? null : request.body.data.fullName,
+        identificationTypeInput: request.body.data.identificationType === '' ? null : request.body.data.identificationType,
+        identityNumberInput: request.body.data.identityNumber === '' ? null : request.body.data.identityNumber,
+        epidemiologyNumberInput: epidemiologyNumber
+    };
+
+    updateStaticInfoLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+
+    return graphqlRequest(UPDATE_INVESTIGATION_STATIC_INFO, response.locals, parameters)
+        .then(result => {
+            updateStaticInfoLogger.info(validDBResponseLog, Severity.LOW);
+            return response.send(result);
+        })
+        .catch((error) => {
+            updateStaticInfoLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
+});
 
 export default investigationInfo;
