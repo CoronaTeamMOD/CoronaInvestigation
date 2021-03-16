@@ -21,7 +21,7 @@ const statusReasonLabel = 'פירוט';
 
 const InvestigationStatusInfo = (props: any) => {
 
-    const  { statusReasonError, validateStatusReason, validationStatusSchema } = props;
+    const  { statusReasonError, validateStatusReason, ValidationStatusSchema } = props;
     const classes = useStyles();
     
     const { wasInvestigationReopend } = useStatusUtils();
@@ -157,7 +157,7 @@ const InvestigationStatusInfo = (props: any) => {
                                         label={statusReasonError ? statusReasonError[0] : statusReasonLabel}
                                         onChange={async (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
                                             const newStatusReason: string = event.target.value;
-                                            const isValid = validationStatusSchema.isValidSync(newStatusReason);
+                                            const isValid = ValidationStatusSchema(investigationStatus.subStatus).isValidSync(newStatusReason);
                                             validateStatusReason(newStatusReason)
                                             if (isValid || newStatusReason === '') {
                                                 setInvestigationStatus({

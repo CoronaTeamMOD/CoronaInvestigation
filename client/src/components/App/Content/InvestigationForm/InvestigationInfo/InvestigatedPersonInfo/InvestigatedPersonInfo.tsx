@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { Edit, CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
@@ -20,13 +20,13 @@ import IdentificationTypes from 'models/enums/IdentificationTypes';
 import ReturnSickIcon from 'commons/Icons/customIcons/ReturnSickIcon';
 import VaccinationIcon from 'commons/Icons/customIcons/VaccinationIcon';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import { ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX } from 'commons/Regex/Regex';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
-import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
 import useStyles from './InvestigatedPersonInfoStyles';
+import StaticFieldsSchema from './Schema/StaticFieldsSchema';
+import ValidationStatusSchema from './Schema/ValidationStatusSchema';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 import InvestigationMenu from './InvestigationMenu/InvestigationMenu';
@@ -39,9 +39,6 @@ const maxComplexityAge = 14;
 const yes = 'כן';
 const no = 'לא';
 const noInfo = 'אין מידע';
-const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
-const errorMessage = 'השדה יכול להכניס רק תווים חוקיים';
-const requiredMessage = 'שדה זה הינו שדה חובה';
 export const inProcess = 'בטיפול';
 
 const InvestigatedPersonInfo = (props: Props) => {
@@ -64,11 +61,21 @@ const InvestigatedPersonInfo = (props: Props) => {
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
 
-    const validationStatusSchema = investigationStatus.subStatus === transferredSubStatus ?
-        yup.string().required(requiredMessage).matches(ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX, errorMessage).max(50, maxLengthErrorMessage).nullable() :
-        yup.string().matches(ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX, errorMessage).max(50, maxLengthErrorMessage).nullable();
-
     const { confirmExitUnfinishedInvestigation } = useInvestigatedPersonInfo();
+
+    const methods = useForm({
+        mode: 'all',
+        resolver: yupResolver(StaticFieldsSchema)
+    });
+    
+    const onSubmit = () => {
+        const data = methods.getValues();
+        console.log(data);
+    };
+
+    useEffect(() => {
+        methods.reset(StaticFields);
+    }, [fullName, identityType, identityNumber])
 
     const handleLeaveInvestigationClick = (event: React.ChangeEvent<{}>) => {
         if (isEventTrigeredByMouseClicking(event)) {
@@ -87,7 +94,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const validateStatusReason = (newStatusReason: string | null) => {
         try {
-            validationStatusSchema.validateSync(newStatusReason);
+            ValidationStatusSchema(investigationStatus.subStatus).validateSync(newStatusReason);
             setStatusReasonError(null)
         } catch (err) {
             setStatusReasonError(err.errors)
@@ -95,16 +102,6 @@ const InvestigatedPersonInfo = (props: Props) => {
     }
 
     const isMandatoryInfoMissing: boolean = !birthDate && !fullName && !isLoading;
-
-    const methods = useForm({
-        mode: 'all',
-        //resolver: yupResolver(mode === FormMode.CREATE ? SignUpSchema : EditSchema)
-    });
-
-    const onSubmit = () => {
-        const data = methods.getValues();
-        console.log(data);
-    };
     
     return (
         <FormProvider {...methods}>
@@ -122,14 +119,16 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     <Controller 
                                         name={StaticFields.FULL_NAME}
                                         control={methods.control}
+                                        defaultValue={fullName}
                                         render={(props) => (
                                             <TextField
+                                                {...props}
                                                 test-id={props.name}
-                                                value={props.value || fullName}
                                                 onChange={(event) => {
                                                     props.onChange(event.target.value)
                                                     setStaticFieldsChange(true)
-                                                }}                                                error={get(methods.errors, props.name)}
+                                                }}                                                
+                                                error={get(methods.errors, props.name)}
                                                 label={get(methods.errors, props.name)?.message || ''}
                                             />
                                         )}
@@ -162,7 +161,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <InvestigationStatusInfo 
                         statusReasonError={statusReasonError}
                         validateStatusReason={validateStatusReason}
-                        validationStatusSchema={validationStatusSchema}
+                        ValidationStatusSchema={ValidationStatusSchema}
                     />
                     <div className={classes.informationBar}>
                         <div className={classes.additionalInfo}>
@@ -204,11 +203,11 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     <Controller
                                         control={methods.control}
                                         name={StaticFields.IDENTIFICATION_TYPE}
+                                        defaultValue={identityType}
                                         render={(props) => (
                                             <Select
                                                 {...props}
                                                 disabled
-                                                value={identityType}
                                                 className={classes.smallSizeText}
                                                 onChange={(event) => {
                                                     props.onChange(event.target.value)
@@ -252,13 +251,14 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     <Controller 
                                         name={StaticFields.ID}
                                         control={methods.control}
+                                        defaultValue={identityNumber}
                                         render={(props) => (
                                             <TextField
+                                                {...props}
                                                 disabled
                                                 className={classes.smallSizeText}
                                                 InputProps={{className: classes.smallSizeText}}
                                                 test-id={props.name}
-                                                value={props.value || identityNumber}
                                                 onChange={(event) => {
                                                     props.onChange(event.target.value as string)
                                                     setStaticFieldsChange(true)
