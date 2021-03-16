@@ -61,16 +61,16 @@ const InvestigatedPersonInfo = (props: Props) => {
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
 
-    const { confirmExitUnfinishedInvestigation } = useInvestigatedPersonInfo();
+    const { confirmExitUnfinishedInvestigation, staticFieldsSubmit } = useInvestigatedPersonInfo({ setStaticFieldsChange });
 
     const methods = useForm({
         mode: 'all',
         resolver: yupResolver(StaticFieldsSchema)
     });
-    
+  
     const onSubmit = () => {
         const data = methods.getValues();
-        console.log(data);
+        staticFieldsSubmit(data);
     };
 
     useEffect(() => {
@@ -99,7 +99,7 @@ const InvestigatedPersonInfo = (props: Props) => {
         } catch (err) {
             setStatusReasonError(err.errors)
         }
-    }
+    };
 
     const isMandatoryInfoMissing: boolean = !birthDate && !fullName && !isLoading;
     
