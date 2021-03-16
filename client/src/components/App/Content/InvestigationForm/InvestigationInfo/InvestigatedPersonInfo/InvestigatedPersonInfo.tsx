@@ -14,6 +14,7 @@ import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import StaticFields from 'models/enums/StaticFields';
 import InvestigationInfo from 'models/InvestigationInfo';
 import { InvestigationStatus } from 'models/InvestigationStatus';
+import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import MutationIcon from 'commons/Icons/customIcons/MutationIcon';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import ReturnSickIcon from 'commons/Icons/customIcons/ReturnSickIcon';
@@ -124,10 +125,12 @@ const InvestigatedPersonInfo = (props: Props) => {
                                         render={(props) => (
                                             <TextField
                                                 test-id={props.name}
-                                                value={props.value}
-                                                onChange={(event) => props.onChange(event.target.value as string)}
-                                                //error={get(methods.errors, props.name)}
-                                                //label={get(methods.errors, props.name)?.message || MABAR_USER_NAME}
+                                                value={props.value || fullName}
+                                                onChange={(event) => {
+                                                    props.onChange(event.target.value)
+                                                    setStaticFieldsChange(true)
+                                                }}                                                error={get(methods.errors, props.name)}
+                                                label={get(methods.errors, props.name)?.message || ''}
                                             />
                                         )}
                                     />
@@ -201,10 +204,11 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     <Controller
                                         control={methods.control}
                                         name={StaticFields.IDENTIFICATION_TYPE}
-                                        defaultValue={identityType}
                                         render={(props) => (
                                             <Select
                                                 {...props}
+                                                disabled
+                                                value={identityType}
                                                 className={classes.smallSizeText}
                                                 onChange={(event) => {
                                                     props.onChange(event.target.value)
@@ -248,16 +252,19 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     <Controller 
                                         name={StaticFields.ID}
                                         control={methods.control}
-                                        defaultValue={identityNumber}
                                         render={(props) => (
                                             <TextField
+                                                disabled
                                                 className={classes.smallSizeText}
                                                 InputProps={{className: classes.smallSizeText}}
                                                 test-id={props.name}
-                                                value={props.value}
-                                                onChange={(event) => props.onChange(event.target.value as string)}
-                                                //error={get(methods.errors, props.name)}
-                                                //label={get(methods.errors, props.name)?.message || MABAR_USER_NAME}
+                                                value={props.value || identityNumber}
+                                                onChange={(event) => {
+                                                    props.onChange(event.target.value as string)
+                                                    setStaticFieldsChange(true)
+                                                }}
+                                                error={get(methods.errors, props.name)}
+                                                label={get(methods.errors, props.name)?.message || ''}
                                             />
                                         )}
                                     />
