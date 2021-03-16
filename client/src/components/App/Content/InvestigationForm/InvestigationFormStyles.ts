@@ -10,9 +10,10 @@ const useStyles = makeStyles({
         padding: '2vh 1vw 0 1vw',
     },
     buttonSection: {
-        display: 'flex',
-        justifyContent: 'flex-end',
         margin: '1vh 0'
+    },
+    nextButton: {
+        marginLeft: 'auto'
     },
     swalTitle: {
         fontSize: '1.5vw',
@@ -20,6 +21,9 @@ const useStyles = makeStyles({
     },
     swalText: {
         fontFamily: 'Assistant',
+    },
+    trackingForm: {
+        padding : '1vh 1vw'
     }
 });
 

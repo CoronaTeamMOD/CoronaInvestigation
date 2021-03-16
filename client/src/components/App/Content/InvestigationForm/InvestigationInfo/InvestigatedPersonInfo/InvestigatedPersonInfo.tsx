@@ -1,12 +1,15 @@
+import axios from 'axios';
 import * as yup from 'yup';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { yupResolver } from '@hookform/resolvers';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { Edit, CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
-import { Typography, Paper, TextField, Select, MenuItem, Tooltip } from '@material-ui/core';
+import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl, Tooltip, Button } from '@material-ui/core';
 
+import logger from 'logger/logger';
+import { Severity } from 'models/Logger';
 import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
 import formatDate from 'Utils/DateUtils/formatDate';
@@ -15,10 +18,7 @@ import StaticFields from 'models/enums/StaticFields';
 import InvestigationInfo from 'models/InvestigationInfo';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-import MutationIcon from 'commons/Icons/customIcons/MutationIcon';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
-import ReturnSickIcon from 'commons/Icons/customIcons/ReturnSickIcon';
-import VaccinationIcon from 'commons/Icons/customIcons/VaccinationIcon';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
@@ -27,10 +27,11 @@ import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexit
 import useStyles from './InvestigatedPersonInfoStyles';
 import StaticFieldsSchema from './Schema/StaticFieldsSchema';
 import ValidationStatusSchema from './Schema/ValidationStatusSchema';
-import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
-import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
-import InvestigationMenu from './InvestigationMenu/InvestigationMenu';
 import InvestigationStatusInfo from './InvestigationStatusInfo/InvestigationStatusInfo';
+import PatientInfoItem from './PatientInfoItem/PatientInfoItem';
+import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
+import CommentInput from './InvestigationMenu/CommentDialog/CommentInput';
+import { commentContext } from '../Context/CommentContext';
 
 const leaveInvestigationMessage = 'צא מחקירה';
 const saveStaticDetailsMessage = 'שמירת שינויים';
@@ -39,6 +40,11 @@ const maxComplexityAge = 14;
 const yes = 'כן';
 const no = 'לא';
 const noInfo = 'אין מידע';
+const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
+const errorMessage = 'השדה יכול להכניס רק תווים חוקיים';
+const requiredMessage = 'שדה זה הינו שדה חובה';
+const commentLabel = 'הערה'
+const SAVE_BUTTON_TEXT = 'שמור הערה';
 export const inProcess = 'בטיפול';
 
 const InvestigatedPersonInfo = (props: Props) => {
@@ -54,14 +60,18 @@ const InvestigatedPersonInfo = (props: Props) => {
         fullName, primaryPhone, birthDate, validationDate, isReturnSick, previousDiseaseStartDate, 
         isVaccinated, vaccinationEffectiveFrom, isSuspicionOfMutation, mutationName } = investigationStaticInfo;
 
-    const Divider = () => <span className={classes.divider}> | </span>;
-
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
+    const { comment, setComment } = useContext(commentContext);
+    const [commentInput, setCommentInput] = React.useState<string|null>('');
 
     const { confirmExitUnfinishedInvestigation, staticFieldsSubmit } = useInvestigatedPersonInfo({ setStaticFieldsChange });
+
+    useEffect(() => {
+        setCommentInput(comment);
+    }, [comment])
 
     const methods = useForm({
         mode: 'all',
@@ -103,13 +113,25 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const isMandatoryInfoMissing: boolean = !birthDate && !fullName && !isLoading;
     
+    const sendComment = (commentToSend: string | null) => {
+        const sendCommentLogger = logger.setup(`POST request add comment to investigation ${epidemiologyNumber}`);
+        axios.post('/investigationInfo/comment', { comment: commentToSend, epidemiologyNumber })
+            .then(() => {
+                setComment(commentToSend);
+                sendCommentLogger.info('Successfully added comment to investigation', Severity.LOW);
+            })
+            .catch(() => {
+                sendCommentLogger.error('Error occured in adding comment to investigation', Severity.HIGH);
+            })
+            .finally();
+    };
+
     return (
         <FormProvider {...methods}>
             <form id='staticFields' onSubmit={methods.handleSubmit(onSubmit)}>
                 <Paper className={classes.paper}>
                     <div className={classes.headerTopPart}>
                         <div className={classes.investigationHeaderInfo}>
-                            <InvestigationMenu />
                             {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ? 
                                 <>
                                     <Edit />
@@ -144,7 +166,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 phoneNumber={primaryPhone}
                             />
                             <Typography variant='h6' className={classes.investigationTitle}>
-                                {`מספר אפדימיולוגי: ${epedemioligyNumber}`}
+                                {`מספר אפדימיולוגי: ${epedemioligyNumber}`}   
                             </Typography>
                         </div>
                         <PrimaryButton
@@ -158,48 +180,36 @@ const InvestigatedPersonInfo = (props: Props) => {
                             {leaveInvestigationMessage}
                         </PrimaryButton>
                     </div>
+
                     <InvestigationStatusInfo 
                         statusReasonError={statusReasonError}
                         validateStatusReason={validateStatusReason}
                         ValidationStatusSchema={ValidationStatusSchema}
                     />
+
                     <div className={classes.informationBar}>
                         <div className={classes.additionalInfo}>
-                            {
-                                age !== null &&
+                            <div className={classes.line}>
+                                {age !== null &&
                                 <>
-                                    <InfoItemWithIcon testId='age' name='גיל' value={+age < 1 ? 'פחות משנה' : age} icon={CakeOutlined} />
+                                    <PatientInfoItem testId='age' name='גיל' value={+age < 1 ? 'פחות משנה' : age} />
                                     {
                                         +age <= maxComplexityAge && <ComplexityIcon tooltipText='המאומת מתחת לגיל 14' />
                                     }
-                                    <Divider />
                                 </>
-                            }
-                            <InfoItemWithIcon testId='birthdate' name='תאריך לידה' value={
-                                birthDate ? format(new Date(birthDate), displayDateFormat) : 'אין תאריך'
-                            }
-                                icon={CalendarToday}
-                            />
-                            {
-                                isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל' />
-                            }
-                            <Divider />
-                            <InfoItemWithIcon testId='examinationDate' name='תאריך תחילת מחלה' value=
-                                {
-                                    format(validationDate, displayDateFormat)
                                 }
-                                icon={EventOutlined}
-                            />
-                            <Divider />
-                            <InfoItemWithIcon testId='gender' name='מין' value={gender}
-                                icon={Help}
-                            />
-                            <Divider />
-                            {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ?
+                                {isMandatoryInfoMissing && 
+                                    <ComplexityIcon tooltipText='אימות מרשם נכשל' />
+                                }
+                                <PatientInfoItem testId='examinationDate' name='תחילת מחלה' value=
+                                    {
+                                        format(validationDate, displayDateFormat)
+                                    }
+                                />
+                                <PatientInfoItem testId='gender' name='מין' value={gender==='נקבה'?'נ':'ז'} />
+                                {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ?
                                 <>
-                                    <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value=''
-                                        icon={Edit}
-                                    />
+                                    <PatientInfoItem testId='idType' name='סוג תעודה מזהה' value={''}  />
                                     <Controller
                                         control={methods.control}
                                         name={StaticFields.IDENTIFICATION_TYPE}
@@ -238,16 +248,11 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     />
                                 </>
                                 :
-                                <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value={identityType}
-                                    icon={Help}
-                                />
-                            }
-                            <Divider />
-                            {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ?
+                                <PatientInfoItem testId='idType' name='סוג תעודה מזהה' value={identityType}  />
+                                }
+                                {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ?
                                 <>
-                                    <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value=''
-                                        icon={Edit}
-                                    />
+                                    <PatientInfoItem testId='idNumber' name='מספר תעודה מזהה' value={''} />
                                     <Controller 
                                         name={StaticFields.ID}
                                         control={methods.control}
@@ -270,75 +275,57 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     />
                                 </>
                                 :
-                                <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value={identityNumber}
-                                    icon={Help}
-                                />
-                            }
-                            
-                            <Divider />
-                            <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={indication((isDeceased || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED))}
-                                icon={Help}
-                            />
-                            {
-                                (isDeceased ||
-                                    (investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE &&
-                                        investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED)) &&
-                                <ComplexityIcon tooltipText='המאומת נפטר' />
-                            }
-                            <Divider />
-                            <InfoItemWithIcon testId='isCurrentlyHospitalized' name='האם מאושפז' value={indication((isCurrentlyHospitalized || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED))}
-                                icon={Help}
-                            />
-                            {
-                                (isCurrentlyHospitalized ||
-                                    (investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE &&
-                                        investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED)) &&
-                                <ComplexityIcon tooltipText='המאומת מאושפז' />
-                            }
-                            <Divider />
-                            <InfoItemWithIcon testId='isInInstitution' name='שוהה במוסד' value={indication(isInClosedInstitution)}
-                                icon={Help}
-                            />
-                            {
-                                isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
-                            }
-                            <Divider />
-                            <Tooltip title={isVaccinated ? vaccinationEffectiveFrom ? formatDate(vaccinationEffectiveFrom) : noInfo : ''}>
-                                <div>
-                                    <InfoItemWithIcon testId='isVaccinated' name='האם מחוסן' value={isVaccinated ? yes : noInfo}
-                                        icon={VaccinationIcon}
-                                    />  
+                                <PatientInfoItem testId='idNumber' name='מספר תעודה מזהה' value={identityNumber} />
+                                }
+                            </div>
+                            <div className={classes.line}>
+                                <PatientInfoItem testId='isDeceased' name='נפטר' value={indication((isDeceased || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED))} />
+                                {
+                                    (isDeceased ||
+                                        (investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE &&
+                                            investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED)) &&
+                                    <ComplexityIcon tooltipText='המאומת נפטר' />
+                                }
+                                <PatientInfoItem testId='isCurrentlyHospitalized' name='מאושפז' value={indication((isCurrentlyHospitalized || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED))} />
+                                {
+                                    (isCurrentlyHospitalized ||
+                                        (investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE &&
+                                            investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED)) &&
+                                    <ComplexityIcon tooltipText='המאומת מאושפז' />
+                                }
+                                <PatientInfoItem testId='isInInstitution' name='שוהה במוסד' value={indication(isInClosedInstitution)} />
+                                {
+                                    isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
+                                }
+                                <Tooltip title={isVaccinated ? vaccinationEffectiveFrom ? formatDate(vaccinationEffectiveFrom) : noInfo : ''}>
+                                    <div>
+                                        <PatientInfoItem testId='isVaccinated' name='מחוסן' value={isVaccinated ? yes : noInfo} />  
+                                    </div>
+                                    
+                                </Tooltip>
+                                {
+                                    isVaccinated && <ComplexityIcon tooltipText={formatDate(vaccinationEffectiveFrom)} />
+                                }
+                                <Tooltip title={isSuspicionOfMutation ? mutationName ? mutationName : noInfo : ''}>
+                                    <div>
+                                        <PatientInfoItem testId='isSuspicionOfMutation' name='חשד למוטציה' value={isSuspicionOfMutation ? yes : noInfo} />    
+                                    </div>
+                                    
+                                </Tooltip>
+                                {
+                                    isSuspicionOfMutation && <ComplexityIcon tooltipText={mutationName ? mutationName : noInfo} />
+                                }
+                                <Tooltip title={isReturnSick ? previousDiseaseStartDate ? formatDate(previousDiseaseStartDate) : noInfo : ''} >
+                                    <div>
+                                        <PatientInfoItem testId='isReturnSick' name='חולה חוזר' value={isReturnSick ? yes : noInfo}/>   
+                                    </div>
+                                </Tooltip>
+                                {
+                                    isReturnSick && <ComplexityIcon tooltipText={formatDate(previousDiseaseStartDate)} />
+                                }
                                 </div>
-                                
-                            </Tooltip>
-                            {
-                                isVaccinated && <ComplexityIcon tooltipText={formatDate(vaccinationEffectiveFrom)} />
-                            }
-                            <Divider />
-                            <Tooltip title={isSuspicionOfMutation ? mutationName ? mutationName : noInfo : ''}>
-                                <div>
-                                    <InfoItemWithIcon testId='isSuspicionOfMutation' name='חשד למוטציה' value={isSuspicionOfMutation ? yes : noInfo}
-                                        icon={MutationIcon}
-                                    />    
-                                </div>
-                                
-                            </Tooltip>
-                            {
-                                isSuspicionOfMutation && <ComplexityIcon tooltipText={mutationName ? mutationName : noInfo} />
-                            }
-                            <Divider />
-                            <Tooltip title={isReturnSick ? previousDiseaseStartDate ? formatDate(previousDiseaseStartDate) : noInfo : ''}>
-                                <div>
-                                    <InfoItemWithIcon testId='isReturnSick' name='חולה חוזר' value={isReturnSick ? yes : noInfo}
-                                        icon={ReturnSickIcon}
-                                    />   
-                                </div>
-                            </Tooltip>
-                            {
-                                isReturnSick && <ComplexityIcon tooltipText={formatDate(previousDiseaseStartDate)} />
-                            }
+                            </div>
                         </div>
-                    </div>
                     {staticFieldsChange &&
                         <div className={classes.saveButton}>
                             <PrimaryButton
@@ -350,7 +337,23 @@ const InvestigatedPersonInfo = (props: Props) => {
                             </PrimaryButton>
                         </div>
                 
-                    }                  
+                    }        
+                    <div className={classes.commentControllers}>
+                        <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+                            <div className={classes.commentLine}>
+                                <Typography className={classes.commentTitle}>
+                                    <b><bdi>{commentLabel}</bdi>: </b>
+                                </Typography>
+                                <CommentInput commentInput={commentInput} handleInput={setCommentInput} />
+                                <Button 
+                                    className={classes.button} 
+                                    onClick={()=>{sendComment(commentInput as string)}}
+                                    disabled={!(commentInput && commentInput !== comment)}>
+                                        {SAVE_BUTTON_TEXT}
+                                </Button>
+                            </div>
+                        </Grid>
+                    </div>   
                 </Paper>
             </form>
         </FormProvider>

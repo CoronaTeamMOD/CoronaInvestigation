@@ -203,28 +203,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                     />
                 </Grid>
                 <Grid container item>
-                    <FieldName xs={5} fieldName={ADDITIONAL_PHONE_LABEL} />
-                    <Controller
-                        control={control}
-                        name={`form[${index}].${InteractedContactFields.ADDITIONAL_PHONE_NUMBER}`}
-                        defaultValue={interactedContact.additionalPhoneNumber}
-                        render={(props) => {
-                            return (
-                                <NumericTextField
-                                    {...props}
-                                    disabled={isFieldDisabled}
-                                    error={currentFormErrors && currentFormErrors[InteractedContactFields.ADDITIONAL_PHONE_NUMBER]?.message}
-                                    testId='additionalPhoneNumber'
-                                    onChange={(newValue: string) => {
-                                        props.onChange(newValue);
-                                    }}
-                                    placeholder='הכנס טלפון נוסף:'
-                                />
-                            );
-                        }}
-                    />
-                </Grid>
-                <Grid container item>
                     <Grid item xs={12}>
                         <Typography >
                             <b>אירועים בהם בא המגע עם המאומת</b>

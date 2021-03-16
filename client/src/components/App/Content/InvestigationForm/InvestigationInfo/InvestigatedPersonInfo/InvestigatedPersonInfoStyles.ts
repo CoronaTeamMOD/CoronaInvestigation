@@ -3,7 +3,9 @@ import { makeStyles } from '@material-ui/styles';
 const useStyles = makeStyles({
     paper: {
         padding: '0.7vw',
-        borderRadius: 0
+        borderRadius: 0,
+        margin: '2vh',
+        paddingLeft: '2vw',
     },
     headerTopPart: {
         display: 'flex',
@@ -17,7 +19,6 @@ const useStyles = makeStyles({
         alignItems: 'center',
     },
     investigationTitle: {
-        paddingRight: '0.5vw',
         flip: false,
         fontWeight: 400,
     },
@@ -33,15 +34,54 @@ const useStyles = makeStyles({
     additionalInfo: {
         display: 'flex',
         flexWrap: 'wrap',
-        alignItems: 'center',
         whiteSpace: 'pre',
-        flex: 12
+        flex: 12,
+        flexDirection: 'column',
+        marginLeft: '-0.5vw',
+    },
+    line: {
+        display: 'flex',
+        flexDirection: 'row',
+    },
+    commentLine: {
+        display: 'flex',
+        flexDirection: 'row',
+        width: '90%',
     },
     smallSizeText: {
         fontSize: '1rem'
     },
     saveButton: {
         direction: 'rtl'
+    },
+    commentControllers: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 5,
+        marginBottom: '0.5vh'
+    },
+    containerGrid: {
+        maxWidth: '100vw',
+    },
+    fieldLabel: {
+        '@media screen and (min-width: 1870px)': {
+            marginRight: '-6vw',
+        },
+        marginRight: '-2vw',
+    },
+    button: {
+        width: '8vw',
+        border: 'rgba(0, 0, 0, 0.26) 1px solid',
+        height: '5vh',
+        fontWeight: 700,
+        marginLeft: '20px',
+        borderRadius: '20px',
+    },
+    commentTitle: {
+        marginRight: '20px',
+        height: '5vh',
+        marginTop: '7px',
     }
 });
 

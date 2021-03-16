@@ -17,7 +17,7 @@ import { CommentContextProvider } from './Context/CommentContext';
 import { landingPageRoute, adminLandingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationInfo , { InvestigationInfoData } from 'models/InvestigationInfo';
 import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setDatesToInvestigateParams } from 'redux/Investigation/investigationActionCreators';
-import { setInvestigatedPatientId , setIsCurrentlyHospitialized, setIsDeceased, setEndTime } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigatedPatientId , setIsCurrentlyHospitialized, setIsDeceased, setEndTime, setTrackingRecommendation } from 'redux/Investigation/investigationActionCreators';
 
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
@@ -104,6 +104,11 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                     );
                     setEndTime(investigationInfo.endTime);
                     setInvestigationStaticInfo(formattedInvestigationInfo);
+                    setTrackingRecommendation({
+                        reason: investigationInfo.trackingSubReasonByTrackingSubReason?.reasonId ?? 0,
+                        subReason: investigationInfo.trackingSubReasonByTrackingSubReason?.subReasonId,
+                        extraInfo: investigationInfo.trackingExtraInfo 
+                    })
                 }
                 else {
                     investigationInfoLogger.warn('got status 200 but wrong data', Severity.HIGH);

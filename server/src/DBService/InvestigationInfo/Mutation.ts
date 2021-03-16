@@ -79,3 +79,11 @@ mutation updateInvestigationStaticInfo ($fullNameInput: String, $identificationT
   }
 }
 `;
+
+export const UPDATE_INVESTIGATION_TRACKING = gql`
+mutation updateTrackingRecommendation ($inputEpidemiologyNumber: Int!, $extraInfo: String, $reason: Int, $subReason: Int) {
+  updateTrackingRecommendation(input: {extraInfo: $extraInfo, inputEpidemiologyNumber: $inputEpidemiologyNumber, reason: $reason, subReason: $subReason}) {
+    clientMutationId
+  }
+}
+`;

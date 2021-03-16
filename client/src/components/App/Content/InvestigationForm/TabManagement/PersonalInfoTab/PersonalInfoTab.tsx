@@ -3,8 +3,8 @@ import { Autocomplete } from '@material-ui/lab';
 import React, { useMemo, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers';
 import { useForm, FormProvider, Controller } from 'react-hook-form';
-import { Grid, FormControl, TextField, FormLabel, RadioGroup, 
-        InputLabel, FormControlLabel, Radio, Select, MenuItem, Collapse } from '@material-ui/core';
+import { Grid, FormControl, TextField, 
+        InputLabel, Select, MenuItem, Collapse, Button } from '@material-ui/core';
 
 import City from 'models/City';
 import FlattenedDBAddress from 'models/DBAddress';
@@ -38,20 +38,22 @@ const CONTACT_PHONE_LABEL = 'טלפון איש קשר:';
 const INSURANCE_LABEL = 'גורם מבטח:';
 const ADDRESS_LABEL = 'כתובת:';
 const INSERT_INSTITUTION_NAME = 'הזן שם מוסד:';
+const INSERT_OCCUPATION = 'הזן תעסוקה:';
 const INSERT_INSURANCE_COMPANY = 'הזן גורם מבטח:';
 const INSERT_OFFICE_NAME = 'הזן שם משרד/ רשות:';
 const INSERT_TRANSPORTATION_COMPANY_NAME = 'הזן שם חברה:';
 const INSERT_INDUSTRY_NAME = 'הזן שם תעשייה:';
-const CONTACT_INFO = 'תיאור איש קשר:';
 const OFFICE_NAME_LABEL = 'שם משרד/ רשות*';
 const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה*';
 const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
 const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 const NO_INSURANCE = 'אף אחד מהנ"ל';
 const INSURANCE_COMPANY = 'גורם מבטח *';
+const OCCUPATION = 'תעסוקה *';
 const INSTITUTION_CITY = 'עיר המצאות המוסד';
 const STUDENT = 'תלמיד/ה';
 const CLASS_NUMBER = 'מס כיתה';
+const ADD_CONTACT = '+איש קשר'
 
 const PersonalInfoTab: React.FC<Props> = ({ id }) => {
 
@@ -66,6 +68,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
     const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
     const educationGrades = useSelector<StoreStateType, EducationGrade[]>(state => state.educationGrades);
     const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const [toAddContactField, setToAddContactField] = React.useState<boolean>(false);
 
     const { subOccupations, 
             getSubOccupations, 
@@ -188,8 +191,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
         houseNumberField: {
             name: `${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.HOUSE_NUMBER}`,
         },
-        floorField: {
-            name: `${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.FLOOR}`,
+        apartmentField: {
+            name: `${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.APARTMENT}`,
         }
     }
 
@@ -201,7 +204,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                     savePersonalData(convertToDBData(), methods.getValues(), id);
                 }}>
                     <FormRowWithInput fieldName={PHONE_LABEL}>
-                        <Grid item xs={2} className={classes.personalInfoItem}>
+                        <Grid className={classes.personalInfoItem + ' ' + classes.alignRight}>
                             <Controller
                                 control={methods.control}
                                 name={PersonalInfoDataContextFields.PHONE_NUMBER}
@@ -218,31 +221,32 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                     />
                                 )}
                             />
+                            <Button 
+                                className={classes.addPersonButton}
+                                disabled={toAddContactField} 
+                                onClick={ ()=>{setToAddContactField(true)}} > 
+                                {ADD_CONTACT} 
+                            </Button>
                         </Grid>
                     </FormRowWithInput>
-                    <FormRowWithInput fieldName={ADDITIONAL_PHONE_LABEL + ":"}>
-                        <Grid item xs={2} className={classes.personalInfoItem}>
-                            <Controller
-                                control={methods.control}
-                                name={PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER}
-                                render={(props) => (
-                                    <NumericTextField
-                                        testId='personalDetailsAdditionalPhone'
-                                        name={props.name}
-                                        value={props.value}
-                                        onChange={(newValue: string) => props.onChange(newValue)}
-                                        onBlur={props.onBlur}
-                                        placeholder={PHONE_LABEL}
-                                        label='טלפון'
-                                        className={classes.phoneInput}
-                                    />
-                                )}
-                            />
-                        </Grid>
-                    </FormRowWithInput>
-                    <FormRowWithInput fieldName={CONTACT_PHONE_LABEL}>
-                        <>
-                            <Grid item xs={2} className={classes.personalInfoItem}>
+                    <Collapse in={toAddContactField} className={classes.personalInfoItem}>
+                        <FormRowWithInput fieldName={''}>
+                            <>
+                                <Controller
+                                    name={PersonalInfoDataContextFields.CONTACT_INFO}
+                                    control={methods.control}
+                                    render={(props) => (
+                                        <AlphanumericTextField
+                                            name={PersonalInfoDataContextFields.CONTACT_INFO}
+                                            value={props.value}
+                                            onChange={(newValue: string) => (props.onChange(newValue))}
+                                            onBlur={props.onBlur}
+                                            placeholder={'פרטי איש קשר'}
+                                            label='פרטי איש קשר'
+                                            className={classes.contactDescription}
+                                        />
+                                    )}
+                                />
                                 <Controller
                                     control={methods.control}
                                     name={PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER}
@@ -259,24 +263,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                         />
                                     )}
                                 />
-                            </Grid>
-                            <Controller
-                                name={PersonalInfoDataContextFields.CONTACT_INFO}
-                                control={methods.control}
-                                render={(props) => (
-                                    <AlphanumericTextField
-                                        name={PersonalInfoDataContextFields.CONTACT_INFO}
-                                        value={props.value}
-                                        onChange={(newValue: string) => (props.onChange(newValue))}
-                                        onBlur={props.onBlur}
-                                        placeholder={CONTACT_INFO}
-                                        label='פרטי איש קשר'
-                                        className={classes.contactDescription}
-                                    />
-                                )}
-                            />
-                        </>
-                    </FormRowWithInput>
+                            </>
+                        </FormRowWithInput>
+                    </Collapse>
                     <FormRowWithInput fieldName={INSURANCE_LABEL} appendantLabelIcon={insuranceCompany === NO_INSURANCE ? <ComplexityIcon tooltipText='המאומת חסר מעמד' /> : undefined}>
                         <Grid item xs={2} className={classes.personalInfoItem}>
                             <FormControl fullWidth>
@@ -312,53 +301,35 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                             {...addressFormFields}
                         />
                     </FormRowWithInput>
-                    <FormRowWithInput gridProps={{ alignItems: 'baseline' }} fieldName={RELEVANT_OCCUPATION_LABEL}>
+                    <FormRowWithInput fieldName={OCCUPATION_LABEL} appendantLabelIcon={occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? <ComplexityIcon tooltipText='עובד במשרד הבריאות/החינוך' /> : undefined}>
                         <>
-                            <Grid item xs={2} className={classes.responsiveOccupation}>
-                                <FormControl component='fieldset'>
-                                    <Controller
-                                        name={PersonalInfoDataContextFields.RELEVANT_OCCUPATION}
-                                        control={methods.control}
-                                        render={(props) => (
-                                            <RadioGroup
-                                                aria-label={OCCUPATION_LABEL}
-                                                name={OCCUPATION_LABEL}
-                                                value={props.value ? props.value : Occupations.OTHER}
-                                                className={classes.relevantOccupationselect}
-                                                >
-                                                <FormLabel component='legend' className={classes.fontSize15}>
-                                                    <b>{OCCUPATION_LABEL}</b>
-                                                </FormLabel>
-                                                {
-                                                    occupations.map((occupationOption) => {
-                                                        return (
-                                                            <div className={classes.occupation}>
-                                                                <FormControlLabel
-                                                                    value={occupationOption}
-                                                                    key={occupationOption}
-                                                                    control={<Radio
-                                                                        color='primary'
-                                                                        onChange={handleChangeOccupation}
-                                                                    />}
-                                                                    label={<span style={{ fontSize: '15px' }}>{occupationOption}</span>}
-                                                                />
-                                                                {
-                                                                    (
-                                                                        (occupationOption === Occupations.EDUCATION_SYSTEM && occupation === Occupations.EDUCATION_SYSTEM) ||
-                                                                        (occupationOption === Occupations.HEALTH_SYSTEM && occupation === Occupations.HEALTH_SYSTEM)
-                                                                    ) && <div className={classes.complexIconOnOccupation}>
-                                                                        <ComplexityIcon tooltipText='עובד במשרד הבריאות/החינוך' />
-                                                                    </div>
-                                                                }
-                                                            </div>
-                                                        )
-                                                    })
-                                                }
-                                            </RadioGroup>
-                                        )}
+                        <Grid item xs={2} className={classes.personalInfoItem}>
+                            <FormControl fullWidth>
+                            <Controller
+                                name={PersonalInfoDataContextFields.RELEVANT_OCCUPATION}
+                                control={methods.control}
+                                render={(props) => (
+                                    <Autocomplete
+                                        options={occupations}
+                                        onChange={(event, occupationOption) => {
+                                            props.onChange(occupationOption ? occupationOption : '')
+                                        }}
+                                        value={props.value || ''}
+                                        className={occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? classes.markComplexity : ''}
+                                        renderInput={(params) =>
+                                            <TextField
+                                                {...params}
+                                                label={methods.errors[PersonalInfoDataContextFields.RELEVANT_OCCUPATION]?.message || OCCUPATION}
+                                                error={Boolean(methods.errors[PersonalInfoDataContextFields.RELEVANT_OCCUPATION])}
+                                                id={PersonalInfoDataContextFields.RELEVANT_OCCUPATION}
+                                                placeholder={INSERT_OCCUPATION}
+                                            />
+                                        }
                                     />
-                                </FormControl>
-                            </Grid>
+                                )}
+                            />
+                            </FormControl>
+                         </Grid>
                             {
                                 occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ?
                                     <>

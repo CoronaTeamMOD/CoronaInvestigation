@@ -11,6 +11,7 @@ import { InvestigationStatus } from 'models/InvestigationStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import BroadcastMessage, { BC_TABS_NAME } from 'models/BroadcastMessage';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
+import UdpateTrackingRecommendation from 'Utils/TrackingRecommendation/updateTrackingRecommendation';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
 import { inProcess } from './InvestigatedPersonInfo';
@@ -21,6 +22,7 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
 
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
     const { alertSuccess, alertWarning, alertError } = useCustomSwal();
+    const { updateTrackingReccomentaion } = UdpateTrackingRecommendation();
 
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 
@@ -73,6 +75,7 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
                 confirmButtonText: 'כן, המשך'
             }).then(async (result) => {
                 if (result.value) {
+                    await updateTrackingReccomentaion();
                     await updateInvestigationStatus(epidemiologyNumber);
                     if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
                         await updateIsDeceased(handleInvestigationFinish);
