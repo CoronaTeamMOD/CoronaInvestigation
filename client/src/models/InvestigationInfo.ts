@@ -17,6 +17,11 @@ interface InvestigationInfo extends SymptomsExistenceInfo, InvestigatedPatientSt
 export interface InvestigationInfoData extends Omit<InvestigationInfo, 'validationDate' | 'symptomsStartDate'> {
     validationDate: string;
     symptomsStartDate: string;
+    trackingSubReasonByTrackingSubReason: {
+        reasonId: number | null;
+        subReasonId?: number;
+    };
+    trackingExtraInfo?: string;
 };
 
 export default InvestigationInfo;

@@ -10,7 +10,8 @@ import {
     GET_INVESTIGAION_SETTINGS_FAMILY_DATA,
     GROUP_ID_BY_EPIDEMIOLOGY_NUMBER,
     GET_INVESTIGATION_COMPLEXITY_REASONS,
-    GET_INVESTIGATION_COMPLEXITY_REASON_ID
+    GET_INVESTIGATION_COMPLEXITY_REASON_ID,
+    TRACKING_SUB_REASONS_BY_REASON_ID
 } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
@@ -21,7 +22,8 @@ import {
     UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA,
     CLOSE_ISOLATED_CONTACT,
     UPDATE_INVESTIGATION_COMPLEXITY_REASON_ID,
-    DELETE_INVESTIGATION_COMPLEXITY_REASON_ID
+    DELETE_INVESTIGATION_COMPLEXITY_REASON_ID,
+    UPDATE_INVESTIGATION_TRACKING
 } from '../../DBService/InvestigationInfo/Mutation';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
@@ -378,6 +380,55 @@ investigationInfo.get('/getComplexityReason/:epidemiologyNumber', (request: Requ
         getInvestigationComplexityReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.status(errorStatusCode).send(error);
     })
+});
+
+investigationInfo.get('/trackingSubReasons/:reasonId', (request: Request, response: Response) => {
+    const reasonId = parseInt(request.params.reasonId);
+    const trackingSubReasonsLogger = logger.setup({
+        workflow: 'get trackingSubReasonBy',
+        user: response.locals.user.id,
+        investigation: request.body.epidemiologyNumberInput,
+    });
+    trackingSubReasonsLogger.info(launchingDBRequestLog({reasonId}) , Severity.LOW);
+    return graphqlRequest(TRACKING_SUB_REASONS_BY_REASON_ID, response.locals, {reasonId})
+    .then((result) => {
+        trackingSubReasonsLogger.info('query from db successfully', Severity.LOW)
+        response.send(result.data.allTrackingSubReasons.nodes);
+    })
+    .catch(error => {
+        trackingSubReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+        response.status(errorStatusCode).send(error);
+    })
+});
+
+investigationInfo.post('/updateTrackingRecommendation', (request: Request, response: Response) => {
+    const {reason} = request.body;
+    const subReason = request.body.subReason ?? null;
+    const extraInfo = request.body.extraInfo ?? null;
+
+    const parameters = {
+        inputEpidemiologyNumber: parseInt(response.locals.epidemiologynumber),
+        reason,
+        subReason,
+        extraInfo
+    }
+
+    const updateTrackingRecommendationLogger = logger.setup({
+        workflow: 'get trackingSubReasonBy',
+        user: response.locals.user.id,
+        investigation: request.body.epidemiologyNumberInput,
+    });
+
+    updateTrackingRecommendationLogger.info(launchingDBRequestLog({parameters}) , Severity.LOW);
+    return graphqlRequest(UPDATE_INVESTIGATION_TRACKING, response.locals, parameters)
+    .then(result => {
+        updateTrackingRecommendationLogger.info(validDBResponseLog, Severity.LOW);
+        return response.send(result);
+    })
+    .catch((error) => {
+        updateTrackingRecommendationLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+        response.status(errorStatusCode).send(error);
+    });
 });
 
 

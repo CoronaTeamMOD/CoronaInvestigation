@@ -47,6 +47,11 @@ query InvestigationStaticDetails($investigationId: Int!) {
       serialNumber
       investigationGroup
     }
+    trackingSubReasonByTrackingSubReason {
+      reasonId
+      subReasonId
+    }
+    trackingExtraInfo
   }
 }
 `;
@@ -118,3 +123,14 @@ query getinvestigationReasonId ($epidemiologyNumber: Int!) {
   }
 }
 `;
+
+export const TRACKING_SUB_REASONS_BY_REASON_ID = gql`
+  query trackingSubReasonsByReasonId($reasonId: Int!) {
+    allTrackingSubReasons(filter: {reasonId: {equalTo: $reasonId}}) {
+      nodes {
+        id: subReasonId
+        displayName
+      }
+    }
+  }
+`
