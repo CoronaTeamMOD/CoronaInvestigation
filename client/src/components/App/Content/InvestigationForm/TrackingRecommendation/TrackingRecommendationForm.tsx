@@ -22,7 +22,6 @@ const TrackingRecommendationForm = (props: Props) => {
     const { fetchSubReasonsByReason } = UseTrackingRecommendationForm({});
 
     useEffect(() => {
-        console.log(reason);
         const fetchSubReasonsByReasonAsync = async () => {
             reason !== null && setTrackingSubReasons(await fetchSubReasonsByReason(reason));
         };
