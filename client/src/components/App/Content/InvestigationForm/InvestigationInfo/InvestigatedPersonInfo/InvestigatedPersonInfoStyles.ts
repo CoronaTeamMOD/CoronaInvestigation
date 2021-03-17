@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/styles';
 const useStyles = makeStyles({
     paper: {
         padding: '0.7vw',
-        borderRadius: 0,
         margin: '2vh',
         paddingLeft: '2vw',
     },
@@ -40,8 +39,7 @@ const useStyles = makeStyles({
         marginLeft: '-0.5vw',
     },
     line: {
-        display: 'flex',
-        flexDirection: 'row',
+        margin: '5px 0'
     },
     commentLine: {
         display: 'flex',
@@ -52,7 +50,8 @@ const useStyles = makeStyles({
         fontSize: '1rem'
     },
     saveButton: {
-        direction: 'rtl'
+        direction: 'rtl',
+        marginRight: '1vw'
     },
     commentControllers: {
         display: 'flex',
@@ -73,10 +72,11 @@ const useStyles = makeStyles({
     button: {
         width: '8vw',
         border: 'rgba(0, 0, 0, 0.26) 1px solid',
-        height: '5vh',
+        height: '100%',
         fontWeight: 700,
         marginLeft: '20px',
         borderRadius: '20px',
+        minWidth: '100px',
     },
     commentTitle: {
         marginRight: '20px',

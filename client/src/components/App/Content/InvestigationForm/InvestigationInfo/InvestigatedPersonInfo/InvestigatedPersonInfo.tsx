@@ -184,7 +184,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 
                     <div className={classes.informationBar}>
                         <div className={classes.additionalInfo}>
-                            <div className={classes.line}>
+                            <Grid container alignItems='center' className={classes.line}>
                                 {age !== null &&
                                 <>
                                     <PatientInfoItem testId='age' name='גיל' value={+age < 1 ? 'פחות משנה' : age} />
@@ -272,8 +272,8 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 :
                                 <PatientInfoItem testId='idNumber' name='מספר תעודה מזהה' value={identityNumber} />
                                 }
-                            </div>
-                            <div className={classes.line}>
+                            </Grid>
+                            <Grid container alignItems='center' className={classes.line}>
                                 <PatientInfoItem testId='isDeceased' name='נפטר' value={indication((isDeceased || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED))} />
                                 {
                                     (isDeceased ||
@@ -304,7 +304,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 {
                                     isReturnSick && <ComplexityIcon tooltipText={formatDate(previousDiseaseStartDate)} />
                                 }
-                                </div>
+                            </Grid>
                             </div>
                         </div>
                     {staticFieldsChange &&
