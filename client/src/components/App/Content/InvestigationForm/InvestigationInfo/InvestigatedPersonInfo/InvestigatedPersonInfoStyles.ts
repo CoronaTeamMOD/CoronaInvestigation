@@ -11,7 +11,8 @@ const useStyles = makeStyles({
         justifyContent: 'space-between',
         paddingLeft: '1vw',
         flip: false,
-        height: '5vh'
+        height: '5vh',
+        marginBottom: '15px',
     },
     investigationHeaderInfo: {
         display: 'flex',
@@ -20,6 +21,7 @@ const useStyles = makeStyles({
     investigationTitle: {
         flip: false,
         fontWeight: 400,
+        fontSize: '1rem'
     },
     informationBar: {
         display: 'flex',
@@ -42,6 +44,7 @@ const useStyles = makeStyles({
         margin: '5px 0'
     },
     commentLine: {
+        fontSize: '1rem',
         display: 'flex',
         flexDirection: 'row',
         width: '90%',
@@ -73,12 +76,13 @@ const useStyles = makeStyles({
         width: '8vw',
         border: 'rgba(0, 0, 0, 0.26) 1px solid',
         height: '100%',
-        fontWeight: 700,
+        fontWeight: 400,
         marginLeft: '20px',
         borderRadius: '20px',
         minWidth: '100px',
     },
     commentTitle: {
+        fontSize: '1rem',
         marginRight: '20px',
         height: '5vh',
         marginTop: '7px',

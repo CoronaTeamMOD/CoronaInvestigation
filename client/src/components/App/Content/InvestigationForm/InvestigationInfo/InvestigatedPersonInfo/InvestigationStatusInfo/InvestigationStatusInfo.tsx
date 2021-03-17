@@ -55,8 +55,8 @@ const InvestigationStatusInfo = (props: any) => {
                 <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                     <Grid item xs={12} className={classes.fieldLabel}>
                         <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                            <Typography>
-                                <b><bdi>{statusLabel}</bdi>: </b>
+                            <Typography className={classes.label}>
+                                {statusLabel}:
                             </Typography>
                             <Grid item className={classes.statusSelectGrid}>
                                 <FormControl variant='outlined' className={classes.statusSelect}>
