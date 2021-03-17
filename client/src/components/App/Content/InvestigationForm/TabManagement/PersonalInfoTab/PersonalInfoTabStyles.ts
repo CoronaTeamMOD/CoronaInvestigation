@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles({
     tabInitialContainer: {
         padding: '2vh',
-        height: '64vh'
+        maxHeight: '64vh'
     },
     personalInfoItem: {
         marginLeft: '-10vw',

@@ -3,7 +3,7 @@ import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     card: {
-        height: '70vh',
+        maxHeight: '70vh',
     },
     displayedTab: {
         height: '90%',
