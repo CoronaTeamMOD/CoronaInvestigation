@@ -9,6 +9,7 @@ export const ALPHBET_TEXT_REGEX = /^[a-zA-Z\u0590-\u05fe\s]*$/;
 export const ENGLISH_ALPHANUMERIC_TEXT_REGEX = /^[a-zA-Z0-9\s,-]*$/;
 
 export const FLIGHT_NUMBER_REGEX = /^[a-zA-Z0-9-\s//\\]*$/;
+export const FULL_NAME_REGEX = /^[a-zA-Z\u0590-\u05fe-'"\s]*$/;
 
 export const HEBREW_TEXT_REGEX = /^[\u0590-\u05fe\s]*$/;
 

@@ -8,15 +8,17 @@ import StoreStateType from 'redux/storeStateType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import BroadcastMessage, { BC_TABS_NAME } from 'models/BroadcastMessage';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import UdpateTrackingRecommendation from 'Utils/TrackingRecommendation/updateTrackingRecommendation';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
 import { inProcess } from './InvestigatedPersonInfo';
-import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
+import { InvestigatedPersonInfoIncome, InvestigatedPersonInfoOutcome, StaticFieldsFormInputs } from './InvestigatedPersonInfoInterfaces';
 
-const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
+const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): InvestigatedPersonInfoOutcome => {
+    const { setStaticFieldsChange } = parameters;
 
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
     const { alertSuccess, alertWarning, alertError } = useCustomSwal();
@@ -87,20 +89,29 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         }
     };
 
-    const getPersonAge = (birthDate: Date) => {
-
-        const currentDate = new Date();
-        let personAge = currentDate.getFullYear() - birthDate.getFullYear();
-        const monthDelta = currentDate.getMonth() - birthDate.getMonth();
-        if (monthDelta < 0 || (monthDelta === 0 && currentDate.getDate() < birthDate.getDate())) {
-            personAge--;
-        }
-        return String(personAge);
-    }
+    const staticFieldsSubmit = (data: StaticFieldsFormInputs) => {
+        const updateStaticFieldsLogger = logger.setup('Updating static info');
+        updateStaticFieldsLogger.info('launching the server request', Severity.LOW);
+        setIsLoading(true);
+        axios.post('/investigationInfo/updateStaticInfo', ({
+            data
+        }))
+        .then(() => {
+            updateStaticFieldsLogger.info('updated static info successfully', Severity.LOW);
+            setIsLoading(false);
+            setStaticFieldsChange(false);
+        })
+        .catch((error) => {
+            updateStaticFieldsLogger.error(`got error from server: ${error}`, Severity.HIGH);
+            alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
+            setIsLoading(false);
+        })
+    };
+  
     return {
         confirmExitUnfinishedInvestigation,
-        getPersonAge
-    }
+        staticFieldsSubmit
+    };
 };
 
 export default useInvestigatedPersonInfo;

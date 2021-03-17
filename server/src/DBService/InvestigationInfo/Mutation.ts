@@ -72,6 +72,14 @@ mutation deleteinvestigationReasonId ($epidemiologyNumberInput: Int!, $oldComple
 }
 `;
 
+export const UPDATE_INVESTIGATION_STATIC_INFO = gql`
+mutation updateInvestigationStaticInfo ($fullNameInput: String, $identificationTypeInput: String, $identityNumberInput: String, $epidemiologyNumberInput: Int!) {
+  updateStaticInfo(input: {fullNameInput: $fullNameInput, identificationTypeInput: $identificationTypeInput, identityNumberInput: $identityNumberInput, epidemiologyNumberInput: $epidemiologyNumberInput}) {
+    clientMutationId
+  }
+}
+`;
+
 export const UPDATE_INVESTIGATION_TRACKING = gql`
 mutation updateTrackingRecommendation ($inputEpidemiologyNumber: Int!, $extraInfo: String, $reason: Int, $subReason: Int) {
   updateTrackingRecommendation(input: {extraInfo: $extraInfo, inputEpidemiologyNumber: $inputEpidemiologyNumber, reason: $reason, subReason: $subReason}) {
@@ -79,4 +87,3 @@ mutation updateTrackingRecommendation ($inputEpidemiologyNumber: Int!, $extraInf
   }
 }
 `;
-

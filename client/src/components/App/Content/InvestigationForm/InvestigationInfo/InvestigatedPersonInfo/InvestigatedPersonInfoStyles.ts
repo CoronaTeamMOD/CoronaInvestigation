@@ -48,12 +48,11 @@ const useStyles = makeStyles({
         flexDirection: 'row',
         width: '90%',
     },
-    managementControllers: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        flex: 5,
-        marginBottom: '0.5vh'
+    smallSizeText: {
+        fontSize: '1rem'
+    },
+    saveButton: {
+        direction: 'rtl'
     },
     commentControllers: {
         display: 'flex',
@@ -70,24 +69,6 @@ const useStyles = makeStyles({
             marginRight: '-6vw',
         },
         marginRight: '-2vw',
-    },
-    statusSelect: {
-        width: '14vw',
-        height: '2vw'
-    },
-    subStatusSelect: {
-        width: '14vw',
-        height: '2vw'
-    },
-    statusSelectGrid: {
-        flip: false,
-        marginRight: '1vw'
-    },
-    swalTitle: {
-        fontSize: '1.5vw',
-        fontFamily: 'Assistant',
-    },
-    subStatusLabel: {
     },
     button: {
         width: '8vw',
