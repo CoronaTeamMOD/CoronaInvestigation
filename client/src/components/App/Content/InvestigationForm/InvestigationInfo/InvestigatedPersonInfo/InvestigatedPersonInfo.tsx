@@ -136,7 +136,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     <Controller 
                                         name={StaticFields.FULL_NAME}
                                         control={methods.control}
-                                        defaultValue={'y'}
+                                        defaultValue={fullName}
                                         render={(props) => (
                                             <TextField
                                                 {...props}
@@ -263,7 +263,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                                     props.onChange(event.target.value as string)
                                                     setStaticFieldsChange(true)
                                                 }}
-                                                error={methods.errors  && methods.errors[StaticFields.ID]}   
+                                                error={methods.errors && methods.errors[StaticFields.ID]}   
                                                 label={(methods.errors && methods.errors[StaticFields.ID]?.message) || ''}
                                             />
                                         )}
