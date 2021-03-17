@@ -8,7 +8,7 @@ const occupationsWithInstitution = ['מערכת הבריאות', 'מערכת ה�
 const occupationsWithoutExtraInfo = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון', 'לא עובד'];
 const requiredText = 'שגיאה: שדה חובה';
 const numberValidationText = 'שגיאה: מספר אינו תקין';
-const requiredSelectionText = 'שגיאה: יש לבחור מבין האפשרויות הקיימות';
+const requiredSelectionText = '*שדה חובה';
 const maxClassNumberError = 'ניתן להזין עד המספר 50';
 
 const schema = yup.object().shape({
