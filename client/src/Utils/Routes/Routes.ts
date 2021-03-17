@@ -3,4 +3,4 @@ export const landingPageRoute: string = '/landing';
 export const adminLandingPageRoute: string = '/adminLanding';
 export const usersManagementRoute: string = '/management';
 export const indexRoute: string = '/';
-git pull export const createComplexityReasons: string = '/complexityReasons';//
+export const createComplexityReasons: string = '/complexityReasons';
