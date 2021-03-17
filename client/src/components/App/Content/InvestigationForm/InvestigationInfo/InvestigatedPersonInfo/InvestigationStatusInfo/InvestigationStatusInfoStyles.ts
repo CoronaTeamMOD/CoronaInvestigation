@@ -2,9 +2,6 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles({
     managementControllers: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
         flex: 5,
         marginBottom: '0.5vh'
     },
@@ -32,8 +29,6 @@ const useStyles = makeStyles({
     swalTitle: {
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
-    },
-    subStatusLabel: {
     },
 });
 

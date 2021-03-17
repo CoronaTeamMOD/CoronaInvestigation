@@ -32,9 +32,8 @@ begin
 		UPDATE public.investigation
 		SET last_update_time=(SELECT now())
 		WHERE epidemiology_number = epidemiology_number_input;
-	end if;
 
-	if status = 100000001 then
+	elsif status = 100000001 then
 		UPDATE public.investigation
 		SET end_time=(SELECT now())
 		WHERE epidemiology_number = epidemiology_number_input;

@@ -5,7 +5,7 @@ import { Edit } from '@material-ui/icons';
 import { yupResolver } from '@hookform/resolvers';
 import React, { useEffect, useState, useContext } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { Grid, Typography, Paper, TextField, Select, MenuItem, Tooltip, Button } from '@material-ui/core';
+import { Grid, Typography, Paper, TextField, Select, MenuItem, Button } from '@material-ui/core';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
@@ -16,7 +16,6 @@ import StaticFields from 'models/enums/StaticFields';
 import UserTypeCodes from 'models/enums/UserTypeCodes';
 import InvestigationInfo from 'models/InvestigationInfo';
 import { InvestigationStatus } from 'models/InvestigationStatus';
-import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
@@ -145,9 +144,9 @@ const InvestigatedPersonInfo = (props: Props) => {
                                                 onChange={(event) => {
                                                     props.onChange(event.target.value)
                                                     setStaticFieldsChange(true)
-                                                }}                                                
-                                                error={get(methods.errors, props.name)}
-                                                label={get(methods.errors, props.name)?.message || ''}
+                                                }}     
+                                                error={methods.errors && methods.errors[StaticFields.FULL_NAME]}   
+                                                label={(methods.errors && methods.errors[StaticFields.FULL_NAME]?.message) || ''}
                                             />
                                         )}
                                     />
@@ -264,8 +263,8 @@ const InvestigatedPersonInfo = (props: Props) => {
                                                     props.onChange(event.target.value as string)
                                                     setStaticFieldsChange(true)
                                                 }}
-                                                error={get(methods.errors, props.name)}
-                                                label={get(methods.errors, props.name)?.message || ''}
+                                                error={methods.errors && methods.errors[StaticFields.ID]}   
+                                                label={(methods.errors && methods.errors[StaticFields.ID]?.message) || ''}
                                             />
                                         )}
                                     />

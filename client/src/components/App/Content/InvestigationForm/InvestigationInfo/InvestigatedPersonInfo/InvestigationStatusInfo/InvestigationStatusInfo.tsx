@@ -1,6 +1,5 @@
-import * as yup from 'yup';
 import { useSelector } from 'react-redux';
-import React, {ChangeEvent, useContext, useEffect, useMemo, useState} from 'react';
+import React, {ChangeEvent, useEffect, useMemo} from 'react';
 import {Collapse, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography} from '@material-ui/core';
 
 import StoreStateType from 'redux/storeStateType';
@@ -52,7 +51,7 @@ const InvestigationStatusInfo = (props: any) => {
 
     return (
         <>
-            <div className={classes.managementControllers}>
+            <Grid container direction='column' alignItems='center' className={classes.managementControllers}>
                 <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                     <Grid item xs={12} className={classes.fieldLabel}>
                         <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
@@ -107,7 +106,7 @@ const InvestigationStatusInfo = (props: any) => {
                                 investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS}>
                                 <Grid item className={classes.statusSelectGrid}>
                                     <FormControl variant='outlined' className={classes.subStatusSelect}>
-                                        <InputLabel className={classes.subStatusLabel} id='sub-status-label'>{subStatusLabel}</InputLabel>
+                                        <InputLabel id='sub-status-label'>{subStatusLabel}</InputLabel>
                                         <Select
                                             MenuProps={{
                                                 anchorOrigin: {
@@ -153,7 +152,7 @@ const InvestigationStatusInfo = (props: any) => {
                                         value={investigationStatus.statusReason}
                                         required={investigationStatus.subStatus === transferredSubStatus}
                                         placeholder={statusReasonLabel}
-                                        error={statusReasonError ? true : false}
+                                        error={Boolean(statusReasonError)}
                                         label={statusReasonError ? statusReasonError[0] : statusReasonLabel}
                                         onChange={async (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
                                             const newStatusReason: string = event.target.value;
@@ -173,7 +172,7 @@ const InvestigationStatusInfo = (props: any) => {
                         </Grid>
                     </Grid>
                 </Grid>
-            </div>
+            </Grid>
         </>
     );
 };
