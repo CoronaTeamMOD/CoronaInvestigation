@@ -16,7 +16,11 @@ const useStyles = makeStyles({
     },
         statusSelect: {
         width: '14vw',
-        height: '2vw'
+        height: '2vw',
+    },
+    label: {
+        fontWeight: 400,
+        fontSize: '1rem',
     },
     subStatusSelect: {
         width: '14vw',

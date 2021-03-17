@@ -49,11 +49,16 @@ const theme = createMuiTheme({
         MuiOutlinedInput: {
             root: {
                 borderRadius: 24,
-                fontWeight: 500
+                fontWeight: 400
             },
             inputMarginDense: {
                 paddingTop: 6.5,
                 paddingBottom: 6.5
+            }
+        },
+        MuiInputBase: {
+            root: {
+                fontSize: '16px'
             }
         },
         MuiInputLabel: {

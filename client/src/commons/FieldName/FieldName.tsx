@@ -15,9 +15,7 @@ const FieldName = ({fieldName, xs, className, appendantLabelIcon, ...typographyP
     return (
         <Grid item xs={xs || defaultGridXSSize} {...className && {className}}>
             <Typography className={classes.fontSize15} {...typographyProps}>
-                <b>
                     {fieldName}
-                </b>
             </Typography>
             {appendantLabelIcon}
         </Grid>
