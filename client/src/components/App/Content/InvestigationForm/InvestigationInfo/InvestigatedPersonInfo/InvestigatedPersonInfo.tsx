@@ -129,7 +129,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                         <div className={classes.investigationHeaderInfo}>
                             {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ? 
                                 <>
-                                    <Edit />
+                                    <Edit fontSize='inherit'/>
                                     <Typography className={classes.investigationTitle}>
                                         {'שם:'}
                                     </Typography>
