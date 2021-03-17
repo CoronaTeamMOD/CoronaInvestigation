@@ -79,7 +79,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     };
 
     useEffect(() => {
-        methods.reset(StaticFields);
+        methods.reset({fullName, identityType, identityNumber});
     }, [fullName, identityType, identityNumber])
 
     const handleLeaveInvestigationClick = (event: React.ChangeEvent<{}>) => {
