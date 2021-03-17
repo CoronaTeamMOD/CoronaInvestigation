@@ -1,20 +1,19 @@
 import axios from 'axios';
-import * as yup from 'yup';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import React, { useEffect, useState, useContext } from 'react';
+import { Edit } from '@material-ui/icons';
 import { yupResolver } from '@hookform/resolvers';
+import React, { useEffect, useState, useContext } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { Edit, CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
-import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl, Tooltip, Button } from '@material-ui/core';
+import { Grid, Typography, Paper, TextField, Select, MenuItem, Tooltip, Button } from '@material-ui/core';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
-import UserTypeCodes from 'models/enums/UserTypeCodes';
 import StoreStateType from 'redux/storeStateType';
 import formatDate from 'Utils/DateUtils/formatDate';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import StaticFields from 'models/enums/StaticFields';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import InvestigationInfo from 'models/InvestigationInfo';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
@@ -25,13 +24,13 @@ import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/Compl
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 
 import useStyles from './InvestigatedPersonInfoStyles';
+import { commentContext } from '../Context/CommentContext';
 import StaticFieldsSchema from './Schema/StaticFieldsSchema';
-import ValidationStatusSchema from './Schema/ValidationStatusSchema';
-import InvestigationStatusInfo from './InvestigationStatusInfo/InvestigationStatusInfo';
 import PatientInfoItem from './PatientInfoItem/PatientInfoItem';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
+import ValidationStatusSchema from './Schema/ValidationStatusSchema';
 import CommentInput from './InvestigationMenu/CommentDialog/CommentInput';
-import { commentContext } from '../Context/CommentContext';
+import InvestigationStatusInfo from './InvestigationStatusInfo/InvestigationStatusInfo';
 
 const leaveInvestigationMessage = 'צא מחקירה';
 const saveStaticDetailsMessage = 'שמירת שינויים';
@@ -40,9 +39,6 @@ const maxComplexityAge = 14;
 const yes = 'כן';
 const no = 'לא';
 const noInfo = 'אין מידע';
-const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
-const errorMessage = 'השדה יכול להכניס רק תווים חוקיים';
-const requiredMessage = 'שדה זה הינו שדה חובה';
 const commentLabel = 'הערה'
 const SAVE_BUTTON_TEXT = 'שמור הערה';
 export const inProcess = 'בטיפול';
@@ -297,29 +293,15 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 {
                                     isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
                                 }
-                                <Tooltip title={isVaccinated ? vaccinationEffectiveFrom ? formatDate(vaccinationEffectiveFrom) : noInfo : ''}>
-                                    <div>
-                                        <PatientInfoItem testId='isVaccinated' name='מחוסן' value={isVaccinated ? yes : noInfo} />  
-                                    </div>
-                                    
-                                </Tooltip>
+                                <PatientInfoItem testId='isVaccinated' name='מחוסן' value={isVaccinated ? yes : noInfo} />  
                                 {
                                     isVaccinated && <ComplexityIcon tooltipText={formatDate(vaccinationEffectiveFrom)} />
                                 }
-                                <Tooltip title={isSuspicionOfMutation ? mutationName ? mutationName : noInfo : ''}>
-                                    <div>
-                                        <PatientInfoItem testId='isSuspicionOfMutation' name='חשד למוטציה' value={isSuspicionOfMutation ? yes : noInfo} />    
-                                    </div>
-                                    
-                                </Tooltip>
+                                <PatientInfoItem testId='isSuspicionOfMutation' name='חשד למוטציה' value={isSuspicionOfMutation ? yes : noInfo} />    
                                 {
                                     isSuspicionOfMutation && <ComplexityIcon tooltipText={mutationName ? mutationName : noInfo} />
                                 }
-                                <Tooltip title={isReturnSick ? previousDiseaseStartDate ? formatDate(previousDiseaseStartDate) : noInfo : ''} >
-                                    <div>
-                                        <PatientInfoItem testId='isReturnSick' name='חולה חוזר' value={isReturnSick ? yes : noInfo}/>   
-                                    </div>
-                                </Tooltip>
+                                <PatientInfoItem testId='isReturnSick' name='חולה חוזר' value={isReturnSick ? yes : noInfo}/>   
                                 {
                                     isReturnSick && <ComplexityIcon tooltipText={formatDate(previousDiseaseStartDate)} />
                                 }
