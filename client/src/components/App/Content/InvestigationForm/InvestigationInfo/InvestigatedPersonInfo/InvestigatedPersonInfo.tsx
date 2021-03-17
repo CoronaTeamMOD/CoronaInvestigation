@@ -130,7 +130,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                             {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ? 
                                 <>
                                     <Edit />
-                                    <Typography variant='h6' className={classes.investigationTitle}>
+                                    <Typography className={classes.investigationTitle}>
                                         {'שם:'}
                                     </Typography>
                                     <Controller 
@@ -152,7 +152,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     />
                                 </>
                                 :
-                                <Typography variant='h6' className={classes.investigationTitle}>
+                                <Typography className={classes.investigationTitle}>
                                     {`שם: ${fullName}`}
                                 </Typography>
                             }
@@ -160,7 +160,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                             <PhoneDial
                                 phoneNumber={primaryPhone}
                             />
-                            <Typography variant='h6' className={classes.investigationTitle}>
+                            <Typography className={classes.investigationTitle}>
                                 {`מספר אפדימיולוגי: ${epedemioligyNumber}`}   
                             </Typography>
                         </div>
@@ -323,7 +323,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                         <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                             <div className={classes.commentLine}>
                                 <Typography className={classes.commentTitle}>
-                                    <b><bdi>{commentLabel}</bdi>: </b>
+                                    {commentLabel}:
                                 </Typography>
                                 <CommentInput commentInput={commentInput} handleInput={setCommentInput} />
                                 <Button 
