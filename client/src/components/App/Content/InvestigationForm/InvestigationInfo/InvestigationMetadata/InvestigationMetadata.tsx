@@ -19,9 +19,8 @@ const InvestigationMetadata = (props: Props) => {
             <InfoItem testId='investigationStartDate' name='תחילת החקירה'
                 value={investigationMetaData.startTime ? format(new Date(investigationMetaData.startTime), 'dd/MM/yyyy') : noStartDate}
             />
-            <InfoItem testId='investigationLastUpdatedDate' name='עדכון אחרון' value={
-                format(new Date(investigationMetaData.lastUpdateTime), 'dd/MM/yyyy')
-            }
+            <InfoItem testId='investigationLastUpdatedDate' name='עדכון אחרון'
+                value={investigationMetaData.lastUpdateTime ? format(new Date(investigationMetaData.lastUpdateTime), 'dd/MM/yyyy') : noStartDate}
             />
             <InfoItem testId='district' name='נפה/מחוז' value={investigationMetaData.investigatingUnit} />
             <InfoItem testId='updatingUser' name='משתמש מעדכן' value={
