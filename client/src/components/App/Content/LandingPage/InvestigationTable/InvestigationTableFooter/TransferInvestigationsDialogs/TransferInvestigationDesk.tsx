@@ -3,11 +3,9 @@ import { SweetAlertResult } from 'sweetalert2';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
 import { FormProvider, Controller, useForm } from 'react-hook-form';
-import { Button, DialogActions, TextField, Typography, useTheme } from '@material-ui/core';
+import { Button, DialogActions, TextField, Typography } from '@material-ui/core';
 
 import Desk from 'models/Desk';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-
 
 import useStyles from './TransferDialogsStyles';
 import validationSchema from './TransferInvestigationDeskSchema';
@@ -23,39 +21,24 @@ const tranferDeskFormName = 'transferDesk';
 
 const TransferInvestigationDesk = (props: Props) => {
 
-    const { alertWarning } = useCustomSwal();
-
-    const theme = useTheme();
-
     const { allDesks, onClose, onConfirm, onSuccess } = props;
+
+    const classes = useStyles();
 
     const methods = useForm({
         mode: 'all',
         resolver: yupResolver(validationSchema),
         defaultValues
-    })
+    });
 
     const onDialogConfirm = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         methods.handleSubmit((data) => {
-            alertWarning(`האם אתה בטוח שתרצה להעביר חקירות אלו לדסק ${data[TransferInvestigationInputsNames.DESK].deskName}`, {
-                showCancelButton: true,
-                cancelButtonText: 'בטל',
-                cancelButtonColor: theme.palette.error.main,
-                confirmButtonColor: theme.palette.primary.main,
-                confirmButtonText: 'כן, המשך'
-            }).then((result) => {
-                if (result.value) {
-                    onConfirm(data[TransferInvestigationInputsNames.DESK], data[TransferInvestigationInputsNames.REASON] || '');
-                    onSuccess();
-                    onClose();
-                }
-            })
+            onConfirm(data[TransferInvestigationInputsNames.DESK], data[TransferInvestigationInputsNames.REASON] || '');
+            onSuccess();
+            onClose();
         })()
-    }
-
-
-    const classes = useStyles();
+    };
 
     return (
         <FormProvider {...methods}>
@@ -124,13 +107,13 @@ const TransferInvestigationDesk = (props: Props) => {
             </form>
         </FormProvider>
     )
-}
+};
 
 interface Props {
     allDesks: Desk[];
     onClose: () => void;
     onConfirm: (updatedDesk: Desk, transferReason: string) => void;
     onSuccess: () => Promise<SweetAlertResult<any>>
-}
+};
 
 export default TransferInvestigationDesk;

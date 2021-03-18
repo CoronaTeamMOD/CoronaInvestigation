@@ -7,6 +7,6 @@ const TransferInvestigationDialogNote = () => {
             <Typography variant='body2'> שים לב, הפעולה תתבצע רק על חקירות השייכות לנפתך </Typography>
         </div>
     )
-}
+};
 
 export default TransferInvestigationDialogNote;

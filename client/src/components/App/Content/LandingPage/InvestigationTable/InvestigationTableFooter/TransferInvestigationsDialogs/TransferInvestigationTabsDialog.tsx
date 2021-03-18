@@ -35,7 +35,7 @@ const TransferInvestigationDialog = (props: Props) => {
             </DialogContent>
         </Dialog>
     )
-}
+};
 
 interface Props {
     open: boolean;
@@ -44,7 +44,6 @@ interface Props {
     onCountyTransfer: (updatedCounty: County, transferReason: string) => void;
     allDesks: Desk[];
     onSuccess: () => Promise<SweetAlertResult<any>>
-
-}
+};
 
 export default TransferInvestigationDialog;
