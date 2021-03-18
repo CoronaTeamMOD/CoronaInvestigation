@@ -12,7 +12,7 @@ const TransferInvestigationDialog = (props: Props) => {
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         onConfirm();
-    }
+    };
 
     return (
         <form id={formName} onSubmit={onSubmit}>
@@ -42,7 +42,7 @@ const TransferInvestigationDialog = (props: Props) => {
             </Dialog>
         </form>
     )
-}
+};
 
 interface Props {
     open: boolean;
@@ -52,6 +52,6 @@ interface Props {
     formName: string;
     onClose: () => void;
     onConfirm: () => void;
-}
+};
 
 export default TransferInvestigationDialog;

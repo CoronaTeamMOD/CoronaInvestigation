@@ -85,7 +85,7 @@ interface TabPanelProps {
     children?: React.ReactNode;
     index: number;
     value: number;
-}
+};
 
 interface Props {
     open: boolean;
@@ -94,6 +94,6 @@ interface Props {
     onDeskTransfer: (updatedDesk: Desk, transferReason: string) => void;
     onCountyTransfer: (updatedCounty: County, transferReason: string) => void;
     onSuccess: () => Promise<SweetAlertResult<any>>;
-}
+};
 
 export default TransferInvestigationTabs;
