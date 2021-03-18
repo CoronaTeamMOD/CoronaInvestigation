@@ -2,19 +2,15 @@ import { SweetAlertResult } from 'sweetalert2';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Tooltip } from '@material-ui/core';
 
-import theme from 'styles/theme';
 import InvestigatorOption from 'models/InvestigatorOption';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import useStyles from './InvestigatorAllocationDialogStyles';
 import InvestigatorsTable from './InvestigatorsTable/InvestigatorsTable';
-import { TableHeadersNames } from './InvestigatorsTable/InvestigatorsTableHeaders';
 import TransferInvestigationDialogNote from '../InvestigationTableFooter/TransferInvestigationsDialogs/TransferInvestigationDialogNote';
 
-export const investigatorAllocationTitle = 'הקצאת חקירה';
 const unSelectedRow = '';
+export const investigatorAllocationTitle = 'הקצאת חקירה';
 
 const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
 
@@ -25,7 +21,6 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
     const [selectedInvestigator, setSelectedInvestigator] = useState<InvestigatorOption | undefined>(undefined);
 
     const classes = useStyles();
-    const { alertWarning } = useCustomSwal();
 
     const shouldButtonDisabled: boolean = useMemo(() => {
         return investigatorToAllocateId === unSelectedRow;
@@ -36,17 +31,6 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
             setSelectedInvestigator(allInvestigators.find(investigator => investigator.id === investigatorToAllocateId))
         }
     }, [investigatorToAllocateId]);
-
-    const createAlertMessage = () => {
-        let message = '<p>האם אתה בטוח שתרצה להעביר ';
-        if ((groupIds.length && groupIds[0]) || epidemiologyNumbers.length > 1) {
-            message += 'את כל החקירות ';
-        } else if (epidemiologyNumbers.length === 1) {
-            message += `את חקירה מספר <b>${epidemiologyNumbers[0]}</b> `;
-        }
-        message += allInvestigators && `לחוקר <b>${selectedInvestigator ? get(selectedInvestigator.value, TableHeadersNames.userName) : ''}</b>?</p>`;
-        return message;
-    };
 
     const closeDialog = () => {
         setInvestigatorToAllocateId(unSelectedRow);
@@ -61,21 +45,11 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
     };
 
     const handleClick = () => {
-        const alertMessage = createAlertMessage();
-        alertWarning(alertMessage, {
-            showCancelButton: true,
-            cancelButtonText: 'בטל',
-            cancelButtonColor: theme.palette.error.main,
-            confirmButtonColor: theme.palette.primary.main,
-            confirmButtonText: 'כן, המשך',
-        })
-            .then(result => {
-                if (result.value && selectedInvestigator) {
-                    allocateInvestigationToInvestigator(groupIds, epidemiologyNumbers, selectedInvestigator);
-                    onSuccess();
-                    closeDialog();
-                }
-            })
+        if (selectedInvestigator) {
+            allocateInvestigationToInvestigator(groupIds, epidemiologyNumbers, selectedInvestigator);
+            onSuccess();
+            closeDialog();
+        }
     };
 
     return (
@@ -136,7 +110,7 @@ interface Props {
     allocateInvestigationToInvestigator: (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => void;
     groupIds: string[];
     epidemiologyNumbers: number[];
-    onSuccess: () => Promise<SweetAlertResult<any>>
-}
+    onSuccess: () => Promise<SweetAlertResult<any>>;
+};
 
 export default InvestigatorAllocationDialog;
