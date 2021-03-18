@@ -41,19 +41,9 @@ const TransferInvestigationCounty = (props: Props) => {
     const onDialogConfirm = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         methods.handleSubmit((data) => {
-            alertWarning(`האם אתה בטוח שתרצה להעביר חקירות אלו לנפת ${data[TransferInvestigationInputsNames.COUNTY].displayName}`, {
-                showCancelButton: true,
-                cancelButtonText: 'בטל',
-                cancelButtonColor: theme.palette.error.main,
-                confirmButtonColor: theme.palette.primary.main,
-                confirmButtonText: 'כן, המשך'
-            }).then((result) => {
-                if (result.value) {
-                    onConfirm(data[TransferInvestigationInputsNames.COUNTY], data[TransferInvestigationInputsNames.REASON] || '');
-                    onSuccess();
-                    onClose();
-                }
-            })
+            onConfirm(data[TransferInvestigationInputsNames.COUNTY], data[TransferInvestigationInputsNames.REASON] || '');
+            onSuccess();
+            onClose();         
         })()
     }
 
