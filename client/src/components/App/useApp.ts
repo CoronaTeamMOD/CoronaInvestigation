@@ -175,6 +175,7 @@ const useApp = () => {
             initUser();
         }
         fetchDesks();
+        fetchUserTypes();
     }, []);
 
     useEffect(() => {
@@ -185,7 +186,6 @@ const useApp = () => {
         if((user !== initialUserState.data && user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) || isSignUpOpen || user.isDeveloper) {
             fetchDistricts();
             fetchAllCounties();
-            fetchUserTypes();
         }
     }, [user, isSignUpOpen]);
 
