@@ -1,10 +1,9 @@
 import React from 'react';
-import Swal from 'sweetalert2';
 import { act } from 'react-dom/test-utils';
 import { mount, ReactWrapper } from 'enzyme';
 
 import flushPromises from 'Utils/Testing/flushPromises';
-import { confirmed, dismissed } from 'Utils/Testing/MockSwal';
+import { confirmed } from 'Utils/Testing/MockSwal';
 import { investigators } from 'Utils/Testing/InvestigatorAllocation/state';
 
 import InvestigatorsTable from './InvestigatorsTable/InvestigatorsTable';
@@ -121,48 +120,5 @@ describe('<InvestigatorAllocationDialog />', () => {
     it('renders InvestigatorsTable' , () => {
         const investigatorsTable = wrapper.find(InvestigatorsTable);
         expect(investigatorsTable.exists()).toBeTruthy();
-    });
-
-    describe('Alert:', () => {
-        beforeAll(loadWrapper);
-        afterEach(loadWrapper);
-
-        it('shows alert dismissed', async () => {
-            const mockWarning = dismissed;
-            jest.spyOn(Swal, 'fire').mockImplementation(mockWarning);
-            expect(mockWarning).not.toBeCalled();
-            expect(onSuccessSpy).not.toBeCalled();
-            expect(allocateInvestigationToInvestigatorSpy).not.toBeCalled();
-            act(() => {
-                wrapper.find('tr#investigator-row-206621534').simulate('click');
-            });
-            await act(async () => {
-                wrapper.find('button#submit-button').simulate('click');  
-                await flushPromises();
-            });
-            wrapper.update();
-            expect(mockWarning).toBeCalled();
-            expect(onSuccessSpy).not.toBeCalled();
-            expect(allocateInvestigationToInvestigatorSpy).not.toBeCalled();
-        });
-
-        it('shows alert confirmed', async () => {
-            const mockWarning = confirmed;
-            jest.spyOn(Swal, 'fire').mockImplementation(mockWarning);
-            expect(mockWarning).not.toBeCalled();
-            expect(onSuccessSpy).not.toBeCalled();
-            expect(allocateInvestigationToInvestigatorSpy).not.toBeCalled();
-            act(() => {
-                wrapper.find('tr#investigator-row-206621534').simulate('click');
-            });
-            await act(async () => {
-                wrapper.find('button#submit-button').simulate('click');  
-                await flushPromises();
-            });
-            wrapper.update();
-            expect(mockWarning).toBeCalled();
-            expect(onSuccessSpy).toBeCalled();
-            expect(allocateInvestigationToInvestigatorSpy).toBeCalledWith([] , [] , investigators[0]);
-        });
     });
 });
