@@ -33,7 +33,6 @@ const AddressForm: React.FC<Props> = ({
 
     const methods = useFormContext();
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
-
     const [streetsInCity, setStreetsInCity] = useState<Map<string, Street>>(new Map());
 
     const cityWatcher = methods.watch(cityField.name);
@@ -131,10 +130,11 @@ const AddressForm: React.FC<Props> = ({
                                 }}
                                 renderInput={(params) =>
                                     <TextField
-                                        test-id={streetField.testId || ''}
                                         {...params}
-                                        placeholder='רחוב'
-                                        label='רחוב'
+                                        error={Boolean(get(methods.errors, streetField.name))}
+                                        test-id={streetField.testId || ''}
+                                        label={get(methods.errors, streetField.name)?.message || `${STREET_LABEL}`}
+                                        placeholder={STREET_LABEL}
                                     />
                                 }
                             />
@@ -168,15 +168,14 @@ const AddressForm: React.FC<Props> = ({
                         defaultValue={houseNumberField.defaultValue}
                         render={(props) => (
                             <AlphanumericTextField
+                                name={props.name}
                                 className={smallFieldsClass}
                                 InputProps={{className: smallFieldsClass}}
                                 testId={houseNumberField.testId || ''}
-                                name={houseNumberFieldNameSplitted[houseNumberFieldNameSplitted.length - 1]}
                                 value={props.value}
                                 onChange={props.onChange}
                                 onBlur={props.onBlur}
                                 placeholder={HOUSE_NUM_LABEL}
-                                label={HOUSE_NUM_LABEL}
                             />
                         )}
                     />
