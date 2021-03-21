@@ -32,9 +32,7 @@ import InstitutionComponent from './InstitutionComponent/InstitutionComponent';
 export const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
 export const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
 export const OCCUPATION_LABEL = 'תעסוקה:';
-
 const PHONE_LABEL = 'טלפון:';
-const CONTACT_PHONE_LABEL = 'טלפון איש קשר:';
 const INSURANCE_LABEL = 'גורם מבטח:';
 const ADDRESS_LABEL = 'כתובת:';
 const INSERT_INSTITUTION_NAME = 'הזן שם מוסד:';
@@ -92,16 +90,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
         investigatedPatientRoles.find(role => role.id === selectedRoleId)
     ), [selectedRoleId]);
 
-    const handleChangeOccupation = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newOccupation = event.target.value;
-        methods.setValue(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, newOccupation);
-        methods.setValue(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, '');
-        methods.setValue(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, '');
-        methods.setValue(PersonalInfoDataContextFields.ROLE, null);
-        methods.setValue(PersonalInfoDataContextFields.INSTITUTION_NAME, '');            
-        methods.clearErrors(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO);
-    }
-
     const subOccupationsPlaceHolderByOccupation = useMemo<string>(() => {
         if (occupation === Occupations.GOVERNMENT_OFFICE) return INSERT_OFFICE_NAME;
         if (occupation === Occupations.TRANSPORTATION) return INSERT_TRANSPORTATION_COMPANY_NAME;
@@ -130,12 +118,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                     (specialConvertors.get(key) as DataParser)(value)
                 :
                     value;
-    }
+    };
 
     const convertToDBData = (): PersonalInfoDbData => {
         const data = methods.getValues();
         const dataKeys = Object.keys(data);
-
         const parsedData = Object.values(data)
                                 .map(value => value || null)
                                 .reduce((obj, value, index) => {
@@ -146,7 +133,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                 }, {})
 
         return parsedData;
-    }
+    };
 
     useEffect(() => {
         if (epidemiologyNumber !== defaultEpidemiologyNumber) {
@@ -167,7 +154,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
         if (occupation === Occupations.EDUCATION_SYSTEM && educationOccupationCity) {
             getEducationSubOccupations(educationOccupationCity)
         }
-    }, [occupation, educationOccupationCity])
+    }, [occupation, educationOccupationCity]);
 
     useEffect(() => {
         const address: FlattenedDBAddress = {
@@ -176,7 +163,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
             floor: (floor as any) || null,
             houseNum: (houseNumber as any) || null,
         }
-
         setAddress(address);
     }, [city, street, floor, houseNumber]);
 
@@ -194,7 +180,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
         apartmentField: {
             name: `${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.APARTMENT}`,
         }
-    }
+    };
 
     return (
         <div className={classes.tabInitialContainer}>
@@ -487,6 +473,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
 
 interface Props {
     id: number;
-}
+};
 
 export default PersonalInfoTab;

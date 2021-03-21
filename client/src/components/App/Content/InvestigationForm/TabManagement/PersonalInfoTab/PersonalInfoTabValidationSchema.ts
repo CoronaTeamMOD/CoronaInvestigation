@@ -20,6 +20,7 @@ const schema = yup.object().shape({
         [PersonalInfoDataContextFields.CITY]: yup.string().nullable().required(requiredText),
     }),
     [PersonalInfoDataContextFields.CONTACT_INFO]: yup.string().nullable(),
+    [PersonalInfoDataContextFields.RELEVANT_OCCUPATION]: yup.string().nullable().required(requiredText),
     [PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]: yup.string().when(
         PersonalInfoDataContextFields.RELEVANT_OCCUPATION, 
         {
