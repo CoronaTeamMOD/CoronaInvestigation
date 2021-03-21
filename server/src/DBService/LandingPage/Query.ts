@@ -196,7 +196,7 @@ query allDesks {
 `;
 
 export const GET_INVESTIGATION_STATISTICS = gql`
-mutation getInvestigationStatistics( $county: Int!, $desks: [Int], $startDate: Date, $endDate: Date ) {
+mutation getInvestigationStatistics( $county: Int!, $desks: [Int], $startDate: Datetime, $endDate: Datetime ) {
   functionGetInvestigationStatistics(
     input: {
       countyInput: $county

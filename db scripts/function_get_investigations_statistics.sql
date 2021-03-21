@@ -1,12 +1,12 @@
 -- FUNCTION: public.function_get_investigation_statistics(integer, integer[], date, date)
 
--- DROP FUNCTION public.function_get_investigation_statistics(integer, integer[], date, date);
+DROP FUNCTION public.function_get_investigation_statistics(integer, integer[], date, date);
 
 CREATE OR REPLACE FUNCTION public.function_get_investigation_statistics(
 	county_input integer,
 	desks_input integer[],
-	start_date_input date,
-	end_date_input date)
+	start_date_input timestamp,
+	end_date_input timestamp)
     RETURNS json
     LANGUAGE 'plpgsql'
     COST 100
@@ -40,7 +40,7 @@ BEGIN
 	AND (desks_input is NULL OR desk_id IN (SELECT unnest(desks_input)))
 
 	-- only if either start or end date filter is send - add the filter
-	AND ( start_date_input is NULL OR end_date_input IS NULL OR creation_date BETWEEN start_date_input AND end_date_input);
+	AND ( start_date_input is NULL OR end_date_input IS NULL OR creation_date >= start_date_input AND creation_date < end_date_input);
 	
 	-- allInvestigations
 	SELECT COUNT(epidemiology_number) INTO allInvestigationsCount FROM filtered_investigations;
@@ -121,5 +121,5 @@ BEGIN
 END;
 $BODY$;
 
-ALTER FUNCTION public.function_get_investigation_statistics(integer, integer[], date, date)
-    OWNER TO coronai;
+ALTER FUNCTION public.function_get_investigation_statistics(integer, integer[], timestamp, timestamp)
+    OWNER TO postgres;
