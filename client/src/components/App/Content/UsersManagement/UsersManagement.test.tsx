@@ -233,9 +233,13 @@ describe('<UsersManagement />', () => {
         });
     });
     describe('user managment counter: ' , () => {
-        const counter = wrapper.find('#user-management-counter');
+        const counter = wrapper.find('p#user-management-counter');
         it('renders' , () => {    
             expect(counter.exists()).toBeTruthy();
+        });
+        it('shows count' , () => {    
+            expect(counter.text()).toBe('סה"כ 0 חוקרים');
+
         });
     });
     describe('table SearchBar: ' , () => {
