@@ -229,6 +229,7 @@ const UsersManagement: React.FC = () => {
             </Grid>
             <Grid container justify='space-between' id='user-management-filters' className={classes.filters}>
                 <SearchBar 
+                    id='user-management-search-bar'
                     searchBarLabel={searchBarLabel}
                     onClick={(value: string) => handleFilterChange(filterCreators.SEARCH_BAR(value))}
                     validationSchema={userValidationSchema}

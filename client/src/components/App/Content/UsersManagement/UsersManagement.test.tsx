@@ -232,4 +232,16 @@ describe('<UsersManagement />', () => {
             });
         });
     });
+    describe('user managment counter: ' , () => {
+        const counter = wrapper.find('#user-management-counter');
+        it('renders' , () => {    
+            expect(counter.exists()).toBeTruthy();
+        });
+    });
+    describe('table SearchBar: ' , () => {
+        const searchBar = wrapper.find('#user-management-search-bar');
+        it('renders' , () => {    
+            expect(searchBar.exists()).toBeTruthy();
+        });
+    })
 });
