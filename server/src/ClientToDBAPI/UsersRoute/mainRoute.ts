@@ -114,7 +114,8 @@ usersRoute.post('/updateCounty', handleUsersRequest, (request: Request, response
 });
 
 
-usersRoute.post('/updateDistrict', handleUsersRequest, (request: Request, response: Response) => {
+usersRoute.post('/updateDistrict', (request: Request, response: Response) => {
+    //add middleware that checks the user is developer
     const updateDistrictLogger = logger.setup({
         workflow: 'update user district',
         user: response.locals.user.id,
