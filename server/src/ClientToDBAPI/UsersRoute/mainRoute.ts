@@ -5,18 +5,17 @@ import UserPatch from '../../Models/User/UserPatch';
 import { Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import handleUsersRequest from '../../middlewares/HandleUsersRequest';
-import handleCountyRequest from '../../middlewares/HandleCountyRequest';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
 import UpdateUserResponse from '../../Models/User/UpdateUserResponse';
+import handleCountyRequest from '../../middlewares/HandleCountyRequest';
 import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
-import { GET_ALL_COUNTIES_OF_DISTRICT } from '../../DBService/Counties/Query';
 import GetAllUserTypesResponse from '../../Models/User/GetAllUserTypesResponse';
 import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { 
     UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, UPDATE_INVESTIGATOR_BY_GROUP_ID, 
-    UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY, UPDATE_USER, DEACTIVATE_ALL_COUNTY_USERS 
+    UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY, UPDATE_USER, DEACTIVATE_ALL_COUNTY_USERS, UPDATE_DISTRICT 
 } from '../../DBService/Users/Mutation';
 import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
@@ -121,27 +120,14 @@ usersRoute.post('/updateDistrict', (request: Request, response: Response) => {
         user: response.locals.user.id,
     });
     const parameters = {
-        district: request.body.district
+        userIdInput: response.locals.user.id,
+        districtIdInput: request.body.district
     };
     updateDistrictLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-    graphqlRequest(GET_ALL_COUNTIES_OF_DISTRICT, response.locals, parameters)
+    graphqlRequest(UPDATE_DISTRICT, response.locals, parameters)
     .then(result => {
-        const investigationGroup = result.data.allCounties.nodes[0].id;
-        const countyDisplayName =result.data.allCounties.nodes[0].displayName
-        const updateCountyVariables = {
-            id: response.locals.user.id,
-            investigationGroup
-        };
-
-        updateDistrictLogger.info(launchingDBRequestLog(updateCountyVariables), Severity.LOW);
-        graphqlRequest(UPDATE_COUNTY, response.locals, updateCountyVariables)
-            .then(result => {
-                updateDistrictLogger.info(validDBResponseLog, Severity.LOW);
-                response.send({user: result.data.updateUserById.user, countyDisplayName});
-            })
-            .catch(error => {
-                updateDistrictLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-            })
+        updateDistrictLogger.info(validDBResponseLog, Severity.LOW);
+        response.send(result.data.updateUserDistrict.json);
     })
     .catch(error => {
         updateDistrictLogger.error(invalidDBResponseLog(error), Severity.HIGH);

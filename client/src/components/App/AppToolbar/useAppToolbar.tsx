@@ -84,7 +84,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
             if(result.data){
                 setInvestigationGroup(district, result.data.countyDisplayName);
                 setDisplayedDistrict(district);
-                setDisplayedCounty(result.data.user.investigationGroup);
+                setDisplayedCounty(result.data.countyId);
             }    
             changeUserDistrictLogger.info('updated user district successfully', Severity.LOW);
         }).catch((error) => {

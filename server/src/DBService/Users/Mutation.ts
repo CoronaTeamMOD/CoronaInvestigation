@@ -55,6 +55,13 @@ mutation updateCounty($id: String!, $investigationGroup: Int!) {
 }
 `;
 
+export const UPDATE_DISTRICT = gql`
+mutation updateUserDistrict($userIdInput: String!, $districtIdInput: Int!) {
+  updateUserDistrict(input: {districtIdInput: $districtIdInput, userIdInput: $userIdInput}) {
+    json
+  }
+}
+`;
 
 export const UPDATE_INVESTIGATOR = gql`
 mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!, $transferReason: String) {
