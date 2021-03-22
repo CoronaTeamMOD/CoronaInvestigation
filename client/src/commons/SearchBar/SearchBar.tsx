@@ -66,7 +66,7 @@ const SearchBar: React.FC<Props> = (props: Props) => {
             error={Boolean(queryValidationError)}
         />
     );
-}
+};
 
 interface Props {
     id?: string;
@@ -74,6 +74,6 @@ interface Props {
     onClick: (value: string) => void;
     onChange?: (value: string) => void;
     validationSchema: yup.StringSchema<string | undefined, object>;
-}
+};
 
 export default SearchBar;

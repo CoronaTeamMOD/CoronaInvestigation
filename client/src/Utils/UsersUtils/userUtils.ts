@@ -16,4 +16,4 @@ export const defaultUser = {
     phoneNumber: '',
     serialNumber: '',
     investigationGroup: -1
-}
+};

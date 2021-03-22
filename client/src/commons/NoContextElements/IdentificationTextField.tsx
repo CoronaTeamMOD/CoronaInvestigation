@@ -30,7 +30,6 @@ interface Props{
     className?: string,
     isPassport: boolean,
     error: string
-}
-
+};
 
 export default IdentificationTextField;

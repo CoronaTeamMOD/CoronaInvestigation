@@ -1,17 +1,15 @@
 import * as yup from 'yup';
 
 import { ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX } from 'commons/Regex/Regex';
-import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
+import { alphaNumericSpecialCharsErrorMessage, max50LengthErrorMessage, requiredText } from 'commons/Schema/messages';
 
-const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
-const errorMessage = 'השדה יכול להכניס רק תווים חוקיים';
-const requiredMessage = 'שדה זה הינו שדה חובה';
+import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
 const validationStatusSchema = (subStatus: string | null) => {
     return (
         subStatus === transferredSubStatus ?
-        yup.string().required(requiredMessage).matches(ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX, errorMessage).max(50, maxLengthErrorMessage).nullable() :
-        yup.string().matches(ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX, errorMessage).max(50, maxLengthErrorMessage).nullable()   
+        yup.string().required(requiredText).matches(ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX, alphaNumericSpecialCharsErrorMessage).max(50, max50LengthErrorMessage).nullable() :
+        yup.string().matches(ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX, alphaNumericSpecialCharsErrorMessage).max(50, max50LengthErrorMessage).nullable()   
     )
 };
 

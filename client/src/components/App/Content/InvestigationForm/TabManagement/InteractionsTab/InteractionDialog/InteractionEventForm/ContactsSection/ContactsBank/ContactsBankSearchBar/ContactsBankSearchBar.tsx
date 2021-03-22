@@ -5,11 +5,10 @@ import { IconButton, InputAdornment } from '@material-ui/core';
 
 import { ALPHANUMERIC_SLASHES_TEXT_REGEX } from 'commons/Regex/Regex';
 import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
+import { alphaNumericWhiteSpaceErrorMessage, max50LengthErrorMessage } from 'commons/Schema/messages';
 
 import useStyles from './contactsBankSearchBarStyles';
 
-const errorMessage = 'השדה יכול להכיל רק אותיות, מספרים, מקף ורווח';
-const maxLengthErrorMessage = 'השדה יכול להכיל 50 תווים בלבד';
 const INSERT_TABLE_SEARCH = 'הזן שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
 
 interface Props {
@@ -19,8 +18,8 @@ interface Props {
 
 const stringAlphabet = yup
   .string()
-  .matches(ALPHANUMERIC_SLASHES_TEXT_REGEX, errorMessage)
-  .max(50, maxLengthErrorMessage);
+  .matches(ALPHANUMERIC_SLASHES_TEXT_REGEX, alphaNumericWhiteSpaceErrorMessage)
+  .max(50, max50LengthErrorMessage);
 
 const TableSearchBar = (props: Props) => {
     const [searchQuery, setsearchQueries] = useState<string>('');
