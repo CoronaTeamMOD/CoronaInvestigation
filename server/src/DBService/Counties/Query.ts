@@ -15,17 +15,6 @@ query allCounties {
 }
 `;
 
-export const GET_ALL_COUNTIES_OF_DISTRICT = gql`
-query allCounties ($district: Int) {
-  allCounties(condition: {districtId: $district}, orderBy: DISPLAY_NAME_ASC) {
-    nodes {
-      id
-      displayName
-    }
-  }
-}
-`;
-
 export const DISTRICT_BY_COUNTY = gql`
 query DistrictByCounty($id : Int!) {
   countyById(id: $id){
