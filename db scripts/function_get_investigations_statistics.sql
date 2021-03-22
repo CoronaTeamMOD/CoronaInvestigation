@@ -122,4 +122,4 @@ END;
 $BODY$;
 
 ALTER FUNCTION public.function_get_investigation_statistics(integer, integer[], timestamp, timestamp)
-    OWNER TO postgres;
+    OWNER TO coronai;
