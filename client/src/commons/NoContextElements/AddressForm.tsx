@@ -6,6 +6,7 @@ import { Grid, TextField } from '@material-ui/core';
 
 import City from 'models/City';
 import Street from 'models/Street';
+import FlattenedDBAddress from 'models/DBAddress';
 import StoreStateType from 'redux/storeStateType';
 import InteractedContact from 'models/InteractedContact';
 import { getStreetByCity } from 'Utils/Address/AddressUtils';
@@ -296,7 +297,7 @@ interface Props {
     apartmentField?: FormField;
     control: any;
     watch: any;
-    errors?: any;
+    errors?: DeepMap<FlattenedDBAddress , FieldError>;
 }
 
 export type AddressFormFields = Pick<Props, 'cityField' | 'streetField' | 'houseNumberField'> & Partial<Pick<Props, 'floorField' | 'apartmentField'>>;
