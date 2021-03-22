@@ -30,17 +30,19 @@ const AddressForm: React.FC<Props> = ({
     apartmentField,
     houseNumberField,
     control,
-    watch
+    watch,
+    errors
 }) => {
     const classes = useStyles();
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const [streetsInCity, setStreetsInCity] = useState<Map<string, Street>>(new Map());
 
+    // TODO : see if moving to another isolation scope helps
     const cityWatcher = watch(cityField.name);
     const streetWatcher = watch(streetField.name);
     const houseNumWatcher = watch(houseNumberField.name);
-    
+
     useEffect(() => {
         if (cityWatcher) {
             getStreetByCity(cityWatcher, setStreetsInCity);
@@ -84,9 +86,9 @@ const AddressForm: React.FC<Props> = ({
                                 value={props.value ? {id: props.value as string, value: cities.get(props.value) as City} : {id: '', value: {id: '', displayName: ''}}}
                                 onChange={(event, selectedCity) => props.onChange(selectedCity ? selectedCity.id : null)}
                                 renderInput={(params) => <TextField
-                                        error={Boolean(cityField.error)}
+                                        error={Boolean(errors?.city)}
                                         test-id={cityField.testId || ''}
-                                        label={cityField.error || `${CITY_LABEL}`}
+                                        label={errors?.city?.message || `${CITY_LABEL}`}
                                         {...params}
                                         placeholder={CITY_LABEL}
                                     />}
@@ -135,9 +137,9 @@ const AddressForm: React.FC<Props> = ({
                                 renderInput={(params) =>
                                     <TextField
                                         {...params}
-                                        error={Boolean(streetField.error)}
+                                        error={Boolean(errors?.street)}
                                         test-id={streetField.testId || ''}
-                                        label={streetField.error || `${STREET_LABEL}`}
+                                        label={errors?.street?.message || `${STREET_LABEL}`}
                                         placeholder={STREET_LABEL}
                                     />
                                 }
@@ -173,6 +175,7 @@ const AddressForm: React.FC<Props> = ({
                         render={(props) => (
                             <AlphanumericTextField
                                 name={props.name}
+                                error={errors?.houseNum?.message}
                                 className={smallFieldsClass}
                                 InputProps={{className: smallFieldsClass}}
                                 testId={houseNumberField.testId || ''}
@@ -213,7 +216,7 @@ const AddressForm: React.FC<Props> = ({
                             render={(props) => (
                                 <AlphanumericTextField
                                     className={smallFieldsClass}
-                                    error={floorField.error}
+                                    error={errors?.floor?.message}
                                     InputProps={{className: smallFieldsClass}}
                                     testId={floorField?.testId || ''}
                                     name={floorFieldNameSplitted ? floorFieldNameSplitted[floorFieldNameSplitted.length - 1] : ''}
@@ -257,7 +260,7 @@ const AddressForm: React.FC<Props> = ({
                             render={(props) => (
                                 <AlphanumericTextField
                                     className={smallFieldsClass}
-                                    error={apartmentField.error}
+                                    error={errors?.apartment?.message}
                                     InputProps={{className: smallFieldsClass}}
                                     testId={apartmentField?.testId || ''}
                                     name={apartmentFieldNameSplitted ? apartmentFieldNameSplitted[apartmentFieldNameSplitted.length - 1] : ''}
@@ -281,7 +284,6 @@ interface FormField {
     className?: string;
     testId?: string;
     defaultValue?: any;
-    error?: string;
 }
 
 interface Props {
@@ -294,6 +296,7 @@ interface Props {
     apartmentField?: FormField;
     control: any;
     watch: any;
+    errors?: any;
 }
 
 export type AddressFormFields = Pick<Props, 'cityField' | 'streetField' | 'houseNumberField'> & Partial<Pick<Props, 'floorField' | 'apartmentField'>>;

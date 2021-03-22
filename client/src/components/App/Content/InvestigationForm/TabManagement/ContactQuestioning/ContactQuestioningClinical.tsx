@@ -41,16 +41,13 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const isolationEndDate = addDays(new Date(interactedContact.contactDate), daysToIsolate);
     const formattedIsolationEndDate = format(new Date(isolationEndDate), 'dd/MM/yyyy');
 
-    console.log(formValues);
-
     const isolationAddressErrors = formErrors && formErrors[InteractedContactFields.ISOLATION_ADDRESS];
-    const cityFieldError = isolationAddressErrors && isolationAddressErrors[InteractedContactFields.CONTACTED_PERSON_CITY];
+
     const addressFormFields: AddressFormFields = {
         cityField: {
             name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`, 
             className: classes.addressTextField, 
             testId: 'contactedPersonCity',
-            error : cityFieldError?.displayName?.message,
             defaultValue: interactedContact.isolationAddress?.city?.id
         },
         streetField: {
@@ -60,7 +57,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         },
         houseNumberField: {
             name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`,
-            defaultValue: interactedContact.isolationAddress?.houseNum
+            defaultValue: interactedContact.isolationAddress?.houseNum,
         },
         apartmentField: {
             name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`,
@@ -187,6 +184,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                 disabled={isFieldDisabled}
                                 control={control}
                                 watch={watch}
+                                errors={isolationAddressErrors}
                                 {...addressFormFields}
                             />
                         </Grid>
