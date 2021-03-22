@@ -103,6 +103,7 @@ const InteractedContactAccordion = (props: Props) => {
                                 light={true}
                             />
                             <ContactQuestioningClinical
+                                watch={watch}
                                 index={index}
                                 familyRelationships={
                                     familyRelationships as FamilyRelationship[]
