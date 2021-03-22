@@ -41,8 +41,8 @@ const AddressForm: React.FC<Props> = ({
 
     // TODO : see if moving to another isolation scope helps
     const cityWatcher = watch(cityField.name);
-    const streetWatcher = watch(streetField.name);
-    const houseNumWatcher = watch(houseNumberField.name);
+    watch(streetField.name);
+    watch(houseNumberField.name);
 
     useEffect(() => {
         if (cityWatcher) {
