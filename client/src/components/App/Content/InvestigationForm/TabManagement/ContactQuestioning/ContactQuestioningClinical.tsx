@@ -5,6 +5,7 @@ import { Avatar, FormControl, Grid, MenuItem, Select, Typography } from '@materi
 
 import theme from 'styles/theme';
 import Toggle from 'commons/Toggle/Toggle';
+import FlattenedDBAddress from 'models/DBAddress';
 import FieldName from 'commons/FieldName/FieldName';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
@@ -41,7 +42,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const isolationEndDate = addDays(new Date(interactedContact.contactDate), daysToIsolate);
     const formattedIsolationEndDate = format(new Date(isolationEndDate), 'dd/MM/yyyy');
 
-    const isolationAddressErrors = formErrors && formErrors[InteractedContactFields.ISOLATION_ADDRESS];
+    const isolationAddressErrors = formErrors && (formErrors[InteractedContactFields.ISOLATION_ADDRESS] as DeepMap<FlattenedDBAddress , FieldError>);
 
     const addressFormFields: AddressFormFields = {
         cityField: {
