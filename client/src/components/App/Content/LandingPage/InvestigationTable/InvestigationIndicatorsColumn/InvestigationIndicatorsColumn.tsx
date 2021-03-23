@@ -14,7 +14,6 @@ const InvestigationIndicatorsColumn = (props: Props) => {
     const { isComplex, wasInvestigationTransferred, transferReason, isSelfInvestigated, selfInvestigationStatus, selfInvestigationUpdateTime, complexityReasonsId } = props;
     const allComplexReasons = useSelector<StoreStateType, (number|null)[]>(state => state.complexReasons);
     const investigationComplexityReasons = (complexityReasonsId) && complexityReasonsId.map((id) => (id) && allComplexReasons[id - 1]).filter((value, index, self) => self.indexOf(value) === index).toString()
-    console.log(complexityReasonsId, investigationComplexityReasons)
     const complexInvestigationText = investigationComplexityReasons ? `${complexInvestigationMessage}: ${investigationComplexityReasons}` : `${complexInvestigationMessage}: אחר`;
 
     return (
