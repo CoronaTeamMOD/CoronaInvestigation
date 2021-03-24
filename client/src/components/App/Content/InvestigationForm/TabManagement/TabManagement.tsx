@@ -22,7 +22,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         setNextTab,
         areThereContacts,
         setAreThereContacts,
-        isScriptOpened
+        isScriptOpened,
+        setIsScriptOpened
     } = tabManagementProps;
 
     const tabs: TabObj[] = [
@@ -75,9 +76,11 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     }
     
     const currentCardsClass = `${classes.card} ${isScriptOpened ? classes.collapsed : ''}`;
-    
+
     return (
         <Card className={currentCardsClass}>
+            {/* TODO: change after rebase from button location*/}
+            <button onClick={() => setIsScriptOpened(!isScriptOpened)}>clickme</button>
             <Tabs
                 value={currentTab}
                 indicatorColor='primary'
@@ -114,4 +117,5 @@ interface Props {
     setNextTab: (nextTabId: number) => void;
     setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
     isScriptOpened: boolean;
+    setIsScriptOpened: React.Dispatch<React.SetStateAction<boolean>>;
 };

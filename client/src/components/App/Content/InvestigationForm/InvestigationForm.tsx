@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Grid, Paper } from '@material-ui/core';
+import { Grid, Paper, Card } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -83,15 +83,20 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                         currentTab = {currentTab}
                     />
                         <div className={classes.interactiveForm}>
-                            <Grid container>
+                            <Grid container spacing={2}>
                                 <TabManagement
                                     areThereContacts={areThereContacts}
                                     setAreThereContacts={setAreThereContacts}
                                     currentTab={currentTab}
                                     setNextTab={setNextTab}
                                     isScriptOpened={isScriptOpened}
+                                    setIsScriptOpened={setIsScriptOpened}
                                 />
-
+                                <Grid item className={isScriptOpened ? classes.uncollapsed : classes.collapsed}>
+                                    <Card> //className={classes.scriptWrapper}>
+                                        hellooooo
+                                    </Card>
+                                </Grid>
                             </Grid>
                             <Grid container alignItems='center' className={classes.buttonSection}>
                                 {isLastTabDisplayed && 
