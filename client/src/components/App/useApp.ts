@@ -176,24 +176,19 @@ const useApp = () => {
         }
         fetchDesks();
         fetchUserTypes();
-        fetchDistricts();
+        fetchDistricts();            
+        fetchAllCounties();
     }, []);
 
     useEffect(() => {
         fetchAllCounties();
     }, [displayedDistrict]);
 
-    useEffect(() => {
-        if((user !== initialUserState.data && user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) || isSignUpOpen || user.isDeveloper) {
-            fetchAllCounties();
-        }
-    }, [user, isSignUpOpen]);
-
     return {
         isSignUpOpen,
         handleSaveUser, 
         handleCloseSignUp
     };
-}
+};
 
 export default useApp;
