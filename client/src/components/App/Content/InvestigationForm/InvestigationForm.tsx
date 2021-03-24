@@ -20,9 +20,6 @@ import TabManagement from './TabManagement/TabManagement';
 import TrackingRecommendationForm from './TrackingRecommendation/TrackingRecommendationForm';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 
-const END_INVESTIGATION = 'סיים חקירה';
-const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
-
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
@@ -87,6 +84,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                 setAreThereContacts={setAreThereContacts}
                                 currentTab={currentTab}
                                 setNextTab={setNextTab}
+                                isLastTabDisplayed={isLastTabDisplayed}
                             />
                             <Grid container alignItems='center' className={classes.buttonSection}>
                                 {isLastTabDisplayed && 
@@ -96,16 +94,6 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                         </Paper>
                                     </Grid>
                                 }
-                                <Grid item className={classes.nextButton}>
-                                    <PrimaryButton
-                                        type='submit'
-                                        form={`form-${currentTab}`}
-                                        test-id={isLastTabDisplayed ? 'endInvestigation' : 'continueToNextStage'}
-                                        onClick={() => setNextTab(currentTab + 1)}                                    
-                                    >
-                                    {isLastTabDisplayed ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
-                                    </PrimaryButton>
-                                </Grid>
                             </Grid>
                         </div>
                 </StartInvestigationDateVariablesProvider>
