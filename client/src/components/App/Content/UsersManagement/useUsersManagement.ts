@@ -20,6 +20,7 @@ import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import { defaultPage } from './UsersManagement';
 import { SortOrderTableHeadersNames } from './UsersManagementTableHeaders'
+import { setDisplayedCounty, setDisplayedDistrict, setInvestigationGroup } from 'redux/User/userActionCreators';
 
 interface UserDialog {
     isOpen: boolean,
@@ -33,7 +34,7 @@ interface CellNameSort {
 
 const unassignedUserName = 'לא משויך';
 
-const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUsersManagementInCome): useUsersManagementOutCome => {
+const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage, isDeveloper }: useUsersManagementInCome): useUsersManagementOutCome => {
     
     const [users, setUsers] = useState<SignUpUser[]>([]);
     const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([])
@@ -236,7 +237,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     };
 
     const setUserCounty = (countyId: number, userId: string) => {
-        if(userId != user.id){
+        if(userId != user.id || isDeveloper){
             const setUpdateCountyLogger = logger.setup('Updating user county');
             setUpdateCountyLogger.info(`send request to server for updating user county to ${countyId}`, Severity.LOW);
             setIsLoading(true);
@@ -245,9 +246,16 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                 investigationGroup: countyId,
                 userId
             }).then((result) => {
-                if(result.data)
-                setUpdateCountyLogger.info('updated user county successfully', Severity.LOW);
-                fetchUsers();
+                if(result.data) {
+                    if (isDeveloper && userId === user.id) {
+                        setInvestigationGroup(result.data.countyByInvestigationGroup.districtId, result.data.countyByInvestigationGroup.displayName);
+                        setDisplayedDistrict(result.data.countyByInvestigationGroup.districtId);
+                        setDisplayedCounty(countyId);
+                    } else {
+                        fetchUsers();
+                    }
+                    setUpdateCountyLogger.info('updated user county successfully', Severity.LOW);
+                };
             }).catch((error) => {
                 alertError('לא הצלחנו לעדכן את הנפה של המשתמש');
                 setUpdateCountyLogger.error(`error in updating user county due to ${error}`, Severity.HIGH);
@@ -333,6 +341,7 @@ interface useUsersManagementInCome {
     rowsPerPage: number;
     cellNameSort: CellNameSort;
     setPage: React.Dispatch<React.SetStateAction<number>>;
+    isDeveloper: Boolean;
 };
 
 interface useUsersManagementOutCome {
