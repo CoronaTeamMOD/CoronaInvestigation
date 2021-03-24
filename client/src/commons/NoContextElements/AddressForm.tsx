@@ -39,10 +39,10 @@ const AddressForm: React.FC<Props> = ({
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const [streetsInCity, setStreetsInCity] = useState<Map<string, Street>>(new Map());
 
-    // TODO : see if moving to another isolation scope helps
     const cityWatcher = watch(cityField.name);
     watch(streetField.name);
     watch(houseNumberField.name);
+    apartmentField && watch(apartmentField.name);
 
     useEffect(() => {
         if (cityWatcher) {
@@ -189,49 +189,6 @@ const AddressForm: React.FC<Props> = ({
                     />
                 }
             </Grid>
-            {
-                floorField &&
-                <Grid item xs={unsized ? 12 : 2} className={floorField?.className}>
-                    {
-                        disabled ?
-                        <Controller
-                            name={floorField?.name || ''}
-                            control={control}
-                            render={(props) => (
-                                <TextField 
-                                    className={smallFieldsClass}
-                                    InputProps={{className: smallFieldsClass}}
-                                    test-id={floorField?.testId || ''} 
-                                    value={props.value} 
-                                    label={FLOOR_LABEL} 
-                                    InputLabelProps={{ shrink: true }}
-                                    disabled={true} 
-                                />
-                            )}
-                        />
-                        :
-                        <Controller
-                            name={floorField?.name || ''}
-                            control={control}
-                            defaultValue={floorField?.defaultValue}
-                            render={(props) => (
-                                <AlphanumericTextField
-                                    className={smallFieldsClass}
-                                    error={errors?.floor?.message}
-                                    InputProps={{className: smallFieldsClass}}
-                                    testId={floorField?.testId || ''}
-                                    name={floorFieldNameSplitted ? floorFieldNameSplitted[floorFieldNameSplitted.length - 1] : ''}
-                                    value={props.value}
-                                    onChange={props.onChange}
-                                    onBlur={props.onBlur}
-                                    placeholder={FLOOR_LABEL}
-                                    label={FLOOR_LABEL}
-                                />
-                            )}
-                        />
-                    }
-                </Grid>
-            }
             {
                 apartmentField &&
                 <Grid item xs={unsized ? 12 : 2} className={apartmentField?.className}>
