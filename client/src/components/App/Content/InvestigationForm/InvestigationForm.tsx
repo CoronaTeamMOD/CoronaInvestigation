@@ -33,6 +33,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const [hasSymptoms, setHasSymptoms] = React.useState<boolean>(false);
     const [endInvestigationDate, setEndInvestigationDate] = React.useState<Date>(new Date());
     const [lastTabDisplayedId, setLastTabDisplayedId] = React.useState<number>(LAST_TAB_ID - 1);
+    const [isScriptOpened, setIsScriptOpened] = React.useState<boolean>(true);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
     const {setGroupedInvestigationsDetailsAsync} = useGroupedInvestigationContacts();
@@ -82,12 +83,16 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                         currentTab = {currentTab}
                     />
                         <div className={classes.interactiveForm}>
-                            <TabManagement
-                                areThereContacts={areThereContacts}
-                                setAreThereContacts={setAreThereContacts}
-                                currentTab={currentTab}
-                                setNextTab={setNextTab}
-                            />
+                            <Grid container>
+                                <TabManagement
+                                    areThereContacts={areThereContacts}
+                                    setAreThereContacts={setAreThereContacts}
+                                    currentTab={currentTab}
+                                    setNextTab={setNextTab}
+                                    isScriptOpened={isScriptOpened}
+                                />
+
+                            </Grid>
                             <Grid container alignItems='center' className={classes.buttonSection}>
                                 {isLastTabDisplayed && 
                                     <Grid item>

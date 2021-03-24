@@ -21,7 +21,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         currentTab,
         setNextTab,
         areThereContacts,
-        setAreThereContacts
+        setAreThereContacts,
+        isScriptOpened
     } = tabManagementProps;
 
     const tabs: TabObj[] = [
@@ -72,9 +73,11 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     const isTabValid = (tabId: number) => {
         return formsValidations !== undefined && formsValidations[tabId] !== null && !formsValidations[tabId];
     }
-
+    
+    const currentCardsClass = `${classes.card} ${isScriptOpened ? classes.collapsed : ''}`;
+    
     return (
-        <Card className={classes.card}>
+        <Card className={currentCardsClass}>
             <Tabs
                 value={currentTab}
                 indicatorColor='primary'
@@ -110,4 +113,5 @@ interface Props {
     currentTab: number;
     setNextTab: (nextTabId: number) => void;
     setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
+    isScriptOpened: boolean;
 };
