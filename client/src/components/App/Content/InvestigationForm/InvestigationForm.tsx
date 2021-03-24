@@ -13,10 +13,11 @@ import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
 
 import useStyles from './InvestigationFormStyles';
 import useInvestigationForm from './useInvestigationForm';
+import TabManagement from './TabManagement/TabManagement';
+import ConvesrationScript from './ConversationScript/ConvesrationScript';
+import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import useGroupedInvestigationContacts from './useGroupedInvestigationContacts';
 import useTabManagement ,{ LAST_TAB_ID } from './TabManagement/useTabManagement';
-import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
-import TabManagement from './TabManagement/TabManagement';
 import TrackingRecommendationForm from './TrackingRecommendation/TrackingRecommendationForm';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 
@@ -93,8 +94,8 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                     setIsScriptOpened={setIsScriptOpened}
                                 />
                                 <Grid item className={isScriptOpened ? classes.uncollapsed : classes.collapsed}>
-                                    <Card> //className={classes.scriptWrapper}>
-                                        hellooooo
+                                    <Card className={classes.scriptWrapper}>
+                                        <ConvesrationScript currentTab={currentTab}/>
                                     </Card>
                                 </Grid>
                             </Grid>
