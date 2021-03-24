@@ -294,9 +294,10 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             userType: userTypeId,
             userId
         }).then((result) => {
-            if(result.data)
-            updateUserTypeLogger.info('updated user type successfully', Severity.LOW);
-            fetchUsers();
+            if(result.data) {
+                updateUserTypeLogger.info('updated user type successfully', Severity.LOW);
+                fetchUsers();  
+            }
         }).catch((error) => {
             alertError('לא הצלחנו לעדכן את הסוג של המשתמש');
             updateUserTypeLogger.error(`error in updating user type due to ${error}`, Severity.HIGH);
