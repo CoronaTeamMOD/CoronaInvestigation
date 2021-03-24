@@ -35,8 +35,8 @@ const mandatoryQuarantineFields = [
     InteractedContactFields.IDENTIFICATION_NUMBER,
     InteractedContactFields.IDENTIFICATION_TYPE,
     `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`,
-    `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`,
-    `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`,
+    // `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`,
+    // `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`,
      InteractedContactFields.PHONE_NUMBER, 
      InteractedContactFields.FIRST_NAME,
     InteractedContactFields.LAST_NAME];
