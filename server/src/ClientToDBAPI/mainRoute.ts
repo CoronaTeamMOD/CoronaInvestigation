@@ -16,6 +16,7 @@ import intersectionsRoute from './IntersectionsRoute/mainRoute';
 import personalDetailsRoute from './PersonalDetailsRoute/mainRoute';
 import clinicalDetailsRoute from './ClinicalDetailsRoute/mainRoute';
 import groupedInvestigationsRoute from './GroupedInvestigationsRoute/mainRoute';
+import complexityReasonsRoute from './ComplexityReasons/mainRoute'
 
 const clientToDBRouter = Router();
 clientToDBRouter.use(authMiddleware);
@@ -34,5 +35,6 @@ clientToDBRouter.use('/personalDetails', personalDetailsRoute);
 clientToDBRouter.use('/clinicalDetails', clinicalDetailsRoute);
 clientToDBRouter.use('/contactedPeople', contactedPeopleRoute);
 clientToDBRouter.use('/groupedInvestigations', groupedInvestigationsRoute);
+clientToDBRouter.use('/complexityReasons', complexityReasonsRoute);
 
 export default clientToDBRouter;
