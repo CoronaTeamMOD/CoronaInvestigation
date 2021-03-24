@@ -14,8 +14,9 @@ import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizatio
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { 
-    UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, UPDATE_INVESTIGATOR_BY_GROUP_ID, 
-    UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY, UPDATE_USER, DEACTIVATE_ALL_COUNTY_USERS, UPDATE_DISTRICT 
+    UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, 
+    UPDATE_INVESTIGATOR_BY_GROUP_ID, UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY, 
+    UPDATE_USER, DEACTIVATE_ALL_COUNTY_USERS, UPDATE_DISTRICT, UPDATE_USER_TYPE 
 } from '../../DBService/Users/Mutation';
 import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
@@ -86,7 +87,7 @@ usersRoute.post('/updateDesk', handleUsersRequest, (request: Request, response: 
             updateDeskLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.sendStatus(errorStatusCode).send(error);
         })
-})
+});
 
 usersRoute.post('/updateCounty', handleUsersRequest, (request: Request, response: Response) => {
     const updateCountyLogger = logger.setup({
@@ -133,6 +134,31 @@ usersRoute.post('/updateDistrict', (request: Request, response: Response) => {
         updateDistrictLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.sendStatus(errorStatusCode).send(error);
     })
+});
+
+usersRoute.post('/updateUserType', (request: Request, response: Response) => {
+    //add middleware that checks the user is developer
+    const updateUserTypeLogger = logger.setup({
+        workflow: 'update user type',
+        user: response.locals.user.id,
+    });
+
+    const parameters = {
+        id: request.body.userId,
+        userType: request.body.userType
+    };
+
+    updateUserTypeLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+
+    graphqlRequest(UPDATE_USER_TYPE, response.locals, parameters)
+        .then(result => {
+            updateUserTypeLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data.updateUserById.user);
+        })
+        .catch(error => {
+            updateUserTypeLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.sendStatus(errorStatusCode).send(error);
+        })
 });
 
 const updateIsUserActive = (response: Response, id: string, isActive: Boolean) => {
