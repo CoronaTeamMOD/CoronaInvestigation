@@ -18,9 +18,9 @@ export const contactQuestioningClinical = {
             return contactStatus === ContactStatusCodes.COMPLETED || !needIsolation
                 ? yup.object().nullable()
                 : yup.object().shape({
-                    'city': yup.string().nullable().required(errorMessage),
-                    'street': yup.string().nullable().required(errorMessage),
-                    'houseNum': yup.string().nullable().required(errorMessage)
+                    'city': yup.string().nullable().required(errorMessage) //,
+                    // 'street': yup.string().nullable().required(errorMessage),
+                    // 'houseNum': yup.string().nullable().required(errorMessage)
                 })
         })
 };
