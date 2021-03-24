@@ -146,7 +146,7 @@ const InteractedContactAccordion = (props: Props) => {
                 </Accordion>
             </div>
         )
-    } , [JSON.stringify(formValues) , formErrors]);
+    } , [JSON.stringify(formValues) , formErrors, contactStatuses]);
 
     return (
         getAccordion
