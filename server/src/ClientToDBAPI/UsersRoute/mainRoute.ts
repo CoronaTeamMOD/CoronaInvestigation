@@ -480,7 +480,7 @@ const convertToUser = (user: any) => ({
     city: user.cityByCity,
     isActive: user.isActive,
     languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
-    userType: user.userTypeByUserType.displayName,
+    userType: { id:user.userTypeByUserType.id, displayName: user.userTypeByUserType.displayName},
     desk: { id: user.deskByDeskId?.id, deskName: user.deskByDeskId?.deskName},
     investigationGroup: {id: user.countyByInvestigationGroup?.id ,displayName: user.countyByInvestigationGroup?.displayName},
     sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName,
