@@ -3,10 +3,13 @@ import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     card: {
+        // removeOnceCompletedPlz
+        width: '75%',
+        transition: '1s',
         maxHeight: '70vh',
     },
     displayedTab: {
-        maxHeight: '70vh',
+        maxHeight: '60vh',
         overflowY: 'scroll'
     },
     errorIcon:{

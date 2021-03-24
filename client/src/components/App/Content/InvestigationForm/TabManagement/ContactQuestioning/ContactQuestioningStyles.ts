@@ -36,7 +36,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: '9.5vw',
     },
     idTextField: {
-        width: '9vw',
     },
     addressTextField: {
         width: '14vw',
