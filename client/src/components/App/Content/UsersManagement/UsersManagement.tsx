@@ -63,7 +63,7 @@ const UsersManagement: React.FC = () => {
             setUserActivityStatus, setUserSourceOrganization, 
             setUserDesk, setUserCounty, handleDeactivateAllUsersCounty, 
             counter, setUserType
-        } = useUsersManagement({ page, rowsPerPage, cellNameSort, setPage });
+        } = useUsersManagement({ page, rowsPerPage, cellNameSort, setPage, isDeveloper });
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
 

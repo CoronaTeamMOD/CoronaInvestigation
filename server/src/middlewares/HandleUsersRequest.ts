@@ -15,11 +15,12 @@ const handleUsersRequest = async (request: Request, response: Response, next: Ne
         workflow: 'InvestigationMiddleware',
         investigation: currentUser.epidemiologynumber,
     });
+    
+    const questionedUser = await getUserDistrictCounty(userId, response.locals);    
+
     if (isDeveloper) {
         return next();
-    };
-    const questionedUser = await getUserDistrictCounty(userId, response.locals);    
-        if (userType === UserType.SUPER_ADMIN) {
+    } else if (userType === UserType.SUPER_ADMIN) {
         if (currentUser.countyByInvestigationGroup.districtId === questionedUser.countyByInvestigationGroup.districtId) {
             usersMiddlewareLogger.info(
                 'requesting user is super admin and questioned user is in user district , redirecting',
