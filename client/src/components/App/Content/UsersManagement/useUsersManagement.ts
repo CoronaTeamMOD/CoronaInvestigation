@@ -286,6 +286,25 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         });
     };
 
+    const setUserType = (userTypeId: number, userId: string) => {
+        const updateUserTypeLogger = logger.setup('Updating user type');
+        updateUserTypeLogger.info(`send request to server for updating user type to ${userTypeId}`, Severity.LOW);
+        setIsLoading(true);
+        axios.post('users/updateUserType', {
+            userType: userTypeId,
+            userId
+        }).then((result) => {
+            if(result.data) {
+                updateUserTypeLogger.info('updated user type successfully', Severity.LOW);
+                fetchUsers();  
+            }
+        }).catch((error) => {
+            alertError('לא הצלחנו לעדכן את הסוג של המשתמש');
+            updateUserTypeLogger.error(`error in updating user type due to ${error}`, Severity.HIGH);
+        })
+        .finally(() => setIsLoading(false));
+    };
+
     return {
         users,
         sourcesOrganization,
@@ -304,7 +323,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         setUserDesk,
         setUserCounty,
         handleDeactivateAllUsersCounty,
-        counter
+        counter,
+        setUserType
     };
 }
 
@@ -334,6 +354,7 @@ interface useUsersManagementOutCome {
     setUserCounty: (countyId: number, userId: string) => void;
     handleDeactivateAllUsersCounty: () => void;
     counter: number;
+    setUserType: (userTypeId: number, userId: string) => void;
 };
 
 export default useUsersManagement;
