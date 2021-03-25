@@ -1,11 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
-import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
+import { Tabs, Tab, Card, createStyles, withStyles, Grid } from '@material-ui/core';
 
 import TabId from 'models/enums/TabId';
 import { Tab as TabObj } from 'models/Tab';
 import StoreStateType from 'redux/storeStateType';
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import useStyles from './TabManagementStyles';
 import { orderedTabsNames } from './useTabManagement';
@@ -14,6 +15,9 @@ import InteractionsTab from './InteractionsTab/InteractionsTab';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
+
+const END_INVESTIGATION = 'סיים חקירה';
+const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
 
@@ -24,6 +28,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         setAreThereContacts,
         isScriptOpened,
         setIsScriptOpened
+        isLastTabDisplayed
     } = tabManagementProps;
 
     const tabs: TabObj[] = [
@@ -79,29 +84,46 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 
     return (
         <Card className={currentCardsClass}>
-            {/* TODO: change after rebase from button location*/}
-            <button onClick={() => setIsScriptOpened(!isScriptOpened)}>clickme</button>
-            <Tabs
-                value={currentTab}
-                indicatorColor='primary'
-                textColor='primary'
-            >
-                {
-                    tabs.map((tab: TabObj) =>
-                    !(tab.id === TabId.CONTACTS_QUESTIONING && !areThereContacts) &&
-                    <StyledTab
-                            // @ts-ignore
+            <Grid container>
+                {/* TODO: change after rebase from button location*/}
+                <button onClick={() => setIsScriptOpened(!isScriptOpened)}>clickme</button>
+                <Grid item sm={8}>
+                    <Tabs
+                        value={currentTab}
+                        indicatorColor='primary'
+                        textColor='primary'
+                    >
+                        {
+                            tabs.map((tab: TabObj) =>
+                            !(tab.id === TabId.CONTACTS_QUESTIONING && !areThereContacts) &&
+                            <StyledTab
+                                    // @ts-ignore
+                                    type='submit'
+                                    form={`form-${currentTab}`}
+                                    onClick={() => { setNextTab(tab.id) }}
+                                    key={tab.id}
+                                    label={tab.name}
+                                    icon={isTabValid(tab.id) ? <ErrorOutlineIcon className={classes.icon} fontSize={'small'}/> : undefined}
+                                    className={isTabValid(tab.id) ? classes.errorIcon : undefined}
+                                />
+                            )
+                        }
+                    </Tabs>
+                </Grid>
+                <Grid container item spacing={2} alignItems='center' sm={4}>
+                    <Grid item className={classes.nextButton}>
+                        <PrimaryButton
                             type='submit'
                             form={`form-${currentTab}`}
-                            onClick={() => { setNextTab(tab.id) }}
-                            key={tab.id}
-                            label={tab.name}
-                            icon={isTabValid(tab.id) ? <ErrorOutlineIcon className={classes.icon} fontSize={'small'}/> : undefined}
-                            className={isTabValid(tab.id) ? classes.errorIcon : undefined}
-                        />
-                    )
-                }
-            </Tabs>
+                            test-id={isLastTabDisplayed ? 'endInvestigation' : 'continueToNextStage'}
+                            onClick={() => setNextTab(currentTab + 1)}                                    
+                        >
+                            {isLastTabDisplayed ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
+                        </PrimaryButton>
+                    </Grid>
+                </Grid>
+            </Grid>
+            
             <div className={classes.displayedTab}>
                 {tabs[currentTab].displayComponent}
             </div>
@@ -118,4 +140,5 @@ interface Props {
     setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
     isScriptOpened: boolean;
     setIsScriptOpened: React.Dispatch<React.SetStateAction<boolean>>;
+    isLastTabDisplayed: boolean;
 };

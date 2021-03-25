@@ -20,7 +20,10 @@ const useStyles = makeStyles({
     },
     icon:{
         marginTop: theme.spacing(1)
-    }
+    },
+    nextButton: {
+        marginLeft: 'auto'
+    },
 });
 
 interface Props {

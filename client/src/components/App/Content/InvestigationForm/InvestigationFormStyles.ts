@@ -12,9 +12,6 @@ const useStyles = makeStyles({
     buttonSection: {
         margin: '1vh 0'
     },
-    nextButton: {
-        marginLeft: 'auto'
-    },
     swalTitle: {
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
