@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
-import { Tabs, Tab, Card, createStyles, withStyles, Grid } from '@material-ui/core';
+import { Tabs, Tab, Card, createStyles, withStyles, Grid, Button, IconButton, Tooltip } from '@material-ui/core';
 
 import TabId from 'models/enums/TabId';
 import { Tab as TabObj } from 'models/Tab';
@@ -15,9 +15,12 @@ import InteractionsTab from './InteractionsTab/InteractionsTab';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
+import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 
 const END_INVESTIGATION = 'סיים חקירה';
 const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
+const SHOW_SCRIPT = 'הצג תסריט';
+const HIDE_SCRIPT = 'הסתר תסריט';
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
 
@@ -27,7 +30,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         areThereContacts,
         setAreThereContacts,
         isScriptOpened,
-        setIsScriptOpened
+        setIsScriptOpened,
         isLastTabDisplayed
     } = tabManagementProps;
 
@@ -85,8 +88,6 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     return (
         <Card className={currentCardsClass}>
             <Grid container>
-                {/* TODO: change after rebase from button location*/}
-                <button onClick={() => setIsScriptOpened(!isScriptOpened)}>clickme</button>
                 <Grid item sm={8}>
                     <Tabs
                         value={currentTab}
@@ -120,6 +121,17 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                         >
                             {isLastTabDisplayed ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                         </PrimaryButton>
+                        <Tooltip title={isScriptOpened ? HIDE_SCRIPT : SHOW_SCRIPT}>
+                            <IconButton
+                                onClick={() => setIsScriptOpened(!isScriptOpened)}
+                            >
+                                {
+                                    isScriptOpened 
+                                        ? <ChevronLeft />
+                                        : <ChevronRight /> 
+                                }
+                            </IconButton>
+                        </Tooltip>
                     </Grid>
                 </Grid>
             </Grid>

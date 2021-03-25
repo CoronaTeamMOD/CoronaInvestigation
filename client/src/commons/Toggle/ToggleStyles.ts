@@ -2,8 +2,7 @@ import { makeStyles } from '@material-ui/styles';
 
 export const useStyles = makeStyles({
     toggle: {
-        borderRadius: '15px',
-        height: '4vh',
-        width: '3vw',
+        borderRadius: '50px',
+        width: '50px',
     },
 });
