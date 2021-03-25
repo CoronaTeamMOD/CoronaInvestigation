@@ -12,7 +12,7 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
     additionalPhoneNumber: 'טלפון משני',
     birthDate: 'תאריך לידה',
     gender: 'מגדר',
-    identificationNumber: 'ת.ז',
+    identificationNumber: 'מספר תעודה מזהה',
     identificationType: 'סוג תעודה מזהה',
     contactDate: 'תאריך חשיפה',
     contactType: 'סוג מגע',
