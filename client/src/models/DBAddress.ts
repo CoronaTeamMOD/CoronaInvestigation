@@ -3,6 +3,7 @@ interface FlattenedDBAddress {
     street: string;
     floor: string;
     houseNum: string;
+    apartment?: string;
 }
 
 type AddressComponent = {id: string; displayName: string}

@@ -103,6 +103,7 @@ const InteractedContactAccordion = (props: Props) => {
                                 light={true}
                             />
                             <ContactQuestioningClinical
+                                watch={watch}
                                 index={index}
                                 familyRelationships={
                                     familyRelationships as FamilyRelationship[]
@@ -145,7 +146,7 @@ const InteractedContactAccordion = (props: Props) => {
                 </Accordion>
             </div>
         )
-    } , [JSON.stringify(formValues)]);
+    } , [JSON.stringify(formValues) , formErrors, contactStatuses]);
 
     return (
         getAccordion
