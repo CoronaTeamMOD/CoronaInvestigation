@@ -52,7 +52,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const { id, setSymptoms, setBackgroundDiseases, didSymptomsDateChangeOccur } = parameters;
 
     const { convertDate } = useDateUtils();
-    const { alertError, alertWarning } = useCustomSwal();
+    const { alertError } = useCustomSwal();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
@@ -227,36 +227,22 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                 setFormState(epidemiologyNumber, id, valid);
             })
         })
-    }
-
-    const alertSymptomsDatesChange = () =>
-        alertWarning('האם אתה בטוח שתרצה לשנות את שדה התסמינים? שינוי זה יגרום למחיקת האירועים והמגעים הקיימים בימים שימחקו', {
-            showCancelButton: true,
-            cancelButtonText: 'בטל',
-            cancelButtonColor: theme.palette.error.main,
-            confirmButtonColor: theme.palette.primary.main,
-            confirmButtonText: 'כן, המשך'
-        });
+    };
 
     const saveClinicalDetailsAndDeleteContactEvents = (clinicalDetails: ClinicalDetailsData, id: number): void => {
         if(didSymptomsDateChangeOccur) {
             const { symptomsStartDate, doesHaveSymptoms } = clinicalDetails;
             ClinicalDetailsSchema(validationDate)
             .validateAt(ClinicalDetailsFields.SYMPTOMS_START_DATE, clinicalDetails as any)
-            .then(() => 
-                alertSymptomsDatesChange().then(result => {
-                    if(result.isConfirmed) {
-                        deleteIrrelevantContactEvents(symptomsStartDate, doesHaveSymptoms);
-                        didDeletingContactEventsSucceed &&
-                            saveClinicalDetailsToDB(clinicalDetails, id);
-                    }
-                })
-            )
+            .then(() => {
+                deleteIrrelevantContactEvents(symptomsStartDate, doesHaveSymptoms);
+                didDeletingContactEventsSucceed && saveClinicalDetailsToDB(clinicalDetails, id);
+            })
             .catch(() => alertError('לא ניתן להשלים את הטאב עם תאריך תסמינים לא חוקי'));
         } else {
             saveClinicalDetailsToDB(clinicalDetails, id);
         }
-    }
+    };
 
     return {
         saveClinicalDetailsAndDeleteContactEvents,
