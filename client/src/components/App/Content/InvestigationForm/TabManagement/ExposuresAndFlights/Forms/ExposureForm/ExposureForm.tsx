@@ -10,6 +10,7 @@ import PlaceSubType from 'models/PlaceSubType';
 import CovidPatient from 'models/CovidPatient';
 import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
+import { invalidDateText } from 'commons/Schema/messages';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ExposureSearchTextField from './ExposureSearchTextField/ExposureSearchTextField';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
@@ -62,7 +63,7 @@ const ExposureForm = (props: Props) => {
 	const getDateLabel = (dateError: { message?: string, type?: string }) => {
 		if (dateError) {
 			if (dateError.type === 'typeError') {
-				return 'תאריך לא ולידי'
+				return invalidDateText;
 			}
 			return dateError.message;
 		}

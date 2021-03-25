@@ -5,6 +5,7 @@ import { Controller , useFormContext } from 'react-hook-form';
 
 import useFormStyles from 'styles/formStyles';
 import DatePick from 'commons/DatePick/DatePick';
+import { invalidDateText } from 'commons/Schema/messages';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import AirelineTextField from 'commons/AirelineTextField/AirelineTextField';
 import FlightNumberTextField from 'commons/FlightNumberTextField/FlightNumberTextField';
@@ -29,7 +30,7 @@ const FlightsForm = (props: Props) => {
     const getDateLabel = (dateError : {message? : string , type? : string}, isStart: boolean) => {
 		if(dateError) {
 			if(dateError.type === 'typeError') {
-				return 'תאריך לא ולידי'
+				return invalidDateText;
 			}
 			return dateError.message;
 		}
