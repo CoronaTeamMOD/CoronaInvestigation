@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import { Tabs, Tab, Card, createStyles, withStyles, Grid, Button, IconButton, Tooltip } from '@material-ui/core';
@@ -85,6 +85,10 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     
     const currentCardsClass = `${classes.card} ${isScriptOpened ? classes.collapsed : ''}`;
 
+    useEffect(() => {
+        localStorage.setItem('isScriptOpened' , String(isScriptOpened));
+    }, [isScriptOpened])
+
     return (
         <Card className={currentCardsClass}>
             <Grid container>
@@ -121,7 +125,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                         >
                             {isLastTabDisplayed ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                         </PrimaryButton>
-                        <Tooltip title={isScriptOpened ? HIDE_SCRIPT : SHOW_SCRIPT}>
+                        <Tooltip title={isScriptOpened ? HIDE_SCRIPT : SHOW_SCRIPT} arrow placement='top'>
                             <IconButton
                                 onClick={() => setIsScriptOpened(!isScriptOpened)}
                             >

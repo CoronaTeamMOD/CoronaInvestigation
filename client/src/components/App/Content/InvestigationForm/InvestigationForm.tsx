@@ -24,6 +24,8 @@ import { StartInvestigationDateVariablesProvider } from './StartInvestiationDate
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
+    const initialSctiptState = ( localStorage.getItem('isScriptOpened') ?? 'true' ) === 'true';
+    
     const [showSnackbar, setShowSnackbar] = React.useState<boolean>(false);
     const [exposureDate, setExposureDate] = React.useState<Date>();
     const [exposureAndFlightsData, setExposureDataAndFlights] = React.useState<ExposureAndFlightsDetails>(initialExposuresAndFlightsData)
@@ -31,7 +33,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const [hasSymptoms, setHasSymptoms] = React.useState<boolean>(false);
     const [endInvestigationDate, setEndInvestigationDate] = React.useState<Date>(new Date());
     const [lastTabDisplayedId, setLastTabDisplayedId] = React.useState<number>(LAST_TAB_ID - 1);
-    const [isScriptOpened, setIsScriptOpened] = React.useState<boolean>(true);
+    const [isScriptOpened, setIsScriptOpened] = React.useState<boolean>(initialSctiptState);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
     const {setGroupedInvestigationsDetailsAsync} = useGroupedInvestigationContacts();
