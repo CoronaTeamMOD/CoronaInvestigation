@@ -4,7 +4,7 @@ import { subDays, addDays } from 'date-fns';
 import { fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 import { requiredText } from 'commons/Schema/messages';
 
-const endDateBeforeValidationDateText = 'תאריך לא יכול להיות יותר גדול מתאריך תחילת מחלה';
+const endDateBeforeValidationDateText = 'תאריך לא יכול להיות יותר מאוחר מתאריך תחילת מחלה';
 const twoWeeksBeforeValidationDateText = 'תאריך לא יכול להיות יותר קטן משבועיים מתאריך תחילת מחלה';
 const EndDateBeforeStartDateText = 'זמן הנחיתה  צריך להיות לאחר זמן ההמראה';
 
