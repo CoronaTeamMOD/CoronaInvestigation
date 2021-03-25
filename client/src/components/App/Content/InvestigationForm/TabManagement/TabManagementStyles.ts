@@ -28,8 +28,7 @@ const useStyles = makeStyles({
     },
     tabs: {
         '& .Mui-selected' : {
-            borderBottom: `3px solid ${theme.palette.primary.main}`,
-            marginBottom: '-3px'
+            borderBottom: `3px solid ${theme.palette.primary.main}`
         }
     },
     indicator: {
