@@ -3,10 +3,9 @@ import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     card: {
-        // removeOnceCompletedPlz
         width: '100%',
         transition: '1s',
-        maxHeight: '70vh',
+        maxHeight: '70vh'
     },
     collapsed: {
         width: '75%'
@@ -22,8 +21,20 @@ const useStyles = makeStyles({
         marginTop: theme.spacing(1)
     },
     nextButton: {
-        marginLeft: 'auto'
+        marginLeft: 'auto',
+        '& button': {
+            maxHeight: '50px'
+        }
     },
+    tabs: {
+        '& .Mui-selected' : {
+            borderBottom: `3px solid ${theme.palette.primary.main}`,
+            marginBottom: '-3px'
+        }
+    },
+    indicator: {
+        display: 'none'
+    }
 });
 
 interface Props {

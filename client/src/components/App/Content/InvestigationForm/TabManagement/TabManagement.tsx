@@ -68,7 +68,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         createStyles({
             root: {
                 fontWeight: theme.typography.fontWeightRegular,
-                minHeight: '7vh'
+                padding: '20px'
             },
             wrapper: {
                 flexDirection: 'row-reverse',
@@ -95,8 +95,11 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                 <Grid item sm={8}>
                     <Tabs
                         value={currentTab}
-                        indicatorColor='primary'
+                        classes={{
+                            indicator: classes.indicator
+                        }}
                         textColor='primary'
+                        className={classes.tabs}
                     >
                         {
                             tabs.map((tab: TabObj) =>
