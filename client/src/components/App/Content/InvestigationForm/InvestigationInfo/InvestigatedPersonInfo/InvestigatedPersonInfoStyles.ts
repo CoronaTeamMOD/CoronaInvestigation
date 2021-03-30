@@ -24,6 +24,12 @@ const useStyles = makeStyles({
         fontSize: '1rem',
         marginLeft: '18px'
     },
+    investigationNameTitle: {
+        flip: false,
+        fontWeight: 400,
+        fontSize: '1rem',
+        marginLeft: '30px'
+    },
     informationBar: {
         display: 'flex',
         alignItems: 'center',
