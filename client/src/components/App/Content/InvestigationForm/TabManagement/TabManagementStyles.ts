@@ -6,7 +6,7 @@ const useStyles = makeStyles({
         maxHeight: '70vh',
     },
     displayedTab: {
-        maxHeight: '70vh',
+        maxHeight: '54vh',
         overflowY: 'scroll'
     },
     errorIcon:{
