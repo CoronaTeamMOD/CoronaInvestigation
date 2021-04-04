@@ -7,9 +7,6 @@ const useStyles = makeStyles({
     desksCard: {
         borderRadius: '1vw',
     },
-    desksCardContent: {
-
-    },
     desksCardActions: {
         direction: 'ltr', 
         paddingLeft: '1vw',
