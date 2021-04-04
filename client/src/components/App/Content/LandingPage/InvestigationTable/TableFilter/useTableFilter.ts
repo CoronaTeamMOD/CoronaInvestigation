@@ -41,12 +41,12 @@ const useTableFilter = (props : Props) => {
     }
 
     const onStartDateSelect = (startDateInput: Date) => {
-        const startDate = isValid(startDateInput) ? format(startDateInput, 'yyyy-MM-dd') : invalidDateString;
+        const startDate = isValid(startDateInput) ? format(startDateInput, 'yyyy-MM-dd') + 'T00:00:00' : invalidDateString;
         setDisplayTimeRange({...displayTimeRange, startDate});
     }
 
     const onEndDateSelect = (endDateInput :Date) => {
-        const endDate = isValid(endDateInput) ? format(endDateInput, 'yyyy-MM-dd') : invalidDateString;
+        const endDate = isValid(endDateInput) ? format(endDateInput, 'yyyy-MM-dd') + 'T23:59:59' : invalidDateString;
         setDisplayTimeRange({...displayTimeRange, endDate});
     }
 
