@@ -21,6 +21,21 @@ const useStyles = makeStyles({
     },
     trackingForm: {
         padding : '1vh 1vw'
+    },
+    uncollapsed: {
+        width: '25%',
+        transition: '1s',
+        opacity: 1
+    },
+    collapsed: {
+        width: '0',
+        transition: '1s',
+        opacity: 0
+    },
+    scriptWrapper: {
+        maxHeight: '60vh',
+        overflowY: 'scroll',
+        padding: '15px'
     }
 });
 

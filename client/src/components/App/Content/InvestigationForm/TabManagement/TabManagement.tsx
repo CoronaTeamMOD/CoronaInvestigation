@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
-import { Tabs, Tab, Card, createStyles, withStyles, Grid } from '@material-ui/core';
+import { Tabs, Tab, Card, createStyles, withStyles, Grid, Button, IconButton, Tooltip } from '@material-ui/core';
 
 import TabId from 'models/enums/TabId';
 import { Tab as TabObj } from 'models/Tab';
@@ -15,9 +15,12 @@ import InteractionsTab from './InteractionsTab/InteractionsTab';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
+import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 
 const END_INVESTIGATION = 'סיים חקירה';
 const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
+const SHOW_SCRIPT = 'הצג תסריט';
+const HIDE_SCRIPT = 'הסתר תסריט';
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
 
@@ -26,6 +29,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         setNextTab,
         areThereContacts,
         setAreThereContacts,
+        isScriptOpened,
+        setIsScriptOpened,
         isLastTabDisplayed
     } = tabManagementProps;
 
@@ -63,7 +68,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         createStyles({
             root: {
                 fontWeight: theme.typography.fontWeightRegular,
-                minHeight: '7vh'
+                padding: '20px'
             },
             wrapper: {
                 flexDirection: 'row-reverse',
@@ -77,15 +82,24 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     const isTabValid = (tabId: number) => {
         return formsValidations !== undefined && formsValidations[tabId] !== null && !formsValidations[tabId];
     }
+    
+    const currentCardsClass = `${classes.card} ${isScriptOpened ? classes.collapsed : ''}`;
+
+    useEffect(() => {
+        localStorage.setItem('isScriptOpened' , String(isScriptOpened));
+    }, [isScriptOpened])
 
     return (
-        <Card className={classes.card}>
+        <Card className={currentCardsClass}>
             <Grid container>
                 <Grid item sm={8}>
                     <Tabs
                         value={currentTab}
-                        indicatorColor='primary'
+                        classes={{
+                            indicator: classes.indicator
+                        }}
                         textColor='primary'
+                        className={classes.tabs}
                     >
                         {
                             tabs.map((tab: TabObj) =>
@@ -114,6 +128,17 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                         >
                             {isLastTabDisplayed ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                         </PrimaryButton>
+                        <Tooltip title={isScriptOpened ? HIDE_SCRIPT : SHOW_SCRIPT} arrow placement='top'>
+                            <IconButton
+                                onClick={() => setIsScriptOpened(!isScriptOpened)}
+                            >
+                                {
+                                    isScriptOpened 
+                                        ? <ChevronLeft />
+                                        : <ChevronRight /> 
+                                }
+                            </IconButton>
+                        </Tooltip>
                     </Grid>
                 </Grid>
             </Grid>
@@ -132,5 +157,7 @@ interface Props {
     currentTab: number;
     setNextTab: (nextTabId: number) => void;
     setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
+    isScriptOpened: boolean;
+    setIsScriptOpened: React.Dispatch<React.SetStateAction<boolean>>;
     isLastTabDisplayed: boolean;
 };

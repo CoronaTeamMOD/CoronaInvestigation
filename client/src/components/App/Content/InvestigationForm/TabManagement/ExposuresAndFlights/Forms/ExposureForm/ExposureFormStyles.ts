@@ -4,7 +4,7 @@ import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     exposureSourceTextFied: {
-        width: '60vw',
+        width: '60%',
     },
     optionalExposureSources: {
         maxHeight: '50vh',
