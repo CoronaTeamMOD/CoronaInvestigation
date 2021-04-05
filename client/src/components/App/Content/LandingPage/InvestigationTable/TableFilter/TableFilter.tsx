@@ -1,8 +1,10 @@
 import React from 'react'
-import { Close } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import { Card, Checkbox, Collapse, FormControl, Grid, IconButton, TextField, Typography } from '@material-ui/core';
+import { Card, Checkbox, Collapse, FormControl, Grid, Button, Box, TextField, Typography } from '@material-ui/core';
+import { Refresh } from '@material-ui/icons';
 
+import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
+import SearchBar from 'commons/SearchBar/SearchBar';
 import { TimeRange } from 'models/TimeRange';
 import timeRanges, { customTimeRange, timeRangeMinDate } from 'models/enums/timeRanges';
 import DateRangePick from 'commons/DatePick/DateRangePick';
@@ -10,9 +12,14 @@ import SelectDropdown from 'commons/Select/SelectDropdown';
 import InvestigationSubStatus from 'models/InvestigationSubStatus';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
+import DeskFilter from '../DeskFilter/DeskFilter';
 import useStyles from './TableFilterStyles';
 import useTableFilter from './useTableFilter';
 import { StatusFilter as StatusFilterType, SubStatusFilter as SubStatusFilterType } from '../InvestigationTableInterfaces';
+import Desk from 'models/Desk';
+
+export const defaultOrderBy = 'defaultOrder';
+const searchBarLabel = 'מספר אפידמיולוגי, ת"ז, שם או טלפון';
 
 const TableFilter = (props: Props) => {
 
@@ -20,11 +27,13 @@ const TableFilter = (props: Props) => {
 
     const { 
         statuses, subStatuses, filteredStatuses, filteredSubStatuses,
-        onFilterChange, onClose, 
+        onFilterChange, 
         changeInactiveUserFilter, onSubStatusChange, inactiveUserFilter, 
         changeUnassginedUserFilter, unassignedUserFilter, 
         timeRangeFilter, onTimeRangeFilterChange, 
-        updateDateFilter, nonContactFilter
+        updateDateFilter, nonContactFilter,
+        desksToTransfer, deskFilter, changeDeskFilter,
+        handleRequestSort, changeSearchFilter
     } = props;
 
     const { displayTimeRange, onSelectTimeRangeChange, onStartDateSelect, onEndDateSelect, errorMes} = useTableFilter({
@@ -32,23 +41,33 @@ const TableFilter = (props: Props) => {
         onTimeRangeFilterChange
     });
 
+    const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id
+
     return (
         <Card className={classes.card}>
-            <Grid className={classes.startCard} xs={8}>
-                <Typography className={classes.headTitle} >
-                    <b>סינון לפי: </b>
-                </Typography>
-                <Typography className={classes.title}>
-                    <b>ת. הגעת<br/> חקירה</b>
-                </Typography>
-                <FormControl variant='outlined' className={classes.formControl}>
+            <Button
+                color='primary'
+                className={classes.sortResetButton}
+                startIcon={<Refresh />}
+                onClick={(event: any) => handleRequestSort(event, defaultOrderBy)}
+            >
+            </Button>
+            <Grid className={classes.startCard}>
+                <DeskFilter
+                    desks={desksToTransfer}
+                    filteredDesks={deskFilter}
+                    onFilterChange={(event, value) => changeDeskFilter(value)} 
+                />
+            </Grid>
+            <div className={classes.column}>
+                <FormControl variant='outlined' className={isCustomTimeRange ? classes.formControlCustomTimeRange : classes.formControl}>
                     <SelectDropdown
                         onChange={onSelectTimeRangeChange}
                         items={timeRanges}
                         value={displayTimeRange.id}
                     />
                 </FormControl>
-                <Collapse in={timeRangeFilter.id === customTimeRange.id} unmountOnExit classes={{container: classes.collapse}}>
+                <Collapse in={isCustomTimeRange} unmountOnExit>
                     <DateRangePick
                         startDate={displayTimeRange.startDate}
                         onStartDateChange={onStartDateSelect}
@@ -58,99 +77,106 @@ const TableFilter = (props: Props) => {
                         maxDate={new Date()}
                     />   
                 </Collapse>
-                {errorMes !== '' && 
-                    <Typography className={classes.timeRangeError}>{errorMes}</Typography>
+            </div>
+            {errorMes !== '' && 
+                <Typography className={classes.timeRangeError}>{errorMes}</Typography>
+            }
+            <Autocomplete
+                disabled={updateDateFilter !== "" || nonContactFilter}
+                ChipProps={{className:classes.chip}}
+                className={classes.autocomplete}
+                classes={{inputFocused: classes.autocompleteInputText}}
+                size='small'
+                disableCloseOnSelect
+                multiple
+                options={statuses}
+                value={statuses.filter(status => filteredStatuses.includes(status.id))}
+                getOptionLabel={(option) => option.displayName}
+                onChange={onFilterChange}
+                renderInput={(params) =>
+                    <TextField
+                        label={'סטטוס'}
+                        size='small'
+                        {...params}
+                        InputProps={{...params.InputProps, className: classes.autocompleteInput}}
+                    />
                 }
-                <Typography className={classes.title} >
-                    <b>סטטוס</b>
-                </Typography>
-                <Autocomplete
-                    disabled={updateDateFilter !== "" || nonContactFilter}
-                    ChipProps={{className:classes.chip}}
-                    className={classes.autocomplete}
-                    classes={{inputFocused: classes.autocompleteInputText}}
-                    size='small'
-                    disableCloseOnSelect
-                    multiple
-                    options={statuses}
-                    value={statuses.filter(status => filteredStatuses.includes(status.id))}
-                    getOptionLabel={(option) => option.displayName}
-                    onChange={onFilterChange}
-                    renderInput={(params) =>
-                        <TextField
+                renderOption={(option, { selected }) => (
+                    <>
+                        <Checkbox
                             size='small'
-                            {...params}
-                            InputProps={{...params.InputProps, className: classes.autocompleteInput}}
+                            className={classes.optionCheckbox}
+                            checked={selected}
+                            color='primary'
                         />
-                    }
-                    renderOption={(option, { selected }) => (
-                        <>
-                            <Checkbox
-                                size='small'
-                                className={classes.optionCheckbox}
-                                checked={selected}
-                                color='primary'
-                            />
-                            <Typography className={classes.option} >{option.displayName}</Typography>
-                        </>
-                    )}
-                    limitTags={1}
-                />
-                <Typography className={classes.title} >
-                    <b>תת סטטוס</b>
-                </Typography>
-                <Autocomplete
-                    disabled={updateDateFilter !== ""}
-                    ChipProps={{className:classes.chip}}
-                    className={classes.autocomplete}
-                    classes={{inputFocused: classes.autocompleteInputText}}
-                    size='small'
-                    disableCloseOnSelect
-                    multiple
-                    options={subStatuses}
-                    value={subStatuses.filter(subStatus => filteredSubStatuses.includes(subStatus.displayName))}
-                    getOptionLabel={(option) => option.displayName}
-                    onChange={onSubStatusChange}
-                    renderInput={(params) =>
-                        <TextField
+                        <Typography className={classes.option} >{option.displayName}</Typography>
+                    </>
+                )}
+                limitTags={1}
+            />
+            <Autocomplete
+                disabled={updateDateFilter !== ""}
+                ChipProps={{className:classes.chip}}
+                className={classes.autocomplete}
+                classes={{inputFocused: classes.autocompleteInputText}}
+                size='small'
+                disableCloseOnSelect
+                multiple
+                options={subStatuses}
+                value={subStatuses.filter(subStatus => filteredSubStatuses.includes(subStatus.displayName))}
+                getOptionLabel={(option) => option.displayName}
+                onChange={onSubStatusChange}
+                renderInput={(params) =>
+                    <TextField
+                        label={'תת סטטוס'}
+                        size='small'
+                        {...params}
+                        InputProps={{...params.InputProps, className: classes.autocompleteInput}}
+                    />
+                }
+                renderOption={(option, { selected }) => (
+                    <>
+                        <Checkbox
                             size='small'
-                            {...params}
-                            InputProps={{...params.InputProps, className: classes.autocompleteInput}}
+                            className={classes.optionCheckbox}
+                            checked={selected}
+                            color='primary'
                         />
-                    }
-                    renderOption={(option, { selected }) => (
-                        <>
-                            <Checkbox
-                                size='small'
-                                className={classes.optionCheckbox}
-                                checked={selected}
-                                color='primary'
-                            />
-                            <Typography className={classes.option} >{option.displayName}</Typography>
-                        </>
-                    )}
-                    limitTags={1}
-                />
-            </Grid>
+                        <Typography className={classes.option} >{option.displayName}</Typography>
+                    </>
+                )}
+                limitTags={1}
+            />
             <Grid className={classes.endCard} xs={3}>
-                <Checkbox
-                    onChange={(event) => changeUnassginedUserFilter(event.target.checked)}
-                    color='primary'
-                    checked={unassignedUserFilter}
-                />
-                <Typography className={classes.title} >
-                    <b>חקירות לא משויכות</b>
-                </Typography>
-                <Checkbox
-                    onChange={(event) => changeInactiveUserFilter(event.target.checked)}
-                    color='primary'
-                    checked={inactiveUserFilter}
-                />
-                <Typography className={classes.title} >
-                    <b>חקירות משויכות לחוקרים לא פעילים</b>
-                </Typography>
-                <IconButton onClick={() => onClose()} size='small'><Close /></IconButton>
-            </Grid>   
+                <div className={classes.row}>
+                    <Checkbox
+                        onChange={(event) => changeUnassginedUserFilter(event.target.checked)}
+                        color='primary'
+                        checked={unassignedUserFilter}
+                        className={classes.checkbox}
+                    />
+                    <Typography className={classes.title}>לא משויכות</Typography>
+                </div>
+                <div className={classes.row}>
+                    <Checkbox
+                        onChange={(event) => changeInactiveUserFilter(event.target.checked)}
+                        color='primary'
+                        checked={inactiveUserFilter}
+                        className={classes.checkbox}
+                    />
+                    <Typography className={classes.title}>משויכות לחוקרים לא פעילים</Typography>
+                </div>
+            </Grid>
+            <div className={classes.tableHeaderRow}>
+                <Box justifyContent='flex-end' display='flex'>
+                    <SearchBar 
+                        validationSchema={stringAlphanum}
+                        searchBarLabel={searchBarLabel}
+                        onClick={(value: string) => changeSearchFilter(value)}
+                    />
+                    
+                </Box>
+            </div> 
         </Card>
     )
 }
@@ -166,11 +192,15 @@ interface Props {
     changeInactiveUserFilter: (isFilterOn: boolean) => void;
     onFilterChange: (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => void;
     onSubStatusChange: (event: React.ChangeEvent<{}>, selectedSubStatuses: InvestigationSubStatus[]) => void;
-    onClose: () => void;
     timeRangeFilter: TimeRange;
     onTimeRangeFilterChange: (timeRangeFilter: TimeRange) => void;
     updateDateFilter: string;
     nonContactFilter: boolean;
+    desksToTransfer: Desk[];
+    deskFilter: any;
+    changeDeskFilter: (desks: Desk[]) => void;
+    handleRequestSort: (event: any, property: React.SetStateAction<string>) => void;
+    changeSearchFilter: (searchQuery: string) => void;
 };
 
 export default TableFilter

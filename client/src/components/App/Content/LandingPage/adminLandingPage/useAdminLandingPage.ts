@@ -17,7 +17,7 @@ import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 
 import { HistoryState } from '../InvestigationTable/InvestigationTableInterfaces';
 
-export const allTimeRangeId = 10;
+export const allTimeRangeId = [10, 11];
 
 const useAdminLandingPage = (parameters: Parameters) => {
     const { alertError } = useCustomSwal();

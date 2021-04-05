@@ -79,9 +79,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         whiteSpace: 'nowrap',
         fontSize: '0.97rem'
     },
-    sortResetButton: {
-        fontWeight: 600
-    },
     deskFilterCard: {
         marginRight : 'auto'
     },

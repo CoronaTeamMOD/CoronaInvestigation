@@ -128,7 +128,6 @@ const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החק
 const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף'
 export const transferredSubStatus = 'נדרשת העברה';
 const welcomeMessage = 'ניהול חקירות';
-const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
 
@@ -172,7 +171,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const statusFilterToSet = historyStatusFilter.length > 0 ? filterCreators.STATUS(historyStatusFilter) : null;
         const subStatusFilterToSet = historySubStatusFilter.length > 0 ? filterCreators.SUB_STATUS(historySubStatusFilter) : null;
         const deskFilterToSet = historyDeskFilter.length > 0 ? filterCreators.DESK_ID(historyDeskFilter) : null;
-        const timeRangeFilterToSet = historyTimeRange.id !== allTimeRangeId ? filterCreators.TIME_RANGE(historyTimeRange) : null;
+        const timeRangeFilterToSet = !allTimeRangeId.includes(historyTimeRange.id) ? filterCreators.TIME_RANGE(historyTimeRange) : null;
         const unAssignedFilterToSet = (historyUnassignedUserFilter && !inactiveUserFilter) ? filterCreators.UNASSIGNED_USER(historyUnassignedUserFilter) : null;
         const inActiveToSet = (historyInactiveUserFilter && !historyUnassignedUserFilter) ? filterCreators.INACTIVE_USER(historyInactiveUserFilter) : null;
         const unAllocatedToSet = (historyInactiveUserFilter && historyUnassignedUserFilter) ? filterCreators.UNALLOCATED_USER(historyUnassignedUserFilter) : null;
@@ -998,10 +997,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const isAdmin = userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN;
 
-    const noAdminFilterTitle = rows.length === 0 ? noInvestigationsMessage : welcomeMessage;
+    const noAdminFilterTitle = welcomeMessage;
 
     const tableTitle = useMemo(() => {
-        if (rows.length === 0) return noInvestigationsMessage;
         if (isAdminLandingRedirect === false || !isAdmin) {
             return noAdminFilterTitle;
         }

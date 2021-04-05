@@ -6,16 +6,13 @@ import {
     useMediaQuery, Collapse, IconButton, Badge, Grid,
     Slide, Box, Popover, Tooltip
 } from '@material-ui/core';
-import { faFilter } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useMemo, useState, useRef, useEffect } from 'react';
-import { Refresh, KeyboardArrowDown, KeyboardArrowLeft } from '@material-ui/icons';
+import { KeyboardArrowDown, KeyboardArrowLeft } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
-import SearchBar from 'commons/SearchBar/SearchBar';
 import useDesksUtils from 'Utils/Desk/useDesksUtils';
 import UserTypeCodes from 'models/enums/UserTypeCodes';
 import InvestigatorOption from 'models/InvestigatorOption';
@@ -25,9 +22,7 @@ import InvestigationTableRowType from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
-import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
 
-import DeskFilter from './DeskFilter/DeskFilter';
 import useStyles from './InvestigationTableStyles';
 import TableFilter from './TableFilter/TableFilter';
 import InvestigationTableRow from './InvestigationTableRow/InvestigationTableRow';
@@ -38,9 +33,6 @@ import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCo
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
-const resetSortButtonText = 'סידור לפי תעדוף';
-const searchBarLabel = 'הכנס מס\' אפידימיולוגי, ת\"ז, שם מלא או טלפון...';
-
 export const rowsPerPage = 100;
 
 const refreshPromptMessage = 'שים לב, ייתכן כי התווספו חקירות חדשות';
@@ -60,7 +52,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [allStatuses, setAllStatuses] = useState<InvestigationMainStatus[]>([]);
     const [allSubStatuses, setAllSubStatuses] = useState<InvestigationSubStatus[]>([]);
     const [allComplexReasons, setAllComplexReasons] = useState<(number|null)[]>([]);
-    const [showFilterRow, setShowFilterRow] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(defaultPage);
     const [checkGroupedInvestigationOpen, setCheckGroupedInvestigationOpen] = useState<number[]>([])
     const [allGroupedInvestigations, setAllGroupedInvestigations] = useState<Map<string, InvestigationTableRowType[]>>(new Map());
@@ -165,10 +156,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         property === defaultOrderBy ? sortInvestigationTable(property) : sortInvestigationTable(property + newOrder.toLocaleUpperCase());
     };
 
-    const closeFilterRow = () => setShowFilterRow(false);
-
-    const toggleFilterRow = () => setShowFilterRow(!showFilterRow);
-
     const markRow = async (indexedRow: IndexedInvestigation) => {
         const epidemiologyNumberIndex = checkedIndexedRows.findIndex(checkedRow => indexedRow.epidemiologyNumber === checkedRow.epidemiologyNumber);
         if (epidemiologyNumberIndex !== -1) {
@@ -255,77 +242,35 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     return (
         <div onClick={closeDropdowns} >
-            <Grid className={classes.title} container alignItems='center'>
-                <Grid container xs={9} direction='row' alignItems='center'>
-                    <Typography color='textPrimary'>
-                        {tableTitle}
-                    </Typography>
-                </Grid>
-                <Grid item xs={2} >
-                    <DeskFilter
-                        desks={desksToTransfer}
-                        filteredDesks={deskFilter}
-                        onFilterChange={(event, value) => changeDeskFilter(value)} 
-                    />
-                </Grid>
-            </Grid>
             <Grid className={classes.content}>
                 <div className={classes.tableHeaderRow}>
                     <Typography color='primary' className={classes.counterLabel} >
                         {counterDescription}
                     </Typography>
-                    <Box justifyContent='flex-end' display='flex'>
-                        <SearchBar 
-                            validationSchema={stringAlphanum}
-                            searchBarLabel={searchBarLabel}
-                            onClick={(value: string) => changeSearchFilter(value)}
-                        />
-                        <Tooltip title='סינון'>
-                            <IconButton 
-                                color='primary'
-                                onClick={toggleFilterRow} 
-                            >
-                                <Badge
-                                    invisible={isBadgeInVisible}
-                                    color='error'
-                                    variant='dot'
-                                    anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
-                                >
-                                    <FontAwesomeIcon icon={faFilter} style={{ fontSize: '15px' }} />
-                                </Badge>
-                            </IconButton>
-                        </Tooltip>
-                        <Button
-                            color='primary'
-                            className={classes.sortResetButton}
-                            startIcon={<Refresh />}
-                            onClick={(event: any) => handleRequestSort(event, defaultOrderBy)}
-                        >
-                            {resetSortButtonText}
-                        </Button>
-                    </Box>
                 </div>
                 <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
                     <Grid item xs={12}>
-                        <Collapse in={showFilterRow}>
-                            <TableFilter
-                                statuses={allStatuses}
-                                subStatuses={allSubStatuses}
-                                filteredStatuses={statusFilter}
-                                onFilterChange={(event, value) => changeStatusFilter(value)}
-                                onClose={closeFilterRow}
-                                filteredSubStatuses={subStatusFilter}
-                                onSubStatusChange={(event, value) => changeSubStatusFilter(value)}
-                                changeInactiveUserFilter={changeInactiveUserFilter}
-                                changeUnassginedUserFilter={changeUnassginedUserFilter}
-                                inactiveUserFilter={inactiveUserFilter}
-                                unassignedUserFilter={unassignedUserFilter}
-                                timeRangeFilter={timeRangeFilter}
-                                onTimeRangeFilterChange={changeTimeRangeFilter}
-                                updateDateFilter={updateDateFilter}
-                                nonContactFilter={nonContactFilter} 
-                            />
-                        </Collapse>
+                        <TableFilter
+                            statuses={allStatuses}
+                            subStatuses={allSubStatuses}
+                            filteredStatuses={statusFilter}
+                            onFilterChange={(event, value) => changeStatusFilter(value)}
+                            filteredSubStatuses={subStatusFilter}
+                            onSubStatusChange={(event, value) => changeSubStatusFilter(value)}
+                            changeInactiveUserFilter={changeInactiveUserFilter}
+                            changeUnassginedUserFilter={changeUnassginedUserFilter}
+                            inactiveUserFilter={inactiveUserFilter}
+                            unassignedUserFilter={unassignedUserFilter}
+                            timeRangeFilter={timeRangeFilter}
+                            onTimeRangeFilterChange={changeTimeRangeFilter}
+                            updateDateFilter={updateDateFilter}
+                            nonContactFilter={nonContactFilter} 
+                            desksToTransfer={desksToTransfer}
+                            deskFilter={deskFilter}
+                            changeDeskFilter={changeDeskFilter}
+                            handleRequestSort= {handleRequestSort}
+                            changeSearchFilter={changeSearchFilter}
+                        />
                     </Grid>
                 </Grid>
                 <TableContainer ref={tableContainerRef} component={Paper} className={classes.tableContainer}>

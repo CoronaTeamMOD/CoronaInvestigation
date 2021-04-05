@@ -5,6 +5,12 @@ import { TimeRange } from 'models/TimeRange';
 const timeRanges: TimeRange[] = [
     {
         id: 10,
+        displayName: 'ת. הגעת חקירה',
+        endDate: format(new Date(),'yyyy-MM-dd'),
+        startDate: format(new Date(),'yyyy-MM-dd')
+    },
+    {
+        id: 11,
         displayName: 'הכל',
         endDate: format(new Date(),'yyyy-MM-dd'),
         startDate: format(new Date(),'yyyy-MM-dd')
@@ -37,7 +43,7 @@ const timeRanges: TimeRange[] = [
 
 export const defaultTimeRange = timeRanges[0];
 
-export const customTimeRange = timeRanges[4];
+export const customTimeRange = timeRanges[5];
 
 export const timeRangeMinDate = new Date(2020, 9, 1);
 
