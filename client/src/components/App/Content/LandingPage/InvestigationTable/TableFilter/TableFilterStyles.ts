@@ -32,13 +32,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     endCard: {
         display: 'flex',
-        flexDirection: 'column',
     },
     row: {
         flexDirection: 'row',
     },
     autocomplete: {
-        width: '12vw'
+        width: '10%',
+        marginRight: '7px',
     },
     autocompleteInput: {
         paddingRight: 'unset'

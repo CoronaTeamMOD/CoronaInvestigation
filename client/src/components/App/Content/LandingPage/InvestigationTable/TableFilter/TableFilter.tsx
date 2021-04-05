@@ -11,12 +11,12 @@ import DateRangePick from 'commons/DatePick/DateRangePick';
 import SelectDropdown from 'commons/Select/SelectDropdown';
 import InvestigationSubStatus from 'models/InvestigationSubStatus';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
+import Desk from 'models/Desk';
 
 import DeskFilter from '../DeskFilter/DeskFilter';
 import useStyles from './TableFilterStyles';
 import useTableFilter from './useTableFilter';
 import { StatusFilter as StatusFilterType, SubStatusFilter as SubStatusFilterType } from '../InvestigationTableInterfaces';
-import Desk from 'models/Desk';
 
 export const defaultOrderBy = 'defaultOrder';
 const searchBarLabel = 'מספר אפידמיולוגי, ת"ז, שם או טלפון';
@@ -147,7 +147,7 @@ const TableFilter = (props: Props) => {
                 )}
                 limitTags={1}
             />
-            <Grid className={classes.endCard} xs={3}>
+            <Grid className={classes.endCard} xs={3} direction="column">
                 <div className={classes.row}>
                     <Checkbox
                         onChange={(event) => changeUnassginedUserFilter(event.target.checked)}
