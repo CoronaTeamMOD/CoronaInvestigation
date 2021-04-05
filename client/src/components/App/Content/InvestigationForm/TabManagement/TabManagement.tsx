@@ -121,7 +121,6 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                 <Grid container item spacing={2} alignItems='center' sm={4}>
                     <Grid item className={classes.nextButton}>
                         <PrimaryButton
-                            //disabled={isLastTabDisplayed && !isTabValid(4)}
                             type='submit'
                             form={`form-${currentTab}`}
                             test-id={isLastTabDisplayed ? 'endInvestigation' : 'continueToNextStage'}
