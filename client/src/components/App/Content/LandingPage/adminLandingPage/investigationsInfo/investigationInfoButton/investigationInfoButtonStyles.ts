@@ -8,7 +8,8 @@ const useStyles = makeStyles({
         margin: '0 1vw',
         flexBasis: 0,
         flexGrow: 1,
-        height: '10vh'
+        maxHeight: '10vh',
+        minHeight: '100px',
     },
 });
 

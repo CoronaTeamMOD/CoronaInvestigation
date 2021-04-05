@@ -5,11 +5,7 @@ export const cardHeight = '35vh';
 
 const useStyles = makeStyles({
     desksCard: {
-        height: '35vh',
         borderRadius: '1vw',
-    },
-    desksCardContent: {
-        height: '30vh',
     },
     desksCardActions: {
         direction: 'ltr', 
@@ -17,6 +13,8 @@ const useStyles = makeStyles({
         flip: false
     },
     desksWrapper: {
+        minHeight: '150px',
+        maxHeight: '20vh',
         overflowY: 'auto',
     }
 });
