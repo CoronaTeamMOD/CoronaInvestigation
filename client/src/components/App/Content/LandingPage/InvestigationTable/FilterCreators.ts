@@ -98,7 +98,7 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
             { [InvestigationsFilterByFields.UNALLOCATED_USER]: null };
     },
     [InvestigationsFilterByFields.TIME_RANGE]: (timeRangeFilter: TimeRange) => {
-        if (timeRangeFilter.id !== allTimeRangeId) {
+        if (!allTimeRangeId.includes(timeRangeFilter.id)) {
             return {
                 [InvestigationsFilterByFields.TIME_RANGE]: {
                     creationDate: {

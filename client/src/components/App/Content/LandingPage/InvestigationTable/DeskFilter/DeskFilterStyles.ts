@@ -16,9 +16,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         textOverflow: 'ellipsis',
     },
     autocomplete: {
-        width: '70%',
         height: '60%',
-         marginBottom: theme.spacing(1),
 
         '& .MuiInputBase-root': {
             fontSize: '0.7vw'

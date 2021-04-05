@@ -11,6 +11,20 @@ const useStyles = makeStyles((theme: Theme) => ({
         maxHeight: '80%',
         justifyContent: 'space-between'
     },
+    sortResetButton: {
+        fontWeight: 600,
+        minWidth: '6px',
+        marginLeft: '8px',
+    },
+    counterLabel: {
+        fontWeight: 600
+    },
+    tableHeaderRow: {
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        display: 'flex',
+    },
     startCard: {
         display: 'flex',
         justifyContent: 'flex-start',
@@ -18,11 +32,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     endCard: {
         display: 'flex',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
+    },
+    row: {
+        flexDirection: 'row',
     },
     autocomplete: {
-        width: '20vw'
+        width: '10%',
+        marginRight: '7px',
     },
     autocompleteInput: {
         paddingRight: 'unset'
@@ -30,24 +46,29 @@ const useStyles = makeStyles((theme: Theme) => ({
     autocompleteInputText: {
         width: 'unset'
     },
+    checkbox: {
+        padding: '2px'
+    },
     optionCheckbox: {
         height: '0.5vh',
         marginLeft: theme.spacing(1),
         flip: false
-    }, 
+    },
     headTitle: {
         fontSize: '1.2vw',
         paddingRight: '1vw'
     },
     title: {
         fontSize: '1vw',
-        padding: '0 0.4vw'
+        padding: '0 0.4vw',
+        display: 'inline'
     },
     formControl: {
         padding: '0 0.4vw'
     },
-    collapse: {
-        maxWidth: '30%'
+    formControlCustomTimeRange: {
+        padding: '0 0.4vw',
+        margin: '43px 0 10px 0'
     },
     option: {
         fontSize: '1vw',
@@ -61,6 +82,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     timeRangeError: {
         fontSize: '1vw',
     },
+    column: {
+        flexDirection: 'column'
+    }
 }));
 
 export default useStyles;
