@@ -15,7 +15,7 @@ const useStyles = makeStyles({
         overflowY: 'scroll'
     },
     errorIcon:{
-        color: '#ffcc00'
+        color: theme.palette.error.main
     },
     icon:{
         marginTop: theme.spacing(1)

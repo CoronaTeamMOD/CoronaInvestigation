@@ -2,18 +2,15 @@ import React from 'react';
 import * as yup from 'yup';
 
 import { ALPHANUMERIC_TEXT_REGEX } from 'commons/Regex/Regex';
+import { max50LengthErrorMessage, alphaNumericErrorMessage } from 'commons/Schema/messages';
 
 import AlphanumericTextFieldType from './AlphanumericTextFieldTypes';
 import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventionTextField';
 
-const errorMessage = 'השדה יכול להכיל רק אותיות ומספרים';
-const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
-
 export const stringAlphanum = yup
   .string()
-  .matches(ALPHANUMERIC_TEXT_REGEX, errorMessage)
-  .max(50, maxLengthErrorMessage);
-
+  .matches(ALPHANUMERIC_TEXT_REGEX, alphaNumericErrorMessage)
+  .max(50, max50LengthErrorMessage);
 
 const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
   return (

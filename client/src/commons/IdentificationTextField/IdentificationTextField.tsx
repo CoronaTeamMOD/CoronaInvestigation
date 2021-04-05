@@ -29,7 +29,6 @@ interface Props{
     label?: string,
     className?: string,
     isPassport: boolean
-}
-
+};
 
 export default IdentificationTextField;

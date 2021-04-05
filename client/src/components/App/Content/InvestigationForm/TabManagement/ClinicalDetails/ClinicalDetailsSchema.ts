@@ -1,11 +1,10 @@
 import * as yup from 'yup';
 import { startOfTomorrow, subDays } from 'date-fns';
 
+import { requiredText, invalidDateText } from 'commons/Schema/messages';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { getMinimalSymptomsStartDate, getMinimalStartIsolationDate, maxInvestigatedDays, maxIsolationDays } from 'Utils/ClinicalDetails/symptomsUtils';
 
-const invalidDateText = 'תאריך לא תקין';
-const requiredText = 'שדה זה הוא חובה';
 const StartDateAfterEndDateText = 'תאריך ההתחלה צריך להיות מוקדם יותר מתאריך הסיום';
 const EndDateBeforeStartDateText = 'תאריך הסיום צריך להיות מאוחר יותר מתאריך ההתחלה';
 const futureDateText = 'לא ניתן להכניס תאריך עתידי';

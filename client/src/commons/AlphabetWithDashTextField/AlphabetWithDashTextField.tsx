@@ -2,18 +2,15 @@ import React from 'react';
 import * as yup from 'yup';
 
 import { ALPHBET_DASH_TEXT_REGEX } from 'commons/Regex/Regex';
+import { max50LengthErrorMessage, alphbetDashErrorMessage } from 'commons/Schema/messages';
 
 import AlphbetWithDashTextFieldType from './AlphabetWithDashTextFieldTypes';
 import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventionTextField';
 
-const errorMessage = 'השדה יכול להכיל אותיות, רווחים ומקפים';
-const maxLengthErrorMessage = 'השדה יכול להכיל 50 תווים בלבד';
-
 const stringAlphabetWithDash = yup
   .string()
-  .matches(ALPHBET_DASH_TEXT_REGEX, errorMessage)
-  .max(50, maxLengthErrorMessage);
-
+  .matches(ALPHBET_DASH_TEXT_REGEX, alphbetDashErrorMessage)
+  .max(50, max50LengthErrorMessage);
 
 const AlphabetWithDashTextField: AlphbetWithDashTextFieldType = (props) => {
   return (

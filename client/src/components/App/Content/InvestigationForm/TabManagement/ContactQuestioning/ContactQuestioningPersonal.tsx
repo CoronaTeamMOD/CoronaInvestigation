@@ -9,8 +9,9 @@ import formatDate from 'Utils/DateUtils/formatDate';
 import FieldName from 'commons/FieldName/FieldName';
 import HelpIcon from 'commons/Icons/HelpIcon/HelpIcon';
 import InteractedContact from 'models/InteractedContact';
-import useContactFields from 'Utils/Contacts/useContactFields';
+import { invalidDateText } from 'commons/Schema/messages';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
+import useContactFields from 'Utils/Contacts/useContactFields';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import NumericTextField from 'commons/NoContextElements/NumericTextField';
@@ -18,7 +19,6 @@ import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextFie
 import IdentificationTextField from 'commons/NoContextElements/IdentificationTextField';
 
 import useStyles from './ContactQuestioningStyles';
-import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 const passportInfoMessage = 'ניתן להזין בשדה דרכון 10 תווים/ 15 תווים ו-/';
@@ -161,7 +161,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                     maxDate={new Date()}
                                     maxDateMessage='תאריך לידה לא יכול להיות יותר גדול מהיום'
                                     useBigCalender={false}
-                                    labelText={dateError ? 'תאריך לא ולידי' : 'תאריך לידה'}
+                                    labelText={dateError ? invalidDateText : 'תאריך לידה'}
                                     error={Boolean(dateError)}
                                     onChange={(newDate: Date) => {
                                         props.onChange(newDate);
