@@ -36,7 +36,7 @@ const useTimeRangeFilterCard = () => {
     const onStartDateSelect = (startDateInput: Date) => {
         let startDate = '';
         try {
-            startDate = format(startDateInput,'yyyy-MM-dd');
+            startDate = format(startDateInput,'yyyy-MM-dd') + ' 00:00:00';
             setTimeRangeFilter((timeRangeFilter) => {
                 return {...timeRangeFilter, startDate};
             });
@@ -49,7 +49,7 @@ const useTimeRangeFilterCard = () => {
     const onEndDateSelect = (endDateInput :Date) => {
         let endDate = '';
         try {
-            endDate = format(endDateInput,'yyyy-MM-dd');
+            endDate = format(endDateInput,'yyyy-MM-dd') + ' 23:59:59';
             setTimeRangeFilter((timeRangeFilter) => {
                 return {...timeRangeFilter, endDate};
             });

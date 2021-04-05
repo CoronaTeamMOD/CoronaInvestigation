@@ -5,18 +5,18 @@ import UserPatch from '../../Models/User/UserPatch';
 import { Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import handleUsersRequest from '../../middlewares/HandleUsersRequest';
-import handleCountyRequest from '../../middlewares/HandleCountyRequest';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
 import UpdateUserResponse from '../../Models/User/UpdateUserResponse';
+import handleCountyRequest from '../../middlewares/HandleCountyRequest';
 import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
-import { GET_ALL_COUNTIES_OF_DISTRICT } from '../../DBService/Counties/Query';
 import GetAllUserTypesResponse from '../../Models/User/GetAllUserTypesResponse';
 import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { 
-    UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, UPDATE_INVESTIGATOR_BY_GROUP_ID, 
-    UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY, UPDATE_USER, DEACTIVATE_ALL_COUNTY_USERS 
+    UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, 
+    UPDATE_INVESTIGATOR_BY_GROUP_ID, UPDATE_SOURCE_ORGANIZATION, UPDATE_DESK, UPDATE_COUNTY, 
+    UPDATE_USER, DEACTIVATE_ALL_COUNTY_USERS, UPDATE_DISTRICT, UPDATE_USER_TYPE 
 } from '../../DBService/Users/Mutation';
 import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
@@ -87,7 +87,7 @@ usersRoute.post('/updateDesk', handleUsersRequest, (request: Request, response: 
             updateDeskLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.sendStatus(errorStatusCode).send(error);
         })
-})
+});
 
 usersRoute.post('/updateCounty', handleUsersRequest, (request: Request, response: Response) => {
     const updateCountyLogger = logger.setup({
@@ -114,38 +114,51 @@ usersRoute.post('/updateCounty', handleUsersRequest, (request: Request, response
 });
 
 
-usersRoute.post('/updateDistrict', handleUsersRequest, (request: Request, response: Response) => {
+usersRoute.post('/updateDistrict', (request: Request, response: Response) => {
+    //add middleware that checks the user is developer
     const updateDistrictLogger = logger.setup({
         workflow: 'update user district',
         user: response.locals.user.id,
     });
     const parameters = {
-        district: request.body.district
+        userIdInput: response.locals.user.id,
+        districtIdInput: request.body.district
     };
     updateDistrictLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-    graphqlRequest(GET_ALL_COUNTIES_OF_DISTRICT, response.locals, parameters)
+    graphqlRequest(UPDATE_DISTRICT, response.locals, parameters)
     .then(result => {
-        const investigationGroup = result.data.allCounties.nodes[0].id;
-        const countyDisplayName =result.data.allCounties.nodes[0].displayName
-        const updateCountyVariables = {
-            id: response.locals.user.id,
-            investigationGroup
-        };
-
-        updateDistrictLogger.info(launchingDBRequestLog(updateCountyVariables), Severity.LOW);
-        graphqlRequest(UPDATE_COUNTY, response.locals, updateCountyVariables)
-            .then(result => {
-                updateDistrictLogger.info(validDBResponseLog, Severity.LOW);
-                response.send({user: result.data.updateUserById.user, countyDisplayName});
-            })
-            .catch(error => {
-                updateDistrictLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-            })
+        updateDistrictLogger.info(validDBResponseLog, Severity.LOW);
+        response.send(result.data.updateUserDistrict.json);
     })
     .catch(error => {
         updateDistrictLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.sendStatus(errorStatusCode).send(error);
     })
+});
+
+usersRoute.post('/updateUserType', (request: Request, response: Response) => {
+    //add middleware that checks the user is developer
+    const updateUserTypeLogger = logger.setup({
+        workflow: 'update user type',
+        user: response.locals.user.id,
+    });
+
+    const parameters = {
+        id: request.body.userId,
+        userType: request.body.userType
+    };
+
+    updateUserTypeLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+
+    graphqlRequest(UPDATE_USER_TYPE, response.locals, parameters)
+        .then(result => {
+            updateUserTypeLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data.updateUserById.user);
+        })
+        .catch(error => {
+            updateUserTypeLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.sendStatus(errorStatusCode).send(error);
+        })
 });
 
 const updateIsUserActive = (response: Response, id: string, isActive: Boolean) => {
@@ -493,7 +506,7 @@ const convertToUser = (user: any) => ({
     city: user.cityByCity,
     isActive: user.isActive,
     languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
-    userType: user.userTypeByUserType.displayName,
+    userType: { id:user.userTypeByUserType.id, displayName: user.userTypeByUserType.displayName},
     desk: { id: user.deskByDeskId?.id, deskName: user.deskByDeskId?.deskName},
     investigationGroup: {id: user.countyByInvestigationGroup?.id ,displayName: user.countyByInvestigationGroup?.displayName},
     sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName,

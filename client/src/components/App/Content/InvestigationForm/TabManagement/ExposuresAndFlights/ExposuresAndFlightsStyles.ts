@@ -2,7 +2,6 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles({
     subForm: {
-        width: '93vw',
         padding: '3vh 1.5vw 3vw 3vh'
     },
     additionalInformationForm: {
@@ -12,12 +11,12 @@ const useStyles = makeStyles({
     },
     contactToggle: {
         '@media screen and (max-width: 1900px) and (min-width: 1280px)': {
-            marginLeft: '-9vw',
+            marginLeft: '-9%',
         },
-        marginLeft: '-13vw',
+        marginLeft: '-13%',
     },
     abroadToggle: {
-        marginLeft: '-17vw',
+        marginLeft: '-17%',
     }
 });
 

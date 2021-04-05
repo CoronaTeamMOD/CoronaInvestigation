@@ -25,7 +25,7 @@ const DesksFilterCard = (props: Props): JSX.Element => {
     return (
         <LoadingCard isLoading={countyDesks.length === 0} width={cardWidth} height={cardHeight} className={classes.desksCard}>
             <CardContent>
-                <Box display='flex' flexDirection='column' className={classes.desksCardContent}>
+                <Box display='flex' flexDirection='column'>
                     <Typography variant='h6' id='desks-card-headline'>
                         <b>הדסקים בהם הינך צופה</b>
                     </Typography>

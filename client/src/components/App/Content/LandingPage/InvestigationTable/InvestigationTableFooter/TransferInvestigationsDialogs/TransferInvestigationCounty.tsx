@@ -4,11 +4,10 @@ import { SweetAlertResult } from 'sweetalert2';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
 import { FormProvider, Controller, useForm } from 'react-hook-form';
-import { Button, DialogActions, TextField, Typography, useTheme } from '@material-ui/core';
+import { Button, DialogActions, TextField, Typography } from '@material-ui/core';
 
 import County from 'models/County';
 import StoreStateType from 'redux/storeStateType';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useStyles from './TransferDialogsStyles';
 import validationSchema from './TransferInvestigationCountySchema';
@@ -24,40 +23,26 @@ const tranferCountyFormName = 'transferCounty';
 
 const TransferInvestigationCounty = (props: Props) => {
 
-    const { alertWarning } = useCustomSwal();
-
-    const theme = useTheme();
-
     const { onClose, onConfirm, onSuccess } = props;
+
+    const classes = useStyles();
 
     const methods = useForm({
         mode: 'all',
         resolver: yupResolver(validationSchema),
         defaultValues
-    })
+    });
 
     const allCounties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
 
     const onDialogConfirm = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         methods.handleSubmit((data) => {
-            alertWarning(`האם אתה בטוח שתרצה להעביר חקירות אלו לנפת ${data[TransferInvestigationInputsNames.COUNTY].displayName}`, {
-                showCancelButton: true,
-                cancelButtonText: 'בטל',
-                cancelButtonColor: theme.palette.error.main,
-                confirmButtonColor: theme.palette.primary.main,
-                confirmButtonText: 'כן, המשך'
-            }).then((result) => {
-                if (result.value) {
-                    onConfirm(data[TransferInvestigationInputsNames.COUNTY], data[TransferInvestigationInputsNames.REASON] || '');
-                    onSuccess();
-                    onClose();
-                }
-            })
+            onConfirm(data[TransferInvestigationInputsNames.COUNTY], data[TransferInvestigationInputsNames.REASON] || '');
+            onSuccess();
+            onClose();         
         })()
-    }
-
-    const classes = useStyles();
+    };
 
     return (
         <FormProvider {...methods}>
@@ -126,7 +111,7 @@ const TransferInvestigationCounty = (props: Props) => {
             </form>
         </FormProvider>
     )
-}
+};
 
 interface Props {
     onClose: () => void;

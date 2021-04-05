@@ -39,12 +39,10 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                         control={control}
                         render={(props) => (
                             <Toggle
-                                disabled={wasInvestigationReopend}
                                 test-id='areThereSymptoms'
                                 value={props.value}
                                 onChange={(e, value) => {
                                     if (value !== null) {
-                                        handleDidSymptomsDateChangeOccur();
                                         props.onChange(value);
                                     }
                                 }}
@@ -60,30 +58,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
             <FormRowWithInput fieldName=''>
                 <Collapse in={watchDoesHaveSymptoms}>
                     <Grid item xs={7}>
-                        <div className={classes.symptomsDateCheckBox}>
-                            <Controller
-                                name={ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN}
-                                control={control}
-                                render={(props) => (
-                                    <CustomCheckbox
-                                        testId='unkownSymptomsDate'
-                                        checkboxElements={[{
-                                            disabled:wasInvestigationReopend,
-                                            value: props.value,
-                                            labelText: 'תאריך התחלת תסמינים לא ידוע',
-                                            checked: props.value,
-                                            onChange: (e, value) => {
-                                                if (value !== null) {
-                                                    handleDidSymptomsDateChangeOccur();
-                                                    props.onChange(value);
-                                                }
-                                            }
-                                        }]}
-                                    />
-                                )}
-                            />
-                        </div>
-                        <Collapse in={!watchIsSymptomsDateUnknown}>
+                    <Collapse in={!watchIsSymptomsDateUnknown}>
                             <div className={classes.dates}>
                                 {
                                     <Controller
@@ -91,7 +66,6 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                         control={control}
                                         render={(props) => (
                                             <DatePick
-                                                disabled={wasInvestigationReopend}
                                                 onBlur={props.onBlur}
                                                 maxDate={new Date()}
                                                 minDate={getMinimalSymptomsStartDate(validationDate)}
@@ -113,6 +87,28 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 }
                             </div>
                         </Collapse>
+                        <div className={classes.symptomsDateCheckBox}>
+                            <Controller
+                                name={ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN}
+                                control={control}
+                                render={(props) => (
+                                    <CustomCheckbox
+                                        testId='unkownSymptomsDate'
+                                        checkboxElements={[{
+                                            value: props.value,
+                                            labelText: 'תאריך התחלת תסמינים לא ידוע',
+                                            checked: props.value,
+                                            onChange: (e, value) => {
+                                                if (value !== null) {
+                                                    handleDidSymptomsDateChangeOccur();
+                                                    props.onChange(value);
+                                                }
+                                            }
+                                        }]}
+                                    />
+                                )}
+                            />
+                        </div>
                         {
                             watchDoesHaveSymptoms &&
                             <Typography color={errors[ClinicalDetailsFields.SYMPTOMS] ? 'error' : 'initial'}>תסמינים:

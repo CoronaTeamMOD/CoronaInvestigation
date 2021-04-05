@@ -147,9 +147,9 @@ describe('<TimeRangeFilterCard />', () => {
             });
             wrapper.update();
             startdate = wrapper.find(startSelector);
-            const inputDate = new Date(String(startdate.prop('value')));
+            const inputDate = startdate.prop('value');
             
-            expect(inputDate.getTime()).toBe(testDate.getTime());
+            expect(inputDate).toBe('2020-09-11 00:00:00');
         });
 
         it('renders endDate', () => {
@@ -170,9 +170,9 @@ describe('<TimeRangeFilterCard />', () => {
             });
             wrapper.update();
             endDate = wrapper.find(endSelector);
-            const inputDate = new Date(String(endDate.prop('value')));
+            const inputDate = endDate.prop('value');
             
-            expect(inputDate.getTime()).toBe(testDate.getTime());
+            expect(inputDate).toBe('2020-09-12 23:59:59');
         });
 
         it('shows error' , () => {
@@ -270,8 +270,8 @@ describe('<TimeRangeFilterCard />', () => {
             expect(onUpdateButtonClicked).toHaveBeenCalled();
             expect(onUpdateButtonClicked).toHaveBeenCalledWith({
                 ...customTimeRange,
-                startDate : '2020-09-11',
-                endDate : '2020-09-12',
+                startDate : '2020-09-11 00:00:00',
+                endDate : '2020-09-12 23:59:59',
             });
         });
     });

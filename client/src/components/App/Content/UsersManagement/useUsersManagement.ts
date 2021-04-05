@@ -20,6 +20,7 @@ import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import { defaultPage } from './UsersManagement';
 import { SortOrderTableHeadersNames } from './UsersManagementTableHeaders'
+import { setDisplayedCounty, setDisplayedDistrict, setInvestigationGroup } from 'redux/User/userActionCreators';
 
 interface UserDialog {
     isOpen: boolean,
@@ -33,7 +34,7 @@ interface CellNameSort {
 
 const unassignedUserName = 'לא משויך';
 
-const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUsersManagementInCome): useUsersManagementOutCome => {
+const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage, isDeveloper }: useUsersManagementInCome): useUsersManagementOutCome => {
     
     const [users, setUsers] = useState<SignUpUser[]>([]);
     const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([])
@@ -236,7 +237,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     };
 
     const setUserCounty = (countyId: number, userId: string) => {
-        if(userId != user.id){
+        if(userId != user.id || isDeveloper){
             const setUpdateCountyLogger = logger.setup('Updating user county');
             setUpdateCountyLogger.info(`send request to server for updating user county to ${countyId}`, Severity.LOW);
             setIsLoading(true);
@@ -245,9 +246,16 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                 investigationGroup: countyId,
                 userId
             }).then((result) => {
-                if(result.data)
-                setUpdateCountyLogger.info('updated user county successfully', Severity.LOW);
-                fetchUsers();
+                if(result.data) {
+                    if (isDeveloper && userId === user.id) {
+                        setInvestigationGroup(result.data.countyByInvestigationGroup.districtId, result.data.countyByInvestigationGroup.displayName);
+                        setDisplayedDistrict(result.data.countyByInvestigationGroup.districtId);
+                        setDisplayedCounty(countyId);
+                    } else {
+                        fetchUsers();
+                    }
+                    setUpdateCountyLogger.info('updated user county successfully', Severity.LOW);
+                };
             }).catch((error) => {
                 alertError('לא הצלחנו לעדכן את הנפה של המשתמש');
                 setUpdateCountyLogger.error(`error in updating user county due to ${error}`, Severity.HIGH);
@@ -286,6 +294,25 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         });
     };
 
+    const setUserType = (userTypeId: number, userId: string) => {
+        const updateUserTypeLogger = logger.setup('Updating user type');
+        updateUserTypeLogger.info(`send request to server for updating user type to ${userTypeId}`, Severity.LOW);
+        setIsLoading(true);
+        axios.post('users/updateUserType', {
+            userType: userTypeId,
+            userId
+        }).then((result) => {
+            if(result.data) {
+                updateUserTypeLogger.info('updated user type successfully', Severity.LOW);
+                fetchUsers();  
+            }
+        }).catch((error) => {
+            alertError('לא הצלחנו לעדכן את הסוג של המשתמש');
+            updateUserTypeLogger.error(`error in updating user type due to ${error}`, Severity.HIGH);
+        })
+        .finally(() => setIsLoading(false));
+    };
+
     return {
         users,
         sourcesOrganization,
@@ -304,7 +331,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         setUserDesk,
         setUserCounty,
         handleDeactivateAllUsersCounty,
-        counter
+        counter,
+        setUserType
     };
 }
 
@@ -313,6 +341,7 @@ interface useUsersManagementInCome {
     rowsPerPage: number;
     cellNameSort: CellNameSort;
     setPage: React.Dispatch<React.SetStateAction<number>>;
+    isDeveloper: Boolean;
 };
 
 interface useUsersManagementOutCome {
@@ -334,6 +363,7 @@ interface useUsersManagementOutCome {
     setUserCounty: (countyId: number, userId: string) => void;
     handleDeactivateAllUsersCounty: () => void;
     counter: number;
+    setUserType: (userTypeId: number, userId: string) => void;
 };
 
 export default useUsersManagement;

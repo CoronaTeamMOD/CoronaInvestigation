@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import { Edit } from '@material-ui/icons';
 import { yupResolver } from '@hookform/resolvers';
 import React, { useEffect, useState, useContext } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
@@ -79,7 +78,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     };
 
     useEffect(() => {
-        methods.reset(StaticFields);
+        methods.reset({fullName, identityType, identityNumber});
     }, [fullName, identityType, identityNumber])
 
     const handleLeaveInvestigationClick = (event: React.ChangeEvent<{}>) => {
@@ -129,8 +128,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                         <div className={classes.investigationHeaderInfo}>
                             {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ? 
                                 <>
-                                    <Edit fontSize='inherit'/>
-                                    <Typography className={classes.investigationTitle}>
+                                    <Typography className={classes.investigationNameTitle}>
                                         {'שם:'}
                                     </Typography>
                                     <Controller 
@@ -152,7 +150,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     />
                                 </>
                                 :
-                                <Typography className={classes.investigationTitle}>
+                                <Typography className={classes.investigationNameTitle}>
                                     {`שם: ${fullName}`}
                                 </Typography>
                             }

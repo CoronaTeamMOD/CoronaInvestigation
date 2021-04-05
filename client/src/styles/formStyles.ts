@@ -43,14 +43,7 @@ const useStyles = makeStyles({
     fieldContainer: {
         display: 'flex',
         alignItems: 'center',
-        margin: '2vh',
-        '@media screen and (min-width: 1870px)': {
-            marginRight: '-3vw'
-        },
-        '@media screen and (max-width: 1000px)': {
-            marginRight: '0.5vw',
-        },
-        marginRight: '-3vw',
+        margin: '10px 15px 10px 0'
     },
     fontSize15: {
         fontSize: 16,

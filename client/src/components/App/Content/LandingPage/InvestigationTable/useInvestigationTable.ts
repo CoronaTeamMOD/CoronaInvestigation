@@ -11,9 +11,9 @@ import logger from 'logger/logger';
 import { persistor } from 'redux/store';
 import { Severity } from 'models/Logger';
 import { TimeRange } from 'models/TimeRange';
-import UserTypeCodes from 'models/enums/UserTypeCodes';
 import Investigator from 'models/Investigator';
 import StoreStateType from 'redux/storeStateType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import { BC_TABS_NAME } from 'models/BroadcastMessage';
 import usePageRefresh from 'Utils/vendor/usePageRefresh';
 import { truncateDate } from 'Utils/DateUtils/formatDate';
@@ -21,16 +21,17 @@ import InvestigatorOption from 'models/InvestigatorOption';
 import { defaultTimeRange } from 'models/enums/timeRanges';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import InvestigationSubStatus from 'models/InvestigationSubStatus';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import getColorByGroupId from 'Utils/GroupedInvestigations/getColorByGroupId';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import { setComplexReasons } from 'redux/ComplexReasons/complexReasonsActionCreators';
+import { setComplexReasonsId } from 'redux/Investigation/investigationActionCreators';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
 import AllocatedInvestigator from 'models/InvestigationTable/AllocateInvestigatorDialog/AllocatedInvestigator';
-import { setComplexReasons } from 'redux/ComplexReasons/complexReasonsActionCreators';
-import { setComplexReasonsId } from 'redux/Investigation/investigationActionCreators';
 import { resetInvestigationState, setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
@@ -41,12 +42,8 @@ import {
     TableHeadersNames, IndexedInvestigationData, investigatorIdPropertyName, TableKeys, HiddenTableKeys
 } from './InvestigationTablesHeaders';
 import { DeskFilter, HistoryState, StatusFilter, SubStatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
-import InvestigationSubStatus from 'models/InvestigationSubStatus';
 
 const investigationURL = '/investigation';
-const getFlooredRandomNumber = (min: number, max: number): number => (
-    Math.floor(Math.random() * (max - min) + min)
-)
 
 export const createRowData = (
     epidemiologyNumber: number,
@@ -118,7 +115,7 @@ export const createRowData = (
 export interface SelectedRow {
     epidemiologyNumber: number;
     groupId: string;
-}
+};
 
 export const DEFAULT_SELECTED_ROW: SelectedRow = {
     epidemiologyNumber: -1,
@@ -130,11 +127,11 @@ const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את החקירה';
 const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החקירה';
 const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף'
 export const transferredSubStatus = 'נדרשת העברה';
-
 const welcomeMessage = 'ניהול חקירות';
 const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
+
     const { setSelectedRow, setAllStatuses, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations,
         investigationColor, setAllSubStatuses } = parameters;
 
@@ -192,7 +189,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: updateDateFilterToSet && Object.values(updateDateFilterToSet)[0],
             [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: nonContactFilterToSet && Object.values(nonContactFilterToSet)[0],
         }
-    }
+    };
     
     const [filterRules, setFitlerRules] = useState<any>(getFilterRules());
     const [isBadgeInVisible, setIsBadgeInVisible] = useState<boolean>(true);
@@ -237,7 +234,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const changeSearchFilter = (searchQuery: string) => {
         handleFilterChange(filterCreators.SEARCH_BAR(searchQuery)) 
-    }
+    };
     
     const changeStatusFilter = (statuses: InvestigationMainStatus[]) => {
         const statusesIds = statuses.map(status => status.id);
@@ -270,7 +267,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             handleFilterChange(filterCreators.UNASSIGNED_USER(value));
         }
         setCurrentPage(defaultPage);
-    }
+    };
 
     const changeInactiveUserFilter = (value: boolean) => {
         updateFilterHistory('inactiveUserFilter', value);
@@ -287,7 +284,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             handleFilterChange(filterCreators.INACTIVE_USER(value));
         }
         setCurrentPage(defaultPage);
-    }
+    };
 
     const updateFilterHistory = (key: string, value: any) => {
         const { location: { state } } = history;
@@ -322,7 +319,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 alertError('לא הצלחנו לשלוף את כל הסטטוסים האפשריים לסינון');
                 investigationStatusesLogger.error(err, Severity.HIGH);
             })
-    }
+    };
 
     const fetchAllInvestigationComplexityReasons = () => {
         const investigationStatusesLogger = logger.setup('GraphQL GET statuses request to the DB');
@@ -340,7 +337,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 alertError('לא הצלחנו לשלוף את כל הסיבות לחקירות מורכבות');
                 investigationStatusesLogger.error(err, Severity.HIGH);
             })
-    }
+    };
 
     const fetchAllInvestigationSubStatuses = () => {
         const subStatusesLogger = logger.setup('GraphQL GET sub statuses request to the DB');
@@ -358,7 +355,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 subStatusesLogger.error(err, Severity.HIGH);
             })
     };
-
 
     useEffect(() => {
         resetInvestigationState();
@@ -392,7 +388,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             delete filterRulesToSet[Object.keys(filterBy)[0]]
         }
         setFitlerRules(filterRulesToSet);
-    }  
+    };
 
     const fetchInvestigationsAxiosRequest = (): any => {
         const investigationsLogger = logger.setup('Getting Investigations');
@@ -411,15 +407,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
         investigationsLogger.info('user isnt admin so landingPage/investigations route is chosen', Severity.LOW);
         return axios.post('/landingPage/investigations', requestData);
-    }
+    };
 
     const sortUsersByAvailability = (firstUser: User, secondUser: User) => {
         return (
             firstUser.newInvestigationsCount - secondUser.newInvestigationsCount 
             || firstUser.activeInvestigationsCount - secondUser.activeInvestigationsCount
         )
-    }
-
+    };
 
     const fetchAllCountyUsers = async () => {
         const countyUsersLogger = logger.setup('Getting group users');
@@ -450,7 +445,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const sortedCountyUsers = new Map(Array.from(countyUsers.entries())
         .sort((fisrtUser, secondUser) => sortUsersByAvailability(fisrtUser[1], secondUser[1])));
         return sortedCountyUsers;
-    }
+    };
 
     const getFormattedDate = (date: string) => {
         return format(truncateDate(date), 'dd/MM')
@@ -658,7 +653,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             });
             moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
         }
-    }
+    };
 
     const convertToIndexedRow = (row: InvestigationTableRow): IndexedInvestigationData => {
         return {
@@ -696,19 +691,19 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.selfInvestigationStatus]: row.selfInvestigationStatus,
             [TableHeadersNames.selfInvestigationUpdateTime]: row.selfInvestigationUpdateTime,
         }
-    }
+    };
 
     const getInvestigationsOldValues = (investigations: InvestigationTableRow[], key: TableKeys, isCounty?: boolean) => (
         investigations
         .map(investigation => `${investigation.epidemiologyNumber}: ${isCounty ? investigation.county.id : convertToIndexedRow(investigation)[key as TableHeadersNames]}`)
         .join(', ')
-    )
+    );
 
     const logInvestigationTransfer = (epidemiologyNumbers: number[], key: TableKeys, newValue: number | string, reason?: string) => {
         const investigations =  rows.filter(investigation => epidemiologyNumbers.includes(investigation.epidemiologyNumber))
         const investigationsPreviousValues = getInvestigationsOldValues(investigations, key, key  === HiddenTableKeys.county);
         return `launching request to transfer the investigations ${key} to ${newValue} from their old values: {${investigationsPreviousValues}} ${reason ? `due to ${reason}` : ''}`;
-    }
+    };
 
     const logGroupTransfer = (groupIds: string[], key: TableKeys, newValue: number | string, reason?: string) => {
         const groups =  Array.from(allGroupedInvestigations.keys()).filter(groupId => groupIds.includes(groupId))
@@ -717,12 +712,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             (allGroupedInvestigations.get(groupId) as InvestigationTableRow[], key, key  === HiddenTableKeys.county)}}`)
         .join(', ');
         return `launching request to transfer the groups investigations ${key} to ${newValue} from their old values: ${investigationsPreviousValues} ${reason ? `due to ${reason}` : ''}`;
-    }
+    };
 
     const getUserMapKeyByValue = (map: Map<string, User>, value: string): string => {
         const key = Array.from(map.keys()).find(key => map.get(key)?.userName === value);
         return key ? key : ''
-    }
+    };
 
     const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => {
         const changeGroupsInvestigatorLogger = logger.setup('Change groups investigator');
@@ -833,7 +828,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             changeDeskLogger.error(`couldn't change the desk due to ${error}`, Severity.HIGH);
             alertError(UPDATE_ERROR_TITLE);
         }
-    }
+    };
 
     const changeInvestigationCounty = (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => {
         const changeCountyLogger = logger.setup('Change Investigations County');
@@ -850,7 +845,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             changeCountyLogger.error(`couldn't change the county for ${epidemiologyNumbers} due to ${error}`, Severity.HIGH);
             alertError(UPDATE_ERROR_TITLE);
         }
-    }
+    };
 
     const getDefaultCellStyles = (cellKey: string) => {
         let classNames: string[] = [];
@@ -867,7 +862,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
 
         return classNames;
-    }
+    };
 
     const getNestedCellStyle = (isLast: boolean) => (cellKey: string) => {
         let classNames = getDefaultCellStyles(cellKey);
@@ -879,7 +874,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
 
         return classNames;
-    }
+    };
 
     const getRegularCellStyle = (rowIndex: number, isGroupShown: boolean) => (cellKey: string) => {
         let classNames = getDefaultCellStyles(cellKey);
@@ -895,7 +890,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
 
         return classNames;
-    }
+    };
 
     const cellNeedsABorder = (rowIndex: number) => {
         const currentRow = rows[rowIndex];
@@ -911,13 +906,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             isNotLastRow &&
             hasATestDate &&
             isLastOfDate)
-    }
+    };
 
     const sortInvestigationTable = (orderByValue: string) => {
         setIsDefaultOrder(orderByValue === defaultOrderBy);
         setOrderBy(orderByValue);
         setCurrentPage(defaultPage);
-    }
+    };
 
     const fetchInvestigationsByGroupId = async (groupId: string): Promise<InvestigationTableRow[]> => {
         const investigationsByGroupIdLogger = logger.setup('get investigations by group id');
@@ -999,7 +994,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         } finally {
             setIsLoading(false);
         }
-    }
+    };
 
     const isAdmin = userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN;
 
@@ -1011,7 +1006,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             return noAdminFilterTitle;
         }
         return filterTitle || noAdminFilterTitle;
-    }, [rows])
+    }, [rows]);
 
     const fetchAllGroupedInvestigations = async () => {
         const allGroupIds = new Set<string>();
@@ -1028,8 +1023,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 })
             );
         }
-    }
-
+    };
 
     return {
         tableRows: rows,

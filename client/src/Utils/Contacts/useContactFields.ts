@@ -31,8 +31,14 @@ export enum ValidationReason {
 
 const COMPLETE_CONTACT_QUESTIONING_STATUS = 'הושלם התחקור';
 
-const mandatoryQuarantineFields = [InteractedContactFields.IDENTIFICATION_NUMBER, InteractedContactFields.IDENTIFICATION_TYPE,
-    `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`, InteractedContactFields.PHONE_NUMBER, InteractedContactFields.FIRST_NAME,
+const mandatoryQuarantineFields = [
+    InteractedContactFields.IDENTIFICATION_NUMBER,
+    InteractedContactFields.IDENTIFICATION_TYPE,
+    `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`,
+    // `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`,
+    // `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`,
+     InteractedContactFields.PHONE_NUMBER, 
+     InteractedContactFields.FIRST_NAME,
     InteractedContactFields.LAST_NAME];
 
 const useContactFields = (contactStatus?: InteractedContact['contactStatus']) => {

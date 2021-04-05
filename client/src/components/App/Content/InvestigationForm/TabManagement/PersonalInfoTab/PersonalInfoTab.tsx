@@ -68,7 +68,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
     const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
     const educationGrades = useSelector<StoreStateType, EducationGrade[]>(state => state.educationGrades);
     const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    const [toAddContactField, setToAddContactField] = React.useState<boolean>(false);
+    const [toAddContactField, setToAddContactField] = React.useState<boolean>(Boolean(PersonalInfoDataContextFields.CONTACT_INFO) || Boolean(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER));
 
     const { subOccupations, 
             getSubOccupations, 

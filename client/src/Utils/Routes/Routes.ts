@@ -3,4 +3,3 @@ export const landingPageRoute: string = '/landing';
 export const adminLandingPageRoute: string = '/adminLanding';
 export const usersManagementRoute: string = '/management';
 export const indexRoute: string = '/';
-export const createComplexityReasons: string = '/complexityReasons';

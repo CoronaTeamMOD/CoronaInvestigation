@@ -118,7 +118,7 @@ const useApp = () => {
             }
         }).catch(err => {
             fetchDistrictsLogger.error(err, Severity.HIGH);
-            alertError('לא ניתן לשלוף את המחוזות של המחוז');
+            alertError('לא ניתן לשלוף את המחוזות');
         });
     };
 
@@ -175,25 +175,20 @@ const useApp = () => {
             initUser();
         }
         fetchDesks();
+        fetchUserTypes();
+        fetchDistricts();            
+        fetchAllCounties();
     }, []);
 
     useEffect(() => {
         fetchAllCounties();
     }, [displayedDistrict]);
 
-    useEffect(() => {
-        if((user !== initialUserState.data && user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) || isSignUpOpen || user.isDeveloper) {
-            fetchDistricts();
-            fetchAllCounties();
-            fetchUserTypes();
-        }
-    }, [user, isSignUpOpen]);
-
     return {
         isSignUpOpen,
         handleSaveUser, 
         handleCloseSignUp
     };
-}
+};
 
 export default useApp;

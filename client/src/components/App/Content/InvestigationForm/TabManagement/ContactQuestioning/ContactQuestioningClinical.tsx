@@ -5,6 +5,7 @@ import { Avatar, FormControl, Grid, MenuItem, Select, Typography } from '@materi
 
 import theme from 'styles/theme';
 import Toggle from 'commons/Toggle/Toggle';
+import FlattenedDBAddress from 'models/DBAddress';
 import FieldName from 'commons/FieldName/FieldName';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
@@ -12,9 +13,9 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import HebrewTextField from 'commons/NoContextElements/HebrewTextField';
-import AddressForm, { AddressFormFields } from 'commons/Forms/AddressForm/AddressForm';
+import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextField';
 import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFields';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import AddressForm, { AddressFormFields } from 'commons/NoContextElements/AddressForm';
 
 import useStyles from './ContactQuestioningStyles';
 
@@ -25,7 +26,7 @@ const emptyFamilyRelationship: FamilyRelationship = {
 
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
     const { index, familyRelationships, interactedContact, isFamilyContact, 
-            control, formValues, formErrors } = props;
+            control, watch, formValues, formErrors } = props;
 
     const classes = useStyles();
 
@@ -40,7 +41,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const daysToIsolate = 14;
     const isolationEndDate = addDays(new Date(interactedContact.contactDate), daysToIsolate);
     const formattedIsolationEndDate = format(new Date(isolationEndDate), 'dd/MM/yyyy');
-  
+
+    const isolationAddressErrors = formErrors && (formErrors[InteractedContactFields.ISOLATION_ADDRESS] as DeepMap<FlattenedDBAddress , FieldError>);
+
     const addressFormFields: AddressFormFields = {
         cityField: {
             name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`, 
@@ -55,7 +58,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         },
         houseNumberField: {
             name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`,
-            defaultValue: interactedContact.isolationAddress?.houseNum
+            defaultValue: interactedContact.isolationAddress?.houseNum,
         },
         apartmentField: {
             name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`,
@@ -180,6 +183,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                             <AddressForm
                                 unsized={true}
                                 disabled={isFieldDisabled}
+                                control={control}
+                                watch={watch}
+                                errors={isolationAddressErrors}
                                 {...addressFormFields}
                             />
                         </Grid>
@@ -259,6 +265,7 @@ interface Props {
     interactedContact: InteractedContact;
     isFamilyContact: boolean;
     control: any;
+    watch: any
     formValues: InteractedContact;
     formErrors?: DeepMap<InteractedContact, FieldError>;
 };

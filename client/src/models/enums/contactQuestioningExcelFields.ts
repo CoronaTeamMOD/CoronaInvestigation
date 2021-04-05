@@ -12,7 +12,7 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
     additionalPhoneNumber: 'טלפון משני',
     birthDate: 'תאריך לידה',
     gender: 'מגדר',
-    identificationNumber: 'ת.ז',
+    identificationNumber: 'מספר תעודה מזהה',
     identificationType: 'סוג תעודה מזהה',
     contactDate: 'תאריך חשיפה',
     contactType: 'סוג מגע',
@@ -24,6 +24,8 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
     doesHaveBackgroundDiseases: 'האם סובל ממחלות רקע',
     isolationAddress: {
         city: 'יישוב השהייה בבידוד',
+        street: 'רחוב השהייה בבידוד',
+        houseNum: 'מספר בית השהייה בבידוד'
     },
     doesFeelGood: 'האם חש בטוב',
     doesNeedHelpInIsolation: 'האם נדרש סיוע עבור מקום בידוד',
@@ -40,6 +42,8 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
 type AddressNames = {
     isolationAddress: {
         city: string;
+        street: string;
+        houseNum: string;
     };
     cityId: string;
     streetId: string;

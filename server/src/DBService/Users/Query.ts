@@ -95,6 +95,7 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter:
       }
       userTypeByUserType {
         displayName
+        id
       }
       countyByInvestigationGroup {
         id,

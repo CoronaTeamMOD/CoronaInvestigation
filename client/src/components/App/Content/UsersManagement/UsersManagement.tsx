@@ -52,15 +52,18 @@ const UsersManagement: React.FC = () => {
     const [cellNameSort, setCellNameSort] = useState<CellNameSort>({ name: '', direction: undefined });
     const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
     const allCounties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
+    const isDeveloper = useSelector<StoreStateType, boolean>(state => state.user.data.isDeveloper);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
     const userTypes = useSelector<StoreStateType, UserType[]>(state => state.user.userTypes);
 
     const { users, sourcesOrganization, languages,totalCount, 
-            userDialog, editUserDialog, isBadgeInVisible, watchUserInfo, 
-            handleCloseUserDialog, editUserInfo, handleCloseEditUserDialog, 
-            handleFilterChange, setUserActivityStatus, setUserSourceOrganization, 
-            setUserDesk, setUserCounty, handleDeactivateAllUsersCounty, counter
-        } = useUsersManagement({ page, rowsPerPage, cellNameSort, setPage });
+            userDialog, editUserDialog, isBadgeInVisible, 
+            watchUserInfo, handleCloseUserDialog, editUserInfo, 
+            handleCloseEditUserDialog, handleFilterChange, 
+            setUserActivityStatus, setUserSourceOrganization, 
+            setUserDesk, setUserCounty, handleDeactivateAllUsersCounty, 
+            counter, setUserType
+        } = useUsersManagement({ page, rowsPerPage, cellNameSort, setPage, isDeveloper });
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
 
@@ -210,6 +213,41 @@ const UsersManagement: React.FC = () => {
                     </Select>
                 )
             }
+            case UsersManagementTableHeadersNames.USER_TYPE : {
+                if (isDeveloper) {
+                    return (
+                        <Select
+                            MenuProps={{
+                                anchorOrigin: {
+                                    vertical: 'bottom',
+                                    horizontal: 'left'
+                                },
+                                transformOrigin: {
+                                    vertical: 'top',
+                                    horizontal: 'left'
+                                },
+                                getContentAnchorEl: null
+                            }}
+                            value={row[cellName]?.id || ''}
+                            onChange={(event: React.ChangeEvent<any>) => setUserType(event.target.value as number, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
+                            className={classes.desks}
+                            variant='outlined'
+                        >
+                            {
+                                userTypes.map((userType: UserType) => (
+                                    <MenuItem
+                                        key={userType.id}
+                                        value={userType.id}>
+                                        {userType.displayName}
+                                    </MenuItem>
+                                ))
+                            }
+                        </Select>
+                    )
+                } else {
+                    return row[cellName].displayName
+                }
+            }
             default:
                 return row[cellName]
         }
@@ -229,6 +267,7 @@ const UsersManagement: React.FC = () => {
             </Grid>
             <Grid container justify='space-between' id='user-management-filters' className={classes.filters}>
                 <SearchBar 
+                    id='user-management-search-bar'
                     searchBarLabel={searchBarLabel}
                     onClick={(value: string) => handleFilterChange(filterCreators.SEARCH_BAR(value))}
                     validationSchema={userValidationSchema}

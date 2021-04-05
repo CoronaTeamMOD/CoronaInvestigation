@@ -1,26 +1,24 @@
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { Pagination } from '@material-ui/lab';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TableSortLabel, Button,
     useMediaQuery, Collapse, IconButton, Badge, Grid,
-    Slide, Box, useTheme, Popover, Tooltip
+    Slide, Box, Popover, Tooltip
 } from '@material-ui/core';
-import { Refresh, ArrowForward, KeyboardArrowDown, KeyboardArrowLeft } from '@material-ui/icons';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useMemo, useState, useRef, useEffect } from 'react';
+import { Refresh, KeyboardArrowDown, KeyboardArrowLeft } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
-import UserTypeCodes from 'models/enums/UserTypeCodes';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import SearchBar from 'commons/SearchBar/SearchBar';
 import useDesksUtils from 'Utils/Desk/useDesksUtils';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import InvestigatorOption from 'models/InvestigatorOption';
-import { adminLandingPageRoute } from 'Utils/Routes/Routes';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationSubStatus from 'models/InvestigationSubStatus';
 import InvestigationTableRowType from 'models/InvestigationTableRow';
@@ -42,7 +40,6 @@ export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
 const resetSortButtonText = 'סידור לפי תעדוף';
 const searchBarLabel = 'הכנס מס\' אפידימיולוגי, ת\"ז, שם מלא או טלפון...';
-const returnToAdminLandingPage = 'חזרה לדף הנחיתה';
 
 export const rowsPerPage = 100;
 
@@ -52,11 +49,8 @@ const emptyGroupText = 'שים לב, בסבירות גבוהה לחקירה זו
 const InvestigationTable: React.FC = (): JSX.Element => {
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const classes = useStyles(isScreenWide);
-    const { alertWarning, alertSuccess } = useCustomSwal();
+    const { alertSuccess } = useCustomSwal();
     const onAllocationSuccess = () => alertSuccess('החוקר הוקצה בהצלחה');
-
-    const theme = useTheme();
-    const history = useHistory();
     
     const [checkedIndexedRows, setCheckedIndexedRows] = useState<IndexedInvestigation[]>([]);
     const [selectedRow, setSelectedRow] = useState<SelectedRow>(DEFAULT_SELECTED_ROW);
@@ -83,6 +77,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         event.stopPropagation();
         setAnchorEl(null);
     };
+
     const closeDropdowns = () => {
         setDeskAutoCompleteClicked(false);
     }
@@ -110,7 +105,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const desksToTransfer : Desk[] = useMemo(() =>
         [...countyDesks, { id: null, deskName: 'לא שוייך לדסק', county: displayedCounty}]
-    , [countyDesks])
+    , [countyDesks]);
 
     const totalPageCount = Math.ceil(totalCount / rowsPerPage);
 
@@ -132,7 +127,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         }
         setSelectedRow({ epidemiologyNumber, groupId });
         setCheckedIndexedRows([]);
-    }
+    };
 
     const getFilteredUsersOfCurrentCounty = async (): Promise<InvestigatorOption[]> => {
         const allCountyUsers = await fetchAllCountyUsers();
@@ -149,7 +144,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             });
         }
         return allUsersOfCountyArray;
-    }
+    };
 
     const allocateInvestigationToInvestigator = async (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => {
         if (groupIds.length && groupIds[0]) {
@@ -160,7 +155,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         }
         groupIds[0] && groupIds.forEach((groupId: string) => fetchInvestigationsByGroupId(groupId));
         fetchTableData();
-    }
+    };
 
     const handleRequestSort = (event: any, property: React.SetStateAction<string>) => {
         const isAsc = orderBy === property && order === SortOrder.asc;
@@ -201,13 +196,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 setCheckedIndexedRows([...checkedIndexedRows, indexedRow]);
             }
         }
-    }
+    };
 
     const openGroupedInvestigation = (epidemiologyNumber: number, groupId: string) => {
         checkGroupedInvestigationOpen.includes(epidemiologyNumber) ?
             setCheckGroupedInvestigationOpen(checkGroupedInvestigationOpen.filter(rowId => rowId !== epidemiologyNumber)) :
             setCheckGroupedInvestigationOpen([...checkGroupedInvestigationOpen, epidemiologyNumber])
-    }
+    };
 
     const expandAllGroupedInvestigations = async () => {
         await fetchAllGroupedInvestigations();
@@ -218,12 +213,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             )
         setIsGroupedExpanded(true);
         setCheckGroupedInvestigationOpen(InvestigationsToExpand);
-    }
+    };
 
     const collapseAllGroupedInvestigations = async () => {
         setIsGroupedExpanded(false);
         setCheckGroupedInvestigationOpen([]);
-    }
+    };
 
     const isInvestigationRowClickable = (investigationStatus: InvestigationMainStatus) =>
         !(user.userType === UserTypeCodes.INVESTIGATOR && investigationStatus.id === InvestigationMainStatusCodes.DONE)
@@ -238,26 +233,14 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         async (event: React.ChangeEvent<{}>, newSelectedDesk: Desk | null) => {
             const deskName = newSelectedDesk?.deskName;
             const { investigationDesk, epidemiologyNumber, groupId } = indexedRow;
-
-            const switchDeskTitle = `<p>האם אתה בטוח שאתה רוצה להחליף את דסק <b>${investigationDesk}</b> בדסק <b>${deskName}</b>?</p>`;
-            const enterDeskTitle = `<p>האם אתה בטוח שאתה רוצה לבחור את דסק <b>${deskName}</b>?</p>`;
             if (deskName !== investigationDesk) {
-                const result = await alertWarning(investigationDesk ? switchDeskTitle : enterDeskTitle, {
-                    showCancelButton: true,
-                    cancelButtonText: 'לא',
-                    cancelButtonColor: theme.palette.error.main,
-                    confirmButtonColor: theme.palette.primary.main,
-                    confirmButtonText: 'כן, המשך',
-                });
-                if (result.isConfirmed) {
-                    groupId ?
-                        await changeGroupsDesk([groupId], newSelectedDesk) :
-                        await changeInvestigationsDesk([epidemiologyNumber], newSelectedDesk);
-                }
-
+                groupId ?
+                    await changeGroupsDesk([groupId], newSelectedDesk) :
+                    await changeInvestigationsDesk([epidemiologyNumber], newSelectedDesk);
                 setSelectedRow(DEFAULT_SELECTED_ROW);
+                fetchTableData();
             }
-        }
+        };
 
     useEffect(() => {
         window.addEventListener("keydown", handleEscKey);
@@ -268,7 +251,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const handleEscKey = (e: KeyboardEvent) => {
         e.key === 'Escape' && closeDropdowns()
-    }
+    };
 
     return (
         <div onClick={closeDropdowns} >
@@ -525,6 +508,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             </Popover>
         </div>
     );
-}
+};
 
 export default InvestigationTable;

@@ -1,17 +1,19 @@
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
-import { useFormContext, Controller } from 'react-hook-form';
-import { Grid, TextField, GridSize } from '@material-ui/core';
+import { Controller ,DeepMap, FieldError } from 'react-hook-form';
+import { Grid, TextField } from '@material-ui/core';
 
 import City from 'models/City';
 import Street from 'models/Street';
+import FlattenedDBAddress from 'models/DBAddress';
 import StoreStateType from 'redux/storeStateType';
+import InteractedContact from 'models/InteractedContact';
 import { getStreetByCity } from 'Utils/Address/AddressUtils';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './AddressFormStyles';
+import AlphanumericTextField from './AlphanumericTextField';
 
 const CITY_LABEL = 'עיר';
 const STREET_LABEL = 'רחוב';
@@ -27,15 +29,20 @@ const AddressForm: React.FC<Props> = ({
     streetField,
     floorField, 
     apartmentField,
-    houseNumberField
+    houseNumberField,
+    control,
+    watch,
+    errors
 }) => {
     const classes = useStyles();
 
-    const methods = useFormContext();
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const [streetsInCity, setStreetsInCity] = useState<Map<string, Street>>(new Map());
 
-    const cityWatcher = methods.watch(cityField.name);
+    const cityWatcher = watch(cityField.name);
+    watch(streetField.name);
+    watch(houseNumberField.name);
+    apartmentField && watch(apartmentField.name);
 
     useEffect(() => {
         if (cityWatcher) {
@@ -55,7 +62,7 @@ const AddressForm: React.FC<Props> = ({
                     disabled ?
                     <Controller
                         name={cityField.name}
-                        control={methods.control}
+                        control={control}
                         defaultValue={cityField.defaultValue}
                         render={(props) => (
                             <TextField 
@@ -71,7 +78,7 @@ const AddressForm: React.FC<Props> = ({
                     :
                     <Controller
                         name={cityField.name}
-                        control={methods.control}
+                        control={control}
                         defaultValue={cityField.defaultValue}
                         render={(props) => (
                             <Autocomplete
@@ -80,9 +87,9 @@ const AddressForm: React.FC<Props> = ({
                                 value={props.value ? {id: props.value as string, value: cities.get(props.value) as City} : {id: '', value: {id: '', displayName: ''}}}
                                 onChange={(event, selectedCity) => props.onChange(selectedCity ? selectedCity.id : null)}
                                 renderInput={(params) => <TextField
-                                    error={Boolean(get(methods.errors, cityField.name))}
+                                        error={Boolean(errors?.city)}
                                         test-id={cityField.testId || ''}
-                                        label={get(methods.errors, cityField.name)?.message || `${CITY_LABEL}`}
+                                        label={errors?.city?.message || `${CITY_LABEL}`}
                                         {...params}
                                         placeholder={CITY_LABEL}
                                     />}
@@ -96,7 +103,7 @@ const AddressForm: React.FC<Props> = ({
                     disabled ?
                     <Controller
                         name={streetField.name}
-                        control={methods.control}
+                        control={control}
                         defaultValue={streetField.defaultValue}
                         render={(props) => (
                             <TextField 
@@ -113,7 +120,7 @@ const AddressForm: React.FC<Props> = ({
                     :
                     <Controller
                         name={streetField.name}
-                        control={methods.control}
+                        control={control}
                         defaultValue={streetField.defaultValue}
                         render={(props) => (
                             <Autocomplete
@@ -125,15 +132,15 @@ const AddressForm: React.FC<Props> = ({
                                     } else return option
                                 }}
                                 value={props.value ? {id: props.value as string, value: streetsInCity.get(props.value) as Street} : {id: '', value: {id: '', displayName: ''}}}
-                                onChange={(event, selectedStreet) => {
+                                onChange={(event, selectedStreet) => 
                                     props.onChange(selectedStreet ? selectedStreet.id : '')
-                                }}
+                                }
                                 renderInput={(params) =>
                                     <TextField
                                         {...params}
-                                        error={Boolean(get(methods.errors, streetField.name))}
+                                        error={Boolean(errors?.street)}
                                         test-id={streetField.testId || ''}
-                                        label={get(methods.errors, streetField.name)?.message || `${STREET_LABEL}`}
+                                        label={errors?.street?.message || `${STREET_LABEL}`}
                                         placeholder={STREET_LABEL}
                                     />
                                 }
@@ -147,7 +154,7 @@ const AddressForm: React.FC<Props> = ({
                     disabled ?
                     <Controller
                         name={houseNumberField.name}
-                        control={methods.control}
+                        control={control}
                         defaultValue={houseNumberField.defaultValue}
                         render={(props) => (
                             <TextField 
@@ -164,11 +171,12 @@ const AddressForm: React.FC<Props> = ({
                     :
                     <Controller
                         name={houseNumberField.name}
-                        control={methods.control}
+                        control={control}
                         defaultValue={houseNumberField.defaultValue}
                         render={(props) => (
                             <AlphanumericTextField
                                 name={props.name}
+                                error={errors?.houseNum?.message}
                                 className={smallFieldsClass}
                                 InputProps={{className: smallFieldsClass}}
                                 testId={houseNumberField.testId || ''}
@@ -182,55 +190,13 @@ const AddressForm: React.FC<Props> = ({
                 }
             </Grid>
             {
-                floorField &&
-                <Grid item xs={unsized ? 12 : 2} className={floorField?.className}>
-                    {
-                        disabled ?
-                        <Controller
-                            name={floorField?.name || ''}
-                            control={methods.control}
-                            render={(props) => (
-                                <TextField 
-                                    className={smallFieldsClass}
-                                    InputProps={{className: smallFieldsClass}}
-                                    test-id={floorField?.testId || ''} 
-                                    value={props.value} 
-                                    label={FLOOR_LABEL} 
-                                    InputLabelProps={{ shrink: true }}
-                                    disabled={true} 
-                                />
-                            )}
-                        />
-                        :
-                        <Controller
-                            name={floorField?.name || ''}
-                            control={methods.control}
-                            defaultValue={floorField?.defaultValue}
-                            render={(props) => (
-                                <AlphanumericTextField
-                                    className={smallFieldsClass}
-                                    InputProps={{className: smallFieldsClass}}
-                                    testId={floorField?.testId || ''}
-                                    name={floorFieldNameSplitted ? floorFieldNameSplitted[floorFieldNameSplitted.length - 1] : ''}
-                                    value={props.value}
-                                    onChange={props.onChange}
-                                    onBlur={props.onBlur}
-                                    placeholder={FLOOR_LABEL}
-                                    label={FLOOR_LABEL}
-                                />
-                            )}
-                        />
-                    }
-                </Grid>
-            }
-            {
                 apartmentField &&
                 <Grid item xs={unsized ? 12 : 2} className={apartmentField?.className}>
                     {
                         disabled ?
                         <Controller
                             name={apartmentField?.name || ''}
-                            control={methods.control}
+                            control={control}
                             defaultValue={apartmentField?.defaultValue}
                             render={(props) => (
                                 <TextField 
@@ -247,11 +213,12 @@ const AddressForm: React.FC<Props> = ({
                         :
                         <Controller
                             name={apartmentField?.name || ''}
-                            control={methods.control}
+                            control={control}
                             defaultValue={apartmentField?.defaultValue}
                             render={(props) => (
                                 <AlphanumericTextField
                                     className={smallFieldsClass}
+                                    error={errors?.apartment?.message}
                                     InputProps={{className: smallFieldsClass}}
                                     testId={apartmentField?.testId || ''}
                                     name={apartmentFieldNameSplitted ? apartmentFieldNameSplitted[apartmentFieldNameSplitted.length - 1] : ''}
@@ -285,6 +252,9 @@ interface Props {
     houseNumberField: FormField;
     floorField?: FormField;
     apartmentField?: FormField;
+    control: any;
+    watch: any;
+    errors?: DeepMap<FlattenedDBAddress , FieldError>;
 }
 
 export type AddressFormFields = Pick<Props, 'cityField' | 'streetField' | 'houseNumberField'> & Partial<Pick<Props, 'floorField' | 'apartmentField'>>;
