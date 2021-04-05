@@ -147,7 +147,13 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     popover: {
         width: 250,
         padding: theme.spacing(1)
-    }
+    },
+    sortResetButton: {
+        fontWeight: 600,
+        minWidth: '6px',
+        marginLeft: '8px',
+        paddingRight: '0',
+    },
 }))();
 
 export default useStyles;

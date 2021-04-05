@@ -11,11 +11,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         maxHeight: '80%',
         justifyContent: 'space-between'
     },
-    sortResetButton: {
-        fontWeight: 600,
-        minWidth: '6px',
-        marginLeft: '8px',
-    },
     counterLabel: {
         fontWeight: 600
     },
