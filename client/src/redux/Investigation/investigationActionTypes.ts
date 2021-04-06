@@ -15,6 +15,7 @@ export const SET_END_TIME = 'SET_END_TIME';
 export const SET_CREATOR = 'SET_CREATOR';
 export const SET_DATES_TO_INVESTIGATE_PARAMS = 'SET_DATES_TO_INVESTIGATE_PARAMS';
 export const SET_TRACKING_RECOMMENDATION = 'SET_TRACKING_RECOMMENDATION';
+export const SET_BIRTH_DATE = 'SET_BIRTH_DATE';
 export const RESET_STATE = 'RESET_STATE';
 
 interface SetEpidemiologyNum {
@@ -81,6 +82,11 @@ interface ResetStateParams {
     type: typeof RESET_STATE,
 }
 
+interface SetBirthDate{
+    type: typeof SET_BIRTH_DATE,
+    payload: {birthDate: Date}
+}
+
 interface SetTrackingRecommendation {
     type: typeof SET_TRACKING_RECOMMENDATION,
     payload: {trackingRecommendation : TrackingRecommendation}
@@ -88,4 +94,4 @@ interface SetTrackingRecommendation {
 
 export type InvestigationAction = SetEpidemiologyNum | SetComplexReasonsId | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId
  | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetEndTime 
- | SetCreator | SetDatesToInvestigateParams |  ResetStateParams | SetTrackingRecommendation;
+ | SetCreator | SetDatesToInvestigateParams |  ResetStateParams | SetTrackingRecommendation| SetBirthDate;

@@ -17,7 +17,7 @@ import { CommentContextProvider } from './Context/CommentContext';
 import { landingPageRoute, adminLandingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationInfo , { InvestigationInfoData } from 'models/InvestigationInfo';
 import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setDatesToInvestigateParams } from 'redux/Investigation/investigationActionCreators';
-import { setInvestigatedPatientId , setIsCurrentlyHospitialized, setIsDeceased, setEndTime, setTrackingRecommendation } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigatedPatientId , setIsCurrentlyHospitialized, setIsDeceased, setEndTime, setTrackingRecommendation, setBirthDate } from 'redux/Investigation/investigationActionCreators';
 
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
@@ -87,6 +87,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                     setInvestigatedPatientId(investigationInfo.investigatedPatientId);
                     setIsDeceased(investigationInfo.isDeceased);
                     setIsCurrentlyHospitialized(investigationInfo.isCurrentlyHospitalized);
+                    setBirthDate(investigationInfo.birthDate ? new Date(investigationInfo.birthDate) : new Date('01.01.1970'));
                     const gender = investigationInfo.gender;
                     setGender(gender ? gender : '');
                     const formattedValidationDate  = truncateDate(investigationInfo.validationDate);

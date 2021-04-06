@@ -16,6 +16,7 @@ const initialState: InvestigationRedux = {
         investigatedPatientId: -1,
         isDeceased: false,
         isCurrentlyHospitialized: false,
+        birthDate: new Date()
     },
     doesHaveSymptoms: false,
     symptomsStartDate: null,
@@ -59,6 +60,7 @@ const investigationReducer = (state = initialState, action: Actions.Investigatio
         case Actions.SET_END_TIME: return { ...state, endTime: action.payload.endTime }
         case Actions.SET_TRACKING_RECOMMENDATION: return {...state, trackingRecommendation: action.payload.trackingRecommendation}
         case Actions.SET_CREATOR: return  { ...state, creator: action.payload.creator }
+        case Actions.SET_BIRTH_DATE: return {...state , investigatedPatient: {...state.investigatedPatient , birthDate : action.payload.birthDate}}
         case Actions.RESET_STATE: return  initialState
         default: return state;
     }

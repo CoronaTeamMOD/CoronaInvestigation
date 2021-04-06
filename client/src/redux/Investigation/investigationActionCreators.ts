@@ -89,6 +89,13 @@ export const setDatesToInvestigateParams = (symptomsExistenceInfo?: SymptomsExis
     })
 };
 
+export const setBirthDate = (birthDate : Date) => {
+    store.dispatch({
+        type: actionTypes.SET_BIRTH_DATE,
+        payload: {birthDate}
+    });
+};
+
 export const setTrackingRecommendation = (trackingRecommendation : TrackingRecommendation) => {
     store.dispatch({
         type: actionTypes.SET_TRACKING_RECOMMENDATION,
