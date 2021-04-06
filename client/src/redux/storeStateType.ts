@@ -7,6 +7,7 @@ import ContactType from 'models/ContactType';
 import CountyReducer from 'models/CountyReducer';
 import FlattenedDBAddress from 'models/DBAddress';
 import EducationGrade from 'models/EducationGrade';
+import GreenPassQuestion from 'models/GreenPassQuestion';
 import InvestigationRedux from 'models/InvestigationRedux';
 import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
@@ -36,4 +37,5 @@ export default interface StoreStateType {
     groupedInvestigations: GroupedInvestigationReducerType;
     authorities: Map<string, Authority>;
     complexReasons: (number|null)[];
+    greenPassQuestions: GreenPassQuestion[];
 };
