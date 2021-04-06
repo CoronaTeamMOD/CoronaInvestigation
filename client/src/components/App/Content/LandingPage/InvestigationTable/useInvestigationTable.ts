@@ -303,7 +303,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const fetchAllInvestigationStatuses = () => {
-        const investigationStatusesLogger = logger.setup('GraphQL GET statuses request to the DB');
+        const investigationStatusesLogger = logger.setup('Fetch Investigation Statuses');
+        investigationStatusesLogger.info('sending request to DB', Severity.LOW);
         axios.get('/landingPage/investigationStatuses').
             then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
@@ -321,7 +322,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const fetchAllInvestigationComplexityReasons = () => {
-        const investigationStatusesLogger = logger.setup('GraphQL GET statuses request to the DB');
+        const investigationStatusesLogger = logger.setup('Fetch All Complexity Reasons');
+        investigationStatusesLogger.info('sending request to DB', Severity.LOW);
         axios.get('/investigationInfo/complexityReasons').
             then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
@@ -339,7 +341,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const fetchAllInvestigationSubStatuses = () => {
-        const subStatusesLogger = logger.setup('GraphQL GET sub statuses request to the DB');
+        const subStatusesLogger = logger.setup('Fetch All Investigation Sub Statuses');
+        subStatusesLogger.info('sending request to DB', Severity.LOW);
         axios.get('/landingPage/investigationSubStatuses').
             then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
