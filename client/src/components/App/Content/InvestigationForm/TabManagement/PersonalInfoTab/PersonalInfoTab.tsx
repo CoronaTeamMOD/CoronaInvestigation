@@ -7,6 +7,7 @@ import { Grid, FormControl, TextField,
         InputLabel, Select, MenuItem, Collapse, Button } from '@material-ui/core';
 
 import City from 'models/City';
+import dateToAge from 'Utils/DateUtils/dateToAge';
 import FlattenedDBAddress from 'models/DBAddress';
 import StoreStateType from 'redux/storeStateType';
 import Occupations from 'models/enums/Occupations';
@@ -28,6 +29,8 @@ import usePersonalTabInfo from './usePersonalInfoTab';
 import validationSchema from './PersonalInfoTabValidationSchema';
 import { PersonalInfoTabState } from './PersonalInfoTabInterfaces';
 import InstitutionComponent from './InstitutionComponent/InstitutionComponent';
+
+const under16AllowedOccupations = ['מערכת החינוך', 'אחר'];
 
 export const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
 export const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
@@ -65,9 +68,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
     const educationGrades = useSelector<StoreStateType, EducationGrade[]>(state => state.educationGrades);
+    const birthDate = useSelector<StoreStateType, Date>(state => state.investigation.investigatedPatient.birthDate);
     const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     const [toAddContactField, setToAddContactField] = React.useState<boolean>(Boolean(PersonalInfoDataContextFields.CONTACT_INFO) || Boolean(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER));
 
+    const isOver16 = dateToAge(birthDate) > 16;
+    
     const { subOccupations, 
             getSubOccupations, 
             getEducationSubOccupations, 
@@ -296,7 +302,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                 control={methods.control}
                                 render={(props) => (
                                     <Autocomplete
-                                        options={occupations}
+                                        options={isOver16 ? occupations : occupations.filter(occupation => under16AllowedOccupations.indexOf(occupation) !== -1)}
                                         onChange={(event, occupationOption) => {
                                             props.onChange(occupationOption ? occupationOption : '')
                                         }}
