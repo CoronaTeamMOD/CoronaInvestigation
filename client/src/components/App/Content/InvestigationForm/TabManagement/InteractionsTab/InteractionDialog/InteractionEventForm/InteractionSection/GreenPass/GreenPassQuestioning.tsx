@@ -7,10 +7,15 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
     
 import useStyles from './GreenPassStyles';
+import useGreenPassQuestioning from './useGreenPassQuestioning';
 
 const GreenPassQuestioning = (props :Props) => {
 
     const { control } = useFormContext();
+
+    const { greenPassQuestions } = useGreenPassQuestioning();
+
+    //console.log(greenPassQuestions);
 
     const classes = useStyles();
     return (
