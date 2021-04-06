@@ -1,12 +1,13 @@
 import {Request, Response, Router} from 'express';
 
 import { Severity } from '../../Models/Logger/types';
-import {errorStatusCode, validStatusCode, graphqlRequest} from '../../GraphqlHTTPRequest';
 import {GetContactTypeResponse} from '../../Models/ContactEvent/GetContactType';
+import { GetGreenPassQuestionsResponse } from '../../Models/ContactEvent/GreenPass';
+import {errorStatusCode, validStatusCode, graphqlRequest} from '../../GraphqlHTTPRequest';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
-import {GetContactEventResponse, ContactEvent, ClientInteractionsData} from '../../Models/ContactEvent/GetContactEvent';
 import { GetInvolvedContactsResponse, InvolvedContactDB} from '../../Models/ContactEvent/GetInvolvedContacts';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
+import {GetContactEventResponse, ContactEvent, ClientInteractionsData} from '../../Models/ContactEvent/GetContactEvent';
 import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
 import {
     CREATE_OR_EDIT_CONTACT_EVENT, DELETE_CONTACT_EVENT, 
@@ -18,14 +19,15 @@ import {
     GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, 
     GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_ALL_CONTACT_TYPES,
     GET_ALL_INVOLVED_CONTACTS, CONTACTS_BY_GROUP_ID, 
-    CONTACTS_BY_CONTACTS_IDS
+    CONTACTS_BY_CONTACTS_IDS,
+    GET_ALL_GREEN_PASS_QUESTIONS
 } from '../../DBService/ContactEvent/Query';
 
 const intersectionsRoute = Router();
         
 intersectionsRoute.get('/', (request: Request, response: Response) => {
     response.send(request.query.epidemioligyNumber);
-})
+});
 
 const createPlacesSubTypesByTypes = (result: GetPlaceSubTypesByTypesResposne) => {
     const locationsSubTypesByTypes: PlacesSubTypesByTypes = {};
@@ -33,7 +35,7 @@ const createPlacesSubTypesByTypes = (result: GetPlaceSubTypesByTypesResposne) =>
         locationsSubTypesByTypes[type.displayName] = type.placeSubTypesByParentPlaceType.nodes
     );
     return locationsSubTypesByTypes;
-}
+};
 
 intersectionsRoute.get('/getPlacesSubTypesByTypes', (request: Request, response: Response) => {
     const getPlacesSubTypesByTypesLogger = logger.setup({
@@ -87,7 +89,7 @@ const convertDBEvent = (event: ContactEvent) => {
         ...eventObjectToClient,
         contacts,
     };
-}
+};
 
 intersectionsRoute.get('/contactEvent/:minimalDateToFilter', handleInvestigationRequest, (request: Request, response: Response) => {
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
@@ -374,6 +376,23 @@ intersectionsRoute.post('/addContactsFromBank', handleInvestigationRequest, (req
             addContactsFromBankLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         });
+});
+
+intersectionsRoute.get('/greenPassQuestions', (request: Request, response: Response) => {
+    const greenPassQuestionsLogger = logger.setup({
+        workflow: 'query all green pass questions',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    });
+    greenPassQuestionsLogger.info(launchingDBRequestLog(), Severity.LOW);
+    graphqlRequest(GET_ALL_GREEN_PASS_QUESTIONS, response.locals)
+        .then((result: GetGreenPassQuestionsResponse) => {
+            greenPassQuestionsLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data.allGreenPassQuestions.nodes);
+        }).catch((error) => {
+            greenPassQuestionsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+    });
 });
 
 export default intersectionsRoute;

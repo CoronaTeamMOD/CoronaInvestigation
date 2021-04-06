@@ -216,4 +216,15 @@ export const CONTACTS_BY_CONTACTS_IDS = gql`
       }
     }
   }
-`
+`;
+
+export const GET_ALL_GREEN_PASS_QUESTIONS = gql`
+query getAllGreenPassQuestions {
+  allGreenPassQuestions(orderBy: ID_ASC) {
+    nodes {
+      id
+      displayName
+    }
+  }
+}
+`;
