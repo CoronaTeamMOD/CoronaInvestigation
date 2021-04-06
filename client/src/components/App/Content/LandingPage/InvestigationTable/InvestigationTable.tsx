@@ -3,11 +3,11 @@ import { Pagination } from '@material-ui/lab';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TableSortLabel, Button,
-    useMediaQuery, Collapse, IconButton, Badge, Grid,
-    Slide, Box, Popover, Tooltip
+    useMediaQuery, Collapse, IconButton, Grid,
+    Slide, Popover, Tooltip
 } from '@material-ui/core';
 import React, { useMemo, useState, useRef, useEffect } from 'react';
-import { KeyboardArrowDown, KeyboardArrowLeft } from '@material-ui/icons';
+import { KeyboardArrowDown, KeyboardArrowLeft, Refresh } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
@@ -37,6 +37,7 @@ export const rowsPerPage = 100;
 
 const refreshPromptMessage = 'שים לב, ייתכן כי התווספו חקירות חדשות';
 const emptyGroupText = 'שים לב, בסבירות גבוהה לחקירה זו קובצו חקירות ישנות שכבר לא קיימות במערכת'
+const resetSortButtonText = 'סידור לפי תעדוף';
 
 const InvestigationTable: React.FC = (): JSX.Element => {
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
@@ -298,6 +299,16 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             }
                                             {
                                                 key === TableHeadersNames.multipleCheck &&
+                                                <>
+                                                <Tooltip title={resetSortButtonText} placement='top' arrow>
+                                                    <Button
+                                                        color='primary'
+                                                        className={classes.sortResetButton}
+                                                        startIcon={<Refresh />}
+                                                        onClick={(event: any) => handleRequestSort(event, defaultOrderBy)}
+                                                    >
+                                                    </Button>
+                                                </Tooltip>
                                                 <Tooltip title={(isGroupedExpanded ? 'הסתר' : 'הצג') + ' ' + 'את כל החקירות המקושרות'} placement='top' arrow>
                                                     <IconButton onClick={
                                                         isGroupedExpanded ? collapseAllGroupedInvestigations : expandAllGroupedInvestigations
@@ -307,6 +318,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                             <KeyboardArrowLeft />}
                                                     </IconButton>
                                                 </Tooltip>
+                                             </>
                                             }
                                         </TableCell>
                                     ))

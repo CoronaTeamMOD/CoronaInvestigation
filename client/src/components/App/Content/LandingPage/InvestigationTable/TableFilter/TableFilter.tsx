@@ -1,7 +1,6 @@
 import React from 'react'
 import { Autocomplete } from '@material-ui/lab';
-import { Card, Checkbox, Collapse, FormControl, Grid, Button, Box, TextField, Typography } from '@material-ui/core';
-import { Refresh } from '@material-ui/icons';
+import { Card, Checkbox, Collapse, FormControl, Grid, Box, TextField, Typography } from '@material-ui/core';
 
 import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
 import SearchBar from 'commons/SearchBar/SearchBar';
@@ -18,7 +17,6 @@ import useStyles from './TableFilterStyles';
 import useTableFilter from './useTableFilter';
 import { StatusFilter as StatusFilterType, SubStatusFilter as SubStatusFilterType } from '../InvestigationTableInterfaces';
 
-export const defaultOrderBy = 'defaultOrder';
 const searchBarLabel = 'מספר אפידמיולוגי, ת"ז, שם או טלפון';
 
 const TableFilter = (props: Props) => {
@@ -32,8 +30,7 @@ const TableFilter = (props: Props) => {
         changeUnassginedUserFilter, unassignedUserFilter, 
         timeRangeFilter, onTimeRangeFilterChange, 
         updateDateFilter, nonContactFilter,
-        desksToTransfer, deskFilter, changeDeskFilter,
-        handleRequestSort, changeSearchFilter
+        desksToTransfer, deskFilter, changeDeskFilter, changeSearchFilter
     } = props;
 
     const { displayTimeRange, onSelectTimeRangeChange, onStartDateSelect, onEndDateSelect, errorMes} = useTableFilter({
@@ -45,13 +42,6 @@ const TableFilter = (props: Props) => {
 
     return (
         <Card className={classes.card}>
-            <Button
-                color='primary'
-                className={classes.sortResetButton}
-                startIcon={<Refresh />}
-                onClick={(event: any) => handleRequestSort(event, defaultOrderBy)}
-            >
-            </Button>
             <Grid className={classes.startCard}>
                 <DeskFilter
                     desks={desksToTransfer}
