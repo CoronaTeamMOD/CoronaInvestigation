@@ -5,9 +5,9 @@ import { useHistory } from 'react-router-dom';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
-import UserTypeCodes from 'models/enums/UserTypeCodes';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { defaultUser } from 'Utils/UsersUtils/userUtils';
 import { truncateDate } from 'Utils/DateUtils/formatDate';
@@ -55,16 +55,35 @@ const defaultInvestigationStaticInfo : InvestigationInfo = {
 
 export const LandingPageTimer = 1900;
 
+const unauthorizedErrorMessages: Record<number, string> = {
+    [UserTypeCodes.INVESTIGATOR] : 'החקירה אינה מוקצית אליך',
+    [UserTypeCodes.ADMIN] : 'החקירה אינה נמצאת בנפה שלך',
+    [UserTypeCodes.SUPER_ADMIN] : 'החקירה אינה נמצאת במחוז שלך',
+}
+
+const UNAUTHORIZED_ERROR_TEXT = 'אין לך הרשאות לבצע פעולות על החקירה';
+
 const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
 
     let history = useHistory();
-    const { alertWarning } = useCustomSwal();
+    const { alertWarning, alertError } = useCustomSwal();
 
     const [investigationStaticInfo, setInvestigationStaticInfo] = React.useState<InvestigationInfo>(defaultInvestigationStaticInfo);
+    const [authorized, setAuthorized] = React.useState<boolean>(true);
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const lastOpenedEpidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.lastOpenedEpidemiologyNumber);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
+
+
+    const unauthorizedResponseInterceptor = axios.interceptors.response.use(response => {
+        return response
+    }, error => {
+        if(error.response.status === 401) {
+            setAuthorized(false);
+        }
+        return error
+    })
 
     React.useEffect(() => {
         if (lastOpenedEpidemiologyNumber !== defaultEpidemiologyNumber) {
@@ -74,6 +93,13 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
             handleInvalidEntrance();
         }
     }, []);
+
+    React.useEffect(() => {
+        if(!authorized) {
+            axios.interceptors.response.eject(unauthorizedResponseInterceptor);
+            handleUnauthorizedResponse();
+        }
+    }, [authorized]);
 
     React.useEffect(() => {
         const investigationInfoLogger = logger.setup('Fetching investigation Info');
@@ -124,6 +150,17 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     const handleInvalidEntrance = () => {
         alertWarning('נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנך מועבר לשם', {
             timer: 1750,
+            showConfirmButton: false
+        });
+        timeout(LandingPageTimer).then(() =>
+            (userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN) ? history.push(adminLandingPageRoute) : history.push(landingPageRoute));
+    };
+
+    const handleUnauthorizedResponse = () => {
+        const errorText = `${UNAUTHORIZED_ERROR_TEXT}: ${unauthorizedErrorMessages[userType]}. הינך מועבר/ת לעמוד הראשי`
+    
+        alertError(errorText, {
+            timer: 2000,
             showConfirmButton: false
         });
         timeout(LandingPageTimer).then(() =>
