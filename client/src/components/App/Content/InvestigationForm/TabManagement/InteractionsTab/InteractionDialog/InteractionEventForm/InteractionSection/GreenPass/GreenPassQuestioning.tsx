@@ -5,6 +5,7 @@ import {Controller, useFormContext} from 'react-hook-form';
 
 import Toggle from 'commons/Toggle/Toggle';
 import FormInput from 'commons/FormInput/FormInput';
+import TripleToggle from 'commons/Toggle/TripleToggle';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
     
 import useStyles from './GreenPassStyles';
@@ -17,7 +18,7 @@ const GreenPassQuestioning = (props :Props) => {
 
     const { control } = useFormContext();
 
-    const { greenPassQuestions } = useGreenPassQuestioning();
+    const { greenPassQuestions, greenPassAnswers } = useGreenPassQuestioning();
 
     const classes = useStyles();
 
@@ -55,7 +56,10 @@ const GreenPassQuestioning = (props :Props) => {
                                 name={`${InteractionEventDialogFields.IS_GREEN_PASS}-${finalQuestion.id}`}
                                 control={control}
                                 render={(props) => (
-                                    <Toggle
+                                    <TripleToggle
+                                        firstOption={greenPassAnswers[greenPassAnswers.length-3].displayName}
+                                        secondOption={greenPassAnswers[greenPassAnswers.length-2].displayName}
+                                        thirdOption={greenPassAnswers[greenPassAnswers.length-1].displayName}
                                         value={props.value}
                                         onChange={(e, value) => {
                                             if (value !== null) {
