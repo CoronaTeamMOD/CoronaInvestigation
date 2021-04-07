@@ -46,5 +46,5 @@ export default combineReducers <StoreStateType> ({
      groupedInvestigations : groupedInvestigationReducer,
      authorities: authorityReducer,
      complexReasons: complexReasonsReducer,
-     greenPassQuestions: greenPassReducer
+     greenPass: greenPassReducer
 }) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;

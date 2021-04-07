@@ -29,7 +29,7 @@ const InteractionFormTabSwitchButton = ({isAddingContacts, setIsAddingContacts, 
 
     const {errors, watch, trigger} = useFormContext();
     
-    const greenPassQuestions = useSelector<StoreStateType, GreenPassQuestion[]>(state => state.greenPassQuestions);
+    const greenPassQuestions = useSelector<StoreStateType, GreenPassQuestion[]>(state => state.greenPass.greenPassQuestions);
     const greenPassFields = greenPassQuestions.map((greenPassQuestion) => `${InteractionEventDialogFields.IS_GREEN_PASS}-${greenPassQuestion.id}`);
 
     const placeType = watch(InteractionEventDialogFields.PLACE_TYPE);
