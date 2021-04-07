@@ -37,8 +37,8 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     }, [user.isLoggedIn]);
 
     const getUserActivityStatus = () => {
-        const getUserActivityStatusLogger = logger.setup('GraphQL request to the DB');
-        getUserActivityStatusLogger.info('started user activity status fetching', Severity.LOW);
+        const getUserActivityStatusLogger = logger.setup('Get User Activity Status');
+        getUserActivityStatusLogger.info('sending request to DB', Severity.LOW);
         axios.get(`/users/userActivityStatus`)
         .then((result) => { 
             if (result.data) {
@@ -61,8 +61,8 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     };
 
     const setUserActivityStatus = (isActive: boolean) : Promise<any> => {
-        const setUserActivityStatusLogger = logger.setup('GraphQL request to the DB');
-        setUserActivityStatusLogger.info('started is user active updating', Severity.LOW);
+        const setUserActivityStatusLogger = logger.setup('Setting User Activity Status');
+        setUserActivityStatusLogger.info('sending request to DB', Severity.LOW);
         return axios.post('users/updateIsUserActive', {
             isActive
         }).then((result) => {
@@ -76,8 +76,8 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     };
 
     const changeUserDistrict = (district: number) : Promise<any> => {
-        const changeUserDistrictLogger = logger.setup('GraphQL request to the DB');
-        changeUserDistrictLogger.info('changing user district', Severity.LOW);
+        const changeUserDistrictLogger = logger.setup('Updating User District');
+        changeUserDistrictLogger.info('sending request to DB', Severity.LOW);
         return axios.post('users/updateDistrict', {
             district
         }).then((result) => {
@@ -97,8 +97,8 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
         if (!user.data.isDeveloper){
             setDisplayedCounty(county);
         } else {
-            const changeUserCountyLogger = logger.setup('GraphQL request to the DB');
-            changeUserCountyLogger.info('changing user county', Severity.LOW);
+            const changeUserCountyLogger = logger.setup('Change User County');
+            changeUserCountyLogger.info('sending request to DB', Severity.LOW);
             axios.post('users/updateCounty', {
                     investigationGroup: county,
                     userId: user.data.id

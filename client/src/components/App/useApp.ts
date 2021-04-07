@@ -107,7 +107,7 @@ const useApp = () => {
     };
 
     const fetchDistricts = () => {
-        const fetchDistrictsLogger = logger.setup('GraphQL request to the DB');
+        const fetchDistrictsLogger = logger.setup('Fetching all Discricts');
         axios.get('/districts')
         .then((result: any) => {
             if (result.data) {
@@ -123,7 +123,7 @@ const useApp = () => {
     };
 
     const fetchAllCounties = () => {
-        const fetchAllCountiesLogger = logger.setup('GraphQL request to the DB');
+        const fetchAllCountiesLogger = logger.setup('Fetching all counties');
         axios.get('/counties')
         .then((result: any) => {
             if (result.data && result.headers['content-type'].includes('application/json')) {

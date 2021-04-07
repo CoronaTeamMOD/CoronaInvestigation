@@ -124,7 +124,8 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     };
 
     const fetchStatuses = () => {
-        const statusesLogger = logger.setup('GraphQL GET statuses request to the DB');
+        const statusesLogger = logger.setup('Get Investigation Statuses');
+        statusesLogger.info('sending request to DB', Severity.LOW);
         axios.get('/landingPage/investigationStatuses').
             then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
