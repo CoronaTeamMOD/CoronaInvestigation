@@ -8,7 +8,7 @@ import ConnectedInvestigationContact from 'models/GroupedInvestigationContacts/C
 
 const useGroupedInvestigationContacts = () => {
     const fetchGroupedId = async () => {
-        const groupIdByEpidemiologyNumberLogger = logger.setup('Fetching Places And Sub Types By Types');
+        const groupIdByEpidemiologyNumberLogger = logger.setup('Fetching Investigation Group Id');
 
         groupIdByEpidemiologyNumberLogger.info('launching groupid by epidemiologyNumber request', Severity.LOW);
         return await axios.get<string>('/investigationInfo/groupedInvestigationsId')
@@ -23,7 +23,7 @@ const useGroupedInvestigationContacts = () => {
     }
 
     const fetchGroupedInvestigationContacts = (groupId : string) => {
-        const connectedInvestigationsByGroupIdLogger = logger.setup('Fetching Places And Sub Types By Types');
+        const connectedInvestigationsByGroupIdLogger = logger.setup('Fetching Grouped Investigations Contacts');
         
         connectedInvestigationsByGroupIdLogger.info('launching connectedInvestigationContacts by groupId request', Severity.LOW);
         return axios.get<ConnectedInvestigationContact>(`/intersections/groupedInvestigationsContacts/${groupId}`)
