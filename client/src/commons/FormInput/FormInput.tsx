@@ -15,7 +15,7 @@ const FormInput: React.FC<Props> = (props: Props): JSX.Element => {
                test-id={'textFormInput'} xs={xs} className={className || ''}>
             <Grid item className={classes.inputLabel} xs={labelLength ? labelLength : 3}>
                 <Typography className={formClasses.fieldName} variant='caption' {...rest}>
-                {fieldName && isQuestion ? <b>{fieldName + '?'}</b> : <b>{fieldName + ':'}</b>}
+                {fieldName && (isQuestion ? <b>{fieldName + '?'}</b> : <b>{fieldName + ':'}</b>)}
                 </Typography>
             </Grid>
             <Grid item xs={labelLength ? (12-labelLength) as GridSize : 9}>
