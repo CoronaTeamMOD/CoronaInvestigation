@@ -2,11 +2,11 @@ import {Request, Response, Router} from 'express';
 
 import { Severity } from '../../Models/Logger/types';
 import {GetContactTypeResponse} from '../../Models/ContactEvent/GetContactType';
-import { GetGreenPassQuestionsResponse } from '../../Models/ContactEvent/GreenPass';
 import {errorStatusCode, validStatusCode, graphqlRequest} from '../../GraphqlHTTPRequest';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
-import { GetInvolvedContactsResponse, InvolvedContactDB} from '../../Models/ContactEvent/GetInvolvedContacts';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
+import { GetInvolvedContactsResponse, InvolvedContactDB} from '../../Models/ContactEvent/GetInvolvedContacts';
+import { GetGreenPassAnswersResponse, GetGreenPassQuestionsResponse } from '../../Models/ContactEvent/GreenPass';
 import {GetContactEventResponse, ContactEvent, ClientInteractionsData} from '../../Models/ContactEvent/GetContactEvent';
 import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
 import {
@@ -20,7 +20,8 @@ import {
     GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_ALL_CONTACT_TYPES,
     GET_ALL_INVOLVED_CONTACTS, CONTACTS_BY_GROUP_ID, 
     CONTACTS_BY_CONTACTS_IDS,
-    GET_ALL_GREEN_PASS_QUESTIONS
+    GET_ALL_GREEN_PASS_QUESTIONS,
+    GET_ALL_GREEN_PASS_ANSWERS
 } from '../../DBService/ContactEvent/Query';
 
 const intersectionsRoute = Router();
@@ -391,6 +392,23 @@ intersectionsRoute.get('/greenPassQuestions', (request: Request, response: Respo
             response.send(result.data.allGreenPassQuestions.nodes);
         }).catch((error) => {
             greenPassQuestionsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+    });
+});
+
+intersectionsRoute.get('/greenPassAnswers', (request: Request, response: Response) => {
+    const greenPassAnswersLogger = logger.setup({
+        workflow: 'query all green pass answers',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    });
+    greenPassAnswersLogger.info(launchingDBRequestLog(), Severity.LOW);
+    graphqlRequest(GET_ALL_GREEN_PASS_ANSWERS, response.locals)
+        .then((result: GetGreenPassAnswersResponse) => {
+            greenPassAnswersLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data.allGreenPassAnswers.nodes);
+        }).catch((error) => {
+            greenPassAnswersLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
     });
 });
