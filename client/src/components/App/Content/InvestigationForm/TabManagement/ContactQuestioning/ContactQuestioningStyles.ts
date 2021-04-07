@@ -76,7 +76,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         '& p': {
             marginRight: '15px'
         }
-    }
+    },
+    smallSizeText: {
+        fontSize: '1rem'
+    },
 }));
 
 export default useStyles;

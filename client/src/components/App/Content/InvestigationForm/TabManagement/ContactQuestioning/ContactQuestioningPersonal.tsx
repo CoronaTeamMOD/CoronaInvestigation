@@ -1,9 +1,8 @@
 import { differenceInYears } from 'date-fns';
 import React, { useState, useEffect } from 'react';
-import { Avatar, Grid, Typography } from '@material-ui/core';
+import { Avatar, Grid, Typography, Select, MenuItem } from '@material-ui/core';
 import { Controller, DeepMap, FieldError } from 'react-hook-form';
 
-import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import formatDate from 'Utils/DateUtils/formatDate';
 import FieldName from 'commons/FieldName/FieldName';
@@ -28,6 +27,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (
     props: Props
 ): JSX.Element => {
     const { index, interactedContact, currentFormErrors, formValues, control, trigger } = props;
+
+    const [staticFieldsChange, setStaticFieldsChange] = useState<boolean>(false);
     
     const calcAge = (birthDate: Date) => {
         const newAge: number = differenceInYears(new Date(),new Date(birthDate));
@@ -78,32 +79,40 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                 </Grid>
                 <Grid item container alignItems='center'>
                     <FieldName fieldName='סוג תעודה מזהה:' />
-                    <Grid item xs={3}>
+                    <Grid item xs={3}> 
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.IDENTIFICATION_TYPE}`}
                             defaultValue={formValues.identificationType}
-                            render={(props) => {
-                                return (
-                                    <Toggle
-                                        disabled={isFieldDisabled}
-                                        test-id='identificationType'
-                                        firstOption={IdentificationTypes.ID}
-                                        secondOption={IdentificationTypes.PASSPORT}
-                                        value={isPassport}
-                                        onChange={(event, value) => {
-                                            if (value !== null) {
-                                                setIsPassport(value);
-                                                props.onChange(
-                                                    value
-                                                        ? IdentificationTypes.PASSPORT
-                                                        : IdentificationTypes.ID
-                                                );
-                                            }
+                            render={(props) => (
+                                <Select
+                                    {...props}
+                                    className={classes.smallSizeText}
+                                    onChange={(event) => {
+                                        props.onChange(event.target.value)
+                                    }}
+                                    MenuProps={{
+                                        anchorOrigin: {
+                                            vertical: 'bottom',
+                                            horizontal: 'left'
+                                        },
+                                        transformOrigin: {
+                                            vertical: 'top',
+                                            horizontal: 'left'
+                                        },
+                                        getContentAnchorEl: null
                                         }}
-                                    />
-                                );
-                            }}
+                                >
+                                    {Object.values(IdentificationTypes).map((identificationType: string) => (
+                                        <MenuItem
+                                            className={classes.smallSizeText}
+                                            key={identificationType}
+                                            value={identificationType}>
+                                            {identificationType}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            )}
                         />
                     </Grid>
                     <FieldName 
