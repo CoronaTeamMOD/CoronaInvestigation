@@ -231,7 +231,7 @@ query getAllGreenPassQuestions {
 
 export const GET_ALL_GREEN_PASS_ANSWERS = gql`
 query allGreenPassAnswers {
-  allGreenPassQuestions(orderBy: ID_ASC) {
+  allGreenPassAnswers(orderBy: ID_ASC) {
     nodes {
       id
       displayName
