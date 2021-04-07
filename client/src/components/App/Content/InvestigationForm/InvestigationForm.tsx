@@ -6,7 +6,6 @@ import MuiAlert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 
 import { setFormState } from 'redux/Form/formActionCreators';
-import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
 import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
         initialExposuresAndFlightsData, ExposureAndFlightsDetailsAndSet} from 'commons/Contexts/ExposuresAndFlights';
@@ -16,7 +15,6 @@ import useInvestigationForm from './useInvestigationForm';
 import TabManagement from './TabManagement/TabManagement';
 import ConvesrationScript from './ConversationScript/ConvesrationScript';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
-import useGroupedInvestigationContacts from './useGroupedInvestigationContacts';
 import useTabManagement ,{ LAST_TAB_ID } from './TabManagement/useTabManagement';
 import TrackingRecommendationForm from './TrackingRecommendation/TrackingRecommendationForm';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
@@ -35,8 +33,6 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const [lastTabDisplayedId, setLastTabDisplayedId] = React.useState<number>(LAST_TAB_ID - 1);
     const [isScriptOpened, setIsScriptOpened] = React.useState<boolean>(initialSctiptState);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-
-    const {setGroupedInvestigationsDetailsAsync} = useGroupedInvestigationContacts();
 
     const exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet = React.useMemo(() => ({
         exposureAndFlightsData,
@@ -69,10 +65,6 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         !areThereContacts && setFormState(investigationId, LAST_TAB_ID, true);
     }, [areThereContacts]);
 
-    useEffect(() => {
-        setGroupedInvestigationsDetailsAsync();
-    }, []);
-    
     const isLastTabDisplayed = currentTab === lastTabDisplayedId;
 
     return (

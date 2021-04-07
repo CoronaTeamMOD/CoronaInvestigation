@@ -19,6 +19,7 @@ import InvestigationInfo , { InvestigationInfoData } from 'models/InvestigationI
 import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setDatesToInvestigateParams } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigatedPatientId , setIsCurrentlyHospitialized, setIsDeceased, setEndTime, setTrackingRecommendation, setBirthDate } from 'redux/Investigation/investigationActionCreators';
 
+import useGroupedInvestigationContacts from '../useGroupedInvestigationContacts';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
 
@@ -75,6 +76,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     const lastOpenedEpidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.lastOpenedEpidemiologyNumber);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
 
+    const {setGroupedInvestigationsDetailsAsync} = useGroupedInvestigationContacts();
 
     const unauthorizedResponseInterceptor = axios.interceptors.response.use(response => {
         return response
@@ -104,7 +106,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     React.useEffect(() => {
         const investigationInfoLogger = logger.setup('Fetching investigation Info');
         investigationInfoLogger.info('launching investigation info request', Severity.LOW);
-        epidemiologyNumber !== defaultEpidemiologyNumber &&
+        if(epidemiologyNumber !== defaultEpidemiologyNumber) { 
             axios.get('/investigationInfo/staticInfo')
             .then((result: any) => {
                 if (result && result.data) {
@@ -145,6 +147,8 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                 investigationInfoLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                 handleInvalidEntrance()
             });
+            setGroupedInvestigationsDetailsAsync();
+        }
     }, [epidemiologyNumber]);
 
     const handleInvalidEntrance = () => {
