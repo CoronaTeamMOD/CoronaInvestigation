@@ -69,10 +69,10 @@ const InvestigationsInfo = (props: Props): JSX.Element => {
                         }
                         </Grid>
                     </Grid>
-                    <Grid item xs={12} className={[classes.investigationAmountContainer, hoverClasses.whiteButtons].join(' ')}>
+                    <Grid item xs={12} className={[classes.investigationAmountContainer, hoverClasses.whiteButtons].join(' ')} onClick={() => onInfoButtonClick({})}>
                         <Typography id='investigations-count' className={classes.investigationAmountText}><b>{allInvestigationsCount}</b></Typography>
                         <Typography><b>חקירות בסך הכל</b></Typography>
-                        <IconButton id='next-page-arrow' onClick={() => onInfoButtonClick({})}>
+                        <IconButton id='next-page-arrow'>
                             <NavigateBeforeIcon className={classes.navigateIcon} />
                         </IconButton>
                     </Grid>
