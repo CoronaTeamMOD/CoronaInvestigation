@@ -28,13 +28,13 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
     const formClasses = useFormStyles();
 
     return (
-        <Card test-id='contactLocationDateCard' key={contactDate.getTime()} className={classes.investigatedDateCard}>
+        <Card test-id='contactLocationDateCard' key={contactDate.getTime()} className={classes.investigatedDateCard} onClick={() => setAreInteractionsOpen(!areInteractionsOpen)}>
             <div className={classes.dateInfo}>
                 <div className={classes.dateSection}>
                     <div className={classes.arrowWrapper}>
                         {
                             interactions !== undefined && 
-                            <IconButton test-id={'collpaseContactLocationDate'} onClick={() => setAreInteractionsOpen(!areInteractionsOpen)}>
+                            <IconButton test-id={'collpaseContactLocationDate'}>
                                 {areInteractionsOpen ? <KeyboardArrowDown /> : <KeyboardArrowLeft />}
                             </IconButton>
                         }
