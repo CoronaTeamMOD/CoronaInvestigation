@@ -10,6 +10,7 @@ import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import BroadcastMessage, { BC_TABS_NAME } from 'models/BroadcastMessage';
+import { DEFAULT_INVESTIGATION_STATUS } from 'redux/Investigation/investigationReducer';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import UdpateTrackingRecommendation from 'Utils/TrackingRecommendation/updateTrackingRecommendation';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
@@ -46,7 +47,7 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
         const statusReason = investigationStatus.statusReason === '' ? null : investigationStatus.statusReason;
         const updateInvestigationStatusLogger = logger.setup('Update Investigation Status');
         updateInvestigationStatusLogger.info('launching investigation status request', Severity.LOW);
-        await axios.post('/investigationInfo/updateInvestigationStatus', {
+        investigationStatus.mainStatus !== DEFAULT_INVESTIGATION_STATUS && await axios.post('/investigationInfo/updateInvestigationStatus', {
             investigationMainStatus: investigationStatus.mainStatus,
             investigationSubStatus: subStatus !== inProcess ? subStatus : null,
             statusReason: statusReason,

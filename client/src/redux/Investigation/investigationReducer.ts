@@ -4,11 +4,13 @@ import { getDatesToInvestigate } from 'Utils/ClinicalDetails/symptomsUtils';
 
 import * as Actions from './investigationActionTypes';
 
+export const DEFAULT_INVESTIGATION_STATUS = -1;
+
 const initialState: InvestigationRedux = {
     epidemiologyNumber: defaultEpidemiologyNumber,
     complexReasonsId: [null],
     investigationStatus: {
-        mainStatus: -1,
+        mainStatus: DEFAULT_INVESTIGATION_STATUS,
         subStatus: '',
         statusReason: ''
     },
