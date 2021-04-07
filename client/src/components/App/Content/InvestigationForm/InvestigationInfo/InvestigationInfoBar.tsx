@@ -54,7 +54,7 @@ const defaultInvestigationStaticInfo : InvestigationInfo = {
     mutationName: null
 };
 
-export const LandingPageTimer = 1900;
+export const LandingPageTimer = 4000;
 
 const unauthorizedErrorMessages: Record<number, string> = {
     [UserTypeCodes.INVESTIGATOR] : 'החקירה אינה מוקצית אליך',
@@ -164,7 +164,6 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
         const errorText = `${UNAUTHORIZED_ERROR_TEXT}: ${unauthorizedErrorMessages[userType]}. הינך מועבר/ת לעמוד הראשי`
     
         alertError(errorText, {
-            timer: 2000,
             showConfirmButton: false
         });
         timeout(LandingPageTimer).then(() =>
