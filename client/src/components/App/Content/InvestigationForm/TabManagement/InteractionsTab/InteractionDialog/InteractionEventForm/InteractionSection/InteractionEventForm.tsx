@@ -9,7 +9,6 @@ import StoreStateType from 'redux/storeStateType';
 import FlattenedDBAddress from 'models/DBAddress';
 import FormInput from 'commons/FormInput/FormInput';
 import useContactEvent from 'Utils/ContactEvent/useContactEvent';
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import AddressForm, {AddressFormFields} from 'commons/Forms/AddressForm/AddressForm';
 import placeTypesCodesHierarchy, {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCodesHierarchy';
@@ -24,7 +23,7 @@ import GoogleAddressForm from './InteractionLocationFields/AddressForm/AddressFo
 import InteractionDetailsFields from './InteractionDetailsFields/InteractionDetailsFields';
 import BusinessContactForm from './InteractionLocationFields/BusinessContactForm/BusinessContactForm';
 
-const ADDRESS_LABEL = 'כתובת';
+const ADDRESS_LABEL = 'מקום/כתובת';
 
 const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     {onPlaceSubTypeChange, isVisible, interactionData, isNewInteraction}: InteractionEventFormProps): JSX.Element => {
@@ -111,12 +110,12 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                 <GoogleAddressForm/>
             </Collapse>
             <Collapse in={isSubTypePatientHouse}>
-                <FormRowWithInput labelLength={2} fieldName={ADDRESS_LABEL}>
+                <FormInput fieldName={ADDRESS_LABEL}>
                     <AddressForm
                         disabled={true}
                         {...addressFormFields}
                     />
-                </FormRowWithInput>
+                </FormInput>
             </Collapse>
             <Collapse in={isNamedLocation}>
                 <PlaceNameForm nameFieldLabel={nameFieldLabel}/>
@@ -129,7 +128,7 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
             </Collapse>
             {
                     <div>
-                        <FormInput xs={7} fieldName='האם האירוע מחזורי ?'>
+                        <FormInput xs={7} isQuestion={true} fieldName='האם האירוע מחזורי'>
                             <Controller
                                 name={InteractionEventDialogFields.IS_REPETITIVE}
                                 control={control}

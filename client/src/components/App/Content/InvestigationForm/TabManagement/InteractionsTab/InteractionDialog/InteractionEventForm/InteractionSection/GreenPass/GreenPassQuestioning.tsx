@@ -1,13 +1,17 @@
 import React from 'react';
-import {Grid} from '@material-ui/core';
+import {Grid, Typography} from '@material-ui/core';
 import {Controller, useFormContext} from 'react-hook-form';
 
+
+import Toggle from 'commons/Toggle/Toggle';
 import FormInput from 'commons/FormInput/FormInput';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
     
 import useStyles from './GreenPassStyles';
 import useGreenPassQuestioning from './useGreenPassQuestioning';
+
+const greenPassQuestionsTitle = 'הקפדה על נהלים:';
+const finalQuestionsTitle = 'מסקנת החוקר:';
 
 const GreenPassQuestioning = (props :Props) => {
 
@@ -15,27 +19,57 @@ const GreenPassQuestioning = (props :Props) => {
 
     const { greenPassQuestions } = useGreenPassQuestioning();
 
-    //console.log(greenPassQuestions);
-
     const classes = useStyles();
+
     return (
-        <Grid container>
-            <FormInput xs={6} fieldName={'k'}>
-                <Controller
-                    name={InteractionEventDialogFields.PLACE_NAME}
-                    control={control}
-                    render={(props) => (
-                        <AlphanumericTextField
-                            name={props.name}
-                            value={props.value}
-                            onChange={(newValue: string) => props.onChange(newValue as string)}
-                            onBlur={props.onBlur}
-                            className={classes.field}
-                        />
-                    )}
-                />
-            </FormInput>
-        </Grid>
+        <>
+            <Typography className={classes.title}>{greenPassQuestionsTitle}</Typography>
+            <Grid container>
+                { greenPassQuestions.slice(0, -2).map((greenPassQuestion) => {
+                    return (
+                        <FormInput fieldName={greenPassQuestion.displayName} className={classes.field} isQuestion={true}>
+                            <Controller
+                                name={`${InteractionEventDialogFields.IS_GREEN_PASS}-${greenPassQuestion.id}`}
+                                control={control}
+                                render={(props) => (
+                                    <Toggle
+                                        value={props.value}
+                                        onChange={(e, value) => {
+                                            if (value !== null) {
+                                                props.onChange(value)
+                                            }
+                                        }}
+                                    />
+                                )}
+                            />
+                        </FormInput>
+                    )
+                })}                 
+            </Grid>            
+            <Typography className={classes.title}>{finalQuestionsTitle}</Typography>
+            <Grid container>
+                { greenPassQuestions.slice(-2).map((finalQuestion) => {
+                    return (
+                        <FormInput fieldName={finalQuestion.displayName} className={classes.field} isQuestion={true}>
+                            <Controller
+                                name={`${InteractionEventDialogFields.IS_GREEN_PASS}-${finalQuestion.id}`}
+                                control={control}
+                                render={(props) => (
+                                    <Toggle
+                                        value={props.value}
+                                        onChange={(e, value) => {
+                                            if (value !== null) {
+                                                props.onChange(value)
+                                            }
+                                        }}
+                                    />
+                                )}
+                            />
+                        </FormInput>
+                    )
+                })}
+            </Grid>
+        </>
     );
 };
 
