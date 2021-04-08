@@ -90,7 +90,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
     const city = methods.watch(`${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.CITY}`);
     const street = methods.watch(`${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.STREET}`);
     const houseNumber = methods.watch(`${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.HOUSE_NUMBER}`);
-    const floor = methods.watch(`${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.FLOOR}`);
+    const apartment = methods.watch(`${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.APARTMENT}`);
 
     const selectedRole = useMemo<investigatedPatientRole | undefined>(() => (
         investigatedPatientRoles.find(role => role.id === selectedRoleId)
@@ -166,11 +166,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
         const address: FlattenedDBAddress = {
             city: (city as any) || null,
             street: (street as any) || null,
-            floor: (floor as any) || null,
+            apartment: (apartment as any) || null,
             houseNum: (houseNumber as any) || null,
         }
         setAddress(address);
-    }, [city, street, floor, houseNumber]);
+    }, [city, street, apartment, houseNumber]);
 
     const addressFormFields: AddressFormFields = {
         cityField: {

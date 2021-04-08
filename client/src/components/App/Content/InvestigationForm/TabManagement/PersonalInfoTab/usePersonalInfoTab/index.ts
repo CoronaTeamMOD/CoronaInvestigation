@@ -117,7 +117,7 @@ const usePersonalInfoTab = (): usePersonalInfoTabOutcome => {
                     convertedPatientAddress = {
                         city,
                         street,
-                        floor: patientAddress.floor,
+                        apartment: patientAddress.apartment,
                         houseNum: patientAddress.houseNum,
                     }
                 } else {
