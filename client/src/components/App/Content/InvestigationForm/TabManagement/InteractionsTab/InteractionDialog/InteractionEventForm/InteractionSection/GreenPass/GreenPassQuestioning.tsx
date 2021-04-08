@@ -57,9 +57,9 @@ const GreenPassQuestioning = (props :Props) => {
                                 control={control}
                                 render={(props) => (
                                     <TripleToggle
-                                        firstOption={greenPassAnswers[greenPassAnswers.length-3].displayName}
-                                        secondOption={greenPassAnswers[greenPassAnswers.length-2].displayName}
-                                        thirdOption={greenPassAnswers[greenPassAnswers.length-1].displayName}
+                                        firstOption={greenPassAnswers[greenPassAnswers.length-3]}
+                                        secondOption={greenPassAnswers[greenPassAnswers.length-2]}
+                                        thirdOption={greenPassAnswers[greenPassAnswers.length-1]}
                                         value={props.value}
                                         onChange={(e, value) => {
                                             if (value !== null) {

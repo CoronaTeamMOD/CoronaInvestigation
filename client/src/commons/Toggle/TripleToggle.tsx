@@ -16,23 +16,23 @@ const TrippleToggle: React.FC<Props> = (props: Props): JSX.Element => {
 
     return (
         <ToggleButtonGroup value={value} exclusive {...rest}>
-            <ToggleButton className={classes.toggle} 
+            <ToggleButton className={classes.trippleToggle} 
                 disabled={disabled}
-                style={value === 2 ? activeButtonStyle : {}}
-                value={2}>
-                {firstOption}
+                style={value === firstOption?.id ? activeButtonStyle : {}}
+                value={firstOption?.id}>
+                {firstOption?.displayName}
             </ToggleButton>
-            <ToggleButton className={classes.toggle}
+            <ToggleButton className={classes.trippleToggle}
                 disabled={disabled}
-                style={value === 3 ? activeButtonStyle : {}}
-                value={3}>
-                {secondOption}
+                style={value === secondOption?.id ? activeButtonStyle : {}}
+                value={secondOption?.id}>
+                {secondOption?.displayName}
             </ToggleButton>
-            <ToggleButton className={classes.toggle} 
+            <ToggleButton className={classes.trippleToggle} 
                 disabled={disabled}
-                style={value === 4 ? activeButtonStyle : {}}
-                value={4}>
-                {thirdOption}
+                style={value === thirdOption?.id ? activeButtonStyle : {}}
+                value={thirdOption?.id}>
+                {thirdOption?.displayName}
             </ToggleButton>
         </ToggleButtonGroup>
     );
@@ -40,10 +40,15 @@ const TrippleToggle: React.FC<Props> = (props: Props): JSX.Element => {
 
 export default TrippleToggle;
 
+interface Option {
+    displayName: string;
+    id: number;
+};
+
 interface Props extends ToggleButtonGroupProps {
-    firstOption?: string;
-    secondOption?: string;
-    thirdOption?: string;
+    firstOption?: Option;
+    secondOption?: Option;
+    thirdOption?: Option;
     disabled?: boolean;
     value?: number;
 };
