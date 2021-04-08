@@ -1,7 +1,7 @@
 interface InsertAndGetAddressIdInput {
     cityValue: string;
     streetValue: string;
-    floorValue: string;
+    apartmentValue: string;
     houseNumValue: string;
 }
 

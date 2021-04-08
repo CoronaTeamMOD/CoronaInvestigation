@@ -189,11 +189,13 @@ personalDetailsRoute.post('/updatePersonalDetails', handleInvestigationRequest, 
         investigation: response.locals.epidemiologynumber,
     };
     const requestAddress: InsertAndGetAddressIdInput = formatToInsertAndGetAddressIdInput(address);
+    console.log('HELO2',requestAddress);
     const createAddressLogger = logger.setup({...logData, workflow: `${logData.workflow}: create patient address`});
     const parameters = {input: requestAddress};
     createAddressLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     graphqlRequest(CREATE_ADDRESS,  response.locals, parameters)
     .then((result) => {
+        console.log(result);
         createAddressLogger.info(validDBResponseLog, Severity.LOW);
         savePersonalDetails(request, response, logData, result.data.insertAndGetAddressId.integer);
     })
