@@ -209,7 +209,6 @@ clinicalDetailsRoute.post('/saveClinicalDetails', handleInvestigationRequest, (r
         user: response.locals.user.id
     };
     const isolationAddress = formatToNullable(request.body.clinicalDetails?.isolationAddress);
-    console.log('HELO3' , isolationAddress);
     if (isolationAddress !== null) {
         const requestAddress: InsertAndGetAddressIdInput = formatToInsertAndGetAddressIdInput(isolationAddress);
         const createAddressLogger = logger.setup({...logData, workflow: `${logData.workflow}: create isolation address`})
