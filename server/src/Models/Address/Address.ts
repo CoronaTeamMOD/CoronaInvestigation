@@ -1,7 +1,8 @@
 interface Address {
     city: string;
     street: string;
-    apartment: string;
+    apartment?: string;
+    floor?: string;
     houseNum: string;
 }
 
