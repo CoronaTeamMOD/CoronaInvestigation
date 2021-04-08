@@ -3,6 +3,7 @@ import {Grid, Typography} from '@material-ui/core';
 import {Controller, useFormContext} from 'react-hook-form';
 
 import Toggle from 'commons/Toggle/Toggle';
+import GreenPassInfo from 'models/GreenPassInfo';
 import FormInput from 'commons/FormInput/FormInput';
 import TripleToggle from 'commons/Toggle/TripleToggle';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
@@ -15,11 +16,10 @@ const finalQuestionsTitle = 'מסקנת החוקר:';
 
 const GreenPassQuestioning = (props :Props) => {
 
-    const { control } = useFormContext();
-
-    const { greenPassQuestions, greenPassAnswers } = useGreenPassQuestioning();
-
+    const { greenPassInformation } = props;
     const classes = useStyles();
+    const { control } = useFormContext();
+    const { greenPassQuestions, greenPassAnswers, greenPass } = useGreenPassQuestioning({ greenPassInformation });
 
     return (
         <>
@@ -31,6 +31,7 @@ const GreenPassQuestioning = (props :Props) => {
                             <Controller
                                 name={`${InteractionEventDialogFields.IS_GREEN_PASS}-${greenPassQuestion.id}`}
                                 control={control}
+                                defaultValue={greenPass.hasOwnProperty(greenPassQuestion.id) ? !!greenPass[greenPassQuestion.id] : undefined}
                                 render={(props) => (
                                     <Toggle
                                         value={props.value}
@@ -54,6 +55,7 @@ const GreenPassQuestioning = (props :Props) => {
                             <Controller
                                 name={`${InteractionEventDialogFields.IS_GREEN_PASS}-${finalQuestion.id}`}
                                 control={control}
+                                defaultValue={greenPass.hasOwnProperty(finalQuestion.id) ? greenPass[finalQuestion.id] : undefined}
                                 render={(props) => (
                                     <TripleToggle
                                         firstOption={greenPassAnswers[greenPassAnswers.length-3]}
@@ -79,4 +81,5 @@ const GreenPassQuestioning = (props :Props) => {
 export default GreenPassQuestioning;
 
 interface Props {
+    greenPassInformation: GreenPassInfo[] | undefined; 
 };

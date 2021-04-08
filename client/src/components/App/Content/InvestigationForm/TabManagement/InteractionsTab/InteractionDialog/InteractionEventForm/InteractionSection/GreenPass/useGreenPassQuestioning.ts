@@ -1,9 +1,10 @@
-import React from 'react';
 import axios  from 'axios';
+import React, { useState } from 'react';
 import {useSelector} from 'react-redux';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
+import GreenPassInfo from 'models/GreenPassInfo';
 import StoreStateType from 'redux/storeStateType';
 import GreenPassAnswer from 'models/GreenPassAnswer';
 import GreenPassQuestion from 'models/GreenPassQuestion';
@@ -12,11 +13,13 @@ import { setGreenPassAnswers, setGreenPassQuestions } from 'redux/GreenPass/gree
 
 import { useGreenPassQuestioningOutcome } from './GreenPassInterfaces';
 
-const useGreenPassQuestioning = () : useGreenPassQuestioningOutcome => {
+const useGreenPassQuestioning = (props: Props) : useGreenPassQuestioningOutcome => {
+
+    const { greenPassInformation } = props;
 
     const greenPassQuestions = useSelector<StoreStateType, GreenPassQuestion[]>(state => state.greenPass.greenPassQuestions);
     const greenPassAnswers = useSelector<StoreStateType, GreenPassAnswer[]>(state => state.greenPass.greenPassAnswers);
-
+    
     const getGreenPassQuestions = () => {
         if (Object.keys(greenPassQuestions).length > 0) {
             return;
@@ -61,6 +64,18 @@ const useGreenPassQuestioning = () : useGreenPassQuestioningOutcome => {
         }).finally(() => setIsLoading(false))
     };
 
+    const getGreenPass = () => {
+        let greenPass : {[key: number] : number} = {};
+        if (greenPassInformation && greenPassInformation.length > 0){
+            for (const greenPassInfo of greenPassInformation) {
+                greenPass[greenPassInfo.questionId] = greenPassInfo.answerId;
+            }
+        }
+        return greenPass;
+    };
+
+    const [greenPass, setGreenPass] = useState(getGreenPass());
+
     React.useEffect(() => {
         getGreenPassQuestions();
         getGreenPassAnswers();
@@ -68,8 +83,13 @@ const useGreenPassQuestioning = () : useGreenPassQuestioningOutcome => {
 
     return {
         greenPassQuestions,
-        greenPassAnswers
+        greenPassAnswers,
+        greenPass
     };
 };
 
 export default useGreenPassQuestioning;
+
+interface Props {
+    greenPassInformation: GreenPassInfo[] | undefined; 
+};

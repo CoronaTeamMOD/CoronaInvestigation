@@ -92,6 +92,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
         return ({
             ...dbInteraction,
+            greenPass: dbInteraction.greenPassInformationsByContactEventId.nodes,
             locationAddress: parseAddress(dbInteraction.locationAddress) || null,
             startTime: new Date(dbInteraction.startTime),
             endTime: new Date(dbInteraction.endTime),

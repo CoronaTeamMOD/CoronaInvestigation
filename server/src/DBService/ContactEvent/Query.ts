@@ -128,6 +128,12 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!, $minimalDateT
           }
         }
       }
+      greenPassInformationsByContactEventId {
+        nodes {
+          questionId
+          answerId
+        }
+      }
     }
   }
 }

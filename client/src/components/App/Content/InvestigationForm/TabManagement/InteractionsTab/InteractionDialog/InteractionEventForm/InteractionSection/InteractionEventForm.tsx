@@ -11,8 +11,8 @@ import FormInput from 'commons/FormInput/FormInput';
 import useContactEvent from 'Utils/ContactEvent/useContactEvent';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import AddressForm, {AddressFormFields} from 'commons/Forms/AddressForm/AddressForm';
-import placeTypesCodesHierarchy, {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import placeTypesCodesHierarchy, {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import PlacesTypesAndSubTypes, {PlacesTypesAndSubTypesProps} from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
 import PlaceNameForm from './PlaceNameForm/PlaceNameForm';
@@ -124,7 +124,7 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                 {extraFields?.map((fieldElement: React.FC) => React.createElement(fieldElement))}
             </Collapse>
             <Collapse in={placeType !== placeTypesCodesHierarchy.privateHouse.code}>
-                <GreenPassQuestioning />
+                <GreenPassQuestioning greenPassInformation={interactionData?.greenPass}/>
             </Collapse>
             {
                     <div>
