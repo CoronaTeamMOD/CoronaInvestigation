@@ -42,7 +42,6 @@ const InteractionFormTabSwitchButton = ({isAddingContacts, setIsAddingContacts, 
     const hebrewActionName = isNewInteraction ? 'יצירת' : 'עריכת';
 
     const continueToContactsTabAbility: (ContinueToTabOK | ContinueToTabError) = React.useMemo(() => {
-        console.log(isGreenPass, placeType);
         if (Boolean(placeTypeErrors) || Boolean(placeSubTypeErrors)) {
             return {canContinue: false, message: cantMoveToContactsBaseMessage.concat('מבלי להזין סוג אתר/תת סוג')};
         }

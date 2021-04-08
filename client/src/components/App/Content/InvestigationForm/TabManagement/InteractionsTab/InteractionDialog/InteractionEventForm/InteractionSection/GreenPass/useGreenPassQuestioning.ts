@@ -10,8 +10,9 @@ import GreenPassQuestion from 'models/GreenPassQuestion';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { setGreenPassAnswers, setGreenPassQuestions } from 'redux/GreenPass/greenPassActionCreators';
 
+import { useGreenPassQuestioningOutcome } from './GreenPassInterfaces';
 
-const useGreenPassQuestioning = () => {
+const useGreenPassQuestioning = () : useGreenPassQuestioningOutcome => {
 
     const greenPassQuestions = useSelector<StoreStateType, GreenPassQuestion[]>(state => state.greenPass.greenPassQuestions);
     const greenPassAnswers = useSelector<StoreStateType, GreenPassAnswer[]>(state => state.greenPass.greenPassAnswers);

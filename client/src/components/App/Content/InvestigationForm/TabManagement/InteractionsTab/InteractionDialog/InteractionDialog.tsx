@@ -11,7 +11,7 @@ import InvolvedContact from 'models/InvolvedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import useDuplicateContactId, {IdToCheck} from 'Utils/Contacts/useDuplicateContactId';
-import {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCodesHierarchy';
+import placeTypesCodesHierarchy, {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import {ContactBankContextProvider , ContactBankOption} from 'commons/Contexts/ContactBankContext';
 import {GroupedInvestigationsContextProvider} from 'commons/Contexts/GroupedInvestigationFormContext';
 import {familyMembersContext, FamilyMembersDataContextProvider} from 'commons/Contexts/FamilyMembersContext';
@@ -112,6 +112,20 @@ const InteractionDialog = (props: Props) => {
         unknownTime:  Boolean(data.unknownTime),
     });
 
+    const convertGreenPassQuestions = (data: InteractionEventDialogData) => {
+        let greenPass = [];
+        if (data[InteractionEventDialogFields.PLACE_TYPE] !== placeTypesCodesHierarchy.privateHouse.code) {
+            for (let field of Object.keys(data)) {
+                if (field.includes(InteractionEventDialogFields.IS_GREEN_PASS)) {
+                    let questionId = parseInt(field.slice(12));
+                    let answerId = +(data as any)[field];
+                    greenPass.push({questionId, answerId});
+                }
+            }
+        }
+        return greenPass;
+    };
+
     const convertData = (data: InteractionEventDialogData) => {
         const { isNamedLocation } = getOptionsByPlaceAndSubplaceType(data.placeType, data.placeSubType);
         initialInteractionDate.current.setHours(0, 0, 0, 0);
@@ -141,7 +155,8 @@ const InteractionDialog = (props: Props) => {
                     } else {
                         return contact
                     }
-                }) || []
+                }) || [],
+            [InteractionEventDialogFields.IS_GREEN_PASS]: convertGreenPassQuestions(data),
         }
     };
 
@@ -262,20 +277,19 @@ const InteractionDialog = (props: Props) => {
         eventFamilyMembersIds : getEventFamilyMembersIds()
     };
 
-    const validateAndHandleSubmit = methods.handleSubmit(
-        () => {
-            const datesHaveError =
-                getAndSetDateErrors({unknownTime: isUnknownTime,startTime: interactionStartTime, endTime: interactionEndTime })
-               || additionalOccurrences?.map((occurence, index) => getAndSetDateErrors(occurence, index)).some(Boolean);
+    const validateAndHandleSubmit = methods.handleSubmit(() => {
+        const datesHaveError =
+            getAndSetDateErrors({unknownTime: isUnknownTime,startTime: interactionStartTime, endTime: interactionEndTime })
+            || additionalOccurrences?.map((occurence, index) => getAndSetDateErrors(occurence, index)).some(Boolean);
 
-            const canSubmit = !(datesHaveError || isRepetitiveFieldInvalid.invalid);
+        const canSubmit = !(datesHaveError || isRepetitiveFieldInvalid.invalid);
 
-            if (canSubmit) {
-                const data = methods.getValues();
-                delete data.privateHouseAddress;
-                onSubmit(data);
-            }
-        });
+        if (canSubmit) {
+            const data = methods.getValues();
+            delete data.privateHouseAddress;
+            onSubmit(data);
+        }
+    });
 
     return (
         <FormProvider {...methods}>

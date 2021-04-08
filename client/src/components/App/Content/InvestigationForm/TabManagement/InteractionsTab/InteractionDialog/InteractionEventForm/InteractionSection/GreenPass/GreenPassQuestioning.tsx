@@ -2,7 +2,6 @@ import React from 'react';
 import {Grid, Typography} from '@material-ui/core';
 import {Controller, useFormContext} from 'react-hook-form';
 
-
 import Toggle from 'commons/Toggle/Toggle';
 import FormInput from 'commons/FormInput/FormInput';
 import TripleToggle from 'commons/Toggle/TripleToggle';
