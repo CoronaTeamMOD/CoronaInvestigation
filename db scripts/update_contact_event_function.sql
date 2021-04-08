@@ -4,7 +4,7 @@ DROP FUNCTION public.update_contact_event_function(json);
 
 CREATE OR REPLACE FUNCTION public.update_contact_event_function(
 	input_data json)
-    RETURNS int4[]
+    RETURNS integer[]
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
@@ -54,6 +54,9 @@ flightOriginCountry varchar;
 contactPhoneNumber varchar;
 person_arr json[];
 person json;
+
+greenPass json;
+green_pass_arr json[];
 
 areContactsEmpty boolean;
 deletedContacts json;
@@ -120,6 +123,11 @@ begin
 				select nullif((contact_event->'flightOriginCountry')::text,'null') as val into flightOriginCountry;
 			
 				select nullif((contact_event->'contactPhoneNumber')::text,'null') as val into contactPhoneNumber;
+				
+				select (contact_event->'isGreenPass') into greenPass;
+				if greenPass is not null and greenPass::TEXT != '[]' then
+					green_pass_arr :=(select  array_agg(green_pass_data.value) from json_array_elements(greenPass) green_pass_data);
+				end if;
 				
 				if curr_event is null then
 					insert into public.contact_event(investigation_id,
@@ -241,11 +249,19 @@ begin
 				
 				end if;
 				
-					areContactsEmpty := contacts::TEXT = '[]';
-					if 	contacts is not null and areContactsEmpty = false then
-						perform public.update_contact_person(contacts,curr_event,investigationId);
-						events_array := array_append(events_array, curr_event);
-					end if;
+				if green_pass_arr is not null then
+					perform public.update_green_pass_information(green_pass_arr,curr_event,investigationId);
+				else 
+					DELETE from public.green_pass_information
+						where investigation_id = investigationId and contact_event_id = curr_event;
+				end if;
+
+				areContactsEmpty := contacts::TEXT = '[]';
+				if contacts is not null and areContactsEmpty = false then
+					perform public.update_contact_person(contacts,curr_event,investigationId);
+					events_array := array_append(events_array, curr_event);
+				end if;
+		
 			end loop;
 	end if;
 return events_array;	
@@ -253,4 +269,4 @@ end;
 $BODY$;
 
 ALTER FUNCTION public.update_contact_event_function(json)
-    OWNER TO coronai;
+    OWNER TO postgres;
