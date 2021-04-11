@@ -25,7 +25,7 @@ export interface PersonalInfoFormData {
     insuranceCompany: string,
     city: string,
     street: string,
-    floor: string,
+    apartment?: string,
     houseNum: string,
     relevantOccupation: string;
     educationOccupationCity: string;

@@ -4,8 +4,9 @@ import InsertAndGetAddressIdInput from '../Models/Address/InsertAndGetAddressIdI
 export const formatToInsertAndGetAddressIdInput = (address: Address) :  InsertAndGetAddressIdInput => ({
     cityValue: address.city || null,
     streetValue: address.street || null,
-    floorValue: address.floor || null,
+    apartmentValue: address.apartment || null,
     houseNumValue: address.houseNum || null,
+    floorValue: address.floor || null,
 });
 
 export const formatToNullable = (address : Address): Address => {
@@ -13,6 +14,7 @@ export const formatToNullable = (address : Address): Address => {
         city : address.city || null,
         street : address.street || null, 
         houseNum : address.houseNum || null, 
-        floor : address.floor || null, 
+        apartment : address.apartment || null,
+        floor: address.floor || null, 
     }
 } 
