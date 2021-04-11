@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 
 const DEFAULT_NO_INFO_TEXT = 'אין מידע';
 
-const formatDate = (date?: Date | string | null , noInfoText? : string): string => {
+const formatDate = (date?: Date | string | null, noInfoText? : string): string => {
     return (
         date 
         ? format(new Date(date), 'dd/MM/yyyy')
@@ -10,11 +10,11 @@ const formatDate = (date?: Date | string | null , noInfoText? : string): string 
     ) 
 }
 
-export const formatDateTime = (date: Date): string => {
+export const formatDateTime = (date: Date, noInfoText? : string): string => {
     return (
         date 
         ? format(new Date(date), 'HH:mm:ss dd/MM/yyyy')
-        : DEFAULT_NO_INFO_TEXT
+        : noInfoText ?? DEFAULT_NO_INFO_TEXT
     ) 
 }
 
