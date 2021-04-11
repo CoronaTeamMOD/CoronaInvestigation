@@ -1,3 +1,5 @@
+import EpidemiologicStatus from './EpidemiologicStatus';
+
 interface Person {
     firstName: string;
     lastName: string;
@@ -7,6 +9,7 @@ interface Person {
     additionalPhoneNumber: string;
     gender: string;
     birthDate: Date;
+    epidemiologicStatus? : EpidemiologicStatus | null
 };
 
 export default Person;

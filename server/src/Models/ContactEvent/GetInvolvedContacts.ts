@@ -26,6 +26,13 @@ export interface InvolvedContactDB {
         identificationType: string;
         lastName: string;
         phoneNumber: string;
+        epidemiologicStatus: {
+            recoveryDate: Date | null,
+            serologicImmunityStartDate: Date | null,
+            serologicImmunityExpirationDate: Date | null,
+            vaccineEffectivenessStartDate: Date | null,
+            vaccineExpirationDate: Date | null
+        } | null;
     },
     involvementReason: number;
     isContactedPerson: boolean;
