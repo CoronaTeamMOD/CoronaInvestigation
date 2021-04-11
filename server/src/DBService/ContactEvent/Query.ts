@@ -41,6 +41,13 @@ personByPersonId {
   identificationType
   lastName
   phoneNumber
+  epidemiologicStatus: personEpidemiologicStatusByPersonEpidemiologicStatusId {
+    recoveryDate
+    serologicImmunityStartDate
+    serologicImmunityExpirationDate
+    vaccineEffectivenessStartDate
+    vaccineExpirationDate
+  }
 }
 involvementReason,
 isContactedPerson
