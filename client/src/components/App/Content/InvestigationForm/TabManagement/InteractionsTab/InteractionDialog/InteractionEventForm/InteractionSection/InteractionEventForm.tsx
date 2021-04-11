@@ -1,30 +1,29 @@
 import {useSelector} from 'react-redux';
-import React, {useEffect, useMemo,} from 'react';
+import React, {useEffect, useMemo} from 'react';
+import {Grid, Divider, Collapse} from '@material-ui/core';
 import {useFormContext, Controller} from 'react-hook-form';
-import {Grid, Divider, Collapse, Typography} from '@material-ui/core';
 
+import Toggle from 'commons/Toggle/Toggle';
+import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FlattenedDBAddress from 'models/DBAddress';
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
-import Toggle from 'commons/Toggle/Toggle';
 import FormInput from 'commons/FormInput/FormInput';
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import AddressForm, {AddressFormFields} from 'commons/Forms/AddressForm/AddressForm';
-import PlacesTypesAndSubTypes, {PlacesTypesAndSubTypesProps} from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 import useContactEvent from 'Utils/ContactEvent/useContactEvent';
-import {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCodesHierarchy';
-import {getDatesToInvestigate} from 'Utils/ClinicalDetails/symptomsUtils';
-import useFormStyles from 'styles/formStyles';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import AddressForm, {AddressFormFields} from 'commons/Forms/AddressForm/AddressForm';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import placeTypesCodesHierarchy, {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCodesHierarchy';
+import PlacesTypesAndSubTypes, {PlacesTypesAndSubTypesProps} from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
-import GoogleAddressForm from './InteractionLocationFields/AddressForm/AddressForm';
 import PlaceNameForm from './PlaceNameForm/PlaceNameForm';
-import BusinessContactForm from './InteractionLocationFields/BusinessContactForm/BusinessContactForm';
-import InteractionDetailsFields from './InteractionDetailsFields/InteractionDetailsFields';
+import GreenPassQuestioning from './GreenPass/GreenPassQuestioning';
 import RepetitiveEventForm from './RepetitiveEventForm/RepetitiveEventForm';
 import DetailsFieldsTitle from './InteractionDetailsFields/DetailsFieldsTitle';
+import GoogleAddressForm from './InteractionLocationFields/AddressForm/AddressForm';
+import InteractionDetailsFields from './InteractionDetailsFields/InteractionDetailsFields';
+import BusinessContactForm from './InteractionLocationFields/BusinessContactForm/BusinessContactForm';
 
-const ADDRESS_LABEL = 'כתובת';
+const ADDRESS_LABEL = 'מקום/כתובת';
 
 const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     {onPlaceSubTypeChange, isVisible, interactionData, isNewInteraction}: InteractionEventFormProps): JSX.Element => {
@@ -111,12 +110,12 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                 <GoogleAddressForm/>
             </Collapse>
             <Collapse in={isSubTypePatientHouse}>
-                <FormRowWithInput labelLength={2} fieldName={ADDRESS_LABEL}>
+                <FormInput fieldName={ADDRESS_LABEL}>
                     <AddressForm
                         disabled={true}
                         {...addressFormFields}
                     />
-                </FormRowWithInput>
+                </FormInput>
             </Collapse>
             <Collapse in={isNamedLocation}>
                 <PlaceNameForm nameFieldLabel={nameFieldLabel}/>
@@ -124,10 +123,12 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
             <Collapse in={!!extraFields}>
                 {extraFields?.map((fieldElement: React.FC) => React.createElement(fieldElement))}
             </Collapse>
-
+            <Collapse in={placeType !== placeTypesCodesHierarchy.privateHouse.code}>
+                <GreenPassQuestioning greenPassInformation={interactionData?.greenPass}/>
+            </Collapse>
             {
                     <div>
-                        <FormInput xs={7} fieldName='האם האירוע מחזורי ?'>
+                        <FormInput xs={7} isQuestion={true} fieldName='האם האירוע מחזורי'>
                             <Controller
                                 name={InteractionEventDialogFields.IS_REPETITIVE}
                                 control={control}

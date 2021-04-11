@@ -47,6 +47,7 @@ interface InteractionEventData {
     flightOriginCountry?: string;
     creationTime: Date;
     privateHouseAddress?: DBAddress;
+    greenPass?: [];
 };
 
 export default InteractionEventDialogData;

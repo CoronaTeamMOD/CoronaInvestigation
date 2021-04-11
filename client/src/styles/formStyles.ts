@@ -11,6 +11,7 @@ const useStyles = makeStyles({
     fieldName: {
         fontWeight: 'bold',
         marginRight: '1vw',
+        textAlign: 'left'
     },
     formRow: {
         display: 'flex',

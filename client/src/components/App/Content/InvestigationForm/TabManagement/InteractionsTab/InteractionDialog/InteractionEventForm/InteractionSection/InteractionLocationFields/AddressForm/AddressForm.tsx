@@ -3,13 +3,14 @@ import { Grid } from '@material-ui/core';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import Map from 'commons/Map/Map';
+import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
-import useFormStyles from 'styles/formStyles';
 
 import useStyles from './AddressFormStyles';
 
 const AddressForm: React.FC = (): JSX.Element => {
+    
     const { control } = useFormContext();
 
     const formClasses = useFormStyles();
@@ -17,7 +18,7 @@ const AddressForm: React.FC = (): JSX.Element => {
 
     return (
         <Grid container justify='flex-start' className={[formClasses.formRow, additionalClasses.addressRow].join(' ')}>
-            <FormInput xs={8} fieldName='מקום/כתובת'>
+            <FormInput xs={8} fieldName='מקום/כתובת' className={additionalClasses.addressText}>
                         <Controller
                             name={InteractionEventDialogFields.LOCATION_ADDRESS}
                             control={control}
@@ -31,6 +32,7 @@ const AddressForm: React.FC = (): JSX.Element => {
                         />
             </FormInput>
         </Grid>
-    )};
+    )
+};
 
 export default AddressForm;

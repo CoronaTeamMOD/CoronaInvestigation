@@ -5,4 +5,9 @@ export const useStyles = makeStyles({
         borderRadius: '50px',
         width: '50px',
     },
+    trippleToggle: {
+        borderRadius: '50px',
+        width: '70px',
+        lineHeight: '1.1rem'
+    }
 });

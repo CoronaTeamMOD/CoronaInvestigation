@@ -128,6 +128,12 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!, $minimalDateT
           }
         }
       }
+      greenPassInformationsByContactEventId {
+        nodes {
+          questionId
+          answerId
+        }
+      }
     }
   }
 }
@@ -216,4 +222,26 @@ export const CONTACTS_BY_CONTACTS_IDS = gql`
       }
     }
   }
-`
+`;
+
+export const GET_ALL_GREEN_PASS_QUESTIONS = gql`
+query getAllGreenPassQuestions {
+  allGreenPassQuestions(orderBy: ID_ASC) {
+    nodes {
+      id
+      displayName
+    }
+  }
+}
+`;
+
+export const GET_ALL_GREEN_PASS_ANSWERS = gql`
+query allGreenPassAnswers {
+  allGreenPassAnswers(orderBy: ID_ASC) {
+    nodes {
+      id
+      displayName
+    }
+  }
+}
+`;

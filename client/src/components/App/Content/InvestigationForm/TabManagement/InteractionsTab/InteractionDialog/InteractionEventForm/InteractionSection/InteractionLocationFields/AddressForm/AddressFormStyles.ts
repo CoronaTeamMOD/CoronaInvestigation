@@ -5,6 +5,9 @@ const useStyles = makeStyles({
         display: 'flex',
         justifyContent: 'space-between',
     },
+    addressText: {
+        alignItems: 'flex-start'
+    }
 });
 
 export default useStyles;
