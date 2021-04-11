@@ -27,11 +27,11 @@ export interface InvolvedContactDB {
         lastName: string;
         phoneNumber: string;
         epidemiologicStatus: {
-            recoveryDate: Date,
-            serologicImmunityStartDate: Date,
-            serologicImmunityExpirationDate: Date,
-            vaccineEffectivenessStartDate: Date,
-            vaccineExpirationDate: Date
+            recoveryDate: Date | null,
+            serologicImmunityStartDate: Date | null,
+            serologicImmunityExpirationDate: Date | null,
+            vaccineEffectivenessStartDate: Date | null,
+            vaccineExpirationDate: Date | null
         } | null;
     },
     involvementReason: number;
