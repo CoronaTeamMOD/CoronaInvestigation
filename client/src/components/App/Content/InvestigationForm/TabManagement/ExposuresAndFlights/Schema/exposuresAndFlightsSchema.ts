@@ -48,8 +48,8 @@ const exposures = (validationDate : Date) => {
 
 const ExposureSchema = (validationDate : Date) => {
     return yup.object().shape({
-    [fieldsNames.wasInEilat]: yup.boolean().required(),
-    [fieldsNames.wasInDeadSea]: yup.boolean().required(),
+    [fieldsNames.wasInVacation]: yup.boolean().required(),
+    [fieldsNames.wasInEvent]: yup.boolean().required(),
     [fieldsNames.wereFlights]: yup.boolean().required(),
     [fieldsNames.wereConfirmedExposures]: yup.boolean().required(),
     exposures : yup.array().when(

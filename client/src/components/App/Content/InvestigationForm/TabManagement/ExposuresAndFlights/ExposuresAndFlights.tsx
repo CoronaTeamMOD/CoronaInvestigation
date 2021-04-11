@@ -9,7 +9,7 @@ import StoreStateType from 'redux/storeStateType';
 import { exposureAndFlightsContext } from 'commons/Contexts/ExposuresAndFlights';
 
 import PossibleExposure from './Forms/PossibleExposure'; 
-import { EilatOrDeadSea } from './Forms/EilatOrDeadSea';
+import { VacationOrEvent } from './Forms/VacationOrEvent';
 import { BackFromAbroad } from './Forms/BackFromAbroad';
 import { FormData } from './ExposuresAndFlightsInterfaces';
 import ExposureSchema from './Schema/exposuresAndFlightsSchema';
@@ -17,7 +17,7 @@ import { useExposuresAndFlights } from './useExposuresAndFlights';
 
 const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);
-    const { exposures, wereFlights, wereConfirmedExposures, wasInEilat, wasInDeadSea } = exposureAndFlightsData;
+    const { exposures, wereFlights, wereConfirmedExposures, wasInVacation, wasInEvent } = exposureAndFlightsData;
     const ids = exposures.map(exposure => exposure.id);
     const validationDate : Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
 
@@ -60,9 +60,9 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
                 <Divider />
 
-                <EilatOrDeadSea 
-                    wasInEilat={wasInEilat}
-                    wasInDeadSea={wasInDeadSea}
+                <VacationOrEvent 
+                    wasInVacation={wasInVacation}
+                    wasInEvent={wasInEvent}
                 />
 
                 <Divider />

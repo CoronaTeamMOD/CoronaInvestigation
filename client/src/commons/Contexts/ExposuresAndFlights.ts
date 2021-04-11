@@ -10,8 +10,8 @@ export type ExposureAndFlightsDetails = {
     exposuresToDelete: (number | null)[],
     wereConfirmedExposures: boolean,
     wereFlights: boolean,
-    wasInEilat: boolean,
-    wasInDeadSea: boolean,
+    wasInVacation: boolean | undefined,
+    wasInEvent: boolean | undefined
 };
 
 export interface ExposureAndFlightsDetailsAndSet {
@@ -39,8 +39,8 @@ export const fieldsNames = {
     flightNumber: 'flightNum',
     wereConfirmedExposures: 'wereConfirmedExposures',
     wereFlights: 'wereFlights',
-    wasInEilat: 'wasInEilat',
-    wasInDeadSea: 'wasInDeadSea',
+    wasInVacation: 'wasInVacation',
+    wasInEvent: 'wasInEvent',
 };
 
 export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
@@ -48,8 +48,8 @@ export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
     exposuresToDelete: [],
     wereConfirmedExposures: false,
     wereFlights: false,
-    wasInEilat: false,
-    wasInDeadSea: false,
+    wasInVacation: undefined,
+    wasInEvent: undefined,
 };
 
 export const initialExposureOrFlight: Exposure = {
