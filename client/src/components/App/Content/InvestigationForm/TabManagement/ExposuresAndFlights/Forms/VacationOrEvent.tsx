@@ -10,24 +10,24 @@ import useStyles from '../ExposuresAndFlightsStyles';
 
 
 interface Props {
-    wasInEilat: boolean;
-    wasInDeadSea: boolean;
+    wasInVacation: boolean | undefined;
+    wasInEvent: boolean | undefined;
 }
 
-export const EilatOrDeadSea = (props: Props) => {
+export const VacationOrEvent = (props: Props) => {
 	const { control } = useFormContext();
 
-    const { wasInEilat , wasInDeadSea} = props;
+    const { wasInVacation , wasInEvent} = props;
     const classes = useStyles();
 
     return (
 		<div className={classes.subForm}>
-			<FormTitle title='חזרה מאילת או מים המלח' />
-			<FormRowWithInput fieldName='חזר מאילת'>
+			<FormTitle title='שהייה באתרי נופש או אירועים' />
+			<FormRowWithInput fieldName='שהייה באתר נופש'>
 				<Controller
 					control={control}
-					name={fieldsNames.wasInEilat}
-					defaultValue={wasInEilat}
+					name={fieldsNames.wasInVacation}
+					defaultValue={wasInVacation}
 					render={(props) => {
 						return (
 							<Toggle
@@ -42,11 +42,11 @@ export const EilatOrDeadSea = (props: Props) => {
 					}}
 				/>
 			</FormRowWithInput>
-			<FormRowWithInput fieldName='חזר מים המלח'>
+			<FormRowWithInput fieldName='ביקור באירוע רב משתתפים'>
 			<Controller
 					control={control}
-					name={fieldsNames.wasInDeadSea}
-					defaultValue={wasInDeadSea}
+					name={fieldsNames.wasInEvent}
+					defaultValue={wasInEvent}
 					render={ (props) => {
 						return (
 							<Toggle

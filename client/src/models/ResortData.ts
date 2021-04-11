@@ -1,6 +1,6 @@
 interface ResortData {
-    wasInEilat: boolean;
-    wasInDeadSea: boolean;
+    wasInVacation: boolean | undefined;
+    wasInEvent: boolean | undefined;
 };
 
 export default ResortData;
