@@ -17,6 +17,6 @@ export interface PersonalInfoTabState {
         [PersonalInfoDataContextFields.CITY]: string;
         [PersonalInfoDataContextFields.STREET]: string;
         [PersonalInfoDataContextFields.HOUSE_NUMBER]: string;
-        [PersonalInfoDataContextFields.FLOOR]: string;
+        [PersonalInfoDataContextFields.APARTMENT]?: string;
     }
 }

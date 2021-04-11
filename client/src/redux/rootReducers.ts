@@ -13,6 +13,7 @@ import statusesReducer from './Status/statusesReducer';
 import districtReducer from './District/districtReducer';
 import authorityReducer from './Authority/authorityReducer';
 import isLoadingReducer from './IsLoading/isLoadingReducer';
+import greenPassReducer from './GreenPass/greenPassReducer';
 import placetypeReducer from './PlaceTypes/placetypeReducer';
 import contactTypeReducer from './ContactType/contactTypeReducer';
 import subStatusesReducer from './SubStatuses/subStatusesReducer';
@@ -44,5 +45,6 @@ export default combineReducers <StoreStateType> ({
      desk: deskReducer,
      groupedInvestigations : groupedInvestigationReducer,
      authorities: authorityReducer,
-     complexReasons: complexReasonsReducer
+     complexReasons: complexReasonsReducer,
+     greenPass: greenPassReducer
 }) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;

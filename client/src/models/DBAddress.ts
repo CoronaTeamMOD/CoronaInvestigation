@@ -1,9 +1,9 @@
 interface FlattenedDBAddress {
     city: string;
     street: string;
-    floor: string;
     houseNum: string;
     apartment?: string;
+    floor? : string;
 }
 
 type AddressComponent = {id: string; displayName: string}
@@ -19,7 +19,7 @@ export interface DBAddress {
 export const initDBAddress: FlattenedDBAddress  = {
     city: '',
     street: '',
-    floor: '',
+    apartment: '',
     houseNum: '',
 };
 

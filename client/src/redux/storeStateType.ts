@@ -7,11 +7,14 @@ import ContactType from 'models/ContactType';
 import CountyReducer from 'models/CountyReducer';
 import FlattenedDBAddress from 'models/DBAddress';
 import EducationGrade from 'models/EducationGrade';
+import GreenPassAnswer from 'models/GreenPassAnswer';
+import GreenPassQuestion from 'models/GreenPassQuestion';
 import InvestigationRedux from 'models/InvestigationRedux';
 import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
 import { UserState } from './User/userReducer';
+import { GreenPassReducerType } from './GreenPass/greenPassReducer';
 import GroupedInvestigationReducerType from './GroupedInvestigations/GroupedInvestigationsType';
 
 export default interface StoreStateType {
@@ -36,4 +39,5 @@ export default interface StoreStateType {
     groupedInvestigations: GroupedInvestigationReducerType;
     authorities: Map<string, Authority>;
     complexReasons: (number|null)[];
+    greenPass: GreenPassReducerType;
 };

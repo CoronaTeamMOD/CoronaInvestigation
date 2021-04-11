@@ -27,7 +27,7 @@ query getInvestigatedPatientDetails($id: Int!) {
         id
         covidPatientByCovidPatient {
           addressByAddress {
-            floor
+            apartment
             houseNum
             cityByCity {
               id
