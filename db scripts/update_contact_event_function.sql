@@ -1,6 +1,6 @@
 -- FUNCTION: public.update_contact_event_function(json)
 
-DROP FUNCTION public.update_contact_event_function(json);
+-- DROP FUNCTION public.update_contact_event_function(json);
 
 CREATE OR REPLACE FUNCTION public.update_contact_event_function(
 	input_data json)
@@ -25,6 +25,7 @@ startTime timestamp;
 endTime timestamp;
 isolationStartDate timestamp;
 externalizationApproval bool;
+externalizationApprovalDesc varchar;
 contacts json;
 placeSubType int4;
 contacted_number int4;
@@ -91,6 +92,7 @@ begin
 				startTime:= (select value::text::timestamp  from json_each(contact_event) where key='startTime');
 				endTime:=(select value::text::timestamp from json_each(contact_event) where key='endTime');	
 				externalizationApproval:=(select value::text::boolean from json_each(contact_event) where key='externalizationApproval');
+				select nullif((contact_event->'externalizationApprovalDescription')::text,'null') as val into externalizationApprovalDesc;
 				contacts:=(select value from json_each(contact_event) where key='contacts');
 				placeSubType:=(select value::text::int4 from json_each(contact_event) where key='placeSubType');
 				contacted_number :=(select value::text::int4 from json_each(contact_event) where key='contactedNumber');
@@ -141,6 +143,7 @@ begin
 					place_sub_type,
 					location_address,
 					externalization_approval,
+					externalization_approval_desc,
 					number_of_contacted,
 					bus_line,
 					airline,
@@ -178,6 +181,7 @@ begin
 						placeSubType,
 						trim(locationAddress,'"'),
 						externalizationApproval,
+						externalizationApprovalDesc,
 						contacted_number,
 						trim(busLine,'"'),
 						trim(iAirline,'"'),
@@ -222,7 +226,8 @@ begin
 					boarding_station=trim(boardingStation,'"'), 
 					end_station=trim(endStation,'"'), 
 					isolation_start_date=isolationStartDate, 
-					externalization_approval=externalizationApproval, 
+					externalization_approval=externalizationApproval,
+					externalization_approval_desc=externalizationApprovalDesc,
 					place_type=trim(placeType,'"'), 
 					contact_phone_number=trim(contactPhoneNumber,'"'), 
 					grade=trim(igrade,'"'),

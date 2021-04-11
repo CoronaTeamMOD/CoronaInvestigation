@@ -10,6 +10,7 @@ export interface DateData {
 }
 export interface OccuranceData extends DateData{
     externalizationApproval: boolean | null;
+    externalizationApprovalDescription: string | null;
     placeDescription?: string;
 }
 

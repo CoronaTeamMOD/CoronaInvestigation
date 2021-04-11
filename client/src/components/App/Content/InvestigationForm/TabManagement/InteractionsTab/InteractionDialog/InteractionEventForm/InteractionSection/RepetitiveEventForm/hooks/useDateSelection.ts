@@ -10,7 +10,8 @@ const initialOccuranceData = (startDate: Date): OccuranceData =>  ({
     endTime: startDate,
     placeDescription: '',
     unknownTime: false,
-    externalizationApproval: null
+    externalizationApproval: null,
+    externalizationApprovalDescription: null
 });
 
 const useDateSelection = () => {

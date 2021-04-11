@@ -94,6 +94,7 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!, $minimalDateT
       endStation
       endTime
       externalizationApproval
+      externalizationApprovalDescription: externalizationApprovalDesc
       flightDestinationAirport
       flightDestinationCity
       flightDestinationCountry
