@@ -1,7 +1,6 @@
-import React from 'react';
-import { AddCircle } from '@material-ui/icons';
+import React, { useState, useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { Collapse, Divider, Typography, IconButton } from '@material-ui/core';
+import { Collapse, Divider, Typography, Grid } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import FormTitle from 'commons/FormTitle/FormTitle';
@@ -11,7 +10,7 @@ import { Exposure, fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 import useStyles from '../ExposuresAndFlightsStyles';
 import ExposureForm from './ExposureForm/ExposureForm';
 
-const addConfirmedExposureButton: string = 'הוסף חשיפה';
+const addConfirmedExposureButton: string = 'היתה חשיפה נוספת';
 
 const PossibleExposure = (props: Props) => {
 
@@ -28,6 +27,19 @@ const PossibleExposure = (props: Props) => {
     const classes = useStyles();
     const { control, watch } = useFormContext();
     const watchWasConfirmedExposure = watch(fieldsNames.wereConfirmedExposures, wereConfirmedExposures);
+	const [isExposureAdded, setIsExposureAdded] = useState<boolean| undefined>(undefined);
+
+    useEffect(() => {
+		if (Boolean(isExposureAdded)) {
+             onExposureAdded(true, false)
+        }
+	}, [isExposureAdded]);
+
+    useEffect(() => {
+		if (Boolean(onExposureDeleted)) {
+            setIsExposureAdded(undefined)
+        }
+	}, [onExposureDeleted]);
 
     return (
         <div className={classes.subForm}>
@@ -70,14 +82,19 @@ const PossibleExposure = (props: Props) => {
                                 </>
                             )
                     )}
-                    <IconButton
-                        test-id='addConfirmedExposure'
-                        onClick={() => onExposureAdded(true, false)}
-                        disabled={disableConfirmedExposureAddition}
-                    >
-                        <AddCircle color={disableConfirmedExposureAddition ? 'disabled' : 'primary'} />
-                    </IconButton>
-                    <Typography variant='caption'>{addConfirmedExposureButton}</Typography>
+                    <Grid className={classes.anotherExposureContainer} direction='row'>
+                        <Typography variant='caption' className={classes.anotherExposureTitle}>{addConfirmedExposureButton}</Typography>
+                        <Toggle
+                            className={classes.anotherExposureToggle}
+                            value={isExposureAdded}
+                            disabled={disableConfirmedExposureAddition}
+                            onChange={(e, value) => {
+                                if (value !== null) {
+                                    setIsExposureAdded(value)
+                                }
+                            }}
+                        />
+                    </Grid>
                 </div>
             </Collapse>
         </div>

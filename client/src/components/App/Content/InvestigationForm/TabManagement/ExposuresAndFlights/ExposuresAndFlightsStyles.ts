@@ -17,6 +17,25 @@ const useStyles = makeStyles({
     },
     abroadToggle: {
         marginLeft: '-17%',
+    },
+    anotherExposureContainer: {
+        maxWidth: '100vw',
+        display: 'flex',
+        marginTop: '45px',
+    },
+    anotherExposureTitle: {
+        fontSize: '16px',
+        fontWeight: 500,
+        padding: '12px',
+        margin: '10px 15px 10px 0',
+        flexGrow: 0,
+        maxWidth: '25%',
+        flexBasis: '25%',
+        boxSizing: 'border-box',
+        display: 'flex',
+    },
+    anotherExposureToggle: {
+        display: 'block'
     }
 });
 
