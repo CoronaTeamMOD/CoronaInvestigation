@@ -48,9 +48,9 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
 
     return (
         <Card className={classes.container}>
-            <div className={[classes.rowAlignment, classes.spaceBetween].join(' ')}>
+            <div className={[classes.rowAlignment, classes.spaceBetween].join(' ')} onClick={() => setAreDetailsOpen(!areDetailsOpen)}>
                 <div className={classes.rowAlignment}>
-                    <IconButton color='primary' onClick={() => setAreDetailsOpen(!areDetailsOpen)}>
+                    <IconButton color='primary'>
                         {areDetailsOpen ? <KeyboardArrowDown /> : <KeyboardArrowLeft />}
                     </IconButton>
                     <Typography>
