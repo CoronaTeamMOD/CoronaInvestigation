@@ -14,6 +14,7 @@ interface Investigation {
     isolationAddress: number | null;
     otherSymptomsMoreInfo: string;
     isolationSource: number | null;
+    isolationSourceDesc: string | null;
 };
 
 export default Investigation;

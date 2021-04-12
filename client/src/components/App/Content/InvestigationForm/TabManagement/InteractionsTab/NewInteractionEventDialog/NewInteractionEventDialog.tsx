@@ -21,6 +21,7 @@ const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], 
     endTime,
     unknownTime: false,
     externalizationApproval: null,
+    externalizationApprovalDescription: '',
     additionalOccurrences: []
 });
 

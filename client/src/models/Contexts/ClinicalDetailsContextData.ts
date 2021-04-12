@@ -5,6 +5,7 @@ interface ClinicalDetailsData extends SymptomsExistenceInfo {
     isolationStartDate: Date | null;
     isolationEndDate: Date | null;
     isolationSource: number | null;
+    isolationSourceDesc: string | null;
     isolationAddress: FlattenedDBAddress;
     isInIsolation: boolean;
     isIsolationProblem: boolean | null;

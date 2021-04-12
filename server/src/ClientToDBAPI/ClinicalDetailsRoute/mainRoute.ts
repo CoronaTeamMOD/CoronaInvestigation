@@ -133,6 +133,7 @@ const saveClinicalDetails = (request: Request, response: Response, baseLog: Init
         wasHospitalized: clinicalDetails.wasHospitalized,
         otherSymptomsMoreInfo: clinicalDetails.otherSymptomsMoreInfo,
         isolationSource: clinicalDetails.isolationSource,
+        isolationSourceDesc: clinicalDetails.isolationSourceDesc,
         isolationAddress: isolationAddress || null
     };
     const saveClinicalInvestigationLogger = logger.setup({

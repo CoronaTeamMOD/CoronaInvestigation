@@ -4,9 +4,10 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
+import IsolationSource from 'models/IsolationSource';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import IsolationSource from 'models/IsolationSource';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
@@ -83,6 +84,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
             </Collapse>
             <Collapse in={watchIsInIsolation}>
                 <FormRowWithInput fieldName='מקור עדכון על הצורך בבידוד:'>
+                    <>
                     <Grid item xs={4}>
                         <Controller
                             name={ClinicalDetailsFields.ISOLATION_SOURCE}
@@ -110,6 +112,21 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                             )}
                         />
                     </Grid>
+                    <Grid item xs={2}>
+                        <Controller 
+                            name={ClinicalDetailsFields.ISOLATION_SOURCE_DESC}
+                            control={control}
+                            render={(props) => {
+                                return (
+                                    <AlphanumericTextField
+                                        {...props}
+                                        placeholder='פירוט נוסף'
+                                    />
+                                )
+                            }}
+                        />
+                    </Grid>
+                    </>
                 </FormRowWithInput>
             </Collapse>
         </>

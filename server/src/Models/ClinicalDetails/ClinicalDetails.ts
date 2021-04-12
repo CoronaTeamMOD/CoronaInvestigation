@@ -20,6 +20,7 @@ interface ClinicalDetails {
     otherSymptomsMoreInfo: string;
     otherBackgroundDiseasesMoreInfo: string;
     isolationSource: number | null;
+    isolationSourceDesc: string | null;
 };
 
 export default ClinicalDetails;

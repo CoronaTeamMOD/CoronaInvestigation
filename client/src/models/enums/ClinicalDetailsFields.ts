@@ -2,6 +2,7 @@ enum ClinicalDetailsFields {
     ISOLATION_START_DATE = 'isolationStartDate',
     ISOLATION_END_DATE = 'isolationEndDate',
     ISOLATION_SOURCE = 'isolationSource',
+    ISOLATION_SOURCE_DESC = 'isolationSourceDesc',
     ISOLATION_ADDRESS = 'isolationAddress',
     ISOLATION_CITY = 'city',
     ISOLATION_STREET = 'street',

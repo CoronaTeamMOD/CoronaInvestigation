@@ -1,7 +1,7 @@
 import { gql } from 'postgraphile';
 
 export const UPDATE_INVESTIGATION = gql`
-mutation updateInvestigationByEpidemiologyNumber ($epidemiologyNumber: Int!, $hospital: String, $hospitalizationEndTime: Datetime, $hospitalizationStartTime: Datetime, $isIsolationProblem: Boolean, $isIsolationProblemMoreInfo: String, $isolationEndTime: Datetime, $isolationStartTime: Datetime, $symptomsStartTime: Datetime, $isolationAddress: Int, $isInIsolation: Boolean, $doesHaveSymptoms: Boolean, $wasHospitalized: Boolean, $otherSymptomsMoreInfo: String, $isolationSource: Int) {
+mutation updateInvestigationByEpidemiologyNumber ($epidemiologyNumber: Int!, $hospital: String, $hospitalizationEndTime: Datetime, $hospitalizationStartTime: Datetime, $isIsolationProblem: Boolean, $isIsolationProblemMoreInfo: String, $isolationEndTime: Datetime, $isolationStartTime: Datetime, $symptomsStartTime: Datetime, $isolationAddress: Int, $isInIsolation: Boolean, $doesHaveSymptoms: Boolean, $wasHospitalized: Boolean, $otherSymptomsMoreInfo: String, $isolationSource: Int, $isolationSourceDesc: String) {
         updateInvestigationByEpidemiologyNumber(input: {
             investigationPatch: {
                 hospital: $hospital, 
@@ -11,7 +11,8 @@ mutation updateInvestigationByEpidemiologyNumber ($epidemiologyNumber: Int!, $ho
                 isIsolationProblemMoreInfo: $isIsolationProblemMoreInfo, 
                 isolationEndTime: $isolationEndTime, 
                 isolationStartTime: $isolationStartTime, 
-                isolationSource: $isolationSource, 
+                isolationSource: $isolationSource,
+                isolationSourceDesc: $isolationSourceDesc, 
                 symptomsStartTime: $symptomsStartTime, 
                 isolationAddress: $isolationAddress, 
                 isInIsolation: $isInIsolation, 

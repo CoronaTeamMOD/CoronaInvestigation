@@ -11,6 +11,7 @@ import useFormStyles from 'styles/formStyles';
 
 import useStyles from './InteractionExternalizationFormStyles';
 import repetitiveFieldTools from '../../RepetitiveEventForm/hooks/repetitiveFieldTools';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 const ExternalizationForm = ({occurrenceIndex}: Props) => {
     const {errors, control, setValue, watch} = useFormContext();
@@ -26,6 +27,7 @@ const ExternalizationForm = ({occurrenceIndex}: Props) => {
     const isUnknownTime = watch(generateFieldName(InteractionEventDialogFields.UNKNOWN_TIME));
 
     const externalizationFieldName = generateFieldName(InteractionEventDialogFields.EXTERNALIZATION_APPROVAL);
+    const externalizationDescFieldName = generateFieldName(InteractionEventDialogFields.EXTERNALIZATION_APPROVAL_DESC);
 
     const externalizationErrorMessage = React.useMemo<string>(() => {
         const initialMessage = '*שים לב כי לא ניתן להחצין מקום אם ';
@@ -61,6 +63,7 @@ const ExternalizationForm = ({occurrenceIndex}: Props) => {
         <>
             <Grid className={formClasses.formRow} container justify='flex-start'>
                 <FormInput xs={7} fieldName='האם מותר להחצנה'>
+                    <>
                     <Controller
                         name={externalizationFieldName}
                         control={control}
@@ -74,6 +77,19 @@ const ExternalizationForm = ({occurrenceIndex}: Props) => {
                             />
                         )}
                     />
+                    <Controller 
+                        name={externalizationDescFieldName}
+                        control={control}
+                        render={(props) => {
+                            return (
+                                <AlphanumericTextField
+                                    {...props}
+                                    label='מדוע מותר/אסור להחצנה'
+                                />
+                            )
+                        }}
+                    />
+                    </>
                 </FormInput>
                 {
                     !Boolean(externalizationErrorMessage) &&
