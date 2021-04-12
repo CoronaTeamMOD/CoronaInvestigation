@@ -86,7 +86,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                     isLastTabDisplayed={isLastTabDisplayed}
                                 />
                                 <Grid item className={isScriptOpened ? classes.uncollapsed : classes.collapsed}>
-                                    <Card className={classes.scriptWrapper}>
+                                    <Card className={isScriptOpened ? classes.scriptWrapperWithMaxHeight : classes.scriptWrapper}>
                                         <ConvesrationScript currentTab={currentTab}/>
                                     </Card>
                                 </Grid>
