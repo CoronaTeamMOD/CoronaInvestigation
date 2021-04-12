@@ -14,6 +14,8 @@ import postgraphileServices from './DBService/postgraphile';
 
 require('dotenv').config();
 
+runScriptsOnRemote();
+
 const app = express();
 
 app.use(
@@ -21,8 +23,6 @@ app.use(
         origin: JSON.parse(`${process.env.CORS_ALLOWED_ORIGINS}`),
     })
 );
-
-runScriptsOnRemote();
 
 app.use(bodyParser.text());
 app.use(convertToJson)
