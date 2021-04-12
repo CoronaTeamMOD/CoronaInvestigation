@@ -1,6 +1,6 @@
 # 🏃💨 SCRIPT RUNNER 🏃💨
 ## What is it? 
-Script runner's job is to run all of the scripts for the upcoming version once the server runs
+Script runner's job is to run all of the scripts for the upcoming version when the server starts.
 
 ## How To Use It
 Write a script using the [Guidelines](). <sup>WIP</sup>  

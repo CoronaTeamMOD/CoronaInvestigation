@@ -1,1 +1,0 @@
-SELECT * FROM public.user LIMIT 1;
