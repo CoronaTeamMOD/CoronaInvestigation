@@ -10,16 +10,16 @@ const runScripts = (scriptNames : string[]) => {
 
     connection.connect(async (err , client , release) => {
         if(err) {
-            console.error('❌ Error connecting to server. stack:' , err.stack);
+            console.error('❌ Error connecting to server. stack:' , err.message);
         } else {
             await scriptNames.forEach((name) => {
                 const query = fs.readFileSync(path.resolve(__dirname , `../Scripts/${SCRIPTS_DIRECTORY}/${name}`)).toString();
                 console.log(`⌛ Running script ${name}`);
                 client.query(query , (err , result) => {
                     if(err) {
-                        console.error(`❌ Received error running script ${name}. stack:`, err.stack);
+                        console.error(`❌ Received error running ${name}. message:`, err.message);
                     } else {
-                        console.info(`✔️  ${name} script ran successfully.`);
+                        console.info(`✔️  ${name} ran successfully.`);
                     }
                 });
             });

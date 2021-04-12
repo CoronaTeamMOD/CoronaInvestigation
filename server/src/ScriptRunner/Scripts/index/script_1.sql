@@ -1,4 +1,4 @@
-ALTER TABLE public.contact_event
+ALTER TABLE public.contact_evenz
 	ADD COLUMN IF NOT EXISTS externalization_approval_desc varchar;
 	
 ALTER TABLE public.investigation 

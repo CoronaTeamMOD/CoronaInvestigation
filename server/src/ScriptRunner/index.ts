@@ -1,11 +1,11 @@
 import runScripts from './src/runScripts';
 import getAllScriptsNames from './src/getAllScriptsNames';
 
-const runScriptsOnRemote = async () => {
+const initScriptRunner = async () => {
     console.info('🏃💨 SCRIPT RUNNER 🏃💨')
     const scriptsNames = await getAllScriptsNames();
 
     runScripts(scriptsNames);
 }
 
-export default runScriptsOnRemote;
+export default initScriptRunner;

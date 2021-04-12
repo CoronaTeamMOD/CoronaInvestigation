@@ -2,11 +2,9 @@ import cors from 'cors';
 import express from 'express';
 import bodyParser from 'body-parser';
 
-
-
 import logger from './Logger/Logger';
 import MOHApi from './MOHAPI/mainRoute';
-import runScriptsOnRemote from './ScriptRunner';
+import initScriptRunner from './ScriptRunner';
 import { Service, Severity } from './Models/Logger/types';
 import ClientToDBApi from './ClientToDBAPI/mainRoute';
 import convertToJson from './middlewares/ConvertToObject';
@@ -14,7 +12,7 @@ import postgraphileServices from './DBService/postgraphile';
 
 require('dotenv').config();
 
-runScriptsOnRemote();
+initScriptRunner();
 
 const app = express();
 
