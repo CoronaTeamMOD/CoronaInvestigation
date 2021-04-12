@@ -81,11 +81,10 @@ const ExternalizationForm = ({occurrenceIndex}: Props) => {
                         name={externalizationDescFieldName}
                         control={control}
                         render={(props) => {
-                            console.log(props);
                             return (
                                 <AlphanumericTextField
                                     {...props}
-                                    label='yahoo'
+                                    label='מדוע מותר/אסור להחצנה'
                                 />
                             )
                         }}

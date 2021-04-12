@@ -236,6 +236,27 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                         })
                     }
                 </Grid>
+                <Grid container item>
+                    <Grid item xs={12}>
+                        <Controller
+                            control={control}
+                            name={`form[${index}].${InteractedContactFields.EXTRA_INFO}`}
+                            defaultValue={interactedContact.extraInfo}
+                            render={(props) => {
+                                return (
+                                    <AlphanumericTextField
+                                        {...props}
+                                        disabled={isFieldDisabled}
+                                        testId='extrainfo'
+                                        onChange={(newValue: string) => {
+                                            props.onChange(newValue)
+                                        }}
+                                        placeholder='הערות נוספות'
+                                />)
+                            }}
+                        />
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
     );
