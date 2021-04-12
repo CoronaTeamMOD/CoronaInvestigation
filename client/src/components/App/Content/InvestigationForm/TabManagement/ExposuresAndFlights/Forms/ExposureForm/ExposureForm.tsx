@@ -208,7 +208,7 @@ const ExposureForm = (props: Props) => {
 			</Grid>
 			
 			<Grid container justify='space-between' xs={12}>
-                <Grid item xs={11}>
+                <Grid item xs={11} className={classes.placeTypeSpace}>
 					<PlacesTypesAndSubTypes
 						size='Tab'
 						placeTypeName={`exposures[${index}].${fieldsNames.placeType}`}

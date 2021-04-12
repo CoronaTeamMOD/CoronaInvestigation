@@ -36,6 +36,9 @@ const useStyles = makeStyles({
     },
     anotherExposureToggle: {
         display: 'block'
+    },
+    patientDetailSpace: {
+        marginTop: '15px'
     }
 });
 
