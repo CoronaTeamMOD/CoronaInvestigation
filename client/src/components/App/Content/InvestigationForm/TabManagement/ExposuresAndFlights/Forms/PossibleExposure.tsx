@@ -47,13 +47,14 @@ const PossibleExposure = (props: Props) => {
             <FormTitle title='חשיפה אפשרית' />
             <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
                 <>
-                <Controller
-                    control={control}
-                    name={fieldsNames.wereConfirmedExposures}
-                    defaultValue={wereConfirmedExposures}
-                    render={(props) => {
-                        return (
-                            <Toggle
+                <Grid xs={1}>
+                    <Controller
+                        control={control}
+                        name={fieldsNames.wereConfirmedExposures}
+                        defaultValue={wereConfirmedExposures}
+                        render={(props) => {
+                            return (
+                                <Toggle
                                 {...props}
                                 onChange={(e, value) => {
                                     if (value !== null) {
@@ -61,22 +62,25 @@ const PossibleExposure = (props: Props) => {
                                         onExposuresStatusChange(fieldsNames.wereConfirmedExposures, value);
                                     }
                                 }}
-                            />
-                        );
-                    }}
+                                />
+                            );
+                            }}
+                        />
+                </Grid>
+                <Grid xs={3}>
+                    <Controller
+                        control={control}
+                        name={fieldsNames.wereConfirmedExposuresDesc}
+                        render={(props) => {
+                            return (
+                                <AlphanumericTextField 
+                                    {...props}
+                                    label='פירוט'
+                                />
+                            );
+                        }}
                 />
-                <Controller
-                    control={control}
-                    name={fieldsNames.wereConfirmedExposuresDesc}
-                    render={(props) => {
-                        return (
-                            <AlphanumericTextField 
-                                {...props}
-                                label='פירוט'
-                            />
-                        );
-                    }}
-                />
+                </Grid>
                 </>
             </FormRowWithInput>
             <Collapse in={watchWasConfirmedExposure} className={classes.additionalInformationForm}>
