@@ -84,7 +84,7 @@ const PossibleExposure = (props: Props) => {
                 </>
             </FormRowWithInput>
             <Collapse in={watchWasConfirmedExposure} className={classes.additionalInformationForm}>
-                <div>
+                <div className={classes.patientDetailSpace}>
                     {exposures.map(
                         (exposure, index) =>
                             exposure.wasConfirmedExposure && (

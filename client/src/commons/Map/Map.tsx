@@ -114,10 +114,12 @@ const Map = ({ selectedAddress, setSelectedAddress, name, ...props }: MapProps) 
     const height = props.height || DEFAULT_MAP_HEIGHT;
     const width = props.width || DEFAULT_MAP_WIDTH;
     return <div style={{display: 'flex', flexDirection: 'column', alignItems:'center'}}>
+        <div style={{marginTop: '30px'}}/>
         <LocationInput name={name}
                        selectedAddress={selectedAddress as GoogleApiPlace}
                        setSelectedAddress={handleAddressSelected}
         />
+        <div style={{marginBottom: '20px'}}/>
         <div style={{height, width}}>
         <GoogleMap googleMapLoader={injectScript}
                    zoom={zoom} center={mapPosition}

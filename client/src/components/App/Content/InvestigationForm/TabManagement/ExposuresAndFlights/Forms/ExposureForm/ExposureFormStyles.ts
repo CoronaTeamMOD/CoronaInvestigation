@@ -43,6 +43,9 @@ const useStyles = makeStyles({
     },
     errorLabel: {
         color: theme.palette.error.main
+    },
+    placeTypeSpace: {
+        margin: '30px 0 20px'
     }
 });
 
