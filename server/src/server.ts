@@ -2,8 +2,11 @@ import cors from 'cors';
 import express from 'express';
 import bodyParser from 'body-parser';
 
+
+
 import logger from './Logger/Logger';
 import MOHApi from './MOHAPI/mainRoute';
+import runScriptsOnRemote from './ScriptRunner';
 import { Service, Severity } from './Models/Logger/types';
 import ClientToDBApi from './ClientToDBAPI/mainRoute';
 import convertToJson from './middlewares/ConvertToObject';
@@ -18,6 +21,8 @@ app.use(
         origin: JSON.parse(`${process.env.CORS_ALLOWED_ORIGINS}`),
     })
 );
+
+runScriptsOnRemote();
 
 app.use(bodyParser.text());
 app.use(convertToJson)
