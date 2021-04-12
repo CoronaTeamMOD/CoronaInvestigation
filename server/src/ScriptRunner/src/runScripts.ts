@@ -10,7 +10,7 @@ const runScripts = (scriptNames : string[]) => {
 
     connection.connect(async (err , client , release) => {
         if(err) {
-            console.error('❌ Error connecting to server. stack:' , err.message);
+            console.error('❌ Error connecting to server. message:' , err.message);
         } else {
             await scriptNames.forEach((name) => {
                 const query = fs.readFileSync(path.resolve(__dirname , `../Scripts/${SCRIPTS_DIRECTORY}/${name}`)).toString();
