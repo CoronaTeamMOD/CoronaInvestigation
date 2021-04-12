@@ -6,20 +6,28 @@ enum FamilyContactsTableHeadersNames {
     IDENTIFICATION_NUMBER = 'identificationNumber',
     BIRTH_DATE = 'birthDate',
     PHONE_NUMBER = 'phoneNumber',
-    ADDITIONAL_PHONE_NUMBER = 'additionalPhoneNumber',
-    ISOLATION_CITY = 'isolationCity'
+    ISOLATION_CITY = 'isolationCity',
+    RECOVERY_DATE = 'recoveryDate',
+    SEROLOGIC_IMMUNITY_START_DATE = 'serologicImmunityStartDate',
+    SEROLOGIC_IMMUNITY_EXPIERY_DATE = 'serologicImmunityExpieryDate',
+    VACCINE_EFFECTIVENESS_START_DATE = 'vaccineEffectivenessStartDate',
+    VACCINE_EFFECTIVENESS_EXPIERY_DATE = 'vaccineEffectivenessExpieryDate',
 };
 
 export const FamilyContactsTableHeaders = {
-    [FamilyContactsTableHeadersNames.FAMILY_RELATIONSHIP]: 'קרבה משפחתית',
-    [FamilyContactsTableHeadersNames.FIRST_NAME]: 'שם פרטי',
-    [FamilyContactsTableHeadersNames.LAST_NAME]: 'שם משפחה',
+    [FamilyContactsTableHeadersNames.FAMILY_RELATIONSHIP]: 'קרבה',
+    [FamilyContactsTableHeadersNames.FIRST_NAME]: 'שם',
+    [FamilyContactsTableHeadersNames.LAST_NAME]: 'משפחה',
     [FamilyContactsTableHeadersNames.IDENTIFICATION_TYPE]: 'סוג מזהה',
     [FamilyContactsTableHeadersNames.IDENTIFICATION_NUMBER]: 'מספר מזהה',
     [FamilyContactsTableHeadersNames.BIRTH_DATE]: 'תאריך לידה',
     [FamilyContactsTableHeadersNames.PHONE_NUMBER]: 'טלפון ראשי',
-    [FamilyContactsTableHeadersNames.ADDITIONAL_PHONE_NUMBER]: 'טלפון משני',
-    [FamilyContactsTableHeadersNames.ISOLATION_CITY]: 'ישוב השהייה בבידוד'
+    [FamilyContactsTableHeadersNames.ISOLATION_CITY]: 'ישוב השהייה בבידוד',
+    [FamilyContactsTableHeadersNames.RECOVERY_DATE]: 'תאריך החלמה',
+    [FamilyContactsTableHeadersNames.SEROLOGIC_IMMUNITY_START_DATE]: 'תחילת חסינות סרולוגית',
+    [FamilyContactsTableHeadersNames.SEROLOGIC_IMMUNITY_EXPIERY_DATE]: 'תוקף חסינות סרולוגית',
+    [FamilyContactsTableHeadersNames.VACCINE_EFFECTIVENESS_START_DATE]: 'אפקטיביות חיסון',
+    [FamilyContactsTableHeadersNames.VACCINE_EFFECTIVENESS_EXPIERY_DATE]: 'תוקף חיסון',
 }
 
 export default FamilyContactsTableHeadersNames;

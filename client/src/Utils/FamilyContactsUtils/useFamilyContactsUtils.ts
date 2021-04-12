@@ -1,6 +1,7 @@
 import { format } from 'date-fns';
 
 import InvolvedContact from 'models/InvolvedContact';
+import formatDate from 'Utils/DateUtils/formatDate';
 
 import FamilyContactsTableHeadersNames, { FamilyContactsTableHeaders } from './FamilyContactsTableHeaders';
 
@@ -16,8 +17,12 @@ const useFamilyContactsUtils = () => {
         [FamilyContactsTableHeadersNames.IDENTIFICATION_NUMBER]: row.identificationNumber,
         [FamilyContactsTableHeadersNames.BIRTH_DATE]: row.birthDate,
         [FamilyContactsTableHeadersNames.PHONE_NUMBER]: row.phoneNumber,
-        [FamilyContactsTableHeadersNames.ADDITIONAL_PHONE_NUMBER]: row.additionalPhoneNumber,
-        [FamilyContactsTableHeadersNames.ISOLATION_CITY]: row.isolationAddress?.city?.displayName
+        [FamilyContactsTableHeadersNames.RECOVERY_DATE]: formatDate(row.epidemiologicStatus?.recoveryDate, '---'),
+        [FamilyContactsTableHeadersNames.SEROLOGIC_IMMUNITY_START_DATE]: formatDate(row.epidemiologicStatus?.serologicImmunityStartDate, '---'),
+        [FamilyContactsTableHeadersNames.SEROLOGIC_IMMUNITY_EXPIERY_DATE]: formatDate(row.epidemiologicStatus?.serologicImmunityExpirationDate, '---'),
+        [FamilyContactsTableHeadersNames.VACCINE_EFFECTIVENESS_START_DATE]: formatDate(row.epidemiologicStatus?.vaccineEffectivenessStartDate, '---'),
+        [FamilyContactsTableHeadersNames.VACCINE_EFFECTIVENESS_EXPIERY_DATE]: formatDate(row.epidemiologicStatus?.vaccineExpirationDate, '---'),
+        [FamilyContactsTableHeadersNames.ISOLATION_CITY]: row.isolationAddress?.city?.displayName,
     });
 
     const getTableCell = (row: IndexedContactRow, cellName: string) => {

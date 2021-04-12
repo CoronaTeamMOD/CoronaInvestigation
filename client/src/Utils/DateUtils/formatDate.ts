@@ -1,18 +1,20 @@
 import { format } from 'date-fns';
 
-const formatDate = (date?: Date | string | null): string => {
+const DEFAULT_NO_INFO_TEXT = 'אין מידע';
+
+const formatDate = (date?: Date | string | null, noInfoText? : string): string => {
     return (
         date 
         ? format(new Date(date), 'dd/MM/yyyy')
-        : 'אין מידע'
+        : noInfoText ?? DEFAULT_NO_INFO_TEXT
     ) 
 }
 
-export const formatDateTime = (date: Date): string => {
+export const formatDateTime = (date: Date, noInfoText? : string): string => {
     return (
         date 
         ? format(new Date(date), 'HH:mm:ss dd/MM/yyyy')
-        : 'אין מידע'
+        : noInfoText ?? DEFAULT_NO_INFO_TEXT
     ) 
 }
 
