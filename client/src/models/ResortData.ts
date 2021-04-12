@@ -1,6 +1,7 @@
 interface ResortData {
-    wasInVacation: boolean | undefined;
-    wasInEvent: boolean | undefined;
+    wasInVacation?: boolean;
+    wasInEvent?: boolean;
+    wereConfirmedExposuresDesc: string | null;
 };
 
 export default ResortData;

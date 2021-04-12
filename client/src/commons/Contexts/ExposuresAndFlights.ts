@@ -21,6 +21,7 @@ export interface ExposureAndFlightsDetailsAndSet {
 
 export const fieldsNames = {
     wasConfirmedExposure: 'wasConfirmedExposure',
+    wereConfirmedExposuresDesc: 'wereConfirmedExposuresDesc',
     exposureSource: 'exposureSource',
     date: 'exposureDate',
     address: 'exposureAddress',

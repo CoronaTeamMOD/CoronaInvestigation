@@ -33,13 +33,14 @@ const useExposuresSaving = () => {
     const complexityReasonsId = useSelector<StoreStateType, (number|null)[]>((state) => state.investigation.complexReasonsId);
 
     const saveResortsData = (data : ResortData) : Promise<void> => {
-        let { wasInVacation, wasInEvent } = data;
+        let { wasInVacation, wasInEvent, wereConfirmedExposuresDesc } = data;
         const saveResortsDataLogger = logger.setup('Saving investigated patient resort data');
         saveResortsDataLogger.info('launching the server request', Severity.LOW);
         setIsLoading(true);
         return axios.post('/investigationInfo/resorts', {
             wasInVacation,
             wasInEvent,
+            wereConfirmedExposuresDesc,
             id: investigatedPatientId,
         });
     }

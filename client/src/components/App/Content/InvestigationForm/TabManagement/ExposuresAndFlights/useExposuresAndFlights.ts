@@ -78,6 +78,7 @@ export const useExposuresAndFlights = (props : Props) => {
                     exposures,
                     exposuresToDelete: [],
                     wereConfirmedExposures: doesHaveConfirmedExposures(exposures),
+                    wereConfirmedExposuresDesc: result.wereConfirmedExposuresDesc,
                     wereFlights: doesHaveFlights(exposures),
                     wasInVacation: result.wasInVacation,
                     wasInEvent: result.wasInEvent,
@@ -104,6 +105,7 @@ export const useExposuresAndFlights = (props : Props) => {
         const result = await axios.get('investigationInfo/resorts/' + investigatedPatientId);
         fetchResortsDataLogger.info('got investigated patient resorts response successfully', Severity.LOW);
         const resortData: ResortData =  {
+        wereConfirmedExposuresDesc: result?.data?.wereConfirmedExposuresDesc,
         wasInVacation: result?.data?.wasInVacation,
         wasInEvent: result?.data?.wasInEvent
         }

@@ -9,6 +9,7 @@ import { Exposure, fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 
 import useStyles from '../ExposuresAndFlightsStyles';
 import ExposureForm from './ExposureForm/ExposureForm';
+import AlphanumericTextField from '../../../../../../../commons/AlphanumericTextField/AlphanumericTextField';
 
 const addConfirmedExposureButton: string = 'היתה חשיפה נוספת';
 
@@ -45,13 +46,15 @@ const PossibleExposure = (props: Props) => {
         <div className={classes.subForm}>
             <FormTitle title='חשיפה אפשרית' />
             <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
-                <Controller
-                    control={control}
-                    name={fieldsNames.wereConfirmedExposures}
-                    defaultValue={wereConfirmedExposures}
-                    render={(props) => {
-                        return (
-                            <Toggle
+                <>
+                <Grid xs={1}>
+                    <Controller
+                        control={control}
+                        name={fieldsNames.wereConfirmedExposures}
+                        defaultValue={wereConfirmedExposures}
+                        render={(props) => {
+                            return (
+                                <Toggle
                                 {...props}
                                 onChange={(e, value) => {
                                     if (value !== null) {
@@ -59,10 +62,26 @@ const PossibleExposure = (props: Props) => {
                                         onExposuresStatusChange(fieldsNames.wereConfirmedExposures, value);
                                     }
                                 }}
-                            />
-                        );
-                    }}
+                                />
+                            );
+                            }}
+                        />
+                </Grid>
+                <Grid xs={3}>
+                    <Controller
+                        control={control}
+                        name={fieldsNames.wereConfirmedExposuresDesc}
+                        render={(props) => {
+                            return (
+                                <AlphanumericTextField 
+                                    {...props}
+                                    label='פירוט'
+                                />
+                            );
+                        }}
                 />
+                </Grid>
+                </>
             </FormRowWithInput>
             <Collapse in={watchWasConfirmedExposure} className={classes.additionalInformationForm}>
                 <div>

@@ -69,6 +69,7 @@ query GetAllSubStatuses($parentStatus: Int!) {
 export const GET_INVESTIGATED_PATIENT_RESORTS_DATA = gql`
 query getInvestigatedPatientResortsData($id: Int!) {
   investigatedPatientById(id: $id) {
+    wereConfirmedExposuresDesc
     wasInVacation
     wasInEvent
   }
