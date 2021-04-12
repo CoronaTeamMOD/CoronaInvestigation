@@ -25,6 +25,7 @@ const useStyles = makeStyles({
     uncollapsed: {
         width: '25%',
         transition: '1s',
+        padding: '0 8px',
         opacity: 1
     },
     collapsed: {

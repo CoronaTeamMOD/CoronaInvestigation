@@ -75,7 +75,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                         currentTab = {currentTab}
                     />
                         <div className={classes.interactiveForm}>
-                            <Grid container spacing={2}>
+                            <Grid container>
                                 <TabManagement
                                     areThereContacts={areThereContacts}
                                     setAreThereContacts={setAreThereContacts}
