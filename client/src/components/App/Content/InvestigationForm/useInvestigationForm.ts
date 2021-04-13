@@ -185,12 +185,12 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         const finishInvestigationLogger= logger.setup('Ending Investigation');
         finishInvestigationLogger.info('the user has been offered the oppurtunity to finish the investigation',  Severity.LOW);
         alertWarning('האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?', {
-            text: 'שים לב, מגעים אשר עבורם הוקם דיווח בידוד או מגעים בעלי שם, שם משפחה ומספר טלפון תקינים יועברו בעת סיום החקירה לסטאטוס "הושלם תחקור" ולא ניתן יהיה לערוך אותם.',
+            text: 'מגעים עבורם הוקם דיווח בידוד או בעלי שם, משפחה ומספר טלפון יועברו בסיום החקירה ל"הושלם התחקור" (למעט "לא ניתן להשגה" ו"לא משתף פעולה") ולא יהיו ניתנים לעריכה',
             showCancelButton: true,
             cancelButtonText: 'בטל',
             cancelButtonColor: theme.palette.error.main,
             confirmButtonColor: theme.palette.primary.main,
-            confirmButtonText: 'כן, המשך'
+            confirmButtonText: 'הבנתי'
         }).then((result) => {
             if (result.value) {
                 finishInvestigationLogger.info('launching investigation status request', Severity.LOW);
