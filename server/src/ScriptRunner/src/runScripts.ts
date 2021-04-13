@@ -19,7 +19,7 @@ const runScripts = async (scriptNames : string[]) => {
                 for(const [index , name] of scriptNames.entries()) {
                     const pathToScript = path.resolve(__dirname , `../Scripts/${SCRIPTS_DIRECTORY}/${name}`);
                     const query = fs.readFileSync(pathToScript).toString(); 
-                    console.log(`${generateLoadingBar((index + 1) / scriptNames.length)} ${index+1}/${scriptNames.length}`);
+                    console.log(`${generateLoadingBar((index + 1) / scriptNames.length)} ${index+1}/${scriptNames.length} - ${name}`);
                     const response = await client.query(query)
                         .then(result => {
                             return `✔️  ran ${name} successfully.`;
