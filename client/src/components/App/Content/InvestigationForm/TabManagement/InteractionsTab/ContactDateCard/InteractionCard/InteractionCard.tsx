@@ -28,7 +28,7 @@ import RepetitiveEventIcon from "../RepetitiveEventIcon";
 
 const unknownTimeMessage = 'זמן לא ידוע';
 
-const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, religion, transportation } = placeTypesCodesHierarchy;
+const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, religion, transportation, other, event, house, education, shop, attraction} = placeTypesCodesHierarchy;
 
 const InteractionCard: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
@@ -106,6 +106,30 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     {
                         interaction.placeType === otherPublicPlaces.code &&
                         <OtherPublicLocationGrid interaction={interaction} />
+                    }
+                    {
+                        interaction.placeType === other.code &&
+                        <DefaultPlaceEventGrid interaction={interaction} />
+                    }
+                    {
+                        interaction.placeType === event.code &&
+                        <DefaultPlaceEventGrid interaction={interaction} />
+                    }
+                    {
+                        interaction.placeType === house.code &&
+                        <DefaultPlaceEventGrid interaction={interaction} />
+                    }
+                    {
+                        interaction.placeType === education.code &&
+                        <DefaultPlaceEventGrid interaction={interaction} />
+                    }
+                    {
+                        interaction.placeType === attraction.code &&
+                        <DefaultPlaceEventGrid interaction={interaction} />
+                    }
+                    {
+                        interaction.placeType === shop.code &&
+                        <DefaultPlaceEventGrid interaction={interaction} />
                     }
                     <InteractionGridItem 
                         containerSize={6} 
