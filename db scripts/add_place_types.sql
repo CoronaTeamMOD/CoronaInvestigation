@@ -1,7 +1,9 @@
+-- need to run only in production
+
 INSERT INTO public.place_types (display_name)
 VALUES
 	('אירוע / כנס'),
-	('אף אחד מהנ"ל'),
+	('אחר'),
 	('בית'),
 	('מוסד השכלה'),
 	('מקום בילוי'),
