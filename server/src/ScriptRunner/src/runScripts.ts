@@ -12,17 +12,18 @@ const runScripts = (scriptNames : string[]) => {
         if(err) {
             console.error('❌ Error connecting to server. message:' , err.message);
         } else {
-            await scriptNames.forEach((name) => {
+            for(const name of scriptNames) {
                 const query = fs.readFileSync(path.resolve(__dirname , `../Scripts/${SCRIPTS_DIRECTORY}/${name}`)).toString();
                 console.log(`⌛ Running script ${name}`);
-                client.query(query , (err , result) => {
-                    if(err) {
-                        console.error(`❌ Received error running ${name}. message:`, err.message);
-                    } else {
-                        console.info(`✔️  ${name} ran successfully.`);
-                    }
-                });
-            });
+                const response = await client.query(query)
+                    .then(result => {
+                        return `✔️  ${name} ran successfully.`;
+                    })
+                    .catch(err => {
+                        return `❌ Received error running ${name}. message: ${err.message}`;
+                    });
+                console.log(response);
+            };
         }
 
         release();
