@@ -1,1 +1,1 @@
-SELECT count(id) FROM public.USERS;
+SELECT count(id) FROM public.USER;

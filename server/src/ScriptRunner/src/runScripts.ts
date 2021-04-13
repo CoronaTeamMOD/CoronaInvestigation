@@ -12,9 +12,10 @@ const runScripts = (scriptNames : string[]) => {
         if(err) {
             console.error('❌ Error connecting to server. message:' , err.message);
         } else {
-            for(const name of scriptNames) {
-                const query = fs.readFileSync(path.resolve(__dirname , `../Scripts/${SCRIPTS_DIRECTORY}/${name}`)).toString();
-                console.log(`⌛ Running script ${name}`);
+            for(const [index , name] of scriptNames.entries()) {
+                const pathToScript = path.resolve(__dirname , `../Scripts/${SCRIPTS_DIRECTORY}/${name}`);
+                const query = fs.readFileSync(pathToScript).toString(); 
+                console.log(`${index + 1}\\${scriptNames.length} ⌛ Running script ${name}`);
                 const response = await client.query(query)
                     .then(result => {
                         return `✔️  ${name} ran successfully.`;
