@@ -45,7 +45,7 @@ export const getOptionsByPlaceAndSubplaceType = (placeTypeCode: string, subplace
     return  {...placeConfig, ...subPlaceConfig};
 };
 
-type Places = 'privateHouse' | 'office' | 'transportation' | 'school' | 'medical' | 'religion' | 'geriatric' | 'otherPublicPlaces';
+type Places = 'privateHouse' | 'office' | 'transportation' | 'school' | 'medical' | 'religion' | 'geriatric' | 'otherPublicPlaces' | 'other' | 'event' | 'house' | 'education' | 'shop' | 'attraction';
 
 const placeTypesCodesHierarchy: Record<Places, FormConfig> = {
     privateHouse: {
@@ -147,6 +147,31 @@ const placeTypesCodesHierarchy: Record<Places, FormConfig> = {
             },
         }
     },
+    other: {
+        code: 'אחר',
+        ...defaultOptions,
+    },
+    event: {
+        code: 'אירוע / כנס',
+        ...defaultOptions
+    },
+    house: {
+        code: 'בית',
+        ...defaultOptions
+    },
+    education: {
+        code: 'מוסד השכלה',
+        ...defaultOptions
+    },
+    attraction: {
+        code: 'מקום בילוי',
+        ...defaultOptions
+    },
+    shop: {
+        code: 'מרכז מסחרי / חנות',
+        ...defaultOptions
+    }
+
 }
 
 export default placeTypesCodesHierarchy;
