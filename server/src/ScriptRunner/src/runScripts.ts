@@ -22,7 +22,7 @@ const runScripts = async (scriptNames : string[]) => {
                     console.log(`${generateLoadingBar((index + 1) / scriptNames.length)} ${index+1}/${scriptNames.length}`);
                     const response = await client.query(query)
                         .then(result => {
-                            return `✔️  ${name} ran successfully.`;
+                            return `✔️  ran ${name} successfully.`;
                         })
                         .catch(err => {
                             return `❌ Received error running ${name}. message: ${err.message}`;
