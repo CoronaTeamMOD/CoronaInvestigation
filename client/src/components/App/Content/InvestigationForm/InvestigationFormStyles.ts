@@ -34,9 +34,8 @@ const useStyles = makeStyles({
         opacity: 0
     },
     scriptWrapper: {
-        maxHeight: '0',
-        overflowY: 'scroll',
-        padding: '15px'
+        maxHeight: '60vh',
+        overflowY: 'scroll'
     },
     scriptWrapperWithMaxHeight: {
         maxHeight: '60vh',
