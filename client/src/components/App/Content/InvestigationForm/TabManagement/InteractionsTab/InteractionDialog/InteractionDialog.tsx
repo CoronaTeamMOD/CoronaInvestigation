@@ -77,9 +77,7 @@ const InteractionDialog = (props: Props) => {
         [isRepetitive, isNewInteraction,additionalOccurrences]);
     
     const isGreenPassInvalid = useMemo(() => {
-        if (placeType !== placeTypesCodesHierarchy.privateHouse.code && Object.values(isGreenPass).some((answer) => answer === undefined)) {
-            return true;
-        }
+        return (placeType !== placeTypesCodesHierarchy.privateHouse.code && Object.values(isGreenPass).some((answer) => answer === undefined));
     },
     [isGreenPass]);
 
