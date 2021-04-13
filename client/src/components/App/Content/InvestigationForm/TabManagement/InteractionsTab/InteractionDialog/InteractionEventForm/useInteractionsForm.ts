@@ -49,11 +49,15 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 createInteractionsLogger.info('launching create interaction request', Severity.LOW);
                 axios.post('/intersections/createContactEvent', parsedData)
                 .then((response) => {
+                    console.log('hi');
                     if (response.data?.data?.updateContactEventFunction) {
                         createInteractionsLogger.info('created interaction successfully', Severity.LOW);
                         saveConnectedInteractions(response.data.data.updateContactEventFunction.integers[0]);
                     } else {
                         createInteractionsLogger.info(`response data is not valid data : ${JSON.stringify(response)}`, Severity.LOW);
+                        onDialogClose();
+                        alertError('לא ניתן היה ליצור אירוע חדש');
+                        setIsLoading(false);
                     }
                 })
                 .catch((error) => {
