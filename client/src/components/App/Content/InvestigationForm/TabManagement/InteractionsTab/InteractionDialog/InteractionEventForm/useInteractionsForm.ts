@@ -54,6 +54,9 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                         saveConnectedInteractions(response.data.data.updateContactEventFunction.integers[0]);
                     } else {
                         createInteractionsLogger.info(`response data is not valid data : ${JSON.stringify(response)}`, Severity.LOW);
+                        onDialogClose();
+                        alertError('לא ניתן היה ליצור אירוע חדש');
+                        setIsLoading(false);
                     }
                 })
                 .catch((error) => {
