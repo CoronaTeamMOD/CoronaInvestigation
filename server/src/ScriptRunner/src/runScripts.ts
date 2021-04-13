@@ -14,7 +14,7 @@ const runScripts = async (scriptNames : string[]) => {
         .catch(err => {
             console.error('❌ Error connecting to server. message:' , err.message);
         }).then( async (client) => {
-            let logs : string[] = ['Ran scripts: '];
+            let logs : string[] = [];
             if(client) {
                 for(const [index , name] of scriptNames.entries()) {
                     const pathToScript = path.resolve(__dirname , `../Scripts/${SCRIPTS_DIRECTORY}/${name}`);
