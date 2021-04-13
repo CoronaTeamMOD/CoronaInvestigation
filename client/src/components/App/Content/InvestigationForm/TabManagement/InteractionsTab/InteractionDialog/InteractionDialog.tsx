@@ -1,23 +1,26 @@
-import {yupResolver} from '@hookform/resolvers';
+import { useSelector } from 'react-redux';
 import {DevTool} from '@hookform/devtools';
-import React, {useContext, useMemo, useState} from 'react';
+import {yupResolver} from '@hookform/resolvers';
 import {FormProvider, useForm,} from 'react-hook-form';
+import React, {useContext, useMemo, useState} from 'react';
 import {Dialog, DialogTitle, DialogContent, DialogActions, Button, Tooltip} from '@material-ui/core';
 
 import theme from 'styles/theme';
 import Contact from 'models/Contact';
 import PlaceSubType from 'models/PlaceSubType';
+import StoreStateType from 'redux/storeStateType';
 import InvolvedContact from 'models/InvolvedContact';
+import GreenPassQuestion from 'models/GreenPassQuestion';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import useDuplicateContactId, {IdToCheck} from 'Utils/Contacts/useDuplicateContactId';
-import placeTypesCodesHierarchy, {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 import {ContactBankContextProvider , ContactBankOption} from 'commons/Contexts/ContactBankContext';
 import {GroupedInvestigationsContextProvider} from 'commons/Contexts/GroupedInvestigationFormContext';
 import {familyMembersContext, FamilyMembersDataContextProvider} from 'commons/Contexts/FamilyMembersContext';
 import InteractionEventDialogData, {DateData, OccuranceData} from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
+import placeTypesCodesHierarchy, {getOptionsByPlaceAndSubplaceType} from 'Utils/ContactEvent/placeTypesCodesHierarchy';
 
 import useStyles from './InteractionDialogStyles';
 import useInteractionsForm from './InteractionEventForm/useInteractionsForm';
@@ -46,6 +49,10 @@ const InteractionDialog = (props: Props) => {
         resolver: yupResolver(InteractionEventSchema)
     });
 
+    const greenPassQuestions = useSelector<StoreStateType, GreenPassQuestion[]>(state => state.greenPass.greenPassQuestions);
+    const greenPassFields = greenPassQuestions.map((greenPassQuestion) => `${InteractionEventDialogFields.IS_GREEN_PASS}-${greenPassQuestion.id}`);
+    const isGreenPass = methods.watch(greenPassFields);
+
     const classes = useStyles();
     const {familyMembers} = useContext(familyMembersContext);
     const [placeSubtypeName, setPlaceSubtypeName] = useState<string>('');
@@ -68,6 +75,13 @@ const InteractionDialog = (props: Props) => {
             }
         },
         [isRepetitive, isNewInteraction,additionalOccurrences]);
+    
+    const isGreenPassInvalid = useMemo(() => {
+        if (placeType !== placeTypesCodesHierarchy.privateHouse.code && Object.values(isGreenPass).some((answer) => answer === undefined)) {
+            return true;
+        }
+    },
+    [isGreenPass]);
 
     const {saveInteractions} = useInteractionsForm({
         loadInteractions,
@@ -336,7 +350,7 @@ const InteractionDialog = (props: Props) => {
                             isRepetitiveFieldInvalid.RepetitiveFieldMissingMessage || isRepetitiveFieldInvalid.missingAdditionalDateMessage
                         }>
                             <div>
-                                <PrimaryButton disabled={isRepetitiveFieldInvalid.invalid}
+                                <PrimaryButton disabled={isRepetitiveFieldInvalid.invalid || isGreenPassInvalid}
                                                form='interactionEventForm'
                                                type='submit'
                                                id='createContact'>
