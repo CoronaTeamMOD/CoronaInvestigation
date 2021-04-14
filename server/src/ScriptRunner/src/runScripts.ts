@@ -2,9 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import { Pool } from "pg";
 
+import logger from './Logger';
 import generateLoadingBar from './loadingBar';
 import SCRIPTS_DIRECTORY from '../common/SCRIPTS_DIRECTORY'; 
-import StringToFormattedLog from './LogUtils/StringToFormattedLog';
 
 const { DBConnectionsObject } = require('../../DBService/config');
 
@@ -21,17 +21,17 @@ const runScripts = async (scriptNames : string[]) => {
                     console.log(`${generateLoadingBar((index + 1) / scriptNames.length)} ${index+1}/${scriptNames.length} - ${name}`);
                     const response = await client.query(query)
                         .then(result => {
-                            return StringToFormattedLog(`✔️  ran ${name} successfully.`);
+                            return logger().success(`ran ${name} successfully.`);
                         })
                         .catch(err => {
-                            return StringToFormattedLog(`❌  Received error running ${name}. message: ${err.message}`);
+                            return logger().error(`Received error running ${name}. message: ${err.message}`);
                         });
                     logs.push(response);
                 };
                 }        
             return logs;
         }).catch(err => {
-            return [StringToFormattedLog(`❌ Error connecting to server. message: ${err.message}`)];
+            return [logger().error(`Error connecting to server. message: ${err.message}`)];
         });
 
     return newlogs;
