@@ -39,6 +39,9 @@ const useStyles = makeStyles({
     },
     patientDetailSpace: {
         marginTop: '15px'
+    },
+    wereConfirmedExposures : {
+        marginRight: '15px'
     }
 });
 

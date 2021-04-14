@@ -47,7 +47,6 @@ const PossibleExposure = (props: Props) => {
             <FormTitle title='חשיפה אפשרית' />
             <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
                 <>
-                <Grid xs={1}>
                     <Controller
                         control={control}
                         name={fieldsNames.wereConfirmedExposures}
@@ -56,6 +55,7 @@ const PossibleExposure = (props: Props) => {
                             return (
                                 <Toggle
                                 {...props}
+                                className={classes.wereConfirmedExposures}
                                 onChange={(e, value) => {
                                     if (value !== null) {
                                         props.onChange(value);
@@ -66,8 +66,6 @@ const PossibleExposure = (props: Props) => {
                             );
                             }}
                         />
-                </Grid>
-                <Grid xs={3}>
                     <Controller
                         control={control}
                         name={fieldsNames.wereConfirmedExposuresDesc}
@@ -79,8 +77,7 @@ const PossibleExposure = (props: Props) => {
                                 />
                             );
                         }}
-                />
-                </Grid>
+                    />
                 </>
             </FormRowWithInput>
             <Collapse in={watchWasConfirmedExposure} className={classes.additionalInformationForm}>
