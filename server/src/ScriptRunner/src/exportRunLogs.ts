@@ -5,7 +5,6 @@ const PATH_TO_LOGS_DIR = path.resolve(__dirname , `../Logs`);
 const LOG_FILE_NAME = 'log';
 
 const exportRunLogs = (logs : string[]) => {
-    
     logs.forEach(log => {
         console.log(log);
     });
