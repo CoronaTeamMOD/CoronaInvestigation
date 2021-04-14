@@ -3,6 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 
 import logger from './Logger/Logger';
+import LogAPI from './LogAPI';
 import MOHApi from './MOHAPI/mainRoute';
 import initScriptRunner from './ScriptRunner';
 import { Service, Severity } from './Models/Logger/types';
@@ -26,6 +27,7 @@ app.use(bodyParser.text());
 app.use(convertToJson)
 app.use('/mohApi', MOHApi);
 app.use('/clientToDBApi', ClientToDBApi);
+app.use('/log', LogAPI);
 
 postgraphileServices.forEach(postgraphileService => {
     app.use(postgraphileService);
