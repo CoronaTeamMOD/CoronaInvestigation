@@ -28,7 +28,7 @@ const runScripts = async (scriptNames : string[]) => {
                         });
                     logs.push(response);
                 };
-                }        
+            }        
             return logs;
         }).catch(err => {
             return [logger.error(`Error connecting to server. message: ${err.message}`)];
