@@ -25,7 +25,7 @@ const runScripts = async (scriptNames : string[]) => {
                             return `✔️  ran ${name} successfully.`;
                         })
                         .catch(err => {
-                            return `❌ Received error running ${name}. message: ${err.message}`;
+                            return `❌  Received error running ${name}. message: ${err.message}`;
                         });
                     logs.push(response);
                 };

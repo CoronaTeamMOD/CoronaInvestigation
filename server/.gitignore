@@ -11,6 +11,9 @@
 # production
 /build
 
+# script runner
+/src/ScriptRunner/Logs/*
+
 # misc
 .DS_Store
 .env
