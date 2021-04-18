@@ -3,12 +3,12 @@ import path from 'path';
 import { Pool } from "pg";
 
 import logger from './Logger';
+import runScript from './runScript';
+import blacklistFile from './blacklistFile';
 import generateLoadingBar from './loadingBar';
+import shouldRunScript from './shouldRunScript';
 import BLACKLIST_AFFIX from '../common/BLACKLIST_AFFIX';
 import SCRIPTS_DIRECTORY from '../common/SCRIPTS_DIRECTORY'; 
-import blacklistFile from './blacklistFile';
-import shouldRunScript from './shouldRunScript';
-import { ConsoleTransportOptions } from 'winston/lib/winston/transports';
 
 const { DBConnectionsObject } = require('../../DBService/config');
 
@@ -28,13 +28,7 @@ const runScripts = async (scriptNames : string[]) => {
                         const shouldBlacklist = name.startsWith(BLACKLIST_AFFIX);
                         shouldBlacklist && blacklistFile(name);
                         
-                        await client.query(query)
-                            .then(result => {
-                                logger.success(`ran ${name} successfully.`);
-                            })
-                            .catch(err => {
-                                logger.error(`Received error running ${name}. message: ${err.message}`);
-                            });
+                        runScript(client, query, name);
                     } else {
                         logger.info(`${name} is blacklisted, skipping...`);
                     }
