@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import logRoute from './Logs/mainRoute';
+import logRoute from './LogsRoute/mainRoute';
 import addressRoute from './Address/mainRoute';
 import usersRoute from './UsersRoute/mainRoute';
 import desksRoute from './DesksRoute/mainRoute';
