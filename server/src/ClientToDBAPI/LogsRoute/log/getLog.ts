@@ -1,10 +1,11 @@
 import path from 'path';
 import { Request , Response } from 'express';
 
-const PATH_TO_LOG_FILE = path.resolve(__dirname , '../../../ScriptRunner/Logs/log.txt');
+const PATH_TO_LOG_FILE = path.resolve(__dirname , '../../../ScriptRunner/Logs/log.csv');
 
 const getLog = (req : Request , res : Response) => {
-    res.sendFile(PATH_TO_LOG_FILE);
+    console.log(PATH_TO_LOG_FILE);
+    res.download(PATH_TO_LOG_FILE);
 }
 
 export default getLog;

@@ -1,24 +1,25 @@
-const SUCCESS_ICON = '✔️';
-const INFO_ICON = '💬';
-const WARN_ICON = '⚠️';
-const ERROR_ICON = '❌';
+const SUCCESS = 'SUCCESS';
+const INFO = 'INFO';
+const WARN = 'WARN';
+const ERROR = 'ERROR';
 
+import { writeToStream } from './writeStream';
 import getLogDateTime from '../LogUtils/getLogDateTime';
 
 const success = (message : string) => {
-    return `${SUCCESS_ICON}  ${getLogDateTime()} ${message}`
+    writeToStream([getLogDateTime(), SUCCESS, message])
 }
 
 const info = (message : string) => {
-    return `${INFO_ICON}  ${getLogDateTime()} ${message}`
+    writeToStream([getLogDateTime(), INFO, message])
 }
 
 const warn = (message : string) => {
-    return `${WARN_ICON}  ${getLogDateTime()} ${message}`
+    writeToStream([getLogDateTime(), WARN, message])
 }
 
 const error = (message : string) => {
-    return `${ERROR_ICON}  ${getLogDateTime()} ${message}`
+    writeToStream([getLogDateTime(), ERROR, message])
 }
 
 
