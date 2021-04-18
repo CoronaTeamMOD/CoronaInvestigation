@@ -13,6 +13,7 @@
 
 # script runner
 /src/ScriptRunner/Logs/*
+!/src/ScriptRunner/Logs/.keep
 
 # misc
 .DS_Store
