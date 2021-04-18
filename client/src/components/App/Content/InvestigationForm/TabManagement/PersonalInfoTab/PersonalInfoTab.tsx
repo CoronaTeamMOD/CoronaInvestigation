@@ -71,7 +71,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
     const birthDate = useSelector<StoreStateType, Date>(state => state.investigation.investigatedPatient.birthDate);
     const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
-    const [toAddContactField, setToAddContactField] = React.useState<boolean>(false);    // Boolean(PersonalInfoDataContextFields.CONTACT_INFO !== null ) || Boolean(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER !== null)
+    const [toAddContactField, setToAddContactField] = React.useState<boolean>(false);
 
     const isOver16 = dateToAge(birthDate) > 16;
     
