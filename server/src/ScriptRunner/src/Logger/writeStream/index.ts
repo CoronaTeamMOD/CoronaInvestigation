@@ -12,8 +12,8 @@ const ws = fs.createWriteStream(PATH_TO_LOG_FILE);
 stream.pipe(ws);
 stream.write(CSV_HEADERS);
 
-const writeToStream = (row : any) => {
-    console.log(row);
+const writeToStream = (row : string[]) => {
+    console.log(row.join(','));
     stream.write(row);
 }
 
