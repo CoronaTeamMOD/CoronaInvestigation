@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import HandleDeveloperRequest from '../../middlewares/HandleDeveloperRequest';
+import HandleDeveloperRequest from '../../../middlewares/HandleDeveloperRequest';
 
 import Routes from './routes';
 import logController from './log';

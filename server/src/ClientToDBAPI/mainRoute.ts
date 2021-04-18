@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
-import logRoute from './LogsRoute/mainRoute';
 import addressRoute from './Address/mainRoute';
 import usersRoute from './UsersRoute/mainRoute';
 import desksRoute from './DesksRoute/mainRoute';
+import scriptsRoute from './ScriptsRoute/mainRoute';
 import exposureRoute from './ExposureRoute/mainRoute';
 import countiesRoute from './CountiesRoute/mainRoute';
 import educationRoute from './EducationRoute/mainRoute';
@@ -35,6 +35,6 @@ clientToDBRouter.use('/personalDetails', personalDetailsRoute);
 clientToDBRouter.use('/clinicalDetails', clinicalDetailsRoute);
 clientToDBRouter.use('/contactedPeople', contactedPeopleRoute);
 clientToDBRouter.use('/groupedInvestigations', groupedInvestigationsRoute);
-clientToDBRouter.use('/logs', logRoute);
+clientToDBRouter.use('/scripts', scriptsRoute);
 
 export default clientToDBRouter;

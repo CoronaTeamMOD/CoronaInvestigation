@@ -1,5 +1,5 @@
 enum Routes {
-    log = '/log',
+    logs = '/logs'
 }
 
 export default Routes;
