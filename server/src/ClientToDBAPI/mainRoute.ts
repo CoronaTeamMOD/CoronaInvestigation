@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import logRoute from './Logs/mainRoute';
 import addressRoute from './Address/mainRoute';
 import usersRoute from './UsersRoute/mainRoute';
 import desksRoute from './DesksRoute/mainRoute';
@@ -34,5 +35,6 @@ clientToDBRouter.use('/personalDetails', personalDetailsRoute);
 clientToDBRouter.use('/clinicalDetails', clinicalDetailsRoute);
 clientToDBRouter.use('/contactedPeople', contactedPeopleRoute);
 clientToDBRouter.use('/groupedInvestigations', groupedInvestigationsRoute);
+clientToDBRouter.use('/logs', logRoute);
 
 export default clientToDBRouter;
