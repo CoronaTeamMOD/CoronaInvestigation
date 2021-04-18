@@ -5,6 +5,8 @@ import getAllScriptsNames from '../../../../ScriptRunner/src/getAllScriptsNames'
 
 const postDir = async (req : Request , res : Response) => {
     const { directory } = req.body;
+    
+    console.log('hello!');
 
     try {
         const allScriptsNames = await getAllScriptsNames(directory)

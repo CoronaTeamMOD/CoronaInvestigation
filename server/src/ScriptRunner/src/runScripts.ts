@@ -32,6 +32,7 @@ const runScripts = async (scriptNames : string[], directory : string) => {
                         logger.info(`${name} is blacklisted, skipping...`);
                     }
                 };
+                client.release();
                 return;
             }        
         }).catch(err => {

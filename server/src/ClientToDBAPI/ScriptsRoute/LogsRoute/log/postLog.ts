@@ -20,15 +20,14 @@ const postLog = async (req: Request , res: Response) => {
                 const query = fs.readFileSync(pathToScript).toString();
                 
                 await runScript(client, query, name);
-
-                connection.end();
+                client.release();
                 return res.status(200).send('🎉');
             } catch (e) {
-                connection.end();
+                client.release();
                 return res.status(404).send(`Read error , ${e}`);
             }
+            
         }).catch(err => {
-            connection.end();
             return res.status(500).send(`Error connecting to server. message: ${err.message}`);
         });
 }
