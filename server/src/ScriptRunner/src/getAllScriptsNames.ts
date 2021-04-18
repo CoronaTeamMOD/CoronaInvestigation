@@ -1,9 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import CURRENT_DIRECTORY from '../common/SCRIPTS_DIRECTORY';
 
-const getAllScriptsNames = async () => {
-    const dir = await fs.promises.opendir(path.resolve(__dirname , `../Scripts/${CURRENT_DIRECTORY}`));
+const getAllScriptsNames = async (direcrory: string) => {
+    const dir = await fs.promises.opendir(path.resolve(__dirname , `../Scripts/${direcrory}`));
     
     let names = [];
     for await (const dirent of dir) {

@@ -8,18 +8,17 @@ import blacklistFile from './blacklistFile';
 import generateLoadingBar from './loadingBar';
 import shouldRunScript from './shouldRunScript';
 import BLACKLIST_AFFIX from '../common/BLACKLIST_AFFIX';
-import SCRIPTS_DIRECTORY from '../common/SCRIPTS_DIRECTORY'; 
 
 const { DBConnectionsObject } = require('../../DBService/config');
 
-const runScripts = async (scriptNames : string[]) => {
+const runScripts = async (scriptNames : string[], directory : string) => {
     const connection : Pool = DBConnectionsObject.coronai.connection;
     
     await connection.connect()
         .then( async (client) => {
             if(client) {
                 for(const [index , name] of scriptNames.entries()) {
-                    const pathToScript = path.resolve(__dirname , `../Scripts/${SCRIPTS_DIRECTORY}/${name}`);
+                    const pathToScript = path.resolve(__dirname , `../Scripts/${directory}/${name}`);
                     
                     console.log(`${generateLoadingBar((index + 1) / scriptNames.length)} ${index+1}/${scriptNames.length} - ${name}`);
 
@@ -28,11 +27,12 @@ const runScripts = async (scriptNames : string[]) => {
                         const shouldBlacklist = name.startsWith(BLACKLIST_AFFIX);
                         shouldBlacklist && blacklistFile(name);
                         
-                        runScript(client, query, name);
+                        await runScript(client, query, name);
                     } else {
                         logger.info(`${name} is blacklisted, skipping...`);
                     }
                 };
+                return;
             }        
         }).catch(err => {
             logger.error(`Error connecting to server. message: ${err.message}`);
