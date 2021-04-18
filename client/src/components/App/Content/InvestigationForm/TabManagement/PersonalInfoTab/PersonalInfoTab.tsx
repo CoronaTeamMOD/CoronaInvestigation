@@ -70,7 +70,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
     const educationGrades = useSelector<StoreStateType, EducationGrade[]>(state => state.educationGrades);
     const birthDate = useSelector<StoreStateType, Date>(state => state.investigation.investigatedPatient.birthDate);
     const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    const [toAddContactField, setToAddContactField] = React.useState<boolean>(Boolean(PersonalInfoDataContextFields.CONTACT_INFO) || Boolean(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER));
+
+    const [toAddContactField, setToAddContactField] = React.useState<boolean>(false);    // Boolean(PersonalInfoDataContextFields.CONTACT_INFO !== null ) || Boolean(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER !== null)
 
     const isOver16 = dateToAge(birthDate) > 16;
     
@@ -83,6 +84,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
             clearSubOccupations,
             savePersonalData } = usePersonalTabInfo();
 
+    const contactInfo = methods.watch(`${PersonalInfoDataContextFields.CONTACT_INFO}`);
+    const contactPhoneNumber = methods.watch(`${PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER}`);
     const occupation = methods.watch(PersonalInfoDataContextFields.RELEVANT_OCCUPATION);
     const insuranceCompany = methods.watch(PersonalInfoDataContextFields.INSURANCE_COMPANY);
     const selectedRoleId = methods.watch(PersonalInfoDataContextFields.ROLE);
@@ -140,6 +143,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
 
         return parsedData;
     };
+
+    useEffect(() => {
+        if ( Boolean(contactInfo) || Boolean(contactPhoneNumber) ) {   
+            setToAddContactField(true);
+        }
+    }, [contactInfo, contactPhoneNumber]);
 
     useEffect(() => {
         if (epidemiologyNumber !== defaultEpidemiologyNumber) {
