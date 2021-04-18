@@ -13,6 +13,7 @@ stream.pipe(ws);
 stream.write(CSV_HEADERS);
 
 const writeToStream = (row : any) => {
+    console.log(row);
     stream.write(row);
 }
 
