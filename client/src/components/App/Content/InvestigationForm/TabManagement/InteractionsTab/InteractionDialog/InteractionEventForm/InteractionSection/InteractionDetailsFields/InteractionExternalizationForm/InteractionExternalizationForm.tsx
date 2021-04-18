@@ -63,33 +63,37 @@ const ExternalizationForm = ({occurrenceIndex}: Props) => {
         <>
             <Grid className={formClasses.formRow} container justify='flex-start'>
                 <FormInput xs={7} fieldName='האם מותר להחצנה'>
-                    <>
-                    <Controller
-                        name={externalizationFieldName}
-                        control={control}
-                        render={(props) => (
-                            <Toggle
-                                test-id='allowExternalization'
-                                disabled={externalizationErrorMessage !== ''}
-                                value={externalizationErrorMessage !== '' ? null : props.value}
-                                onChange={(event, value: boolean) => value !== null && props.onChange(value as boolean)}
-                                className={formClasses.formToggle}
+                    <Grid container alignItems='center' spacing={2}>
+                        <Grid item>
+                            <Controller
+                                name={externalizationFieldName}
+                                control={control}
+                                render={(props) => (
+                                    <Toggle
+                                    test-id='allowExternalization'
+                                    disabled={externalizationErrorMessage !== ''}
+                                    value={externalizationErrorMessage !== '' ? null : props.value}
+                                    onChange={(event, value: boolean) => value !== null && props.onChange(value as boolean)}
+                                    className={formClasses.formToggle}
+                                    />
+                                    )}
                             />
-                        )}
-                    />
-                    <Controller 
-                        name={externalizationDescFieldName}
-                        control={control}
-                        render={(props) => {
-                            return (
-                                <AlphanumericTextField
-                                    {...props}
-                                    label='מדוע מותר/אסור להחצנה'
-                                />
-                            )
-                        }}
-                    />
-                    </>
+                    </Grid>
+                    <Grid item>
+                        <Controller 
+                            name={externalizationDescFieldName}
+                            control={control}
+                            render={(props) => {
+                                return (
+                                    <AlphanumericTextField
+                                        {...props}
+                                        label='מדוע מותר/אסור להחצנה'
+                                    />
+                                )
+                            }}
+                        />
+                    </Grid>
+                </Grid>
                 </FormInput>
                 {
                     !Boolean(externalizationErrorMessage) &&
