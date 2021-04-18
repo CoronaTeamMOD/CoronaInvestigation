@@ -1,7 +1,7 @@
 const RUNNER = '🏃';
 const GUST = '💨';
 const DOT = '➖󠀠'
-const BAR_LENGTH = 12;
+const BAR_LENGTH = 18;
 
 const generateLoadingBar = (fraction : number) => {
     const gustCount = Math.floor(fraction * BAR_LENGTH) - 1;
