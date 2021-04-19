@@ -101,28 +101,16 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                         }}
                         textColor='primary'
                         className={classes.tabs}
-                        variant="scrollable"
-                        scrollButtons="auto"
+                        variant='scrollable'
+                        scrollButtons='auto'
                         ScrollButtonComponent={(props) => {
-                            if (
-                                props.direction === "right"
-                            ) {
-                                return (
-                                    <IconButton {...props}
-                                        disabled={false}
-                                    >
-                                        <ChevronLeft />
-                                    </IconButton>
-                                );
-                            } else {
-                                return (
-                                    <IconButton {...props}
-                                        disabled={false}
-                                    >
-                                        <ChevronRight />
-                                    </IconButton>
-                                );
-                            }
+                            return (
+                                <IconButton {...props}
+                                    disabled={false}
+                                >
+                                    {props.direction === 'left' ? <ChevronRight /> : <ChevronLeft />}
+                                </IconButton>
+                            )
                         }}
                     >
                         {
