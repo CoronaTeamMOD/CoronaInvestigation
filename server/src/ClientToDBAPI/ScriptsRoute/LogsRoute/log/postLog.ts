@@ -8,13 +8,13 @@ import runScript from "../../../../ScriptRunner/src/runScript";
 const { DBConnectionsObject } = require('../../../../DBService/config');
 
 const postLog = async (req: Request , res: Response) => {
-    const { direcrory, name } = req.body;
+    const { directory, name } = req.body;
 
     const connection : Pool = DBConnectionsObject.coronai.connection;
 
     await connection.connect()
         .then(async (client) => {
-            const pathToScript = path.resolve(__dirname , `../../../../ScriptRunner/Scripts/${direcrory}/${name}`);
+            const pathToScript = path.resolve(__dirname , `../../../../ScriptRunner/Scripts/${directory}/${name}`);
             
             try {
                 const query = fs.readFileSync(pathToScript).toString();
