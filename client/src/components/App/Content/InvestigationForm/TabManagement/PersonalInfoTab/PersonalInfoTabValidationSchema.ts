@@ -10,7 +10,7 @@ const occupationsWithoutExtraInfo = ['מערכת הבריאות', 'מערכת ה
 const maxClassNumberError = 'ניתן להזין עד המספר 50';
 
 const schema = yup.object().shape({
-    [PersonalInfoDataContextFields.PHONE_NUMBER]: yup.string().nullable().required(requiredText).matches(PHONE_NUMBER_REGEX, invalidPhoneText),
+    [PersonalInfoDataContextFields.PHONE_NUMBER]: yup.string().required(requiredText).matches(PHONE_NUMBER_REGEX, invalidPhoneText),
     [PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]: yup.string().nullable().matches(NOT_REQUIRED_PHONE_NUMBER_REGEX, invalidPhoneText),
     [PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]: yup.string().nullable().matches(NOT_REQUIRED_PHONE_NUMBER_REGEX, invalidPhoneText),
     [PersonalInfoDataContextFields.INSURANCE_COMPANY]: yup.string().nullable().required(requiredText),
