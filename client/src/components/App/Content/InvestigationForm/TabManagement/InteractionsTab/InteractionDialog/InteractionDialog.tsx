@@ -75,7 +75,7 @@ const InteractionDialog = (props: Props) => {
             }
         },
         [isRepetitive, isNewInteraction,additionalOccurrences]);
-    
+    const isPlaceTypeSelected = Boolean(placeType)
     const isGreenPassInvalid = useMemo(() => {
         return (placeType !== placeTypesCodesHierarchy.privateHouse.code && Object.values(isGreenPass).some((answer) => answer === undefined));
     },
@@ -348,7 +348,7 @@ const InteractionDialog = (props: Props) => {
                             isRepetitiveFieldInvalid.RepetitiveFieldMissingMessage || isRepetitiveFieldInvalid.missingAdditionalDateMessage
                         }>
                             <div>
-                                <PrimaryButton disabled={isRepetitiveFieldInvalid.invalid || isGreenPassInvalid}
+                                <PrimaryButton disabled={isRepetitiveFieldInvalid.invalid || isGreenPassInvalid || !isPlaceTypeSelected}
                                                form='interactionEventForm'
                                                type='submit'
                                                id='createContact'>
