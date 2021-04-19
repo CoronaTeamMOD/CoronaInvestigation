@@ -15,7 +15,7 @@ import InteractionsTab from './InteractionsTab/InteractionsTab';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
-import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+import { ArrowLeft, ChevronLeft, ChevronRight } from '@material-ui/icons';
 
 const END_INVESTIGATION = 'סיים חקירה';
 const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
@@ -96,20 +96,44 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                     <Tabs
                         value={currentTab}
                         classes={{
-                            indicator: classes.indicator
+                            root: classes.tabRoot,
+                            indicator: classes.indicator,
                         }}
                         textColor='primary'
                         className={classes.tabs}
+                        variant="scrollable"
+                        scrollButtons="auto"
+                        ScrollButtonComponent={(props) => {
+                            if (
+                                props.direction === "right"
+                            ) {
+                                return (
+                                    <IconButton {...props}
+                                        disabled={false}
+                                    >
+                                        <ChevronLeft />
+                                    </IconButton>
+                                );
+                            } else {
+                                return (
+                                    <IconButton {...props}
+                                        disabled={false}
+                                    >
+                                        <ChevronRight />
+                                    </IconButton>
+                                );
+                            }
+                        }}
                     >
                         {
-                            tabs.map((tab: TabObj) =>
+                            tabs.map((tab: TabObj , index : number) =>
                             !(tab.id === TabId.CONTACTS_QUESTIONING && !areThereContacts) &&
                             <StyledTab
                                     // @ts-ignore
                                     type='submit'
                                     form={`form-${currentTab}`}
                                     onClick={() => { setNextTab(tab.id) }}
-                                    key={tab.id}
+                                    key={index}
                                     label={tab.name}
                                     icon={isTabValid(tab.id) ? <ErrorOutlineIcon className={classes.icon} fontSize={'small'}/> : undefined}
                                     className={isTabValid(tab.id) ? classes.errorIcon : undefined}

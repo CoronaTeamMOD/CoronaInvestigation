@@ -31,6 +31,9 @@ const useStyles = makeStyles({
             borderBottom: `3px solid ${theme.palette.primary.main}`
         }
     },
+    tabRoot: {
+        flexDirection: 'row-reverse'
+    },
     indicator: {
         display: 'none'
     }
