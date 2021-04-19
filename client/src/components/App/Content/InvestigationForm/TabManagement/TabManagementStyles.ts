@@ -32,7 +32,6 @@ const useStyles = makeStyles({
         }
     },
     tabRoot: {
-        flexDirection: 'row-reverse'
     },
     indicator: {
         display: 'none'

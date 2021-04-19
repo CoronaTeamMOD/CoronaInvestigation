@@ -108,7 +108,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                                 <IconButton {...props}
                                     disabled={false}
                                 >
-                                    {props.direction === 'left' ? <ChevronRight /> : <ChevronLeft />}
+                                    {props.direction === 'right' ? <ChevronRight /> : <ChevronLeft />}
                                 </IconButton>
                             )
                         }}
