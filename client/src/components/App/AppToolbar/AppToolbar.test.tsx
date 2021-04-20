@@ -2,23 +2,24 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
 
-import UserType from 'models/enums/UserType';
+import UserTypeCodes from 'models/enums/UserTypeCodes';
 import MockRouter from 'Utils/Testing/MockRouter';
 import MockThemeProvider from 'Utils/Testing/MockThemeProvider';
 import mockSelectors from 'Utils/Testing/AppToolbar/mockSelectors';
 import useAppToolbar from 'Utils/Testing/AppToolbar/mockUseAppToolbar';
 
 import AppToolbar, { toggleMessage } from './AppToolbar';
-import { user } from 'Utils/Testing/AdminLandingPage/state';
+import { user } from 'Utils/Testing/AppToolbar/state';
 
 describe('<AppToolbar />', () => {
-    mockSelectors(UserType.INVESTIGATOR);
+    const testUser = user(UserTypeCodes.INVESTIGATOR);
+    mockSelectors(UserTypeCodes.INVESTIGATOR);
     const wrapper = mount(
-        <MockThemeProvider>
-            <MockRouter>
+        <MockRouter>
+            <MockThemeProvider>
                 <AppToolbar />
-            </MockRouter>
-        </MockThemeProvider>
+            </MockThemeProvider>
+        </MockRouter>
     );
 
     it('renders' , () => {
@@ -37,11 +38,29 @@ describe('<AppToolbar />', () => {
         expect(logo).toHaveLength(1);
     });
 
-    it('shows togglr' , () => {
-        const toogleTooltipSelector = wrapper.find('#toggle-tooltip');
-        jest.spyOn(useAppToolbar, 'useAppToolbar').mockImplementation(() => ([user, true, jest.fn(), jest.fn()]));
-
-        expect(toogleTooltipSelector.exists()).toBeTruthy();
-        expect(wrapper.find(toogleTooltipSelector).props().title).toBe(toggleMessage);    
+    it('shows logout button', () => {
+        const logoutButton = wrapper.find('button#logout-button');
+        expect(logoutButton.exists()).toBeTruthy();
+        expect(logoutButton).toHaveLength(1);
     });
+
+    it('shows logout tooltip message' , () => {
+        const toolTipMessage = 'התנתקות מהמערכת';
+        expect(wrapper.find('span#logout-tooltip').props().title).toBe(toolTipMessage);
+    });
+
+    it('shows welcome message' , () => {
+        const userName = testUser.data.authorityByAuthorityId?.authorityName ? 
+                            testUser.data.userName +" (" + testUser.data.authorityByAuthorityId.authorityName + ")"  : testUser.data.userName;
+        const welcomeMessage = `שלום ${userName}`;
+        expect(wrapper.find('#welcome-message').props().title).toBe(welcomeMessage);
+    });
+
+    // it('shows toggle' , () => {
+    //     const toogleTooltipSelector = wrapper.find('#toggle-tooltip');
+    //     jest.spyOn(useAppToolbar, 'useAppToolbar').mockImplementation(() => ([user, true, jest.fn(), jest.fn()]));
+
+    //     expect(toogleTooltipSelector.exists()).toBeTruthy();
+    //     expect(wrapper.find(toogleTooltipSelector).props().title).toBe(toggleMessage);    
+    // });
 });

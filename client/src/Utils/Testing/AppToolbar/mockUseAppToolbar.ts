@@ -1,6 +1,8 @@
 import useAppToolbar from '../../../components/App/AppToolbar/useAppToolbar';
 
 
-jest.mock('useAppToolbar', () => ({
+const mockUseAppToolbar =  jest.mock('useAppToolbar', () => ({
     useAppToolbar: () => ();
 }));
+
+export default mockUseAppToolbar;

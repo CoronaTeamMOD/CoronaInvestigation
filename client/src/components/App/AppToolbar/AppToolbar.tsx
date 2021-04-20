@@ -1,3 +1,4 @@
+  
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { ExitToApp, Home, SupervisorAccount } from '@material-ui/icons';
@@ -50,107 +51,151 @@ const AppToolbar: React.FC = (): JSX.Element => {
     const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
     const districtCounties = useSelector<StoreStateType, County[]>(state => state.county.districtCounties);
     const countyDisplayName = useSelector<StoreStateType, string>(state => state.user.data.countyByInvestigationGroup.displayName);
-    
-  
-
     const classes = useStyles();
     const location = useLocation();
     const userName = user.authorityByAuthorityId?.authorityName ? 
-                          user.userName +" (" + user.authorityByAuthorityId.authorityName + ")"  : user.userName;
+                            user.userName +" (" + user.authorityByAuthorityId.authorityName + ")"  : user.userName;
 
-  return (
-    <AppBar className={classes.appBar} position='static'>
-      <Toolbar>
-        <div className={classes.rightSection}>
-          <img id='logo' alt='logo' src='./assets/img/logo.png' width={48} height={48} />
-          <Typography variant='h4' id='title'>אבן יסוד</Typography>
-          {
-            navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
-            navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&
-            <div className={classes.navButtons}>
-              <StatePersistentNavLink exact to={indexRoute} 
-                isActive={(match, location) => 
-                  (location.pathname === adminLandingPageRoute || location.pathname  === landingPageRoute)}>
-                <Home className={classes.menuIcon} />
-                <Typography className={classes.menuTypo}> עמוד הבית</Typography>
-              </StatePersistentNavLink>
-              <StatePersistentNavLink exact to={usersManagementRoute}>
-                <SupervisorAccount className={classes.menuIcon} />
-                <Typography className={classes.menuTypo}> ניהול משתמשים</Typography>
-              </StatePersistentNavLink>
-            </div>
-<<<<<<< HEAD
-            <div className={classes.userSection}>
-            {isActive !== null &&
-                <Tooltip title={toggleMessage} arrow>
-                <IsActiveToggle
-                    value={isActive}
-                    onToggle={setUserActivityStatus}
-                    exclusive
-                />
-                </Tooltip>
-            }
-            <Tooltip title='התנתקות מהמערכת' arrow>
-                <IconButton color='inherit' onClick={logout}>
-                <ExitToApp />
-                </IconButton>
-=======
-          }
-        </div>
-        <div className={classes.userSection}>
-          {isActive !== null &&
-            <Tooltip title={toggleMessage} arrow id='toggle-tooltip'>
-              <IsActiveToggle
-                value={isActive}
-                onToggle={setUserActivityStatus}
-                exclusive
-              />
->>>>>>> 659a91e8 (added mock of usehook , dont work now needs fix)
-            </Tooltip>
-            <Typography className={classes.greetUserText}>
-                שלום, {userName}
-            </Typography>
-            {
-                user.userType === UserType.SUPER_ADMIN ?
-                <Select
-                    className={classes.countySelect}
-                    value={displayedCounty}
-                    onChange={(event) => setDisplayedCounty(event.target.value as number)}
-                    classes={{icon: classes.countySelect}}
-                    disableUnderline
-                    MenuProps={{
-                    anchorOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'left'
-                    },
-                    transformOrigin: {
-                        vertical: 'top',
-                        horizontal: 'left'
-                    },
-                    getContentAnchorEl: null
-                    }}
-                    renderValue={(value) => 
-                    <Typography>נפת <b>{districtCounties.find(county => county.id === value)?.displayName}</b></Typography>
-                    }
-                >
+    return (
+        <AppBar className={classes.appBar} position='static'>
+            <Toolbar>
+                <div className={classes.rightSection}>
+                    <StatePersistentNavLink exact to={indexRoute} >
+                        <img id='logo' alt='logo' src='./assets/img/logo.png' width={48} height={48} />
+                        <Typography variant='h4' className={classes.title} id='title'>אבן יסוד</Typography>
+                    </StatePersistentNavLink>
                     {
-                    districtCounties.map(county => 
-                        <MenuItem key={county.id} value={county.id}>
-                            {`נפת  ${county.displayName}`}
-                        </MenuItem>
-                    )
+                    navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
+                    navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&
+                        <div className={classes.navButtons}>
+                            <StatePersistentNavLink exact to={landingPageRoute} >
+                                <Typography className={classes.menuTypo}>  ניהול חקירות</Typography>
+                            </StatePersistentNavLink>
+                            <StatePersistentNavLink exact to={usersManagementRoute}>
+                                <Typography className={classes.menuTypo}> ניהול משתמשים</Typography>
+                            </StatePersistentNavLink>
+                        </div>
                     }
-                </Select>
-                :
-                countyDisplayName &&
-                <Typography>
-                    הינך מחובר/ת לנפת <b>{countyDisplayName}</b>
-                </Typography>
-            }
-            </div>
-        </Toolbar>
+                </div>
+                <div className={classes.userSection}>
+                    {user.isDeveloper &&
+                        <Select
+                            className={classes.select}
+                            value={user.userType}
+                            onChange={(event) => setDisplayedUserType(event.target.value as number)}
+                            classes={{icon: classes.select}}
+                            disableUnderline
+                            MenuProps={{
+                            anchorOrigin: {
+                                vertical: 'bottom',
+                                horizontal: 'left'
+                            },
+                            transformOrigin: {
+                                vertical: 'top',
+                                horizontal: 'left'
+                            },
+                            getContentAnchorEl: null
+                            }}
+                            renderValue={(value) => 
+                                <Typography>משתמש <b>{userTypes.find(userType => userType.id === value)?.displayName}</b></Typography>
+                            }
+                        >
+                            {
+                                userTypes.map(userType => 
+                                    <MenuItem key={userType.id} value={userType.id}>
+                                        {userType.displayName}
+                                    </MenuItem>
+                                )
+                            }
+                        </Select>
+                    }
+                    {isActive !== null &&
+                        <Tooltip title={toggleMessage} arrow>
+                        <IsActiveToggle
+                            value={isActive}
+                            onToggle={setUserActivityStatus}
+                            exclusive
+                        />
+                        </Tooltip>
+                    }
+                    <Tooltip title='התנתקות מהמערכת' arrow id='logout-tooltip'>
+                        <IconButton color='inherit' onClick={logout} id='logout-button'>
+                            <ExitToApp />
+                        </IconButton>
+                    </Tooltip>
+                    <Typography className={classes.greetUserText} id='welcome-message'>
+                        שלום, {userName}
+                    </Typography>
+                    {user.userType === UserTypeCodes.SUPER_ADMIN && user.isDeveloper &&
+                        <Select
+                            className={classes.select}
+                            value={displayedDistrict}
+                            onChange={(event) => changeUserDistrict(event.target.value as number)}
+                            classes={{icon: classes.select}}
+                            disableUnderline
+                            MenuProps={{
+                            anchorOrigin: {
+                                vertical: 'bottom',
+                                horizontal: 'left'
+                            },
+                            transformOrigin: {
+                                vertical: 'top',
+                                horizontal: 'left'
+                            },
+                            getContentAnchorEl: null
+                            }}
+                            renderValue={(value) => 
+                                <Typography>מחוז <b>{districts.find(district => district.id === value)?.displayName}</b></Typography>
+                            }
+                        >
+                        {
+                            districts.map(district => 
+                                <MenuItem key={district.id} value={district.id}>
+                                    {`מחוז  ${district.displayName}`}
+                                </MenuItem>
+                            )
+                        }
+                    </Select>
+                    }
+                    {user.userType === UserTypeCodes.SUPER_ADMIN ?
+                        <Select
+                            className={classes.select}
+                            value={displayedCounty}
+                            onChange={(event) => changeUserCounty(event.target.value as number)}
+                            classes={{icon: classes.select}}
+                            disableUnderline
+                            MenuProps={{
+                            anchorOrigin: {
+                                vertical: 'bottom',
+                                horizontal: 'left'
+                            },
+                            transformOrigin: {
+                                vertical: 'top',
+                                horizontal: 'left'
+                            },
+                            getContentAnchorEl: null
+                            }}
+                            renderValue={(value) => 
+                                <Typography>נפת <b>{districtCounties.find(county => county.id === value)?.displayName}</b></Typography>
+                            }
+                        >
+                        {
+                            districtCounties.map(county => 
+                                <MenuItem key={county.id} value={county.id}>
+                                    {`נפת  ${county.displayName}`}
+                                </MenuItem>
+                            )
+                        }
+                    </Select>
+                    : countyDisplayName &&
+                        <Typography>
+                            הינך מחובר/ת לנפת <b>{countyDisplayName}</b>
+                        </Typography>
+                    }
+                </div>
+            </Toolbar>
         </AppBar>
     );
-}
+};
 
 export default AppToolbar;
