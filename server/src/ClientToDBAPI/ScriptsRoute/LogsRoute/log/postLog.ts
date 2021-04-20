@@ -21,9 +21,11 @@ const postLog = async (req: Request , res: Response) => {
                 
                 await runScript(client, query, name);
                 client.release();
+
                 return res.status(200).send('🎉');
             } catch (e) {
                 client.release();
+
                 return res.status(404).send(`Read error , ${e}`);
             }
             
@@ -33,5 +35,3 @@ const postLog = async (req: Request , res: Response) => {
 }
 
 export default postLog;
-
-// TODO: find a way to add how much time it took to run a query (at the server)
