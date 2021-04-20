@@ -5,8 +5,8 @@ import { Pool } from "pg";
 import logger from './Logger';
 import runScript from './runScript';
 import blacklistFile from './blacklistFile';
-import generateLoadingBar from './loadingBar';
 import shouldRunScript from './shouldRunScript';
+import logLoadingBar from './LoadingBar/logLoadingBar';
 import BLACKLIST_AFFIX from '../common/BLACKLIST_AFFIX';
 
 const { DBConnectionsObject } = require('../../DBService/config');
@@ -19,10 +19,10 @@ const runScripts = async (scriptNames : string[], directory : string) => {
             if(client) {
                 for(const [index , name] of scriptNames.entries()) {
                     const pathToScript = path.resolve(__dirname , `../Scripts/${directory}/${name}`);
-                    
-                    console.log(`${generateLoadingBar((index + 1) / scriptNames.length)} ${index+1}/${scriptNames.length} - ${name}`);
-
                     const query = fs.readFileSync(pathToScript).toString(); 
+                    
+                    logLoadingBar(index + 1, scriptNames.length, name);
+                    
                     if(shouldRunScript(name)) {
                         const shouldBlacklist = name.startsWith(BLACKLIST_AFFIX);
                         shouldBlacklist && blacklistFile(name);

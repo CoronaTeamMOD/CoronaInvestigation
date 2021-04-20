@@ -1,19 +1,18 @@
 import { Request , Response } from 'express';
 import runScripts from '../../../../ScriptRunner/src/runScripts';
 
-import getAllScriptsNames from '../../../../ScriptRunner/src/getAllScriptsNames';
+import { validStatusCode } from '../../../../GraphqlHTTPRequest';
+import getScriptsNamesByFolder from '../../../../ScriptRunner/src/getScriptsNamesByFolder';
 
 const postDir = async (req : Request , res : Response) => {
     const { directory } = req.body;
-    
-    console.log('hello!');
 
     try {
-        const allScriptsNames = await getAllScriptsNames(directory)
+        const allScriptsNames = await getScriptsNamesByFolder(directory)
         
         await runScripts(allScriptsNames, directory);
 
-        return res.sendStatus(200);
+        return res.status(validStatusCode).send('🎉');
     } catch(e) {
         return res.status(404).send(`Recived Error: ${e}`);
     }

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const getAllScriptsNames = async (direcrory: string) => {
+const getScriptsNamesByFolder = async (direcrory: string) => {
     const dir = await fs.promises.opendir(path.resolve(__dirname , `../Scripts/${direcrory}`));
     
     let names = [];
@@ -15,4 +15,4 @@ const getAllScriptsNames = async (direcrory: string) => {
     return names;
 }
 
-export default getAllScriptsNames;
+export default getScriptsNamesByFolder;
