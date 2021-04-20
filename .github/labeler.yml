@@ -5,7 +5,7 @@ server:
   - 'server/**/*'
 
 database:
-  - 'db\ scripts/**/*'
+  - 'server/src/ScriptRunner/scripts/**/*.sql'
 
 tests:
   - 'client/**/*.test.tsx'
