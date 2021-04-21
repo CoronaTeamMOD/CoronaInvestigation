@@ -25,7 +25,10 @@ query InvestigationStaticDetails($investigationId: Int!) {
         birthDate
         validationDate
       }
-      identityType
+      identificationTypeByIdentityType {
+        id
+        type
+      }
       additionalPhoneNumber
       gender
       isDeceased
