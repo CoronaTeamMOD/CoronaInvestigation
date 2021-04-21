@@ -22,6 +22,7 @@ import investigationReducer from './Investigation/investigationReducer';
 import educationGradeReducer from './EducationGrade/educationGradeReducer';
 import complexReasonsReducer from './ComplexReasons/complexReasonsReducer';
 import isInInvestigationReducer from './IsInInvestigations/isInInvestigationReducer';
+import identificationTypesReducer from './IdentificationTypes/identificationTypesReducer';
 import groupedInvestigationReducer from './GroupedInvestigations/GroupedInvestigationsReducer';
 
 export default combineReducers <StoreStateType> ({
@@ -46,5 +47,6 @@ export default combineReducers <StoreStateType> ({
      groupedInvestigations : groupedInvestigationReducer,
      authorities: authorityReducer,
      complexReasons: complexReasonsReducer,
-     greenPass: greenPassReducer
+     greenPass: greenPassReducer,
+     identificationTypes: identificationTypesReducer
 }) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;

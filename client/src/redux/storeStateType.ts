@@ -10,6 +10,7 @@ import EducationGrade from 'models/EducationGrade';
 import GreenPassAnswer from 'models/GreenPassAnswer';
 import GreenPassQuestion from 'models/GreenPassQuestion';
 import InvestigationRedux from 'models/InvestigationRedux';
+import IdentificationType from 'models/IdentificationType';
 import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
@@ -40,4 +41,5 @@ export default interface StoreStateType {
     authorities: Map<string, Authority>;
     complexReasons: (number|null)[];
     greenPass: GreenPassReducerType;
+    identificationTypes: IdentificationType[];
 };
