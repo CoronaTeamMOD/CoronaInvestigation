@@ -46,14 +46,14 @@ describe('<AppToolbar />', () => {
 
     it('shows logout tooltip message' , () => {
         const toolTipMessage = 'התנתקות מהמערכת';
-        expect(wrapper.find('span#logout-tooltip').props().title).toBe(toolTipMessage);
+        expect(wrapper.find('#logout-tooltip').props().title).toBe(toolTipMessage);
     });
 
     it('shows welcome message' , () => {
         const userName = testUser.data.authorityByAuthorityId?.authorityName ? 
                             testUser.data.userName +" (" + testUser.data.authorityByAuthorityId.authorityName + ")"  : testUser.data.userName;
-        const welcomeMessage = `שלום ${userName}`;
-        expect(wrapper.find('#welcome-message').props().title).toBe(welcomeMessage);
+        const welcomeMessage = `שלום, ,${userName}`;
+        expect((wrapper.find('p#welcome-message').props().children)?.toString()).toBe(welcomeMessage);
     });
 
     // it('shows toggle' , () => {

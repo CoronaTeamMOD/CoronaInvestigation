@@ -118,10 +118,12 @@ const AppToolbar: React.FC = (): JSX.Element => {
                         />
                         </Tooltip>
                     }
-                    <Tooltip title='התנתקות מהמערכת' arrow id='logout-tooltip'>
-                        <IconButton color='inherit' onClick={logout} id='logout-button'>
-                            <ExitToApp />
-                        </IconButton>
+                    <Tooltip title='התנתקות מהמערכת' arrow >
+                        <span id='logout-tooltip'> {/* The span role is to wrap the button to make sure the tooltip work properly even if the button is disabled */}
+                            <IconButton color='inherit' onClick={logout} id='logout-button'>
+                                <ExitToApp />
+                            </IconButton>
+                        </span>
                     </Tooltip>
                     <Typography className={classes.greetUserText} id='welcome-message'>
                         שלום, {userName}

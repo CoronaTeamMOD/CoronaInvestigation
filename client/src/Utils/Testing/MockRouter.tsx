@@ -6,17 +6,12 @@ import { TimeRange } from 'models/TimeRange';
 const MockRouter: React.FC<Props> = (props) => {
     const { locationState } = props
     
-    const historyMock = locationState 
-    ? {
+    const historyMock = {
         push: jest.fn(), 
-        location: { state : locationState }, 
+        location: locationState ?  { state : locationState } : {}, 
         listen: jest.fn(), 
-        replace: jest.fn()
-    } : { 
-        push: jest.fn(), 
-        location: {}, 
-        listen: jest.fn(), 
-        replace: jest.fn() 
+        replace: jest.fn(),
+        createHref: jest.fn()
     };
 
     return (
