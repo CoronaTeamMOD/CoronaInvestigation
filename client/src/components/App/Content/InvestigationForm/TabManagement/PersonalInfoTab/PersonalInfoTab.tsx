@@ -54,7 +54,7 @@ const OCCUPATION = 'תעסוקה *';
 const INSTITUTION_CITY = 'עיר המצאות המוסד';
 const STUDENT = 'תלמיד/ה';
 const CLASS_NUMBER = 'מס כיתה';
-const ADD_CONTACT = '+איש קשר'
+const ADD_CONTACT = '+ איש קשר'
 
 const PersonalInfoTab: React.FC<Props> = ({ id }) => {
 
@@ -183,8 +183,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
 
     const addressFormFields: AddressFormFields = {
         cityField: {
-            name: `${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.CITY}`,
-            className: classes.personalInfoItem,
+            name: `${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.CITY}`
         },
         streetField: {
             name: `${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.STREET}`,
@@ -204,50 +203,56 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                     event.preventDefault();
                     savePersonalData(convertToDBData(), methods.getValues(), id);
                 }}>
-                    <FormRowWithInput fieldName={PHONE_LABEL}>
-                        <Grid className={classes.personalInfoItem + ' ' + classes.alignRight}>
-                            <Controller
-                                control={methods.control}
-                                name={PersonalInfoDataContextFields.PHONE_NUMBER}
-                                render={(props) => (
-                                    <NumericTextField
-                                        testId='personalDetailsPhone'
-                                        name={props.name}
-                                        value={props.value}
-                                        onChange={(newValue: string) => props.onChange(newValue)}
-                                        onBlur={props.onBlur}
-                                        placeholder={PHONE_LABEL}
-                                        label='טלפון*'
-                                        className={classes.phoneInput}
-                                    />
-                                )}
-                            />
-                            <Button 
-                                className={classes.addPersonButton}
-                                disabled={toAddContactField} 
-                                onClick={ ()=>{setToAddContactField(true)}} > 
-                                {ADD_CONTACT} 
-                            </Button>
+                    <FormRowWithInput fieldName={PHONE_LABEL} labelLength={1}>
+                        <Grid item container xs={3}>
+                            <Grid item xs={8}>
+                                <Controller
+                                    control={methods.control}
+                                    name={PersonalInfoDataContextFields.PHONE_NUMBER}
+                                    render={(props) => (
+                                        <NumericTextField
+                                            testId='personalDetailsPhone'
+                                            name={props.name}
+                                            value={props.value}
+                                            onChange={(newValue: string) => props.onChange(newValue)}
+                                            onBlur={props.onBlur}
+                                            placeholder={PHONE_LABEL}
+                                            label='טלפון*'
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Button
+                                    className={classes.addPersonButton}
+                                    disabled={toAddContactField}
+                                    onClick={ ()=>{setToAddContactField(true)}}>
+                                    {ADD_CONTACT}
+                                </Button>
+                            </Grid>
                         </Grid>
                     </FormRowWithInput>
-                    <Collapse in={toAddContactField} className={classes.personalInfoItem}>
-                        <FormRowWithInput fieldName={''}>
-                            <>
+                    <Collapse in={toAddContactField}>
+                        <Grid item container xs={12} spacing={3} className={classes.addContactWrapper}>
+                            <Grid item xs={1} className={classes.contactDetailsStub}/>
+                            <Grid item xs={2}>
                                 <Controller
                                     name={PersonalInfoDataContextFields.CONTACT_INFO}
                                     control={methods.control}
                                     render={(props) => (
                                         <AlphanumericTextField
+                                            fullWidth={true}
                                             name={PersonalInfoDataContextFields.CONTACT_INFO}
                                             value={props.value}
                                             onChange={(newValue: string) => (props.onChange(newValue))}
                                             onBlur={props.onBlur}
                                             placeholder={'פרטי איש קשר'}
                                             label='פרטי איש קשר'
-                                            className={classes.contactDescription}
                                         />
                                     )}
                                 />
+                            </Grid>
+                            <Grid item xs={2}>
                                 <Controller
                                     control={methods.control}
                                     name={PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER}
@@ -260,15 +265,14 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                             onBlur={props.onBlur}
                                             placeholder={PHONE_LABEL}
                                             label='טלפון'
-                                            className={classes.phoneInput}
                                         />
                                     )}
                                 />
-                            </>
-                        </FormRowWithInput>
+                            </Grid>
+                        </Grid>
                     </Collapse>
-                    <FormRowWithInput fieldName={INSURANCE_LABEL} appendantLabelIcon={insuranceCompany === NO_INSURANCE ? <ComplexityIcon tooltipText='המאומת חסר מעמד' /> : undefined}>
-                        <Grid item xs={2} className={classes.personalInfoItem}>
+                    <FormRowWithInput fieldName={INSURANCE_LABEL} appendantLabelIcon={insuranceCompany === NO_INSURANCE ? <ComplexityIcon tooltipText='המאומת חסר מעמד' /> : undefined} labelLength={1}>
+                        <Grid item xs={2}>
                             <FormControl fullWidth>
                                 <Controller
                                     name={PersonalInfoDataContextFields.INSURANCE_COMPANY}
@@ -297,14 +301,14 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                             </FormControl>
                         </Grid>
                     </FormRowWithInput>
-                    <FormRowWithInput fieldName={ADDRESS_LABEL}>
+                    <FormRowWithInput fieldName={ADDRESS_LABEL} labelLength={1}>
                         <AddressForm
                             {...addressFormFields}
                         />
                     </FormRowWithInput>
-                    <FormRowWithInput fieldName={OCCUPATION_LABEL} appendantLabelIcon={occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? <ComplexityIcon tooltipText='עובד במשרד הבריאות/החינוך' /> : undefined}>
+                    <FormRowWithInput fieldName={OCCUPATION_LABEL} labelLength={1} appendantLabelIcon={occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? <ComplexityIcon tooltipText='עובד במשרד הבריאות/החינוך' /> : undefined}>
                         <>
-                        <Grid item xs={2} className={classes.personalInfoItem}>
+                        <Grid item xs={2}>
                             <FormControl fullWidth>
                             <Controller
                                 name={PersonalInfoDataContextFields.RELEVANT_OCCUPATION}

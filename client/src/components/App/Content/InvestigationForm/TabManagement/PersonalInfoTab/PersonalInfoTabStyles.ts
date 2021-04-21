@@ -5,11 +5,8 @@ const useStyles = makeStyles({
         padding: '2vh',
         maxHeight: '64vh'
     },
-    personalInfoItem: {
-        marginLeft: '-10vw',
-        '@media screen and (max-width: 1700px)': {
-            marginRight: '2vw',
-        },
+    addContactWrapper: {
+        padding: '12px 0'
     },
     spacedOutAddress: {
         marginRight: '4vw',
@@ -22,9 +19,6 @@ const useStyles = makeStyles({
             marginRight: '2vw',
             marginLeft: '-2vw',
         }
-    },
-    contactDescription: {
-        margin: '2vw 3vw 2vw 0',
     },
     personalInfoFieldContainer: {
         display: 'flex',
@@ -104,8 +98,8 @@ const useStyles = makeStyles({
         },
         marginRight: '-7vw'
     },
-    phoneInput: {
-        minWidth: '15vw',
+    contactDetailsStub: {
+        margin: '10px 15px 10px 0'
     },
     markComplexity: {
         border: 'solid #FFC90E',
