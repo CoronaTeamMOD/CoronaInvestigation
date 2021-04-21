@@ -1,6 +1,6 @@
 -- FUNCTION: public.update_contact_person(json, integer, integer)
 
--- DROP FUNCTION public.update_contact_person(json, integer, integer);
+DROP FUNCTION public.update_contact_person(json, integer, integer);
 
 CREATE OR REPLACE FUNCTION public.update_contact_person(
 	contacts json,
@@ -12,8 +12,8 @@ CREATE OR REPLACE FUNCTION public.update_contact_person(
     VOLATILE PARALLEL UNSAFE
 AS $BODY$
 declare
-/*Update or insert  contacted persons  assigned to specified contacted_event*/
---Event variables:
+--Update or insert  contacted persons  assigned to specified contacted_event
+--Variables:
 
 person_arr json[];
 person json;
@@ -21,7 +21,7 @@ firstName varchar;
 lastName varchar;
 phoneNumber varchar;
 identificationNumber varchar;
-identificationType varchar;
+identificationType int4;
 extraInfo varchar;
 igender varchar;
 contacted_person_id int4;
@@ -50,13 +50,12 @@ begin
 		select trim(nullif((person->'phoneNumber')::text,'null'),'"') into phoneNumber;
 		select trim(nullif((person->'extraInfo')::text,'null'),'"') into extraInfo;
 		select trim(nullif((person->'identificationNumber')::text,'null'),'"')  into identificationNumber;
-		select replace(trim(nullif((person->'identificationType')::text,'null'),'"'),'\', '')  into identificationType;
+		select trim(nullif((person->'identificationType')::text,'null'),'"')::int4 into identificationType;
 		select trim(nullif((person->'gender')::text,'null'),'"') into igender;
 	   	select trim(nullif((person->'id')::text,'null'),'"')::int4 into contacted_person_id;  
  		select trim(nullif((person->'contactType')::text,'null'),'"')::int4 into contactType;
 		select trim(nullif((person->'involvedContactId')::text,'null'),'"')::int4 into involvedContactId;
 		select trim(nullif((person->'familyRelationship')::text,'null'),'"')::int4 into familyRelationship;
-
 	    if contacted_person_id is not null then
 	    	raise notice 'UPDATE contacted person';
 			/*update person and contacted person */
@@ -70,9 +69,7 @@ begin
 	    	last_name  = LastName,
 	    	phone_number = phoneNumber,
 	    	identification_Number = identificationNumber,
-	    	identification_type = (case  when identificationNumber is null then null
-				 				  	     when identificationType is null then 'ת"ז' 
-				 				  	   	 else identificationType end)
+	    	identification_type = identificationType
 	   	from contacted_person 
 	    where person.id= contacted_person.person_info and contacted_person.id = contacted_person_id;
 	
@@ -103,9 +100,7 @@ begin
 				identification_type,
 				identification_number
 				)
-				VALUES(firstName,lastName, phoneNumber,(case when identificationNumber is null then null
-				 				  	     when identificationType is null then 'ת"ז' 
-				 				  	   else identificationType end), identificationNumber);
+				VALUES(firstName,lastName, phoneNumber, identificationType, identificationNumber);
 
 				personId := currval('person_id_seq');
 				INSERT INTO public.contacted_person
@@ -121,6 +116,3 @@ begin
 	end loop;
 end;
 $BODY$;
-
-COMMENT ON FUNCTION public.update_contact_person(json, integer, integer)
-    IS 'Update or insert  contacted persons  assigned to specified contacted_event';
