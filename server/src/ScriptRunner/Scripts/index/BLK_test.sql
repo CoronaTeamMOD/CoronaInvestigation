@@ -1,1 +1,0 @@
-SELECT count(id) from public.userz;

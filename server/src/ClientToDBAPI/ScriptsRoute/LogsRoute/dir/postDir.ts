@@ -14,7 +14,7 @@ const postDir = async (req : Request , res : Response) => {
 
         return res.status(validStatusCode).send('🎉');
     } catch(e) {
-        return res.status(404).send(`Recived Error: ${e}`);
+        return res.status(404).send(`❌ Recived Error: ${e}`);
     }
 }
 

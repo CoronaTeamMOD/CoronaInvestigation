@@ -8,7 +8,7 @@ const shouldRunScript = (name : string) => {
     try {
         blacklist = fs.readFileSync(PATH_TO_BLACKLIST).toString().split(',')
     } catch {
-        return false;
+        blacklist = [];
     }
 
     return !blacklist.includes(name);

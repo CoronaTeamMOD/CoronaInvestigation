@@ -1,7 +1,6 @@
 import runScripts from './src/runScripts';
-import getScriptsNamesByFolder from './src/getScriptsNamesByFolder';
-
 import CURRENT_DIRECTORY from './common/SCRIPTS_DIRECTORY';
+import getScriptsNamesByFolder from './src/getScriptsNamesByFolder';
 
 const initScriptRunner = async () => {
     console.info('🏃💨 SCRIPT RUNNER 🏃💨');

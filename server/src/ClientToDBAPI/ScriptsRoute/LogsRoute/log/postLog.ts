@@ -26,7 +26,7 @@ const postLog = async (req: Request , res: Response) => {
             } catch (e) {
                 client.release();
 
-                return res.status(404).send(`Read error , ${e}`);
+                return res.status(404).send(`❌ Read error , ${e}`);
             }
             
         }).catch(err => {
