@@ -113,7 +113,7 @@ const useStyles = makeStyles({
         marginTop: '5%',
     },
     gradeInput: {
-        width: '7vw',
+        maxWidth: '5vw',
         '& .MuiInputLabel-formControl.Mui-error': {
             fontSize: '1.1vw',
             top: '-0.8vh'
