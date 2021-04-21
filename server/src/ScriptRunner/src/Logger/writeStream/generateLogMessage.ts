@@ -1,5 +1,7 @@
 import chalk from 'chalk';
 
+import levels from '../levels';
+
 const generateLogMessage = (row: string[]) => {
     const rowObj = logRowToObject(row);
     
@@ -16,11 +18,11 @@ const logRowToObject = (logRow: string[]) => {
 
 const getTypeMessage = (type: string) => {
     switch (type) {
-        case 'SUCCESS':
+        case levels.SUCCESS:
             return chalk.green(type)
-        case 'INFO': 
+        case levels.INFO: 
             return chalk.blue(type)
-        case 'ERROR': 
+        case levels.ERROR: 
             return chalk.red(type)
         default:
             return type

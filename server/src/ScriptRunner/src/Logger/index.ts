@@ -1,25 +1,21 @@
-const SUCCESS = 'SUCCESS';
-const INFO = 'INFO';
-const WARN = 'WARN';
-const ERROR = 'ERROR';
-
+import levels from './levels';
 import { writeToStream } from './writeStream';
 import getLogDateTime from '../LogUtils/getLogDateTime';
 
 const success = (message : string) => {
-    writeToStream([getLogDateTime(), SUCCESS, message])
+    writeToStream([getLogDateTime(), levels.SUCCESS, message])
 }
 
 const info = (message : string) => {
-    writeToStream([getLogDateTime(), INFO, message])
+    writeToStream([getLogDateTime(), levels.INFO, message])
 }
 
 const warn = (message : string) => {
-    writeToStream([getLogDateTime(), WARN, message])
+    writeToStream([getLogDateTime(), levels.WARN, message])
 }
 
 const error = (message : string) => {
-    writeToStream([getLogDateTime(), ERROR, message])
+    writeToStream([getLogDateTime(), levels.ERROR, message])
 }
 
 
