@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS public.person_contact_details (
 		REFERENCES public.address(id),
 	FOREIGN KEY (family_relationship) 
 		REFERENCES public.family_relationship(id),
-	FOREIGN KEY (isolation_address)
-		REFERENCES public.address(id),
+	FOREIGN KEY (involved_contact_id)
+		REFERENCES public.involved_contact(id),
 	FOREIGN KEY (occupation)
 		REFERENCES public.occupation(display_name),
 	FOREIGN KEY (person_info)

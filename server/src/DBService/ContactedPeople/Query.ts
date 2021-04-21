@@ -16,18 +16,38 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!, $minimalDateToFi
         birthDate
         additionalPhoneNumber
         gender
-      }
-      isolationAddress: addressByIsolationAddress {
-        city: cityByCity {
-          id
-          displayName
+        personContactDetailByPersonInfo {
+          extraInfo
+          relationship
+          familyRelationship
+          occupation
+          doesHaveBackgroundDiseases
+          contactType
+          doesFeelGood
+          doesNeedHelpInIsolation
+          repeatingOccuranceWithConfirmed
+          doesLiveWithConfirmed
+          doesWorkWithCrowd
+          doesNeedIsolation
+          contactStatus
+          creationTime
+          involvedContactId
+          involvementReason: involvedContactByInvolvedContactId {
+            involvementReason
+          }
+          isolationAddress: addressByIsolationAddress {
+          city: cityByCity {
+            id
+            displayName
+          }
+          street: streetByStreet {
+            id
+            displayName
+          }
+            houseNum
+            apartment
+        	}
         }
-        street: streetByStreet {
-          id
-          displayName
-        }
-        houseNum
-        apartment
       }
       contactEventByContactEvent {
         placeName
@@ -35,24 +55,6 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!, $minimalDateToFi
         id
       }
       id
-      extraInfo
-      relationship
-      familyRelationship
-      occupation
-      doesHaveBackgroundDiseases
-      contactType
-      doesFeelGood
-      doesNeedHelpInIsolation
-      repeatingOccuranceWithConfirmed
-      doesLiveWithConfirmed
-      doesWorkWithCrowd
-      doesNeedIsolation
-      contactStatus
-      creationTime
-      involvedContactId
-      involvementReason : involvedContactByInvolvedContactId {
-        involvementReason
-      }
     }
   }
 }
