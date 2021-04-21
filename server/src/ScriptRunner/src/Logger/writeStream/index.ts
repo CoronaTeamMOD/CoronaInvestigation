@@ -3,6 +3,7 @@ import path from 'path';
 import { format } from 'fast-csv';
 
 import CSV_HEADERS from './csv-headers';
+import generateLogMessage from './generateLogMessage';
 
 const PATH_TO_LOG_FILE = path.resolve(__dirname , '../../../Logs/log.csv');
 
@@ -13,7 +14,7 @@ stream.pipe(ws);
 stream.write(CSV_HEADERS);
 
 const writeToStream = (row : string[]) => {
-    console.log(row.join(','));
+    console.log(generateLogMessage(row));
     stream.write(row);
 }
 
