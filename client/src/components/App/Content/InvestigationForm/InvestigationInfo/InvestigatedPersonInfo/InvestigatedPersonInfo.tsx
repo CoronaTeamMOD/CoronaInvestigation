@@ -14,8 +14,8 @@ import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import StaticFields from 'models/enums/StaticFields';
 import UserTypeCodes from 'models/enums/UserTypeCodes';
 import InvestigationInfo from 'models/InvestigationInfo';
+import IdentificationType from 'models/IdentificationType';
 import { InvestigationStatus } from 'models/InvestigationStatus';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
@@ -53,11 +53,11 @@ const InvestigatedPersonInfo = (props: Props) => {
     const { identityType, gender, isDeceased, isCurrentlyHospitalized, isInClosedInstitution, age, identityNumber, 
         fullName, primaryPhone, birthDate, validationDate, isReturnSick, previousDiseaseStartDate, 
         isVaccinated, vaccinationEffectiveFrom, isSuspicionOfMutation, mutationName } = investigationStaticInfo;
-
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
+    const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
     const { comment, setComment } = useContext(commentContext);
     const [commentInput, setCommentInput] = React.useState<string|null>('');
 
@@ -206,7 +206,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     <Controller
                                         control={methods.control}
                                         name={StaticFields.IDENTIFICATION_TYPE}
-                                        defaultValue={identityType}
+                                        defaultValue={identityType.id}
                                         render={(props) => (
                                             <Select
                                                 {...props}
@@ -228,12 +228,12 @@ const InvestigatedPersonInfo = (props: Props) => {
                                                     getContentAnchorEl: null
                                                     }}
                                             >
-                                                {Object.values(IdentificationTypes).map((identificationType: string) => (
+                                                {Object.values(identificationTypes).map((identificationType: IdentificationType) => (
                                                     <MenuItem
                                                         className={classes.smallSizeText}
-                                                        key={identificationType}
-                                                        value={identificationType}>
-                                                        {identificationType}
+                                                        key={identificationType.id}
+                                                        value={identificationType.id}>
+                                                        {identificationType.type}
                                                     </MenuItem>
                                                 ))}
                                             </Select>
@@ -241,7 +241,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     />
                                 </>
                                 :
-                                <PatientInfoItem testId='idType' name='סוג תעודה מזהה' value={identityType}  />
+                                <PatientInfoItem testId='idType' name='סוג תעודה מזהה' value={identityType.type}  />
                                 }
                                 {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ?
                                 <>

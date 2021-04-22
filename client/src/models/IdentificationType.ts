@@ -1,6 +1,6 @@
 interface IdentificationType {
     id: number;
-    tyoe: string;
+    type: string;
 }
 
 export default IdentificationType;
