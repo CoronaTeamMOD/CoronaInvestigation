@@ -25,7 +25,7 @@ query InvestigationStaticDetails($investigationId: Int!) {
         birthDate
         validationDate
       }
-      identificationTypeByIdentityType {
+      identificationType: identificationTypeByIdentityType {
         id
         type
       }

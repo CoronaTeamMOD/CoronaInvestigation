@@ -11,7 +11,7 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!, $minimalDateToFi
         firstName
         lastName
         phoneNumber
-        identificationTypeByIdentificationType {
+        identificationType: identificationTypeByIdentificationType {
           id
           type
         }

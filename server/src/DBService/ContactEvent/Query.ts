@@ -38,7 +38,10 @@ personByPersonId {
   additionalPhoneNumber
   firstName
   identificationNumber
-  identificationType
+  identificationType: identificationTypeByIdentificationType {
+    type
+    id
+  }
   lastName
   phoneNumber
   epidemiologicStatus: personEpidemiologicStatusByPersonEpidemiologicStatusId {
@@ -126,7 +129,10 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!, $minimalDateT
           personByPersonInfo {
             firstName
             identificationNumber
-            identificationType
+            identificationType: identificationTypeByIdentificationType {
+              type
+              id
+            }
             lastName
             phoneNumber
             personContactDetailByPersonInfo {
@@ -189,7 +195,10 @@ query contactsByGroupId($groupId: UUID!, $epidemiologynumber: Int!) {
                   identificationNumber
                   lastName
                   id
-                  identificationType
+                  identificationType: identificationTypeByIdentificationType {
+                    type
+                    id
+                  }
                   phoneNumber
                   birthDate
                   additionalPhoneNumber

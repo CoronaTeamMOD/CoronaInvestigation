@@ -1,5 +1,6 @@
 import City from '../Address/City';
 import Street from '../Address/Street';
+import IdentificationType from '../IdentificationTypes/IdentificationType';
 
 export interface GetInvolvedContactsResponse {
     data: {
@@ -23,7 +24,7 @@ export interface InvolvedContactDB {
         additionalPhoneNumber: string;
         firstName: string;
         identificationNumber: string;
-        identificationType: string;
+        identificationType: IdentificationType;
         lastName: string;
         phoneNumber: string;
         epidemiologicStatus: {
@@ -49,4 +50,4 @@ export interface InvolvedContactDB {
     subOccupationByInstitutionName: {
         institutionName: string;
     }
-}
+};
