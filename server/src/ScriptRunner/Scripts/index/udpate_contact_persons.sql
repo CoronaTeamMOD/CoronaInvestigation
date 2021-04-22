@@ -104,7 +104,7 @@ begin
 		  
 		addressId := insert_and_get_address_id(city, null, street, houseNum, apartment, null, null);
 									 
-		if personInfo is not null then
+	if personInfo is not null then
 	    	/*update person and contacted person UPDATE THIS*/
 		select completion_time from public.person_contact_details pcd where pcd.person_info = personInfo into completionTime;
 	
@@ -143,9 +143,9 @@ begin
 										when completionTime is not null then completionTime
 										else null end)
 				where person_contact_details.person_info = personInfo;
-				
+	    
 	    	raise notice '%', identificationType;
-		   	update person 
+		   	update public.person
 				set identification_type = (case when identificationNumber is null then null
 											 when identificationType is null then 'ת"ז' 
 										   else identificationType end),
@@ -156,8 +156,7 @@ begin
 					last_name = lastName,
 					gender = igender,
 					phone_number = phoneNumber
-			from public.person_contact_details 
-			where person.id= person_contact_details.person_info;
+			where person.id = personInfo;
 
 			if (involvedContactId is not null ) then
 				update public.involved_contact
@@ -166,13 +165,13 @@ begin
 			end if;
 	   else
 			INSERT INTO public.person (first_name, last_name, identification_type, identification_number, phone_number, additional_phone_number, gender, birth_date) 
-			VALUES(firstName, lastName,  (case when identificationNumber is null then null
+			VALUES(firstName, lastName, (case when identificationNumber is null then null
 				 				  	     when identificationType is null then 'ת"ז' 
 				 				  	   else identificationType end),
 			identificationNumber, phoneNumber, additionalPhoneNumber, igender, birthDate);
 			
 		    personId := currval('person_id_seq');
- 		raise notice 'insert new person %', personId	;   
+ 		raise notice 'insert new person %', personId;   
 	   	   	INSERT INTO public.person_contact_details (
 			   	isolation_address,person_info, contact_event, relationship, extra_info, contact_type, 
 	   	    	does_have_background_diseases, occupation, does_feel_good, does_need_help_in_isolation, 
