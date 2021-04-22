@@ -51,25 +51,25 @@ street varchar;
 houseNum varchar;
 apartment varchar;
 
-begin 	
-	/*contacted_persons is a Jsonthat may recieved in 2 different structures: */
+BEGIN 	
+	/* contacted_persons is a JSON that can be recieved in 2 different structures: */
 	
 	contactPersonArr :=(
-					select  array_agg(p_data.value)
-					from json_array_elements(contacted_persons->'unSavedContacts'->'contacts') p_data
-				  );
-	if contactPersonArr is null then
+					SELECT array_agg(p_data.value)
+					FROM json_array_elements(contacted_persons->'unSavedContacts'->'contacts') p_data
+				  ); 
+	IF contactPersonArr IS NULL THEN
 	contactPersonArr :=(
-					select  array_agg(p_data.value)
-					from json_array_elements(contacted_persons) p_data
+					SELECT array_agg(p_data.value)
+					FROM json_array_elements(contacted_persons) p_data
 				  );	
-	end if;
+	END IF;
 				 
-				 
-	foreach contactedPerson in array contactPersonArr 
-	loop
+	-- Looping through contacted_person
+	foreach contactedPerson IN array contactPersonArr 
+	LOOP
 			raise notice '%',contactedPerson;			 	 
-		
+		-- Getting the information out of the contact_persons arr JSON
 		select trim(nullif((contactedPerson->'contactEvent')::text,'null'),'"')::int4 into contactEvent;
 		select trim(nullif((contactedPerson->'firstName')::text,'null'),'"')  into firstName;
 		select trim(nullif((contactedPerson->'lastName')::text,'null'),'"')  into lastName;
@@ -101,14 +101,14 @@ begin
 		select trim(nullif((contactedPerson->'isolationAddress'->'houseNum')::text,'null'),'"')  into houseNum;
 		select trim(nullif((contactedPerson->'isolationAddress'->'apartment')::text,'null'),'"')  into apartment;
  
-		  
 		addressId := insert_and_get_address_id(city, null, street, houseNum, apartment, null, null);
 									 
-	if personInfo is not null then
-	    	/*update person and contacted person UPDATE THIS*/
-		select completion_time from public.person_contact_details pcd where pcd.person_info = personInfo into completionTime;
+	IF personInfo IS NOT NULL THEN
+	    -- Updating person_info
+		SELECT completion_time FROM public.person_contact_details pcd WHERE pcd.person_info = personInfo INTO completionTime;
 	
  		raise notice 'update contacted person %', personInfo;
+		-- Using upsert to the table person_contact_details
 			INSERT INTO public.person_contact_details (
 				person_info, does_need_isolation, extra_info, isolation_address, contact_type, family_relationship,
 				occupation, does_have_background_diseases, does_feel_good, does_need_help_in_isolation, repeating_occurance_with_confirmed,
@@ -118,9 +118,9 @@ begin
 				personOccupation, doesHaveBackgroundDiseases, doesFeelGood, doesNeedHelpInIsolation, repeatingOccuranceWithConfirmed,
 				doesLiveWithConfirmed, contactStatus, doesWorkWithCrowd, personRelationship, 
 				(
-					case when completionTime is null and contactStatus = 5 then now() 
-					when completionTime is not null then completionTime
-					else null end
+					CASE WHEN completionTime IS NULL AND contactStatus = 5 THEN NOW() 
+					WHEN completionTime IS NOT NULL THEN completionTime
+					ELSE NULL END
 				)
 			) 
 			ON CONFLICT (person_info)
@@ -139,16 +139,17 @@ begin
 				contact_status = contactStatus ,
 				does_work_with_crowd = doesWorkWithCrowd,
 				relationship = personRelationship,	
-				completion_time = (case when completionTime is null and contactStatus = 5 then now() 
-										when completionTime is not null then completionTime
-										else null end)
+				completion_time = (CASE WHEN completionTime IS NULL AND contactStatus = 5 THEN NOW() 
+										WHEN completionTime IS NOT NULL then completionTime
+										ELSE NULL END)
 				where person_contact_details.person_info = personInfo;
 	    
 	    	raise notice '%', identificationType;
-		   	update public.person
-				set identification_type = (case when identificationNumber is null then null
-											 when identificationType is null then 'ת"ז' 
-										   else identificationType end),
+			-- Updating public.person by the personInfo
+		   	UPDATE public.person
+				SET identification_type = (CASE WHEN identificationNumber IS NULL THEN NULL
+											 	WHEN identificationType IS NULL THEN 'ת"ז' 
+										   		ELSE identificationType END),
 					identification_number = identificationNumber,
 					birth_date = birthDate,
 					additional_phone_number  = additionalPhoneNumber,
@@ -156,18 +157,18 @@ begin
 					last_name = lastName,
 					gender = igender,
 					phone_number = phoneNumber
-			where person.id = personInfo;
+			WHERE person.id = personInfo;
 
-			if (involvedContactId is not null ) then
-				update public.involved_contact
-				set isolation_address = addressId
-				where id = involvedContactId;
-			end if;
-	   else
+			IF (involvedContactId IS NOT NULL ) THEN
+				UPDATE public.involved_contact
+				SET isolation_address = addressId
+				WHERE id = involvedContactId;
+			END IF;
+	   ELSE
 			INSERT INTO public.person (first_name, last_name, identification_type, identification_number, phone_number, additional_phone_number, gender, birth_date) 
-			VALUES(firstName, lastName, (case when identificationNumber is null then null
-				 				  	     when identificationType is null then 'ת"ז' 
-				 				  	   else identificationType end),
+			VALUES(firstName, lastName, (CASE WHEN identificationNumber IS NULL THEN NULL
+				 				  	     WHEN identificationType IS NULL THEN 'ת"ז' 
+				 				  	     ELSE identificationType END),
 			identificationNumber, phoneNumber, additionalPhoneNumber, igender, birthDate);
 			
 		    personId := currval('person_id_seq');
@@ -180,7 +181,7 @@ begin
 				addressId,personId, contactEvent, personRelationship, extraInfo, contactType, 
 	   		 	doesHaveBackgroundDiseases, personOccupation , doesfeelGood, doesNeedHelpInIsolation,
 	   			repeatingOccuranceWithConfirmed, doesLiveWithConfirmed, contactStatus, familyRelationship, doesWorkWithCrowd, doesNeedIsolation, now());
-	   end if;
-	end loop;
-end;
+	   END IF;
+	END LOOP;
+END;
 $BODY$;
