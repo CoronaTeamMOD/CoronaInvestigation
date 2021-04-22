@@ -288,6 +288,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         updatedPerson.firstName = allContactedInteractions[index].firstName;
         updatedPerson.gender = allContactedInteractions[index].gender;
         updatedPerson.id = allContactedInteractions[index].id;
+        updatedPerson.personInfo = allContactedInteractions[index].personInfo;
         updatedPerson.involvedContactId = allContactedInteractions[index].involvedContactId;
         updatedPerson.involvementReason = allContactedInteractions[index].involvementReason;
         updatedPerson.lastName = allContactedInteractions[index].lastName;
