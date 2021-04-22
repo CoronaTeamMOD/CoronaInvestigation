@@ -55,12 +55,4 @@ describe('<AppToolbar />', () => {
         const welcomeMessage = `שלום, ,${userName}`;
         expect((wrapper.find('p#welcome-message').props().children)?.toString()).toBe(welcomeMessage);
     });
-
-    // it('shows toggle' , () => {
-    //     const toogleTooltipSelector = wrapper.find('#toggle-tooltip');
-    //     jest.spyOn(useAppToolbar, 'useAppToolbar').mockImplementation(() => ([user, true, jest.fn(), jest.fn()]));
-
-    //     expect(toogleTooltipSelector.exists()).toBeTruthy();
-    //     expect(wrapper.find(toogleTooltipSelector).props().title).toBe(toggleMessage);    
-    // });
 });
