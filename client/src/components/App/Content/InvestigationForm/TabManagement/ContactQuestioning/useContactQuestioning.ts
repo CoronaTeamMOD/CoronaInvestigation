@@ -19,6 +19,8 @@ import {
     useContactQuestioningParameters,
 } from './ContactQuestioningInterfaces';
     
+const NEW_CONTACT_STATUS_CODE = 1; // TODO: figure out how does a contact gets it's initial contact status
+
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {
         id,
@@ -135,8 +137,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         'got respond from the server that has data',
                         Severity.LOW
                     );
-                    const interactedContacts: InteractedContact[] = result.data.map((contact: any) =>
-                        ({
+                    const interactedContacts: InteractedContact[] = result.data.map((contact: any) => {
+                        return ({
                             personInfo : contact.personInfo,
                             placeName: contact.contactEventByContactEvent.placeName,
                             id: contact.id,
@@ -157,38 +159,40 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             contactDate:
                                 contact.contactEventByContactEvent.startTime,
                             contactEvent: contact.contactEventByContactEvent.id,
-                            contactType: contact.personByPersonInfo.personContactDetailByPersonInfo.contactType,
-                            contactStatus: contact.personByPersonInfo.personContactDetailByPersonInfo.contactStatus,
-                            extraInfo: contact.personByPersonInfo.personContactDetailByPersonInfo.extraInfo,
-                            relationship: contact.personByPersonInfo.personContactDetailByPersonInfo.relationship,
-                            familyRelationship: contact.personByPersonInfo.personContactDetailByPersonInfo.familyRelationship,
-                            isolationAddress: contact.personByPersonInfo.personContactDetailByPersonInfo.isolationAddress,
-                            occupation: contact.personByPersonInfo.personContactDetailByPersonInfo.occupation,
-                            doesFeelGood: contact.personByPersonInfo.personContactDetailByPersonInfo.doesFeelGood
-                                ? contact.personByPersonInfo.personContactDetailByPersonInfo.doesFeelGood
+                            contactType: contact.personByPersonInfo.personContactDetailByPersonInfo?.contactType,
+                            contactStatus: contact.personByPersonInfo.personContactDetailByPersonInfo?.contactStatus ?? NEW_CONTACT_STATUS_CODE,
+                            extraInfo: contact.personByPersonInfo.personContactDetailByPersonInfo?.extraInfo,
+                            relationship: contact.personByPersonInfo.personContactDetailByPersonInfo?.relationship,
+                            familyRelationship: contact.personByPersonInfo.personContactDetailByPersonInfo?.familyRelationship,
+                            isolationAddress: contact.personByPersonInfo.personContactDetailByPersonInfo?.isolationAddress,
+                            occupation: contact.personByPersonInfo.personContactDetailByPersonInfo?.occupation,
+                            doesFeelGood: contact.personByPersonInfo.personContactDetailByPersonInfo?.doesFeelGood
+                                ? contact.personByPersonInfo.personContactDetailByPersonInfo?.doesFeelGood
                                 : false,
-                            doesHaveBackgroundDiseases: contact.personByPersonInfo.personContactDetailByPersonInfo.doesHaveBackgroundDiseases
-                                ? contact.personByPersonInfo.personContactDetailByPersonInfo.doesHaveBackgroundDiseases
+                            doesHaveBackgroundDiseases: contact.personByPersonInfo.personContactDetailByPersonInfo?.doesHaveBackgroundDiseases
+                                ? contact.personByPersonInfo.personContactDetailByPersonInfo?.doesHaveBackgroundDiseases
                                 : false,
-                            doesLiveWithConfirmed: contact.personByPersonInfo.personContactDetailByPersonInfo.doesLiveWithConfirmed
-                                ? contact.personByPersonInfo.personContactDetailByPersonInfo.doesLiveWithConfirmed
+                            doesLiveWithConfirmed: contact.personByPersonInfo.personContactDetailByPersonInfo?.doesLiveWithConfirmed
+                                ? contact.personByPersonInfo.personContactDetailByPersonInfo?.doesLiveWithConfirmed
                                 : false,
-                            doesNeedHelpInIsolation: contact.personByPersonInfo.personContactDetailByPersonInfo.doesNeedHelpInIsolation
-                                ? contact.personByPersonInfo.personContactDetailByPersonInfo.doesNeedHelpInIsolation
+                            doesNeedHelpInIsolation: contact.personByPersonInfo.personContactDetailByPersonInfo?.doesNeedHelpInIsolation
+                                ? contact.personByPersonInfo.personContactDetailByPersonInfo?.doesNeedHelpInIsolation
                                 : false,
-                            repeatingOccuranceWithConfirmed: contact.personByPersonInfo.personContactDetailByPersonInfo.repeatingOccuranceWithConfirmed
-                                ? contact.personByPersonInfo.personContactDetailByPersonInfo.repeatingOccuranceWithConfirmed
+                            repeatingOccuranceWithConfirmed: contact.personByPersonInfo.personContactDetailByPersonInfo?.repeatingOccuranceWithConfirmed
+                                ? contact.personByPersonInfo.personContactDetailByPersonInfo?.repeatingOccuranceWithConfirmed
                                 : false,
-                            doesWorkWithCrowd: contact.personByPersonInfo.personContactDetailByPersonInfo.doesWorkWithCrowd
-                                ? contact.personByPersonInfo.personContactDetailByPersonInfo.doesWorkWithCrowd
+                            doesWorkWithCrowd: contact.personByPersonInfo.personContactDetailByPersonInfo?.doesWorkWithCrowd
+                                ? contact.personByPersonInfo.personContactDetailByPersonInfo?.doesWorkWithCrowd
                                 : false,
-                            doesNeedIsolation: contact.personByPersonInfo.personContactDetailByPersonInfo.doesNeedIsolation
-                                ? contact.personByPersonInfo.personContactDetailByPersonInfo.doesNeedIsolation
+                            doesNeedIsolation: contact.personByPersonInfo.personContactDetailByPersonInfo?.doesNeedIsolation
+                                ? contact.personByPersonInfo.personContactDetailByPersonInfo?.doesNeedIsolation
                                 : false,
-                            creationTime: contact.personByPersonInfo.personContactDetailByPersonInfo.creationTime,
-                            involvementReason: contact.personByPersonInfo.personContactDetailByPersonInfo.involvementReason,
-                            involvedContactId: contact.personByPersonInfo.personContactDetailByPersonInfo.involvedContactId,
+                            creationTime: contact.personByPersonInfo.personContactDetailByPersonInfo?.creationTime,
+                            involvementReason: contact.personByPersonInfo.personContactDetailByPersonInfo?.involvementReason,
+                            involvedContactId: contact.personByPersonInfo.personContactDetailByPersonInfo?.involvedContactId,
                         })
+                    }
+                        
                     );
                     const groupedInteractedContacts = groupSimilarContactedPersons(interactedContacts);
                     setAllContactedInteractions(groupedInteractedContacts);
@@ -296,6 +300,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 });
             }
         });
+        
         return Array.from(contactsMap).map(contact => contact[1]);
     }
 

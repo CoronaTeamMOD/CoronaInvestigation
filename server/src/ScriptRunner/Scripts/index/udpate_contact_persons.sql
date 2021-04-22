@@ -109,8 +109,23 @@ begin
 		select completion_time from public.person_contact_details pcd where pcd.person_info = personInfo into completionTime;
 	
  		raise notice 'update contacted person %', personInfo;
-	    	update public.person_contact_details 
-				set does_need_isolation = doesNeedIsolation,
+			INSERT INTO public.person_contact_details (
+				person_info, does_need_isolation, extra_info, isolation_address, contact_type, family_relationship,
+				occupation, does_have_background_diseases, does_feel_good, does_need_help_in_isolation, repeating_occurance_with_confirmed,
+				does_live_with_confirmed, contact_status, does_work_with_crowd, relationship, completion_time
+			) VALUES (
+				personInfo, doesNeedIsolation, extraInfo, addressId, contactType, familyRelationship,
+				personOccupation, doesHaveBackgroundDiseases, doesFeelGood, doesNeedHelpInIsolation, repeatingOccuranceWithConfirmed,
+				doesLiveWithConfirmed, contactStatus, doesWorkWithCrowd, personRelationship, 
+				(
+					case when completionTime is null and contactStatus = 5 then now() 
+					when completionTime is not null then completionTime
+					else null end
+				)
+			) 
+			ON CONFLICT (person_info)
+			DO UPDATE
+				SET does_need_isolation = doesNeedIsolation,
 				extra_info = extraInfo,
 				isolation_address = addressId,
 				contact_type = contactType,
@@ -127,8 +142,8 @@ begin
 				completion_time = (case when completionTime is null and contactStatus = 5 then now() 
 										when completionTime is not null then completionTime
 										else null end)
-				where personInfo = person_info;
-	    
+				where person_contact_details.person_info = personInfo;
+				
 	    	raise notice '%', identificationType;
 		   	update person 
 				set identification_type = (case when identificationNumber is null then null
