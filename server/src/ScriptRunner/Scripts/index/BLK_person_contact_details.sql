@@ -3,7 +3,6 @@ CREATE TABLE IF NOT EXISTS public.person_contact_details (
    	person_info integer PRIMARY KEY NOT NULL,
    	relationship varchar,
    	extra_info varchar,
-	contact_type integer,
 	does_have_background_diseases boolean,
 	occupation varchar,
 	does_feel_good boolean,
@@ -19,8 +18,6 @@ CREATE TABLE IF NOT EXISTS public.person_contact_details (
 	contact_status integer,
 	involved_contact_id integer,
 	isolation_address integer,
-   	FOREIGN KEY (contact_type) 
-		REFERENCES public.contact_type(id),
 	FOREIGN KEY (contact_status) 
 		REFERENCES public.contact_statuses(id),
 	FOREIGN KEY (isolation_address)
@@ -40,7 +37,6 @@ INSERT INTO public.person_contact_details (
 	person_info,
 	relationship,
 	extra_info,
-	contact_type,
 	does_have_background_diseases,
 	occupation,
 	does_feel_good,
@@ -60,7 +56,6 @@ INSERT INTO public.person_contact_details (
 	person_info,
 	relationship,
 	extra_info,
-	contact_type,
 	does_have_background_diseases,
 	occupation,
 	does_feel_good,

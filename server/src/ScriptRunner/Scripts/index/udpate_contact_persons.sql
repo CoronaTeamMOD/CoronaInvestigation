@@ -110,11 +110,11 @@ BEGIN
  		raise notice 'update contacted person %', personInfo;
 		-- Using upsert to the table person_contact_details
 			INSERT INTO public.person_contact_details (
-				person_info, does_need_isolation, extra_info, isolation_address, contact_type, family_relationship,
+				person_info, does_need_isolation, extra_info, isolation_address, family_relationship,
 				occupation, does_have_background_diseases, does_feel_good, does_need_help_in_isolation, repeating_occurance_with_confirmed,
 				does_live_with_confirmed, contact_status, does_work_with_crowd, relationship, completion_time
 			) VALUES (
-				personInfo, doesNeedIsolation, extraInfo, addressId, contactType, familyRelationship,
+				personInfo, doesNeedIsolation, extraInfo, addressId, familyRelationship,
 				personOccupation, doesHaveBackgroundDiseases, doesFeelGood, doesNeedHelpInIsolation, repeatingOccuranceWithConfirmed,
 				doesLiveWithConfirmed, contactStatus, doesWorkWithCrowd, personRelationship, 
 				(
@@ -128,7 +128,6 @@ BEGIN
 				SET does_need_isolation = doesNeedIsolation,
 				extra_info = extraInfo,
 				isolation_address = addressId,
-				contact_type = contactType,
 				family_relationship = familyRelationship ,
 				occupation = personOccupation,
 				does_have_background_diseases = doesHaveBackgroundDiseases ,
@@ -174,11 +173,11 @@ BEGIN
 		    personId := currval('person_id_seq');
  		raise notice 'insert new person %', personId;   
 	   	   	INSERT INTO public.person_contact_details (
-			   	isolation_address,person_info, contact_event, relationship, extra_info, contact_type, 
+			   	isolation_address,person_info, contact_event, relationship, extra_info,
 	   	    	does_have_background_diseases, occupation, does_feel_good, does_need_help_in_isolation, 
 	   	   		repeating_occurance_with_confirmed, does_live_with_confirmed, contact_status, family_relationship, does_work_with_crowd, does_need_isolation, creation_time) 
 	    	VALUES(
-				addressId,personId, contactEvent, personRelationship, extraInfo, contactType, 
+				addressId,personId, contactEvent, personRelationship, extraInfo,
 	   		 	doesHaveBackgroundDiseases, personOccupation , doesfeelGood, doesNeedHelpInIsolation,
 	   			repeatingOccuranceWithConfirmed, doesLiveWithConfirmed, contactStatus, familyRelationship, doesWorkWithCrowd, doesNeedIsolation, now());
 	   END IF;

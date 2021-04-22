@@ -22,7 +22,6 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!, $minimalDateToFi
           familyRelationship
           occupation
           doesHaveBackgroundDiseases
-          contactType
           doesFeelGood
           doesNeedHelpInIsolation
           repeatingOccuranceWithConfirmed
@@ -53,7 +52,8 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!, $minimalDateToFi
         placeName
         startTime
         id
-      }
+      }        
+      contactType
       id
     }
   }

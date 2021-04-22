@@ -159,7 +159,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             contactDate:
                                 contact.contactEventByContactEvent.startTime,
                             contactEvent: contact.contactEventByContactEvent.id,
-                            contactType: contact.personByPersonInfo.personContactDetailByPersonInfo?.contactType,
+                            contactType: contact.contactType,
                             contactStatus: contact.personByPersonInfo.personContactDetailByPersonInfo?.contactStatus ?? NEW_CONTACT_STATUS_CODE,
                             extraInfo: contact.personByPersonInfo.personContactDetailByPersonInfo?.extraInfo,
                             relationship: contact.personByPersonInfo.personContactDetailByPersonInfo?.relationship,
