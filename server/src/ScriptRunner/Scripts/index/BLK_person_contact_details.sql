@@ -76,7 +76,9 @@ INSERT INTO public.person_contact_details (
 	involved_contact_id,
 	completion_time,
 	isolation_address 
-FROM public.contacted_person;
+FROM public.contacted_person
+ON CONFLICT (person_info)
+DO NOTHING;
 
 -- TODO : add deletion of current fieilds
 
