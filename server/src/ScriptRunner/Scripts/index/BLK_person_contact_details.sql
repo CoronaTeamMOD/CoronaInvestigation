@@ -79,6 +79,7 @@ INSERT INTO public.person_contact_details (
 FROM public.contacted_person
 ON CONFLICT (person_info)
 DO NOTHING;
+-- Please review this line - I am uncertain as for what to do with conflicting records in this case.
 
 -- TODO : add deletion of current fieilds
 
