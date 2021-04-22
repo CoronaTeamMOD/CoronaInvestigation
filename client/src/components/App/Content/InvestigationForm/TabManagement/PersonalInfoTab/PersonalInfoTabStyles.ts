@@ -101,15 +101,9 @@ const useStyles = makeStyles({
     contactDetailsStub: {
         margin: '10px 15px 10px 0'
     },
-    notchedOutline: {
-        borderWidth: '1px',
-        borderColor: '#FFC90E !important'
-    },
     markComplexity: {
-        
-    },
-    '& .MuiInputLabel-root': {
-        backgroundColor : 'white'
+        border: 'solid #FFC90E',
+        borderRadius: 24,
     },
     occupation: {
         display: 'flex',
