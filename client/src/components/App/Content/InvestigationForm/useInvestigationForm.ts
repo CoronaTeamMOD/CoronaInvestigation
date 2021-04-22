@@ -24,6 +24,7 @@ import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setEducationGrade } from 'redux/EducationGrade/educationGradeActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
+import { setIdentificationTypes } from 'redux/IdentificationTypes/identificationTypesActionCreators';
 import UpdateTrackingRecommendation from 'Utils/TrackingRecommendation/updateTrackingRecommendation'; 
 
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
@@ -90,7 +91,21 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             .catch(error => {
                 contactTypesLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
             });
-    }
+    };
+
+    const fetchIdentificationTypes = () => {
+        const identificationTypesLogger = logger.setup('Fetching Identification Types');
+        identificationTypesLogger.info('launching request to get identification types', Severity.LOW);
+        axios.get('/investigationInfo/identificationTypes')
+            .then((result: any) => {
+                identificationTypesLogger.info('request to get identification types was successful', Severity.LOW);
+                setIdentificationTypes(result.data);
+                console.log(result.data)
+            })
+            .catch(error => {
+                identificationTypesLogger.error(`got errors in server while trying to get identification types, result: ${error}`, Severity.HIGH);
+            });
+    };
 
     const fetchCountries = () => {
         const countriesLogger = logger.setup('Fetching Countries');
@@ -159,6 +174,10 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     };
 
     useEffect(() => {
+        fetchIdentificationTypes();
+    }, []);
+
+    useEffect(() => {
         if (epidemiologyNumber !== defaultEpidemiologyNumber && userId !== defaultUser.id) {
             fetchCities();
             fetchCountries();
@@ -166,7 +185,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             fetchStatuses();
             investigationStatus.mainStatus && fetchSubStatusesByStatus(investigationStatus.mainStatus);
             fetchEducationGrades();
-        }
+        };
     }, [epidemiologyNumber, userId]);
 
     useEffect(() => {
