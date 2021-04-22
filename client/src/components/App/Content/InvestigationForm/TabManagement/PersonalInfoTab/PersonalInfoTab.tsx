@@ -49,7 +49,7 @@ const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה*';
 const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
 const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 const NO_INSURANCE = 'אף אחד מהנ"ל';
-const INSURANCE_COMPANY = 'מבטח*';
+const INSURANCE_COMPANY = 'מבטח *';
 const OCCUPATION = 'תעסוקה *';
 const INSTITUTION_CITY = 'עיר המצאות המוסד';
 const STUDENT = 'תלמיד/ה';
@@ -284,7 +284,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                 props.onChange(selectedInsuranceCompany ? selectedInsuranceCompany : '')
                                             }}
                                             value={props.value || ''}
-                                            className={props.value === NO_INSURANCE ? classes.markComplexity : ''}
                                             renderInput={(params) =>
                                                 <TextField
                                                     {...params}
@@ -293,6 +292,13 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                     error={Boolean(methods.errors[PersonalInfoDataContextFields.INSURANCE_COMPANY])}
                                                     id={PersonalInfoDataContextFields.INSURANCE_COMPANY}
                                                     placeholder={INSERT_INSURANCE_COMPANY}
+                                                    variant='outlined'
+                                                    InputProps={{
+                                                        ...params.InputProps,
+                                                        classes: {
+                                                            notchedOutline: props.value === NO_INSURANCE ? classes.notchedOutline : ''
+                                                        }
+                                                    }}
                                                 />
                                             }
                                         />
@@ -320,7 +326,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                             props.onChange(occupationOption ? occupationOption : '')
                                         }}
                                         value={props.value || ''}
-                                        className={occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? classes.markComplexity : ''}
                                         renderInput={(params) =>
                                             <TextField
                                                 {...params}
@@ -328,6 +333,13 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                 error={Boolean(methods.errors[PersonalInfoDataContextFields.RELEVANT_OCCUPATION])}
                                                 id={PersonalInfoDataContextFields.RELEVANT_OCCUPATION}
                                                 placeholder={INSERT_OCCUPATION}
+                                                variant='outlined'
+                                                InputProps={{
+                                                    ...params.InputProps,
+                                                    classes: {
+                                                        notchedOutline: occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? classes.notchedOutline : ''
+                                                    }
+                                                }}
                                             />
                                         }
                                     />
@@ -391,11 +403,17 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                         getOptionSelected={(option) => option.id === props.value}
                                                         value={props.value ? {id: props.value, displayName: (selectedRole?.displayName as string)} : null}
                                                         onChange={(event, selectedRole) => props.onChange(selectedRole?.id)}
-                                                        className={classes.markComplexity}
                                                         renderInput={(params) =>
                                                             <TextField
                                                                 {...params}
                                                                 placeholder='תפקיד'
+                                                                variant='outlined'
+                                                                InputProps={{
+                                                                    ...params.InputProps,
+                                                                    classes: {
+                                                                        notchedOutline: classes.notchedOutline
+                                                                    }
+                                                                }}
                                                             />
                                                         }
                                                     />
