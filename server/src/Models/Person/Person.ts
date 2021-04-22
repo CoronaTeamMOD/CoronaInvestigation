@@ -1,8 +1,9 @@
+import IdentificationType from '../IdentificationTypes/IdentificationType';
 interface Person {
     firstName: string;
     lastName: string;
     phoneNumber: string;
-    identificationType: string;
+    identificationTypeByIdentityType: IdentificationType;
     identificationNumber: string;
     additionalPhoneNumber: string;
     gender: string;
