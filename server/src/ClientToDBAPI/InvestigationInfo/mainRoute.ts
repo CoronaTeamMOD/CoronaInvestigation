@@ -444,7 +444,7 @@ investigationInfo.post('/updateStaticInfo', handleInvestigationRequest, (request
 
     const parameters = { 
         fullNameInput: request.body.data.fullName === '' ? null : request.body.data.fullName,
-        identificationTypeInput: request.body.data.identificationType === '' ? null : request.body.data.identificationType,
+        identificationTypeInput: request.body.data.identificationType === 0 ? null : request.body.data.identificationType,
         identityNumberInput: request.body.data.identityNumber === '' ? null : request.body.data.identityNumber,
         epidemiologyNumberInput: epidemiologyNumber
     };
