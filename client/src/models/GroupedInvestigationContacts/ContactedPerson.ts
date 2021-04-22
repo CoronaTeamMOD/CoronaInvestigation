@@ -1,9 +1,11 @@
+import IdentificationType from 'models/IdentificationType';
+
 type ContactedPerson = {
     id : number;
     firstName : string;
     lastName : string;
     identificationNumber: string;
-    identificationType: string;
+    identificationType: IdentificationType;
     birthDate: string;
     phoneNumber: string | null;
     additionalPhoneNumber: string | null;

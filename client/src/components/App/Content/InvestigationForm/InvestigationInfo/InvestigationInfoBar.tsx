@@ -125,7 +125,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                         ...investigationInfo,
                         symptomsStartDate: formattedSymptomsDate,
                         validationDate: formattedValidationDate,
-                        identityType: result.data.identificationTypeByIdentityType
+                        identityType: result.data.identificationType
                     }
                     setDatesToInvestigateParams({
                         symptomsStartDate: truncateDate(investigationInfo.symptomsStartDate), 

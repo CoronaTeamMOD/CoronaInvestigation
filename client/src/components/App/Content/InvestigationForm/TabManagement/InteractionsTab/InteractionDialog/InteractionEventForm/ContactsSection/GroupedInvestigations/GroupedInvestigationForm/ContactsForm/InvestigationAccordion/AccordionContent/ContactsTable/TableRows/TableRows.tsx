@@ -24,12 +24,13 @@ const TableRows = (props: Props) => {
                         const isFamily = involvedContactByInvolvedContactId && isGroupReasonFamily &&  isInvolvedThroughFamily(involvedContactByInvolvedContactId.involvementReason);
                         
                         if(!isFamily) {
+                            const {id} = person;
                             const {
                                 id,
                                 firstName,
                                 lastName,
-                                identificationType,
                                 identificationNumber,
+                                identificationType,
                                 birthDate,
                                 phoneNumber,
                                 additionalPhoneNumber
@@ -57,7 +58,7 @@ const TableRows = (props: Props) => {
                                     </TableCell>
                                     <TableCell>{firstName}</TableCell>
                                     <TableCell>{lastName}</TableCell>
-                                    <TableCell>{identificationType}</TableCell>
+                                    <TableCell>{identificationType.type}</TableCell>
                                     <TableCell>{identificationNumber}</TableCell>
                                     <TableCell>{Boolean(birthDate) && formatDate(new Date(birthDate))}</TableCell>
                                     <TableCell>{phoneNumber}</TableCell>

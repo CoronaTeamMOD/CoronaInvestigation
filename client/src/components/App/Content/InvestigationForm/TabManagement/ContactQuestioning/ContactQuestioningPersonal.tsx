@@ -44,9 +44,9 @@ const ContactQuestioningPersonal: React.FC<Props> = (
 
     const { isFieldDisabled } = useContactFields(formValues.contactStatus);
     const [isPassport, setIsPassport] = useState<boolean>(
-        formValues.identificationType === IdentificationTypes.PASSPORT
+        formValues.identificationType.type === IdentificationTypes.PASSPORT
     );
-
+        //TODO
     const classes = useStyles();
     const idTooltipText = isPassport ? passportInfoMessage : idInfoMessage;
     const PHONE_LABEL = 'טלפון';

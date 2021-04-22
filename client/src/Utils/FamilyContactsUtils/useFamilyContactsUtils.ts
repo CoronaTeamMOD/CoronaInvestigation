@@ -13,7 +13,7 @@ const useFamilyContactsUtils = () => {
         [FamilyContactsTableHeadersNames.FAMILY_RELATIONSHIP]: row.familyRelationship,
         [FamilyContactsTableHeadersNames.FIRST_NAME]: row.firstName,
         [FamilyContactsTableHeadersNames.LAST_NAME]: row.lastName,
-        [FamilyContactsTableHeadersNames.IDENTIFICATION_TYPE]: row.identificationType,
+        [FamilyContactsTableHeadersNames.IDENTIFICATION_TYPE]: row.identificationType.type,
         [FamilyContactsTableHeadersNames.IDENTIFICATION_NUMBER]: row.identificationNumber,
         [FamilyContactsTableHeadersNames.BIRTH_DATE]: row.birthDate,
         [FamilyContactsTableHeadersNames.PHONE_NUMBER]: row.phoneNumber,

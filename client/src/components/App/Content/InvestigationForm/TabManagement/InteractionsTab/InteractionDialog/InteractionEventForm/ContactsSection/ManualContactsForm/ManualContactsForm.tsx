@@ -19,7 +19,8 @@ const defaultContact: Contact = {
     contactType: -1,
     creationTime: new Date(),
     involvedContact: null,
-    identificationType: IdentificationTypes.ID
+    identificationType: {id: 3, type:''}
+    //TODO
 };
 
 const addContactText = 'הוסף מגע';
