@@ -11,7 +11,8 @@ import {
     GROUP_ID_BY_EPIDEMIOLOGY_NUMBER,
     GET_INVESTIGATION_COMPLEXITY_REASONS,
     GET_INVESTIGATION_COMPLEXITY_REASON_ID,
-    TRACKING_SUB_REASONS_BY_REASON_ID
+    TRACKING_SUB_REASONS_BY_REASON_ID,
+    GET_IDENTIFICATION_TYPES
 } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
@@ -50,7 +51,7 @@ const convertInvestigationInfoFromDB = (investigationInfo: any) => {
     delete convertedInvestigation.investigatedPatientByInvestigatedPatientId;
 
     return convertedInvestigation;
-}
+};
 
 investigationInfo.get('/staticInfo', handleInvestigationRequest,(request: Request, response: Response) => {
     const staticInfoLogger = logger.setup({
@@ -112,7 +113,7 @@ investigationInfo.post('/updateInvestigationStatus', handleInvestigationRequest,
         investigationStatus: investigationMainStatus,
         investigationSubStatus: investigationSubStatus,
         statusReason: statusReason
-    }
+    };
     updateInvestigationStatusLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(UPDATE_INVESTIGATION_STATUS, response.locals, parameters)
@@ -412,7 +413,7 @@ investigationInfo.post('/updateTrackingRecommendation', (request: Request, respo
         reason,
         subReason,
         extraInfo
-    }
+    };
 
     const updateTrackingRecommendationLogger = logger.setup({
         workflow: 'get trackingSubReasonBy',
@@ -459,6 +460,24 @@ investigationInfo.post('/updateStaticInfo', handleInvestigationRequest, (request
             updateStaticInfoLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         });
+});
+
+investigationInfo.get('/identificationTypes', (request: Request, response: Response) => {
+    const identificationTypesLogger = logger.setup({
+        workflow: 'get all identification types',
+        user: response.locals.user.id,
+    });
+    identificationTypesLogger.info(launchingDBRequestLog() , Severity.LOW);
+
+    return graphqlRequest(GET_IDENTIFICATION_TYPES, response.locals)
+    .then((result) => {
+        identificationTypesLogger.info('query from db to get identification types went successfully', Severity.LOW)
+        response.send(result.data.allIdentificationTypes.nodes);
+    })
+    .catch(error => {
+        identificationTypesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+        response.status(errorStatusCode).send(error);
+    })
 });
 
 export default investigationInfo;

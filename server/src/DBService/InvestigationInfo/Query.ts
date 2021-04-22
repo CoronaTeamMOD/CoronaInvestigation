@@ -137,4 +137,15 @@ export const TRACKING_SUB_REASONS_BY_REASON_ID = gql`
       }
     }
   }
-`
+`;
+
+export const GET_IDENTIFICATION_TYPES = gql`
+query getAllIdentificationTypes {
+  allIdentificationTypes {
+    nodes {
+      id
+      type
+    }
+  }
+} 
+`;
