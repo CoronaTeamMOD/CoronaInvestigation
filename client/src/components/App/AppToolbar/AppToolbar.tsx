@@ -1,3 +1,4 @@
+  
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { ExitToApp, Home, SupervisorAccount } from '@material-ui/icons';
@@ -16,7 +17,7 @@ import { adminLandingPageRoute, landingPageRoute, usersManagementRoute, indexRou
 import useStyles from './AppToolbarStyles';
 import useAppToolbar from './useAppToolbar';
 
-const toggleMessage = 'מה הסטטוס שלך?';
+export const toggleMessage = 'מה הסטטוס שלך?';
 const navButtonsWhitelist = {
     allowedUserTypes: [UserTypeCodes.ADMIN, UserTypeCodes.SUPER_ADMIN],
     allowedRoutes: [landingPageRoute, adminLandingPageRoute, usersManagementRoute, investigationFormRoute]
@@ -60,8 +61,8 @@ const AppToolbar: React.FC = (): JSX.Element => {
             <Toolbar>
                 <div className={classes.rightSection}>
                     <StatePersistentNavLink exact to={indexRoute} >
-                        <img alt='logo' src='./assets/img/logo.png' width={48} height={48} />
-                        <Typography variant='h4' className={classes.title}>אבן יסוד</Typography>
+                        <img id='logo' alt='logo' src='./assets/img/logo.png' width={48} height={48} />
+                        <Typography variant='h4' className={classes.title} id='title'>אבן יסוד</Typography>
                     </StatePersistentNavLink>
                     {
                     navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
@@ -117,12 +118,14 @@ const AppToolbar: React.FC = (): JSX.Element => {
                         />
                         </Tooltip>
                     }
-                    <Tooltip title='התנתקות מהמערכת' arrow>
-                        <IconButton color='inherit' onClick={logout}>
-                            <ExitToApp />
-                        </IconButton>
+                    <Tooltip title='התנתקות מהמערכת' arrow >
+                        <span id='logout-tooltip'> {/* The span role is to wrap the button to make sure the tooltip work properly even if the button is disabled */}
+                            <IconButton color='inherit' onClick={logout} id='logout-button'>
+                                <ExitToApp />
+                            </IconButton>
+                        </span>
                     </Tooltip>
-                    <Typography className={classes.greetUserText}>
+                    <Typography className={classes.greetUserText} id='welcome-message'>
                         שלום, {userName}
                     </Typography>
                     {user.userType === UserTypeCodes.SUPER_ADMIN && user.isDeveloper &&
