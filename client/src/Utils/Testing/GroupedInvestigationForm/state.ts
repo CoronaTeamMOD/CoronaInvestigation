@@ -24,24 +24,25 @@ export const otherContactReason = {
  */
 export const testPersonalDetails = {
     id : 777,
+    personInfo: 888,
     firstName: 'יעקב',
     lastName: 'יעקובי',
     identificationNumber: '234567899',
     identificationType: 'דרכון',
     birthDate: '2021-02-03T08:36:03Z',
     phoneNumber: '0544444443',
-    additionalPhoneNumber: null
+    additionalPhoneNumber: null,
+    addressByIsolationAddress: {
+        cityByCity: {
+            displayName: 'קריית מוטקין'
+        }
+    },
 }
 
 export const testEventNode = {
     id: 666,
     involvedContactByInvolvedContactId: {
         involvementReason: 1
-    },
-    addressByIsolationAddress: {
-        cityByCity: {
-            displayName: 'קריית מוטקין'
-        }
     },
     personByPersonInfo: testPersonalDetails
 }
