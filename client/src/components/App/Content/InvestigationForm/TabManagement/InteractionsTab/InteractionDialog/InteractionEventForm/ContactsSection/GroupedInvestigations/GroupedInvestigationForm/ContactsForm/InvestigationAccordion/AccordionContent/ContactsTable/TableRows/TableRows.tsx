@@ -24,9 +24,8 @@ const TableRows = (props: Props) => {
                         const isFamily = involvedContactByInvolvedContactId && isGroupReasonFamily &&  isInvolvedThroughFamily(involvedContactByInvolvedContactId.involvementReason);
                         
                         if(!isFamily) {
-                            const {id} = person;
-                            
                             const {
+                                id,
                                 firstName,
                                 lastName,
                                 identificationType,

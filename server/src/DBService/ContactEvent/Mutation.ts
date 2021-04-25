@@ -40,6 +40,14 @@ export const CREATE_CONTACTED_PERSON = gql`
     }
 `;
 
+export const CREATE_PERSON_CONTACT_DETAIL = gql`
+    mutation MyMutation($params: PersonContactDetailInput!) {
+        createPersonContactDetail(input: {personContactDetail: $params}) {
+            clientMutationId
+        }
+    }
+`;
+
 export const DUPLICATE_PERSON = gql`
     mutation duplicatePersonById($personId: BigInt!) {
         duplicatePersonById(input: {personid: $personId}) {

@@ -13,7 +13,7 @@ import {
     CREATE_OR_EDIT_CONTACT_EVENT, DELETE_CONTACT_EVENT, 
     DELETE_CONTACT_EVENTS_BY_DATE, DELETE_CONTACTED_PERSON, 
     CREATE_CONTACTED_PERSON, DUPLICATE_PERSON, 
-    ADD_CONTACTS_FROM_BANK
+    ADD_CONTACTS_FROM_BANK, CREATE_PERSON_CONTACT_DETAIL
 } from '../../DBService/ContactEvent/Mutation';
 import {
     GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, 
@@ -185,17 +185,17 @@ intersectionsRoute.post('/groupedInvestigationContacts' , async (request : Reque
         investigation: epidemiologynumber
     });
 
-    let fullContacts = await graphqlRequest(CONTACTS_BY_CONTACTS_IDS , response.locals ,{ids : contacts})
+    const personContactDetail = await graphqlRequest(CONTACTS_BY_CONTACTS_IDS , response.locals ,{ids : contacts})
         .then(result => {
             createGroupedContactLogger.info(validDBResponseLog, Severity.LOW);
-            return result.data.allContactedPeople.edges
+            return result.data.allPersonContactDetails.edges
         })
         .catch(error => {
             createGroupedContactLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         });
 
-    fullContacts = await Promise.all(fullContacts.map(async (contact : any) => {
+    const contactPersons = await Promise.all(personContactDetail.map(async (contact : any) => {
         const newPersonInfo = await graphqlRequest(DUPLICATE_PERSON , response.locals ,{personId : parseInt(contact.node.personInfo)})
             .then(result => {
                 return result.data.duplicatePersonById.bigInt
@@ -213,8 +213,20 @@ intersectionsRoute.post('/groupedInvestigationContacts' , async (request : Reque
         }
     }));
 
-    await fullContacts.map(async (contact : any) => {
-        await graphqlRequest(CREATE_CONTACTED_PERSON , response.locals , {params : contact})
+    await contactPersons.map(async (contact : any) => {
+        const contactedPerson = {
+            personInfo: contact.personInfo,
+            contactEvent: contact.contactEvent,
+            creationTime: contact.creationTime
+        }
+
+        const contactDetails = contact
+
+        delete contactDetails.contactEvent
+        delete contactDetails.creationTime
+
+        console.log(contactDetails);
+        await graphqlRequest(CREATE_CONTACTED_PERSON , response.locals , {params : contactedPerson})
             .then(result => {
                 createGroupedContactLogger.info(validDBResponseLog, Severity.LOW);
                 return;
@@ -223,8 +235,18 @@ intersectionsRoute.post('/groupedInvestigationContacts' , async (request : Reque
                 createGroupedContactLogger.error(invalidDBResponseLog(error), Severity.HIGH);
                 response.status(errorStatusCode).send(error);
                 return;
+            });
+
+        await graphqlRequest(CREATE_PERSON_CONTACT_DETAIL , response.locals , {params : contactDetails})
+            .then(result => {
+                createGroupedContactLogger.info(validDBResponseLog, Severity.LOW);
+                return;
             })
-            
+            .catch(error => {
+                createGroupedContactLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                response.status(errorStatusCode).send(error);
+                return;
+            });
     });
     response.sendStatus(validStatusCode);
 });

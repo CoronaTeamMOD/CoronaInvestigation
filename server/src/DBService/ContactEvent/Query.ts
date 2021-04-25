@@ -213,7 +213,7 @@ query contactsByGroupId($groupId: UUID!, $epidemiologynumber: Int!) {
 
 export const CONTACTS_BY_CONTACTS_IDS = gql`
   query ContactByContactsIds($ids: [Int!]) {
-    allContactedPeople(filter: {id: {in: $ids}}) {
+    allPersonContactDetails(filter: {personInfo: {in: $ids}}) {
       edges {
         node {
           repeatingOccuranceWithConfirmed
