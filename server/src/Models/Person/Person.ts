@@ -4,7 +4,7 @@ interface Person {
     firstName: string;
     lastName: string;
     phoneNumber: string;
-    identificationType: IdentificationType;
+    identificationType: IdentificationType | number;
     identificationNumber: string;
     additionalPhoneNumber: string;
     gender: string;
