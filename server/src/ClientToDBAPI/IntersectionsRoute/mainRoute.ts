@@ -73,9 +73,9 @@ intersectionsRoute.get('/contactTypes', (request: Request, response: Response) =
 });
 
 const convertDBEvent = (event: ContactEvent) => {
-    const {contactedPeopleByContactEvent, ...eventObjectToClient} = event;
+    const {contactedPeopleByContactEvent,...eventObjectToClient} = event;
     const contacts: any = contactedPeopleByContactEvent.nodes.map((person) => {
-        const {personByPersonInfo, involvedContact ,...personNoData} = person;
+        const {personByPersonInfo, involvedContact, personContactDetailsByPersonInfo ,...personNoData} = person;
         let convertedInvolvedContact = null;
         if (involvedContact) {
             convertedInvolvedContact = convertInvolvedContact(involvedContact);
@@ -83,6 +83,7 @@ const convertDBEvent = (event: ContactEvent) => {
         return {
             ...personNoData,
             ...personByPersonInfo,
+            ...personByPersonInfo.personContactDetailByPersonInfo,
             involvedContact: convertedInvolvedContact,
         };
     });

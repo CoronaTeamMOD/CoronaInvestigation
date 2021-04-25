@@ -118,7 +118,6 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!, $minimalDateT
         nodes {
           id
           contactEvent
-          contactStatus
           contactType
           extraInfo
           creationTime
@@ -130,6 +129,9 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!, $minimalDateT
             identificationType
             lastName
             phoneNumber
+            personContactDetailByPersonInfo {
+              contactStatus
+            }
           }
           involvedContact: involvedContactByInvolvedContactId {
             ${involvedFieldsToQuery}
@@ -191,10 +193,12 @@ query contactsByGroupId($groupId: UUID!, $epidemiologynumber: Int!) {
                   phoneNumber
                   birthDate
                   additionalPhoneNumber
-                }
-                addressByIsolationAddress {
-                  cityByCity {
-                    displayName
+                  personContactDetailByPersonInfo {
+                    addressByIsolationAddress {
+                      cityByCity {
+                        displayName
+                      }
+                    }
                   }
                 }
               }
