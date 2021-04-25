@@ -24,6 +24,8 @@ import {
     GET_ALL_GREEN_PASS_ANSWERS
 } from '../../DBService/ContactEvent/Query';
 
+const NEW_CONTACT_STATUS = 1;
+
 const intersectionsRoute = Router();
         
 intersectionsRoute.get('/', (request: Request, response: Response) => {
@@ -207,7 +209,7 @@ intersectionsRoute.post('/groupedInvestigationContacts' , async (request : Reque
         return {
                 ...contact.node,
                 personInfo : parseInt(newPersonInfo),
-                contactStatus: 1,
+                contactStatus: NEW_CONTACT_STATUS,
                 contactEvent: eventId,
                 creationTime: new Date()
         }
@@ -225,7 +227,6 @@ intersectionsRoute.post('/groupedInvestigationContacts' , async (request : Reque
         delete contactDetails.contactEvent
         delete contactDetails.creationTime
 
-        console.log(contactDetails);
         await graphqlRequest(CREATE_CONTACTED_PERSON , response.locals , {params : contactedPerson})
             .then(result => {
                 createGroupedContactLogger.info(validDBResponseLog, Severity.LOW);
