@@ -22,7 +22,7 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
       disableToolbar={useBigCalender !== undefined ? useBigCalender : true}
       variant='inline'
       format='dd/MM/yyyy'
-      placeholder='dd/MM/yyyy'
+      placeholder='dd/mm/yyyy'
       margin='normal'
       label={labelText}
       value={value}
