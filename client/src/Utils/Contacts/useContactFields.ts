@@ -59,16 +59,20 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         : contactType !== ContactType.TIGHT;
 
     const validateContact = (contact: InteractedContact, validationReason: ValidationReason): validValidation | invalidValidation => {
-        if (contact.identificationType.id === identificationTypes[0].id && !isIdValid(contact.identificationNumber)) {
+
+        const contactIdType = contact.identificationType.id ? contact.identificationType.id : contact.identificationType;
+        const contactIdNumber = contact.identificationNumber;
+
+        if (contactIdType === identificationTypes[0].id && !isIdValid(contactIdNumber)) {
             return { valid: false, error: 'שדה ת"ז אינו תקין' };
         };
-        if (contact.identificationType.id === identificationTypes[1].id && !isPassportValid(contact.identificationNumber)) {
+        if (contactIdType === identificationTypes[1].id && !isPassportValid(contactIdNumber)) {
             return { valid: false, error: 'שדה דרכון אינו תקין' };
         };
-        if ((contact.identificationType.id === identificationTypes[2].id || contact.identificationType.id === identificationTypes[3].id ) && !isOtherIdValid(contact.identificationNumber)) {
+        if ((contactIdType === identificationTypes[2].id || contactIdType === identificationTypes[3].id ) && !isOtherIdValid(contactIdNumber)) {
             return { valid: false, error: 'שדה מזהה אינו תקין' };
         };
-        if (contact.identificationType.id === identificationTypes[4].id && !isPalestineIdValid(contact.identificationNumber)) {
+        if (contactIdType === identificationTypes[4].id && !isPalestineIdValid(contactIdNumber)) {
             return { valid: false, error: 'שדה ת"ז פלסטינית אינו תקין' };
         };
         
