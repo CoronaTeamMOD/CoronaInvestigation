@@ -19,7 +19,7 @@ import {
     useContactQuestioningParameters,
 } from './ContactQuestioningInterfaces';
     
-const NEW_CONTACT_STATUS_CODE = 1; // TODO: figure out how does a contact gets it's initial contact status
+const NEW_CONTACT_STATUS_CODE = 1;
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {
