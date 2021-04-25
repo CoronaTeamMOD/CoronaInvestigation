@@ -108,7 +108,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                     </FormInput>
                     <FormInput xs={2} fieldName={ContactFieldName.IDENTIFICATION_TYPE}>
                         <Typography variant='caption'>
-                            {contact.identificationType.type || noDataIndication}
+                            {contact.identificationType?.type || noDataIndication}
                         </Typography>
                     </FormInput>
                     <FormInput xs={2} fieldName={ContactFieldName.IDENTIFICATION_NUMBER}>

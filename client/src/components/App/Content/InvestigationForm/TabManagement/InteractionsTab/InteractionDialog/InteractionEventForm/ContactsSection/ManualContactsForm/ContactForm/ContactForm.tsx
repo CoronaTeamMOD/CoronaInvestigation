@@ -110,7 +110,8 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
                 <FormInput xs={4} labelLength={3} fieldName={ContactFieldName.IDENTIFICATION_TYPE}>
                     <FormControl fullWidth>
                         <div>
-                            <Controller
+                            <Controller                                        
+                                defaultValue={contactIdentificationType?.id ? contactIdentificationType?.id : null}
                                 name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.IDENTIFICATION_TYPE}`}
                                 control={control}
                                 render={(props) => (

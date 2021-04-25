@@ -57,8 +57,7 @@ UPDATE public.person
 	
 UPDATE public.person
 	SET identification_type=3
-	WHERE identification_type NOT IN ('1','2','4','5') 
-		OR identification_type IS NULL;
+	WHERE identification_type NOT IN ('1','2','4','5');
 	
 -- Updating identification_type column type
 
