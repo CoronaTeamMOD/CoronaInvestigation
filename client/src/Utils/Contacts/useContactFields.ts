@@ -1,15 +1,16 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import Contact from 'models/Contact';
+import StoreStateType from 'redux/storeStateType';
 import ContactType from 'models/enums/ContactType';
 import InteractedContact from 'models/InteractedContact';
+import IdentificationType from 'models/IdentificationType';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import {ContactedPersonFieldMapper} from 'models/enums/contactQuestioningExcelFields';
-import { isIdValid , isPassportValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-
-import {get} from '../auxiliaryFunctions/auxiliaryFunctions';
+import { get, isIdValid , isOtherIdValid, isPalestineIdValid, isPassportValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 export const STRICT_CONTACT_TYPE = 1;
 const isolationErrorMessageEnd = ' ולכן לא ניתן להקים דיווח בידוד';
@@ -42,6 +43,9 @@ const mandatoryQuarantineFields = [
     InteractedContactFields.LAST_NAME];
 
 const useContactFields = (contactStatus?: InteractedContact['contactStatus']) => {
+
+    const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
+
     const shouldDisable = (status?: InteractedContact['contactStatus']) => status === ContactStatusCodes.COMPLETED;
 
     const isFieldDisabled = React.useMemo(() => shouldDisable(contactStatus), [contactStatus]);
@@ -55,14 +59,19 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         : contactType !== ContactType.TIGHT;
 
     const validateContact = (contact: InteractedContact, validationReason: ValidationReason): validValidation | invalidValidation => {
-        if (contact.identificationType.type === IdentificationTypes.ID && !isIdValid(contact.identificationNumber)) {
-            return { valid: false, error: 'שדה ת.ז. אינו תקין' };
+        if (contact.identificationType.id === identificationTypes[0].id && !isIdValid(contact.identificationNumber)) {
+            return { valid: false, error: 'שדה ת"ז אינו תקין' };
         };
-        //TODO validation
-        if (contact.identificationType.type === IdentificationTypes.PASSPORT && !isPassportValid(contact.identificationNumber)) {
+        if (contact.identificationType.id === identificationTypes[1].id && !isPassportValid(contact.identificationNumber)) {
             return { valid: false, error: 'שדה דרכון אינו תקין' };
         };
-
+        if ((contact.identificationType.id === identificationTypes[2].id || contact.identificationType.id === identificationTypes[3].id ) && !isOtherIdValid(contact.identificationNumber)) {
+            return { valid: false, error: 'שדה מזהה אינו תקין' };
+        };
+        if (contact.identificationType.id === identificationTypes[4].id && !isPalestineIdValid(contact.identificationNumber)) {
+            return { valid: false, error: 'שדה ת"ז פלסטינית אינו תקין' };
+        };
+        
         if(!contact.doesNeedIsolation) {
             if (contact.contactType === ContactType.TIGHT) {
                 return { valid: false, error: 'המגע סומן כהדוק אך לא הוקם לו בידוד'};
