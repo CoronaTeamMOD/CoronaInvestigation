@@ -58,7 +58,8 @@ const theme = createMuiTheme({
         },
         MuiInputBase: {
             root: {
-                fontSize: '16px'
+                fontSize: '16px',
+                minHeight: '40px'
             }
         },
         MuiInputLabel: {
