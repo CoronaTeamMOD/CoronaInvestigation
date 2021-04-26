@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, Grid, MenuItem, Select } from '@material-ui/core';
 
-import Toggle from 'commons/Toggle/Toggle';
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
@@ -12,7 +11,6 @@ import IdentificationType from 'models/IdentificationType';
 import ContactFieldName from 'models/enums/ContactFieldName';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import useContactFields from 'Utils/Contacts/useContactFields';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import IdentificationTextField from 'commons/IdentificationTextField/IdentificationTextField';
@@ -35,7 +33,6 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
     const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
     const { isFieldDisabled } = useContactFields(contactStatus);
-    const isExistingPerson = Boolean(personInfo);
 
     const { shouldDisableContact } = useStatusUtils();
 
@@ -120,7 +117,9 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
                                         test-id='identificationType'
                                         value={props.value}
                                         className={classes.inputForm}
-                                        onChange={event => props.onChange(event.target.value as number)}
+                                        onChange={(event) => {
+                                            props.onChange(event.target.value as number)
+                                        }}
                                     >
                                         {
                                             identificationTypes.map((identificationType: IdentificationType) => (
@@ -130,7 +129,6 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
                                             ))
                                         }
                                     </Select>
-                                    //TODO: deafult
                                 )}
                             />
                         </div>
@@ -142,8 +140,6 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
                         control={control}
                         render={(props) => (
                             <IdentificationTextField
-                                isPassport={false}
-                                //TODO
                                 disabled={isFieldDisabled || (contactCreationTime ? shouldDisableContact(contactCreationTime) : false)}
                                 name={props.name}
                                 value={props.value}

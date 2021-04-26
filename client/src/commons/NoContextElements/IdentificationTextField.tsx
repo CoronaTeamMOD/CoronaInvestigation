@@ -1,21 +1,22 @@
 import React from 'react';
+import * as yup from 'yup';
 
-import {passportSchema , idSchema} from 'Utils/Schemas/identification';
+import { NUMERIC_TEXT_REGEX } from 'commons/Regex/Regex';
+import { max15LengthNumErrorMessage, numericErrorMessage } from 'commons/Schema/messages';
+
 import TypePreventiveTextField from './TypingPreventionTextField';
 
 const IdentificationTextField = (props : Props) => {
-  const { isPassport } = props;
 
-  const schema = isPassport 
-    ? passportSchema
-    : idSchema;  
-  return (
-    <TypePreventiveTextField
-        {...props}
-        value={props.value || ''}
-        validationSchema={schema}
-    />
-  );
+    const schema = yup.string().matches(NUMERIC_TEXT_REGEX, numericErrorMessage).max(15, max15LengthNumErrorMessage);
+
+    return (
+        <TypePreventiveTextField
+            {...props}
+            value={props.value || ''}
+            validationSchema={schema}
+        />
+    );
 };
 
 interface Props{
@@ -28,7 +29,6 @@ interface Props{
     placeholder?: string,
     label?: string,
     className?: string,
-    isPassport: boolean,
     error: string
 };
 

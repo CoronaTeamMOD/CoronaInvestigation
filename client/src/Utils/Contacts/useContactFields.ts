@@ -7,7 +7,6 @@ import ContactType from 'models/enums/ContactType';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationType from 'models/IdentificationType';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import {ContactedPersonFieldMapper} from 'models/enums/contactQuestioningExcelFields';
 import { get, isIdValid , isOtherIdValid, isPalestineIdValid, isPassportValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';

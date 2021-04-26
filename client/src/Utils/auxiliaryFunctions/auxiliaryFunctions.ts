@@ -72,7 +72,7 @@ const isPalestineIdValid = (id: string | null | undefined): boolean => {
 
 const isOtherIdValid = (id: string | null | undefined): boolean => {
     if (id) {
-        if (id.length === otherIdLength) {
+        if (id.length <= otherIdLength) {
             return NUMERIC_TEXT_REGEX.test(String(id));
         } else {
             return false;
