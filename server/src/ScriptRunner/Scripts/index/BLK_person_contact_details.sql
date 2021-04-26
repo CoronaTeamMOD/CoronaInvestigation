@@ -95,16 +95,16 @@ DO UPDATE SET
 	isolation_address = COALESCE(EXCLUDED.isolation_address ,pcd.isolation_address);
 
 ALTER TABLE public.contacted_person 
-	DROP COLUMN relationship,
-	DROP COLUMN does_have_background_diseases,
-	DROP COLUMN occupation,
-	DROP COLUMN does_feel_good,
-	DROP COLUMN does_need_help_in_isolation,
-	DROP COLUMN repeating_occurance_with_confirmed,
-	DROP COLUMN does_live_with_confirmed,
-	DROP COLUMN family_relationship,
-	DROP COLUMN does_work_with_crowd,
-	DROP COLUMN does_need_isolation,
-	DROP COLUMN contact_status,
-	DROP COLUMN completion_time,
-	DROP COLUMN isolation_address;
+	DROP COLUMN IF EXISTS relationship,
+	DROP COLUMN IF EXISTS does_have_background_diseases,
+	DROP COLUMN IF EXISTS occupation,
+	DROP COLUMN IF EXISTS does_feel_good,
+	DROP COLUMN IF EXISTS does_need_help_in_isolation,
+	DROP COLUMN IF EXISTS repeating_occurance_with_confirmed,
+	DROP COLUMN IF EXISTS does_live_with_confirmed,
+	DROP COLUMN IF EXISTS family_relationship,
+	DROP COLUMN IF EXISTS does_work_with_crowd,
+	DROP COLUMN IF EXISTS does_need_isolation,
+	DROP COLUMN IF EXISTS contact_status,
+	DROP COLUMN IF EXISTS completion_time,
+	DROP COLUMN IF EXISTS isolation_address;
