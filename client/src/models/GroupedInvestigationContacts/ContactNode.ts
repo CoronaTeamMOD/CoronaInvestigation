@@ -5,11 +5,6 @@ type ContactNode = {
     involvedContactByInvolvedContactId?: {
         involvementReason: number; 
     }
-    addressByIsolationAddress: {
-        cityByCity: {
-            displayName: string;
-        }
-    },
     personByPersonInfo: ContactedPerson
 }
 

@@ -41,7 +41,7 @@ const ContactsTabs = (props : Props) => {
                 <Tab classes={tabClasses} icon={<FontAwesomeIcon color={active} icon={faUserEdit} />} label={mutualContactsLabel} />
                 <Tab classes={tabClasses} icon={<GroupOutlined color='action' />} label={familyMembersLabel} />
                 <Tab classes={tabClasses} icon={<CallMerge color='action' />} label={groupedInvestigationsLabel} />
-                {/* <Tab classes={tabClasses} icon={<AccountBalance color='action' />} label={contactBankLabel} /> */}
+                <Tab classes={tabClasses} icon={<AccountBalance color='action' />} label={contactBankLabel} />
             </Tabs>
             <Divider orientation='vertical' variant='fullWidth' light={true} />
             <Forms

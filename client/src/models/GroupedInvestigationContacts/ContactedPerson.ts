@@ -7,6 +7,12 @@ type ContactedPerson = {
     birthDate: string;
     phoneNumber: string | null;
     additionalPhoneNumber: string | null;
+    personInfo: number;
+    addressByIsolationAddress: {
+        cityByCity: {
+            displayName: string;
+        }
+    },
 }
 
 export default ContactedPerson;

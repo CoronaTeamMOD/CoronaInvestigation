@@ -4,7 +4,7 @@ import { GroupedInvestigationsContextProvider, initialContacts } from 'commons/C
 
 const checkedRowValues = {
     ...initialContacts, 
-    groupedInvestigationContacts : [666]
+    groupedInvestigationContacts : [777]
 }
 
 const MockGroupedInvestigationsProvider : React.FC<Props> = (props) => {

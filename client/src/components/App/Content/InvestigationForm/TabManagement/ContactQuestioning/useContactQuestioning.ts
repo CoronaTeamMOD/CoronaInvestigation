@@ -9,7 +9,6 @@ import { setFormState } from 'redux/Form/formActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
-import useDuplicateContactId from 'Utils/Contacts/useDuplicateContactId';
 import GroupedInteractedContact,
        { GroupedInteractedContactEvent } from 'models/ContactQuestioning/GroupedInteractedContact';
 
@@ -20,6 +19,8 @@ import {
     useContactQuestioningParameters,
 } from './ContactQuestioningInterfaces';
     
+const NEW_CONTACT_STATUS_CODE = 1;
+
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {
         id,
@@ -33,7 +34,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
 
-    const { checkDuplicateIds } = useDuplicateContactId();
     const { alertError } = useCustomSwal();
 
     const createSaveContactRequest = (contactsSavingVariable: { unSavedContacts: { contacts: InteractedContact[] } },
@@ -56,44 +56,26 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const saveContact = (interactedContact: InteractedContact): boolean => {
-        if (
-            checkDuplicateIds(
-                allContactedInteractions.map(
-                    (contact: InteractedContact) => contact.identificationNumber
-                )
-            )
-        ) {
-            return false
-        } else {
-            const contacts = [interactedContact];
-            const contactsSavingVariable = {
-                unSavedContacts: { contacts },
-            };
-    
-            createSaveContactRequest(contactsSavingVariable, 'Saving single contact');
-            return true; 
-        }
+        const contacts = [interactedContact];
+        const contactsSavingVariable = {
+            unSavedContacts: { contacts },
+        };
+
+        createSaveContactRequest(contactsSavingVariable, 'Saving single contact');
+        return true; 
     };
 
     const saveContactQuestioning = (parsedFormData: InteractedContact[] , originalFormData: FormInputs) => {
-        if (
-            !checkDuplicateIds(
-                allContactedInteractions.map(
-                    (contact: InteractedContact) => contact.identificationNumber
-                )
-            )
-        ) {
-            const contactsSavingVariable = {
-                unSavedContacts: {contacts: parsedFormData}
-            };
+        const contactsSavingVariable = {
+            unSavedContacts: {contacts: parsedFormData}
+        };
 
-            createSaveContactRequest(contactsSavingVariable, 'Saving all contacts')
-            .finally(() => {
-                ContactQuestioningSchema.isValid(originalFormData).then(valid => {
-                    setFormState(epidemiologyNumber, id, valid);
-                })
-            });
-        }
+        createSaveContactRequest(contactsSavingVariable, 'Saving all contacts')
+        .finally(() => {
+            ContactQuestioningSchema.isValid(originalFormData).then(valid => {
+                setFormState(epidemiologyNumber, id, valid);
+            })
+        });
     };
 
     const loadFamilyRelationships = () => {
@@ -155,8 +137,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         'got respond from the server that has data',
                         Severity.LOW
                     );
-                    const interactedContacts: InteractedContact[] = result.data.map((contact: any) =>
-                        ({
+                    const interactedContacts: InteractedContact[] = result.data.map((contact: any) => {
+                        return ({
                             personInfo : contact.personInfo,
                             placeName: contact.contactEventByContactEvent.placeName,
                             id: contact.id,
@@ -178,7 +160,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                                 contact.contactEventByContactEvent.startTime,
                             contactEvent: contact.contactEventByContactEvent.id,
                             contactType: contact.contactType,
-                            contactStatus: contact.contactStatus,
+                            contactStatus: contact.contactStatus ?? NEW_CONTACT_STATUS_CODE,
                             extraInfo: contact.extraInfo,
                             relationship: contact.relationship,
                             familyRelationship: contact.familyRelationship,
@@ -209,6 +191,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             involvementReason: contact.involvementReason,
                             involvedContactId: contact.involvedContactId,
                         })
+                    }
+                        
                     );
                     const groupedInteractedContacts = groupSimilarContactedPersons(interactedContacts);
                     setAllContactedInteractions(groupedInteractedContacts);
@@ -288,6 +272,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         updatedPerson.firstName = allContactedInteractions[index].firstName;
         updatedPerson.gender = allContactedInteractions[index].gender;
         updatedPerson.id = allContactedInteractions[index].id;
+        updatedPerson.personInfo = allContactedInteractions[index].personInfo;
         updatedPerson.involvedContactId = allContactedInteractions[index].involvedContactId;
         updatedPerson.involvementReason = allContactedInteractions[index].involvementReason;
         updatedPerson.lastName = allContactedInteractions[index].lastName;
@@ -315,6 +300,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 });
             }
         });
+        
         return Array.from(contactsMap).map(contact => contact[1]);
     }
 

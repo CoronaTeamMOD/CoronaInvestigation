@@ -13,7 +13,7 @@ import {
     CREATE_OR_EDIT_CONTACT_EVENT, DELETE_CONTACT_EVENT, 
     DELETE_CONTACT_EVENTS_BY_DATE, DELETE_CONTACTED_PERSON, 
     CREATE_CONTACTED_PERSON, DUPLICATE_PERSON, 
-    ADD_CONTACTS_FROM_BANK
+    ADD_CONTACTS_FROM_BANK, CREATE_PERSON_CONTACT_DETAIL
 } from '../../DBService/ContactEvent/Mutation';
 import {
     GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, 
@@ -23,6 +23,8 @@ import {
     GET_ALL_GREEN_PASS_QUESTIONS,
     GET_ALL_GREEN_PASS_ANSWERS
 } from '../../DBService/ContactEvent/Query';
+
+const NEW_CONTACT_STATUS = 1;
 
 const intersectionsRoute = Router();
         
@@ -73,9 +75,9 @@ intersectionsRoute.get('/contactTypes', (request: Request, response: Response) =
 });
 
 const convertDBEvent = (event: ContactEvent) => {
-    const {contactedPeopleByContactEvent, ...eventObjectToClient} = event;
+    const {contactedPeopleByContactEvent,...eventObjectToClient} = event;
     const contacts: any = contactedPeopleByContactEvent.nodes.map((person) => {
-        const {personByPersonInfo, involvedContact ,...personNoData} = person;
+        const {personByPersonInfo, involvedContact, personContactDetailsByPersonInfo ,...personNoData} = person;
         let convertedInvolvedContact = null;
         if (involvedContact) {
             convertedInvolvedContact = convertInvolvedContact(involvedContact);
@@ -83,6 +85,7 @@ const convertDBEvent = (event: ContactEvent) => {
         return {
             ...personNoData,
             ...personByPersonInfo,
+            ...personByPersonInfo.personContactDetailByPersonInfo,
             involvedContact: convertedInvolvedContact,
         };
     });
@@ -184,17 +187,17 @@ intersectionsRoute.post('/groupedInvestigationContacts' , async (request : Reque
         investigation: epidemiologynumber
     });
 
-    let fullContacts = await graphqlRequest(CONTACTS_BY_CONTACTS_IDS , response.locals ,{ids : contacts})
+    const personContactDetail = await graphqlRequest(CONTACTS_BY_CONTACTS_IDS , response.locals ,{ids : contacts})
         .then(result => {
             createGroupedContactLogger.info(validDBResponseLog, Severity.LOW);
-            return result.data.allContactedPeople.edges
+            return result.data.allPersonContactDetails.edges
         })
         .catch(error => {
             createGroupedContactLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         });
 
-    fullContacts = await Promise.all(fullContacts.map(async (contact : any) => {
+    const contactPersons = await Promise.all(personContactDetail.map(async (contact : any) => {
         const newPersonInfo = await graphqlRequest(DUPLICATE_PERSON , response.locals ,{personId : parseInt(contact.node.personInfo)})
             .then(result => {
                 return result.data.duplicatePersonById.bigInt
@@ -206,14 +209,25 @@ intersectionsRoute.post('/groupedInvestigationContacts' , async (request : Reque
         return {
                 ...contact.node,
                 personInfo : parseInt(newPersonInfo),
-                contactStatus: 1,
+                contactStatus: NEW_CONTACT_STATUS,
                 contactEvent: eventId,
                 creationTime: new Date()
         }
     }));
 
-    await fullContacts.map(async (contact : any) => {
-        await graphqlRequest(CREATE_CONTACTED_PERSON , response.locals , {params : contact})
+    await contactPersons.map(async (contact : any) => {
+        const contactedPerson = {
+            personInfo: contact.personInfo,
+            contactEvent: contact.contactEvent,
+            creationTime: contact.creationTime
+        }
+
+        const contactDetails = contact
+
+        delete contactDetails.contactEvent
+        delete contactDetails.creationTime
+
+        await graphqlRequest(CREATE_CONTACTED_PERSON , response.locals , {params : contactedPerson})
             .then(result => {
                 createGroupedContactLogger.info(validDBResponseLog, Severity.LOW);
                 return;
@@ -222,8 +236,18 @@ intersectionsRoute.post('/groupedInvestigationContacts' , async (request : Reque
                 createGroupedContactLogger.error(invalidDBResponseLog(error), Severity.HIGH);
                 response.status(errorStatusCode).send(error);
                 return;
+            });
+
+        await graphqlRequest(CREATE_PERSON_CONTACT_DETAIL , response.locals , {params : contactDetails})
+            .then(result => {
+                createGroupedContactLogger.info(validDBResponseLog, Severity.LOW);
+                return;
             })
-            
+            .catch(error => {
+                createGroupedContactLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                response.status(errorStatusCode).send(error);
+                return;
+            });
     });
     response.sendStatus(validStatusCode);
 });

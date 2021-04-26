@@ -69,7 +69,7 @@ describe('<AccordionContent />', () => {
         wrapper.update();
 
         expect(wrapper.find(TypePreventiveTextField).at(0).props().value).toBe(query);
-        const tableRow = wrapper.find('tr#person-row-666');
+        const tableRow = wrapper.find('tr#person-row-777');
 
         expect(tableRow.exists()).toBeTruthy();
         expect(tableRow).toHaveLength(1);
@@ -90,7 +90,7 @@ describe('<AccordionContent />', () => {
         wrapper.update();
 
         expect(wrapper.find(TypePreventiveTextField).at(0).props().value).toBe(query);
-        const tableRow = wrapper.find('tr#person-row-666');
+        const tableRow = wrapper.find('tr#person-row-777');
 
         expect(tableRow.exists()).toBeFalsy();
 
@@ -121,7 +121,8 @@ describe('<AccordionContent />', () => {
                 searchWrapper.update();
     
                 expect(searchWrapper.find(TypePreventiveTextField).at(0).props().value).toBe(value);
-                const tableRow = searchWrapper.find('tr#person-row-666');
+                console.log(searchWrapper.debug());
+                const tableRow = searchWrapper.find('tr#person-row-777');
     
                 expect(tableRow.exists()).toBeTruthy();
                 expect(tableRow).toHaveLength(1);

@@ -24,9 +24,8 @@ const TableRows = (props: Props) => {
                         const isFamily = involvedContactByInvolvedContactId && isGroupReasonFamily &&  isInvolvedThroughFamily(involvedContactByInvolvedContactId.involvementReason);
                         
                         if(!isFamily) {
-                            const {id} = person;
-                            
                             const {
+                                id,
                                 firstName,
                                 lastName,
                                 identificationType,
@@ -35,7 +34,7 @@ const TableRows = (props: Props) => {
                                 phoneNumber,
                                 additionalPhoneNumber
                             } = person.personByPersonInfo;
-                            const isolationCity = person.addressByIsolationAddress?.cityByCity?.displayName;
+                            const isolationCity = person.personByPersonInfo.addressByIsolationAddress?.cityByCity?.displayName;
 
                             const isRowSelected = groupedInvestigationsContextState.groupedInvestigationContacts.indexOf(id) !== -1;
                             const isRowDisabled = existingIds.indexOf(identificationNumber) !== -1;

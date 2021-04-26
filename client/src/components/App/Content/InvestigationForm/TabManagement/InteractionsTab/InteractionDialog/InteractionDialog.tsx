@@ -13,7 +13,6 @@ import InvolvedContact from 'models/InvolvedContact';
 import GreenPassQuestion from 'models/GreenPassQuestion';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import useDuplicateContactId, {IdToCheck} from 'Utils/Contacts/useDuplicateContactId';
 import {ContactBankContextProvider , ContactBankOption} from 'commons/Contexts/ContactBankContext';
 import {GroupedInvestigationsContextProvider} from 'commons/Contexts/GroupedInvestigationFormContext';
 import {familyMembersContext, FamilyMembersDataContextProvider} from 'commons/Contexts/FamilyMembersContext';
@@ -88,7 +87,6 @@ const InteractionDialog = (props: Props) => {
         groupedInvestigationContacts,
         contactBank
     });
-    const {checkDuplicateIdsForInteractions} = useDuplicateContactId();
 
     const addFamilyMemberContacts = (contacts: Contact[]) => {
         familyMembers.forEach((familyMember: InvolvedContact) => {
@@ -189,30 +187,16 @@ const InteractionDialog = (props: Props) => {
         addFamilyMemberContacts(data.contacts);
 
         const interactionDataToSave = convertData(data);
-        const existingIds: IdToCheck[] = interactions.map(interaction => interaction.contacts).flat().map((contact) => {
-            return ({
-                id: contact[InteractionEventContactFields.IDENTIFICATION_NUMBER],
-                serialId: contact[InteractionEventContactFields.ID]
-            })
-        });
-        const newIds: IdToCheck[] = interactionDataToSave[InteractionEventDialogFields.CONTACTS].map((contact: Contact) => {
-            return ({
-                id: contact[InteractionEventContactFields.IDENTIFICATION_NUMBER],
-                serialId: contact[InteractionEventContactFields.ID]
-            })
-        });
 
-        if (!checkDuplicateIdsForInteractions(existingIds.concat(newIds))) {
-            if (isNewInteraction && data.isRepetitive) {
-                fireRepetitiveContactWarning()
-                    .then(result => {
-                        if (result.value) {
-                            saveInteractions(interactionDataToSave)
-                        }
-                    })
-            } else {
-                saveInteractions(interactionDataToSave)
-            }
+        if (isNewInteraction && data.isRepetitive) {
+            fireRepetitiveContactWarning()
+                .then(result => {
+                    if (result.value) {
+                        saveInteractions(interactionDataToSave)
+                    }
+                })
+        } else {
+            saveInteractions(interactionDataToSave)
         }
     };
 

@@ -16,7 +16,7 @@ const Forms = (props: Props) => {
         { id: 0, Component: <ManualContactsForm /> },
         { id: 1, Component: <FamilyMembersForm /> },
         { id: 2, Component: <GroupedInvestigationsTab /> },
-        //{ id: 3, Component: <ContactsBankForm existingPersons={existingPersons} /> }
+        { id: 3, Component: <ContactsBankForm existingPersons={existingPersons} /> }
     ];
 
     return (
