@@ -5,7 +5,6 @@ import {Grid, IconButton, Typography} from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import useFormStyles from 'styles/formStyles';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import ContactForm from './ContactForm/ContactForm';

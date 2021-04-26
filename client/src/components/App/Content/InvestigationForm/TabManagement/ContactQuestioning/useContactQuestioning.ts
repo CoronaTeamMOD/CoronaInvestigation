@@ -7,10 +7,8 @@ import { Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import { setFormState } from 'redux/Form/formActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
-import GroupedInteractedContact,
-       { GroupedInteractedContactEvent } from 'models/ContactQuestioning/GroupedInteractedContact';
+import GroupedInteractedContact, { GroupedInteractedContactEvent } from 'models/ContactQuestioning/GroupedInteractedContact';
 
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 import {
@@ -145,12 +143,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             firstName: contact.personByPersonInfo.firstName,
                             lastName: contact.personByPersonInfo.lastName,
                             phoneNumber: contact.personByPersonInfo.phoneNumber,
-                            identificationType: contact.personByPersonInfo
-                                .identificationType
-                                ? contact.personByPersonInfo.identificationType
-                                : IdentificationTypes.ID,
-                            identificationNumber:
-                                contact.personByPersonInfo.identificationNumber,
+                            identificationType: contact.personByPersonInfo.identificationType,
+                            identificationNumber: contact.personByPersonInfo.identificationNumber,
                             birthDate: contact.personByPersonInfo.birthDate,
                             additionalPhoneNumber:
                                 contact.personByPersonInfo
