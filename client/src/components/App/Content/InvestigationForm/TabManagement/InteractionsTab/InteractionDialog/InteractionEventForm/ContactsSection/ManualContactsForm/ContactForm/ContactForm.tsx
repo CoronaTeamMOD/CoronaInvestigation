@@ -33,6 +33,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
     const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
     const { isFieldDisabled } = useContactFields(contactStatus);
+    const isExistingPerson = Boolean(personInfo);
 
     const { shouldDisableContact } = useStatusUtils();
 
