@@ -100,7 +100,6 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             .then((result: any) => {
                 identificationTypesLogger.info('request to get identification types was successful', Severity.LOW);
                 setIdentificationTypes(result.data);
-                console.log(result.data)
             })
             .catch(error => {
                 identificationTypesLogger.error(`got errors in server while trying to get identification types, result: ${error}`, Severity.HIGH);
