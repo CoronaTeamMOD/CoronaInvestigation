@@ -1,6 +1,6 @@
 -- FUNCTION: public.update_contact_persons(json)
 
--- DROP FUNCTION public.update_contact_persons(json);
+DROP FUNCTION public.update_contact_persons(json);
 
 CREATE OR REPLACE FUNCTION public.update_contact_persons(
 	contacted_persons json)
@@ -36,7 +36,7 @@ lastName varchar;
 phoneNumber varchar;
 igender varchar;
 
-identificationType varchar;
+identificationType int4;
 identificationNumber varchar;
 birthDate timestamp;
 additionalPhoneNumber varchar;
@@ -52,7 +52,7 @@ houseNum varchar;
 apartment varchar;
 
 BEGIN 	
-	/* contacted_persons is a JSON that can be recieved in 2 different structures: */
+	-- contacted_persons is a JSON that can be recieved in 2 different structures: */
 	
 	contactPersonArr :=(
 					SELECT array_agg(p_data.value)
@@ -75,7 +75,7 @@ BEGIN
 		select trim(nullif((contactedPerson->'lastName')::text,'null'),'"')  into lastName;
 		select trim(nullif((contactedPerson->'gender')::text,'null'),'"')  into igender;
 		select trim(nullif((contactedPerson->'phoneNumber')::text,'null'),'"')  into phoneNumber;
-		select trim(nullif((contactedPerson->'identificationType')::text,'null'),'"') into identificationType;
+		select trim(nullif((contactedPerson->'identificationType')::text,'null'),'"')::int4 into identificationType;
 		select trim(nullif((contactedPerson->'identificationNumber')::text,'null'),'"')  into identificationNumber;
 		select trim(nullif((contactedPerson->'birthDate')::text,'null'),'"')::timestamp  into birthDate;
 		select trim(nullif((contactedPerson->'additionalPhoneNumber')::text,'null'),'"')  into additionalPhoneNumber;
@@ -146,9 +146,7 @@ BEGIN
 	    	raise notice '%', identificationType;
 			-- Updating public.person by the personInfo
 		   	UPDATE public.person
-				SET identification_type = (CASE WHEN identificationNumber IS NULL THEN NULL
-											 	WHEN identificationType IS NULL THEN 'ת"ז' 
-										   		ELSE identificationType END),
+				SET identification_type = identificationType,
 					identification_number = identificationNumber,
 					birth_date = birthDate,
 					additional_phone_number  = additionalPhoneNumber,
@@ -165,10 +163,7 @@ BEGIN
 			END IF;
 	   ELSE
 			INSERT INTO public.person (first_name, last_name, identification_type, identification_number, phone_number, additional_phone_number, gender, birth_date) 
-			VALUES(firstName, lastName, (CASE WHEN identificationNumber IS NULL THEN NULL
-				 				  	     WHEN identificationType IS NULL THEN 'ת"ז' 
-				 				  	     ELSE identificationType END),
-			identificationNumber, phoneNumber, additionalPhoneNumber, igender, birthDate);
+			VALUES(firstName, lastName, identificationType, identificationNumber, phoneNumber, additionalPhoneNumber, igender, birthDate);
 			
 		    personId := currval('person_id_seq');
  		raise notice 'insert new person %', personId;   
