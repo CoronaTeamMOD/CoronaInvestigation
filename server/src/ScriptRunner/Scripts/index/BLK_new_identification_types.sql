@@ -66,6 +66,8 @@ ALTER TABLE public.person
 	USING identification_type::integer;
 
 -- Add constraint of FK in person table
+ALTER TABLE public.person
+    DROP CONSTRAINT IF EXISTS identification_type_fk;
 
 ALTER TABLE public.person
     ADD CONSTRAINT identification_type_fk FOREIGN KEY (identification_type) REFERENCES public.identification_type (id);
@@ -103,9 +105,12 @@ ALTER TABLE public.investigated_patient
 -- Add constraint of FK in investigated_patient table
 
 ALTER TABLE public.investigated_patient
+    DROP CONSTRAINT IF EXISTS identity_type_fk;
+	
+ALTER TABLE public.investigated_patient
     ADD CONSTRAINT identity_type_fk FOREIGN KEY (identity_type) REFERENCES public.identification_type (id);
 	
 	
 -- Delete duplicate function of update_contact_person
 
-DROP FUNCTION public.update_contact_person(json, integer);
+DROP FUNCTION IF EXISTS public.update_contact_person(json, integer);

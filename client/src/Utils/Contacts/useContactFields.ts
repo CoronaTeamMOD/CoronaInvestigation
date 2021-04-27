@@ -1,13 +1,11 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
 import Contact from 'models/Contact';
-import StoreStateType from 'redux/storeStateType';
 import ContactType from 'models/enums/ContactType';
 import InteractedContact from 'models/InteractedContact';
-import IdentificationType from 'models/IdentificationType';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import InteractedContactFields from 'models/enums/InteractedContact';
+import IdentificationTypesCodes from 'models/enums/IdentificationTypesCodes';
 import {ContactedPersonFieldMapper} from 'models/enums/contactQuestioningExcelFields';
 import { get, isIdValid , isOtherIdValid, isPalestineIdValid, isPassportValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
@@ -43,8 +41,6 @@ const mandatoryQuarantineFields = [
 
 const useContactFields = (contactStatus?: InteractedContact['contactStatus']) => {
 
-    const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
-
     const shouldDisable = (status?: InteractedContact['contactStatus']) => status === ContactStatusCodes.COMPLETED;
 
     const isFieldDisabled = React.useMemo(() => shouldDisable(contactStatus), [contactStatus]);
@@ -62,16 +58,16 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         const contactIdType = contact.identificationType.id ? contact.identificationType.id : contact.identificationType;
         const contactIdNumber = contact.identificationNumber;
 
-        if (contactIdType === identificationTypes[0].id && !isIdValid(contactIdNumber)) {
+        if (contactIdType === IdentificationTypesCodes.ID && !isIdValid(contactIdNumber)) {
             return { valid: false, error: 'שדה ת"ז אינו תקין' };
         };
-        if (contactIdType === identificationTypes[1].id && !isPassportValid(contactIdNumber)) {
+        if (contactIdType === IdentificationTypesCodes.PASSPORT && !isPassportValid(contactIdNumber)) {
             return { valid: false, error: 'שדה דרכון אינו תקין' };
         };
-        if ((contactIdType === identificationTypes[2].id || contactIdType === identificationTypes[3].id ) && !isOtherIdValid(contactIdNumber)) {
+        if ((contactIdType === IdentificationTypesCodes.MOSSAD || contactIdType === IdentificationTypesCodes.OTHER ) && !isOtherIdValid(contactIdNumber)) {
             return { valid: false, error: 'שדה מזהה אינו תקין' };
         };
-        if (contactIdType === identificationTypes[4].id && !isPalestineIdValid(contactIdNumber)) {
+        if (contactIdType === IdentificationTypesCodes.PALESTINE_ID && !isPalestineIdValid(contactIdNumber)) {
             return { valid: false, error: 'שדה ת"ז פלסטינית אינו תקין' };
         };
         

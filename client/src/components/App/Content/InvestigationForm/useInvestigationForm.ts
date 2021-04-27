@@ -12,6 +12,7 @@ import StoreStateType from 'redux/storeStateType';
 import { defaultUser } from 'Utils/UsersUtils/userUtils';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setCities } from 'redux/City/cityActionCreators';
+import IdentificationType from 'models/IdentificationType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
@@ -40,6 +41,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
+    const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
 
     const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
 
@@ -173,8 +175,10 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     };
 
     useEffect(() => {
-        fetchIdentificationTypes();
-    }, []);
+        if (identificationTypes.length === 0) {
+            fetchIdentificationTypes();
+        }
+    }, [identificationTypes]);
 
     useEffect(() => {
         if (epidemiologyNumber !== defaultEpidemiologyNumber && userId !== defaultUser.id) {
