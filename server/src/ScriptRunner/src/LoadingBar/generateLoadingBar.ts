@@ -1,13 +1,13 @@
 const RUNNER = '🏃';
-const GUST = '💨';
-const DOT = '➖󠀠'
-const BAR_LENGTH = 18;
+const COMPLETED = '█';
+const UNCOMPLETED = '░'
+const BAR_LENGTH = Math.min(50 , process.stdout.columns - 1) // account for runner;
 
 const generateLoadingBar = (fraction : number) => {
     const gustCount = Math.floor(fraction * BAR_LENGTH) - 1;
     const dotCount = BAR_LENGTH - gustCount - 1; // account for runner
 
-    return  repeatString(DOT,dotCount) + RUNNER + repeatString(GUST,gustCount) ; 
+    return  repeatString(UNCOMPLETED,dotCount) + RUNNER + repeatString(COMPLETED,gustCount) ; 
 }
 
 const repeatString = (string : string, times : number) => {
