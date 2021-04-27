@@ -6,29 +6,25 @@ import { invalidIdText, invalidOtherIdText, invalidPalestineIdText, invalidPassp
 import { isIdValid , isPassportValid, isPalestineIdValid, isOtherIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 const ContactIdValidationSchema = yup.string()
-    .when(InteractionEventContactFields.IDENTIFICATION_TYPE, {
-        is: IdentificationTypesCodes.ID,
-        then: yup.string()
-            .nullable()
-            .test('isValid', invalidIdText, (id) => isIdValid(id)),
-        otherwise:
-            yup.string().when(InteractionEventContactFields.IDENTIFICATION_TYPE, {
-            is: IdentificationTypesCodes.PASSPORT,
-            then: yup.string()
-                .nullable()
-                .test('isValid', invalidPassportText, (id) => isPassportValid(id)),
-            otherwise:
-                yup.string().when(InteractionEventContactFields.IDENTIFICATION_TYPE, {
-                is: IdentificationTypesCodes.PALESTINE_ID,
-                then: yup.string()
+    .when(InteractionEventContactFields.IDENTIFICATION_TYPE, (identificationType: number) => {
+        switch (identificationType) {
+            case IdentificationTypesCodes.ID:
+                return yup.string()
                     .nullable()
-                    .test('isValid', invalidPalestineIdText, (id) => isPalestineIdValid(id)),
-                otherwise:
-                    yup.string()
+                    .test('isValid', invalidIdText, (id) => isIdValid(id));
+            case IdentificationTypesCodes.PASSPORT:
+                return yup.string()
                     .nullable()
-                    .test('isValid', invalidOtherIdText, (id) => isOtherIdValid(id)),
-            })
-        })
+                    .test('isValid', invalidPassportText, (id) => isPassportValid(id));
+            case IdentificationTypesCodes.PALESTINE_ID:
+                return yup.string()
+                    .nullable()
+                    .test('isValid', invalidPalestineIdText, (id) => isPalestineIdValid(id));
+            default:
+                return yup.string()
+                    .nullable()
+                    .test('isValid', invalidOtherIdText, (id) => isOtherIdValid(id));
+        }
     });
 
 export default ContactIdValidationSchema;
