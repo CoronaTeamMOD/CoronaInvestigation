@@ -4,6 +4,6 @@ enum ContactStatusCodes {
     COMPLETED=5,
     CANT_REACH=6,
     DONT_COOPERATE=7
-}
+};
 
 export default ContactStatusCodes;

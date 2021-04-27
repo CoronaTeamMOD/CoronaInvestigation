@@ -1,6 +1,6 @@
 -- FUNCTION: public.update_contact_persons(json)
 
--- DROP FUNCTION public.update_contact_persons(json);
+DROP FUNCTION public.update_contact_persons(json);
 
 CREATE OR REPLACE FUNCTION public.update_contact_persons(
 	contacted_persons json)
@@ -36,7 +36,7 @@ lastName varchar;
 phoneNumber varchar;
 igender varchar;
 
-identificationType varchar;
+identificationType int4;
 identificationNumber varchar;
 birthDate timestamp;
 additionalPhoneNumber varchar;
@@ -52,7 +52,7 @@ houseNum varchar;
 apartment varchar;
 
 BEGIN 	
-	/* contacted_persons is a JSON that can be recieved in 2 different structures: */
+	-- contacted_persons is a JSON that can be recieved in 2 different structures: */
 	
 	contactPersonArr :=(
 					SELECT array_agg(p_data.value)
@@ -75,7 +75,7 @@ BEGIN
 		select trim(nullif((contactedPerson->'lastName')::text,'null'),'"')  into lastName;
 		select trim(nullif((contactedPerson->'gender')::text,'null'),'"')  into igender;
 		select trim(nullif((contactedPerson->'phoneNumber')::text,'null'),'"')  into phoneNumber;
-		select trim(nullif((contactedPerson->'identificationType')::text,'null'),'"') into identificationType;
+		select trim(nullif((contactedPerson->'identificationType')::text,'null'),'"')::int4 into identificationType;
 		select trim(nullif((contactedPerson->'identificationNumber')::text,'null'),'"')  into identificationNumber;
 		select trim(nullif((contactedPerson->'birthDate')::text,'null'),'"')::timestamp  into birthDate;
 		select trim(nullif((contactedPerson->'additionalPhoneNumber')::text,'null'),'"')  into additionalPhoneNumber;
@@ -94,7 +94,6 @@ BEGIN
 		select nullif((contactedPerson->'contactStatus')::text,'null')::int4 into contactStatus;
 		select nullif((contactedPerson->'involvedContactId')::text,'null')::int4 into involvedContactId;
 		select nullif((contactedPerson->'doesWorkWithCrowd')::text,'null')::bool into doesWorkWithCrowd;
-		    identificationType:= REPLACE(identificationType, '\', '' );
 		   
 		select trim(nullif((contactedPerson->'isolationAddress'->'city')::text,'null'),'"')  into city;
 		select trim(nullif((contactedPerson->'isolationAddress'->'street')::text,'null'),'"')  into street;
@@ -146,9 +145,7 @@ BEGIN
 	    	raise notice '%', identificationType;
 			-- Updating public.person by the personInfo
 		   	UPDATE public.person
-				SET identification_type = (CASE WHEN identificationNumber IS NULL THEN NULL
-											 	WHEN identificationType IS NULL THEN 'ת"ז' 
-										   		ELSE identificationType END),
+				SET identification_type = identificationType,
 					identification_number = identificationNumber,
 					birth_date = birthDate,
 					additional_phone_number  = additionalPhoneNumber,
@@ -165,19 +162,23 @@ BEGIN
 			END IF;
 	   ELSE
 			INSERT INTO public.person (first_name, last_name, identification_type, identification_number, phone_number, additional_phone_number, gender, birth_date) 
-			VALUES(firstName, lastName, (CASE WHEN identificationNumber IS NULL THEN NULL
-				 				  	     WHEN identificationType IS NULL THEN 'ת"ז' 
-				 				  	     ELSE identificationType END),
-			identificationNumber, phoneNumber, additionalPhoneNumber, igender, birthDate);
+			VALUES(firstName, lastName, identificationType, identificationNumber, phoneNumber, additionalPhoneNumber, igender, birthDate);
 			
 		    personId := currval('person_id_seq');
- 		raise notice 'insert new person %', personId;   
+ 			raise notice 'insert new person %', personId;   
+
+		 	INSERT INTO public.contacted_person (
+                person_info,contact_event, creation_time
+            ) VALUES (
+                personId,contactEvent, now()
+            );
+
 	   	   	INSERT INTO public.person_contact_details (
-			   	isolation_address,person_info, contact_event, relationship, extra_info,
+			   	isolation_address, person_info, relationship, extra_info,
 	   	    	does_have_background_diseases, occupation, does_feel_good, does_need_help_in_isolation, 
 	   	   		repeating_occurance_with_confirmed, does_live_with_confirmed, contact_status, family_relationship, does_work_with_crowd, does_need_isolation, creation_time) 
 	    	VALUES(
-				addressId,personId, contactEvent, personRelationship, extraInfo,
+				addressId, personId, personRelationship, extraInfo,
 	   		 	doesHaveBackgroundDiseases, personOccupation , doesfeelGood, doesNeedHelpInIsolation,
 	   			repeatingOccuranceWithConfirmed, doesLiveWithConfirmed, contactStatus, familyRelationship, doesWorkWithCrowd, doesNeedIsolation, now());
 	   END IF;

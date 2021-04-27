@@ -1,8 +1,10 @@
+import IdentificationType from "./IdentificationType";
+
 interface InvestigatedPatientStaticInfo {
     isDeceased: boolean;
     additionalPhoneNumber: string;
     gender: string;
-    identityType: string;
+    identityType: IdentificationType;
     isCurrentlyHospitalized: boolean;
     isInClosedInstitution: boolean;
     isReturnSick: boolean;

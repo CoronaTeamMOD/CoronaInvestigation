@@ -1,35 +1,35 @@
+import { useSelector } from 'react-redux';
 import { differenceInYears } from 'date-fns';
 import React, { useState, useEffect } from 'react';
-import { Avatar, Grid, Typography, Select, MenuItem } from '@material-ui/core';
 import { Controller, DeepMap, FieldError } from 'react-hook-form';
+import { Avatar, Grid, Typography, Select, MenuItem } from '@material-ui/core';
 
 import DatePick from 'commons/DatePick/DatePick';
+import StoreStateType from 'redux/storeStateType';
 import formatDate from 'Utils/DateUtils/formatDate';
 import FieldName from 'commons/FieldName/FieldName';
-import HelpIcon from 'commons/Icons/HelpIcon/HelpIcon';
 import InteractedContact from 'models/InteractedContact';
 import { invalidDateText } from 'commons/Schema/messages';
+import IdentificationType from 'models/IdentificationType';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import useContactFields from 'Utils/Contacts/useContactFields';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import NumericTextField from 'commons/NoContextElements/NumericTextField';
 import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextField';
 import IdentificationTextField from 'commons/NoContextElements/IdentificationTextField';
-
-import useStyles from './ContactQuestioningStyles';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
-const passportInfoMessage = 'ניתן להזין בשדה דרכון 10 תווים/ 15 תווים ו-/';
-const idInfoMessage = 'ניתן להזין בשדה תז עד 9 תווים'
+import useStyles from './ContactQuestioningStyles';
+
+const PHONE_LABEL = 'טלפון';
 
 const ContactQuestioningPersonal: React.FC<Props> = (
     props: Props
 ): JSX.Element => {
     const { index, interactedContact, currentFormErrors, formValues, control, trigger } = props;
 
-    const [staticFieldsChange, setStaticFieldsChange] = useState<boolean>(false);
-    
+    const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
+
     const calcAge = (birthDate: Date) => {
         const newAge: number = differenceInYears(new Date(),new Date(birthDate));
         return birthDate && !isNaN(newAge as number)
@@ -43,13 +43,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (
     const [age, setAge] = useState<string>(calcAge(interactedContact.birthDate));
 
     const { isFieldDisabled } = useContactFields(formValues.contactStatus);
-    const [isPassport, setIsPassport] = useState<boolean>(
-        formValues.identificationType === IdentificationTypes.PASSPORT
-    );
 
     const classes = useStyles();
-    const idTooltipText = isPassport ? passportInfoMessage : idInfoMessage;
-    const PHONE_LABEL = 'טלפון';
 
     const { shouldDisableContact } = useStatusUtils();
     const shouldDisableIdByReopen = interactedContact.creationTime
@@ -63,10 +58,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                 !!interactedContact.identificationNumber);
         setShouldIdDisable(shouldDisable);
     }, [interactedContact.contactStatus, isFieldDisabled]);
-
-    useEffect(() => {
-        trigger(`form[${index}].${InteractedContactFields.IDENTIFICATION_NUMBER}`)
-    }, [isPassport]);
 
     return (
         <Grid item xs={4}>
@@ -83,10 +74,11 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.IDENTIFICATION_TYPE}`}
-                            defaultValue={formValues.identificationType}
+                            defaultValue={formValues.identificationType?.id}
                             render={(props) => (
                                 <Select
                                     {...props}
+                                    disabled={shouldIdDisable}
                                     className={classes.smallSizeText}
                                     onChange={(event) => {
                                         props.onChange(event.target.value)
@@ -103,12 +95,12 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                         getContentAnchorEl: null
                                         }}
                                 >
-                                    {Object.values(IdentificationTypes).map((identificationType: string) => (
+                                    {Object.values(identificationTypes).map((identificationType: IdentificationType) => (
                                         <MenuItem
                                             className={classes.smallSizeText}
-                                            key={identificationType}
-                                            value={identificationType}>
-                                            {identificationType}
+                                            key={identificationType.id}
+                                            value={identificationType.id}>
+                                            {identificationType.type}
                                         </MenuItem>
                                     ))}
                                 </Select>
@@ -118,14 +110,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                     <FieldName 
                         fieldName='מספר תעודה:' 
                         className={classes.fieldNameWithIcon}
-                        appendantLabelIcon={
-                            <HelpIcon 
-                                title={idTooltipText} 
-                                isWarning={
-                                    Boolean(currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_NUMBER])
-                                } 
-                            />
-                        }
                     />
                     <Grid item xs={3}>
                         <Controller
@@ -140,7 +124,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                     <IdentificationTextField
                                         {...props}
                                         error={(currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_NUMBER]?.message ) || ''}
-                                        isPassport={isPassport}
                                         disabled={shouldIdDisable}
                                         testId='identificationNumber'
                                         onChange={(newValue: string) => {
@@ -271,4 +254,4 @@ interface Props {
     formValues: InteractedContact;
     trigger: (fieldname : string) => {};
     currentFormErrors?: DeepMap<InteractedContact, FieldError>;
-}
+};

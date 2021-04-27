@@ -11,7 +11,10 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!, $minimalDateToFi
         firstName
         lastName
         phoneNumber
-        identificationType
+        identificationType: identificationTypeByIdentificationType {
+          id
+          type
+        }
         identificationNumber
         birthDate
         additionalPhoneNumber

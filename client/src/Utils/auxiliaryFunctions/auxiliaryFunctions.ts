@@ -1,6 +1,10 @@
-import { PASSPORT_REGEX, VISA_REGEX } from 'commons/Regex/Regex';
+import { NUMERIC_TEXT_REGEX, PALESTINE_ID_REGEX, PASSPORT_REGEX, VISA_REGEX } from 'commons/Regex/Regex';
 
 const moreThanOneSlashIndicator = 3;
+export const idLength = 9;
+export const passportLength = 10;
+export const visaLength = 15;
+export const otherIdLength = 12;
 
 const get = (obj: any, path: string, defaultValue = undefined) => {
     const travel = (regexp: RegExp) =>
@@ -16,7 +20,6 @@ const get = (obj: any, path: string, defaultValue = undefined) => {
     return result === undefined || result === obj ? defaultValue : result;
 };
 
-export const idLength = 9;
 const isIdValid = (id: string | null | undefined) => {
     let sum = 0;
     if (Boolean(id)) {
@@ -35,8 +38,6 @@ const isIdValid = (id: string | null | undefined) => {
     }
 };
 
-export const passportLength = 10;
-export const visaLength = 15;
 const isPassportValid = (id: string | null | undefined): boolean => {
     /*
      *  note : this is a funcion and not a constant because the logic
@@ -58,8 +59,30 @@ const isPassportValid = (id: string | null | undefined): boolean => {
     return true;
 };
 
+const isPalestineIdValid = (id: string | null | undefined): boolean => {
+    if (id) {
+        if (id.length === idLength) {
+            return PALESTINE_ID_REGEX.test(String(id));
+        } else {
+            return false;
+        }
+    }
+    return true;
+};
+
+const isOtherIdValid = (id: string | null | undefined): boolean => {
+    if (id) {
+        if (id.length <= otherIdLength) {
+            return NUMERIC_TEXT_REGEX.test(String(id));
+        } else {
+            return false;
+        }
+    }
+    return true;
+};
+
 const doesStringHasMoreThanOneSlash = (givenStr: string) => {
     return givenStr.split('/').length < moreThanOneSlashIndicator;
-}
+};
 
-export { get, isIdValid, isPassportValid };
+export { get, isIdValid, isPassportValid, isPalestineIdValid, isOtherIdValid };

@@ -13,8 +13,8 @@ const UseDuplicateConnectedIds = (epiNumber : number) => {
     investigationsToSearch.forEach(investigation => {
         investigation.contactEventsByInvestigationId.nodes.forEach(event => {
             event.contactedPeopleByContactEvent.nodes.forEach(person => {
-                const {identificationNumber , identificationType} = person.personByPersonInfo;
-            
+                const {identificationNumber, identificationType } = person.personByPersonInfo;
+
                 if(Boolean(identificationNumber) && Boolean(identificationType)) {
                     connectedInvestigationsIds.push(identificationNumber);
                 }

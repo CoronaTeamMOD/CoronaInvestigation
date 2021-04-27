@@ -29,7 +29,7 @@ const GetGroupedInvestigationsIds = () => {
         investigations.forEach(investigation => 
             investigation.contactEventsByInvestigationId.nodes.forEach(event => 
                 event.contactedPeopleByContactEvent.nodes.forEach(person => {
-                    const {identificationType, identificationNumber} = person.personByPersonInfo;
+                    const { identificationNumber, identificationType } = person.personByPersonInfo;
                     if(identificationType && identificationNumber) {
                         ids.set(person.id ,identificationType + identificationNumber);
                     }

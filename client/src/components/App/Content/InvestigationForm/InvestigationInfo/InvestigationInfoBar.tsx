@@ -22,6 +22,7 @@ import { setInvestigatedPatientId , setIsCurrentlyHospitialized, setIsDeceased, 
 import useGroupedInvestigationContacts from '../useGroupedInvestigationContacts';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
+import InvestigationInfoButton from '../../LandingPage/adminLandingPage/investigationsInfo/investigationInfoButton/investigationInfoButton';
 
 const defaultInvestigationStaticInfo : InvestigationInfo = {
     comment: '',
@@ -34,7 +35,7 @@ const defaultInvestigationStaticInfo : InvestigationInfo = {
     isDeceased: false,
     additionalPhoneNumber: '',
     gender: '',
-    identityType: '',
+    identityType: {id: 0, type: ''},
     isCurrentlyHospitalized: false,
     isInClosedInstitution: false,
     fullName: '',
@@ -122,8 +123,9 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                     const formattedSymptomsDate = truncateDate(investigationInfo.symptomsStartDate);
                     const formattedInvestigationInfo = {
                         ...investigationInfo,
-                        symptomsStartDate : formattedSymptomsDate,
-                        validationDate : formattedValidationDate
+                        symptomsStartDate: formattedSymptomsDate,
+                        validationDate: formattedValidationDate,
+                        identityType: result.data.identificationType
                     }
                     setDatesToInvestigateParams({
                         symptomsStartDate: truncateDate(investigationInfo.symptomsStartDate), 

@@ -9,6 +9,7 @@ export const alphaNumericSpecialCharsErrorMessage = 'השדה יכול להכנ�
 export const alphaNumericWhiteSpaceErrorMessage = 'השדה יכול להכיל אותיות, מספרים, מקף ורווח בלבד';
 
 export const max10LengthNumErrorMessage = 'השדה יכול להכיל 10 מספרים בלבד';
+export const max15LengthNumErrorMessage = 'השדה יכול להכיל 15 מספרים בלבד';
 export const max50LengthErrorMessage = 'השדה יכול להכיל 50 תווים בלבד';
 export const max100LengthErrorMessage = 'השדה יכול להכיל 100 תווים בלבד';
 export const max500LengthErrorMessage = 'השדה יכול להכיל 500 תווים בלבד';
@@ -18,4 +19,6 @@ export const invalidDateText = 'תאריך אינו תקין';
 export const invalidEmailText = 'מייל אינו תקין';
 export const invalidFullNameText = 'שם אינו תקין';
 export const invalidPhoneText = 'טלפון אינו תקין';
-export const invalidPassportText = 'דרכון לא תקין';
+export const invalidPassportText = 'דרכון אינו תקין';
+export const invalidPalestineIdText = 'ת.ז פלסטינית אינה תקינה';
+export const invalidOtherIdText = 'מזהה אינו תקין';

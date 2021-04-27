@@ -5,7 +5,6 @@ import {Grid, IconButton, Typography} from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import useFormStyles from 'styles/formStyles';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import ContactForm from './ContactForm/ContactForm';
@@ -19,7 +18,7 @@ const defaultContact: Contact = {
     contactType: -1,
     creationTime: new Date(),
     involvedContact: null,
-    identificationType: IdentificationTypes.ID
+    identificationType: {id: 0, type:''}
 };
 
 const addContactText = 'הוסף מגע';

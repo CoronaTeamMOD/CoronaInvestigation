@@ -28,8 +28,8 @@ const TableRows = (props: Props) => {
                                 id,
                                 firstName,
                                 lastName,
-                                identificationType,
                                 identificationNumber,
+                                identificationType,
                                 birthDate,
                                 phoneNumber,
                                 additionalPhoneNumber
@@ -57,7 +57,7 @@ const TableRows = (props: Props) => {
                                     </TableCell>
                                     <TableCell>{firstName}</TableCell>
                                     <TableCell>{lastName}</TableCell>
-                                    <TableCell>{identificationType}</TableCell>
+                                    <TableCell>{identificationType.type}</TableCell>
                                     <TableCell>{identificationNumber}</TableCell>
                                     <TableCell>{Boolean(birthDate) && formatDate(new Date(birthDate))}</TableCell>
                                     <TableCell>{phoneNumber}</TableCell>

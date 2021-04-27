@@ -13,7 +13,7 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
     birthDate: 'תאריך לידה',
     gender: 'מגדר',
     identificationNumber: 'מספר תעודה מזהה',
-    identificationType: 'סוג תעודה מזהה',
+    identificationType: 'מזהה סוג תעודה מזהה',
     contactDate: 'תאריך חשיפה',
     contactType: 'סוג מגע',
     extraInfo: 'פירוט נוסף על אופי המגע',

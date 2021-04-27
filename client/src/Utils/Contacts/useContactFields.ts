@@ -4,12 +4,10 @@ import Contact from 'models/Contact';
 import ContactType from 'models/enums/ContactType';
 import InteractedContact from 'models/InteractedContact';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
+import IdentificationTypesCodes from 'models/enums/IdentificationTypesCodes';
 import {ContactedPersonFieldMapper} from 'models/enums/contactQuestioningExcelFields';
-import { isIdValid , isPassportValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-
-import {get} from '../auxiliaryFunctions/auxiliaryFunctions';
+import { get, isIdValid , isOtherIdValid, isPalestineIdValid, isPassportValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 export const STRICT_CONTACT_TYPE = 1;
 const isolationErrorMessageEnd = ' ולכן לא ניתן להקים דיווח בידוד';
@@ -41,7 +39,23 @@ const mandatoryQuarantineFields = [
      InteractedContactFields.FIRST_NAME,
     InteractedContactFields.LAST_NAME];
 
+const getIdValidation = (idType: number) => {
+    switch (idType) {
+        case IdentificationTypesCodes.ID:
+            return {validation: isIdValid, fieldName: 'ת"ז'};
+        case IdentificationTypesCodes.PASSPORT:
+            return {validation: isPassportValid, fieldName: 'דרכון'};
+        case IdentificationTypesCodes.PALESTINE_ID:
+            return {validation: isPalestineIdValid, fieldName: 'ת"ז פלסטינית'};
+        case IdentificationTypesCodes.OTHER || IdentificationTypesCodes.MOSSAD:
+            return {validation: isOtherIdValid, fieldName: 'מזהה'};
+        default:
+            break;
+    }
+};
+
 const useContactFields = (contactStatus?: InteractedContact['contactStatus']) => {
+
     const shouldDisable = (status?: InteractedContact['contactStatus']) => status === ContactStatusCodes.COMPLETED;
 
     const isFieldDisabled = React.useMemo(() => shouldDisable(contactStatus), [contactStatus]);
@@ -55,14 +69,16 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         : contactType !== ContactType.TIGHT;
 
     const validateContact = (contact: InteractedContact, validationReason: ValidationReason): validValidation | invalidValidation => {
-        if (contact.identificationType === IdentificationTypes.ID && !isIdValid(contact.identificationNumber)) {
-            return { valid: false, error: 'שדה ת.ז. אינו תקין' };
-        };
+        const contactIdType = contact.identificationType ? contact.identificationType : 0;
+        const contactIdNumber = contact.identificationNumber;
+        const idValidation = getIdValidation(contactIdType as number);
 
-        if (contact.identificationType === IdentificationTypes.PASSPORT && !isPassportValid(contact.identificationNumber)) {
-            return { valid: false, error: 'שדה דרכון אינו תקין' };
+        if (idValidation?.validation) {
+            if (!idValidation.validation(contactIdNumber)){
+                return { valid: false, error:  `שדה ${idValidation.fieldName} אינו תקין`};
+            } 
         };
-
+        
         if(!contact.doesNeedIsolation) {
             if (contact.contactType === ContactType.TIGHT) {
                 return { valid: false, error: 'המגע סומן כהדוק אך לא הוקם לו בידוד'};

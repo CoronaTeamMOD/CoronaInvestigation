@@ -12,6 +12,7 @@ import StoreStateType from 'redux/storeStateType';
 import { defaultUser } from 'Utils/UsersUtils/userUtils';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setCities } from 'redux/City/cityActionCreators';
+import IdentificationType from 'models/IdentificationType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
@@ -24,6 +25,7 @@ import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setEducationGrade } from 'redux/EducationGrade/educationGradeActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
+import { setIdentificationTypes } from 'redux/IdentificationTypes/identificationTypesActionCreators';
 import UpdateTrackingRecommendation from 'Utils/TrackingRecommendation/updateTrackingRecommendation'; 
 
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
@@ -39,6 +41,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
+    const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
 
     const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
 
@@ -90,7 +93,20 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             .catch(error => {
                 contactTypesLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
             });
-    }
+    };
+
+    const fetchIdentificationTypes = () => {
+        const identificationTypesLogger = logger.setup('Fetching Identification Types');
+        identificationTypesLogger.info('launching request to get identification types', Severity.LOW);
+        axios.get<IdentificationType[]>('/investigationInfo/identificationTypes')
+            .then((result) => {
+                identificationTypesLogger.info('request to get identification types was successful', Severity.LOW);
+                setIdentificationTypes(result.data);
+            })
+            .catch(error => {
+                identificationTypesLogger.error(`got errors in server while trying to get identification types, result: ${error}`, Severity.HIGH);
+            });
+    };
 
     const fetchCountries = () => {
         const countriesLogger = logger.setup('Fetching Countries');
@@ -159,6 +175,12 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     };
 
     useEffect(() => {
+        if (identificationTypes.length === 0) {
+            fetchIdentificationTypes();
+        }
+    }, [identificationTypes]);
+
+    useEffect(() => {
         if (epidemiologyNumber !== defaultEpidemiologyNumber && userId !== defaultUser.id) {
             fetchCities();
             fetchCountries();
@@ -166,7 +188,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             fetchStatuses();
             investigationStatus.mainStatus && fetchSubStatusesByStatus(investigationStatus.mainStatus);
             fetchEducationGrades();
-        }
+        };
     }, [epidemiologyNumber, userId]);
 
     useEffect(() => {

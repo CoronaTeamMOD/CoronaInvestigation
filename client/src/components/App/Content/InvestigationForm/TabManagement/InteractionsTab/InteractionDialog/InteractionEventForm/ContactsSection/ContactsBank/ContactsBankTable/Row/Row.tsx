@@ -35,7 +35,7 @@ const Row = (props: Props) => {
             </TableCell> 
             <TableCell>{contact.firstName}</TableCell>
             <TableCell>{contact.lastName}</TableCell>
-            <TableCell>{contact.identificationType}</TableCell>
+            <TableCell>{contact.identificationType?.type}</TableCell>
             <TableCell>{contact.identificationNumber}</TableCell>
             <TableCell>
                 <Select

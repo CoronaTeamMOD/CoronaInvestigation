@@ -48,7 +48,6 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
         if(contacts && contacts.length > 0) {
             const dataInFileLogger = logger.setup('Saving Contacted People Excel')
             dataInFileLogger.info('launching saving contacted people excel request', Severity.LOW);
-
             const validationErrors = contacts.reduce<string[]>((aggregatedArr, contact) => {
                 const parsedContact = contact.cityId 
                 ? {

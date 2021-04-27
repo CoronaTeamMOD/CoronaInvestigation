@@ -73,7 +73,7 @@ mutation deleteinvestigationReasonId ($epidemiologyNumberInput: Int!, $oldComple
 `;
 
 export const UPDATE_INVESTIGATION_STATIC_INFO = gql`
-mutation updateInvestigationStaticInfo ($fullNameInput: String, $identificationTypeInput: String, $identityNumberInput: String, $epidemiologyNumberInput: Int!) {
+mutation updateInvestigationStaticInfo ($fullNameInput: String, $identificationTypeInput: Int, $identityNumberInput: String, $epidemiologyNumberInput: Int!) {
   updateStaticInfo(input: {fullNameInput: $fullNameInput, identificationTypeInput: $identificationTypeInput, identityNumberInput: $identityNumberInput, epidemiologyNumberInput: $epidemiologyNumberInput}) {
     clientMutationId
   }

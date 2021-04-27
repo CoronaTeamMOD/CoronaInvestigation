@@ -1,26 +1,30 @@
 import * as yup from 'yup';
 
-import { ID_BASIC_VALIDATION_REGEX } from 'commons/Regex/Regex';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
+import IdentificationTypesCodes from 'models/enums/IdentificationTypesCodes';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
-import { isIdValid , isPassportValid, idLength } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-import { invalidIdText, invalidPassportText } from 'commons/Schema/messages';
+import { invalidIdText, invalidOtherIdText, invalidPalestineIdText, invalidPassportText } from 'commons/Schema/messages';
+import { isIdValid , isPassportValid, isPalestineIdValid, isOtherIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
-const ContactIdValidationSchema = yup
-  .string()
-  .when(InteractionEventContactFields.IDENTIFICATION_TYPE, {
-      is: IdentificationTypes.PASSPORT,
-      then: yup
-        .string()
-        .nullable()
-        .test('isValid', invalidPassportText, (id) => isPassportValid(id)),
-      otherwise:
-        yup
-        .string()
-        .nullable()
-        .matches(ID_BASIC_VALIDATION_REGEX, 'ת.ז חייבת להכיל ספרות בלבד')
-        .length(idLength, `ת.ז מכילה ${idLength} ספרות בלבד`)
-        .test('isValid', invalidIdText, (id) => isIdValid(id)),
+const ContactIdValidationSchema = yup.string()
+    .when(InteractionEventContactFields.IDENTIFICATION_TYPE, (identificationType: number) => {
+        switch (identificationType) {
+            case IdentificationTypesCodes.ID:
+                return yup.string()
+                    .nullable()
+                    .test('isValid', invalidIdText, (id) => isIdValid(id));
+            case IdentificationTypesCodes.PASSPORT:
+                return yup.string()
+                    .nullable()
+                    .test('isValid', invalidPassportText, (id) => isPassportValid(id));
+            case IdentificationTypesCodes.PALESTINE_ID:
+                return yup.string()
+                    .nullable()
+                    .test('isValid', invalidPalestineIdText, (id) => isPalestineIdValid(id));
+            default:
+                return yup.string()
+                    .nullable()
+                    .test('isValid', invalidOtherIdText, (id) => isOtherIdValid(id));
+        }
     });
 
 export default ContactIdValidationSchema;

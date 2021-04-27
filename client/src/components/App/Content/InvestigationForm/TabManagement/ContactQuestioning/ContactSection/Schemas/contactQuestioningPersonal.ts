@@ -7,7 +7,6 @@ import ContactIdValidationSchema from 'Utils/Contacts/ContactIdValidationSchema'
 import { PHONE_NUMBER_REGEX, NOT_REQUIRED_PHONE_NUMBER_REGEX} from 'commons/Regex/Regex';
 
 export const contactQuestioningPersonal = {
-    [InteractedContactFields.IDENTIFICATION_TYPE]: yup.string(),
     [InteractedContactFields.IDENTIFICATION_NUMBER]: yup
         .string()
         .when(
