@@ -118,6 +118,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
         type DataParser = (value: any) => any;
         const specialConvertors: Map<DataKey, DataParser> = new Map<DataKey, DataParser>([
             [PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER, (value) => parseInt(value)],
+            [PersonalInfoDataContextFields.EDUCATION_GRADE, (value) => value?.id ?? value],
             [PersonalInfoDataContextFields.ADDRESS, (value) => {
                 Object.keys(value).forEach(key => (value[key] = value[key] || null));
                 return value;
@@ -284,7 +285,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                 props.onChange(selectedInsuranceCompany ? selectedInsuranceCompany : '')
                                             }}
                                             value={props.value || ''}
-                                            className={props.value === NO_INSURANCE ? classes.markComplexity : ''}
                                             renderInput={(params) =>
                                                 <TextField
                                                     {...params}
@@ -293,6 +293,13 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                     error={Boolean(methods.errors[PersonalInfoDataContextFields.INSURANCE_COMPANY])}
                                                     id={PersonalInfoDataContextFields.INSURANCE_COMPANY}
                                                     placeholder={INSERT_INSURANCE_COMPANY}
+                                                    variant='outlined'
+                                                    InputProps={{
+                                                        ...params.InputProps,
+                                                        classes: {
+                                                            notchedOutline: props.value === NO_INSURANCE ? classes.notchedOutline : ''
+                                                        }
+                                                    }}
                                                 />
                                             }
                                         />
@@ -320,7 +327,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                             props.onChange(occupationOption ? occupationOption : '')
                                         }}
                                         value={props.value || ''}
-                                        className={occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? classes.markComplexity : ''}
                                         renderInput={(params) =>
                                             <TextField
                                                 {...params}
@@ -328,6 +334,13 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                 error={Boolean(methods.errors[PersonalInfoDataContextFields.RELEVANT_OCCUPATION])}
                                                 id={PersonalInfoDataContextFields.RELEVANT_OCCUPATION}
                                                 placeholder={INSERT_OCCUPATION}
+                                                variant='outlined'
+                                                InputProps={{
+                                                    ...params.InputProps,
+                                                    classes: {
+                                                        notchedOutline: occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? classes.notchedOutline : ''
+                                                    }
+                                                }}
                                             />
                                         }
                                     />
@@ -391,11 +404,18 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                         getOptionSelected={(option) => option.id === props.value}
                                                         value={props.value ? {id: props.value, displayName: (selectedRole?.displayName as string)} : null}
                                                         onChange={(event, selectedRole) => props.onChange(selectedRole?.id)}
-                                                        className={classes.markComplexity}
                                                         renderInput={(params) =>
                                                             <TextField
                                                                 {...params}
                                                                 placeholder='תפקיד'
+                                                                label='תפקיד'
+                                                                variant='outlined'
+                                                                InputProps={{
+                                                                    ...params.InputProps,
+                                                                    classes: {
+                                                                        notchedOutline: classes.notchedOutline
+                                                                    }
+                                                                }}
                                                             />
                                                         }
                                                     />
@@ -406,31 +426,34 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                             (selectedRole?.displayName === STUDENT && occupation === Occupations.EDUCATION_SYSTEM) &&
                                             <>
                                                 <Grid item xs={1}>
-                                                    <FormControl variant='outlined'>
-                                                        <InputLabel>שכבה</InputLabel>
-                                                        <Controller
-                                                            name={PersonalInfoDataContextFields.EDUCATION_GRADE}
-                                                            control={methods.control}
-                                                            render={(props) => (
-                                                                <Select
-                                                                    label='שכבה'
-                                                                    className={[classes.gradeInput, props.value && classes.markComplexity].join(' ')}
-                                                                    value={props.value}
-                                                                    onChange={(event) => props.onChange(event.target.value)}
-                                                                >
-                                                                    {
-                                                                        Array.isArray(educationGrades) && educationGrades.map((grade: EducationGrade) => (
-                                                                            <MenuItem
-                                                                                key={grade.id}
-                                                                                value={grade.id}>
-                                                                                {grade.displayName}
-                                                                            </MenuItem>
-                                                                        ))
+                                                    <Controller
+                                                        name={PersonalInfoDataContextFields.EDUCATION_GRADE}
+                                                        control={methods.control}
+                                                        render={(props) => {
+                                                            return (
+                                                                <Autocomplete
+                                                                    options={educationGrades}
+                                                                    getOptionLabel={(grade) => grade.displayName}
+                                                                    onChange={(event, grade) => props.onChange(grade ? grade : '')}
+                                                                    value={props.value?.id ? props.value || '' :  educationGrades.find(grade => grade.id === props.value)}
+                                                                    renderInput={(params) => (
+                                                                        <TextField
+                                                                            {...params}
+                                                                            placeholder='שכבה'
+                                                                            label='שכבה'
+                                                                            variant='outlined'
+                                                                            InputProps={{
+                                                                                ...params.InputProps,
+                                                                                classes: {
+                                                                                    notchedOutline: classes.notchedOutline
+                                                                                }
+                                                                            }}
+                                                                        />)
                                                                     }
-                                                                </Select>
+                                                                />
                                                             )}
-                                                        />
-                                                    </FormControl>
+                                                        }
+                                                    />
                                                 </Grid>
                                                 <Grid item xs={1}>
                                                     <Controller
@@ -439,11 +462,16 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                         render={(props) => (
                                                             <NumericTextField
                                                                 name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
-                                                                className={[classes.gradeInput, props.value && classes.markComplexity].join(' ')}
                                                                 value={props.value}
                                                                 onChange={props.onChange}
                                                                 onBlur={props.onBlur}
                                                                 label={CLASS_NUMBER}
+                                                                variant='outlined'
+                                                                InputProps={{
+                                                                    classes: {
+                                                                        notchedOutline: classes.notchedOutline
+                                                                    }
+                                                                }}
                                                             />
                                                         )}
                                                     />
