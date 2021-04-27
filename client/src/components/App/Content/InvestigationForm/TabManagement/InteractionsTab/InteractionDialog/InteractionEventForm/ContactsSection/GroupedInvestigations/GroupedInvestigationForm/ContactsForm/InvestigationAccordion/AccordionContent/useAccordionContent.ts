@@ -10,8 +10,8 @@ const useAccordionContent = (props: Props) => {
         let count = 0;
         events.forEach(
             event => event.contactedPeopleByContactEvent.nodes.forEach(
-                person => {
-                    const { id } = person;
+                contactedPerson => {
+                    const { id } = contactedPerson.personByPersonInfo;
                     groupedInvestigationContacts.includes(id) && count++;
                 }
             )
