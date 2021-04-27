@@ -39,6 +39,21 @@ const mandatoryQuarantineFields = [
      InteractedContactFields.FIRST_NAME,
     InteractedContactFields.LAST_NAME];
 
+const getIdValidation = (idType: number) => {
+    switch (idType) {
+        case IdentificationTypesCodes.ID:
+            return {validation: isIdValid, fieldName: 'ת"ז'};
+        case IdentificationTypesCodes.PASSPORT:
+            return {validation: isPassportValid, fieldName: 'דרכון'};
+        case IdentificationTypesCodes.PALESTINE_ID:
+            return {validation: isPalestineIdValid, fieldName: 'ת"ז פלסטינית'};
+        case IdentificationTypesCodes.OTHER || IdentificationTypesCodes.MOSSAD:
+            return {validation: isOtherIdValid, fieldName: 'מזהה'};
+        default:
+            break;
+    }
+};
+
 const useContactFields = (contactStatus?: InteractedContact['contactStatus']) => {
 
     const shouldDisable = (status?: InteractedContact['contactStatus']) => status === ContactStatusCodes.COMPLETED;
@@ -54,21 +69,14 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         : contactType !== ContactType.TIGHT;
 
     const validateContact = (contact: InteractedContact, validationReason: ValidationReason): validValidation | invalidValidation => {
-
-        const contactIdType = contact.identificationType.id ? contact.identificationType.id : contact.identificationType;
+        const contactIdType = contact.identificationType ? contact.identificationType : 0;
         const contactIdNumber = contact.identificationNumber;
+        const idValidation = getIdValidation(contactIdType as number);
 
-        if (contactIdType === IdentificationTypesCodes.ID && !isIdValid(contactIdNumber)) {
-            return { valid: false, error: 'שדה ת"ז אינו תקין' };
-        };
-        if (contactIdType === IdentificationTypesCodes.PASSPORT && !isPassportValid(contactIdNumber)) {
-            return { valid: false, error: 'שדה דרכון אינו תקין' };
-        };
-        if ((contactIdType === IdentificationTypesCodes.MOSSAD || contactIdType === IdentificationTypesCodes.OTHER ) && !isOtherIdValid(contactIdNumber)) {
-            return { valid: false, error: 'שדה מזהה אינו תקין' };
-        };
-        if (contactIdType === IdentificationTypesCodes.PALESTINE_ID && !isPalestineIdValid(contactIdNumber)) {
-            return { valid: false, error: 'שדה ת"ז פלסטינית אינו תקין' };
+        if (idValidation?.validation) {
+            if (!idValidation.validation(contactIdNumber)){
+                return { valid: false, error:  `שדה ${idValidation.fieldName} אינו תקין`};
+            } 
         };
         
         if(!contact.doesNeedIsolation) {

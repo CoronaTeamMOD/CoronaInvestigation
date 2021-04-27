@@ -98,8 +98,8 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     const fetchIdentificationTypes = () => {
         const identificationTypesLogger = logger.setup('Fetching Identification Types');
         identificationTypesLogger.info('launching request to get identification types', Severity.LOW);
-        axios.get('/investigationInfo/identificationTypes')
-            .then((result: any) => {
+        axios.get<IdentificationType[]>('/investigationInfo/identificationTypes')
+            .then((result) => {
                 identificationTypesLogger.info('request to get identification types was successful', Severity.LOW);
                 setIdentificationTypes(result.data);
             })
