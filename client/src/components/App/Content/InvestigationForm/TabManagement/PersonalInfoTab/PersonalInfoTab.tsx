@@ -118,7 +118,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
         type DataParser = (value: any) => any;
         const specialConvertors: Map<DataKey, DataParser> = new Map<DataKey, DataParser>([
             [PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER, (value) => parseInt(value)],
-            [PersonalInfoDataContextFields.EDUCATION_GRADE, (value) => value.id],
+            [PersonalInfoDataContextFields.EDUCATION_GRADE, (value) => value?.id ?? value],
             [PersonalInfoDataContextFields.ADDRESS, (value) => {
                 Object.keys(value).forEach(key => (value[key] = value[key] || null));
                 return value;
@@ -429,28 +429,30 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                     <Controller
                                                         name={PersonalInfoDataContextFields.EDUCATION_GRADE}
                                                         control={methods.control}
-                                                        render={(props) => (
-                                                            <Autocomplete
-                                                                options={educationGrades}
-                                                                getOptionLabel={(grade) => grade.displayName}
-                                                                onChange={(event, grade) => props.onChange(grade ? grade : '')}
-                                                                value={props.value || ''}
-                                                                renderInput={(params) => (
-                                                                    <TextField
-                                                                        {...params}
-                                                                        placeholder='שכבה'
-                                                                        label='שכבה'
-                                                                        variant='outlined'
-                                                                        InputProps={{
-                                                                            ...params.InputProps,
-                                                                            classes: {
-                                                                                notchedOutline: classes.notchedOutline
-                                                                            }
-                                                                        }}
-                                                                    />)
-                                                                }
-                                                            />
-                                                        )}
+                                                        render={(props) => {
+                                                            return (
+                                                                <Autocomplete
+                                                                    options={educationGrades}
+                                                                    getOptionLabel={(grade) => grade.displayName}
+                                                                    onChange={(event, grade) => props.onChange(grade ? grade : '')}
+                                                                    value={props.value?.id ? props.value || '' :  educationGrades.find(grade => grade.id === props.value)}
+                                                                    renderInput={(params) => (
+                                                                        <TextField
+                                                                            {...params}
+                                                                            placeholder='שכבה'
+                                                                            label='שכבה'
+                                                                            variant='outlined'
+                                                                            InputProps={{
+                                                                                ...params.InputProps,
+                                                                                classes: {
+                                                                                    notchedOutline: classes.notchedOutline
+                                                                                }
+                                                                            }}
+                                                                        />)
+                                                                    }
+                                                                />
+                                                            )}
+                                                        }
                                                     />
                                                 </Grid>
                                                 <Grid item xs={1}>
