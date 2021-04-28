@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
+import cache from '../Cache';
+import { setToCache } from './useCache';
 import UserType from '../Models/User/UserType';
 import { Severity } from '../Models/Logger/types';
 import { GET_USER_BY_ID } from '../DBService/Users/Query';
@@ -25,6 +27,7 @@ const handleConfidentialAuth = (
 ) => {
     const userUpn = request.headers.authorization;
     const userId =  userUpn.split('@')[0];
+
     const authenticationLogger = logger.setup({
         workflow: 'Authentication',
         investigation: parseInt(request.headers.epidemiologynumber as string)
@@ -55,6 +58,13 @@ const handleConfidentialAuth = (
         authenticationLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.sendStatus(errorStatusCode).send(error);
     });;
+}
+
+const cacheUserDetails = () => {
+    // if user is cached
+        // return cached details
+    // else
+        // cache details
 }
 
 const authMiddleware = (
