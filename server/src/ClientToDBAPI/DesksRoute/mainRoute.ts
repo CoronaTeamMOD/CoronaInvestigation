@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 
 import { Severity } from '../../Models/Logger/types';
 import GetAllDesks from '../../Models/Desk/GetAllDesks';
-import UseCache, { setToCache } from '../../middlewares/useCache';
+import UseCache, { setToCache } from '../../middlewares/UseCache';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import { ALL_DESKS_QUERY, DESKS_BY_COUNTY_ID } from '../../DBService/Desk/Query';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';

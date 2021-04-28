@@ -3,7 +3,7 @@ import { Router, Request, Response } from 'express';
 import User from '../../Models/User/User';
 import UserPatch from '../../Models/User/UserPatch';
 import { Severity } from '../../Models/Logger/types';
-import UseCache, { setToCache } from '../../middlewares/useCache';
+import UseCache, { setToCache } from '../../middlewares/UseCache';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import handleUsersRequest from '../../middlewares/HandleUsersRequest';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
