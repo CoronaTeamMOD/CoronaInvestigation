@@ -1,6 +1,6 @@
 -- Creating public.airlines
 CREATE TABLE IF NOT EXISTS public.airlines (
-    id integer PRIMARY KEY NOT NULL
+    id integer PRIMARY KEY NOT NULL,
     display_name varchar
 );
 
@@ -87,9 +87,9 @@ CREATE TABLE IF NOT EXISTS public.flight_numbers (
     airline_id integer NOT NULL,
     display_name varchar,
 
-    FOREIGN KEY (airlineId)
+    FOREIGN KEY (airline_id)
         REFERENCES public.airlines(id)
-)
+);
 
 -- inserting into fight_numbers
 INSERT INTO public.flight_numbers (airline_id, display_name) VALUES  (11 ,'6H432'), 
