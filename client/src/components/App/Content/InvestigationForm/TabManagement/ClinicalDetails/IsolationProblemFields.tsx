@@ -17,7 +17,7 @@ const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
     return (
         <FormRowWithInput fieldName='האם בעייתי לקיים בידוד:'>
             <>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                     <Controller
                         name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM}
                         control={control}

@@ -4,7 +4,8 @@ import { makeStyles } from '@material-ui/styles';
 const useStyles = makeStyles((theme: Theme) => ({
     text: {
         color: theme.palette.error.main,
-        display: 'inline'
+        display: 'inline',
+        fontSize: '16px'
     }
 }));
 

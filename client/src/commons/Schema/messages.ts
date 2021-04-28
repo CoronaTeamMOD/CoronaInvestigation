@@ -1,4 +1,4 @@
-export const requiredText = 'שדה זה הוא חובה';
+export const requiredText = 'שדה חובה';
 
 export const alphbetErrorMessage = 'השדה יכול להכיל אותיות בלבד';
 export const numericErrorMessage = 'השדה יכול להכיל מספרים בלבד';
