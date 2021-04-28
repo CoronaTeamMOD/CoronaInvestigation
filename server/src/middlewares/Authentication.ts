@@ -38,34 +38,35 @@ const handleConfidentialAuth = (
     authenticationLogger.info(`authorized azure upn successfully! got user: ${JSON.stringify(userId)}`, Severity.LOW);
     
     if(hasAuthCache(userId)) {
-        // TODO : loggers
-        console.log('USER IS CACHED!!!');
+        authenticationLogger.info('users exists in cache, returning from cache', Severity.LOW);
+        
         response.locals.user = getAuthCache(userId);
         return next();
     } else {
         const parameters = { id: userId };
         authenticationLogger.info(`get user by id: ${launchingDBRequestLog(parameters)}`, Severity.LOW);
 
-        graphqlRequest(GET_USER_BY_ID, response.locals, parameters).then((result: any) => {
-            authenticationLogger.info(validDBResponseLog, Severity.LOW);
-            const newLocals = {
-                id: userId,
-                name: result.data.userById?.userName,
-                userType: result.data.userById?.userType,
-                investigationGroup: result.data.userById?.investigationGroup,
-                countyByInvestigationGroup: {
-                    districtId: result.data.userById?.countyByInvestigationGroup?.districtId
-                },
-                isDeveloper: result.isDeveloper
-            };
-            setAuthCache(userId, newLocals)
+        graphqlRequest(GET_USER_BY_ID, response.locals, parameters)
+            .then((result: any) => {
+                authenticationLogger.info(validDBResponseLog, Severity.LOW);
+                const newLocals = {
+                    id: userId,
+                    name: result.data.userById?.userName,
+                    userType: result.data.userById?.userType,
+                    investigationGroup: result.data.userById?.investigationGroup,
+                    countyByInvestigationGroup: {
+                        districtId: result.data.userById?.countyByInvestigationGroup?.districtId
+                    },
+                    isDeveloper: result.isDeveloper
+                };
+                setAuthCache(userId, newLocals)
 
-            response.locals.user = newLocals;
-            return next();
-        }).catch(error => {
-            authenticationLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-            response.sendStatus(errorStatusCode).send(error);
-        });
+                response.locals.user = newLocals;
+                return next();
+            }).catch(error => {
+                authenticationLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                response.sendStatus(errorStatusCode).send(error);
+            });
     }
 }
 
@@ -93,31 +94,32 @@ const authMiddleware = (
             authenticationLogger.info(`noauth user found successfully, the user is: ${JSON.stringify(user)}`, Severity.LOW);
             const { id } = user;
             if(hasAuthCache(id)) {
-                console.log('userIsAuthedCACHED');  
+                authenticationLogger.info('users exists in cache, returning from cache', Severity.LOW);
+
                 response.locals.user = getAuthCache(id)
                 return next();
             } else {
                 const parameters = { id };
                 authenticationLogger.info(`get user by id: ${launchingDBRequestLog(parameters)}`, Severity.LOW);
                 graphqlRequest(GET_USER_BY_ID, response.locals, parameters)
-                .then((result: any) => {
-                    authenticationLogger.info(validDBResponseLog, Severity.LOW);
-                    const newLocals = {
-                        ...user,
-                        userType: result.data.userById?.userType,
-                        investigationGroup: result.data.userById?.investigationGroup,
-                        countyByInvestigationGroup: {
-                            districtId: result.data.userById?.countyByInvestigationGroup?.districtId
-                        },
-                        isDeveloper: result.data.userById?.isDeveloper
-                    };
-                    response.locals.user = newLocals;
-                    setAuthCache(id , newLocals);
-                    return next();
-                }).catch(error => {
-                    authenticationLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-                    response.sendStatus(errorStatusCode).send(error);
-                });
+                    .then((result: any) => {
+                        authenticationLogger.info(validDBResponseLog, Severity.LOW);
+                        const newLocals = {
+                            ...user,
+                            userType: result.data.userById?.userType,
+                            investigationGroup: result.data.userById?.investigationGroup,
+                            countyByInvestigationGroup: {
+                                districtId: result.data.userById?.countyByInvestigationGroup?.districtId
+                            },
+                            isDeveloper: result.data.userById?.isDeveloper
+                        };
+                        response.locals.user = newLocals;
+                        setAuthCache(id , newLocals);
+                        return next();
+                    }).catch(error => {
+                        authenticationLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                        response.sendStatus(errorStatusCode).send(error);
+                    });
             }
         }
     }
