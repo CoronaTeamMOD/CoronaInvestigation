@@ -1,4 +1,4 @@
-import cache from '.'
+import cache from '.';
 
 const flushCache = () => {
     cache.flushAll();

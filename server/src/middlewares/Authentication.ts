@@ -94,8 +94,7 @@ const authMiddleware = (
             const { id } = user;
             if(hasAuthCache(id)) {
                 authenticationLogger.info('users exists in cache, returning from cache', Severity.LOW);
-
-                response.locals.user = getAuthCache(id)
+                response.locals.user = getAuthCache(id);
                 return next();
             } else {
                 const parameters = { id };

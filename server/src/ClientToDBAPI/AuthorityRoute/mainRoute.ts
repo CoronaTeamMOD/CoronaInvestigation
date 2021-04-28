@@ -18,7 +18,7 @@ AuthorityRoute.get('/', UseCache,(request: Request, response: Response) => {
     graphqlRequest(GET_ALL_AUTHORITIES, response.locals)
     .then((result: any) => {
       authoritiesLogger.info(validDBResponseLog, Severity.LOW);
-      const data = result.data.allAuthorities.nodes
+      const data = result.data.allAuthorities.nodes;
       setToCache(request.originalUrl, data);
       response.send(data);
     })

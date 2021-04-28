@@ -20,8 +20,7 @@ addressRoute.get('/cities', UseCache, (request: Request, response: Response) => 
     citiesLogger.info(launchingDBRequestLog(), Severity.LOW);
     graphqlRequest(GET_ALL_CITIES, response.locals)
     .then((result: any) => {
-      const data = result.data.allCities.nodes
-      
+      const data = result.data.allCities.nodes;
       citiesLogger.info(validDBResponseLog, Severity.LOW);
       setToCache(request.originalUrl, data);
       response.send(data);

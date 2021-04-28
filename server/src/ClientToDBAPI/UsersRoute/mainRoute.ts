@@ -387,9 +387,8 @@ usersRoute.get('/sourcesOrganization', UseCache, (request: Request, response: Re
     graphqlRequest(GET_ALL_SOURCE_ORGANIZATION, response.locals)
         .then((result: GetAllSourceOrganizations) => {
             sourcesOrganizationLogger.info(validDBResponseLog, Severity.LOW);
-
             const data = result.data.allSourceOrganizations.nodes;
-            setToCache( request.originalUrl,data )
+            setToCache(request.originalUrl, data);
             response.send(data);
         })
         .catch((error) => {
@@ -406,7 +405,6 @@ usersRoute.get('/languages', UseCache, (request: Request, response: Response) =>
     graphqlRequest(GET_ALL_LANGUAGES, response.locals)
         .then((result: GetAllLanguagesResponse) => {
             languagesLogger.info(validDBResponseLog, Severity.LOW);
-
             const data = result.data.allLanguages.nodes;
             setToCache(request.originalUrl, data);
             response.send(data);
