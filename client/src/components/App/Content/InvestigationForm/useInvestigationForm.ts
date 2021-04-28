@@ -40,7 +40,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
-    const airlines = useSelector<StoreStateType, Map<string, Airline>>(state => state.airlines);
+    const airlines = useSelector<StoreStateType, Map<number, string>>(state => state.airlines);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
@@ -82,7 +82,17 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     };
 
     const fetchAirlines = () => {
-        console.log(airlines);
+        if(!airlines.size) {
+            axios.get<Airline[]>('/airlines')
+                .then(result => {
+                    const airlinesMap = new Map(result.data.map(airline => [airline.id, airline.displayName]))
+                    setAirlines(airlinesMap);
+                })
+                .catch(err => {
+                    // logger
+                    console.log(err);
+                });
+        }
     }
 
     const fetchContactTypes = () => {
@@ -193,6 +203,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             fetchCountries();
             fetchContactTypes();
             fetchStatuses();
+            fetchAirlines();
             investigationStatus.mainStatus && fetchSubStatusesByStatus(investigationStatus.mainStatus);
             fetchEducationGrades();
         };

@@ -1,10 +1,8 @@
-import Airline from 'models/Airline';
-
 import * as Actions from './airlineActionTypes';
 
-const initialState: Map<string, Airline> = new Map();
+const initialState: Map<number, string> = new Map();
 
-const cityReducer = (state = initialState, action: Actions.airlinesAction) : Map<string, Airline> => {
+const cityReducer = (state = initialState, action: Actions.airlinesAction) : Map<number, string> => {
     switch (action.type) {
         case Actions.SET_AIRLINES: {
             return action.payload.airlines

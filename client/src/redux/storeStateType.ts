@@ -43,5 +43,5 @@ export default interface StoreStateType {
     complexReasons: (number|null)[];
     greenPass: GreenPassReducerType;
     identificationTypes: IdentificationType[];
-    airlines: Map<string, Airline>
+    airlines: Map<number, string>
 };
