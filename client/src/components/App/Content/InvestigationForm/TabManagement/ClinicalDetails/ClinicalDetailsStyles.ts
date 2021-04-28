@@ -72,6 +72,9 @@ export const useStyles = makeStyles({
     hiddenIsPregnant: {
         display: 'none'
     },
+    clinicalDetailsStub: {
+        margin: '10px 15px 10px 0'
+    }
 });
 
 export interface ClinicalDetailsClasses {
@@ -91,4 +94,5 @@ export interface ClinicalDetailsClasses {
     verticalSpacing: string;
     hospitalInput: string;
     symptomsAndDiseasesCheckbox: string;
+    clinicalDetailsStub: string;
 }

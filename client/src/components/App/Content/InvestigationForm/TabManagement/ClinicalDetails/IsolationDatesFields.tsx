@@ -43,6 +43,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
             </FormRowWithInput>
             <Collapse in={watchIsInIsolation}>
                 <Grid item xs={2} className={classes.dates}>
+                    <Grid item xs={3} className={classes.clinicalDetailsStub}/>
                     <Controller
                         name={ClinicalDetailsFields.ISOLATION_START_DATE}
                         control={control}
