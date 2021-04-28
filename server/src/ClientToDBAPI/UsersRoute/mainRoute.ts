@@ -3,6 +3,7 @@ import { Router, Request, Response } from 'express';
 import User from '../../Models/User/User';
 import UserPatch from '../../Models/User/UserPatch';
 import { Severity } from '../../Models/Logger/types';
+import UseCache, { setToCache } from '../../middlewares/useCache';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import handleUsersRequest from '../../middlewares/HandleUsersRequest';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
@@ -303,7 +304,7 @@ usersRoute.post('/changeGroupCounty', adminMiddleWare, (request: Request, respon
         });
 });
 
-usersRoute.get('/userTypes', (request: Request, response: Response) => {
+usersRoute.get('/userTypes', UseCache, (request: Request, response: Response) => {
     const userTypesLogger = logger.setup({
         workflow: 'query all user types',
         user: response.locals.user.id,
@@ -312,7 +313,10 @@ usersRoute.get('/userTypes', (request: Request, response: Response) => {
     graphqlRequest(GET_ALL_USER_TYPES, response.locals)
         .then((result: GetAllUserTypesResponse) => {
             userTypesLogger.info(validDBResponseLog, Severity.LOW);
-            response.send(result.data.allUserTypes?.nodes);
+            
+            const data = result.data.allUserTypes?.nodes;
+            setToCache(request.originalUrl, data);
+            response.send(data);
         })
         .catch(error => {
             userTypesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
@@ -371,7 +375,7 @@ usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: R
     })
 });
 
-usersRoute.get('/sourcesOrganization', (request: Request, response: Response) => {
+usersRoute.get('/sourcesOrganization', UseCache, (request: Request, response: Response) => {
     const sourcesOrganizationLogger = logger.setup({
         workflow: 'query all sources organizations',
     });
@@ -379,7 +383,10 @@ usersRoute.get('/sourcesOrganization', (request: Request, response: Response) =>
     graphqlRequest(GET_ALL_SOURCE_ORGANIZATION, response.locals)
         .then((result: GetAllSourceOrganizations) => {
             sourcesOrganizationLogger.info(validDBResponseLog, Severity.LOW);
-            response.send(result.data.allSourceOrganizations.nodes);
+
+            const data = result.data.allSourceOrganizations.nodes;
+            setToCache( request.originalUrl,data )
+            response.send(data);
         })
         .catch((error) => {
             sourcesOrganizationLogger.error(invalidDBResponseLog(error), Severity.HIGH);
@@ -387,7 +394,7 @@ usersRoute.get('/sourcesOrganization', (request: Request, response: Response) =>
         })
 })
 
-usersRoute.get('/languages', (request: Request, response: Response) => {
+usersRoute.get('/languages', UseCache, (request: Request, response: Response) => {
     const languagesLogger = logger.setup({
         workflow: 'query all languages',
     });
@@ -395,7 +402,10 @@ usersRoute.get('/languages', (request: Request, response: Response) => {
     graphqlRequest(GET_ALL_LANGUAGES, response.locals)
         .then((result: GetAllLanguagesResponse) => {
             languagesLogger.info(validDBResponseLog, Severity.LOW);
-            response.send(result.data.allLanguages.nodes);
+
+            const data = result.data.allLanguages.nodes;
+            setToCache(request.originalUrl, data);
+            response.send(data);
         })
         .catch((error) => {
             languagesLogger.error(invalidDBResponseLog(error), Severity.HIGH);

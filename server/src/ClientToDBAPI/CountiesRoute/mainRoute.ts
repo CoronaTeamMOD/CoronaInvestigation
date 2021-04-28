@@ -18,7 +18,6 @@ countiesRoute.get('', UseCache,(request: Request, response: Response) => {
         .then((result: GetAllCountiesResponse) => {
             getCountiesLogger.info(validDBResponseLog, Severity.LOW);
             const data = result.data.allCounties.nodes;
-            console.log('CACHING.....$@()$(!@)$!(@)$@(!)$(@!)$(@!)$(!)$@')
             setToCache(request.originalUrl, data);
             response.send(data);
         })

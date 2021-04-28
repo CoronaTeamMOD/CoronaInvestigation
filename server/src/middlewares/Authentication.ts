@@ -4,7 +4,7 @@ import UserType from '../Models/User/UserType';
 import { Severity } from '../Models/Logger/types';
 import { GET_USER_BY_ID } from '../DBService/Users/Query';
 import { errorStatusCode, graphqlRequest } from '../GraphqlHTTPRequest';
-import { hasAuthCache , setAuthCache, getAuthCache } from '../Cache/authentication';
+import { hasAuthCache , setAuthCache, getAuthCache } from '../Cache/authentication/';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../Logger/Logger';
 
 const stubUsers = {
