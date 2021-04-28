@@ -1,8 +1,9 @@
 import * as yup from 'yup';
-
+import { isValid } from 'date-fns';
+ 
 import { subDays, addDays } from 'date-fns';
 import { fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
-import { requiredText } from 'commons/Schema/messages';
+import { invalidDateText, requiredText } from 'commons/Schema/messages';
 
 const endDateBeforeValidationDateText = 'תאריך לא יכול להיות יותר מאוחר מתאריך תחילת מחלה';
 const twoWeeksBeforeValidationDateText = 'תאריך לא יכול להיות יותר קטן משבועיים מתאריך תחילת מחלה';
@@ -25,16 +26,19 @@ const flightValidation = (validationDate: Date): yup.Schema<any, object> => {
         [fieldsNames.originAirport]: yup.string().nullable().required(requiredText),
         [fieldsNames.originCity]: yup.string().nullable(),
         [fieldsNames.originCountry]: yup.string().nullable().required(requiredText),
-        [fieldsNames.flightStartDate]: yup
-            .date()
-            .nullable()
-            .required(requiredText)
+        [fieldsNames.flightStartDate]: yup.date().nullable().required(requiredText)
+            .typeError(invalidDateText)
             .max(includeValidationDate, endDateBeforeValidationDateText)
             .min(twoWeeksBeforeValidationDate, twoWeeksBeforeValidationDateText),
         [fieldsNames.flightEndDate]: yup.date().when(fieldsNames.flightStartDate, (flightStartDate: Date) => {
-            return new Date(twoWeeksBeforeValidationDate) > flightStartDate ?
-            yup.date().min(twoWeeksBeforeValidationDate, twoWeeksBeforeValidationDateText).required(requiredText) :
-            yup.date().min(flightStartDate, EndDateBeforeStartDateText).max(includeValidationDate, endDateBeforeValidationDateText).required(requiredText)
+            return new Date(twoWeeksBeforeValidationDate) > flightStartDate 
+                ? yup.date().required(requiredText)
+                    .min(twoWeeksBeforeValidationDate, twoWeeksBeforeValidationDateText)
+                    .test('isDateValid', invalidDateText, (flightEndDate: any) => isValid(flightEndDate))
+                : yup.date().required(requiredText)
+                    .max(includeValidationDate, endDateBeforeValidationDateText)
+                    .test('isDateValid', invalidDateText, (flightEndDate: any) => isValid(flightEndDate))
+                    .min((isValid(flightStartDate) ? flightStartDate : new Date(0)), EndDateBeforeStartDateText)
         }),
     });
 };
