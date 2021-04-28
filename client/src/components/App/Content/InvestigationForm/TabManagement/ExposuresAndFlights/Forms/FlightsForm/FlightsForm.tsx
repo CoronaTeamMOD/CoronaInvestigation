@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Delete } from '@material-ui/icons';
-import { Grid, IconButton } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 import { Controller , useFormContext } from 'react-hook-form';
+import { Grid, IconButton, TextField } from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import DatePick from 'commons/DatePick/DatePick';
@@ -12,13 +14,16 @@ import FlightNumberTextField from 'commons/FlightNumberTextField/FlightNumberTex
 
 import useStyles from './FlightFormStyles';
 import AirportInput from './AirportInput/AirportInput';
+import StoreStateType from 'redux/storeStateType';
 
 const startDateLabel = '*מתאריך';
 const endDateLabel = '*עד תאריך';
 
 const FlightsForm = (props: Props) => {
-
     const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted } = props;
+    
+	const airlines = useSelector<StoreStateType, Map<number, string>>(state => state.airlines);
+	console.log('aaa',Array.from(airlines).map(airline => {return {id: airline[0] , displayName : airline[1]}}));
 
     const {control , errors, trigger, watch} = useFormContext();
     const classes = useStyles();
@@ -153,14 +158,33 @@ const FlightsForm = (props: Props) => {
 							defaultValue={exposureAndFlightsData[fieldsNames.airline]}
 							render={(props) => {
 								return (
-									<AirelineTextField
-										{...props}
-										testId='airlineCompany'
-										onChange={(value) => {
-											props.onChange(value);
-										}}
-										placeholder='הזן חברת תעופה'
-									/>
+									<Autocomplete
+										options={Array.from(airlines).map(airline => {return {id: airline[0] , displayName : airline[1]}})}
+										getOptionLabel={(option) => option.displayName }
+										value={props.value}
+										onChange={(event, newAirline) => props.onChange(newAirline ?? null)}
+										renderInput={(params) => 
+											<TextField
+												error={false}
+												label={'aaa'}
+												{...params}
+												placeholder={'a'}
+											/>}
+                            		/>
+									// <AutocompletedField 
+									// 	{...props}
+									// 	options={Array.from(airlines, (val , index) => {return {id : index , displayName : val}})}
+									// 	onChange={(event, newValue) => {
+									// 		const formattedValue = newValue ? newValue.id : null;
+									// 		console.log(formattedValue);
+									// 		props.onChange(formattedValue);
+									// 		//handleCountryChange(newValue);
+									// 	}}
+									// 	getOptionLabel={(option) => option.displayName}
+									// 	error={false}
+									// 	label={'namal'}
+									// 	placeholder='namal'
+									// />
 								);
 							}}
 						/>
