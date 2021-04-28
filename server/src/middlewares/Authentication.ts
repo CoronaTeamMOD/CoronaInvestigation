@@ -11,7 +11,6 @@ const stubUsers = {
     'fake token!': {
         id: '7',
         name: 'stubuser',
-
     },
     'demo token': {
         id: '1',

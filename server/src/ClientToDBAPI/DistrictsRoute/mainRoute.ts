@@ -16,8 +16,7 @@ districtsRoute.get('', UseCache , (request: Request, response: Response) => {
     getDistrictsLogger.info(launchingDBRequestLog(), Severity.LOW);
     graphqlRequest(GET_ALL_DISTRICTS, response.locals)
         .then((result: GetAllDistrictsResponse) => {
-            const data = result.data.allDistricts.nodes
-
+            const data = result.data.allDistricts.nodes;
             getDistrictsLogger.info(validDBResponseLog, Severity.LOW);
             setToCache(request.originalUrl, data);
             response.send(data);

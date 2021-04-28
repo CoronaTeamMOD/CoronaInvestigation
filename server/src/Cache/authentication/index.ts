@@ -8,4 +8,4 @@ export {
     setAuthCache,
     getAuthCache,
     removeAuthCache
-}
+};

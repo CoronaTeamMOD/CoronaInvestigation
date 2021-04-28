@@ -9,15 +9,14 @@ const UseCache = (req : Request, res : Response, next : NextFunction) => {
     if(cache.has(originalUrl)) {
         const cachedResponse = cache.get(originalUrl);
 
-        return res.send(cachedResponse)
+        return res.send(cachedResponse);
     } else {
         return next();
     }
-}
-
+};
 
 export default UseCache;
 
 export {
     setToCache
-}
+};
