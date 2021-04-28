@@ -9,6 +9,7 @@ import handleUsersRequest from '../../middlewares/HandleUsersRequest';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
 import UpdateUserResponse from '../../Models/User/UpdateUserResponse';
 import handleCountyRequest from '../../middlewares/HandleCountyRequest';
+import removeAuthCache from '../../Cache/authentication/removeAuthCache';
 import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
 import GetAllUserTypesResponse from '../../Models/User/GetAllUserTypesResponse';
 import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
@@ -106,6 +107,7 @@ usersRoute.post('/updateCounty', handleUsersRequest, (request: Request, response
     graphqlRequest(UPDATE_COUNTY, response.locals, updateCountyVariables)
         .then(result => {
             updateCountyLogger.info(validDBResponseLog, Severity.LOW);
+            removeAuthCache(request.body.userId);
             response.send(result.data.updateUserById.user);
         })
         .catch(error => {
@@ -129,6 +131,7 @@ usersRoute.post('/updateDistrict', (request: Request, response: Response) => {
     graphqlRequest(UPDATE_DISTRICT, response.locals, parameters)
     .then(result => {
         updateDistrictLogger.info(validDBResponseLog, Severity.LOW);
+        removeAuthCache(response.locals.user.id);
         response.send(result.data.updateUserDistrict.json);
     })
     .catch(error => {
@@ -154,6 +157,7 @@ usersRoute.post('/updateUserType', (request: Request, response: Response) => {
     graphqlRequest(UPDATE_USER_TYPE, response.locals, parameters)
         .then(result => {
             updateUserTypeLogger.info(validDBResponseLog, Severity.LOW);
+            removeAuthCache(request.body.userId);
             response.send(result.data.updateUserById.user);
         })
         .catch(error => {
@@ -462,6 +466,7 @@ usersRoute.put('', (request: Request, response: Response) => {
     graphqlRequest(UPDATE_USER, response.locals, parameters)
         .then((result: UpdateUserResponse) => {
             updateUserLogger.info(validDBResponseLog, Severity.LOW);
+            removeAuthCache(request.body.id);
             response.send(result.data.updateUserById);
         })
         .catch((error) => {
