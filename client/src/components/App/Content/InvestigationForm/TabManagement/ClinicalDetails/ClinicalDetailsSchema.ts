@@ -105,7 +105,7 @@ const ClinicalDetailsSchema = (validationDate: Date) => {
         [ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN]: yup.boolean().nullable().when(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, {
             is: true,
             then: yup.boolean().nullable().required(),
-            otherwise: yup.boolean().nullable().nullable()
+            otherwise: yup.boolean().nullable()
         }),
         [ClinicalDetailsFields.SYMPTOMS_START_DATE]: yup.date().when([ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN],
             (doesHaveSymptoms: boolean, isSymptomsDateUnknown: boolean, schema: any) => {
