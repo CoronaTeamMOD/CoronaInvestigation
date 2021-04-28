@@ -17,6 +17,7 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import { setStatuses } from 'redux/Status/statusesActionCreators';
+import { setAirlines } from 'redux/Airlines/airlineActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import  BroadcastMessage, { BC_TABS_NAME }  from 'models/BroadcastMessage';
@@ -29,6 +30,7 @@ import { setIdentificationTypes } from 'redux/IdentificationTypes/identification
 import UpdateTrackingRecommendation from 'Utils/TrackingRecommendation/updateTrackingRecommendation'; 
 
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
+import Airline from 'models/Airline';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
@@ -38,6 +40,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
+    const airlines = useSelector<StoreStateType, Map<string, Airline>>(state => state.airlines);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
@@ -77,6 +80,10 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                 });
         }
     };
+
+    const fetchAirlines = () => {
+        console.log(airlines);
+    }
 
     const fetchContactTypes = () => {
         const contactTypesLogger = logger.setup('Fetching Contact Types');
