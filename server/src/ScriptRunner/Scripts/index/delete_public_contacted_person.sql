@@ -7,12 +7,11 @@ CREATE OR REPLACE FUNCTION public.delete_contacted_person_function(
     COST 100
     VOLATILE PARALLEL UNSAFE
 AS $BODY$
-begin		
+BEGIN		
     -- I'm leaving this as a function in case einat changes her mind about deletion :P
 	
-	delete from public.contacted_person
-   	where id = contacted_person_id;
+	DELETE FROM public.contacted_person
+   	WHERE id = contacted_person_id;
 							
 END;
 $BODY$;
-

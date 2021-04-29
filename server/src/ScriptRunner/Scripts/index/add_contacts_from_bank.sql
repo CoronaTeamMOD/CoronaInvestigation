@@ -1,6 +1,6 @@
 -- FUNCTION: public.add_contacts_from_bank(integer, json)
 
--- DROP FUNCTION public.add_contacts_from_bank(integer, json);
+-- DROP FUNCTION IF EXISTS public.add_contacts_from_bank(integer, json);
 
 CREATE OR REPLACE FUNCTION public.add_contacts_from_bank(
 	contact_event_id integer,

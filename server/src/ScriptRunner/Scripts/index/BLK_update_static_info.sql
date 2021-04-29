@@ -1,6 +1,6 @@
 -- FUNCTION: public.update_static_info(character varying, character varying, character varying, integer)
 
-DROP FUNCTION public.update_static_info(character varying, character varying, character varying, integer);
+DROP FUNCTION IF EXISTS public.update_static_info(character varying, character varying, character varying, integer);
 
 CREATE OR REPLACE FUNCTION public.update_static_info(
 	full_name_input character varying,
