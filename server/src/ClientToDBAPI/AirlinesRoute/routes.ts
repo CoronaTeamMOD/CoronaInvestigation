@@ -1,6 +1,6 @@
 enum Routes {
     airlines =  '/',
-    flights = '/flights/:airlineId'
+    flights = '/flights'
 }
 
 export default Routes;

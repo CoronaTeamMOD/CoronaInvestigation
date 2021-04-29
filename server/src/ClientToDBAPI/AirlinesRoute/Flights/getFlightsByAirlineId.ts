@@ -8,11 +8,13 @@ const getFlightsByAirlineId = (req : Request , res : Response) => {
     graphqlRequest(FLIGHTS_BY_AIRLINE_ID, res.locals , { airlineId })
         .then((result: any) => {
             // loggeerr
-            const data = result.data.allAirlines.nodes;
-            res.send(data);
+            console.log('RES' ,result);
+            const data = result.data.allFlightNumbers.nodes;
+            res.send(data.map((flight : {displayName : string} ) => flight.displayName));
         })
         .catch(error => {
         //loggeer
+            console.log('ERR' , error);
             res.status(errorStatusCode).send(error);
         });
 }
