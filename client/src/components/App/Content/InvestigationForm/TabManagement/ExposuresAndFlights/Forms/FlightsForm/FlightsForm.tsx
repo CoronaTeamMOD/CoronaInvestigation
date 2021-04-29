@@ -65,7 +65,7 @@ const FlightsForm = (props: Props) => {
     const startDateError = currentErrors ? currentErrors.flightStartDate : undefined;
     const endDateError = currentErrors ? currentErrors.flightEndDate : undefined;
     const airlineError = currentErrors ? currentErrors.airline : undefined;
-
+	const flightNumError = currentErrors ? currentErrors[fieldsNames.flightNumber] : undefined;
 
     return (
 		<Grid className={formClasses.form} container justify='flex-start'>
@@ -217,8 +217,8 @@ const FlightsForm = (props: Props) => {
 												}}
 												renderInput={(params) => 
 													<TextField
-														error={Boolean(airlineError)}
-														label={airlineError ? airlineError : flightNumLabel}
+														error={Boolean(flightNumError)}
+														label={flightNumError ? flightNumError : flightNumLabel}
 														{...params}
 														placeholder={flightNumLabel}
 													/>

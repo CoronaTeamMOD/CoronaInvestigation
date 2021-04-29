@@ -90,7 +90,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                 .then(result => {
                     airlineLogger.info('request was successful', Severity.LOW);
 
-                    const airlinesMap = new Map(result.data.map(airline => [airline.id, airline.displayName]))
+                    const airlinesMap = airlineListToMap(result.data);
                     setAirlines(airlinesMap);
                 })
                 .catch(err => {
@@ -98,6 +98,10 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                     console.log(err);
                 });
         }
+    }
+
+    const airlineListToMap = (airlines : Airline[]) => {
+        return new Map(airlines.map(airline => [airline.id, airline.displayName]));
     }
 
     const fetchContactTypes = () => {

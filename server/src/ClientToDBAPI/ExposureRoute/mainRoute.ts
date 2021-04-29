@@ -137,7 +137,7 @@ const convertExposuresToDB = (request: Request) => {
     ({
         ...exposure, 
         exposureSource: exposure.exposureSource ? exposure.exposureSource.epidemiologyNumber : null,
-        airline: exposure.airline.displayName
+        airline: exposure.airline ? exposure.airline.displayName : undefined 
     }))
     return {...request.body, exposures: convertedExposures}
 }

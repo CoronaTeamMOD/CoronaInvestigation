@@ -25,16 +25,16 @@ const getFlightsByAirlineId = (req : Request , res : Response) => {
             flightsByAirlineIdLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             res.status(errorStatusCode).send(error);
         });
-}
+};
 
 const formatServerResponse = (data : ServerResponse[]) => {
     return data.map(
         flight  => flight.displayName
-    )
-}
+    );
+};
 
 interface ServerResponse {
     displayName : string;
-}
+};
 
 export default getFlightsByAirlineId;
