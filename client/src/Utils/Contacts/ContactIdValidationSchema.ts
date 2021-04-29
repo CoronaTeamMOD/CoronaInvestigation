@@ -5,27 +5,36 @@ import InteractionEventContactFields from 'models/enums/InteractionsEventDialogC
 import { invalidIdText, invalidOtherIdText, invalidPalestineIdText, invalidPassportText } from 'commons/Schema/messages';
 import { isIdValid , isPassportValid, isPalestineIdValid, isOtherIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
-const ContactIdValidationSchema = (test?: any) => yup.string()
+const ContactIdValidationSchema = (test?: TestParam) => yup.string()
     .when(InteractionEventContactFields.IDENTIFICATION_TYPE, (identificationType: number) => {
+        let schema = yup.string().nullable();
+
         switch (identificationType) {
             case IdentificationTypesCodes.ID:
-                return yup.string()
-                    .nullable()
-                    .test('isValid', invalidIdText, (id) => isIdValid(id))
-                    .test('istest' , 'aaa', (id) => { console.log(id); return true});
+                schema = schema.test('isValid', invalidIdText, (id) => isIdValid(id))
+                break;
             case IdentificationTypesCodes.PASSPORT:
-                return yup.string()
-                    .nullable()
-                    .test('isValid', invalidPassportText, (id) => isPassportValid(id));
+                schema = schema.test('isValid', invalidPassportText, (id) => isPassportValid(id));
+                break;
             case IdentificationTypesCodes.PALESTINE_ID:
-                return yup.string()
-                    .nullable()
-                    .test('isValid', invalidPalestineIdText, (id) => isPalestineIdValid(id));
+                schema = schema.test('isValid', invalidPalestineIdText, (id) => isPalestineIdValid(id));
+                break;
             default:
-                return yup.string()
-                    .nullable()
-                    .test('isValid', invalidOtherIdText, (id) => isOtherIdValid(id));
+                schema = schema.test('isValid', invalidOtherIdText, (id) => isOtherIdValid(id));
+                break;
         }
-    })
+
+        if(test) { 
+            schema = schema.test(test.name,test.errorMsg,test.testingFunction)
+        }
+
+        return schema;
+    });
+
+interface TestParam {
+    name : string;
+    errorMsg : string;
+    testingFunction: (param : any) => boolean
+}
 
 export default ContactIdValidationSchema;

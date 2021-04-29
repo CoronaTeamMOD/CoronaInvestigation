@@ -7,6 +7,12 @@ import placeTypesCodesHierarchy from 'Utils/ContactEvent/placeTypesCodesHierarch
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
+const test = {
+  name: 'yonatan',
+  errorMsg: 'בנק מגעים או משו',
+  testingFunction: (id : any) => id ==='207950171'
+}
+
 const interactionEventSchema = yup.object().shape({
     [InteractionEventDialogFields.PLACE_TYPE]: yup.string().nullable().required('סוג אתר חובה'),
     [InteractionEventDialogFields.PLACE_SUB_TYPE]: yup.number().when(
@@ -59,10 +65,9 @@ const interactionEventSchema = yup.object().shape({
         [InteractionEventContactFields.LAST_NAME]: yup.string().nullable().required('שם משפחה חובה'),
         [InteractionEventContactFields.PHONE_NUMBER]: yup.string().nullable()
           .matches(NOT_REQUIRED_PHONE_NUMBER_REGEX, invalidPhoneText),
-        [InteractionEventContactFields.IDENTIFICATION_NUMBER]: ContactIdValidationSchema()
+        [InteractionEventContactFields.IDENTIFICATION_NUMBER]: ContactIdValidationSchema(test)
     }))
-  });
-
+  });  
 // hey future yehonatan : find a way to pass the test( ) to the schema and check with contact bank
 //                                                    ^
 //                                                    |
