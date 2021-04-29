@@ -13,6 +13,9 @@ export const useStyles = makeStyles({
     label: {
         width: '40vw',
         display: 'flex',
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-end',
+        maxWidth: '100%',
+        textAlign: 'left',
+        marginTop: '-10px',
     },
 });
