@@ -83,13 +83,18 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const fetchAirlines = () => {
         if(!airlines.size) {
+            const airlineLogger = logger.setup('Fetching Airlines');
+
+            airlineLogger.info('launching DB request', Severity.LOW);
             axios.get<Airline[]>('/airlines')
                 .then(result => {
+                    airlineLogger.info('request was successful', Severity.LOW);
+
                     const airlinesMap = new Map(result.data.map(airline => [airline.id, airline.displayName]))
                     setAirlines(airlinesMap);
                 })
                 .catch(err => {
-                    // logger
+                    airlineLogger.error(`recived error during request, err: ${err}`, Severity.HIGH);
                     console.log(err);
                 });
         }

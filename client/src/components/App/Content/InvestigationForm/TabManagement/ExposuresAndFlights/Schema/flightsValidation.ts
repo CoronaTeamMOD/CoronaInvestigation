@@ -15,7 +15,7 @@ const flightValidation = (validationDate: Date): yup.Schema<any, object> => {
     const includeValidationDate = addDays(new Date(validationDate), 1);
 
     return yup.object().shape({
-        [fieldsNames.airline]: yup.string().nullable(),
+        [fieldsNames.airline]: yup.object().nullable(),
         [fieldsNames.destinationAirport]: yup
             .string()
             .nullable()

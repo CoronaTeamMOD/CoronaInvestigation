@@ -172,7 +172,6 @@ const FlightsForm = (props: Props) => {
 											getOptionLabel={(option) => option.displayName }
 											value={props.value?.id ? props.value : formattedAirlines.find(airline => airline.displayName === props.value)}
 											onChange={(event, newAirline) => { 
-												// fetch flightnums
 												newAirline && setFlightsByAirlineID(newAirline.id);
 												handleChangeExposureDataAndFlightsField(fieldsNames.airline, newAirline?.displayName ?? '');
 												props.onChange(newAirline ?? null);
