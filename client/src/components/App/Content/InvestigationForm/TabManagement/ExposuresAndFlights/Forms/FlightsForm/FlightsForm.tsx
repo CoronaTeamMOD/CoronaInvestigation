@@ -45,7 +45,6 @@ const FlightsForm = (props: Props) => {
 	const watchAirline = watch(airlineFieldName);
 
 	React.useEffect(() => {
-		console.log(watchAirline);
 		if(watchAirline) {
 			const airlineId = watchAirline.id 
 				? watchAirline.id 
