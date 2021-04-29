@@ -59,8 +59,11 @@ const interactionEventSchema = yup.object().shape({
         [InteractionEventContactFields.LAST_NAME]: yup.string().nullable().required('שם משפחה חובה'),
         [InteractionEventContactFields.PHONE_NUMBER]: yup.string().nullable()
           .matches(NOT_REQUIRED_PHONE_NUMBER_REGEX, invalidPhoneText),
-        [InteractionEventContactFields.IDENTIFICATION_NUMBER]: ContactIdValidationSchema
+        [InteractionEventContactFields.IDENTIFICATION_NUMBER]: ContactIdValidationSchema()
     }))
   });
 
+// hey future yehonatan : find a way to pass the test( ) to the schema and check with contact bank
+//                                                    ^
+//                                                    |
 export default interactionEventSchema;
