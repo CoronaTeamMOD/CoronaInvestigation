@@ -4,7 +4,7 @@ import City from '../../Models/Address/City';
 import Street from '../../Models/Address/Street';
 import Country from '../../Models/Address/Country';
 import { Severity } from '../../Models/Logger/types';
-import UseCache, { setToCache } from '../../middlewares/useCache';
+import UseCache, { setToCache } from '../../middlewares/UseCache';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import {GET_ALL_CITIES, GET_CITY_STREETS, GET_ALL_COUNTRIES} from '../../DBService/Address/Query';
 import logger, { invalidDBResponseLog, validDBResponseLog, launchingDBRequestLog} from '../../Logger/Logger';
