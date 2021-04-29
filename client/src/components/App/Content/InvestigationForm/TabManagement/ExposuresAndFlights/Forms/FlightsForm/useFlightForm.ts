@@ -1,19 +1,23 @@
 import axios from 'axios'
 import React from 'react'
 
+import logger from 'logger/logger';
+import { Severity } from 'models/Logger';
+
 const UseFlightForm = (props: Props) => {
     const { setFlights } = props;
 
     const fetchFlightsByAirlineID = async (airlineId : number) => {
+        const fetchFlightsByAirlineIDLogger = logger.setup('fetch flights by airline id');
+
+        fetchFlightsByAirlineIDLogger.info('launching db request' , Severity.LOW);
         const flights = await axios.get<string[]>(`/airlines/flights/${airlineId}`)
             .then(result => {
-                console.log(result.data);
-
+                fetchFlightsByAirlineIDLogger.info('request was successfull' , Severity.LOW);
                 return result.data;
             })
             .catch(err => {
-                // loggeer
-                console.log(err)
+                fetchFlightsByAirlineIDLogger.error(`recived error during request, err: ${err}` , Severity.HIGH);
                 return [];
             });
 
