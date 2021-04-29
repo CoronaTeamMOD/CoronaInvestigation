@@ -20,12 +20,12 @@ const startDateLabel = '*מתאריך';
 const endDateLabel = '*עד תאריך';
 
 const FlightsForm = (props: Props) => {
-    const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted } = props;
+	const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted } = props;
     
 	const airlines = useSelector<StoreStateType, Map<number, string>>(state => state.airlines);
-	console.log('aaa',Array.from(airlines).map(airline => {return {id: airline[0] , displayName : airline[1]}}));
-
-    const {control , errors, trigger, watch} = useFormContext();
+	const formattedAirlines = Array.from(airlines).map(airline => {return {id: airline[0] , displayName : airline[1]}})
+	
+	const {control , errors, trigger, watch} = useFormContext();
     const classes = useStyles();
     const formClasses = useFormStyles();
 
@@ -53,6 +53,8 @@ const FlightsForm = (props: Props) => {
     const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
     const startDateError = currentErrors ? currentErrors.flightStartDate : undefined;
     const endDateError = currentErrors ? currentErrors.flightEndDate : undefined;
+    const airlineError = currentErrors ? currentErrors.airline : undefined;
+
 
     return (
 		<Grid className={formClasses.form} container justify='flex-start'>
@@ -150,44 +152,35 @@ const FlightsForm = (props: Props) => {
 			</Grid>
 
 			<Grid container justify='space-between' xs={12}>
-                <Grid item xs={11}>
+                <Grid item container xs={11}>
 					<FormRowWithInput fieldName='חברת תעופה:'>
-						<Controller
-							control={control}
-							name={`exposures[${index}].${fieldsNames.airline}`}
-							defaultValue={exposureAndFlightsData[fieldsNames.airline]}
-							render={(props) => {
-								return (
-									<Autocomplete
-										options={Array.from(airlines).map(airline => {return {id: airline[0] , displayName : airline[1]}})}
-										getOptionLabel={(option) => option.displayName }
-										value={props.value}
-										onChange={(event, newAirline) => props.onChange(newAirline ?? null)}
-										renderInput={(params) => 
-											<TextField
-												error={false}
-												label={'aaa'}
-												{...params}
-												placeholder={'a'}
-											/>}
-                            		/>
-									// <AutocompletedField 
-									// 	{...props}
-									// 	options={Array.from(airlines, (val , index) => {return {id : index , displayName : val}})}
-									// 	onChange={(event, newValue) => {
-									// 		const formattedValue = newValue ? newValue.id : null;
-									// 		console.log(formattedValue);
-									// 		props.onChange(formattedValue);
-									// 		//handleCountryChange(newValue);
-									// 	}}
-									// 	getOptionLabel={(option) => option.displayName}
-									// 	error={false}
-									// 	label={'namal'}
-									// 	placeholder='namal'
-									// />
-								);
-							}}
-						/>
+						<Grid item xs={3}>
+							<Controller
+								control={control}
+								name={`exposures[${index}].${fieldsNames.airline}`}
+								defaultValue={exposureAndFlightsData[fieldsNames.airline]}
+								render={(props) => {
+									return (
+										<Autocomplete
+											options={formattedAirlines}
+											getOptionLabel={(option) => option.displayName }
+											value={props.value}
+											onChange={(event, newAirline) => { 
+												// fetch flightnums
+												props.onChange(newAirline ?? null)
+											}}
+											renderInput={(params) => 
+												<TextField
+													error={Boolean(airlineError)}
+													label={airlineError ? airlineError : 'חברת תעופה'}
+													{...params}
+													placeholder={'חברת תעופה'}
+												/>}
+										/>
+									);
+								}}
+							/>
+						</Grid>
 					</FormRowWithInput>
 				</Grid>
 			</Grid>
