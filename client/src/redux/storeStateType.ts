@@ -1,5 +1,6 @@
 import Desk from 'models/Desk';
 import City from 'models/City';
+import Airline from 'models/Airline';
 import Country from 'models/Country';
 import District from 'models/District';
 import Authority from 'models/Authority';
@@ -42,4 +43,5 @@ export default interface StoreStateType {
     complexReasons: (number|null)[];
     greenPass: GreenPassReducerType;
     identificationTypes: IdentificationType[];
+    airlines: Map<number, string>
 };

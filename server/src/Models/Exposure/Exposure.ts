@@ -14,7 +14,7 @@ interface Exposure {
     flightOriginAirport?: string,
     flightStartDate?: Date,
     flightEndDate?: Date,
-    airline?: string,
+    airline?: {id: number , displayName: string},
     flightNum?: string,
     flightOriginCountry?: string,
     flightDestinationCountry?: string,

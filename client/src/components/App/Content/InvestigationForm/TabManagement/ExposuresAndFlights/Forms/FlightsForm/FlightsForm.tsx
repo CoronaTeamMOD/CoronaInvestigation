@@ -1,36 +1,57 @@
-import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Delete } from '@material-ui/icons';
-import { Grid, IconButton } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
+import React, { useState, useEffect } from 'react';
 import { Controller , useFormContext } from 'react-hook-form';
+import { Grid, IconButton, TextField } from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import DatePick from 'commons/DatePick/DatePick';
+import StoreStateType from 'redux/storeStateType';
 import { invalidDateText } from 'commons/Schema/messages';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import AirelineTextField from 'commons/AirelineTextField/AirelineTextField';
-import FlightNumberTextField from 'commons/FlightNumberTextField/FlightNumberTextField';
 
 import useStyles from './FlightFormStyles';
+import UseFlightForm from './useFlightForm';
 import AirportInput from './AirportInput/AirportInput';
 
 const startDateLabel = '*מתאריך';
 const endDateLabel = '*עד תאריך';
+const airlineLabel = 'חברת תעופה';
+const flightNumLabel = 'מספר טיסה';
 
 const FlightsForm = (props: Props) => {
+	const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted } = props;
+    
+	const [flights, setFlights] = useState<string[]>([]);
+	
+	const airlines = useSelector<StoreStateType, Map<number, string>>(state => state.airlines);
+	const formattedAirlines = Array.from(airlines).map(airline => {return {id: airline[0] , displayName : airline[1]}})
 
-    const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted } = props;
+	const { setFlightsByAirlineID } = UseFlightForm({setFlights});
 
-    const {control , errors, trigger, watch} = useFormContext();
+	const {control , errors, trigger, watch} = useFormContext();
     const classes = useStyles();
     const formClasses = useFormStyles();
 
 	const flightStartDateFieldName = `exposures[${index}].${fieldsNames.flightStartDate}`;
 	const flightEndDateFieldName = `exposures[${index}].${fieldsNames.flightEndDate}`;
+	const airlineFieldName = `exposures[${index}].${fieldsNames.airline}`;
 
 	const watchFlightStartDate = watch(flightStartDateFieldName);
     const watchFlightEndDate = watch(flightEndDateFieldName);
+	const watchAirline = watch(airlineFieldName);
 
-	React.useEffect(() => {
+	useEffect(() => {
+		if(watchAirline) {
+			const airlineId = watchAirline.id 
+				? watchAirline.id 
+				: getAirlineByDisplayName(watchAirline)?.id
+			airlineId && setFlightsByAirlineID(airlineId);
+		}
+	}, [watchAirline]);
+
+	useEffect(() => {
         trigger(flightStartDateFieldName);
         trigger(flightEndDateFieldName);
     }, [watchFlightStartDate, watchFlightEndDate]);
@@ -45,13 +66,18 @@ const FlightsForm = (props: Props) => {
 		return (isStart ? startDateLabel : endDateLabel)
 	};
 
+	const getAirlineByDisplayName = (displayName : string) => {
+		return formattedAirlines.find(airline => airline.displayName === displayName);
+	};
+
     const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
     const startDateError = currentErrors ? currentErrors.flightStartDate : undefined;
     const endDateError = currentErrors ? currentErrors.flightEndDate : undefined;
+    const airlineError = currentErrors ? currentErrors.airline : undefined;
+	const flightNumError = currentErrors ? currentErrors[fieldsNames.flightNumber] : undefined;
 
     return (
 		<Grid className={formClasses.form} container justify='flex-start'>
-		
 			<Grid container justify='space-between' xs={12}>
                 <Grid item xs={11}>
 					<FormRowWithInput testId='flightStartingPoint' fieldName='מוצא:'>
@@ -144,52 +170,71 @@ const FlightsForm = (props: Props) => {
 				</Grid>
 			</Grid>
 
-			<Grid container justify='space-between' xs={12}>
-                <Grid item xs={11}>
+			<Grid container justify='space-between' xs={12} className={classes.airlineRow}>
+                <Grid item container xs={11}>
 					<FormRowWithInput fieldName='חברת תעופה:'>
-						<Controller
-							control={control}
-							name={`exposures[${index}].${fieldsNames.airline}`}
-							defaultValue={exposureAndFlightsData[fieldsNames.airline]}
-							render={(props) => {
-								return (
-									<AirelineTextField
-										{...props}
-										testId='airlineCompany'
-										onChange={(value) => {
-											props.onChange(value);
-										}}
-										placeholder='הזן חברת תעופה'
-									/>
-								);
-							}}
-						/>
+						<Grid item xs={3}>
+							<Controller
+								control={control}
+								name={airlineFieldName}
+								defaultValue={exposureAndFlightsData[fieldsNames.airline]}
+								render={(props) => {
+									return (
+										<Autocomplete
+											options={formattedAirlines}
+											getOptionLabel={(option) => option.displayName }
+											value={props.value?.id ? props.value : getAirlineByDisplayName(props.value)}
+											onChange={(event, newAirline) => { 
+												handleChangeExposureDataAndFlightsField(fieldsNames.airline, newAirline?.displayName ?? '');
+												props.onChange(newAirline ?? null);
+											}}
+											renderInput={(params) => 
+												<TextField
+													error={Boolean(airlineError)}
+													label={airlineError ? airlineError.message : airlineLabel}
+													{...params}
+													placeholder={airlineLabel}
+												/>}
+										/>
+									);
+								}}
+							/>
+						</Grid>
 					</FormRowWithInput>
 				</Grid>
 			</Grid>
 
-			<Grid container justify='space-between' xs={12}>
-                <Grid item xs={11}>
+			<Grid container justify='space-between' xs={12} className={classes.airlineRow}>
+                <Grid item container xs={11}>
 					<FormRowWithInput fieldName='מספר טיסה:'>
-						<Controller
-							control={control}
-							name={`exposures[${index}].${fieldsNames.flightNumber}`}
-							defaultValue={exposureAndFlightsData[fieldsNames.flightNumber]}
-							render={(props) => {
-								return (
-									<FlightNumberTextField
-										{...props}
-										testId='airlineNumber'
-										onChange={(value) => {
-											props.onChange(value);
-											handleChangeExposureDataAndFlightsField(fieldsNames.flightNumber, value);
-										}}
-										label='מספר טיסה*'
-										placeholder='הזן מספר טיסה'
-									/>
-								);
-							}}
-						/>
+						<Grid item xs={3}>
+							<Controller
+								control={control}
+								name={`exposures[${index}].${fieldsNames.flightNumber}`}
+								defaultValue={exposureAndFlightsData[fieldsNames.flightNumber]}
+								render={(props) => {
+									return (
+										<Autocomplete
+											options={flights}
+											value={props.value}
+											onChange={(event, newFlight) => { 
+												const data = newFlight ?? '';
+												props.onChange(data);
+												handleChangeExposureDataAndFlightsField(fieldsNames.flightNumber , data);
+											}}
+											renderInput={(params) => 
+												<TextField
+													error={Boolean(flightNumError)}
+													label={flightNumError ? flightNumError.message : flightNumLabel}
+													{...params}
+													placeholder={flightNumLabel}
+												/>
+											}
+										/>
+									);
+								}}
+							/>
+						</Grid>
 					</FormRowWithInput>
 				</Grid>
 			</Grid>

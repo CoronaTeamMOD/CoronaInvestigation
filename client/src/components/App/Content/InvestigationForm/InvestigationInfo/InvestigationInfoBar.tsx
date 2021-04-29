@@ -93,7 +93,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
             setEpidemiologyNum(lastOpenedEpidemiologyNumber);
             setLastOpenedEpidemiologyNum(defaultEpidemiologyNumber);
         } else {
-            handleInvalidEntrance();
+            process.env.REACT_APP_ENVIRONMENT !== 'local' && handleInvalidEntrance();
         }
     }, []);
 

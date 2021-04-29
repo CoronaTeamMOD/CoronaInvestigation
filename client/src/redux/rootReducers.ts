@@ -9,6 +9,7 @@ import countyReducer from './County/countyReducer';
 import genderReducer from './Gender/GenderReducer';
 import countryReducer from './Country/countryReducer';
 import addressReducer from './Address/AddressReducer';
+import airlineReducer from './Airlines/airlineReducer';
 import statusesReducer from './Status/statusesReducer';
 import districtReducer from './District/districtReducer';
 import authorityReducer from './Authority/authorityReducer';
@@ -48,5 +49,6 @@ export default combineReducers <StoreStateType> ({
      authorities: authorityReducer,
      complexReasons: complexReasonsReducer,
      greenPass: greenPassReducer,
-     identificationTypes: identificationTypesReducer
+     identificationTypes: identificationTypesReducer,
+     airlines: airlineReducer
 }) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;
