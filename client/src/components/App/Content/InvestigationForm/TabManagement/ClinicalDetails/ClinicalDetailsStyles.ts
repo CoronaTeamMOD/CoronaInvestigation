@@ -54,6 +54,7 @@ export const useStyles = makeStyles({
     },
     spacedDates: {
         marginRight: '1vw',
+        padding: '6px',
     },
     verticalSpacing: {
         marginBottom: '1vh',
@@ -73,7 +74,7 @@ export const useStyles = makeStyles({
         display: 'none'
     },
     clinicalDetailsStub: {
-        margin: '10px 15px 10px 0'
+        margin: '10px 15px 10px 0',
     }
 });
 

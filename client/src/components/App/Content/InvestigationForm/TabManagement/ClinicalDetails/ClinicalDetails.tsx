@@ -162,7 +162,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
         <div className={classes.form}>
             <FormProvider {...methods}>
                 <form id={`form-${id}`} onSubmit={(e) => saveForm(e)}>
-                    <Grid spacing={2} container>
+                    <Grid spacing={3} container>
                         <Grid item xs={12}>
                             <IsolationDatesFields
                                 classes={classes}
