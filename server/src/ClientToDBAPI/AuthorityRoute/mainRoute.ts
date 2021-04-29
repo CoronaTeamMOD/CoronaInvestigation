@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 
 import { Severity } from '../../Models/Logger/types';
-import UseCache, { setToCache } from '../../middlewares/useCache';
+import UseCache, { setToCache } from '../../middlewares/UseCache';
 import {GET_ALL_AUTHORITIES} from '../../DBService/Authority/Query';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import logger, { invalidDBResponseLog, validDBResponseLog, launchingDBRequestLog} from '../../Logger/Logger';

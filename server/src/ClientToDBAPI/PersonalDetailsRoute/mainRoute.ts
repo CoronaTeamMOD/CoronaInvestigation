@@ -1,7 +1,7 @@
 
 import { Router, Request, Response } from 'express';
 
-import UseCache, { setToCache } from '../../middlewares/useCache';
+import UseCache, { setToCache } from '../../middlewares/UseCache';
 import { InitialLogData, Severity } from '../../Models/Logger/types';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import { formatToInsertAndGetAddressIdInput } from '../../Utils/addressUtils';

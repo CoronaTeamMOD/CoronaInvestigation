@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 
 import { Severity } from '../../Models/Logger/types';
-import UseCache, { setToCache } from '../../middlewares/useCache';
+import UseCache, { setToCache } from '../../middlewares/UseCache';
 import { GET_ALL_DISTRICTS } from '../../DBService/Districts/Query';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import GetAllDistrictsResponse from '../../Models/District/GetAllDistrictsResponse';

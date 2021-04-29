@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 
-import UseCache, { setToCache } from '../../middlewares/useCache';
+import UseCache, { setToCache } from '../../middlewares/UseCache';
 import { Severity } from '../../Models/Logger/types';
 import { GET_ALL_COUNTIES } from '../../DBService/Counties/Query';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
