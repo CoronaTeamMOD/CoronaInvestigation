@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 const useStyles = makeStyles({
     managementControllers: {
         flex: 5,
-        marginBottom: '0.5vh'
+        marginBottom: '15px'
     },
     containerGrid: {
         maxWidth: '100vw',
