@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Delete } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
@@ -15,6 +15,7 @@ import FlightNumberTextField from 'commons/FlightNumberTextField/FlightNumberTex
 import useStyles from './FlightFormStyles';
 import AirportInput from './AirportInput/AirportInput';
 import StoreStateType from 'redux/storeStateType';
+import UseFlightForm from './useFlightForm';
 
 const startDateLabel = '*מתאריך';
 const endDateLabel = '*עד תאריך';
@@ -22,9 +23,12 @@ const endDateLabel = '*עד תאריך';
 const FlightsForm = (props: Props) => {
 	const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted } = props;
     
+	const [flights, setFlights] = useState<string[]>([]);
+	
 	const airlines = useSelector<StoreStateType, Map<number, string>>(state => state.airlines);
 	const formattedAirlines = Array.from(airlines).map(airline => {return {id: airline[0] , displayName : airline[1]}})
-	
+	const { setFlightsByAirlineID } = UseFlightForm({setFlights});
+
 	const {control , errors, trigger, watch} = useFormContext();
     const classes = useStyles();
     const formClasses = useFormStyles();
@@ -167,6 +171,7 @@ const FlightsForm = (props: Props) => {
 											value={props.value}
 											onChange={(event, newAirline) => { 
 												// fetch flightnums
+												newAirline && setFlightsByAirlineID(newAirline.id)
 												props.onChange(newAirline ?? null)
 											}}
 											renderInput={(params) => 
