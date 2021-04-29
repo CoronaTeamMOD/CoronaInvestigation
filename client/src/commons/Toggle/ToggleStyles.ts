@@ -4,6 +4,7 @@ export const useStyles = makeStyles({
     toggle: {
         borderRadius: '50px',
         width: '50px',
+        height: '40px'
     },
     trippleToggle: {
         borderRadius: '50px',
