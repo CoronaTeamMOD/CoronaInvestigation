@@ -35,7 +35,7 @@ export const GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER = 
 query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
   investigationByEpidemiologyNumber(epidemiologyNumber: $epidemiologyNumber) {
     isolationAddress: addressByIsolationAddress {
-      floor
+      apartment
       houseNum
       streetByStreet {
         displayName

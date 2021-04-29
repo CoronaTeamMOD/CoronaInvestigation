@@ -94,9 +94,9 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
             name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`,
             testId: 'currentQuarantineHomeNumber'
         },
-        floorField: {
-            name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`,
-            testId: 'currentQuarantineFloor'
+        apartmentField: {
+            name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_APARTMENT}`,
+            testId: 'currentQuarantineApartment'
         }
     }
 

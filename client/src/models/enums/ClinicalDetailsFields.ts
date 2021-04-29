@@ -6,7 +6,7 @@ enum ClinicalDetailsFields {
     ISOLATION_ADDRESS = 'isolationAddress',
     ISOLATION_CITY = 'city',
     ISOLATION_STREET = 'street',
-    ISOLATION_FLOOR = 'floor',
+    ISOLATION_APARTMENT = 'apartment',
     ISOLATION_HOUSE_NUMBER = 'houseNum',
     IS_IN_ISOLATION = 'isInIsolation',
     IS_ISOLATION_PROBLEM = 'isIsolationProblem',

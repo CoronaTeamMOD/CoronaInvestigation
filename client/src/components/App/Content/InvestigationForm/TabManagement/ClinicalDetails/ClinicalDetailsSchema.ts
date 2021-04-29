@@ -80,7 +80,7 @@ const ClinicalDetailsSchema = (validationDate: Date) => yup.object().shape({
     [ClinicalDetailsFields.ISOLATION_ADDRESS]: yup.object().shape({
         [ClinicalDetailsFields.ISOLATION_CITY]: yup.string().required(requiredText).nullable(),
         [ClinicalDetailsFields.ISOLATION_STREET]: yup.string().nullable(),
-        [ClinicalDetailsFields.ISOLATION_FLOOR]: yup.string().nullable(),
+        [ClinicalDetailsFields.ISOLATION_APARTMENT]: yup.string().nullable(),
         [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.string().nullable()
     }).required(),
     [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().nullable(),

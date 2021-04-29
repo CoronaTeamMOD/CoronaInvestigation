@@ -139,7 +139,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         patientAddress = {
                             city: patientAddress.cityByCity?.id,
                             street: patientAddress.streetByStreet?.id,
-                            floor: patientAddress.floor,
+                            apartment: patientAddress.apartment,
                             houseNum: patientAddress.houseNum,
                         }
                     }
