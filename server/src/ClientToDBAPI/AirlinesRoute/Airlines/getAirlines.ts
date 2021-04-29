@@ -3,6 +3,7 @@ import { Severity } from '../../../Models/Logger/types';
 import { ALL_AIRLINES } from '../../../DBService/Airlines/Query';
 import { errorStatusCode, graphqlRequest } from '../../../GraphqlHTTPRequest';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../../Logger/Logger';
+import { setToCache } from '../../../middlewares/UseCache';
 
 const getAirlines = (req : Request , res : Response) => {
     const airlinesLogger = logger.setup({
@@ -17,6 +18,7 @@ const getAirlines = (req : Request , res : Response) => {
             airlinesLogger.info(validDBResponseLog, Severity.LOW);
 
             const data = result.data.allAirlines.nodes;
+            setToCache(req.originalUrl, data);
             res.send(data);
         })
         .catch(error => {
