@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS public.airlines (
 );
 
 -- inserting all of the available airlines into publc.airlines
-INSERT INTO public.airlines (id , display_name) VALUES  (11 ,'ISRAIR AIRLINES'), 
+INSERT INTO public.airlines (id , display_name) VALUES (11 ,'ISRAIR AIRLINES'), 
  (1 ,'QUALITY AIR SERVICES'), 
  (2 ,'UKRAINE INTL  AIR'), 
  (3 ,'EL AL ISRAEL AIRLINES'), 

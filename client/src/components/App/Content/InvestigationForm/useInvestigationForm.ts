@@ -6,6 +6,7 @@ import City from 'models/City';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
 import Country from 'models/Country';
+import Airline from 'models/Airline';
 import { Severity } from 'models/Logger';
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
@@ -30,7 +31,6 @@ import { setIdentificationTypes } from 'redux/IdentificationTypes/identification
 import UpdateTrackingRecommendation from 'Utils/TrackingRecommendation/updateTrackingRecommendation'; 
 
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
-import Airline from 'models/Airline';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
@@ -95,7 +95,6 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                 })
                 .catch(err => {
                     airlineLogger.error(`recived error during request, err: ${err}`, Severity.HIGH);
-                    console.log(err);
                 });
         }
     }

@@ -1,21 +1,19 @@
-import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Delete } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
+import React, { useState, useEffect } from 'react';
 import { Controller , useFormContext } from 'react-hook-form';
 import { Grid, IconButton, TextField } from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import DatePick from 'commons/DatePick/DatePick';
+import StoreStateType from 'redux/storeStateType';
 import { invalidDateText } from 'commons/Schema/messages';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import AirelineTextField from 'commons/AirelineTextField/AirelineTextField';
-import FlightNumberTextField from 'commons/FlightNumberTextField/FlightNumberTextField';
 
 import useStyles from './FlightFormStyles';
-import AirportInput from './AirportInput/AirportInput';
-import StoreStateType from 'redux/storeStateType';
 import UseFlightForm from './useFlightForm';
+import AirportInput from './AirportInput/AirportInput';
 
 const startDateLabel = '*מתאריך';
 const endDateLabel = '*עד תאריך';
@@ -44,7 +42,7 @@ const FlightsForm = (props: Props) => {
     const watchFlightEndDate = watch(flightEndDateFieldName);
 	const watchAirline = watch(airlineFieldName);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if(watchAirline) {
 			const airlineId = watchAirline.id 
 				? watchAirline.id 
@@ -53,7 +51,7 @@ const FlightsForm = (props: Props) => {
 		}
 	}, [watchAirline]);
 
-	React.useEffect(() => {
+	useEffect(() => {
         trigger(flightStartDateFieldName);
         trigger(flightEndDateFieldName);
     }, [watchFlightStartDate, watchFlightEndDate]);
@@ -80,7 +78,6 @@ const FlightsForm = (props: Props) => {
 
     return (
 		<Grid className={formClasses.form} container justify='flex-start'>
-		
 			<Grid container justify='space-between' xs={12}>
                 <Grid item xs={11}>
 					<FormRowWithInput testId='flightStartingPoint' fieldName='מוצא:'>
@@ -173,7 +170,7 @@ const FlightsForm = (props: Props) => {
 				</Grid>
 			</Grid>
 
-			<Grid container justify='space-between' xs={12} spacing={2}>
+			<Grid container justify='space-between' xs={12} className={classes.airlineRow}>
                 <Grid item container xs={11}>
 					<FormRowWithInput fieldName='חברת תעופה:'>
 						<Grid item xs={3}>
@@ -207,7 +204,7 @@ const FlightsForm = (props: Props) => {
 				</Grid>
 			</Grid>
 
-			<Grid container justify='space-between' xs={12} spacing={2}>
+			<Grid container justify='space-between' xs={12} className={classes.airlineRow}>
                 <Grid item container xs={11}>
 					<FormRowWithInput fieldName='מספר טיסה:'>
 						<Grid item xs={3}>
@@ -217,23 +214,23 @@ const FlightsForm = (props: Props) => {
 								defaultValue={exposureAndFlightsData[fieldsNames.flightNumber]}
 								render={(props) => {
 									return (
-											<Autocomplete
-												options={flights}
-												value={props.value}
-												onChange={(event, newFlight) => { 
-													const data = newFlight ?? '';
-													props.onChange(data);
-													handleChangeExposureDataAndFlightsField(fieldsNames.flightNumber , data);
-												}}
-												renderInput={(params) => 
-													<TextField
-														error={Boolean(flightNumError)}
-														label={flightNumError ? flightNumError.message : flightNumLabel}
-														{...params}
-														placeholder={flightNumLabel}
-													/>
-												}
-											/>
+										<Autocomplete
+											options={flights}
+											value={props.value}
+											onChange={(event, newFlight) => { 
+												const data = newFlight ?? '';
+												props.onChange(data);
+												handleChangeExposureDataAndFlightsField(fieldsNames.flightNumber , data);
+											}}
+											renderInput={(params) => 
+												<TextField
+													error={Boolean(flightNumError)}
+													label={flightNumError ? flightNumError.message : flightNumLabel}
+													{...params}
+													placeholder={flightNumLabel}
+												/>
+											}
+										/>
 									);
 								}}
 							/>

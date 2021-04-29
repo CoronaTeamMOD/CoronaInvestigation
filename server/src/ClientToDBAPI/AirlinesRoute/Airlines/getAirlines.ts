@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
+
 import { Severity } from '../../../Models/Logger/types';
+import { setToCache } from '../../../middlewares/UseCache';
 import { ALL_AIRLINES } from '../../../DBService/Airlines/Query';
 import { errorStatusCode, graphqlRequest } from '../../../GraphqlHTTPRequest';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../../Logger/Logger';
-import { setToCache } from '../../../middlewares/UseCache';
 
 const getAirlines = (req : Request , res : Response) => {
     const airlinesLogger = logger.setup({

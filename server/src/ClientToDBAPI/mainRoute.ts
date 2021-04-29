@@ -19,7 +19,6 @@ import personalDetailsRoute from './PersonalDetailsRoute/mainRoute';
 import clinicalDetailsRoute from './ClinicalDetailsRoute/mainRoute';
 import groupedInvestigationsRoute from './GroupedInvestigationsRoute/mainRoute';
 
-
 const clientToDBRouter = Router();
 clientToDBRouter.use(authMiddleware);
 clientToDBRouter.use('/users', usersRoute);

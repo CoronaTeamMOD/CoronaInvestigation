@@ -29,7 +29,7 @@ const getFlightsByAirlineId = (req : Request , res : Response) => {
 
 const formatServerResponse = (data : ServerResponse[]) => {
     return data.map(
-        flight  => flight.displayName
+        flight => flight.displayName
     );
 };
 
