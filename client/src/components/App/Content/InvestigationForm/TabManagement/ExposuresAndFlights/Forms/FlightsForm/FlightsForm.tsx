@@ -38,9 +38,21 @@ const FlightsForm = (props: Props) => {
 
 	const flightStartDateFieldName = `exposures[${index}].${fieldsNames.flightStartDate}`;
 	const flightEndDateFieldName = `exposures[${index}].${fieldsNames.flightEndDate}`;
+	const airlineFieldName = `exposures[${index}].${fieldsNames.airline}`;
 
 	const watchFlightStartDate = watch(flightStartDateFieldName);
     const watchFlightEndDate = watch(flightEndDateFieldName);
+	const watchAirline = watch(airlineFieldName);
+
+	React.useEffect(() => {
+		console.log(watchAirline);
+		if(watchAirline) {
+			const airlineId = watchAirline.id 
+				? watchAirline.id 
+				: getAirlineByDisplayName(watchAirline)?.id
+			airlineId && setFlightsByAirlineID(airlineId);
+		}
+	}, [watchAirline]);
 
 	React.useEffect(() => {
         trigger(flightStartDateFieldName);
@@ -162,13 +174,13 @@ const FlightsForm = (props: Props) => {
 				</Grid>
 			</Grid>
 
-			<Grid container justify='space-between' xs={12}>
+			<Grid container justify='space-between' xs={12} spacing={2}>
                 <Grid item container xs={11}>
 					<FormRowWithInput fieldName='חברת תעופה:'>
 						<Grid item xs={3}>
 							<Controller
 								control={control}
-								name={`exposures[${index}].${fieldsNames.airline}`}
+								name={airlineFieldName}
 								defaultValue={exposureAndFlightsData[fieldsNames.airline]}
 								render={(props) => {
 									return (
@@ -177,14 +189,13 @@ const FlightsForm = (props: Props) => {
 											getOptionLabel={(option) => option.displayName }
 											value={props.value?.id ? props.value : getAirlineByDisplayName(props.value)}
 											onChange={(event, newAirline) => { 
-												newAirline && setFlightsByAirlineID(newAirline.id);
 												handleChangeExposureDataAndFlightsField(fieldsNames.airline, newAirline?.displayName ?? '');
 												props.onChange(newAirline ?? null);
 											}}
 											renderInput={(params) => 
 												<TextField
 													error={Boolean(airlineError)}
-													label={airlineError ? airlineError : airlineLabel}
+													label={airlineError ? airlineError.message : airlineLabel}
 													{...params}
 													placeholder={airlineLabel}
 												/>}
@@ -197,7 +208,7 @@ const FlightsForm = (props: Props) => {
 				</Grid>
 			</Grid>
 
-			<Grid container justify='space-between' xs={12}>
+			<Grid container justify='space-between' xs={12} spacing={2}>
                 <Grid item container xs={11}>
 					<FormRowWithInput fieldName='מספר טיסה:'>
 						<Grid item xs={3}>
@@ -218,7 +229,7 @@ const FlightsForm = (props: Props) => {
 												renderInput={(params) => 
 													<TextField
 														error={Boolean(flightNumError)}
-														label={flightNumError ? flightNumError : flightNumLabel}
+														label={flightNumError ? flightNumError.message : flightNumLabel}
 														{...params}
 														placeholder={flightNumLabel}
 													/>
