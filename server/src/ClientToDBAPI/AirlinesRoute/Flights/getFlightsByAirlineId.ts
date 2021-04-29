@@ -1,4 +1,4 @@
-import { Request, response, Response } from 'express';
+import { Request, Response } from 'express';
 
 import { Severity } from '../../../Models/Logger/types';
 import { FLIGHTS_BY_AIRLINE_ID } from '../../../DBService/Airlines/Query';
@@ -8,8 +8,8 @@ import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog
 const getFlightsByAirlineId = (req : Request , res : Response) => {
     const flightsByAirlineIdLogger = logger.setup({
         workflow: 'flights by airline id',
-        investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
+        investigation: res.locals.epidemiologynumber,
+        user: res.locals.user.id
     });
 
     flightsByAirlineIdLogger.info(launchingDBRequestLog(), Severity.LOW);
@@ -18,13 +18,23 @@ const getFlightsByAirlineId = (req : Request , res : Response) => {
         .then((result: any) => {
             flightsByAirlineIdLogger.info(validDBResponseLog, Severity.LOW);
 
-            const data = result.data.allFlightNumbers.nodes;
-            res.send(data.map((flight : {displayName : string} ) => flight.displayName));
+            const data : ServerResponse[] = result.data.allFlightNumbers.nodes;
+            res.send(formatServerResponse(data));
         })
         .catch(error => {
             flightsByAirlineIdLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             res.status(errorStatusCode).send(error);
         });
+}
+
+const formatServerResponse = (data : ServerResponse[]) => {
+    return data.map(
+        flight  => flight.displayName
+    )
+}
+
+interface ServerResponse {
+    displayName : string;
 }
 
 export default getFlightsByAirlineId;

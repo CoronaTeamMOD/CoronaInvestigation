@@ -29,6 +29,7 @@ const FlightsForm = (props: Props) => {
 	
 	const airlines = useSelector<StoreStateType, Map<number, string>>(state => state.airlines);
 	const formattedAirlines = Array.from(airlines).map(airline => {return {id: airline[0] , displayName : airline[1]}})
+
 	const { setFlightsByAirlineID } = UseFlightForm({setFlights});
 
 	const {control , errors, trigger, watch} = useFormContext();
@@ -54,6 +55,10 @@ const FlightsForm = (props: Props) => {
 			return dateError.message;
 		}
 		return (isStart ? startDateLabel : endDateLabel)
+	};
+
+	const getAirlineByDisplayName = (displayName : string) => {
+		return formattedAirlines.find(airline => airline.displayName === displayName);
 	};
 
     const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
@@ -170,7 +175,7 @@ const FlightsForm = (props: Props) => {
 										<Autocomplete
 											options={formattedAirlines}
 											getOptionLabel={(option) => option.displayName }
-											value={props.value?.id ? props.value : formattedAirlines.find(airline => airline.displayName === props.value)}
+											value={props.value?.id ? props.value : getAirlineByDisplayName(props.value)}
 											onChange={(event, newAirline) => { 
 												newAirline && setFlightsByAirlineID(newAirline.id);
 												handleChangeExposureDataAndFlightsField(fieldsNames.airline, newAirline?.displayName ?? '');
