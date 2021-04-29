@@ -8,6 +8,10 @@ import { isIdValid , isPassportValid, isPalestineIdValid, isOtherIdValid } from 
 const ContactIdValidationSchema = (test?: TestParam) => yup.string()
     .when(InteractionEventContactFields.IDENTIFICATION_TYPE, (identificationType: number) => {
         let schema = yup.string().nullable();
+        
+        if(test) { 
+            schema = schema.test(test.name,test.errorMsg,test.testingFunction);
+        }
 
         switch (identificationType) {
             case IdentificationTypesCodes.ID:
@@ -22,10 +26,6 @@ const ContactIdValidationSchema = (test?: TestParam) => yup.string()
             default:
                 schema = schema.test('isValid', invalidOtherIdText, (id) => isOtherIdValid(id));
                 break;
-        }
-
-        if(test) { 
-            schema = schema.test(test.name,test.errorMsg,test.testingFunction)
         }
 
         return schema;

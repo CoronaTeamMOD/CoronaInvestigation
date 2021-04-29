@@ -25,7 +25,7 @@ import useStyles from './InteractionDialogStyles';
 import useInteractionsForm from './InteractionEventForm/useInteractionsForm';
 import InteractionFormTabSwitchButton from './InteractionFormTabSwitchButton';
 import ContactsTabs from './InteractionEventForm/ContactsSection/ContactsTabs';
-import InteractionEventSchema from './InteractionEventForm/InteractionSection/InteractionEventSchema';
+import InteractionEventSchema from './InteractionEventForm/InteractionSection/Schema/InteractionEventSchema';
 import ContactTypeKeys from './InteractionEventForm/ContactsSection/ManualContactsForm/ContactForm/ContactTypeKeys';
 import repetitiveFieldTools from './InteractionEventForm/InteractionSection/RepetitiveEventForm/hooks/repetitiveFieldTools';
 import InteractionEventForm, {InteractionEventFormProps} from './InteractionEventForm/InteractionSection/InteractionEventForm';
@@ -42,10 +42,18 @@ const InteractionDialog = (props: Props) => {
     
     const { alertWarning } = useCustomSwal();
 
+    const getEventContactIds = () => {
+        const ids = interactions.map(interaction => interaction.contacts).flat().map((contact) => 
+                contact[InteractionEventContactFields.IDENTIFICATION_NUMBER]
+        );
+        return ids;
+    };
+
+
     const methods = useForm<InteractionEventDialogData>({
         defaultValues: interactionData,
         mode: 'all',
-        resolver: yupResolver(InteractionEventSchema)
+        resolver: yupResolver(InteractionEventSchema(getEventContactIds()))
     });
 
     const greenPassQuestions = useSelector<StoreStateType, GreenPassQuestion[]>(state => state.greenPass.greenPassQuestions);
@@ -249,13 +257,6 @@ const InteractionDialog = (props: Props) => {
         contactBank, 
         setContactBank, 
         existingEventPersonInfos : getExistingPersonInfos()
-    };
-
-    const getEventContactIds = () => {
-        const ids = interactions.map(interaction => interaction.contacts).flat().map((contact) => 
-                contact[InteractionEventContactFields.IDENTIFICATION_NUMBER]
-        );
-        return ids;
     };
 
     const groupedInvestigationProviderState = {
