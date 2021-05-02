@@ -33,7 +33,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
     return (
         <>
             <FormRowWithInput fieldName='האם יש תסמינים:'>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                     <Controller
                         name={ClinicalDetailsFields.DOES_HAVE_SYMPTOMS}
                         control={control}
@@ -55,8 +55,8 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                 </Grid>
             </FormRowWithInput>
 
-            <FormRowWithInput fieldName=''>
-                <Collapse in={watchDoesHaveSymptoms}>
+            <Collapse in={watchDoesHaveSymptoms}>
+                <FormRowWithInput fieldName=''>
                     <Grid item xs={7}>
                     <Collapse in={!watchIsSymptomsDateUnknown}>
                             <div className={classes.dates}>
@@ -175,8 +175,8 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                             </Collapse>
                         </Grid>
                     </Grid>
-                </Collapse>
-            </FormRowWithInput>
+                </FormRowWithInput>
+            </Collapse>
         </>
     );
 };

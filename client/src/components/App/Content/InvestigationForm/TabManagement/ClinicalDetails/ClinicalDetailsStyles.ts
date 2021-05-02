@@ -2,7 +2,7 @@ import {makeStyles} from '@material-ui/styles';
 
 export const useStyles = makeStyles({
     form: {
-        padding: '10vh 2vw'
+        padding: '2vh'
     },
     rowGridItem: {
         display: 'flex',
@@ -30,7 +30,7 @@ export const useStyles = makeStyles({
         display: 'flex',
         flexDirection: 'row',
         maxWidth: '100%',
-        marginBottom: '0.5vw',
+        marginTop: '1vw',
         alignItems: 'center',
     },
     hospitalizationDates: {
@@ -40,10 +40,6 @@ export const useStyles = makeStyles({
     smallGrid: {
         width: '60vw'
     },
-    isolationProblemTextField: {
-        marginLeft: '1vw',
-        width: '15vw',
-    },
     otherTextField: {
         marginTop: '1vh',
         marginLeft: '-22vw',
@@ -51,9 +47,6 @@ export const useStyles = makeStyles({
     symptomsDateCheckBox: {
         marginTop: '1vh',
         marginLeft: '1vw',
-    },
-    spacedDates: {
-        marginRight: '1vw',
     },
     verticalSpacing: {
         marginBottom: '1vh',
@@ -72,6 +65,12 @@ export const useStyles = makeStyles({
     hiddenIsPregnant: {
         display: 'none'
     },
+    clinicalDetailsStub: {
+        margin: '10px 15px 10px 0',
+    },
+    reasonInputField: {
+        marginTop: '1vw'
+    }
 });
 
 export interface ClinicalDetailsClasses {
@@ -84,11 +83,11 @@ export interface ClinicalDetailsClasses {
     dates: string;
     hospitalizationDates: string;
     smallGrid: string;
-    isolationProblemTextField: string;
     otherTextField: string;
     symptomsDateCheckBox: string;
-    spacedDates: string;
     verticalSpacing: string;
     hospitalInput: string;
     symptomsAndDiseasesCheckbox: string;
+    clinicalDetailsStub: string;
+    reasonInputField: string;
 }

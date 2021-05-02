@@ -94,9 +94,9 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
             name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`,
             testId: 'currentQuarantineHomeNumber'
         },
-        floorField: {
-            name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`,
-            testId: 'currentQuarantineFloor'
+        apartmentField: {
+            name: `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_APARTMENT}`,
+            testId: 'currentQuarantineApartment'
         }
     }
 
@@ -162,7 +162,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
         <div className={classes.form}>
             <FormProvider {...methods}>
                 <form id={`form-${id}`} onSubmit={(e) => saveForm(e)}>
-                    <Grid spacing={2} container>
+                    <Grid spacing={3} container>
                         <Grid item xs={12}>
                             <IsolationDatesFields
                                 classes={classes}
@@ -208,7 +208,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                         </Grid>
                         <Grid item xs={12} className={patientGender === Gender.MALE ? classes.hiddenIsPregnant : ''}>
                             <FormRowWithInput fieldName='האם בהריון:'>
-                                <Grid item xs={2}>
+                                <Grid item xs={3}>
                                     <Controller
                                         name={ClinicalDetailsFields.IS_PREGNANT}
                                         control={methods.control}

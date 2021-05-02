@@ -6,7 +6,7 @@ export interface GetInvestigatedPatientClinicalDetailsFields {
 
 interface ClinicalDetails {
     isolationAddress: {
-        floor: number;
+        apartment: number;
         houseNum: number;
         streetByStreet: {
             displayName: string,
