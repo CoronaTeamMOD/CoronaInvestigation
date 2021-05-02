@@ -45,7 +45,6 @@ const useStyles = makeStyles({
         display: 'flex',
         alignItems: 'center',
         margin: '10px 15px 10px 0'
-        // margin: '10px 0'
     },
     fontSize15: {
         fontSize: 16,
