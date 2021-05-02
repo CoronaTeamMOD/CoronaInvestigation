@@ -7,7 +7,9 @@ import placeTypesCodesHierarchy from 'Utils/ContactEvent/placeTypesCodesHierarch
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
-const interactionEventSchema = yup.object().shape({
+import contactBankValidation from './contactBankValidation';
+
+const interactionEventSchema = (eventIds : (string | undefined)[]) => yup.object().shape({
     [InteractionEventDialogFields.PLACE_TYPE]: yup.string().nullable().required('סוג אתר חובה'),
     [InteractionEventDialogFields.PLACE_SUB_TYPE]: yup.number().when(
       InteractionEventDialogFields.PLACE_TYPE, {
@@ -55,11 +57,11 @@ const interactionEventSchema = yup.object().shape({
        }
     ),
     [InteractionEventDialogFields.CONTACTS]: yup.array().of(yup.object().shape({
-        [InteractionEventContactFields.FIRST_NAME]: yup.string().nullable().required('שם פרטי חובה'),
-        [InteractionEventContactFields.LAST_NAME]: yup.string().nullable().required('שם משפחה חובה'),
+        [InteractionEventContactFields.FIRST_NAME]: yup.string().nullable().required(requiredText),
+        [InteractionEventContactFields.LAST_NAME]: yup.string().nullable().required(requiredText),
         [InteractionEventContactFields.PHONE_NUMBER]: yup.string().nullable()
           .matches(NOT_REQUIRED_PHONE_NUMBER_REGEX, invalidPhoneText),
-        [InteractionEventContactFields.IDENTIFICATION_NUMBER]: ContactIdValidationSchema
+        [InteractionEventContactFields.IDENTIFICATION_NUMBER]: ContactIdValidationSchema(contactBankValidation(eventIds))
     }))
   });
 

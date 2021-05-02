@@ -14,7 +14,7 @@ export const contactQuestioningPersonal = {
             (contactStatus: number, needIsolation: boolean, schema: any, { originalValue }: { originalValue: string }) => {
                 return contactStatus === ContactStatusCodes.COMPLETED || (originalValue === '' && !needIsolation)
                     ? yup.string().nullable()
-                    : ContactIdValidationSchema;
+                    : ContactIdValidationSchema();
             }
         ),
     [InteractedContactFields.BIRTH_DATE]: yup.date().max(new Date()).nullable(),
