@@ -15,50 +15,54 @@ const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
     const { control, errors } = useFormContext();
 
     return (
+        <>
         <FormRowWithInput fieldName='האם בעייתי לקיים בידוד:'>
-            <>
+            <Grid item xs={3}>
+                <Controller
+                    name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM}
+                    control={control}
+                    render={(props) => (
+                        <Toggle
+                            test-id='isQuarantineProblematic'
+                            value={props.value}
+                            onChange={(e, value) => {
+                                if (value !== null) {
+                                    props.onChange(value)
+                                }
+                            }}
+                        />
+                    )}
+                />
+                <InlineErrorText
+                    error={errors[ClinicalDetailsFields.IS_ISOLATION_PROBLEM]}
+                />
+            </Grid>
+        </FormRowWithInput>
+        <Collapse in={watchIsIsolationProblem}>
+            <Grid container spacing={3}>
+                <Grid item xs={3} className={classes.clinicalDetailsStub}/>
                 <Grid item xs={3}>
                     <Controller
-                        name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM}
+                        name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO}
                         control={control}
                         render={(props) => (
-                            <Toggle
-                                test-id='isQuarantineProblematic'
+                            <AlphanumericTextField
+                                fullWidth
+                                testId='problematicQuarantineReason'
+                                name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO}
                                 value={props.value}
-                                onChange={(e, value) => {
-                                    if (value !== null) {
-                                        props.onChange(value)
-                                    }
-                                }}
+                                onChange={(newValue: string) => props.onChange(newValue)}
+                                onBlur={props.onBlur}
+                                placeholder='הכנס סיבה:'
+                                label='סיבה *'
+                                className={classes.reasonInputField}
                             />
                         )}
                     />
-                    <InlineErrorText 
-                        error={errors[ClinicalDetailsFields.IS_ISOLATION_PROBLEM]}
-                    />
                 </Grid>
-                <Grid item xs={2}>
-                    <Collapse in={watchIsIsolationProblem}>
-                        <Controller
-                            name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO}
-                            control={control}
-                            render={(props) => (
-                                <AlphanumericTextField
-                                    testId='problematicQuarantineReason'
-                                    name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO}
-                                    value={props.value}
-                                    onChange={(newValue: string) => props.onChange(newValue)}
-                                    onBlur={props.onBlur}
-                                    placeholder='הכנס סיבה:'
-                                    label='סיבה *'
-                                    className={classes.isolationProblemTextField}
-                                />
-                            )}
-                        />
-                    </Collapse>
-                </Grid>
-            </>
-        </FormRowWithInput>
+            </Grid>
+        </Collapse>
+     </>
     );
 };
 
