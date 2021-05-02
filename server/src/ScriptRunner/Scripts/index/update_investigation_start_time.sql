@@ -1,8 +1,8 @@
--- FUNCTION: public.update_investigation_start_date(timestamp, integer)
+-- FUNCTION: public.update_investigation_start_time(timestamp, integer)
 
--- DROP FUNCTION public.update_investigation_start_date(timestamp, integer);
+DROP FUNCTION IF EXISTS public.update_investigation_start_time(timestamp, integer);
 
-CREATE OR REPLACE FUNCTION public.update_investigation_start_date(
+CREATE OR REPLACE FUNCTION public.update_investigation_start_time(
 	time_input timestamp,
 	investigation_id_input integer)
     RETURNS void
