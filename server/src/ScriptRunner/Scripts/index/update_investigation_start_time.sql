@@ -20,7 +20,7 @@ begin
 
 	INSERT INTO public.investigation_times(
 	investigation_id, action_time, investigation_status)
-	VALUES (investigation_id_input, time_input, 1);
+	VALUES (investigation_id_input, time_input, 100000002);
 
 end;
 $BODY$;
