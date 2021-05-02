@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import UseCache from '../../../middlewares/useCache';
+import UseCache from '../../../middlewares/UseCache';
 
 import getAirlines from './getAirlines';
 
