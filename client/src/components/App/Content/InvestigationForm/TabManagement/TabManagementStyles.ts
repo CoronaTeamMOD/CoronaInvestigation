@@ -11,7 +11,7 @@ const useStyles = makeStyles({
         width: '75%'
     },
     displayedTab: {
-        maxHeight: '60vh',
+        maxHeight: '54vh',
         overflowY: 'scroll'
     },
     errorIcon:{
