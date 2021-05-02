@@ -40,7 +40,7 @@ const InteractionDialog = (props: Props) => {
     const [groupedInvestigationContacts, setGroupedInvestigationContacts] = useState<number[]>([]);
     const [contactBank, setContactBank] = useState<Map<number, ContactBankOption>>(new Map());
     
-    const { alertWarning } = useCustomSwal();
+    const { alertWarning, alertError } = useCustomSwal();
 
     const getEventContactIds = () => {
         const ids = interactions.map(interaction => interaction.contacts).flat().map((contact) => 
@@ -193,21 +193,30 @@ const InteractionDialog = (props: Props) => {
             data.contacts = [];
         }
         addFamilyMemberContacts(data.contacts);
-
-        const interactionDataToSave = convertData(data);
-
-        if (isNewInteraction && data.isRepetitive) {
-            fireRepetitiveContactWarning()
+        
+        if(!areThereDuplicateContactIDs(data)) {
+            const interactionDataToSave = convertData(data);
+            
+            if (isNewInteraction && data.isRepetitive) {
+                fireRepetitiveContactWarning()
                 .then(result => {
                     if (result.value) {
                         saveInteractions(interactionDataToSave)
                     }
                 })
+            } else {
+                saveInteractions(interactionDataToSave)
+            }
         } else {
-            saveInteractions(interactionDataToSave)
+            alertError('ישנם מגעים בעלי אותו תעודה מזהה בטופס') // einat
         }
     };
 
+    const areThereDuplicateContactIDs = (data : InteractionEventDialogData) => {
+        const ids = data.contacts.flatMap(contact => `${contact.identificationType}-${contact.identificationNumber}`)
+        return (new Set(ids)).size !== ids.length
+    }
+    
     const onPlaceSubtypeChange = (newValue: PlaceSubType | null) => {
         if (newValue) {
             setPlaceSubtypeName(newValue?.displayName);
