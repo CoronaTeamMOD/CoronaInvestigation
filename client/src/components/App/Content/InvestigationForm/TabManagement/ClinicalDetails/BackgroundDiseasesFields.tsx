@@ -47,62 +47,60 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
                     />
                 </Grid>
             </FormRowWithInput>
-            <Collapse in={watchDoesHaveBackgroundDiseases}>
-                <FormRowWithInput fieldName=''>
-                    <>
-                        <Typography color={errors[ClinicalDetailsFields.BACKGROUND_DESEASSES] ? 'error' : 'initial'} >
-                            מחלות רקע: (יש לבחור לפחות מחלת רקע אחת)
-                        </Typography>
-                        <Grid container className={classes.smallGrid}>
-                            <Controller
-                                name={ClinicalDetailsFields.BACKGROUND_DESEASSES}
-                                control={control}
-                                render={(props) => (
-                                    <>
-                                        {
-                                            backgroundDiseases.map((backgroundIllness: string) => (
-                                                <Grid item xs={6} key={backgroundIllness}>
-                                                    <CustomCheckbox
-                                                        key={backgroundIllness}
-                                                        checkboxElements={[{
-                                                            key: backgroundIllness,
-                                                            value: backgroundIllness,
-                                                            labelText: backgroundIllness,
-                                                            checked: props.value.includes(backgroundIllness),
-                                                            onChange: () => handleBackgroundIllnessCheck(backgroundIllness, props.onChange, props.value)
-                                                        }]}
-                                                    />
-                                                </Grid>
-                                            ))
-                                        }
-                                    </>
-                                )}
-                            />
-                            <Collapse
-                                in={watchBackgroundDiseases.includes(otherBackgroundDiseaseFieldName)}>
-                                <Grid item xs={2}>
-                                    <Controller
-                                        name={ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO}
-                                        control={control}
-                                        render={(props) => (
-                                            <AlphanumericTextField
-                                                testId='otherBackgroundDisease'
-                                                name={ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO}
-                                                value={props.value}
-                                                onChange={(newValue: string) => props.onChange(newValue)}
-                                                onBlur={props.onBlur}
-                                                label='* מחלת רקע'
-                                                placeholder='הזן מחלת רקע...'
-                                                className={classes.otherTextField}
-                                            />
-                                        )}
-                                    />
-                                </Grid>
-                            </Collapse>
-                        </Grid>
-                    </>
-                </FormRowWithInput>
-            </Collapse>
+            <FormRowWithInput fieldName=''>
+                <Collapse in={watchDoesHaveBackgroundDiseases}>
+                    <Typography color={errors[ClinicalDetailsFields.BACKGROUND_DESEASSES] ? 'error' : 'initial'} >
+                        מחלות רקע: (יש לבחור לפחות מחלת רקע אחת)
+                    </Typography>
+                    <Grid container className={classes.smallGrid}>
+                        <Controller
+                            name={ClinicalDetailsFields.BACKGROUND_DESEASSES}
+                            control={control}
+                            render={(props) => (
+                                <>
+                                    {
+                                        backgroundDiseases.map((backgroundIllness: string) => (
+                                            <Grid item xs={6} key={backgroundIllness}>
+                                                <CustomCheckbox
+                                                    key={backgroundIllness}
+                                                    checkboxElements={[{
+                                                        key: backgroundIllness,
+                                                        value: backgroundIllness,
+                                                        labelText: backgroundIllness,
+                                                        checked: props.value.includes(backgroundIllness),
+                                                        onChange: () => handleBackgroundIllnessCheck(backgroundIllness, props.onChange, props.value)
+                                                    }]}
+                                                />
+                                            </Grid>
+                                        ))
+                                    }
+                                </>
+                            )}
+                        />
+                        <Collapse
+                            in={watchBackgroundDiseases.includes(otherBackgroundDiseaseFieldName)}>
+                            <Grid item xs={2}>
+                                <Controller
+                                    name={ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO}
+                                    control={control}
+                                    render={(props) => (
+                                        <AlphanumericTextField
+                                            testId='otherBackgroundDisease'
+                                            name={ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO}
+                                            value={props.value}
+                                            onChange={(newValue: string) => props.onChange(newValue)}
+                                            onBlur={props.onBlur}
+                                            label='* מחלת רקע'
+                                            placeholder='הזן מחלת רקע...'
+                                            className={classes.otherTextField}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                        </Collapse>
+                    </Grid>
+                </Collapse>
+            </FormRowWithInput>
         </>
     );
 };
