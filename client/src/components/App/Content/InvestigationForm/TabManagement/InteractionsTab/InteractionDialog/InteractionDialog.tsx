@@ -49,7 +49,6 @@ const InteractionDialog = (props: Props) => {
         return ids;
     };
 
-
     const methods = useForm<InteractionEventDialogData>({
         defaultValues: interactionData,
         mode: 'all',

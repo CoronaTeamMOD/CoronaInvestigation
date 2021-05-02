@@ -35,6 +35,6 @@ interface TestParam {
     name : string;
     errorMsg : string;
     testingFunction: (param : any) => boolean
-}
+};
 
 export default ContactIdValidationSchema;
