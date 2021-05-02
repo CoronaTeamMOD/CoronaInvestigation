@@ -85,7 +85,7 @@ const theme = createMuiTheme({
         MuiTypography: {
             body1: {
                 fontWeight: 500,
-                fontSize: '16',
+                fontSize: '16px',
             },
         },
         MuiTab: {
