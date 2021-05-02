@@ -208,7 +208,7 @@ const InteractionDialog = (props: Props) => {
                 saveInteractions(interactionDataToSave)
             }
         } else {
-            alertError('ישנם מגעים בעלי אותו תעודה מזהה בטופס') // einat
+            alertError('ישנם מגעים בעלי אותה תעודה מזהה בטופס');
         }
     };
 
