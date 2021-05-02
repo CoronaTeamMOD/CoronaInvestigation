@@ -6,7 +6,7 @@ import React, {useContext, useMemo, useState} from 'react';
 import {Dialog, DialogTitle, DialogContent, DialogActions, Button, Tooltip} from '@material-ui/core';
 
 import theme from 'styles/theme';
-import Contact from 'models/Contact';
+import Contact, {FormattedContact} from 'models/Contact';
 import PlaceSubType from 'models/PlaceSubType';
 import StoreStateType from 'redux/storeStateType';
 import InvolvedContact from 'models/InvolvedContact';
@@ -106,7 +106,7 @@ const InteractionDialog = (props: Props) => {
     const addFamilyMemberContacts = (contacts: Contact[]) => {
         familyMembers.forEach((familyMember: InvolvedContact) => {
             if (familyMember.selected) {
-                const familyContact: Contact = {
+                const familyContact: FormattedContact = {
                     firstName: familyMember.firstName,
                     lastName: familyMember.lastName,
                     phoneNumber: familyMember.phoneNumber,
@@ -114,10 +114,10 @@ const InteractionDialog = (props: Props) => {
                     contactType: ContactTypeKeys.CONTACT_TYPE_TIGHT,
                     involvedContactId: familyMember.id,
                     familyRelationship: familyMember.familyRelationship?.id,
-                    identificationType: familyMember.identificationType
+                    identificationType: familyMember.identificationType?.id
                 };
 
-                contacts.push(familyContact);
+                contacts.push(familyContact as Contact);
             }
         });
     };
