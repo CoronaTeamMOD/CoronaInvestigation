@@ -10,12 +10,12 @@ CREATE OR REPLACE FUNCTION public.update_investigation_end_time(
     COST 100
     VOLATILE PARALLEL UNSAFE
 AS $BODY$
---Update start time of investigation
+--Update end time of investigation
 
 begin 
 
 	UPDATE public.investigation
-	SET start_time=time_input
+	SET end_time=time_input
 	WHERE epidemiology_number = investigation_id_input;
 
 	INSERT INTO public.investigation_times(
