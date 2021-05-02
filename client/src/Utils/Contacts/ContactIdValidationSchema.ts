@@ -11,7 +11,7 @@ const ContactIdValidationSchema = (test?: TestParam) => yup.string()
         
         if(test) { 
             schema = schema.test(test.name,test.errorMsg,test.testingFunction);
-        }
+        };
 
         switch (identificationType) {
             case IdentificationTypesCodes.ID:
