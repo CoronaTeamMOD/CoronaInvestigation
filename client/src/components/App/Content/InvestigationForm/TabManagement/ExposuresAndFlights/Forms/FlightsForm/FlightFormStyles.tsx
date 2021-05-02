@@ -13,6 +13,9 @@ const useStyles = makeStyles({
             marginTop: '-10px',
         },
     },
+    airlineRow: {
+        margin: '15px 0'
+    }
 });
 
 export default useStyles;

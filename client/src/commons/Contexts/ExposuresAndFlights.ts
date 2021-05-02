@@ -42,6 +42,7 @@ export const fieldsNames = {
     wereFlights: 'wereFlights',
     wasInVacation: 'wasInVacation',
     wasInEvent: 'wasInEvent',
+    exposures: 'exposures' 
 };
 
 export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {

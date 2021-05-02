@@ -121,7 +121,6 @@ describe('<AccordionContent />', () => {
                 searchWrapper.update();
     
                 expect(searchWrapper.find(TypePreventiveTextField).at(0).props().value).toBe(value);
-                console.log(searchWrapper.debug());
                 const tableRow = searchWrapper.find('tr#person-row-777');
     
                 expect(tableRow.exists()).toBeTruthy();

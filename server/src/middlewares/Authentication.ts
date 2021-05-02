@@ -4,13 +4,13 @@ import UserType from '../Models/User/UserType';
 import { Severity } from '../Models/Logger/types';
 import { GET_USER_BY_ID } from '../DBService/Users/Query';
 import { errorStatusCode, graphqlRequest } from '../GraphqlHTTPRequest';
+import { hasAuthCache , setAuthCache, getAuthCache } from '../Cache/authentication/';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../Logger/Logger';
 
 const stubUsers = {
     'fake token!': {
         id: '7',
         name: 'stubuser',
-
     },
     'demo token': {
         id: '1',
@@ -25,6 +25,7 @@ const handleConfidentialAuth = (
 ) => {
     const userUpn = request.headers.authorization;
     const userId =  userUpn.split('@')[0];
+
     const authenticationLogger = logger.setup({
         workflow: 'Authentication',
         investigation: parseInt(request.headers.epidemiologynumber as string)
@@ -35,26 +36,37 @@ const handleConfidentialAuth = (
     }
     authenticationLogger.info(`authorized azure upn successfully! got user: ${JSON.stringify(userId)}`, Severity.LOW);
     
-    const parameters = { id: userId };
-    authenticationLogger.info(`get user by id: ${launchingDBRequestLog(parameters)}`, Severity.LOW);
-
-    graphqlRequest(GET_USER_BY_ID, response.locals, parameters).then((result: any) => {
-        authenticationLogger.info(validDBResponseLog, Severity.LOW);
-        response.locals.user = {
-            id: userId,
-            name: result.data.userById?.userName,
-            userType: result.data.userById?.userType,
-            investigationGroup: result.data.userById?.investigationGroup,
-            countyByInvestigationGroup: {
-                districtId: result.data.userById?.countyByInvestigationGroup?.districtId
-            },
-            isDeveloper: result.isDeveloper
-        };
+    if(hasAuthCache(userId)) {
+        authenticationLogger.info('users exists in cache, returning from cache', Severity.LOW);
+        
+        response.locals.user = getAuthCache(userId);
         return next();
-    }).catch(error => {
-        authenticationLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-        response.sendStatus(errorStatusCode).send(error);
-    });;
+    } else {
+        const parameters = { id: userId };
+        authenticationLogger.info(`get user by id: ${launchingDBRequestLog(parameters)}`, Severity.LOW);
+
+        graphqlRequest(GET_USER_BY_ID, response.locals, parameters)
+            .then((result: any) => {
+                authenticationLogger.info(validDBResponseLog, Severity.LOW);
+                const newLocals = {
+                    id: userId,
+                    name: result.data.userById?.userName,
+                    userType: result.data.userById?.userType,
+                    investigationGroup: result.data.userById?.investigationGroup,
+                    countyByInvestigationGroup: {
+                        districtId: result.data.userById?.countyByInvestigationGroup?.districtId
+                    },
+                    isDeveloper: result.isDeveloper
+                };
+                setAuthCache(userId, newLocals)
+
+                response.locals.user = newLocals;
+                return next();
+            }).catch(error => {
+                authenticationLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                response.sendStatus(errorStatusCode).send(error);
+            });
+    }
 }
 
 const authMiddleware = (
@@ -79,26 +91,34 @@ const authMiddleware = (
             return response.status(401).json({ error: "unauthorized noauth user" });
         } else {
             authenticationLogger.info(`noauth user found successfully, the user is: ${JSON.stringify(user)}`, Severity.LOW);
-            const parameters = { id: user.id };
-            authenticationLogger.info(`get user by id: ${launchingDBRequestLog(parameters)}`, Severity.LOW);
-            graphqlRequest(GET_USER_BY_ID, response.locals, parameters)
-            .then((result: any) => {
-                authenticationLogger.info(validDBResponseLog, Severity.LOW);
-                response.locals.user = {
-                    ...user,
-                    userType: result.data.userById?.userType,
-                    investigationGroup: result.data.userById?.investigationGroup,
-                    countyByInvestigationGroup: {
-                        districtId: result.data.userById?.countyByInvestigationGroup?.districtId
-                    },
-                    isDeveloper: result.data.userById?.isDeveloper
-                };
+            const { id } = user;
+            if(hasAuthCache(id)) {
+                authenticationLogger.info('users exists in cache, returning from cache', Severity.LOW);
+                response.locals.user = getAuthCache(id);
                 return next();
-            }).catch(error => {
-                authenticationLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-                response.sendStatus(errorStatusCode).send(error);
-            });;
-
+            } else {
+                const parameters = { id };
+                authenticationLogger.info(`get user by id: ${launchingDBRequestLog(parameters)}`, Severity.LOW);
+                graphqlRequest(GET_USER_BY_ID, response.locals, parameters)
+                    .then((result: any) => {
+                        authenticationLogger.info(validDBResponseLog, Severity.LOW);
+                        const newLocals = {
+                            ...user,
+                            userType: result.data.userById?.userType,
+                            investigationGroup: result.data.userById?.investigationGroup,
+                            countyByInvestigationGroup: {
+                                districtId: result.data.userById?.countyByInvestigationGroup?.districtId
+                            },
+                            isDeveloper: result.data.userById?.isDeveloper
+                        };
+                        response.locals.user = newLocals;
+                        setAuthCache(id , newLocals);
+                        return next();
+                    }).catch(error => {
+                        authenticationLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                        response.sendStatus(errorStatusCode).send(error);
+                    });
+            }
         }
     }
 };

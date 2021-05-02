@@ -5,6 +5,7 @@ import usersRoute from './UsersRoute/mainRoute';
 import desksRoute from './DesksRoute/mainRoute';
 import scriptsRoute from './ScriptsRoute/mainRoute';
 import exposureRoute from './ExposureRoute/mainRoute';
+import airlinesRoute from './AirlinesRoute/mainRoute';
 import countiesRoute from './CountiesRoute/mainRoute';
 import educationRoute from './EducationRoute/mainRoute';
 import AuthorityRoute from './AuthorityRoute/mainRoute';
@@ -36,5 +37,6 @@ clientToDBRouter.use('/clinicalDetails', clinicalDetailsRoute);
 clientToDBRouter.use('/contactedPeople', contactedPeopleRoute);
 clientToDBRouter.use('/groupedInvestigations', groupedInvestigationsRoute);
 clientToDBRouter.use('/scripts', scriptsRoute);
+clientToDBRouter.use('/airlines', airlinesRoute);
 
 export default clientToDBRouter;

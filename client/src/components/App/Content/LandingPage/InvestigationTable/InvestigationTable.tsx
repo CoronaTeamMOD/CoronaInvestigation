@@ -414,7 +414,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 <Pagination
                     page={currentPage}
                     count={totalPageCount}
-                    onChange={(event, value) => setCurrentPage(value)}
+                    onChange={(event, value) => {
+                        setCurrentPage(value);
+                        window.scrollTo(0, 0);
+                        tableContainerRef.current?.scrollTo(0, 0);
+                    }}
                     size='large'
                     className={classes.pagination}
                 />

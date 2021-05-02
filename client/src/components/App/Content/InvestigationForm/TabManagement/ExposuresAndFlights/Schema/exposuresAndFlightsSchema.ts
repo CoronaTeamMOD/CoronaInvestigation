@@ -8,7 +8,7 @@ import exposureValidation from './exposureValidation';
 
 const hasExposureSource = (exposure : Exposure) => {
     return exposure?.exposureSource !== undefined
-}
+};
 
 const flightsAndExposures = (validationDate : Date) => {
     return yup.lazy(
@@ -48,26 +48,22 @@ const exposures = (validationDate : Date) => {
 
 const ExposureSchema = (validationDate : Date) => {
     return yup.object().shape({
-    [fieldsNames.wasInVacation]: yup.boolean().required(),
-    [fieldsNames.wasInEvent]: yup.boolean().required(),
-    [fieldsNames.wereFlights]: yup.boolean().required(),
-    [fieldsNames.wereConfirmedExposures]: yup.boolean().required(),
-    exposures : yup.array().when(
-        ['wereFlights','wereConfirmedExposures'] , {
-            is: true,
-            then: yup.array().of(flightsAndExposures(validationDate)),
-            otherwise: yup.array().when([fieldsNames.wereFlights] , {
-                is : true,
-                then: yup.array().of(flights(validationDate)),
-                otherwise: yup.array().when([fieldsNames.wereConfirmedExposures] , {
-                    is : true,
-                    then: yup.array().of(exposures(validationDate)),
-                    otherwise: yup.array().of(yup.object())
-                })
-            })
-        }
+        [fieldsNames.wasInVacation]: yup.boolean().required(),
+        [fieldsNames.wasInEvent]: yup.boolean().required(),
+        [fieldsNames.wereFlights]: yup.boolean().required(),
+        [fieldsNames.wereConfirmedExposures]: yup.boolean().required(),
+        [fieldsNames.exposures] : yup.array().when(
+            ['wereFlights','wereConfirmedExposures'] , (wereFlights: boolean, wereConfirmedExposures: boolean) => {
+                return wereFlights && wereConfirmedExposures 
+                    ? yup.array().of(flightsAndExposures(validationDate)) 
+                    : wereFlights 
+                        ? yup.array().of(flights(validationDate))
+                        : wereConfirmedExposures
+                            ? yup.array().of(exposures(validationDate))
+                            : yup.array().of(yup.object());
+            }
         )
-});
-}
+    })
+};
 
 export default ExposureSchema;

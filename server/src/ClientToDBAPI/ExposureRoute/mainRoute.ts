@@ -20,8 +20,8 @@ const exposureRoute = Router();
 
 const searchDaysAmount = 14;
 
-const convertExposuresFromDB = (result: ExposureByInvestigationId) : Exposure[] => {
-    const convertedExposures : Exposure[] = result.data.allExposures.nodes.map(exposure => 
+const convertExposuresFromDB = (result: ExposureByInvestigationId) => {
+    const convertedExposures = result.data.allExposures.nodes.map(exposure => 
     {
         let exposureSource = null;
         if (exposure.covidPatientByExposureSource) {
@@ -132,9 +132,12 @@ exposureRoute.get('/optionalExposureSources/:searchValue/:validationDate', handl
 });
 
 const convertExposuresToDB = (request: Request) => {
+    
     const convertedExposures = request.body.exposures.map((exposure: Exposure) => 
     ({
-        ...exposure, exposureSource: exposure.exposureSource ? exposure.exposureSource.epidemiologyNumber : null
+        ...exposure, 
+        exposureSource: exposure.exposureSource ? exposure.exposureSource.epidemiologyNumber : null,
+        airline: exposure.airline ? exposure.airline.displayName : undefined 
     }))
     return {...request.body, exposures: convertedExposures}
 }

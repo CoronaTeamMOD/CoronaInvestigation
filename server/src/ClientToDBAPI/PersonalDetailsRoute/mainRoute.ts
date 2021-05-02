@@ -1,6 +1,7 @@
 
 import { Router, Request, Response } from 'express';
 
+import UseCache, { setToCache } from '../../middlewares/UseCache';
 import { InitialLogData, Severity } from '../../Models/Logger/types';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import { formatToInsertAndGetAddressIdInput } from '../../Utils/addressUtils';
@@ -16,7 +17,7 @@ import { GET_OCCUPATIONS, GET_HMOS, GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIO
 
 const personalDetailsRoute = Router();
 
-personalDetailsRoute.get('/occupations', (request: Request, response: Response) => {
+personalDetailsRoute.get('/occupations', UseCache, (request: Request, response: Response) => {
     const occupationsLogger = logger.setup({
         workflow: 'query all occupations',
         user: response.locals.user.id,
@@ -25,6 +26,8 @@ personalDetailsRoute.get('/occupations', (request: Request, response: Response) 
     occupationsLogger.info(launchingDBRequestLog(), Severity.LOW);
     graphqlRequest(GET_OCCUPATIONS, response.locals).then((result: any) => {
         occupationsLogger.info(validDBResponseLog, Severity.LOW);
+        
+        setToCache(request.originalUrl,result);
         response.send(result);
     }).catch(error => {
         occupationsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
@@ -32,7 +35,7 @@ personalDetailsRoute.get('/occupations', (request: Request, response: Response) 
     });
 });
 
-personalDetailsRoute.get('/hmos', (request: Request, response: Response) => {
+personalDetailsRoute.get('/hmos', UseCache, (request: Request, response: Response) => {
     const hmosLogger = logger.setup({
         workflow: 'query all hmos',
         user: response.locals.user.id,
@@ -42,14 +45,16 @@ personalDetailsRoute.get('/hmos', (request: Request, response: Response) => {
     graphqlRequest(GET_HMOS, response.locals)
     .then(result => {
         hmosLogger.info(validDBResponseLog, Severity.LOW);
-        response.send(result)
+
+        setToCache(request.originalUrl, result);
+        response.send(result);
     }).catch(error => {
         hmosLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.sendStatus(errorStatusCode).send(error);
     });
 });
 
-personalDetailsRoute.get('/investigatedPatientRoles', (request: Request, response: Response) => {
+personalDetailsRoute.get('/investigatedPatientRoles', UseCache, (request: Request, response: Response) => {
     const investigatedPatientRolesLogger = logger.setup({
         workflow: 'query all investigated patient roles',
         user: response.locals.user.id,
@@ -59,7 +64,10 @@ personalDetailsRoute.get('/investigatedPatientRoles', (request: Request, respons
     graphqlRequest(GET_ALL_INVESTIGATED_PATIENT_ROLES, response.locals)
     .then(result => {
         investigatedPatientRolesLogger.info(validDBResponseLog, Severity.LOW);
-        response.send(result.data.allInvestigatedPatientRoles.nodes);
+        
+        const data = result.data.allInvestigatedPatientRoles.nodes;
+        setToCache(request.originalUrl, data);
+        response.send(data);
     }).catch(error => {
         investigatedPatientRolesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
         response.sendStatus(errorStatusCode).send(error);

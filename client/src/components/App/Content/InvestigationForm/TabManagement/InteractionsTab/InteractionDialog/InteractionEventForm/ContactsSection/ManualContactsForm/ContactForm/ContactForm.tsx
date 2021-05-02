@@ -161,7 +161,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
                                     <Select
                                         disabled={isFieldDisabled}
                                         test-id='contactType'
-                                        defaultValue={Array.from(contactTypes.keys())[ContactTypeKeys.CONTACT_TYPE_NOT_TIGHT]}
+                                        defaultValue={Array.from(contactTypes.keys())[ContactTypeKeys.CONTACT_TYPE_TIGHT]}
                                         value={props.value}
                                         className={classes.inputForm}
                                         onChange={event => props.onChange(event.target.value as number)}
