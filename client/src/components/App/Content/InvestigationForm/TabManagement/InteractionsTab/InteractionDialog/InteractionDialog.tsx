@@ -43,8 +43,16 @@ const InteractionDialog = (props: Props) => {
     const { alertWarning, alertError } = useCustomSwal();
 
     const getEventContactIds = () => {
-        const ids = interactions.map(interaction => interaction.contacts).flat().map((contact) => 
-                contact[InteractionEventContactFields.IDENTIFICATION_NUMBER]
+        const ids = interactions
+            .map(interaction => {
+                if(interaction.id !== interactionData?.id){
+                    return interaction.contacts
+                }
+            }).flat().map((contact) => {
+                if(contact) {
+                    return contact[InteractionEventContactFields.IDENTIFICATION_NUMBER]
+                }
+            }
         );
         return ids;
     };
