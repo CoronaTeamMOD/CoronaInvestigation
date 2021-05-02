@@ -2,7 +2,7 @@
 
 DROP FUNCTION IF EXISTS public.update_investigation_end_time(timestamp, integer);
 
-CREATE OR REPLACE FUNCTION public.update_investigation_start_time(
+CREATE OR REPLACE FUNCTION public.update_investigation_end_time(
 	time_input timestamp,
 	investigation_id_input integer)
     RETURNS void
