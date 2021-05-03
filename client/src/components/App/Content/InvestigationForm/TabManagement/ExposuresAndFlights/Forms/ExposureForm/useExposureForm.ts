@@ -79,7 +79,7 @@ const useExposureForm = (props: Props) => {
                 .catch(err => {
                     console.log(err);
                 })
-            return optionalCovidPatients;
+            return optionalCovidPatients || [];
         }
     }
 
@@ -93,12 +93,13 @@ const useExposureForm = (props: Props) => {
                 .get<CovidPatient[]>(`/exposure/exposuresByEpidemiologyNumber/${formattedValidationDate}?${query}`)
                 .then(result => {
                     // logger
-                    return result.data;
+                    const { data } = result;
+                    return data;
                 })
                 .catch(err => {
                     console.log(err);
                 })
-            return optionalCovidPatients;
+            return optionalCovidPatients || [];
         }
         //console.log(params);
     }

@@ -158,7 +158,7 @@ exposureRoute.get('/exposuresByPersonalDetails/:validationDate', handleInvestiga
 
 exposureRoute.get('/exposuresByEpidemiologyNumber/:validationDate', handleInvestigationRequest,  (request: Request, response: Response) => {
     const { validationDate } = request.params;
-    const epidemiologyNumber = parseInt((request.query.epidemiologyNumber ?? '') as string);
+    const epidemiologyNumber = typeof request.query.epidemiologyNumber === 'string' ? parseInt(request.query.epidemiologyNumber) : 0;
 
     const searchEndDate = new Date(validationDate);
     const searchStartDate = subDays(searchEndDate, searchDaysAmount);

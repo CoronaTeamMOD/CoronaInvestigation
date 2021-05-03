@@ -34,11 +34,13 @@ const ExposureForm = (props: Props) => {
 	const [optionalCovidPatients, setOptionalCovidPatients] = useState<CovidPatient[]>([]);
 	const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
-	const { fetchOptionalCovidPatients, selectedExposureSourceDisplay, fetchCovidPatientsByPersonalDetails } = useExposureForm({
+	const { fetchOptionalCovidPatients, selectedExposureSourceDisplay, fetchCovidPatientsByPersonalDetails, fetchCovidPatientsByEpidemiologyNumber } = useExposureForm({
 		exposureAndFlightsData,
 		exposureSourceSearchString,
 		setOptionalPatientsLoading
 	});
+
+	console.log(exposureAndFlightsData.exposureSource);
 
 	const setOptionalCovidPatientsAsync = async () => {
 		const optionalCovidPatients = await fetchOptionalCovidPatients();
@@ -77,9 +79,13 @@ const ExposureForm = (props: Props) => {
 
 	const handlePersonalDetailsSearchButton = async (params : PersonalDetailsQueryParams) => {
 		const optionalCovidPatients = await fetchCovidPatientsByPersonalDetails(params);
-		console.log(optionalCovidPatients);
-		//setOptionalCovidPatients(optionalCovidPatients);
-	}
+		setOptionalCovidPatients(optionalCovidPatients);
+	};
+
+	const handleEpidemiologyNumberSearchButton = async (query : string) => {
+		const optionalCovidPatients = await fetchCovidPatientsByEpidemiologyNumber(query);
+		setOptionalCovidPatients(optionalCovidPatients);
+	};
 
 	return (
 		<Grid className={formClasses.form} container justify='flex-start'>
@@ -100,29 +106,27 @@ const ExposureForm = (props: Props) => {
 							defaultValue={exposureAndFlightsData.exposureSource}
 							render={(props) => {
 								return (
-									<TextField 
-										{...props}
+									<ExposureSearchTextField
 										disabled={true}
+										name={`exposures[${index}].${fieldsNames.exposureSource}`}
+										className={classes.exposureSourceTextFied}
+										onChange={(value) => {
+											setExposureSourceSearchString(value);
+											(!value || !value.includes(':')) &&
+												handleChangeExposureDataAndFlightsField(index, fieldsNames.exposureSource, null);
+												props.onChange(null)
+										}}
+										value={exposureSourceSearchString}
+										test-id='exposureSource'
+										onSearchClick={() => {}}
+										onKeyDown={() => {}}
+										// onKeyDown={(e: React.KeyboardEvent) => {
+										// 	if (e.key === 'Enter') {
+										// 		e.preventDefault();
+										// 		setOptionalCovidPatientsAsync()
+										// 	}
+										// }}
 									/>
-									// <ExposureSearchTextField
-									// 	name={`exposures[${index}].${fieldsNames.exposureSource}`}
-									// 	className={classes.exposureSourceTextFied}
-									// 	onChange={(value) => {
-									// 		setExposureSourceSearchString(value);
-									// 		(!value || !value.includes(':')) &&
-									// 			handleChangeExposureDataAndFlightsField(index, fieldsNames.exposureSource, null);
-									// 			props.onChange(null)
-									// 	}}
-									// 	value={exposureSourceSearchString}
-									// 	test-id='exposureSource'
-									// 	onSearchClick={setOptionalCovidPatientsAsync}
-									// 	onKeyDown={(e: React.KeyboardEvent) => {
-									// 		if (e.key === 'Enter') {
-									// 			e.preventDefault();
-									// 			setOptionalCovidPatientsAsync()
-									// 		}
-									// 	}}
-									// />
 								);
 							}}
 						/>

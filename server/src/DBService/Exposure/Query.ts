@@ -114,7 +114,7 @@ export const GET_EXPOSURE_SOURCE_BY_PERSONAL_DETAILS = gql`
 `;
 
 export const GET_EXPOSURE_SOURCE_BY_EPIDEMIOLOGY_NUMBER = gql`
-    query getOptionalExposureSources($epidemiologyNumber: !Int, $startDate : Datetime! , $endDate : Datetime!) {
+    query getOptionalExposureSources($epidemiologyNumber: Int, $startDate : Datetime! , $endDate : Datetime!) {
         allCovidPatients(
             filter: {
                 and : [

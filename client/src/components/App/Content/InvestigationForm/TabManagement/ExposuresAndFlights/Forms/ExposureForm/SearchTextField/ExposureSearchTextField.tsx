@@ -30,15 +30,6 @@ const ExposureSearchTextField = (props: Props) => {
             {...rest}
             value={serachValue}
             validationSchema={stringAlphabet}
-            InputProps={{
-            endAdornment: (
-                <InputAdornment position='end'>
-                    <IconButton onClick={onSearchClick}>
-                        <Search color='primary' />
-                    </IconButton>
-                </InputAdornment>
-            )
-            }}
             placeholder={INSERT_EXPOSURE_SOURCE_SEARCH}
             test-id='exposureSource'
         />
