@@ -91,6 +91,7 @@ export const GET_EXPOSURE_SOURCE_BY_PERSONAL_DETAILS = gql`
                     { primaryPhone: { includes: $phoneNum } }
                 ]
             }
+            first: 100
         ) {
             nodes {
                 fullName
@@ -121,7 +122,6 @@ export const GET_EXPOSURE_SOURCE_BY_EPIDEMIOLOGY_NUMBER = gql`
                     { validationDate: {greaterThanOrEqualTo: $startDate} }
                     { validationDate: {lessThanOrEqualTo: $endDate} }
                     { epidemiologyNumber: {equalTo: $epidemiologyNumber } }
-
                 ]
             }
         ) {

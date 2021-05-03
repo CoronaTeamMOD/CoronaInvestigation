@@ -65,42 +65,35 @@ const useExposureForm = (props: Props) => {
 
     const fetchCovidPatientsByPersonalDetails = async (params : PersonalDetailsQueryParams) => {
         //logger
-        if (exposureAndFlightsData.exposureSource) {
-            return [];
-        } else {
-            const { phoneNumber, name } = params;
-            const query = `name=${name}&phoneNum=${phoneNumber}`
-            const optionalCovidPatients = await axios
-                .get<CovidPatient[]>(`/exposure/exposuresByPersonalDetails/${formattedValidationDate}?${query}`)
-                .then(result => {
-                    // logger
-                    return result.data;
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-            return optionalCovidPatients || [];
-        }
+        const { phoneNumber, name } = params;
+        const query = `name=${name}&phoneNum=${phoneNumber}`
+        const optionalCovidPatients = await axios
+            .get<CovidPatient[]>(`/exposure/exposuresByPersonalDetails/${formattedValidationDate}?${query}`)
+            .then(result => {
+                // logger
+                console.log(result.data);
+                return result.data;
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        return optionalCovidPatients;
     }
 
     const fetchCovidPatientsByEpidemiologyNumber = async (epidemiologyNumber: string) => {
         //logger
-        if (exposureAndFlightsData.exposureSource) {
-            return [];
-        } else {
-            const query = `epidemiologyNumber=${epidemiologyNumber}`
-            const optionalCovidPatients = await axios
-                .get<CovidPatient[]>(`/exposure/exposuresByEpidemiologyNumber/${formattedValidationDate}?${query}`)
-                .then(result => {
-                    // logger
-                    const { data } = result;
-                    return data;
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-            return optionalCovidPatients || [];
-        }
+        const query = `epidemiologyNumber=${epidemiologyNumber}`
+        const optionalCovidPatients = await axios
+            .get<CovidPatient[]>(`/exposure/exposuresByEpidemiologyNumber/${formattedValidationDate}?${query}`)
+            .then(result => {
+                // logger
+                const { data } = result;
+                return data;
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        return optionalCovidPatients;
         //console.log(params);
     }
     
