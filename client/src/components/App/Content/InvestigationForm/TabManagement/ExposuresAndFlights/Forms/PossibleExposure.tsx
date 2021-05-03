@@ -118,7 +118,7 @@ const PossibleExposure = (props: Props) => {
 };
 
 interface Props {
-    wereConfirmedExposures: boolean | null;
+    wereConfirmedExposures: boolean;
     onExposuresStatusChange: (fieldName: any, value: any) => void;
     exposures: Exposure[];
     handleChangeExposureDataAndFlightsField: (index: number, fieldName: string, value: any) => void;
