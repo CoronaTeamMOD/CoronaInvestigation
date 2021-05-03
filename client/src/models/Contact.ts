@@ -22,6 +22,6 @@ interface Contact {
 
 export interface FormattedContact extends Omit<Contact, "identificationType">{
     identificationType?: number;
-}
+};
 
 export default Contact;
