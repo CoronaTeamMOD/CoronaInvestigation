@@ -81,6 +81,25 @@ const useExposureForm = (props: Props) => {
                 })
             return optionalCovidPatients;
         }
+    }
+
+    const fetchCovidPatientsByEpidemiologyNumber = async (epidemiologyNumber: string) => {
+        //logger
+        if (exposureAndFlightsData.exposureSource) {
+            return [];
+        } else {
+            const query = `epidemiologyNumber=${epidemiologyNumber}`
+            const optionalCovidPatients = await axios
+                .get<CovidPatient[]>(`/exposure/exposuresByEpidemiologyNumber/${formattedValidationDate}?${query}`)
+                .then(result => {
+                    // logger
+                    return result.data;
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+            return optionalCovidPatients;
+        }
         //console.log(params);
     }
     
@@ -95,7 +114,8 @@ const useExposureForm = (props: Props) => {
     return {
         fetchOptionalCovidPatients,
         selectedExposureSourceDisplay,
-        fetchCovidPatientsByPersonalDetails
+        fetchCovidPatientsByPersonalDetails,
+        fetchCovidPatientsByEpidemiologyNumber
     }
 }
 

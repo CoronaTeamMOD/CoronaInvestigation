@@ -13,7 +13,7 @@ import { INVALID_CHARS_REGEX, PHONE_OR_IDENTITY_NUMBER_REGEX } from '../../commo
 import CovidPatientDBOutput, { AddressDBOutput } from '../../Models/Exposure/CovidPatientDBOutput';
 import OptionalExposureSourcesResponse from '../../Models/Exposure/OptionalExposureSourcesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
-import { GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS,GET_EXPOSURE_SOURCE_BY_PERSONAL_DETAILS } from '../../DBService/Exposure/Query';
+import { GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS,GET_EXPOSURE_SOURCE_BY_PERSONAL_DETAILS, GET_EXPOSURE_SOURCE_BY_EPIDEMIOLOGY_NUMBER } from '../../DBService/Exposure/Query';
 
 const exposureRoute = Router();
 
@@ -144,7 +144,33 @@ exposureRoute.get('/exposuresByPersonalDetails/:validationDate', handleInvestiga
         endDate: searchEndDate
     }
 
+    // logger
     graphqlRequest(GET_EXPOSURE_SOURCE_BY_PERSONAL_DETAILS, response.locals,parameters)
+        .then(result => {
+            if(result?.data?.allCovidPatients?.nodes){
+                let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
+                response.send(convertCovidPatientsFromDB(dbBCovidPatients));
+            } else {
+                response.send([])
+            }
+        })
+});
+
+exposureRoute.get('/exposuresByEpidemiologyNumber/:validationDate', handleInvestigationRequest,  (request: Request, response: Response) => {
+    const { validationDate } = request.params;
+    const epidemiologyNumber = parseInt((request.query.epidemiologyNumber ?? '') as string);
+
+    const searchEndDate = new Date(validationDate);
+    const searchStartDate = subDays(searchEndDate, searchDaysAmount);
+
+    const parameters = {
+        epidemiologyNumber,
+        startDate: searchStartDate,
+        endDate: searchEndDate
+    }
+
+    // logger
+    graphqlRequest(GET_EXPOSURE_SOURCE_BY_EPIDEMIOLOGY_NUMBER, response.locals, parameters)
         .then(result => {
             if(result?.data?.allCovidPatients?.nodes){
                 let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
