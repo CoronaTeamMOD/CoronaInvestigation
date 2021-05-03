@@ -9,6 +9,7 @@ import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import AddressForm, { AddressFormFields } from 'commons/Forms/AddressForm/AddressForm';
 
@@ -208,7 +209,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                         </Grid>
                         <Grid item xs={12} className={patientGender === Gender.MALE ? classes.hiddenIsPregnant : ''}>
                             <FormRowWithInput fieldName='האם בהריון:'>
-                                <Grid item xs={3}>
+                                <Grid item xs={4}>
                                     <Controller
                                         name={ClinicalDetailsFields.IS_PREGNANT}
                                         control={methods.control}
@@ -223,6 +224,9 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                 }}
                                             />
                                         )}
+                                    />
+                                    <InlineErrorText 
+                                        error={methods.errors[ClinicalDetailsFields.IS_PREGNANT]}
                                     />
                                 </Grid>
                             </FormRowWithInput>

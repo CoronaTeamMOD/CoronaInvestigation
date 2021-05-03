@@ -7,7 +7,7 @@ interface ClinicalDetailsData extends SymptomsExistenceInfo {
     isolationSource: number | null;
     isolationSourceDesc: string | null;
     isolationAddress: FlattenedDBAddress;
-    isInIsolation: boolean;
+    isInIsolation: boolean | null;
     isIsolationProblem: boolean | null;
     isIsolationProblemMoreInfo: string;
     isSymptomsStartDateUnknown: boolean;
@@ -18,7 +18,7 @@ interface ClinicalDetailsData extends SymptomsExistenceInfo {
     hospitalizationStartDate: Date | null;
     hospitalizationEndDate: Date | null;
     wasHospitalized: boolean;
-    isPregnant: boolean;
+    isPregnant: boolean | null;
     otherSymptomsMoreInfo: string;
     otherBackgroundDiseasesMoreInfo: string;
 };

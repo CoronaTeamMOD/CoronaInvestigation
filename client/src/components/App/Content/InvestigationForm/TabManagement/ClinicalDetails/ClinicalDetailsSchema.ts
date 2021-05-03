@@ -83,7 +83,7 @@ const ClinicalDetailsSchema = (validationDate: Date) => {
             [ClinicalDetailsFields.ISOLATION_APARTMENT]: yup.string().nullable(),
             [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.string().nullable()
         }).required(),
-        [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().nullable(),
+        [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().nullable().required(requiredText),
         [ClinicalDetailsFields.ISOLATION_START_DATE]: isInIsolationStartDateSchema(validationDate),
         [ClinicalDetailsFields.ISOLATION_END_DATE]: isInIsolationEndDateSchema(validationDate),
         [ClinicalDetailsFields.ISOLATION_SOURCE]: yup.number().when(
@@ -134,7 +134,7 @@ const ClinicalDetailsSchema = (validationDate: Date) => {
         [ClinicalDetailsFields.HOSPITAL]: yup.string().nullable(),
         [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: wasHospitilizedStartDateSchema,
         [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: wasHospitilizedEndDateSchema,
-        [ClinicalDetailsFields.IS_PREGNANT]: yup.boolean().nullable().required(),
+        [ClinicalDetailsFields.IS_PREGNANT]: yup.boolean().nullable().required(requiredText),
         [ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]: backgroundDiseasesMoreInfoSchema,
     })
 };

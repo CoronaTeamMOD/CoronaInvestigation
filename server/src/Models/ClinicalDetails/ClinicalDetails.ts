@@ -3,7 +3,7 @@ interface ClinicalDetails {
     isolationStartDate: Date | null;
     isolationEndDate: Date | null;
     isolationAddress: string;
-    isInIsolation: boolean;
+    isInIsolation: boolean | null;
     isIsolationProblem: boolean;
     isIsolationProblemMoreInfo: string;
     symptomsStartDate: Date | null;
@@ -14,7 +14,7 @@ interface ClinicalDetails {
     hospitalizationEndDate: Date | null;
     wasHospitalized: boolean;
     doesHaveSymptoms: boolean;
-    isPregnant: boolean;
+    isPregnant: boolean | null;
     investigatedPatientId: number;
     doesHaveBackgroundDiseases: boolean;
     otherSymptomsMoreInfo: string;

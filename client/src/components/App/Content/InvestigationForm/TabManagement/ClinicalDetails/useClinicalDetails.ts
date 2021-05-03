@@ -28,7 +28,7 @@ export const initialClinicalDetails: ClinicalDetailsData = {
     isolationSource: null,
     isolationSourceDesc : '',
     isolationAddress: initDBAddress,
-    isInIsolation: false,
+    isInIsolation: null,
     isIsolationProblem: null,
     isIsolationProblemMoreInfo: '',
     symptomsStartDate: null,
@@ -41,7 +41,7 @@ export const initialClinicalDetails: ClinicalDetailsData = {
     isSymptomsStartDateUnknown: false,
     doesHaveSymptoms: false,
     wasHospitalized: false,
-    isPregnant: false,
+    isPregnant: null,
     otherSymptomsMoreInfo: '',
     otherBackgroundDiseasesMoreInfo: ''
 };
@@ -145,13 +145,13 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     }
                     const initialDBClinicalDetailsToSet = {
                         ...initialClinicalDetails,
-                        isPregnant: Boolean(patientClinicalDetails.isPregnant),
+                        isPregnant: patientClinicalDetails.isPregnant !== null ? Boolean(patientClinicalDetails.isPregnant) : null,
                         backgroundDeseases: patientClinicalDetails.backgroundDiseases,
                         doesHaveBackgroundDiseases: patientClinicalDetails.doesHaveBackgroundDiseases,
                         hospital: patientClinicalDetails.hospital !== null ? patientClinicalDetails.hospital : '',
                         hospitalizationStartDate: convertDate(patientClinicalDetails.hospitalizationStartTime),
                         hospitalizationEndDate: convertDate(patientClinicalDetails.hospitalizationEndTime),
-                        isInIsolation: Boolean(patientClinicalDetails.isInIsolation),
+                        isInIsolation: patientClinicalDetails.isInIsolation,
                         isIsolationProblem: patientClinicalDetails.isIsolationProblem,
                         isIsolationProblemMoreInfo: patientClinicalDetails.isIsolationProblemMoreInfo !== null ?
                             patientClinicalDetails.isIsolationProblemMoreInfo : '',
