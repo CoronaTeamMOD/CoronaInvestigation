@@ -1,7 +1,9 @@
 import React from 'react'
 import { Controller, useFormContext } from 'react-hook-form';
+import { Grid } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
+import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 import FormTitle from 'commons/FormTitle/FormTitle';
 import { fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
@@ -15,7 +17,7 @@ interface Props {
 }
 
 export const VacationOrEvent = (props: Props) => {
-	const { control } = useFormContext();
+	const { control, errors } = useFormContext();
 
     const { wasInVacation , wasInEvent} = props;
     const classes = useStyles();
@@ -24,13 +26,38 @@ export const VacationOrEvent = (props: Props) => {
 		<div className={classes.subForm}>
 			<FormTitle title='שהייה באתרי נופש או אירועים' />
 			<FormRowWithInput fieldName='שהייה באתר נופש'>
-				<Controller
-					control={control}
-					name={fieldsNames.wasInVacation}
-					defaultValue={wasInVacation}
-					render={(props) => {
-						return (
-							<Toggle
+				<Grid item xs={4}>
+					<Controller
+						control={control}
+						name={fieldsNames.wasInVacation}
+						defaultValue={wasInVacation}
+						render={(props) => {
+							return (
+								<Toggle
+									{...props}
+									onChange={(event, value) => {
+										if (value !== null) {
+											props.onChange(value);
+										}
+									}}
+								/>
+							);
+						}}
+					/>
+					<InlineErrorText 
+						error={errors[fieldsNames.wasInVacation]}
+					/>
+				</Grid>
+			</FormRowWithInput>
+			<FormRowWithInput fieldName='ביקור באירוע רב משתתפים'>
+				<Grid item xs={4}>
+					<Controller
+						control={control}
+						name={fieldsNames.wasInEvent}
+						defaultValue={wasInEvent}
+						render={ (props) => {
+							return (
+								<Toggle
 								{...props}
 								onChange={(event, value) => {
 									if (value !== null) {
@@ -38,28 +65,13 @@ export const VacationOrEvent = (props: Props) => {
 									}
 								}}
 							/>
-						);
-					}}
-				/>
-			</FormRowWithInput>
-			<FormRowWithInput fieldName='ביקור באירוע רב משתתפים'>
-			<Controller
-					control={control}
-					name={fieldsNames.wasInEvent}
-					defaultValue={wasInEvent}
-					render={ (props) => {
-						return (
-							<Toggle
-							{...props}
-							onChange={(event, value) => {
-								if (value !== null) {
-									props.onChange(value);
-								}
-							}}
-						/>
-						)
-					}}
+							)
+						}}
 					/>
+					<InlineErrorText 
+						error={errors[fieldsNames.wasInEvent]}
+					/>
+				</Grid>
 			</FormRowWithInput>
 		</div>
 	);
