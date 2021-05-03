@@ -16,6 +16,7 @@ import {
 } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
+    ADD_INVESTIGATION_START_TIME,
     UPDATE_INVESTIGATION_START_TIME,
     UPDATE_INVESTIGATION_END_TIME,
     COMMENT,
@@ -25,7 +26,7 @@ import {
     UPDATE_INVESTIGATION_COMPLEXITY_REASON_ID,
     DELETE_INVESTIGATION_COMPLEXITY_REASON_ID,
     UPDATE_INVESTIGATION_STATIC_INFO,
-    UPDATE_INVESTIGATION_TRACKING
+    UPDATE_INVESTIGATION_TRACKING,
 } from '../../DBService/InvestigationInfo/Mutation';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
@@ -123,14 +124,22 @@ investigationInfo.post('/updateInvestigationStatus', handleInvestigationRequest,
             const closeContactsParameters = {epiNumber: epidemiologyNumber};
             const closeContactsLogger = logger.setup({...logData, workflow: `${logData.workflow}: close open isloated contactes`});
             closeContactsLogger.info(launchingDBRequestLog(closeContactsParameters), Severity.LOW);
-            graphqlRequest(CLOSE_ISOLATED_CONTACT, response.locals, closeContactsParameters).then(() => {
+
+            graphqlRequest(CLOSE_ISOLATED_CONTACT, response.locals, closeContactsParameters)
+            .then(() => {
                 closeContactsLogger.info(validDBResponseLog, Severity.LOW);
-                const updateEndTimeLogger = logger.setup({...logData, workflow: `${logData.workflow}: update end time`});
+                const investigationEndTime = new Date();
+                const updateEndTimeLogger = logger.setup({
+                    workflow: 'update investigation end time',
+                    user: response.locals.user.id,
+                    investigation: epidemiologyNumber,
+                });
                 const updateEndTimeParameters = {
-                    epidemiologyNumber,
-                    investigationEndTime: new Date()
-                }
+                    investigationIdInput: epidemiologyNumber,
+                    timeInput: investigationEndTime
+                };
                 updateEndTimeLogger.info(launchingDBRequestLog(updateEndTimeParameters), Severity.LOW);
+
                 graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, updateEndTimeParameters)
                 .then(result => {
                     updateEndTimeLogger.info(validDBResponseLog, Severity.LOW);
@@ -144,9 +153,30 @@ investigationInfo.post('/updateInvestigationStatus', handleInvestigationRequest,
                 closeContactsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
                 response.status(errorStatusCode).send(error);
             })     
+        } else if (investigationMainStatus === InvestigationMainStatusCodes.IN_PROCESS) {
+            const investigationStartTime = new Date();
+            const addInvestigationStartTimeLogger = logger.setup({
+                workflow: 'add investigation start time',
+                user: response.locals.user.id,
+                investigation: epidemiologyNumber,
+            });
+            const updateStartTimeParameters = {
+                investigationIdInput: epidemiologyNumber,
+                timeInput: investigationStartTime
+            }
+            addInvestigationStartTimeLogger.info(launchingDBRequestLog(updateStartTimeParameters), Severity.LOW);
+
+            graphqlRequest(ADD_INVESTIGATION_START_TIME, response.locals, updateStartTimeParameters)
+            .then(result => {
+                addInvestigationStartTimeLogger.info(validDBResponseLog, Severity.LOW);
+                response.send(result);
+            }).catch(error => {
+                addInvestigationStartTimeLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                response.status(errorStatusCode).send(error);
+            });     
         } else {
             response.send(result);
-        }
+        };
     })
     .catch(error => {
         updateInvestigationStatusLogger.error(invalidDBResponseLog(error), Severity.HIGH);
@@ -162,10 +192,9 @@ investigationInfo.post('/updateInvestigationStartTime', handleInvestigationReque
         user: response.locals.user.id,
         investigation: epidemiologyNumber,
     });
-
     const parameters = {
-        epidemiologyNumber: parseInt(epidemiologyNumber),
-        investigationStartTime
+        investigationIdInput: parseInt(epidemiologyNumber),
+        timeInput: investigationStartTime
     };
     updateInvestigationStartTimeLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     
