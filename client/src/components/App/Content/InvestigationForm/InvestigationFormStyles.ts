@@ -7,7 +7,7 @@ const useStyles = makeStyles({
         backgroundColor: primaryBackgroundColor,
     },
     interactiveForm: {
-        padding: '2vh 1vw 0 1vw',
+        padding: '2vh',
     },
     buttonSection: {
         margin: '1vh 0'
