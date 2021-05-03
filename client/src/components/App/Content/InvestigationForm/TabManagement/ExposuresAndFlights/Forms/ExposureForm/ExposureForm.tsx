@@ -12,12 +12,14 @@ import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
 import { invalidDateText } from 'commons/Schema/messages';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import ExposureSearchTextField from './ExposureSearchTextField/ExposureSearchTextField';
+import ExposureSearchTextField from './SearchTextField/ExposureSearchTextField';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
 import useStyles from './ExposureFormStyles';
 import useExposureForm from './useExposureForm';
 import ExposureSourceOption from './ExposureSourceOption';
+import SearchByPersonalDetails from './SearchTextField/SearchByPersonalDetails';
+import PersonalDetailsQueryParams from '../../../../../../../../models/ExposureForm/PersonalDetailsQueryParams';
 
 const ExposureForm = (props: Props) => {
 
@@ -73,8 +75,20 @@ const ExposureForm = (props: Props) => {
 	const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
 	const dateError = currentErrors ? currentErrors.exposureDate : undefined;
 
+	const handlePersonalDetailsSearchButton = (params : PersonalDetailsQueryParams) => {
+		console.log(params);
+	}
+
 	return (
 		<Grid className={formClasses.form} container justify='flex-start'>
+			<Grid container alignItems='center' xs={12}>
+				<Grid xs={3} />
+				<Grid item container alignItems='center' xs={9}>
+					<SearchByPersonalDetails 
+						getQueryParams={handlePersonalDetailsSearchButton}
+					/>
+				</Grid>
+			</Grid>
 			<Grid container justify='space-between' xs={12}>
                 <Grid item xs={11}>
 					<FormRowWithInput fieldName='פרטי החולה:'>
