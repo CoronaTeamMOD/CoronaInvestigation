@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { FormControl, Grid, MenuItem, Select } from '@material-ui/core';
+import { FormControl, FormHelperText, Grid, MenuItem, Select } from '@material-ui/core';
 
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
@@ -11,6 +11,7 @@ import IdentificationType from 'models/IdentificationType';
 import ContactFieldName from 'models/enums/ContactFieldName';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import useContactFields from 'Utils/Contacts/useContactFields';
+import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import IdentificationTextField from 'commons/IdentificationTextField/IdentificationTextField';
@@ -26,7 +27,7 @@ const LAST_NAME_LABEL = 'שם משפחה*';
 const PHONE_NUMBER_LABEL = 'מספר טלפון';
 
 const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, personInfo, contactCreationTime, contactIdentificationType }: Props): JSX.Element => {
-    const { control, setValue, getValues } = useFormContext();
+    const { control, setValue, getValues, watch, trigger, errors } = useFormContext();
 
     const classes = useStyles();
 
@@ -37,6 +38,22 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
 
     const { shouldDisableContact } = useStatusUtils();
 
+    const identificationTypeFieldName = `${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.IDENTIFICATION_TYPE}`;
+	const identificationNumberFieldName = `${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.IDENTIFICATION_NUMBER}`;
+
+    const identificationTypeErrorText = errors?.contacts && errors?.contacts[updatedContactIndex] && errors?.contacts[updatedContactIndex].identificationType?.message;
+    const identificationTypeError =  get(errors, identificationTypeFieldName);
+
+	const watchIdentificationType = watch(identificationTypeFieldName);
+    const watchIdentificationNumber = watch(identificationNumberFieldName);
+
+	useEffect(() => {
+        if (watchIdentificationType || watchIdentificationNumber){
+            trigger(identificationTypeFieldName);
+            trigger(identificationNumberFieldName); 
+        }
+    }, [watchIdentificationType, watchIdentificationNumber]);
+    
     useEffect(() => {
         const values = getValues();
         const contactContactType: number = values.contacts[updatedContactIndex]?.contactType ? values.contacts[updatedContactIndex]?.contactType : Array.from(contactTypes.keys())[ContactTypeKeys.CONTACT_TYPE_NOT_TIGHT];
@@ -106,7 +123,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
             </Grid>
             <Grid container justify='flex-start' spacing={6}>
                 <FormInput xs={4} labelLength={3} fieldName={ContactFieldName.IDENTIFICATION_TYPE}>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth error={identificationTypeError}>
                         <div>
                             <Controller                                        
                                 defaultValue={contactIdentificationType?.id ? contactIdentificationType?.id : null}
@@ -129,9 +146,10 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
                                                 </MenuItem>
                                             ))
                                         }
-                                    </Select>
+                                    </Select>                                        
                                 )}
                             />
+                            {identificationTypeError && <FormHelperText>{identificationTypeErrorText}</FormHelperText>}
                         </div>
                     </FormControl>
                 </FormInput>
@@ -144,7 +162,9 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
                                 disabled={isFieldDisabled || (contactCreationTime ? shouldDisableContact(contactCreationTime) : false)}
                                 name={props.name}
                                 value={props.value}
-                                onChange={(newValue: string) => props.onChange(newValue === '' ? null : newValue as string)}
+                                onChange={(newValue: string) => {
+                                    props.onChange(newValue === '' ? null : newValue as string)
+                                }}
                                 onBlur={props.onBlur}
                                 className={classes.inputForm}
                             />
