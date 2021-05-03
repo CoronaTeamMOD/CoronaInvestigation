@@ -10,11 +10,10 @@ import ExposureByInvestigationId from '../../Models/Exposure/ExposureByInvestiga
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { DELETE_EXPOSURE_BY_ID, UPDATE_EXPOSURES } from '../../DBService/Exposure/Mutation';
 import { INVALID_CHARS_REGEX, PHONE_OR_IDENTITY_NUMBER_REGEX } from '../../commons/Regex/Regex';
-import { GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS } from '../../DBService/Exposure/Query';
 import CovidPatientDBOutput, { AddressDBOutput } from '../../Models/Exposure/CovidPatientDBOutput';
 import OptionalExposureSourcesResponse from '../../Models/Exposure/OptionalExposureSourcesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
-import { parse } from 'dotenv/types';
+import { GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS,GET_EXPOSURE_SOURCE_BY_PERSONAL_DETAILS } from '../../DBService/Exposure/Query';
 
 const exposureRoute = Router();
 
@@ -128,6 +127,31 @@ exposureRoute.get('/optionalExposureSources/:searchValue/:validationDate', handl
         .catch(error => {
             optionalExposureSourcesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.sendStatus(errorStatusCode);
+        })
+});
+
+exposureRoute.get('/exposuresByPersonalDetails/:validationDate', handleInvestigationRequest,  (request: Request, response: Response) => {
+    const { validationDate } = request.params;
+    const { name, phoneNum } = request.query;
+
+    const searchEndDate = new Date(validationDate);
+    const searchStartDate = subDays(searchEndDate, searchDaysAmount);
+
+    const parameters = {
+        name,
+        phoneNum,
+        startDate: searchStartDate,
+        endDate: searchEndDate
+    }
+
+    graphqlRequest(GET_EXPOSURE_SOURCE_BY_PERSONAL_DETAILS, response.locals,parameters)
+        .then(result => {
+            if(result?.data?.allCovidPatients?.nodes){
+                let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
+                response.send(convertCovidPatientsFromDB(dbBCovidPatients));
+            } else {
+                response.send([])
+            }
         })
 });
 

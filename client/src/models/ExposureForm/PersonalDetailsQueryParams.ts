@@ -1,6 +1,6 @@
 
 interface PersonalDetailsQueryParams {
-    firstName: string;
+    name: string;
     phoneNumber: string;
 }
 

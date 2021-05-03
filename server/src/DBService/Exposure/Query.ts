@@ -79,3 +79,36 @@ export const GET_EXPOSURE_SOURCE_OPTIONS = gql`
         }
     }
 `;
+
+export const GET_EXPOSURE_SOURCE_BY_PERSONAL_DETAILS = gql`
+    query getOptionalExposureSources($name: String, $phoneNum: String, $startDate : Datetime! , $endDate : Datetime!) {
+        allCovidPatients(
+            filter: {
+                and : [
+                    { validationDate: {greaterThanOrEqualTo: $startDate} }
+                    { validationDate: {lessThanOrEqualTo: $endDate} }
+                    { fullName: { includes: $name } }
+                    { primaryPhone: { includes: $phoneNum } }
+                ]
+            }
+        ) {
+            nodes {
+                fullName
+                identityNumber
+                primaryPhone
+                epidemiologyNumber
+                birthDate
+                addressByAddress {
+                    cityByCity {
+                        displayName
+                    }
+                    streetByStreet {
+                        displayName
+                    }
+                    floor
+                    houseNum
+                }
+            }
+        }
+    }
+`;

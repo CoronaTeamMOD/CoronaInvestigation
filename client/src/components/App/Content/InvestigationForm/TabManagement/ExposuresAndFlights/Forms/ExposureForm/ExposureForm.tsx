@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { Delete } from '@material-ui/icons';
 import React, { useState, useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { CircularProgress, Grid, IconButton, MenuItem } from '@material-ui/core';
+import { CircularProgress, Grid, IconButton, MenuItem, TextField } from '@material-ui/core';
 
 import Map from 'commons/Map/Map';
 import useFormStyles from 'styles/formStyles';
@@ -34,7 +34,7 @@ const ExposureForm = (props: Props) => {
 	const [optionalCovidPatients, setOptionalCovidPatients] = useState<CovidPatient[]>([]);
 	const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
-	const { fetchOptionalCovidPatients, selectedExposureSourceDisplay } = useExposureForm({
+	const { fetchOptionalCovidPatients, selectedExposureSourceDisplay, fetchCovidPatientsByPersonalDetails } = useExposureForm({
 		exposureAndFlightsData,
 		exposureSourceSearchString,
 		setOptionalPatientsLoading
@@ -75,8 +75,10 @@ const ExposureForm = (props: Props) => {
 	const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
 	const dateError = currentErrors ? currentErrors.exposureDate : undefined;
 
-	const handlePersonalDetailsSearchButton = (params : PersonalDetailsQueryParams) => {
-		console.log(params);
+	const handlePersonalDetailsSearchButton = async (params : PersonalDetailsQueryParams) => {
+		const optionalCovidPatients = await fetchCovidPatientsByPersonalDetails(params);
+		console.log(optionalCovidPatients);
+		//setOptionalCovidPatients(optionalCovidPatients);
 	}
 
 	return (
@@ -98,25 +100,29 @@ const ExposureForm = (props: Props) => {
 							defaultValue={exposureAndFlightsData.exposureSource}
 							render={(props) => {
 								return (
-									<ExposureSearchTextField
-										name={`exposures[${index}].${fieldsNames.exposureSource}`}
-										className={classes.exposureSourceTextFied}
-										onChange={(value) => {
-											setExposureSourceSearchString(value);
-											(!value || !value.includes(':')) &&
-												handleChangeExposureDataAndFlightsField(index, fieldsNames.exposureSource, null);
-												props.onChange(null)
-										}}
-										value={exposureSourceSearchString}
-										test-id='exposureSource'
-										onSearchClick={setOptionalCovidPatientsAsync}
-										onKeyDown={(e: React.KeyboardEvent) => {
-											if (e.key === 'Enter') {
-												e.preventDefault();
-												setOptionalCovidPatientsAsync()
-											}
-										}}
+									<TextField 
+										{...props}
+										disabled={true}
 									/>
+									// <ExposureSearchTextField
+									// 	name={`exposures[${index}].${fieldsNames.exposureSource}`}
+									// 	className={classes.exposureSourceTextFied}
+									// 	onChange={(value) => {
+									// 		setExposureSourceSearchString(value);
+									// 		(!value || !value.includes(':')) &&
+									// 			handleChangeExposureDataAndFlightsField(index, fieldsNames.exposureSource, null);
+									// 			props.onChange(null)
+									// 	}}
+									// 	value={exposureSourceSearchString}
+									// 	test-id='exposureSource'
+									// 	onSearchClick={setOptionalCovidPatientsAsync}
+									// 	onKeyDown={(e: React.KeyboardEvent) => {
+									// 		if (e.key === 'Enter') {
+									// 			e.preventDefault();
+									// 			setOptionalCovidPatientsAsync()
+									// 		}
+									// 	}}
+									// />
 								);
 							}}
 						/>

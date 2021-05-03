@@ -2,24 +2,24 @@ import React, { useState } from 'react';
 import { Button, Grid, TextField, Typography } from '@material-ui/core';
 import PersonalDetailsQueryParams from '../../../../../../../../../models/ExposureForm/PersonalDetailsQueryParams';
 
-const firstNameLabel = 'שם פרטי';
+const nameLabel = 'שם';
 const phoneNumberLabel = 'טלפון';
 
 const SearchByPersonalDetails = (props: Props) => {
     const { getQueryParams } = props;
 
-    const [firstNameQuery,setFirstNameQuery] = useState<string>('');
+    const [nameQuery,setFirstNameQuery] = useState<string>('');
     const [phoneNumberQuery,setPhoneNumberQuery] = useState<string>('');
     
     return (
         <>
             <Grid xs={3}>
                 <TextField
-                    value={firstNameQuery}
+                    value={nameQuery}
                     onChange={(e) => {
                         setFirstNameQuery(e.target.value ?? '')
                     }}
-                    label={firstNameLabel}
+                    label={nameLabel}
                 />
             </Grid>
             <Grid xs={1}>
@@ -40,7 +40,7 @@ const SearchByPersonalDetails = (props: Props) => {
                 <Button 
                     onClick={() => {
                         getQueryParams({
-                            firstName: firstNameQuery,
+                            name: nameQuery,
                             phoneNumber: phoneNumberQuery
                         })
                     }}

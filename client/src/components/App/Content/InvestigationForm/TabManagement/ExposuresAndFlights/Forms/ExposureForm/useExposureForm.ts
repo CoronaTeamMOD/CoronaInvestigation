@@ -10,6 +10,7 @@ import StoreStateType from 'redux/storeStateType';
 import CovidPatientFields from 'models/CovidPatientFields';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { Exposure } from 'commons/Contexts/ExposuresAndFlights';
+import PersonalDetailsQueryParams from 'models/ExposureForm/PersonalDetailsQueryParams';
 
 export const displayPatientFields: CovidPatientFields = {
     fullName: 'שם',
@@ -61,6 +62,27 @@ const useExposureForm = (props: Props) => {
             return optionalCovidPatients;
         }
     }
+
+    const fetchCovidPatientsByPersonalDetails = async (params : PersonalDetailsQueryParams) => {
+        //logger
+        if (exposureAndFlightsData.exposureSource) {
+            return [];
+        } else {
+            const { phoneNumber, name } = params;
+            const query = `name=${name}&phoneNum=${phoneNumber}`
+            const optionalCovidPatients = await axios
+                .get<CovidPatient[]>(`/exposure/exposuresByPersonalDetails/${formattedValidationDate}?${query}`)
+                .then(result => {
+                    // logger
+                    return result.data;
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+            return optionalCovidPatients;
+        }
+        //console.log(params);
+    }
     
     const selectedExposureSourceDisplay = (exposureSource: CovidPatient): string => {
         const fields: string[] = [];
@@ -72,7 +94,8 @@ const useExposureForm = (props: Props) => {
 
     return {
         fetchOptionalCovidPatients,
-        selectedExposureSourceDisplay
+        selectedExposureSourceDisplay,
+        fetchCovidPatientsByPersonalDetails
     }
 }
 
