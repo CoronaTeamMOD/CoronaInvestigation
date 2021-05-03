@@ -9,7 +9,7 @@ interface Contact {
     lastName: string;
     phoneNumber?: string;
     identificationNumber?: string;
-    identificationType: IdentificationType;
+    identificationType?: IdentificationType;
     contactType: number;
     extraInfo?: string;
     contactStatus?: InteractedContact['contactStatus'];
@@ -18,6 +18,10 @@ interface Contact {
     involvedContactId?: number;
     involvedContact?: InvolvedContact | null;
     familyRelationship?: number;
+};
+
+export interface FormattedContact extends Omit<Contact, "identificationType">{
+    identificationType?: number;
 };
 
 export default Contact;
