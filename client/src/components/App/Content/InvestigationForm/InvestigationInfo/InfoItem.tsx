@@ -21,8 +21,8 @@ const InfoItem = ({ name, value, testId, size = 'regular' }: InfoItemProps) => {
     const variant = sizeVariantMap[size] as Variant;
     return (
         <Typography variant={variant} className={classes.typographyElement} test-id={testId}>
-           <bdi>{name}</bdi>: 
-            {value}
+           <bdi>{name}</bdi>:
+            {` ${value}`}
         </Typography>
     );
 };
