@@ -64,37 +64,40 @@ const useExposureForm = (props: Props) => {
     }
 
     const fetchCovidPatientsByPersonalDetails = async (params : PersonalDetailsQueryParams) => {
-        //logger
+        const patientsByPersonalDetailsLogger = logger.setup('Fetch confirmed exposures by personal details');
+
         const { phoneNumber, name } = params;
         const query = `name=${name}&phoneNum=${phoneNumber}`
         const optionalCovidPatients = await axios
             .get<CovidPatient[]>(`/exposure/exposuresByPersonalDetails/${formattedValidationDate}?${query}`)
             .then(result => {
-                // logger
-                console.log(result.data);
+                patientsByPersonalDetailsLogger.info('got results back from the server', Severity.LOW);
                 return result.data;
             })
             .catch(err => {
-                console.log(err);
+                patientsByPersonalDetailsLogger.warn(`got error from server: ${err}`, Severity.HIGH);
+                return [];
             })
         return optionalCovidPatients;
     }
 
     const fetchCovidPatientsByEpidemiologyNumber = async (epidemiologyNumber: string) => {
-        //logger
+        const patientsByEpidemiologyNumberLogger = logger.setup('Fetch confirmed exposures by personal details');
+
         const query = `epidemiologyNumber=${epidemiologyNumber}`
         const optionalCovidPatients = await axios
             .get<CovidPatient[]>(`/exposure/exposuresByEpidemiologyNumber/${formattedValidationDate}?${query}`)
             .then(result => {
-                // logger
+                patientsByEpidemiologyNumberLogger.info('got results back from the server', Severity.LOW);
+
                 const { data } = result;
                 return data;
             })
             .catch(err => {
-                console.log(err);
+                patientsByEpidemiologyNumberLogger.warn(`got error from server: ${err}`, Severity.HIGH);
+                return [];
             })
         return optionalCovidPatients;
-        //console.log(params);
     }
     
     const selectedExposureSourceDisplay = (exposureSource: CovidPatient): string => {
