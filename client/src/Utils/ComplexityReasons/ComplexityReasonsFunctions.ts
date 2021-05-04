@@ -1,15 +1,14 @@
 import axios from 'axios';
 
-import { PersonalInfoDbData } from 'models/Contexts/PersonalInfoContextData';
-import { Exposure } from 'commons/Contexts/ExposuresAndFlights';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
+import { Exposure } from 'commons/Contexts/ExposuresAndFlights';
+import { PersonalInfoDbData } from 'models/Contexts/PersonalInfoContextData';
 import { setComplexReasonsId } from 'redux/Investigation/investigationActionCreators';
 
 interface DBExposure extends Omit<Exposure, 'exposureAddress'> {
     exposureAddress: string|null;
-}
-
+};
 
 const updateInvestigationReasonId = (epidemiologyNumber: number, newComplexityReasonId: number, complexityReasonsId: (number|null)[]) => {
     const updateInvestigationComplexityReasonIdLogger = logger.setup('updateInvestigationComplexityReasonIdLogger');
@@ -26,7 +25,7 @@ const updateInvestigationReasonId = (epidemiologyNumber: number, newComplexityRe
         .catch((err) => {
             updateInvestigationComplexityReasonIdLogger.error(err, Severity.HIGH);
         })
-}
+};
 
 const removeInvestigationReasonId = (epidemiologyNumber: number, oldComplexityReasonId: number, complexityReasonsId: (number|null)[]) => {
     const deleteInvestigationComplexityReasonIdLogger = logger.setup('deleteInvestigationComplexityReasonIdLogger');
@@ -45,7 +44,7 @@ const removeInvestigationReasonId = (epidemiologyNumber: number, oldComplexityRe
             deleteInvestigationComplexityReasonIdLogger.error(err, Severity.HIGH);
 
         })
-}
+};
 
 export const checkUpdateInvestigationPersonalReasonId = (personalInfoData: PersonalInfoDbData, epidemiologyNumber: number, complexityReasonsId: (number|null)[]) => {
     if (personalInfoData.insuranceCompany === null || personalInfoData.insuranceCompany === `אף אחד מהנ"ל` && !(complexityReasonsId.includes(6))) {
@@ -73,7 +72,7 @@ export const checkUpdateInvestigationPersonalReasonId = (personalInfoData: Perso
     if (personalInfoData.relevantOccupation !== "מערכת הבריאות"  && complexityReasonsId.includes(9)) {
         removeInvestigationReasonId(epidemiologyNumber, 9, complexityReasonsId);
     }
-}
+};
 
 export const checkUpdateInvestigationExposureReasonId = (filteredExposures: (Exposure | DBExposure)[], epidemiologyNumber: number, complexityReasonsId: (number|null)[]) => {
     if (filteredExposures.length > 0  && !(complexityReasonsId.includes(13))) {
@@ -82,4 +81,4 @@ export const checkUpdateInvestigationExposureReasonId = (filteredExposures: (Exp
     if (filteredExposures.length == 0  && complexityReasonsId.includes(13)) {
         removeInvestigationReasonId(epidemiologyNumber, 13, complexityReasonsId);
     }
-}
+};
