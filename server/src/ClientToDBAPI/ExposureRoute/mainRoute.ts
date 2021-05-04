@@ -159,7 +159,7 @@ exposureRoute.get('/exposuresByPersonalDetails/:validationDate', handleInvestiga
                 response.send(convertCovidPatientsFromDB(dbBCovidPatients));
             } else {
                 exposuresByPersonalDetailsLogger.warn('didnt get exposure source options from DB', Severity.MEDIUM);
-                response.send([])
+                response.send([]);
             }
         })
         .catch(err => {
@@ -189,13 +189,13 @@ exposureRoute.get('/exposuresByEpidemiologyNumber/:validationDate', handleInvest
 
     graphqlRequest(GET_EXPOSURE_SOURCE_BY_EPIDEMIOLOGY_NUMBER, response.locals, parameters)
         .then(result => {
-            if(result?.data?.allCovidPatients?.nodes){
+            if(result?.data?.allCovidPatients?.nodes) {
                 exposuresByEpidemiologyNumberLogger.info(validDBResponseLog, Severity.LOW);
                 let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
                 response.send(convertCovidPatientsFromDB(dbBCovidPatients));
             } else {
                 exposuresByEpidemiologyNumberLogger.warn('didnt get exposure source options from DB', Severity.MEDIUM);
-                response.send([])
+                response.send([]);
             }
         })
         .catch(err => {

@@ -67,7 +67,7 @@ const useExposureForm = (props: Props) => {
         const patientsByPersonalDetailsLogger = logger.setup('Fetch confirmed exposures by personal details');
 
         const { phoneNumber, name } = params;
-        const query = `name=${name}&phoneNum=${phoneNumber}`
+        const query = `name=${name}&phoneNum=${phoneNumber}`;
         const optionalCovidPatients = await axios
             .get<CovidPatient[]>(`/exposure/exposuresByPersonalDetails/${formattedValidationDate}?${query}`)
             .then(result => {
@@ -84,7 +84,7 @@ const useExposureForm = (props: Props) => {
     const fetchCovidPatientsByEpidemiologyNumber = async (epidemiologyNumber: string) => {
         const patientsByEpidemiologyNumberLogger = logger.setup('Fetch confirmed exposures by personal details');
 
-        const query = `epidemiologyNumber=${epidemiologyNumber}`
+        const query = `epidemiologyNumber=${epidemiologyNumber}`;
         const optionalCovidPatients = await axios
             .get<CovidPatient[]>(`/exposure/exposuresByEpidemiologyNumber/${formattedValidationDate}?${query}`)
             .then(result => {

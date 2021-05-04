@@ -18,10 +18,10 @@ import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesT
 import useStyles from './ExposureFormStyles';
 import useExposureForm from './useExposureForm';
 import ExposureSourceOption from './ExposureSourceOption';
-import SearchByPersonalDetails from './SearchCovidPatients/SearchByPersonalDetails';
-import SearchByEpidemiologyNumber from './SearchCovidPatients/SearchByEpidemiologyNumber';
-import PersonalDetailsQueryParams from 'models/ExposureForm/PersonalDetailsQueryParams';
 import queryByTypes from './SearchCovidPatients/queryByTypes';
+import SearchByPersonalDetails from './SearchCovidPatients/SearchByPersonalDetails';
+import PersonalDetailsQueryParams from 'models/ExposureForm/PersonalDetailsQueryParams';
+import SearchByEpidemiologyNumber from './SearchCovidPatients/SearchByEpidemiologyNumber';
 
 const ExposureForm = (props: Props) => {
 
@@ -91,9 +91,7 @@ const ExposureForm = (props: Props) => {
 
 	return (
 		<Grid className={formClasses.form} container justify='flex-start'>
-			<Grid item xs={9}>
-
-			</Grid>
+			<Grid item xs={9} />
 			<Grid item container alignItems='center' xs={12} spacing={3}>
 				<Grid xs={3} />
 				<Grid xs={9}>
