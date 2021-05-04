@@ -2,18 +2,18 @@ import { useSelector } from 'react-redux';
 import { differenceInYears } from 'date-fns';
 import React, { useState, useEffect } from 'react';
 import { Controller, DeepMap, FieldError } from 'react-hook-form';
-import { Avatar, Grid, Typography, Select, MenuItem } from '@material-ui/core';
+import { Avatar, Grid, Typography, Select, MenuItem, FormHelperText, FormControl } from '@material-ui/core';
 
 import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
 import formatDate from 'Utils/DateUtils/formatDate';
 import FieldName from 'commons/FieldName/FieldName';
 import InteractedContact from 'models/InteractedContact';
-import { invalidDateText } from 'commons/Schema/messages';
 import IdentificationType from 'models/IdentificationType';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import useContactFields from 'Utils/Contacts/useContactFields';
 import InteractedContactFields from 'models/enums/InteractedContact';
+import { invalidDateText, requiredText } from 'commons/Schema/messages';
 import NumericTextField from 'commons/NoContextElements/NumericTextField';
 import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextField';
 import IdentificationTextField from 'commons/NoContextElements/IdentificationTextField';
@@ -23,10 +23,9 @@ import useStyles from './ContactQuestioningStyles';
 
 const PHONE_LABEL = 'טלפון';
 
-const ContactQuestioningPersonal: React.FC<Props> = (
-    props: Props
-): JSX.Element => {
-    const { index, interactedContact, currentFormErrors, formValues, control, trigger } = props;
+const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
+
+    const { index, interactedContact, currentFormErrors, formValues, control, trigger, watch} = props;
 
     const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
 
@@ -51,6 +50,19 @@ const ContactQuestioningPersonal: React.FC<Props> = (
         ? shouldDisableContact(interactedContact.creationTime)
         : false;
 
+    const identificationTypeFieldName = `form[${index}].${InteractedContactFields.IDENTIFICATION_TYPE}`;
+    const identificationNumberFieldName = `form[${index}].${InteractedContactFields.IDENTIFICATION_NUMBER}`;    
+
+    const watchIdentificationType = watch(identificationTypeFieldName);
+    const watchIdentificationNumber = watch(identificationNumberFieldName);
+
+    useEffect(() => {
+        if (watchIdentificationType || watchIdentificationNumber){
+            trigger(identificationTypeFieldName);
+            trigger(identificationNumberFieldName); 
+        }
+    }, [watchIdentificationType, watchIdentificationNumber]);
+        
     useEffect(() => {
         const shouldDisable =
             isFieldDisabled ||
@@ -71,46 +83,46 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                 <Grid item container alignItems='center'>
                     <FieldName fieldName='סוג תעודה מזהה:' />
                     <Grid item xs={3}> 
-                        <Controller
-                            control={control}
-                            name={`form[${index}].${InteractedContactFields.IDENTIFICATION_TYPE}`}
-                            defaultValue={formValues.identificationType?.id}
-                            render={(props) => (
-                                <Select
-                                    {...props}
-                                    disabled={shouldIdDisable}
-                                    className={classes.smallSizeText}
-                                    onChange={(event) => {
-                                        props.onChange(event.target.value)
-                                    }}
-                                    MenuProps={{
-                                        anchorOrigin: {
-                                            vertical: 'bottom',
-                                            horizontal: 'left'
-                                        },
-                                        transformOrigin: {
-                                            vertical: 'top',
-                                            horizontal: 'left'
-                                        },
-                                        getContentAnchorEl: null
+                        <FormControl fullWidth error={currentFormErrors ? !!(currentFormErrors[InteractedContactFields.IDENTIFICATION_TYPE]) : false}>
+                            <Controller
+                                control={control}
+                                name={`form[${index}].${InteractedContactFields.IDENTIFICATION_TYPE}`}
+                                defaultValue={formValues.identificationType?.id}
+                                render={(props) => (
+                                    <Select
+                                        {...props}
+                                        disabled={shouldIdDisable}
+                                        className={classes.smallSizeText}
+                                        onChange={(event) => {
+                                            props.onChange(event.target.value)
                                         }}
-                                >
-                                    {Object.values(identificationTypes).map((identificationType: IdentificationType) => (
-                                        <MenuItem
-                                            className={classes.smallSizeText}
-                                            key={identificationType.id}
-                                            value={identificationType.id}>
-                                            {identificationType.type}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            )}
-                        />
+                                        MenuProps={{
+                                            anchorOrigin: {
+                                                vertical: 'bottom',
+                                                horizontal: 'left'
+                                            },
+                                            transformOrigin: {
+                                                vertical: 'top',
+                                                horizontal: 'left'
+                                            },
+                                            getContentAnchorEl: null
+                                            }}
+                                    >
+                                        {Object.values(identificationTypes).map((identificationType: IdentificationType) => (
+                                            <MenuItem
+                                                className={classes.smallSizeText}
+                                                key={identificationType.id}
+                                                value={identificationType.id}>
+                                                {identificationType.type}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                )}
+                            />
+                            {currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_TYPE] && <FormHelperText>{requiredText}</FormHelperText>}
+                        </FormControl>
                     </Grid>
-                    <FieldName 
-                        fieldName='מספר תעודה:' 
-                        className={classes.fieldNameWithIcon}
-                    />
+                    <FieldName fieldName='מספר תעודה:' className={classes.fieldNameWithIcon}/>
                     <Grid item xs={3}>
                         <Controller
                             control={control}
@@ -254,4 +266,5 @@ interface Props {
     formValues: InteractedContact;
     trigger: (fieldname : string) => {};
     currentFormErrors?: DeepMap<InteractedContact, FieldError>;
+    watch: any;
 };

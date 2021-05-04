@@ -96,6 +96,7 @@ const InteractedContactAccordion = (props: Props) => {
                                 formValues={formValues}
                                 trigger={methods.trigger}
                                 currentFormErrors={formErrors}
+                                watch={watch}
                             />
                             <Divider
                                 orientation='vertical'
@@ -164,4 +165,4 @@ interface Props {
     isFamilyContact: boolean;
     familyRelationships: FamilyRelationship[];
     shouldDisable: (status?: string | number | undefined) => boolean;
-}
+};

@@ -2,12 +2,12 @@ import * as yup from 'yup';
 
 import IdentificationTypesCodes from 'models/enums/IdentificationTypesCodes';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
-import { invalidIdText, invalidOtherIdText, invalidPalestineIdText, invalidPassportText } from 'commons/Schema/messages';
 import { isIdValid , isPassportValid, isPalestineIdValid, isOtherIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { invalidIdText, invalidOtherIdText, invalidPalestineIdText, invalidPassportText, requiredText } from 'commons/Schema/messages';
 
 const ContactIdValidationSchema = (test?: TestParam) => yup.string()
     .when(InteractionEventContactFields.IDENTIFICATION_TYPE, (identificationType: number) => {
-        let schema = yup.string().nullable();
+        let schema = yup.string().required(requiredText).nullable();
         
         if(test) { 
             schema = schema.test(test.name,test.errorMsg,test.testingFunction);

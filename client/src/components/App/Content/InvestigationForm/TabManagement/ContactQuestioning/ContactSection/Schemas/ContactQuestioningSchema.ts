@@ -1,9 +1,11 @@
 import * as yup from 'yup';
 
+import InteractedContactFields from 'models/enums/InteractedContact';
+
 import { contactQuestioningInfo } from './contactQuestioningInfo';
 import { contactQuestioningCheck } from './contactQuestioningCheck';
 import { contactQuestioningClinical } from './contactQuestioningClinical';
-import { contactQuestioningPersonal } from './contactQuestioningPersonal';
+import { contactQuestioningPersonal } from './contactQuestioningPersonalSchema';
 
 const interactionEventSchema = yup.object().shape({
     form: yup.array().of(
@@ -12,7 +14,7 @@ const interactionEventSchema = yup.object().shape({
             ...contactQuestioningPersonal,
             ...contactQuestioningClinical,
             ...contactQuestioningCheck,
-        })
+        },[[InteractedContactFields.IDENTIFICATION_TYPE, InteractedContactFields.IDENTIFICATION_NUMBER]])
     ),
 });
 
