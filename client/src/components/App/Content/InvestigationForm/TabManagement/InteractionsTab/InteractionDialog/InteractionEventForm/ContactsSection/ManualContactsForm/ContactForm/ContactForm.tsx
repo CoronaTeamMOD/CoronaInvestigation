@@ -39,7 +39,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
 
     const { shouldDisableContact } = useStatusUtils();
 
-    const [isId, setIsId] =  useState<boolean>(false);
+    const [isId, setIsId] = useState<boolean>(false);
 
     const identificationTypeFieldName = `${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.IDENTIFICATION_TYPE}`;
 	const identificationNumberFieldName = `${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.IDENTIFICATION_NUMBER}`;
@@ -55,11 +55,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
             trigger(identificationTypeFieldName);
             trigger(identificationNumberFieldName); 
         }
-        if (watchIdentificationType === IdentificationTypesCodes.PALESTINE_ID || watchIdentificationType === IdentificationTypesCodes.ID) {
-            setIsId(true);
-        } else {
-            setIsId(false);
-        }
+        setIsId(watchIdentificationType === IdentificationTypesCodes.PALESTINE_ID || watchIdentificationType === IdentificationTypesCodes.ID);
     }, [watchIdentificationType, watchIdentificationNumber]);
     
     useEffect(() => {

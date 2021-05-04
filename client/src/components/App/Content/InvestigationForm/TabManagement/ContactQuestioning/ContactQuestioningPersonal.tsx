@@ -41,7 +41,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
 
     const [shouldIdDisable, setShouldIdDisable] = useState<boolean>(false);
     const [age, setAge] = useState<string>(calcAge(interactedContact.birthDate));
-    const [isId, setIsId] =  useState<boolean>(false);
+    const [isId, setIsId] = useState<boolean>(false);
 
     const { isFieldDisabled } = useContactFields(formValues.contactStatus);
 
@@ -62,11 +62,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
         if (watchIdentificationType || watchIdentificationNumber){
             trigger(identificationTypeFieldName);
             trigger(identificationNumberFieldName); 
-            if (watchIdentificationType === IdentificationTypesCodes.PALESTINE_ID || watchIdentificationType === IdentificationTypesCodes.ID) {
-                setIsId(true);
-            } else {
-                setIsId(false);
-            }
+            setIsId(watchIdentificationType === IdentificationTypesCodes.PALESTINE_ID || watchIdentificationType === IdentificationTypesCodes.ID);
         }
     }, [watchIdentificationType, watchIdentificationNumber]);
         
