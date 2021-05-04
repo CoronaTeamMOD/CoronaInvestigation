@@ -15,6 +15,7 @@ import useContactFields from 'Utils/Contacts/useContactFields';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import { invalidDateText, requiredText } from 'commons/Schema/messages';
 import NumericTextField from 'commons/NoContextElements/NumericTextField';
+import IdentificationTypesCodes from 'models/enums/IdentificationTypesCodes';
 import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextField';
 import IdentificationTextField from 'commons/NoContextElements/IdentificationTextField';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
@@ -40,6 +41,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
 
     const [shouldIdDisable, setShouldIdDisable] = useState<boolean>(false);
     const [age, setAge] = useState<string>(calcAge(interactedContact.birthDate));
+    const [isId, setIsId] = useState<boolean>(false);
 
     const { isFieldDisabled } = useContactFields(formValues.contactStatus);
 
@@ -60,6 +62,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
         if (watchIdentificationType || watchIdentificationNumber){
             trigger(identificationTypeFieldName);
             trigger(identificationNumberFieldName); 
+            setIsId(watchIdentificationType === IdentificationTypesCodes.PALESTINE_ID || watchIdentificationType === IdentificationTypesCodes.ID);
         }
     }, [watchIdentificationType, watchIdentificationNumber]);
         
@@ -143,6 +146,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                         }}
                                         placeholder='מספר תעודה'
                                         className={classes.idTextField}
+                                        isId={isId}
                                     />
                                 );
                             }}

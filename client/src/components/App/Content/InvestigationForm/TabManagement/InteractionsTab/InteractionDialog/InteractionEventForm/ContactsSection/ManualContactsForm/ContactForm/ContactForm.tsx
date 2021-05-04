@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, FormHelperText, Grid, MenuItem, Select } from '@material-ui/core';
 
@@ -13,6 +13,7 @@ import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import useContactFields from 'Utils/Contacts/useContactFields';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
+import IdentificationTypesCodes from 'models/enums/IdentificationTypesCodes';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import IdentificationTextField from 'commons/IdentificationTextField/IdentificationTextField';
 import AlphabetWithDashTextField from 'commons/AlphabetWithDashTextField/AlphabetWithDashTextField';
@@ -38,6 +39,8 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
 
     const { shouldDisableContact } = useStatusUtils();
 
+    const [isId, setIsId] = useState<boolean>(false);
+
     const identificationTypeFieldName = `${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.IDENTIFICATION_TYPE}`;
 	const identificationNumberFieldName = `${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.IDENTIFICATION_NUMBER}`;
 
@@ -52,6 +55,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
             trigger(identificationTypeFieldName);
             trigger(identificationNumberFieldName); 
         }
+        setIsId(watchIdentificationType === IdentificationTypesCodes.PALESTINE_ID || watchIdentificationType === IdentificationTypesCodes.ID);
     }, [watchIdentificationType, watchIdentificationNumber]);
     
     useEffect(() => {
@@ -167,6 +171,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
                                 }}
                                 onBlur={props.onBlur}
                                 className={classes.inputForm}
+                                isId={isId}
                             />
                         )}
                     />
