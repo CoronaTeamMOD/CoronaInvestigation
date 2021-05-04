@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
-import { Button, Grid, TextField, Typography } from '@material-ui/core';
-import PersonalDetailsQueryParams from '../../../../../../../../../models/ExposureForm/PersonalDetailsQueryParams';
+import { Search } from '@material-ui/icons';
+import { Grid, IconButton, TextField, Typography } from '@material-ui/core';
+
+import PersonalDetailsQueryParams from 'models/ExposureForm/PersonalDetailsQueryParams';
+
+import useStyles from './searchStyles';
 
 const nameLabel = 'שם';
 const phoneNumberLabel = 'טלפון';
 
 const SearchByPersonalDetails = (props: Props) => {
     const { getQueryParams } = props;
+
+    const classes = useStyles()
 
     const [nameQuery,setFirstNameQuery] = useState<string>('');
     const [phoneNumberQuery,setPhoneNumberQuery] = useState<string>('');
@@ -15,6 +21,7 @@ const SearchByPersonalDetails = (props: Props) => {
         <>
             <Grid xs={3}>
                 <TextField
+                    fullWidth
                     value={nameQuery}
                     onChange={(e) => {
                         setFirstNameQuery(e.target.value ?? '')
@@ -23,12 +30,13 @@ const SearchByPersonalDetails = (props: Props) => {
                 />
             </Grid>
             <Grid xs={1}>
-                <Typography>
+                <Typography align='center'>
                     וגם
                 </Typography>
             </Grid>
             <Grid xs={3}>
                 <TextField
+                    fullWidth
                     value={phoneNumberQuery}
                     onChange={(e) => {
                         setPhoneNumberQuery(e.target.value ?? '')
@@ -36,8 +44,8 @@ const SearchByPersonalDetails = (props: Props) => {
                     label={phoneNumberLabel}
                 />
             </Grid>
-            <Grid xs='auto'>
-                <Button 
+            <Grid xs='auto' className={classes.buttonWrapper}>
+                <IconButton
                     onClick={() => {
                         getQueryParams({
                             name: nameQuery,
@@ -45,8 +53,8 @@ const SearchByPersonalDetails = (props: Props) => {
                         })
                     }}
                 >
-                    aaaaaa    
-                </Button>
+                    <Search color='primary' />
+                </IconButton>
             </Grid>
         </>
     )

@@ -94,20 +94,19 @@ const ExposureForm = (props: Props) => {
 			<Grid item xs={9}>
 
 			</Grid>
-			<Grid item container alignItems='center' xs={12}>
+			<Grid item container alignItems='center' xs={12} spacing={3}>
 				<Grid xs={3} />
 				<Grid xs={9}>
 					<Select
 						value={queryBy}
 						onChange={(e) => {
-							console.log(e.target.value);
 							if(typeof e.target.value === 'number') {
 								setQueryBy(e.target.value as number);
 							}
 						}}
 					>
-						<MenuItem value={queryByTypes.BY_PERSONAL_DETAILS}>לפי פרטים אישיים</MenuItem>
-						<MenuItem value={queryByTypes.BY_EPIDEMIOLOGY_NUMBER}>לפי מספר אפידמיולוגי</MenuItem>
+						<MenuItem value={queryByTypes.BY_PERSONAL_DETAILS}>חיפוש לפי פרטים אישיים</MenuItem>
+						<MenuItem value={queryByTypes.BY_EPIDEMIOLOGY_NUMBER}>חיפוש לפי מספר אפידמיולוגי</MenuItem>
 					</Select>
 				</Grid>
 				<Grid xs={3} />
@@ -123,9 +122,10 @@ const ExposureForm = (props: Props) => {
 					}
 				</Grid>
 			</Grid>
-			<Grid container justify='space-between' xs={12}>
+			<Grid container justify='space-between' xs={12} className={classes.patientDetailsWrapper}>
                 <Grid item xs={11}>
 					<FormRowWithInput fieldName='פרטי החולה:'>
+						<Grid item xs={7}>
 						<Controller
 							control={control}
 							name={`exposures[${index}].${fieldsNames.exposureSource}`}
@@ -133,9 +133,9 @@ const ExposureForm = (props: Props) => {
 							render={(props) => {
 								return (
 									<ExposureSearchTextField
+										fullWidth
 										disabled={true}
 										name={`exposures[${index}].${fieldsNames.exposureSource}`}
-										className={classes.exposureSourceTextFied}
 										onChange={(value) => {
 											setExposureSourceSearchString(value);
 											(!value || !value.includes(':')) &&
@@ -150,6 +150,7 @@ const ExposureForm = (props: Props) => {
 								);
 							}}
 						/>
+						</Grid>
 					</FormRowWithInput>
 				</Grid>
 

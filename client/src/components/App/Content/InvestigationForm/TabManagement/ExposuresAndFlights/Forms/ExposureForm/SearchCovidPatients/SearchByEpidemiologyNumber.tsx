@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Grid, TextField, Typography } from '@material-ui/core';
+import { Search } from '@material-ui/icons';
+import { IconButton, Grid, TextField } from '@material-ui/core';
 
 const nameLabel = 'מספר אפידמיולוגי';
 
@@ -21,13 +22,13 @@ const SearchByEpidemiologyNumber = (props: Props) => {
                 />
             </Grid>
             <Grid xs='auto'>
-                <Button 
-                    onClick={() => {
-                        getQueryParams(query)
-                    }}
+                <IconButton
+                        onClick={() => {
+                            getQueryParams(query)
+                        }}
                 >
-                    aaaaaa    
-                </Button>
+                    <Search color='primary' />
+                </IconButton>
             </Grid>
         </>
     )

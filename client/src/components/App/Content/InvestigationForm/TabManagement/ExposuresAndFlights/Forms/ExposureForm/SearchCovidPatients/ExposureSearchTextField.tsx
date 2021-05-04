@@ -14,6 +14,7 @@ interface Props extends AlphabetTextFieldProps<string> {
   value: string | null;
   onSearchClick: () => void; 
   onKeyDown: (e : React.KeyboardEvent) => void;
+  fullWidth? : boolean
 };
 
 const stringAlphabet = yup
