@@ -5,6 +5,7 @@ import { fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 
 import flightValidation from './flightsValidation';
 import exposureValidation from './exposureValidation';
+import { requiredText } from 'commons/Schema/messages';
 
 const hasExposureSource = (exposure : Exposure) => {
     return exposure?.exposureSource !== undefined
@@ -48,8 +49,8 @@ const exposures = (validationDate : Date) => {
 
 const ExposureSchema = (validationDate : Date) => {
     return yup.object().shape({
-        [fieldsNames.wasInVacation]: yup.boolean().required(),
-        [fieldsNames.wasInEvent]: yup.boolean().required(),
+        [fieldsNames.wasInVacation]: yup.boolean().nullable().required(requiredText),
+        [fieldsNames.wasInEvent]: yup.boolean().nullable().required(requiredText),
         [fieldsNames.wereFlights]: yup.boolean().required(),
         [fieldsNames.wereConfirmedExposures]: yup.boolean().required(),
         [fieldsNames.exposures] : yup.array().when(
