@@ -80,7 +80,6 @@ const ExposureForm = (props: Props) => {
 
 	const handlePersonalDetailsSearchButton = async (params : PersonalDetailsQueryParams) => {
 		const optionalCovidPatients = await fetchCovidPatientsByPersonalDetails(params);
-		console.log(optionalCovidPatients);
 		optionalCovidPatients && setOptionalCovidPatients(optionalCovidPatients);
 	};
 
