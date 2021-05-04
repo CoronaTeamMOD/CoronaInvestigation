@@ -162,25 +162,25 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             occupation: contact.occupation,
                             doesFeelGood: contact.doesFeelGood
                                 ? contact.doesFeelGood
-                                : false,
+                                : null,
                             doesHaveBackgroundDiseases: contact.doesHaveBackgroundDiseases
                                 ? contact.doesHaveBackgroundDiseases
-                                : false,
+                                : null,
                             doesLiveWithConfirmed: contact.doesLiveWithConfirmed
                                 ? contact.doesLiveWithConfirmed
-                                : false,
+                                : null,
                             doesNeedHelpInIsolation: contact.doesNeedHelpInIsolation
                                 ? contact.doesNeedHelpInIsolation
-                                : false,
+                                : null,
                             repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed
                                 ? contact.repeatingOccuranceWithConfirmed
-                                : false,
+                                : null,
                             doesWorkWithCrowd: contact.doesWorkWithCrowd
                                 ? contact.doesWorkWithCrowd
-                                : false,
+                                : null,
                             doesNeedIsolation: contact.doesNeedIsolation
                                 ? contact.doesNeedIsolation
-                                : false,
+                                : null,
                             creationTime: contact.creationTime,
                             involvementReason: contact.involvementReason,
                             involvedContactId: contact.involvedContactId,
