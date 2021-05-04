@@ -63,14 +63,14 @@ const interactionEventSchema = (eventIds : (string | undefined)[]) => yup.object
           .matches(NOT_REQUIRED_PHONE_NUMBER_REGEX, invalidPhoneText),
         [InteractionEventContactFields.IDENTIFICATION_TYPE]: yup.number().when(
           [InteractionEventContactFields.IDENTIFICATION_NUMBER], (identificationNumber: string | null) => {
-            return (typeof identificationNumber === 'undefined') 
+            return identificationNumber == null
               ? yup.number().nullable() 
               : yup.number().required(requiredText).nullable()
           }
         ),
         [InteractionEventContactFields.IDENTIFICATION_NUMBER]: yup.string().when(
           [InteractionEventContactFields.IDENTIFICATION_TYPE], (identificationType: number | null) => {
-            return identificationType === null 
+            return identificationType == null 
             ? yup.string().nullable()
             : ContactIdValidationSchema(contactBankValidation(eventIds))
           }
