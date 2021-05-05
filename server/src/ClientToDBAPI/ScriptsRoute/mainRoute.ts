@@ -7,7 +7,7 @@ import HandleDeveloperRequest from '../../middlewares/HandleDeveloperRequest';
 
 const router = Router();
 
-router.use(HandleDeveloperRequest);
+//router.use(HandleDeveloperRequest);
 router.use(Routes.logs, logsRouter);
 router.use(Routes.cache, cacheRouter);
 
