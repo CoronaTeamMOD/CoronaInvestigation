@@ -135,7 +135,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
                                 control={control}
                                 render={(props) => (
                                     <Select
-                                        disabled={isFieldDisabled}
+                                        disabled={isExistingPerson}
                                         test-id='identificationType'
                                         value={props.value}
                                         className={classes.inputForm}
