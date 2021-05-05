@@ -173,6 +173,7 @@ const AddressForm: React.FC<Props> = ({
                                 InputProps={{className: smallFieldsClass}}
                                 testId={houseNumberField.testId || ''}
                                 value={props.value}
+                                label={HOUSE_NUM_LABEL} 
                                 onChange={props.onChange}
                                 onBlur={props.onBlur}
                                 placeholder={HOUSE_NUM_LABEL}
