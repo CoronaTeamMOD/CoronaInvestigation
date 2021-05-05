@@ -141,8 +141,6 @@ const ExposureForm = (props: Props) => {
 										}}
 										value={exposureSourceSearchString}
 										test-id='exposureSource'
-										onSearchClick={() => {}}
-										onKeyDown={() => {}}
 									/>
 								);
 							}}
