@@ -85,7 +85,8 @@ begin
 				(person_info, contact_status, creation_time, isolation_address, involved_contact_id, family_relationship)
 				SELECT person_id, 1, now(), ic.isolation_address, involvedContactId, familyRelationship
 				from public.involved_contact ic
-				where id = involvedContactId ;
+				where id = involvedContactId 
+				ON CONFLICT DO NOTHING;
 				
 				UPDATE public.involved_contact
 				SET contact_type = 1,
