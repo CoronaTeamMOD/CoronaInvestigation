@@ -12,8 +12,7 @@ const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן מספר אפידמיולוגי, �
 
 interface Props extends AlphabetTextFieldProps<string> {
   value: string | null;
-  onSearchClick: () => void; 
-  onKeyDown: (e : React.KeyboardEvent) => void;
+  fullWidth? : boolean;
 };
 
 const stringAlphabet = yup
@@ -22,7 +21,7 @@ const stringAlphabet = yup
   .max(50, max50LengthErrorMessage);
 
 const ExposureSearchTextField = (props: Props) => {
-    const { value, onSearchClick, ...rest } = props;
+    const { value, ...rest } = props;
     const serachValue : string = useMemo(() => value || '', [value]);
     
     return (
@@ -30,15 +29,6 @@ const ExposureSearchTextField = (props: Props) => {
             {...rest}
             value={serachValue}
             validationSchema={stringAlphabet}
-            InputProps={{
-            endAdornment: (
-                <InputAdornment position='end'>
-                    <IconButton onClick={onSearchClick}>
-                        <Search color='primary' />
-                    </IconButton>
-                </InputAdornment>
-            )
-            }}
             placeholder={INSERT_EXPOSURE_SOURCE_SEARCH}
             test-id='exposureSource'
         />

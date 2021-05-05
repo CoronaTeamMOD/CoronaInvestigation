@@ -23,8 +23,8 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
 
     return (
         <>
-            <FormRowWithInput fieldName='האם שהה בבידוד לפני הבדיקה:'>
-                <Grid item xs={4}>
+            <FormRowWithInput fieldName='בוצע בידוד לפני הבדיקה:'>
+                <Grid item xs={3}>
                     <Controller
                         name={ClinicalDetailsFields.IS_IN_ISOLATION}
                         control={control}

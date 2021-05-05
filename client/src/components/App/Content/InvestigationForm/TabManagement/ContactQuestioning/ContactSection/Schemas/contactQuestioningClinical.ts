@@ -1,11 +1,10 @@
 import * as yup from 'yup';
 
+import { requiredText } from 'commons/Schema/messages';
 import { ALPHANUMERIC_TEXT_REGEX } from 'commons/Regex/Regex';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import { requiredText } from 'commons/Schema/messages';
-
-const errorMessage = 'שגיאה: שדה חובה'
 
 export const contactQuestioningClinical = {
     [InteractedContactFields.FAMILY_RELATIONSHIP]: yup.number().nullable(),
@@ -18,9 +17,9 @@ export const contactQuestioningClinical = {
             return contactStatus === ContactStatusCodes.COMPLETED || !needIsolation
                 ? yup.object().nullable()
                 : yup.object().shape({
-                    'city': yup.string().nullable().required(errorMessage) //,
-                    // 'street': yup.string().nullable().required(errorMessage),
-                    // 'houseNum': yup.string().nullable().required(errorMessage)
+                    'city': yup.string().nullable().required(requiredText) //,
+                    // 'street': yup.string().nullable().required(requiredText),
+                    // 'houseNum': yup.string().nullable().required(requiredText)
                 })
         })
 };

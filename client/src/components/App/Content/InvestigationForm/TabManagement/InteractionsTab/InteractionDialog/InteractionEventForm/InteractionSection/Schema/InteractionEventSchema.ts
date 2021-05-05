@@ -61,8 +61,21 @@ const interactionEventSchema = (eventIds : (string | undefined)[]) => yup.object
         [InteractionEventContactFields.LAST_NAME]: yup.string().nullable().required(requiredText),
         [InteractionEventContactFields.PHONE_NUMBER]: yup.string().nullable()
           .matches(NOT_REQUIRED_PHONE_NUMBER_REGEX, invalidPhoneText),
-        [InteractionEventContactFields.IDENTIFICATION_NUMBER]: ContactIdValidationSchema(contactBankValidation(eventIds))
-    }))
+        [InteractionEventContactFields.IDENTIFICATION_TYPE]: yup.number().when(
+          [InteractionEventContactFields.IDENTIFICATION_NUMBER], (identificationNumber: string | null) => {
+            return identificationNumber == null
+              ? yup.number().nullable() 
+              : yup.number().required(requiredText).nullable()
+          }
+        ),
+        [InteractionEventContactFields.IDENTIFICATION_NUMBER]: yup.string().when(
+          [InteractionEventContactFields.IDENTIFICATION_TYPE], (identificationType: number | null) => {
+            return identificationType == null 
+            ? yup.string().nullable()
+            : ContactIdValidationSchema(contactBankValidation(eventIds))
+          }
+        ),
+        },[[InteractionEventContactFields.IDENTIFICATION_TYPE, InteractionEventContactFields.IDENTIFICATION_NUMBER]]))
   });
 
 export default interactionEventSchema;

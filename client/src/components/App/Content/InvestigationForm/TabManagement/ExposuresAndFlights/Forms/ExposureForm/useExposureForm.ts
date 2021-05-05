@@ -10,6 +10,7 @@ import StoreStateType from 'redux/storeStateType';
 import CovidPatientFields from 'models/CovidPatientFields';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { Exposure } from 'commons/Contexts/ExposuresAndFlights';
+import PersonalDetailsQueryParams from 'models/ExposureForm/PersonalDetailsQueryParams';
 
 export const displayPatientFields: CovidPatientFields = {
     fullName: 'שם',
@@ -61,6 +62,43 @@ const useExposureForm = (props: Props) => {
             return optionalCovidPatients;
         }
     }
+
+    const fetchCovidPatientsByPersonalDetails = async (params : PersonalDetailsQueryParams) => {
+        const patientsByPersonalDetailsLogger = logger.setup('Fetch confirmed exposures by personal details');
+
+        const { phoneNumber, name } = params;
+        const query = `name=${name}&phoneNum=${phoneNumber}`;
+        const optionalCovidPatients = await axios
+            .get<CovidPatient[]>(`/exposure/exposuresByPersonalDetails/${formattedValidationDate}?${query}`)
+            .then(result => {
+                patientsByPersonalDetailsLogger.info('got results back from the server', Severity.LOW);
+                return result.data;
+            })
+            .catch(err => {
+                patientsByPersonalDetailsLogger.warn(`got error from server: ${err}`, Severity.HIGH);
+                return [];
+            })
+        return optionalCovidPatients;
+    }
+
+    const fetchCovidPatientsByEpidemiologyNumber = async (epidemiologyNumber: string) => {
+        const patientsByEpidemiologyNumberLogger = logger.setup('Fetch confirmed exposures by personal details');
+
+        const query = `epidemiologyNumber=${epidemiologyNumber}`;
+        const optionalCovidPatients = await axios
+            .get<CovidPatient[]>(`/exposure/exposuresByEpidemiologyNumber/${formattedValidationDate}?${query}`)
+            .then(result => {
+                patientsByEpidemiologyNumberLogger.info('got results back from the server', Severity.LOW);
+
+                const { data } = result;
+                return data;
+            })
+            .catch(err => {
+                patientsByEpidemiologyNumberLogger.warn(`got error from server: ${err}`, Severity.HIGH);
+                return [];
+            })
+        return optionalCovidPatients;
+    }
     
     const selectedExposureSourceDisplay = (exposureSource: CovidPatient): string => {
         const fields: string[] = [];
@@ -72,7 +110,9 @@ const useExposureForm = (props: Props) => {
 
     return {
         fetchOptionalCovidPatients,
-        selectedExposureSourceDisplay
+        selectedExposureSourceDisplay,
+        fetchCovidPatientsByPersonalDetails,
+        fetchCovidPatientsByEpidemiologyNumber
     }
 }
 

@@ -1,6 +1,6 @@
 -- FUNCTION: public.update_investigation_reasons_id(integer, integer)
 
-DROP FUNCTION IF EXISTS public.update_investigation_reasons_id(integer, integer);
+-- DROP FUNCTION IF EXISTS public.update_investigation_reasons_id(integer, integer);
 
 CREATE OR REPLACE FUNCTION public.update_investigation_reasons_id(
 	new_complexity_reason_id integer,

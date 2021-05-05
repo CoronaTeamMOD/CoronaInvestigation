@@ -3,9 +3,6 @@ import {makeStyles} from '@material-ui/styles';
 import theme from 'styles/theme';
 
 const useStyles = makeStyles({
-    exposureSourceTextFied: {
-        width: '60%',
-    },
     optionalExposureSources: {
         maxHeight: '50vh',
         overflowY: 'auto',
@@ -46,6 +43,9 @@ const useStyles = makeStyles({
     },
     placeTypeSpace: {
         margin: '30px 0 20px'
+    },
+    patientDetailsWrapper: {
+        marginTop: '15px'
     }
 });
 

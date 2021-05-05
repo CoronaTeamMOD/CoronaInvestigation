@@ -357,16 +357,16 @@ investigationInfo.get('/complexityReasons', (request: Request, response: Respons
 });
 
 investigationInfo.post('/updateComplexityReason', (request: Request, response: Response) => {
-    const queryVariables = {epidemiologyNumberInput: request.body.epidemiologyNumberInput, newComplexityReasonId: request.body.newComplexityReasonId};
+    const parameters = {epidemiologyNumberInput: request.body.epidemiologyNumberInput, newComplexityReasonId: request.body.newComplexityReasonId};
     const updateInvestigationComplexityReasonsLogger = logger.setup({
         workflow: 'get all descriptions of investigations complexity reasons',
         user: response.locals.user.id,
         investigation: request.body.epidemiologyNumberInput,
     });
-    updateInvestigationComplexityReasonsLogger.info(launchingDBRequestLog(queryVariables) , Severity.LOW);
-    return graphqlRequest(UPDATE_INVESTIGATION_COMPLEXITY_REASON_ID, response.locals, queryVariables)
+    updateInvestigationComplexityReasonsLogger.info(launchingDBRequestLog(parameters) , Severity.LOW);
+    return graphqlRequest(UPDATE_INVESTIGATION_COMPLEXITY_REASON_ID, response.locals, parameters)
         .then((result) => {
-            updateInvestigationComplexityReasonsLogger.info('query from db successfully', Severity.LOW)
+            updateInvestigationComplexityReasonsLogger.info('mutation from db was successfully', Severity.LOW)
             response.send(result.data);
         })
         .catch(error => {

@@ -6,8 +6,7 @@ import FamilyMembersTable from './FamilyMembersTable/FamilyMembersTable';
 
 const noFamilyMembers = 'לא קיימים נתונים ממרשם האוכלוסין';
 
-const FamilyMembersForm: React.FC = () => {
-
+const FamilyMembersForm: React.FC<Props> = (props) => {
     const { familyMembers, existingFamilyMembers } = useFamilyMemebersForm();
 
     return (
@@ -19,6 +18,10 @@ const FamilyMembersForm: React.FC = () => {
             :
             <Typography variant='h5'>{noFamilyMembers}</Typography>
     );
+};
+
+interface Props {
+
 };
 
 export default FamilyMembersForm;
