@@ -46,7 +46,6 @@ const InteractionDialog = (props: Props) => {
         const currentInteractionsContactsIds = interactionData?.contacts.map(contact => contact.identificationNumber);
         const ids = interactions
             .map(interaction => {
-                console.log(interaction.contacts);
                 if(interaction.id !== interactionData?.id){
                     return interaction.contacts
                 }
@@ -54,7 +53,7 @@ const InteractionDialog = (props: Props) => {
                 if(contact) {
                     const id = contact[InteractionEventContactFields.IDENTIFICATION_NUMBER];
                     if (currentInteractionsContactsIds?.indexOf(id) === -1) {
-                        return id
+                        return id;
                     }
                 }
             }
