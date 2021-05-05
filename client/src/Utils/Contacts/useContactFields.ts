@@ -7,7 +7,7 @@ import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import IdentificationTypesCodes from 'models/enums/IdentificationTypesCodes';
 import {ContactedPersonFieldMapper} from 'models/enums/contactQuestioningExcelFields';
-import { get, isIdValid , isOtherIdValid, isPalestineIdValid, isPassportValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { get, isIdValid , isOtherIdValid, isPalestineIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 export const STRICT_CONTACT_TYPE = 1;
 const isolationErrorMessageEnd = ' ולכן לא ניתן להקים דיווח בידוד';
@@ -44,7 +44,7 @@ const getIdValidation = (idType: number) => {
         case IdentificationTypesCodes.ID:
             return {validation: isIdValid, fieldName: 'ת"ז'};
         case IdentificationTypesCodes.PASSPORT:
-            return {validation: isPassportValid, fieldName: 'דרכון'};
+            return {validation: isOtherIdValid, fieldName: 'דרכון'};
         case IdentificationTypesCodes.PALESTINE_ID:
             return {validation: isPalestineIdValid, fieldName: 'ת"ז פלסטינית'};
         case IdentificationTypesCodes.OTHER || IdentificationTypesCodes.MOSSAD:
