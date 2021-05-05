@@ -10,11 +10,10 @@ import ExposureByInvestigationId from '../../Models/Exposure/ExposureByInvestiga
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { DELETE_EXPOSURE_BY_ID, UPDATE_EXPOSURES } from '../../DBService/Exposure/Mutation';
 import { INVALID_CHARS_REGEX, PHONE_OR_IDENTITY_NUMBER_REGEX } from '../../commons/Regex/Regex';
-import { GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS } from '../../DBService/Exposure/Query';
 import CovidPatientDBOutput, { AddressDBOutput } from '../../Models/Exposure/CovidPatientDBOutput';
 import OptionalExposureSourcesResponse from '../../Models/Exposure/OptionalExposureSourcesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
-import { parse } from 'dotenv/types';
+import { GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS,GET_EXPOSURE_SOURCE_BY_PERSONAL_DETAILS, GET_EXPOSURE_SOURCE_BY_EPIDEMIOLOGY_NUMBER } from '../../DBService/Exposure/Query';
 
 const exposureRoute = Router();
 
@@ -127,6 +126,80 @@ exposureRoute.get('/optionalExposureSources/:searchValue/:validationDate', handl
         })
         .catch(error => {
             optionalExposureSourcesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.sendStatus(errorStatusCode);
+        })
+});
+
+exposureRoute.get('/exposuresByPersonalDetails/:validationDate', handleInvestigationRequest,  (request: Request, response: Response) => {
+    const { validationDate } = request.params;
+    const { name, phoneNum } = request.query;
+
+    const searchEndDate = new Date(validationDate);
+    const searchStartDate = subDays(searchEndDate, searchDaysAmount);
+
+    const parameters = {
+        name,
+        phoneNum,
+        startDate: searchStartDate,
+        endDate: searchEndDate
+    }
+
+    const exposuresByPersonalDetailsLogger = logger.setup({
+        workflow: 'query exposures by personal details',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    });
+
+    exposuresByPersonalDetailsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+    graphqlRequest(GET_EXPOSURE_SOURCE_BY_PERSONAL_DETAILS, response.locals,parameters)
+        .then(result => {
+            if(result?.data?.allCovidPatients?.nodes){
+                exposuresByPersonalDetailsLogger.info(validDBResponseLog, Severity.LOW);
+                let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
+                response.send(convertCovidPatientsFromDB(dbBCovidPatients));
+            } else {
+                exposuresByPersonalDetailsLogger.warn('didnt get exposure source options from DB', Severity.MEDIUM);
+                response.send([]);
+            }
+        })
+        .catch(err => {
+            exposuresByPersonalDetailsLogger.error(invalidDBResponseLog(err), Severity.HIGH);
+            response.sendStatus(errorStatusCode);
+        })
+});
+
+exposureRoute.get('/exposuresByEpidemiologyNumber/:validationDate', handleInvestigationRequest,  (request: Request, response: Response) => {
+    const { validationDate } = request.params;
+    const epidemiologyNumber = typeof request.query.epidemiologyNumber === 'string' ? parseInt(request.query.epidemiologyNumber) : 0;
+
+    const searchEndDate = new Date(validationDate);
+    const searchStartDate = subDays(searchEndDate, searchDaysAmount);
+
+    const parameters = {
+        epidemiologyNumber,
+        startDate: searchStartDate,
+        endDate: searchEndDate
+    }
+
+    const exposuresByEpidemiologyNumberLogger = logger.setup({
+        workflow: 'query exposures by personal details',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    });
+
+    graphqlRequest(GET_EXPOSURE_SOURCE_BY_EPIDEMIOLOGY_NUMBER, response.locals, parameters)
+        .then(result => {
+            if(result?.data?.allCovidPatients?.nodes) {
+                exposuresByEpidemiologyNumberLogger.info(validDBResponseLog, Severity.LOW);
+                let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
+                response.send(convertCovidPatientsFromDB(dbBCovidPatients));
+            } else {
+                exposuresByEpidemiologyNumberLogger.warn('didnt get exposure source options from DB', Severity.MEDIUM);
+                response.send([]);
+            }
+        })
+        .catch(err => {
+            exposuresByEpidemiologyNumberLogger.error(invalidDBResponseLog(err), Severity.HIGH);
             response.sendStatus(errorStatusCode);
         })
 });

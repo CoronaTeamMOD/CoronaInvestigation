@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { Delete } from '@material-ui/icons';
 import React, { useState, useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { CircularProgress, Grid, IconButton, MenuItem } from '@material-ui/core';
+import { CircularProgress, Collapse, Grid, IconButton, MenuItem, Select, TextField } from '@material-ui/core';
 
 import Map from 'commons/Map/Map';
 import useFormStyles from 'styles/formStyles';
@@ -12,12 +12,16 @@ import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
 import { invalidDateText } from 'commons/Schema/messages';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import ExposureSearchTextField from './ExposureSearchTextField/ExposureSearchTextField';
+import ExposureSearchTextField from './SearchCovidPatients/ExposureSearchTextField';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
 import useStyles from './ExposureFormStyles';
 import useExposureForm from './useExposureForm';
 import ExposureSourceOption from './ExposureSourceOption';
+import queryByTypes from './SearchCovidPatients/queryByTypes';
+import SearchByPersonalDetails from './SearchCovidPatients/SearchByPersonalDetails';
+import PersonalDetailsQueryParams from 'models/ExposureForm/PersonalDetailsQueryParams';
+import SearchByEpidemiologyNumber from './SearchCovidPatients/SearchByEpidemiologyNumber';
 
 const ExposureForm = (props: Props) => {
 
@@ -30,9 +34,10 @@ const ExposureForm = (props: Props) => {
 	const [exposureSourceSearchString, setExposureSourceSearchString] = useState<string>('');
 	const [isOptionalPatientsLoading, setOptionalPatientsLoading] = useState<boolean>(false);
 	const [optionalCovidPatients, setOptionalCovidPatients] = useState<CovidPatient[]>([]);
+	const [queryBy, setQueryBy] = useState<number>(0);
 	const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
-	const { fetchOptionalCovidPatients, selectedExposureSourceDisplay } = useExposureForm({
+	const { fetchOptionalCovidPatients, selectedExposureSourceDisplay, fetchCovidPatientsByPersonalDetails, fetchCovidPatientsByEpidemiologyNumber } = useExposureForm({
 		exposureAndFlightsData,
 		exposureSourceSearchString,
 		setOptionalPatientsLoading
@@ -73,11 +78,51 @@ const ExposureForm = (props: Props) => {
 	const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
 	const dateError = currentErrors ? currentErrors.exposureDate : undefined;
 
+	const handlePersonalDetailsSearchButton = async (params : PersonalDetailsQueryParams) => {
+		const optionalCovidPatients = await fetchCovidPatientsByPersonalDetails(params);
+		optionalCovidPatients && setOptionalCovidPatients(optionalCovidPatients);
+	};
+
+	const handleEpidemiologyNumberSearchButton = async (query : string) => {
+		const optionalCovidPatients = await fetchCovidPatientsByEpidemiologyNumber(query);
+		optionalCovidPatients && setOptionalCovidPatients(optionalCovidPatients);
+	};
+
 	return (
 		<Grid className={formClasses.form} container justify='flex-start'>
-			<Grid container justify='space-between' xs={12}>
+			<Grid item xs={9} />
+			<Grid item container alignItems='center' xs={12} spacing={3}>
+				<Grid xs={3} />
+				<Grid xs={9}>
+					<Select
+						value={queryBy}
+						onChange={(e) => {
+							if(typeof e.target.value === 'number') {
+								setQueryBy(e.target.value as number);
+							}
+						}}
+					>
+						<MenuItem value={queryByTypes.BY_PERSONAL_DETAILS}>חיפוש לפי פרטים אישיים</MenuItem>
+						<MenuItem value={queryByTypes.BY_EPIDEMIOLOGY_NUMBER}>חיפוש לפי מספר אפידמיולוגי</MenuItem>
+					</Select>
+				</Grid>
+				<Grid xs={3} />
+				<Grid item container alignItems='center' xs={9}>
+					{
+						queryBy === queryByTypes.BY_PERSONAL_DETAILS 
+							? 	<SearchByPersonalDetails 
+									getQueryParams={handlePersonalDetailsSearchButton}
+								/>
+							:	<SearchByEpidemiologyNumber 
+									getQueryParams={handleEpidemiologyNumberSearchButton}
+								/>
+					}
+				</Grid>
+			</Grid>
+			<Grid container justify='space-between' xs={12} className={classes.patientDetailsWrapper}>
                 <Grid item xs={11}>
 					<FormRowWithInput fieldName='פרטי החולה:'>
+						<Grid item xs={7}>
 						<Controller
 							control={control}
 							name={`exposures[${index}].${fieldsNames.exposureSource}`}
@@ -85,8 +130,9 @@ const ExposureForm = (props: Props) => {
 							render={(props) => {
 								return (
 									<ExposureSearchTextField
+										fullWidth
+										disabled={true}
 										name={`exposures[${index}].${fieldsNames.exposureSource}`}
-										className={classes.exposureSourceTextFied}
 										onChange={(value) => {
 											setExposureSourceSearchString(value);
 											(!value || !value.includes(':')) &&
@@ -95,17 +141,11 @@ const ExposureForm = (props: Props) => {
 										}}
 										value={exposureSourceSearchString}
 										test-id='exposureSource'
-										onSearchClick={setOptionalCovidPatientsAsync}
-										onKeyDown={(e: React.KeyboardEvent) => {
-											if (e.key === 'Enter') {
-												e.preventDefault();
-												setOptionalCovidPatientsAsync()
-											}
-										}}
 									/>
 								);
 							}}
 						/>
+						</Grid>
 					</FormRowWithInput>
 				</Grid>
 
