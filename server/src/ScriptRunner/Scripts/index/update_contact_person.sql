@@ -1,6 +1,6 @@
 -- FUNCTION: public.update_contact_person(json, integer, integer)
 
-DROP FUNCTION IF EXISTS public.update_contact_person(json, integer, integer);
+-- DROP FUNCTION IF EXISTS public.update_contact_person(json, integer, integer);
 
 CREATE OR REPLACE FUNCTION public.update_contact_person(
 	contacts json,

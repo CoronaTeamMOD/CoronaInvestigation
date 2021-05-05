@@ -1,6 +1,6 @@
 -- FUNCTION: public.update_investigation_end_time(timestamp, integer)
 
-DROP FUNCTION IF EXISTS public.update_investigation_end_time(timestamp, integer);
+-- DROP FUNCTION IF EXISTS public.update_investigation_end_time(timestamp, integer);
 
 CREATE OR REPLACE FUNCTION public.update_investigation_end_time(
 	time_input timestamp,
