@@ -41,7 +41,7 @@ export const COMMENT = gql`
 `;
 
 export const UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA = gql`
-mutation updateInvestigatedPatientById ($wasInVacation: Boolean!, $wasInEvent: Boolean!, $wereConfirmedExposuresDesc: String $id: Int!) {
+mutation updateInvestigatedPatientById ($wasInVacation: Boolean, $wasInEvent: Boolean, $wereConfirmedExposuresDesc: String $id: Int!) {
     updateInvestigatedPatientById(input: {investigatedPatientPatch: {wasInVacation: $wasInVacation, wasInEvent: $wasInEvent, wereConfirmedExposuresDesc: $wereConfirmedExposuresDesc }, id: $id}) {
       clientMutationId
     }
