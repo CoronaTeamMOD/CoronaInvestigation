@@ -4,7 +4,6 @@ import { requiredText } from 'commons/Schema/messages';
 import { ALPHANUMERIC_TEXT_REGEX } from 'commons/Regex/Regex';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import InteractedContactFields from 'models/enums/InteractedContact';
-import { requiredText } from 'commons/Schema/messages';
 
 export const contactQuestioningClinical = {
     [InteractedContactFields.FAMILY_RELATIONSHIP]: yup.number().nullable(),

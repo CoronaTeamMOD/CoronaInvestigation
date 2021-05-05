@@ -25,7 +25,7 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
 
     return (
         <>
-            <FormRowWithInput fieldName='מחלות רקע:'>
+            <FormRowWithInput fieldName='מחלות רקע:' labelLength={2}>
                 <Grid item xs={3}>
                     <Controller
                         name={ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES}
@@ -47,8 +47,9 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
                     />
                 </Grid>
             </FormRowWithInput>
-            <FormRowWithInput fieldName=''>
-                <Collapse in={watchDoesHaveBackgroundDiseases}>
+            <Collapse in={watchDoesHaveBackgroundDiseases}>
+                <FormRowWithInput fieldName='' labelLength={2}>
+                <Grid item xs={7}>
                     <Typography color={errors[ClinicalDetailsFields.BACKGROUND_DESEASSES] ? 'error' : 'initial'} >
                         מחלות רקע: (יש לבחור לפחות מחלת רקע אחת)
                     </Typography>
@@ -99,8 +100,9 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
                             </Grid>
                         </Collapse>
                     </Grid>
-                </Collapse>
-            </FormRowWithInput>
+                    </Grid>
+                </FormRowWithInput>
+            </Collapse>
         </>
     );
 };

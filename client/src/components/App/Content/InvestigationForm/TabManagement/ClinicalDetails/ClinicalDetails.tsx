@@ -174,7 +174,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <FormRowWithInput fieldName='כתובת לבידוד:'>
+                            <FormRowWithInput fieldName='כתובת לבידוד:' labelLength={2}>
                                 <AddressForm
                                     {...addressFormFields}
                                 />
@@ -208,8 +208,8 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                             />
                         </Grid>
                         <Grid item xs={12} className={patientGender === Gender.MALE ? classes.hiddenIsPregnant : ''}>
-                            <FormRowWithInput fieldName='האם בהריון:'>
-                                <Grid item xs={4}>
+                            <FormRowWithInput fieldName='בהריון:' labelLength={2}>
+                                <Grid item xs={3}>
                                     <Controller
                                         name={ClinicalDetailsFields.IS_PREGNANT}
                                         control={methods.control}
