@@ -16,7 +16,7 @@ const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
 
     return (
         <>
-        <FormRowWithInput fieldName='בעייתי לקיים בידוד:'>
+        <FormRowWithInput fieldName='בעייתי לקיים בידוד:' labelLength={2}>
             <Grid item xs={3}>
                 <Controller
                     name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM}
@@ -40,7 +40,7 @@ const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
         </FormRowWithInput>
         <Collapse in={watchIsIsolationProblem}>
             <Grid container spacing={3}>
-                <Grid item xs={3} className={classes.clinicalDetailsStub}/>
+                <Grid item xs={2} className={classes.clinicalDetailsStub}/>
                 <Grid item xs={3}>
                     <Controller
                         name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO}

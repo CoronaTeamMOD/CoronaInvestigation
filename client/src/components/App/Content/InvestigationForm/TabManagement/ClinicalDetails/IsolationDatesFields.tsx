@@ -23,7 +23,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
 
     return (
         <>
-            <FormRowWithInput fieldName='בוצע בידוד לפני הבדיקה:'>
+            <FormRowWithInput fieldName='בוצע בידוד לפני הבדיקה:' labelLength={2}>
                 <Grid item xs={3}>
                     <Controller
                         name={ClinicalDetailsFields.IS_IN_ISOLATION}
@@ -47,7 +47,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
             </FormRowWithInput>
             <Collapse in={watchIsInIsolation}>
                 <Grid container alignItems='center' spacing={3}>
-                    <Grid item xs={3} className={classes.clinicalDetailsStub}/>
+                    <Grid item xs={2} className={classes.clinicalDetailsStub}/>
                     <Grid item xs={3}>
                         <Controller
                             name={ClinicalDetailsFields.ISOLATION_START_DATE}
