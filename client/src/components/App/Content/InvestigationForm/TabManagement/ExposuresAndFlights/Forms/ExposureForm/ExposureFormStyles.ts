@@ -6,7 +6,7 @@ const useStyles = makeStyles({
     optionalExposureSources: {
         maxHeight: '50vh',
         overflowY: 'auto',
-        margin: '15px 0 15px -30px',
+        margin: '15px 0 30px -30px',
         direction: 'rtl',
         width: '70%',
         minHeight: '10vh',
