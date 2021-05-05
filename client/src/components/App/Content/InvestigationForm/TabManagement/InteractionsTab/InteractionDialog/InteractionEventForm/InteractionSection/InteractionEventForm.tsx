@@ -28,9 +28,9 @@ const ADDRESS_LABEL = 'מקום/כתובת';
 const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     {onPlaceSubTypeChange, isVisible, interactionData, isNewInteraction}: InteractionEventFormProps): JSX.Element => {
 
-    const {control, watch, setValue, errors} = useFormContext();
+    const {control, watch, setValue } = useFormContext();
     const patientAddress = useSelector<StoreStateType, FlattenedDBAddress>(state => state.address);
-    const {city, floor, houseNum, street} = patientAddress;
+    const {city, apartment, houseNum, street} = patientAddress;
 
     const placeType = watch(InteractionEventDialogFields.PLACE_TYPE);
     const placeSubType = watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
@@ -51,12 +51,12 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
             setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_CITY}`, city);
             setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_STREET}`, street);
             setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_HOUSE_NUMBER}`, houseNum);
-            setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_FLOOR}`, floor);
+            setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_APARTMENT}`, apartment);
         } else {
             setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_CITY}`, '');
             setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_STREET}`, '');
             setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_HOUSE_NUMBER}`, '');
-            setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_FLOOR}`, '');
+            setValue(`${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_APARTMENT}`, '');
         }
     }, [isSubTypePatientHouse]);
 
@@ -91,9 +91,9 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
             name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_HOUSE_NUMBER}`,
             testId: 'currentQuarantineHomeNumber'
         },
-        floorField: {
-            name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_FLOOR}`,
-            testId: 'currentQuarantineFloor'
+        apartmentField: {
+            name: `${InteractionEventDialogFields.PRIVATE_HOUSE_ADDRESS}.${InteractionEventDialogFields.PRIVATE_HOUSE_APARTMENT}`,
+            testId: 'currentQuarantineApartment'
         }
     }
 
