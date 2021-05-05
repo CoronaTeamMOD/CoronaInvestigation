@@ -8,7 +8,7 @@ import FlattenedDBAddress, { DBAddress } from 'models/DBAddress';
 import useStyles from './FamilyMembersTableStyles';
 
 const useFamilyMemebersTable = (parameters: Parameters) => {
-    const { familyMembers, existingFamilyMembers } = parameters;
+    const { familyMembers, existingFamilyMembers, eventContactIds } = parameters;
 
     const classes = useStyles();
 
@@ -49,7 +49,7 @@ const useFamilyMemebersTable = (parameters: Parameters) => {
     );
 
     const isRowDisabled = (identificationNumber: string) => {
-       return existingFamilyMembers.indexOf(identificationNumber) !== -1; 
+       return existingFamilyMembers.indexOf(identificationNumber) !== -1 || eventContactIds?.indexOf(identificationNumber) !== -1; 
     };
 
     const getRowClass = (familyMember: InvolvedContact) => {
@@ -74,6 +74,7 @@ const useFamilyMemebersTable = (parameters: Parameters) => {
 interface Parameters {
     familyMembers: InvolvedContact[];
     existingFamilyMembers: string[];
+    eventContactIds?: (string | undefined)[]; 
 };
 
 export default useFamilyMemebersTable;
