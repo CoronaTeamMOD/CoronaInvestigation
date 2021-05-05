@@ -32,7 +32,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
 
     return (
         <>
-            <FormRowWithInput fieldName='האם יש תסמינים:'>
+            <FormRowWithInput fieldName='יש תסמינים:'>
                 <Grid item xs={3}>
                     <Controller
                         name={ClinicalDetailsFields.DOES_HAVE_SYMPTOMS}
