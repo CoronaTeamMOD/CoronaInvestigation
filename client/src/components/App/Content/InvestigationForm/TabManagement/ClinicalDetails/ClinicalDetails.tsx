@@ -9,6 +9,7 @@ import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import AddressForm, { AddressFormFields } from 'commons/Forms/AddressForm/AddressForm';
 
@@ -24,18 +25,18 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles();
 
     const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
+    const patientGender = useSelector<StoreStateType, string>(state => state.gender);
 
     const methods = useForm({
         mode: 'all',
         defaultValues: initialClinicalDetails,
-        resolver: yupResolver(ClinicalDetailsSchema(validationDate))
+        resolver: yupResolver(ClinicalDetailsSchema(validationDate, patientGender))
     });
 
     const [symptoms, setSymptoms] = useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = useState<string[]>([]);
     const [didSymptomsDateChangeOccur, setDidSymptomsDateChangeOccur] = useState<boolean>(false);
 
-    const patientGender = useSelector<StoreStateType, string>(state => state.gender);
 
     const { fetchClinicalDetails, saveClinicalDetailsAndDeleteContactEvents, isolationSources } =
         useClinicalDetails({ id, setSymptoms, setBackgroundDiseases, didSymptomsDateChangeOccur });
@@ -208,7 +209,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                         </Grid>
                         <Grid item xs={12} className={patientGender === Gender.MALE ? classes.hiddenIsPregnant : ''}>
                             <FormRowWithInput fieldName='האם בהריון:'>
-                                <Grid item xs={3}>
+                                <Grid item xs={4}>
                                     <Controller
                                         name={ClinicalDetailsFields.IS_PREGNANT}
                                         control={methods.control}
@@ -223,6 +224,9 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                 }}
                                             />
                                         )}
+                                    />
+                                    <InlineErrorText 
+                                        error={methods.errors[ClinicalDetailsFields.IS_PREGNANT]}
                                     />
                                 </Grid>
                             </FormRowWithInput>

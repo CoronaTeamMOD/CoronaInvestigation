@@ -4,6 +4,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
+import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 import IsolationSource from 'models/IsolationSource';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
@@ -38,6 +39,9 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 }}
                             />
                         )}
+                    />
+                    <InlineErrorText 
+                        error={errors[ClinicalDetailsFields.IS_IN_ISOLATION]}
                     />
                 </Grid>
             </FormRowWithInput>

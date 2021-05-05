@@ -16,6 +16,7 @@ import HebrewTextField from 'commons/NoContextElements/HebrewTextField';
 import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextField';
 import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFields';
 import AddressForm, { AddressFormFields } from 'commons/NoContextElements/AddressForm';
+import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 
 import useStyles from './ContactQuestioningStyles';
 
@@ -213,6 +214,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                 )
                             }}
                         />
+                        <InlineErrorText 
+                            error={formErrors && formErrors[InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION]}
+					    />
                     </Grid>
                 </Grid>
                 <Grid item>
@@ -237,6 +241,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                 )
                             }}
                         />
+                        <InlineErrorText 
+						    error={formErrors && formErrors[InteractedContactFields.DOES_NEED_ISOLATION]}
+					    />
                     </Grid>
                 </Grid>
                 <Grid container item>
@@ -267,5 +274,5 @@ interface Props {
     control: any;
     watch: any
     formValues: InteractedContact;
-    formErrors?: DeepMap<InteractedContact, FieldError>;
+    formErrors?: DeepMap<InteractedContact, FieldError> | any;
 };

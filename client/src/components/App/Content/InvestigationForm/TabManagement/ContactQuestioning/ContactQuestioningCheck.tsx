@@ -17,6 +17,7 @@ import FieldName from 'commons/FieldName/FieldName';
 import InteractedContact from 'models/InteractedContact';
 import useContactFields from 'Utils/Contacts/useContactFields';
 import InteractedContactFields from 'models/enums/InteractedContact';
+import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 
 import useStyles from './ContactQuestioningStyles';
 import { OCCUPATION_LABEL, RELEVANT_OCCUPATION_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
@@ -61,6 +62,9 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                             }}
                         />
                     </Grid>
+                    <InlineErrorText 
+                        error={formErrors && formErrors[InteractedContactFields.DOES_FEEL_GOOD]}
+                    />
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
@@ -85,6 +89,9 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                             }}
                         />
                     </Grid>
+                    <InlineErrorText 
+                        error={formErrors && formErrors[InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES]}
+                    />
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
@@ -108,6 +115,9 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                             }}
                         />
                     </Grid>
+                    <InlineErrorText 
+                        error={formErrors && formErrors[InteractedContactFields.DOES_LIVE_WITH_CONFIRMED]}
+                    />
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
@@ -131,6 +141,9 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                             }}
                         />
                     </Grid>
+                    <InlineErrorText 
+                        error={formErrors && formErrors[InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED]}
+                    />
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
@@ -155,6 +168,9 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                             }}
                         />
                     </Grid>
+                    <InlineErrorText 
+                        error={formErrors && formErrors[InteractedContactFields.DOES_WORK_WITH_CROWD]}
+                    />
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>

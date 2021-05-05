@@ -21,7 +21,7 @@ interface ClinicalDetails {
     isolationStartDate: Date | null;
     isolationEndDate: Date | null;
     isolationSource: number | null;
-    isInIsolation: boolean;
+    isInIsolation: boolean | null;
     isIsolationProblem: boolean;
     isIsolationProblemMoreInfo: string;
     symptomsStartDate: Date | null;
@@ -29,7 +29,7 @@ interface ClinicalDetails {
         nodes: {symptomName: string}[]
     },
     investigatedPatientByInvestigatedPatientId: {
-        isPregnant: boolean;
+        isPregnant: boolean | null;
         doesHaveBackgroundDiseases: boolean;
         investigatedPatientBackgroundDiseasesByInvestigatedPatientId: {
             nodes: {backgroundDeseasName: string}[]
