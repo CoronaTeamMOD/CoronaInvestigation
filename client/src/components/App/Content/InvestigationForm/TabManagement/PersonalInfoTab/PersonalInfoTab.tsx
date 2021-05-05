@@ -204,7 +204,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                     event.preventDefault();
                     savePersonalData(convertToDBData(), methods.getValues(), id);
                 }}>
-                    <FormRowWithInput fieldName={PHONE_LABEL} labelLength={1}>
+                    <FormRowWithInput fieldName={PHONE_LABEL} labelLength={1} className={classes.contactContiner}>
                         <Grid item container xs={3}>
                             <Grid item xs={8}>
                                 <Controller
