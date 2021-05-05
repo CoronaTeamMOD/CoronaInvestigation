@@ -32,7 +32,7 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
 
     const { selectRow, counterDescription, isRowSelected, 
             isHouseMember, isRowDisabled, getRowClass 
-    } = useFamilyMemebersTable({ familyMembers, existingFamilyMembers,eventContactIds });
+    } = useFamilyMemebersTable({ familyMembers, existingFamilyMembers, eventContactIds });
 
     return (
         <>
