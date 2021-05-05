@@ -37,6 +37,7 @@ enum InteractionEventDialogFields {
     PRIVATE_HOUSE_STREET = 'privateHouseStreet',
     PRIVATE_HOUSE_HOUSE_NUMBER = 'privateHouseHouseNumber',
     PRIVATE_HOUSE_FLOOR = 'privateHouseFloor',
+    PRIVATE_HOUSE_APARTMENT = 'privateHouseApartment',
     IS_REPETITIVE = 'isRepetitive',
     IS_GREEN_PASS = 'isGreenPass'
 };

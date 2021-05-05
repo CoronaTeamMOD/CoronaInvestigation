@@ -182,6 +182,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
                             <Controller
                                 name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.CONTACT_TYPE}`}
                                 control={control}
+                                defaultValue={Array.from(contactTypes.keys())[ContactTypeKeys.CONTACT_TYPE_TIGHT]}
                                 render={(props) => (
                                     <Select
                                         disabled={isFieldDisabled}
