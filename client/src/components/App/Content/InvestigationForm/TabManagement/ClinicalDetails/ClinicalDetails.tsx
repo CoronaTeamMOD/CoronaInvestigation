@@ -25,18 +25,18 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles();
 
     const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
+    const patientGender = useSelector<StoreStateType, string>(state => state.gender);
 
     const methods = useForm({
         mode: 'all',
         defaultValues: initialClinicalDetails,
-        resolver: yupResolver(ClinicalDetailsSchema(validationDate))
+        resolver: yupResolver(ClinicalDetailsSchema(validationDate, patientGender))
     });
 
     const [symptoms, setSymptoms] = useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = useState<string[]>([]);
     const [didSymptomsDateChangeOccur, setDidSymptomsDateChangeOccur] = useState<boolean>(false);
 
-    const patientGender = useSelector<StoreStateType, string>(state => state.gender);
 
     const { fetchClinicalDetails, saveClinicalDetailsAndDeleteContactEvents, isolationSources } =
         useClinicalDetails({ id, setSymptoms, setBackgroundDiseases, didSymptomsDateChangeOccur });

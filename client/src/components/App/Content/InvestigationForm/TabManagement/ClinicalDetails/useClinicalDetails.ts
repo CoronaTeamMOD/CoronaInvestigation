@@ -225,7 +225,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         })
         .finally(() => {
             setIsLoading(false);
-            ClinicalDetailsSchema(validationDate).isValid(clinicalDetails).then(valid => {
+            ClinicalDetailsSchema(validationDate, 'gender').isValid(clinicalDetails).then(valid => {
                 setFormState(epidemiologyNumber, id, valid);
             })
         })
@@ -234,7 +234,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const saveClinicalDetailsAndDeleteContactEvents = (clinicalDetails: ClinicalDetailsData, id: number): void => {
         if(didSymptomsDateChangeOccur) {
             const { symptomsStartDate, doesHaveSymptoms } = clinicalDetails;
-            ClinicalDetailsSchema(validationDate)
+            ClinicalDetailsSchema(validationDate, 'gender')
             .validateAt(ClinicalDetailsFields.SYMPTOMS_START_DATE, clinicalDetails as any)
             .then(() => {
                 deleteIrrelevantContactEvents(symptomsStartDate, doesHaveSymptoms);

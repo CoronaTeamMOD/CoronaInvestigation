@@ -75,7 +75,7 @@ const backgroundDiseasesMoreInfoSchema = yup.string().nullable().when(
         return backgroundDiseases.includes('אחר') ? schema.required(requiredText).nullable() : schema;
     }
 );
-const ClinicalDetailsSchema = (validationDate: Date) => {
+const ClinicalDetailsSchema = (validationDate: Date, Gender: string) => {
     return yup.object().shape({
         [ClinicalDetailsFields.ISOLATION_ADDRESS]: yup.object().shape({
             [ClinicalDetailsFields.ISOLATION_CITY]: yup.string().required(requiredText).nullable(),
@@ -134,7 +134,7 @@ const ClinicalDetailsSchema = (validationDate: Date) => {
         [ClinicalDetailsFields.HOSPITAL]: yup.string().nullable(),
         [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: wasHospitilizedStartDateSchema,
         [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: wasHospitilizedEndDateSchema,
-        [ClinicalDetailsFields.IS_PREGNANT]: yup.boolean().nullable().required(requiredText),
+        [ClinicalDetailsFields.IS_PREGNANT]: Gender === 'נקבה' ? yup.boolean().nullable().required(requiredText) :  yup.boolean().nullable(),
         [ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]: backgroundDiseasesMoreInfoSchema,
     })
 };
