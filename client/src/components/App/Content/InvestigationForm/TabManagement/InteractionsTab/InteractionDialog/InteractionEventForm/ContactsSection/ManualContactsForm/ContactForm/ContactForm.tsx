@@ -135,7 +135,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
                                 control={control}
                                 render={(props) => (
                                     <Select
-                                        disabled={isFieldDisabled}
+                                        disabled={isExistingPerson}
                                         test-id='identificationType'
                                         value={props.value}
                                         className={classes.inputForm}
@@ -163,7 +163,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, pers
                         control={control}
                         render={(props) => (
                             <IdentificationTextField
-                                disabled={isFieldDisabled || (contactCreationTime ? shouldDisableContact(contactCreationTime) : false)}
+                                disabled={isExistingPerson || (contactCreationTime ? shouldDisableContact(contactCreationTime) : false)}
                                 name={props.name}
                                 value={props.value}
                                 onChange={(newValue: string) => {
