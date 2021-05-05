@@ -1,6 +1,6 @@
 -- FUNCTION: public.close_isolate_contacts(integer)
 
-DROP FUNCTION IF EXISTS public.close_isolate_contacts(integer);
+-- DROP FUNCTION IF EXISTS public.close_isolate_contacts(integer);
 
 CREATE OR REPLACE FUNCTION public.close_isolate_contacts(
 	epi_number integer)
