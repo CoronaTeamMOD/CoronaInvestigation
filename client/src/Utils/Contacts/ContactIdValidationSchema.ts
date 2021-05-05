@@ -1,8 +1,8 @@
 import * as yup from 'yup';
 
 import IdentificationTypesCodes from 'models/enums/IdentificationTypesCodes';
-import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 import { isIdValid , isPalestineIdValid, isOtherIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 import { invalidIdText, invalidOtherIdText, invalidPalestineIdText, invalidPassportText, requiredText } from 'commons/Schema/messages';
 
 const ContactIdValidationSchema = (test?: TestParam) => yup.string()

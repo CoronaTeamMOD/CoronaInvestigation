@@ -2,12 +2,12 @@ import * as yup from 'yup';
 
 import { otherIdLength , idLength } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import { ID_BASIC_VALIDATION_REGEX, PALESTINE_ID_REGEX, PASSPORT_DASH_REGEX } from 'commons/Regex/Regex';
-import { alphaNumericSpecialCharsErrorMessage, max15LengthNumErrorMessage, max9LengthIdErrorMessage } from 'commons/Schema/messages';
+import { alphaNumericSpecialCharsErrorMessage, max15LengthErrorMessage, max9LengthIdErrorMessage } from 'commons/Schema/messages';
 
 export const passportSchema = yup
     .string()
     .matches(PASSPORT_DASH_REGEX, alphaNumericSpecialCharsErrorMessage)
-    .max(otherIdLength, max15LengthNumErrorMessage);
+    .max(otherIdLength, max15LengthErrorMessage);
 
 export const idSchema = yup
     .string()
