@@ -12,7 +12,8 @@ export interface NumericTextFieldProps<T> {
     label?: string,
     className?: string,
     variant? : string,
-    InputProps? :any
+    InputProps? :any,
+    fullWidth? : boolean
 }
 
 type NumericTextFieldType = <T>(props: NumericTextFieldProps<T>) => JSX.Element;

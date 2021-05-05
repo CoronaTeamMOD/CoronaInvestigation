@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Search } from '@material-ui/icons';
-import { IconButton, Grid, TextField } from '@material-ui/core';
+import { IconButton, Grid } from '@material-ui/core';
+
+import NumericTextField from 'commons/NumericTextField/NumericTextField';
 
 const nameLabel = 'מספר אפידמיולוגי';
 
@@ -12,11 +14,12 @@ const SearchByEpidemiologyNumber = (props: Props) => {
     return (
         <>
             <Grid xs={7}>
-                <TextField
+                <NumericTextField
+                    name='searchByEpidemiologyNumber'
                     fullWidth
                     value={query}
                     onChange={(e) => {
-                        setQuery(e.target.value ?? '')
+                        setQuery(e);
                     }}
                     label={nameLabel}
                 />
