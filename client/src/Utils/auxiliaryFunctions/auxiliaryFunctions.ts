@@ -1,10 +1,9 @@
-import { NUMERIC_TEXT_REGEX, PALESTINE_ID_REGEX, PASSPORT_REGEX, VISA_REGEX } from 'commons/Regex/Regex';
+import { PALESTINE_ID_REGEX, PASSPORT_DASH_REGEX } from 'commons/Regex/Regex';
 
 const moreThanOneSlashIndicator = 3;
 export const idLength = 9;
 export const passportLength = 10;
-export const visaLength = 15;
-export const otherIdLength = 12;
+export const otherIdLength = 15;
 
 const get = (obj: any, path: string, defaultValue = undefined) => {
     const travel = (regexp: RegExp) =>
@@ -38,27 +37,6 @@ const isIdValid = (id: string | null | undefined) => {
     }
 };
 
-const isPassportValid = (id: string | null | undefined): boolean => {
-    /*
-     *  note : this is a funcion and not a constant because the logic
-     *        will most likely be changed to something more complicated (like id)
-     */
-    if(id) {
-        if (id.length === passportLength) {
-            return PASSPORT_REGEX.test(String(id));
-        } else if (id.length === visaLength) {
-            if(doesStringHasMoreThanOneSlash(id)) {
-                return VISA_REGEX.test(String(id));
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-    return true;
-};
-
 const isPalestineIdValid = (id: string | null | undefined): boolean => {
     if (id) {
         if (id.length === idLength) {
@@ -73,7 +51,7 @@ const isPalestineIdValid = (id: string | null | undefined): boolean => {
 const isOtherIdValid = (id: string | null | undefined): boolean => {
     if (id) {
         if (id.length <= otherIdLength) {
-            return NUMERIC_TEXT_REGEX.test(String(id));
+            return PASSPORT_DASH_REGEX.test(String(id));
         } else {
             return false;
         }
@@ -85,4 +63,4 @@ const doesStringHasMoreThanOneSlash = (givenStr: string) => {
     return givenStr.split('/').length < moreThanOneSlashIndicator;
 };
 
-export { get, isIdValid, isPassportValid, isPalestineIdValid, isOtherIdValid };
+export { get, isIdValid, isPalestineIdValid, isOtherIdValid };

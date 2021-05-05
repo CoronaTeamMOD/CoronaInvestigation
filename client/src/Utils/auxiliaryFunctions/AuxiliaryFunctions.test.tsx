@@ -1,4 +1,4 @@
-import { isPassportValid, isIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { isOtherIdValid, isIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 describe('auxiliaryFunctions', () => {
     
@@ -23,19 +23,19 @@ describe('auxiliaryFunctions', () => {
     describe('Passport number: ', () => {
 
         it('should accept' , () => {
-            expect(isPassportValid('3005739')).toBeTruthy
+            expect(isOtherIdValid('3005739')).toBeTruthy
         })
 
         it('shouldnt accept - wrong number' , () => {
-            expect(isPassportValid('123123123')).toBe(false)
+            expect(isOtherIdValid('123123123')).toBe(false)
         })
 
         it('shouldnt accept - long number' , () => {
-            expect(isPassportValid('30057391')).toBe(false)
+            expect(isOtherIdValid('30057391')).toBe(false)
         })
 
         it('shouldnt accept - short number' , () => {
-            expect(isPassportValid('300573')).toBe(false)
+            expect(isOtherIdValid('300573')).toBe(false)
         })
     });
 })

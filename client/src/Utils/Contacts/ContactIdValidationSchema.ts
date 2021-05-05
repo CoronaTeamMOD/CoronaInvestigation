@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 import IdentificationTypesCodes from 'models/enums/IdentificationTypesCodes';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
-import { isIdValid , isPassportValid, isPalestineIdValid, isOtherIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { isIdValid , isPalestineIdValid, isOtherIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import { invalidIdText, invalidOtherIdText, invalidPalestineIdText, invalidPassportText, requiredText } from 'commons/Schema/messages';
 
 const ContactIdValidationSchema = (test?: TestParam) => yup.string()
@@ -18,7 +18,7 @@ const ContactIdValidationSchema = (test?: TestParam) => yup.string()
                 schema = schema.test('isValid', invalidIdText, (id) => isIdValid(id))
                 break;
             case IdentificationTypesCodes.PASSPORT:
-                schema = schema.test('isValid', invalidPassportText, (id) => isPassportValid(id));
+                schema = schema.test('isValid', invalidPassportText, (id) => isOtherIdValid(id));
                 break;
             case IdentificationTypesCodes.PALESTINE_ID:
                 schema = schema.test('isValid', invalidPalestineIdText, (id) => isPalestineIdValid(id));
