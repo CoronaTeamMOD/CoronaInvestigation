@@ -6,7 +6,7 @@ const useStyles = makeStyles({
         maxHeight: '64vh'
     },
     addContactWrapper: {
-        padding: '12px 0'
+        paddingBottom: '12px'
     },
     spacedOutAddress: {
         marginRight: '4vw',
@@ -140,6 +140,9 @@ const useStyles = makeStyles({
     },
     alignRight: {
         marginLeft: '-9vw',
+    },
+    contactContiner: {
+        paddingBottom: '12px'
     }
 });
 
