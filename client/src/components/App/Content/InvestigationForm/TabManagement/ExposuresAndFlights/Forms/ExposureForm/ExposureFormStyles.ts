@@ -6,9 +6,9 @@ const useStyles = makeStyles({
     optionalExposureSources: {
         maxHeight: '50vh',
         overflowY: 'auto',
-        marginTop: '1vh',
+        margin: '15px 0 15px -30px',
         direction: 'rtl',
-        width: '70vw',
+        width: '70%',
         minHeight: '10vh',
         display: 'flex',
         justifyContent: 'flex-end'
@@ -18,6 +18,7 @@ const useStyles = makeStyles({
     },
     optionalExposureSource: {
         direction: 'ltr',
+        paddingLeft: '0'
     },
     optionField: {
         marginLeft: '1vw',
