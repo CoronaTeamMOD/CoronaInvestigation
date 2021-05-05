@@ -25,7 +25,7 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
 
     return (
         <>
-            <FormRowWithInput fieldName='האם יש לך מחלות רקע:'>
+            <FormRowWithInput fieldName='מחלות רקע:'>
                 <Grid item xs={3}>
                     <Controller
                         name={ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES}
