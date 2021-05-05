@@ -25,17 +25,5 @@ describe('auxiliaryFunctions', () => {
         it('should accept' , () => {
             expect(isOtherIdValid('3005739')).toBeTruthy
         })
-
-        it('shouldnt accept - wrong number' , () => {
-            expect(isOtherIdValid('123123123')).toBe(false)
-        })
-
-        it('shouldnt accept - long number' , () => {
-            expect(isOtherIdValid('30057391')).toBe(false)
-        })
-
-        it('shouldnt accept - short number' , () => {
-            expect(isOtherIdValid('300573')).toBe(false)
-        })
     });
 })
