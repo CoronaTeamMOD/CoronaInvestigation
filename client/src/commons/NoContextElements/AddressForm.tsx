@@ -183,6 +183,7 @@ const AddressForm: React.FC<Props> = ({
                                 value={props.value}
                                 onChange={props.onChange}
                                 onBlur={props.onBlur}
+                                label={HOUSE_NUM_LABEL} 
                                 placeholder={HOUSE_NUM_LABEL}
                             />
                         )}
