@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Collapse, Divider, Typography, Grid } from '@material-ui/core';
 
@@ -6,41 +6,32 @@ import Toggle from 'commons/Toggle/Toggle';
 import FormTitle from 'commons/FormTitle/FormTitle';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import { Exposure, fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from '../ExposuresAndFlightsStyles';
 import ExposureForm from './ExposureForm/ExposureForm';
-import AlphanumericTextField from '../../../../../../../commons/AlphanumericTextField/AlphanumericTextField';
 
 const addConfirmedExposureButton: string = 'היתה חשיפה נוספת';
 
 const PossibleExposure = (props: Props) => {
 
     const {
-        wereConfirmedExposures,
-        onExposuresStatusChange,
-        exposures,
-        handleChangeExposureDataAndFlightsField,
-        onExposureAdded,
-        disableConfirmedExposureAddition,
-        onExposureDeleted
+        wereConfirmedExposures, onExposuresStatusChange,
+        exposures, handleChangeExposureDataAndFlightsField,
+        onExposureAdded, disableConfirmedExposureAddition,
+        onExposureDeleted, isExposureAdded, setIsExposureAdded
     } = props;
 
     const classes = useStyles();
     const { control, watch } = useFormContext();
     const watchWasConfirmedExposure = watch(fieldsNames.wereConfirmedExposures, wereConfirmedExposures);
-	const [isExposureAdded, setIsExposureAdded] = useState<boolean| undefined>(undefined);
 
     useEffect(() => {
 		if (Boolean(isExposureAdded)) {
              onExposureAdded(true, false)
+             setIsExposureAdded(undefined)
         }
 	}, [isExposureAdded]);
-
-    useEffect(() => {
-		if (Boolean(onExposureDeleted)) {
-            setIsExposureAdded(undefined)
-        }
-	}, [onExposureDeleted]);
 
     return (
         <div className={classes.subForm}>
@@ -125,6 +116,8 @@ interface Props {
     disableConfirmedExposureAddition: boolean;
     onExposureAdded: (wasConfirmedExposure: boolean, wasAbroad: boolean) => void;
     onExposureDeleted: (index: number) => void;
+    isExposureAdded: boolean | undefined;
+    setIsExposureAdded: React.Dispatch<React.SetStateAction<boolean | undefined>>;
 };
 
 export default PossibleExposure;
