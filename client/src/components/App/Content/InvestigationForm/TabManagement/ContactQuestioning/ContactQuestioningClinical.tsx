@@ -92,10 +92,10 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         if (!contactValidation.valid) {
             alertError(contactValidation.error)
         } else if (!isIdAndPhoneNumValid()) {
-            alertError('שים לב, ישנם שדות לא ולידים ולכן לא ניתן להקים דיווח בידוד');
+            alertError('ישנם שדות לא תקינים ולכן לא ניתן להקים דיווח בידוד');
         } else {
             value ?
-                alertWarning('האם אתה בטוח שתרצה להקים דיווח בידוד?', {
+                alertWarning('האם להקים דיווח בידוד?', {
                     showCancelButton: true,
                     cancelButtonText: 'בטל',
                     cancelButtonColor: theme.palette.error.main,
@@ -194,7 +194,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <FieldName xs={6} fieldName='האם נדרש סיוע עבור מקום בידוד?' />
+                        <FieldName xs={6} fieldName='נדרש סיוע עבור מקום בידוד?' />
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION}`}

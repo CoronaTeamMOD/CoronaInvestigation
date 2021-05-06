@@ -41,7 +41,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <FieldName xs={5} fieldName='האם חש בטוב?'/>
+                        <FieldName xs={5} fieldName='חש/ה בטוב?'/>
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.DOES_FEEL_GOOD}]`}
@@ -68,7 +68,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <FieldName xs={5} fieldName='האם סובל ממחלות רקע?'/>
+                        <FieldName xs={5} fieldName='סובל/ת ממחלות רקע?'/>
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES}]`}
@@ -95,7 +95,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <FieldName xs={5} fieldName='האם חי באותו הבית עם המאומת?'/>
+                        <FieldName xs={5} fieldName='חי/ה באותו הבית עם המאומת?'/>
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.DOES_LIVE_WITH_CONFIRMED}]`}
