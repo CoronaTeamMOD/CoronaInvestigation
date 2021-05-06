@@ -29,7 +29,8 @@ export const useExposuresAndFlights = (props : Props) => {
     const { 
         exposures, wereConfirmedExposures, wereFlights,
         exposureAndFlightsData , setExposureDataAndFlights, 
-        setIsExposureAdded, id, reset, trigger, onSubmit} = props;
+        setIsExposureAdded, id, reset, trigger, onSubmit
+    } = props;
     
     const { saveExposureAndFlightData, saveResortsData } = useExposuresSaving();
     const { parseAddress } = useGoogleApiAutocomplete();
