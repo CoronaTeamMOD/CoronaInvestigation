@@ -17,6 +17,20 @@ const SearchByPersonalDetails = (props: Props) => {
     const [nameQuery,setFirstNameQuery] = useState<string>('');
     const [phoneNumberQuery,setPhoneNumberQuery] = useState<string>('');
     
+    const triggerSearch = () => {
+        getQueryParams({
+            name: nameQuery,
+            phoneNumber: phoneNumberQuery
+        });
+    };
+
+    const handleKeyDown = (e : React.KeyboardEvent) => {
+        if(e.key === "Enter") {
+            e.preventDefault();
+            triggerSearch();
+        }
+    };
+
     return (
         <>
             <Grid xs={3}>
@@ -27,6 +41,7 @@ const SearchByPersonalDetails = (props: Props) => {
                         setFirstNameQuery(e.target.value ?? '')
                     }}
                     label={nameLabel}
+                    onKeyDown={handleKeyDown}
                 />
             </Grid>
             <Grid xs={1}>
@@ -42,15 +57,13 @@ const SearchByPersonalDetails = (props: Props) => {
                         setPhoneNumberQuery(e.target.value ?? '')
                     }}
                     label={phoneNumberLabel}
+                    onKeyDown={handleKeyDown}
                 />
             </Grid>
             <Grid xs='auto' className={classes.buttonWrapper}>
                 <IconButton
                     onClick={() => {
-                        getQueryParams({
-                            name: nameQuery,
-                            phoneNumber: phoneNumberQuery
-                        })
+                        triggerSearch();
                     }}
                 >
                     <Search color='primary' />

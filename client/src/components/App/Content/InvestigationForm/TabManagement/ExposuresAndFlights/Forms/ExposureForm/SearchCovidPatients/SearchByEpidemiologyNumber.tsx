@@ -11,6 +11,16 @@ const SearchByEpidemiologyNumber = (props: Props) => {
 
     const [query,setQuery] = useState<string>('');
 
+    const triggerSearch = () => {
+        getQueryParams(query)
+    };
+
+    const handleKeyDown = (e : React.KeyboardEvent) => {
+        if(e.key === "Enter") {
+            e.preventDefault();
+            triggerSearch();
+        }
+    };
     return (
         <>
             <Grid xs={7}>
@@ -22,6 +32,7 @@ const SearchByEpidemiologyNumber = (props: Props) => {
                         setQuery(e);
                     }}
                     label={nameLabel}
+                    onKeyDown={handleKeyDown}
                 />
             </Grid>
             <Grid xs='auto'>
