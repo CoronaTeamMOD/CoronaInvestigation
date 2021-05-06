@@ -6,7 +6,7 @@ const useStyles = makeStyles({
     optionalExposureSources: {
         maxHeight: '50vh',
         overflowY: 'auto',
-        margin: '15px 0 30px -30px',
+        margin: '0px 0 30px -30px',
         direction: 'rtl',
         width: '70%',
         minHeight: '10vh',
@@ -46,7 +46,10 @@ const useStyles = makeStyles({
         margin: '30px 0 20px'
     },
     patientDetailsWrapper: {
-        marginTop: '15px'
+        margin: '15px 0 15px 0'
+    },
+    searchContainer: {
+        paddingLeft: '0 !important'
     }
 });
 

@@ -19,7 +19,7 @@ const SearchByPersonalDetails = (props: Props) => {
     
     return (
         <>
-            <Grid xs={3}>
+            <Grid item xs={3}>
                 <TextField
                     fullWidth
                     value={nameQuery}
@@ -29,12 +29,12 @@ const SearchByPersonalDetails = (props: Props) => {
                     label={nameLabel}
                 />
             </Grid>
-            <Grid xs={1}>
+            <Grid item className={classes.andConnectorWrapper}>
                 <Typography align='center'>
                     וגם
                 </Typography>
             </Grid>
-            <Grid xs={3}>
+            <Grid item xs={3}>
                 <TextField
                     fullWidth
                     value={phoneNumberQuery}
@@ -44,7 +44,7 @@ const SearchByPersonalDetails = (props: Props) => {
                     label={phoneNumberLabel}
                 />
             </Grid>
-            <Grid xs='auto' className={classes.buttonWrapper}>
+            <Grid item xs='auto' className={classes.buttonWrapper}>
                 <IconButton
                     onClick={() => {
                         getQueryParams({
