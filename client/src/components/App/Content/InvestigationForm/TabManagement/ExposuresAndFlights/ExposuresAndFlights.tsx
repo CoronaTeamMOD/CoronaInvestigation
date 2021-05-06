@@ -1,25 +1,29 @@
 
 import { useSelector } from 'react-redux';
-import React , { useContext } from 'react';
 import { Divider } from '@material-ui/core';
 import { yupResolver } from '@hookform/resolvers';
+import React, { useContext, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import StoreStateType from 'redux/storeStateType';
 import { exposureAndFlightsContext } from 'commons/Contexts/ExposuresAndFlights';
 
+import { BackFromAbroad } from './Forms/BackFromAbroad';
 import PossibleExposure from './Forms/PossibleExposure'; 
 import { VacationOrEvent } from './Forms/VacationOrEvent';
-import { BackFromAbroad } from './Forms/BackFromAbroad';
 import { FormData } from './ExposuresAndFlightsInterfaces';
 import ExposureSchema from './Schema/exposuresAndFlightsSchema';
 import { useExposuresAndFlights } from './useExposuresAndFlights';
 
 const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
+
     const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);
+
     const { exposures, wereFlights, wereConfirmedExposures, wasInVacation, wasInEvent } = exposureAndFlightsData;
-    const ids = exposures.map(exposure => exposure.id);
     const validationDate : Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
+	const [isExposureAdded, setIsExposureAdded] = useState<boolean| undefined>(undefined);
+
+    const ids = exposures.map(exposure => exposure.id);
 
     const methods = useForm<FormData>({
         mode: 'all',
@@ -33,7 +37,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
         methods.trigger();
         const data = methods.getValues();
         saveExposure(data , ids);
-    }
+    };
 
     const {
         saveExposure,
@@ -43,7 +47,11 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
         disableConfirmedExposureAddition,
         disableFlightAddition,
         onExposureDeleted
-    } = useExposuresAndFlights({exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, id, reset, trigger, onSubmit});
+    } = useExposuresAndFlights({
+            exposures, wereConfirmedExposures, wereFlights, 
+            exposureAndFlightsData, setExposureDataAndFlights, 
+            setIsExposureAdded, id, reset, trigger, onSubmit
+        });
 
     return (
         <FormProvider {...methods}>
@@ -56,6 +64,8 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     onExposureAdded={onExposureAdded}
                     disableConfirmedExposureAddition={disableConfirmedExposureAddition}
                     onExposureDeleted={onExposureDeleted}
+                    isExposureAdded={isExposureAdded}
+                    setIsExposureAdded={setIsExposureAdded}
                 />
 
                 <Divider />

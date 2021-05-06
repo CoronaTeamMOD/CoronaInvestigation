@@ -26,7 +26,11 @@ const flightDeleteWarningTitle = 'האם אתה בטוח שתרצה למחוק �
 
 export const useExposuresAndFlights = (props : Props) => {
 
-    const {exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, id, reset, trigger, onSubmit} = props;
+    const { 
+        exposures, wereConfirmedExposures, wereFlights,
+        exposureAndFlightsData , setExposureDataAndFlights, 
+        setIsExposureAdded, id, reset, trigger, onSubmit
+    } = props;
     
     const { saveExposureAndFlightData, saveResortsData } = useExposuresSaving();
     const { parseAddress } = useGoogleApiAutocomplete();
@@ -97,7 +101,7 @@ export const useExposuresAndFlights = (props : Props) => {
             alertError('לא ניתן היה לטעון את החשיפה');
             setIsLoading(false);
         });
-    }
+    };
 
     const fetchResortsData: () => Promise<ResortData> = async () => {
         const fetchResortsDataLogger = logger.setup('Fetching investigated patient resorts data');
@@ -110,7 +114,7 @@ export const useExposuresAndFlights = (props : Props) => {
         wasInEvent: result?.data?.wasInEvent
         }
         return resortData;
-    }
+    };
 
     useEffect(() => {
         fetchExposuresAndFlights();
@@ -146,6 +150,7 @@ export const useExposuresAndFlights = (props : Props) => {
                     axios.delete('/exposure/deleteExposure', { params: { exposureId }})
                         .then(() => {
                             deletingExposureLogger.info('exposure was deleted successfully', Severity.LOW)
+                            !isFlight && setIsExposureAdded(undefined);
                         }).catch((error) => {
                             deletingExposureLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                             alertError((isFlight ? flightDeleteFailedMsg : exposureDeleteFailedMsg));
@@ -156,6 +161,7 @@ export const useExposuresAndFlights = (props : Props) => {
                         ...exposureAndFlightsData,
                         exposures: updatedExpousres,
                     });
+                    !isFlight && setIsExposureAdded(undefined);
                 }
                 onSubmit();
             }            
@@ -209,7 +215,7 @@ export const useExposuresAndFlights = (props : Props) => {
         disableConfirmedExposureAddition,
         disableFlightAddition,
         onExposureDeleted
-    }
+    };
 };
 
 interface Props {
@@ -218,6 +224,7 @@ interface Props {
     wereFlights: boolean,
     exposureAndFlightsData: ExposureAndFlightsDetails;
     setExposureDataAndFlights: React.Dispatch<React.SetStateAction<ExposureAndFlightsDetails>>;
+    setIsExposureAdded: React.Dispatch<React.SetStateAction<boolean | undefined>>;
     id: number;
     reset: (values : FormData) => void;
     trigger: () => void;
