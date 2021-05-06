@@ -160,25 +160,25 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             familyRelationship: contact.familyRelationship,
                             isolationAddress: contact.isolationAddress,
                             occupation: contact.occupation,
-                            doesFeelGood: contact.doesFeelGood
+                            doesFeelGood: contact.doesFeelGood !== null
                                 ? contact.doesFeelGood
                                 : null,
-                            doesHaveBackgroundDiseases: contact.doesHaveBackgroundDiseases
+                            doesHaveBackgroundDiseases: contact.doesHaveBackgroundDiseases !== null
                                 ? contact.doesHaveBackgroundDiseases
                                 : null,
-                            doesLiveWithConfirmed: contact.doesLiveWithConfirmed
+                            doesLiveWithConfirmed: contact.doesLiveWithConfirmed !== null
                                 ? contact.doesLiveWithConfirmed
                                 : null,
-                            doesNeedHelpInIsolation: contact.doesNeedHelpInIsolation
+                            doesNeedHelpInIsolation: contact.doesNeedHelpInIsolation !== null
                                 ? contact.doesNeedHelpInIsolation
                                 : null,
-                            repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed
+                            repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed !== null
                                 ? contact.repeatingOccuranceWithConfirmed
                                 : null,
-                            doesWorkWithCrowd: contact.doesWorkWithCrowd
+                            doesWorkWithCrowd: contact.doesWorkWithCrowd !== null
                                 ? contact.doesWorkWithCrowd
                                 : null,
-                            doesNeedIsolation: contact.doesNeedIsolation
+                            doesNeedIsolation: contact.doesNeedIsolation !== null
                                 ? contact.doesNeedIsolation
                                 : null,
                             creationTime: contact.creationTime,
