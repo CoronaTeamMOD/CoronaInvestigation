@@ -2,7 +2,7 @@
 import { useSelector } from 'react-redux';
 import { Divider } from '@material-ui/core';
 import { yupResolver } from '@hookform/resolvers';
-import React , { useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import StoreStateType from 'redux/storeStateType';

@@ -26,7 +26,10 @@ const flightDeleteWarningTitle = 'האם אתה בטוח שתרצה למחוק �
 
 export const useExposuresAndFlights = (props : Props) => {
 
-    const {exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights, setIsExposureAdded,  id, reset, trigger, onSubmit} = props;
+    const { 
+        exposures, wereConfirmedExposures, wereFlights,
+        exposureAndFlightsData , setExposureDataAndFlights, 
+        setIsExposureAdded, id, reset, trigger, onSubmit} = props;
     
     const { saveExposureAndFlightData, saveResortsData } = useExposuresSaving();
     const { parseAddress } = useGoogleApiAutocomplete();
