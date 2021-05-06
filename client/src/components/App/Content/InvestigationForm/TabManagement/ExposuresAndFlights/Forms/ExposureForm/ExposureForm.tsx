@@ -107,7 +107,7 @@ const ExposureForm = (props: Props) => {
 					</Select>
 				</Grid>
 				<Grid xs={3} />
-				<Grid item container alignItems='center' xs={9}>
+				<Grid item container alignItems='center' xs={9} className={classes.searchContainer} >
 					{
 						queryBy === queryByTypes.BY_PERSONAL_DETAILS 
 							? 	<SearchByPersonalDetails 
@@ -122,37 +122,38 @@ const ExposureForm = (props: Props) => {
 			<Grid container justify='space-between' xs={12} className={classes.patientDetailsWrapper}>
                 <Grid item xs={11}>
 					<FormRowWithInput fieldName='פרטי החולה:'>
-						<Grid item xs={7}>
-						<Controller
-							control={control}
-							name={`exposures[${index}].${fieldsNames.exposureSource}`}
-							defaultValue={exposureAndFlightsData.exposureSource}
-							render={(props) => {
-								return (
-									<ExposureSearchTextField
-										fullWidth
-										disabled={true}
-										name={`exposures[${index}].${fieldsNames.exposureSource}`}
-										onChange={(value) => {
-											setExposureSourceSearchString(value);
-											(!value || !value.includes(':')) &&
-												handleChangeExposureDataAndFlightsField(index, fieldsNames.exposureSource, null);
-												props.onChange(null)
-										}}
-										value={exposureSourceSearchString}
-										test-id='exposureSource'
-									/>
-								);
-							}}
-						/>
-						</Grid>
+						<>
+							<Grid item xs={7} className={classes.searchContainer}>
+							<Controller
+								control={control}
+								name={`exposures[${index}].${fieldsNames.exposureSource}`}
+								defaultValue={exposureAndFlightsData.exposureSource}
+								render={(props) => {
+									return (
+										<ExposureSearchTextField
+											fullWidth
+											disabled={true}
+											name={`exposures[${index}].${fieldsNames.exposureSource}`}
+											onChange={(value) => {
+												setExposureSourceSearchString(value);
+												(!value || !value.includes(':')) &&
+													handleChangeExposureDataAndFlightsField(index, fieldsNames.exposureSource, null);
+													props.onChange(null)
+											}}
+											value={exposureSourceSearchString}
+											test-id='exposureSource'
+										/>
+									);
+								}}
+							/>
+							</Grid>
+							<Grid item alignItems='center' justify='flex-start'>
+								<IconButton onClick={onExposureDeleted}>
+									<Delete />
+								</IconButton>
+							</Grid>
+						</>
 					</FormRowWithInput>
-				</Grid>
-
-				<Grid item xs={1} alignItems='center' justify='flex-start'>
-					<IconButton onClick={onExposureDeleted}>
-							<Delete />
-					</IconButton>
 				</Grid>
 			</Grid>
 
