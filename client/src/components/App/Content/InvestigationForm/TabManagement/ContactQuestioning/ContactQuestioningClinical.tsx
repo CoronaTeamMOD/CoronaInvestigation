@@ -214,10 +214,10 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                 )
                             }}
                         />
-                        <InlineErrorText 
-                            error={formErrors && formErrors[InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION]}
-					    />
                     </Grid>
+                    <InlineErrorText
+                        error={formErrors && formErrors[InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION]}
+                    />
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
@@ -233,7 +233,10 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                         disabled={isFieldDisabled || (shouldDisableIdByReopen && interactedContact.doesNeedIsolation === true)}
                                         test-id='doesNeedIsolation'
                                         onChange={(event, booleanValue) => {
-                                            if (booleanValue !== null) {
+                                            if (booleanValue == false) {
+                                                props.onChange(booleanValue)
+                                            }
+                                            if (booleanValue !== null && booleanValue !== false) {
                                                 handleIsolation(booleanValue, props.onChange)
                                             }
                                         }}
@@ -241,10 +244,10 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                 )
                             }}
                         />
-                        <InlineErrorText 
-						    error={formErrors && formErrors[InteractedContactFields.DOES_NEED_ISOLATION]}
-					    />
                     </Grid>
+                    <InlineErrorText
+                        error={formErrors && formErrors[InteractedContactFields.DOES_NEED_ISOLATION]}
+                    />
                 </Grid>
                 <Grid container item>
                     <FieldName xs={6} fieldName='תאריך סיום בידוד:' />
