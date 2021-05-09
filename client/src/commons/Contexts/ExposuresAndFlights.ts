@@ -80,10 +80,18 @@ export const isConfirmedExposureInvalid = (exposure: Exposure) =>
     (!exposure.exposureAddress || !exposure.exposureAddress.place_id)
 
 export const isFlightInvalid = (exposure: Exposure) =>
-    !exposure.flightOriginAirport || 
-    !exposure.flightOriginCountry ||
-    !exposure.flightDestinationAirport ||
-    !exposure.flightDestinationCountry || 
+    /*  
+     *  NOTE: This is a plaster!, see ticket 1085 for more details
+     *  issue seem to stem from the cursed function 🤢 handleChangeExposureDataAndFlightsField 🤢
+     *  is seems that when origin flight country is changed it sometimes erases the origin airport, vice versa
+     *  same for destination.
+     *  the solution is to refactor the function to not use this function and instead rely on methods.getValues() 
+     */
+
+    // !exposure.flightOriginAirport ||
+    // !exposure.flightOriginCountry ||
+    // !exposure.flightDestinationAirport ||
+    // !exposure.flightDestinationCountry ||
     !exposure.flightStartDate ||
     !exposure.flightEndDate ||
     !exposure.flightNum
