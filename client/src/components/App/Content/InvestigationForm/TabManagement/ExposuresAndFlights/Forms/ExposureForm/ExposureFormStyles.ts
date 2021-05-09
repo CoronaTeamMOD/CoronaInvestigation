@@ -50,6 +50,11 @@ const useStyles = makeStyles({
     },
     searchContainer: {
         paddingLeft: '0 !important'
+    },
+    filterSelect: {
+        '& .MuiSelect-root': {
+            padding: '12px 32px 12px 12px'
+        }
     }
 });
 

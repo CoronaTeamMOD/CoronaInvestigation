@@ -96,6 +96,8 @@ const ExposureForm = (props: Props) => {
 				<Grid xs={9}>
 					<Select
 						value={queryBy}
+						variant='outlined'
+						className={classes.filterSelect}
 						onChange={(e) => {
 							if(typeof e.target.value === 'number') {
 								setQueryBy(e.target.value as number);
