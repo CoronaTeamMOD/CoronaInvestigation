@@ -78,10 +78,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     }
 
     const isIdAndPhoneNumValid = (): boolean => {
-        if (formErrors) {
-            if (formErrors) {
-                return Boolean(formErrors.id) || Boolean(formErrors.phoneNumber)
-            }
+        const isDoesNeedIsolationIsTheLastFormError = Object.keys(formErrors).length===1 && Object.keys(formErrors)[0]==='doesNeedIsolation'
+        if (formErrors && !isDoesNeedIsolationIsTheLastFormError) {
+            return Boolean(formErrors.id) || Boolean(formErrors.phoneNumber)
         }
         return true;
     };
@@ -233,10 +232,10 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                         disabled={isFieldDisabled || (shouldDisableIdByReopen && interactedContact.doesNeedIsolation === true)}
                                         test-id='doesNeedIsolation'
                                         onChange={(event, booleanValue) => {
-                                            if (booleanValue == false) {
+                                            if (booleanValue === false) {
                                                 props.onChange(booleanValue)
                                             }
-                                            if (booleanValue !== null && booleanValue !== false) {
+                                            if (booleanValue === true) {
                                                 handleIsolation(booleanValue, props.onChange)
                                             }
                                         }}

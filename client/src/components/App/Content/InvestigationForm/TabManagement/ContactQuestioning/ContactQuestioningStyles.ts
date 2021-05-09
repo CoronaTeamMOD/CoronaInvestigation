@@ -80,6 +80,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     smallSizeText: {
         fontSize: '1rem'
     },
+    contactDetail: {
+        direction: 'ltr',
+    }
 }));
 
 export default useStyles;

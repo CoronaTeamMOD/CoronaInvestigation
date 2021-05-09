@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useFormContext } from 'react-hook-form';
 import { Tooltip, Typography } from '@material-ui/core';
-import { useFormContext } from 'react-hook-form'
 
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
@@ -10,14 +10,18 @@ import InvalidFormIcon from 'commons/Icons/InvalidFormIcon';
 import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 import GroupedContactIcon from 'commons/Icons/GroupedContactIcon';
-import GetGroupedInvestigationsIds from 'Utils/GroupedInvestigationsContacts/getGroupedInvestigationIds';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
+import GetGroupedInvestigationsIds from 'Utils/GroupedInvestigationsContacts/getGroupedInvestigationIds';
+
+import useStyles from '../ContactQuestioningStyles';
 
 const TIGHT_CONTACT_STATUS = 1;
 
 const ContactDetails = (props: Props) => {
+
     const { errors } = useFormContext();
     const { index , interactedContact } = props;
+    const classes = useStyles({});
 
     const formErrors = errors.form ? (errors.form[index] ? errors.form[index] : {}) : {};
     const formHasErrors = Object.entries(formErrors)
@@ -55,11 +59,13 @@ const ContactDetails = (props: Props) => {
                 formHasErrors && <InvalidFormIcon />
             }
 
-            <Typography variant='body2'>
-                <b>שם פרטי:</b> {interactedContact.firstName}
+            <Typography variant='body2' className={classes.contactDetail}>
+                <b>שם פרטי:</b>{' '}
+                {interactedContact.firstName}
             </Typography>
-            <Typography variant='body2'>
-                <b>שם משפחה:</b> {interactedContact.lastName}
+            <Typography variant='body2' className={classes.contactDetail}>
+               <b>שם משפחה:</b>{' '}
+               {interactedContact.lastName}
             </Typography>
             {interactedContact.contactEvents && (
                 <Tooltip title={tooltipText} placement='top' arrow>
@@ -81,4 +87,4 @@ export default ContactDetails;
 interface Props {
     interactedContact: GroupedInteractedContact;
     index : number;
-}
+};

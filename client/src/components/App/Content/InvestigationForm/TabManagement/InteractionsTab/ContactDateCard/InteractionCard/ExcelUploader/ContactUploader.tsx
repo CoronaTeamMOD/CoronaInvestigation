@@ -69,8 +69,10 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
                 }
                 return aggregatedArr;
             }, []);
-
-            if(validationErrors.length > 0) {
+            const existingBankIds = contactsExistsInBank(contacts);
+            if(existingBankIds && existingBankIds?.length > 0) {
+                alertError(`ת.ז. ${existingBankIds  .join(', ')} כבר קיים בבנק המגעים`);
+            } else if(validationErrors.length > 0) {
                 alertError(validationErrors.join("\r\n"));
                 dataInFileLogger.info(`failed to upload excel, validation errors on data: ${validationErrors.join(',')}`, Severity.HIGH);
             } else {
@@ -92,6 +94,28 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
             }
         }
     };
+
+    const contactsExistsInBank = (contacts? : ParsedExcelRow[]) => {
+        const allIdsSet = getAllExistingContactIds();
+        const existingContacts = contacts?.map(contact => contact.identificationNumber)
+            .filter(id => {
+                return Boolean(id) && allIdsSet.has(id)
+            });
+
+        return existingContacts
+    }
+
+    const getAllExistingContactIds = () => {
+        const allIds = allInteractions
+            .flatMap(interaction => 
+                interaction.contacts
+                    .map(contact => 
+                        contact.identificationNumber
+                    )    
+            )
+
+        return new Set(allIds)
+    }
 
     return (
         <>
