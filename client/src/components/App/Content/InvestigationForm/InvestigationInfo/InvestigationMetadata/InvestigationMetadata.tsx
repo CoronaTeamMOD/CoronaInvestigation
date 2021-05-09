@@ -8,6 +8,7 @@ import InfoItem from '../InfoItem';
 import useStyles from './InvestigationMetadataStyles';
 
 const noStartDate = 'אין תאריך';
+const noInvestigatingUnit = 'אין מחוז';
 
 const InvestigationMetadata = (props: Props) => {
 
@@ -22,7 +23,7 @@ const InvestigationMetadata = (props: Props) => {
             <InfoItem testId='investigationLastUpdatedDate' name='עדכון אחרון'
                 value={investigationMetaData.lastUpdateTime ? format(new Date(investigationMetaData.lastUpdateTime), 'dd/MM/yyyy') : noStartDate}
             />
-            <InfoItem testId='district' name='נפה/מחוז' value={investigationMetaData.investigatingUnit} />
+            <InfoItem testId='district' name='מחוז' value={investigationMetaData.investigatingUnit ?? noInvestigatingUnit} />
             <InfoItem testId='updatingUser' name='משתמש מעדכן' value={
                 investigationMetaData.userByLastUpdator.userName
             }
