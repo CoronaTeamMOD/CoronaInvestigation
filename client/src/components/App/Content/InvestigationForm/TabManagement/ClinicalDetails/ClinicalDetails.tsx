@@ -1,15 +1,15 @@
 import { Grid } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import React, { useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers';
+import React, { useEffect, useState } from 'react';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
 
 import Gender from 'models/enums/Gender';
 import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
+import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import AddressForm, { AddressFormFields } from 'commons/Forms/AddressForm/AddressForm';
 

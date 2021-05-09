@@ -7,7 +7,7 @@ export const alphaNumericErrorMessage = 'השדה יכול להכיל אותיו
 export const alphbetDashErrorMessage = 'השדה יכול להכיל אותיות, רווחים ומקפים בלבד';
 export const alphaNumericSpecialCharsErrorMessage = 'השדה יכול להכיל תווים חוקיים בלבד';
 export const alphaNumericWhiteSpaceErrorMessage = 'השדה יכול להכיל אותיות, מספרים, מקף ורווח בלבד';
-export const alphaNumericSlashErrorMessage = 'השדה יכול להכיל אותיות, מספרים ולוכסנים בלבד';
+export const alphaNumericSlashErrorMessage = 'השדה יכול להכיל אותיות באנגלית, מספרים ולוכסנים בלבד';
 
 export const max9LengthIdErrorMessage = 'שדה ת.ז יכול להכיל 9 מספרים בלבד';
 export const max10LengthNumErrorMessage = 'השדה יכול להכיל 10 מספרים בלבד';
