@@ -69,10 +69,9 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
                 }
                 return aggregatedArr;
             }, []);
-            const existingIds = contactsExistsInBank(contacts);
-            console.log(existingIds);
-            if(existingIds && existingIds?.length > 0) {
-                alertError(`ת.ז. ${existingIds.join(', ')} כבר קיים בבנק המגעים`);
+            const existingBankIds = contactsExistsInBank(contacts);
+            if(existingBankIds && existingBankIds?.length > 0) {
+                alertError(`ת.ז. ${existingBankIds  .join(', ')} כבר קיים בבנק המגעים`);
             } else if(validationErrors.length > 0) {
                 alertError(validationErrors.join("\r\n"));
                 dataInFileLogger.info(`failed to upload excel, validation errors on data: ${validationErrors.join(',')}`, Severity.HIGH);
@@ -98,7 +97,6 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
 
     const contactsExistsInBank = (contacts? : ParsedExcelRow[]) => {
         const allIdsSet = getAllExistingContactIds();
-        console.log(allIdsSet);
         const existingContacts = contacts?.map(contact => contact.identificationNumber)
             .filter(id => {
                 return Boolean(id) && allIdsSet.has(id)
