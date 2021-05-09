@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { Grid, Paper, Card } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import StoreStateType from 'redux/storeStateType';
 import MuiAlert from '@material-ui/lab/Alert';
+import StoreStateType from 'redux/storeStateType';
 import Snackbar from '@material-ui/core/Snackbar';
+import { Grid, Paper, Card } from '@material-ui/core';
 
 import { setFormState } from 'redux/Form/formActionCreators';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
