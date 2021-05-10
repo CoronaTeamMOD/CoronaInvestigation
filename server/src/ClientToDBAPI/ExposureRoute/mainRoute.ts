@@ -205,7 +205,6 @@ exposureRoute.get('/exposuresByEpidemiologyNumber/:validationDate', handleInvest
 });
 
 const convertExposuresToDB = (request: Request) => {
-    
     const convertedExposures = request.body.exposures.map((exposure: Exposure) => ({
         ...exposure,
         exposureSource: exposure.exposureSource ? exposure.exposureSource.epidemiologyNumber : null,
