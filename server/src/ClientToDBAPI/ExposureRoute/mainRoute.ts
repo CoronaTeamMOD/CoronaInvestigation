@@ -206,13 +206,21 @@ exposureRoute.get('/exposuresByEpidemiologyNumber/:validationDate', handleInvest
 
 const convertExposuresToDB = (request: Request) => {
     
-    const convertedExposures = request.body.exposures.map((exposure: Exposure) => 
-    ({
-        ...exposure, 
+    const convertedExposures = request.body.exposures.map((exposure: Exposure) => ({
+        ...exposure,
         exposureSource: exposure.exposureSource ? exposure.exposureSource.epidemiologyNumber : null,
-        airline: exposure.airline ? exposure.airline.displayName : undefined 
-    }))
+        airline: parseAirline(exposure.airline),
+    }));
     return {...request.body, exposures: convertedExposures}
+}
+
+const parseAirline = (airline : {id : number, displayName : string} | string | null) => {
+    if(typeof airline === 'object') {
+        return airline.displayName;
+    } else if (typeof airline === 'string') {
+        return airline
+    }
+    return undefined
 }
 
 exposureRoute.post('/updateExposures',handleInvestigationRequest, (request: Request, response: Response) => {
