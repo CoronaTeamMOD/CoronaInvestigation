@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
+import React, { useEffect, useRef } from 'react';
 import { Tabs, Tab, Card, createStyles, withStyles, Grid, Button, IconButton, Tooltip } from '@material-ui/core';
 
 import TabId from 'models/enums/TabId';
@@ -64,6 +64,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 
     const classes = useStyles({});
 
+    const tabRef = useRef<HTMLDivElement>(null);
+
     const StyledTab = withStyles((theme) =>
         createStyles({
             root: {
@@ -87,13 +89,22 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 
     useEffect(() => {
         localStorage.setItem('isScriptOpened' , String(isScriptOpened));
-    }, [isScriptOpened])
+    }, [isScriptOpened]);
+
+    useEffect(() => {
+        tabRef.current?.scroll({
+            top: 0, 
+            left: 0, 
+            behavior: 'smooth'
+        });
+        window.scrollTo(0, 0);
+    }, [currentTab]);
 
     return (
         <Card className={currentCardsClass}>
             <Grid container>
                 <Grid item sm={8}>
-                    <Tabs
+                    <Tabs 
                         value={currentTab}
                         classes={{
                             root: classes.tabRoot,
@@ -102,16 +113,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                         textColor='primary'
                         className={classes.tabs}
                         variant='scrollable'
-                        scrollButtons='auto'
-                        ScrollButtonComponent={(props) => {
-                            return (
-                                <IconButton {...props}
-                                    disabled={false}
-                                >
-                                    {props.direction === 'right' ? <ChevronRight /> : <ChevronLeft />}
-                                </IconButton>
-                            )
-                        }}
+                        scrollButtons={isScriptOpened ? 'on' : 'off'}
                     >
                         {
                             tabs.map((tab: TabObj , index : number) =>
@@ -125,6 +127,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                                     label={tab.name}
                                     icon={isTabValid(tab.id) ? <ErrorOutlineIcon className={classes.icon} fontSize={'small'}/> : undefined}
                                     className={isTabValid(tab.id) ? classes.errorIcon : undefined}
+                                    ref={tabRef}
                                 />
                             )
                         }
