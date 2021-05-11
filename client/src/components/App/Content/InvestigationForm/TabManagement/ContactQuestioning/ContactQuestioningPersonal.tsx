@@ -21,8 +21,7 @@ import IdentificationTextField from 'commons/NoContextElements/IdentificationTex
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 import useStyles from './ContactQuestioningStyles';
-
-const PHONE_LABEL = 'טלפון:';
+import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
 
@@ -84,7 +83,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     </Typography>
                 </Grid>
                 <Grid item container alignItems='center'>
-                    <FieldName fieldName='סוג תעודה מזהה:' />
+                    <FieldName fieldName={ContactQuestioningFieldsNames.IDENTIFICATION_TYPE} />
                     <Grid item xs={3}> 
                         <FormControl fullWidth error={currentFormErrors ? !!(currentFormErrors[InteractedContactFields.IDENTIFICATION_TYPE]) : false}>
                             <Controller
@@ -125,7 +124,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                             {currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_TYPE] && <FormHelperText>{requiredText}</FormHelperText>}
                         </FormControl>
                     </Grid>
-                    <FieldName fieldName='מספר תעודה:' className={classes.fieldNameWithIcon}/>
+                    <FieldName fieldName={ContactQuestioningFieldsNames.IDENTIFICATION_NUMBER} className={classes.fieldNameWithIcon}/>
                     <Grid item xs={3}>
                         <Controller
                             control={control}
@@ -154,7 +153,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     </Grid>
                 </Grid>
                 <Grid container item alignItems='center'>
-                    <FieldName xs={5} fieldName='תאריך לידה:' />
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.BIRTH_DATE}/>
                     <Controller
                         control={control}
                         name={`form[${index}].${InteractedContactFields.BIRTH_DATE}`}
@@ -181,7 +180,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     />
                 </Grid>
                 <Grid container item>
-                    <FieldName xs={5} fieldName='גיל:' />
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.AGE}/>
                     <AlphanumericTextField
                         disabled={true}
                         name='age'
@@ -192,7 +191,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     />
                 </Grid>
                 <Grid container item>
-                    <FieldName xs={5} fieldName={PHONE_LABEL} />
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.PHONE}/>
                     <Controller
                         control={control}
                         name={`form[${index}].${InteractedContactFields.PHONE_NUMBER}`}

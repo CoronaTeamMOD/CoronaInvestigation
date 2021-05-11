@@ -12,13 +12,14 @@ import FamilyRelationship from 'models/FamilyRelationship';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import InteractedContactFields from 'models/enums/InteractedContact';
+import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 import HebrewTextField from 'commons/NoContextElements/HebrewTextField';
 import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextField';
 import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFields';
 import AddressForm, { AddressFormFields } from 'commons/NoContextElements/AddressForm';
-import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 
 import useStyles from './ContactQuestioningStyles';
+import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 
 const emptyFamilyRelationship: FamilyRelationship = {
     id: null as any,
@@ -26,14 +27,17 @@ const emptyFamilyRelationship: FamilyRelationship = {
 };
 
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
+
     const { index, familyRelationships, interactedContact, isFamilyContact, 
             control, watch, formValues, formErrors } = props;
 
     const classes = useStyles();
 
     const { shouldDisableContact } = useStatusUtils();
-    const shouldDisableIdByReopen = interactedContact.creationTime ?
-        shouldDisableContact(interactedContact.creationTime) : false;
+
+    const shouldDisableIdByReopen = interactedContact.creationTime 
+        ? shouldDisableContact(interactedContact.creationTime) 
+        : false;
 
     const { alertError, alertWarning } = useCustomSwal();
 
@@ -65,8 +69,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
             name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`,
             defaultValue: interactedContact.isolationAddress?.apartment
         }
-    }
-
+    };
 
     const formatContactToValidate = () => {
         return {
@@ -75,7 +78,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
             lastName: interactedContact.lastName,
             contactType: interactedContact.contactType,
         }
-    }
+    };
 
     const isIdAndPhoneNumValid = (): boolean => {
         const isDoesNeedIsolationIsTheLastFormError = Object.keys(formErrors).length===1 && Object.keys(formErrors)[0]==='doesNeedIsolation'
@@ -119,7 +122,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid item>
                     <Grid container>
-                        <FieldName xs={5} fieldName='קרבה משפחתית:' />
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.FAMILY_RELATIONSHIP}/>
                         <Grid item xs={7}>
                             <Controller
                                 control={control}
@@ -154,7 +157,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     </Grid>
                 </Grid>
                 <Grid container item>
-                    <FieldName xs={5} fieldName='קשר:' />
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.RELATIONSHIP}/>
                     <Grid item xs={7}>
                         <Controller
                             control={control}
@@ -178,7 +181,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid container item>
                     <Grid container item>
-                        <FieldName xs={5} fieldName='מיקום השהייה בבידוד:' />
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.ISOLATION_PLACE}/>
                         <Grid container item xs={7}>
                             <AddressForm
                                 unsized={true}
@@ -193,7 +196,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <FieldName xs={6} fieldName='נדרש סיוע עבור מקום בידוד?' />
+                        <FieldName xs={6} fieldName={ContactQuestioningFieldsNames.DOES_NEED_HELP_IN_ISOLATION}/>
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION}`}
@@ -220,7 +223,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <FieldName xs={6} fieldName='הקמת דיווח בידוד?' />
+                        <FieldName xs={6} fieldName={ContactQuestioningFieldsNames.DOES_NEED_ISOLATION}/>
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.DOES_NEED_ISOLATION}`}
@@ -249,7 +252,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     />
                 </Grid>
                 <Grid container item>
-                    <FieldName xs={6} fieldName='תאריך סיום בידוד:' />
+                    <FieldName xs={6} fieldName={ContactQuestioningFieldsNames.ISOLATION_END_DATE}/>
                     <Grid item xs={6}>
                         <AlphanumericTextField
                             disabled
