@@ -82,7 +82,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     contactDetail: {
         direction: 'ltr',
-    }
+    },
+    fieldName: {
+        alignSelf: 'center'
+    },
 }));
 
 export default useStyles;
