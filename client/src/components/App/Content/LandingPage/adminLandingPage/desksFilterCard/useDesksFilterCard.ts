@@ -5,7 +5,7 @@ import { HistoryState } from '../../InvestigationTable/InvestigationTableInterfa
 
 const useDesksFilterCard = () => {
     
-    const [filteredDesks, setFilteredDesks] = useState<number[]>([]);
+    const [filteredDesks, setFilteredDesks] = useState<number[] | null>(null);
     
     const history = useHistory<HistoryState>();    
 
@@ -20,10 +20,12 @@ const useDesksFilterCard = () => {
     }, []);
 
     const onDeskClicked = (checkedDesk: number) => {
-        if (filteredDesks.includes(checkedDesk)) {
-            setFilteredDesks(filteredDesks.filter(desk => desk !== checkedDesk));
-        } else {
-            setFilteredDesks([...filteredDesks, checkedDesk])
+        if(filteredDesks) {
+            if (filteredDesks.includes(checkedDesk)) {
+                setFilteredDesks(filteredDesks.filter(desk => desk !== checkedDesk));
+            } else {
+                setFilteredDesks([...filteredDesks, checkedDesk])
+            }
         }
     }
 
