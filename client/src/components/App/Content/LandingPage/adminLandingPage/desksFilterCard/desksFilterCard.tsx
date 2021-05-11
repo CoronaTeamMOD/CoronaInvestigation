@@ -23,7 +23,7 @@ const DesksFilterCard = (props: Props): JSX.Element => {
     const { countyDesks } = useDesksUtils();
 
     return (
-        <LoadingCard isLoading={countyDesks.length === 0} width={cardWidth} height={cardHeight} className={classes.desksCard}>
+        <LoadingCard isLoading={countyDesks === null} width={cardWidth} height={cardHeight} className={classes.desksCard}>
             <CardContent>
                 <Box display='flex' flexDirection='column'>
                     <Typography variant='h6' id='desks-card-headline'>
@@ -32,7 +32,7 @@ const DesksFilterCard = (props: Props): JSX.Element => {
                     <CustomCheckbox
                         checkboxElements={[{
                             id:'all-desks-checkbox',
-                            checked: filteredDesks.length === 0,
+                            checked: filteredDesks?.length === 0,
                             labelText: <b>כל הדסקים</b>,
                             onChange: clearAllDesks
                         }]}
@@ -46,7 +46,7 @@ const DesksFilterCard = (props: Props): JSX.Element => {
                                         id: `desk-checkbox-${desk.id}`,
                                         key: desk.id,
                                         value: desk.id,
-                                        checked: filteredDesks.includes(desk.id!),
+                                        checked: filteredDesks?.includes(desk.id!),
                                         labelText: desk.deskName,
                                         onChange: () => onDeskClicked(desk.id!)
                                     }]}
@@ -57,7 +57,7 @@ const DesksFilterCard = (props: Props): JSX.Element => {
                     <div className={classes.desksCardActions}>
                         <UpdateButton
                             id='desks-filter-update-button'
-                            onClick={() => onUpdateButtonClicked(filteredDesks)}
+                            onClick={() => filteredDesks && onUpdateButtonClicked(filteredDesks)}
                         />
                     </div>
                 </Box>
