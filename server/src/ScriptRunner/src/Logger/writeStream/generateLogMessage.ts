@@ -1,11 +1,12 @@
 import chalk from 'chalk';
 
 import levels from '../levels';
+import IP from '../../LogUtils/ipAddress';
 
 const generateLogMessage = (row: string[]) => {
     const rowObj = logRowToObject(row);
     
-    return `[${rowObj.dateTime}] ${getTypeMessage(rowObj.type)} ${rowObj.message}` 
+    return `[${rowObj.dateTime}] ${IP} ${getTypeMessage(rowObj.type)} ${rowObj.message}` 
 }
 
 const logRowToObject = (logRow: string[]) => {
