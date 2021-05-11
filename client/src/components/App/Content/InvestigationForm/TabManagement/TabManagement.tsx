@@ -17,7 +17,7 @@ import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
 import { ArrowLeft, ChevronLeft, ChevronRight } from '@material-ui/icons';
 
-const END_INVESTIGATION = 'סיים חקירה';
+const END_INVESTIGATION = 'סיום חקירה';
 const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 const SHOW_SCRIPT = 'הצג תסריט';
 const HIDE_SCRIPT = 'הסתר תסריט';
