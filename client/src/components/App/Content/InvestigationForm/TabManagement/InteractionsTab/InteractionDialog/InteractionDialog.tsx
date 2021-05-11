@@ -228,7 +228,6 @@ const InteractionDialog = (props: Props) => {
             .filter(contact => contact.identificationType && contact.identificationNumber)
             .flatMap(contact => `${contact.identificationType}-${contact.identificationNumber}`)
             
-        console.log(ids);
         return (new Set(ids)).size !== ids.length
     }
     
