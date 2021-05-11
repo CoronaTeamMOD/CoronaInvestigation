@@ -22,7 +22,7 @@ import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteracte
 
 import useStyles from './ContactQuestioningStyles';
 
-const PHONE_LABEL = 'טלפון';
+const PHONE_LABEL = 'טלפון:';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
 

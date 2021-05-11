@@ -220,7 +220,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <FieldName xs={6} fieldName='הקמת דיווח בידוד' />
+                        <FieldName xs={6} fieldName='הקמת דיווח בידוד?' />
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.DOES_NEED_ISOLATION}`}
