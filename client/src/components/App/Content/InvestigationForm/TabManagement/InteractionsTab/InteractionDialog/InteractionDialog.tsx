@@ -224,7 +224,10 @@ const InteractionDialog = (props: Props) => {
     };
 
     const areThereDuplicateContactIDs = (data : InteractionEventDialogData) => {
-        const ids = data.contacts.flatMap(contact => `${contact.identificationType}-${contact.identificationNumber}`)
+        const ids = data.contacts
+            .filter(contact => contact.identificationType && contact.identificationNumber)
+            .flatMap(contact => `${contact.identificationType}-${contact.identificationNumber}`)
+            
         return (new Set(ids)).size !== ids.length
     }
     
