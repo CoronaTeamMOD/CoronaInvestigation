@@ -95,3 +95,12 @@ mutation updateTrackingRecommendation ($inputEpidemiologyNumber: Int!, $extraInf
   }
 }
 `;
+
+export const UPDATE_INVESTIGATED_IS_IN_CLOSED_INSTITUTION = gql`
+mutation updateInvestigatedPatientById ($isInClosedInstitution: Boolean, $id: Int!) {
+  updateInvestigatedPatientById(input: {investigatedPatientPatch: {isInClosedInstitution: $isInClosedInstitution}, id: $id}) {
+    clientMutationId
+  }
+}
+`;
+

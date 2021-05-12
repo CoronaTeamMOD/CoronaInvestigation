@@ -162,6 +162,12 @@ const savePersonalDetails = (request: Request, response: Response, baseLog: Init
         educationClassNumber: personalInfoData.educationClassNumber,
     };
 
+    if (dbPersonalInfoData.role === 4) {
+        // graphqlRequest(UPDATE_INVESTIGATED_IS_IN_CLOSED_INSTITUTION)
+    } else {
+
+    }
+
     const saveInvestigatedPatientLogger = logger.setup({...baseLog, workflow: `${baseLog.workflow}: save investigated patient fields`});
     saveInvestigatedPatientLogger.info(launchingDBRequestLog(dbPersonalInfoData), Severity.LOW);
 
