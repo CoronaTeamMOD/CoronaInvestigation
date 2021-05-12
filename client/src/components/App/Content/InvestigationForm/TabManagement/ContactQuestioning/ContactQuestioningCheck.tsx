@@ -166,31 +166,33 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                 </Grid>
                 <Grid item>
                     <Grid container>
-                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.OCCUPATION}/>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.OCCUPATION} className={classes.fieldName}/>
                         <Grid item xs={5}>
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.OCCUPATION}]`}
                             defaultValue={interactedContact.occupation}
                             render={(props) => {
-                                return (<FormControl variant='outlined' fullWidth>
-                                    <Select
-                                        {...props}
-                                        placeholder={ContactQuestioningFieldsNames.OCCUPATION}
-                                        onChange={(event) => {
-                                            props.onChange(event.target.value)
-                                        }}>
-                                        {
-                                           occupations?.length > 0 && occupations.map((occupation) => (
-                                                <MenuItem className={classes.menuItem}
-                                                    key={occupation}
-                                                    value={occupation}>
-                                                    {occupation}
-                                                </MenuItem>
-                                            ))
-                                        }
-                                    </Select>
-                                </FormControl>)
+                                return (
+                                    <FormControl variant='outlined' fullWidth>
+                                        <Select
+                                            {...props}
+                                            placeholder={ContactQuestioningFieldsNames.OCCUPATION}
+                                            onChange={(event) => {
+                                                props.onChange(event.target.value)
+                                            }}>
+                                            {
+                                            occupations?.length > 0 && occupations.map((occupation) => (
+                                                    <MenuItem className={classes.menuItem}
+                                                        key={occupation}
+                                                        value={occupation}>
+                                                        {occupation}
+                                                    </MenuItem>
+                                                ))
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                )
                             }}
                             />
                         </Grid>
