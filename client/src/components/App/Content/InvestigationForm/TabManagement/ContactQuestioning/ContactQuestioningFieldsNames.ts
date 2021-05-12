@@ -15,7 +15,6 @@ enum ContactQuestioningFieldsNames {
     DOES_LIVE_WITH_CONFIRMED = 'חי/ה באותו הבית עם המאומת?',
     REPEATING_OCCURANCE_WITH_CONFIRMED = 'מפגש חוזר עם המאומת?',
     DOES_WORK_WITH_CROWD = 'עבודה עם קהל במסגרת העבודה?',
-    RELEVANT_OCCUPATION = 'האם עובד באחד מהבאים:',
     OCCUPATION = 'תעסוקה:',
 };
 

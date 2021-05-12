@@ -15,12 +15,12 @@ import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 
 const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => {
-    const {formErrors , contactStatus , control} = props;
+
+    const { formErrors, contactStatus, control, index, interactedContact } = props;
 
     const classes = useStyles();
 
     const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
-    const { index , interactedContact } = props;
 
     const { isFieldDisabled } = useContactFields(contactStatus);
 
