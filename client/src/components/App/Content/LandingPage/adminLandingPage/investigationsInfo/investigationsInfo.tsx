@@ -72,7 +72,7 @@ const InvestigationsInfo = (props: Props): JSX.Element => {
             <CardContent>
                 <Grid container>
                     <Grid item container xs={12} alignItems='flex-end' justify='space-around'>
-                        <Grid item container alignItems='stretch' justify='space-around' spacing={1} xs={12}>
+                        <Grid item container alignItems='stretch'  spacing={1} xs={12}>
                         {
                             investigationsGraphData.map((InvestigationData: InvestigationChart , index) => (
                                 <Grid item xs={3}>

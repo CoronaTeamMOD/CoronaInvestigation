@@ -7,10 +7,7 @@ import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 import InvestigationStatistics, { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 
 import useStyles from './adminLandingPageStyles';
-import UnusualCard from './UnusualCard/UnusualCard';
 import useAdminLandingPage from './useAdminLandingPage';
-import PostponedCard from './PostponedCard/PostponedCard';
-import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import LastUpdateMessage from './LastUpdateMessage/LastUpdateMessage';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
@@ -69,32 +66,6 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                 <Grid item xs={6} md={3}>
                     <TimeRangeFilterCard 
                         onUpdateButtonClicked={updateInvestigationFilterByTime}
-                    />
-                </Grid>
-                <Grid item xs={3} md={2}>
-                    <div>
-                        <UnallocatedCard
-                            isLoading={isLoading}
-                            onClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNALLOCATED)} 
-                            unallocatedInvestigationsCount={investigationsStatistics.unallocatedInvestigations}
-                        />
-                    </div>
-                    <div className={classes.gridContainer}>
-                        <PostponedCard
-                            isLoading={isLoading}
-                            onClick={(infoFilter, FilterRulesDescription) => redirectToInvestigationTable(infoFilter, FilterRulesDescription)} 
-                            transferRequestInvestigationsCount={investigationsStatistics.transferRequestInvestigations}
-                            waitingForDetailsInvestigationsCount={investigationsStatistics.waitingForDetailsInvestigations}
-                        />
-                    </div>
-                </Grid>
-                <Grid item xs={3} md={2}>
-                    <UnusualCard
-                        isLoading={isLoading}
-                        onUnusualCompletedNoContactInvestigationsClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT)} 
-                        onUnusualInProgressInvestigationsClick={(infoFilter) => redirectToInvestigationTable(infoFilter, FilterRulesDescription.UNUSUAL_IN_PROCESS)} 
-                        unusualInProgressInvestigationsCount={investigationsStatistics.unusualInProgressInvestigations}
-                        unusualCompletedNoContactInvestigationsCount={investigationsStatistics.unusualCompletedNoContactInvestigations}
                     />
                 </Grid>
             </Grid>

@@ -7,9 +7,6 @@ import mockSelectors from 'Utils/Testing/AdminLandingPage/mockSelectors';
 import { testCountyName } from 'Utils/Testing/AdminLandingPage/state/user';
 
 import AdminLandingPage from './adminLandingPage';
-import UnusualCard from './UnusualCard/UnusualCard';
-import PostponedCard from './PostponedCard/PostponedCard';
-import UnallocatedCard from './UnallocatedCard/UnallocatedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import LastUpdateMessage from './LastUpdateMessage/LastUpdateMessage';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
@@ -63,26 +60,5 @@ describe('<AdminLandingPage />', () => {
 
         expect(timeRangeFilterCard.exists()).toBeTruthy();
         expect(timeRangeFilterCard).toHaveLength(1);
-    });
-
-    it('shows Unallocated card' , () => {
-        const unallocatedCard = wrapper.find(UnallocatedCard);
-
-        expect(unallocatedCard.exists()).toBeTruthy();
-        expect(unallocatedCard).toHaveLength(1);
-    });
-
-    it('shows Postponed card', () => {
-        const postponedCard = wrapper.find(PostponedCard);
-
-        expect(postponedCard.exists()).toBeTruthy();
-        expect(postponedCard).toHaveLength(1);
-    });
-
-    it('shows UnusualCard', () => {
-        const unusualCard = wrapper.find(UnusualCard);
-
-        expect(unusualCard.exists()).toBeTruthy();
-        expect(unusualCard).toHaveLength(1);
     });
 });
