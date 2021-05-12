@@ -241,7 +241,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         if(!areThereDuplicateIds(data)) {
             parsedFormData && saveContactQuestioning(parsedFormData , data);
         } else {
-            alertError('ישנם תזים כפולים בטופס - לא ניתן לשמור');
+            alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
         }
     };
 
