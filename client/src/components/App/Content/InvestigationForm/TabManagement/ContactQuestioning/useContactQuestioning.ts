@@ -238,8 +238,26 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         e.preventDefault();
         const data = getValues();
         const parsedFormData = parseFormBeforeSending(data as FormInputs);
-        parsedFormData && saveContactQuestioning(parsedFormData , data);
+        if(!areThereDuplicateIds(data)) {
+            parsedFormData && saveContactQuestioning(parsedFormData , data);
+        } else {
+            alertError('ישנם תזים כפולים בטופס - לא ניתן לשמור');
+        }
     };
+
+    const areThereDuplicateIds = (data : FormInputs) => {
+        const ids = data.form
+            .filter(person => {
+                const { identificationNumber, identificationType } = person;
+                return identificationNumber && identificationType;
+            }).map(person => {
+                return `${person.identificationNumber}-${person.identificationType}`  
+        });
+
+        console.log(ids);
+        
+        return ids.length !== new Set(ids).size;
+    }
 
     const parseFormBeforeSending = (data: FormInputs) => {
         const { form } = data;
