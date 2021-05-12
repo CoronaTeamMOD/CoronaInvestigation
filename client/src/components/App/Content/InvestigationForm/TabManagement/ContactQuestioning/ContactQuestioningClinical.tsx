@@ -114,8 +114,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     };
 
     return (
-        <Grid item xs={3}>
-            <Grid container direction='column' spacing={4}>
+        <Grid item xs={4}>
+            <Grid container direction='column' spacing={2}>
                 <Grid container item direction='row' alignItems='center'>
                     <Avatar className={classes.avatar}>2</Avatar>
                     <Typography><b>פרטי מגע וכניסה לבידוד</b></Typography>
@@ -123,35 +123,36 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid item>
                     <Grid container>
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.FAMILY_RELATIONSHIP} className={classes.fieldName}/>
-                        <Grid item xs={7}>
+                        <Grid item xs={5}>
                             <Controller
                                 control={control}
                                 name={`form[${index}].${InteractedContactFields.FAMILY_RELATIONSHIP}`}
                                 defaultValue={interactedContact.familyRelationship}                                            
                                 render={(props) => {
-                                    return (<FormControl>
-                                        <Select
-                                            {...props}
-                                            disabled={isFieldDisabled || isFamilyContact}
-                                            test-id='familyRelationshipSelect'
-                                            placeholder='קרבה משפחתית'
-                                            className={classes.select}
-                                            onChange={(event) => {
-                                                props.onChange(event.target.value)
-                                            }}
-                                        >
-                                            {
-                                                familyRelationships?.length > 0 &&
-                                                [emptyFamilyRelationship].concat(familyRelationships).map((familyRelationship) => (
-                                                    <MenuItem className={classes.menuItem}
-                                                        key={familyRelationship.id}
-                                                        value={familyRelationship.id}>
-                                                        {familyRelationship.displayName}
-                                                    </MenuItem>
-                                                ))
-                                            }
-                                        </Select>
-                                    </FormControl>)
+                                    return (
+                                        <FormControl variant='outlined' fullWidth>
+                                            <Select
+                                                {...props}
+                                                disabled={isFieldDisabled || isFamilyContact}
+                                                test-id='familyRelationshipSelect'
+                                                placeholder='קרבה משפחתית'
+                                                onChange={(event) => {
+                                                    props.onChange(event.target.value)
+                                                }}
+                                            >
+                                                {
+                                                    familyRelationships?.length > 0 &&
+                                                    [emptyFamilyRelationship].concat(familyRelationships).map((familyRelationship) => (
+                                                        <MenuItem className={classes.menuItem}
+                                                            key={familyRelationship.id}
+                                                            value={familyRelationship.id}>
+                                                            {familyRelationship.displayName}
+                                                        </MenuItem>
+                                                    ))
+                                                }
+                                            </Select>
+                                        </FormControl>
+                                    )
                                 }}
                             />
                         </Grid>
@@ -254,7 +255,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid container item>
                     <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.ISOLATION_END_DATE} className={classes.fieldName}/>
-                    <Grid item xs={7}>
+                    <Grid item xs={5}>
                         <AlphanumericTextField
                             disabled
                             testId='isolationEndDate'
