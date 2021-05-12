@@ -51,10 +51,7 @@ const InvestigationsInfo = (props: Props): JSX.Element => {
             <CardContent>
                 <Grid container>
                     <Grid item container xs={12} alignItems='flex-end' justify='space-around'>
-                        <Grid item xs={3} className={classes.investigationsGraphContainer}>
-                            <InvestigationBarChart investigationsGraphData={investigationsGraphData} />
-                        </Grid>
-                        <Grid item container alignItems='flex-end' justify='space-around' spacing={1} xs={9}>
+                        <Grid item container alignItems='flex-end' justify='space-around' spacing={1} xs={12}>
                         {
                             investigationsGraphData.map((InvestigationData: InvestigationChart , index) => (
                                 <InvestigationInfoButton

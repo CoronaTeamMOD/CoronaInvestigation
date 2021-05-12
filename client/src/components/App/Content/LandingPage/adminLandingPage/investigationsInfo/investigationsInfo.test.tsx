@@ -65,13 +65,6 @@ describe('<InvestigationsInfo />', () => {
         });
     });
 
-    it('shows investigationBarChart' , () => {
-        const investigationBarChart = wrapper.find(InvestigationBarChart);
-
-        expect(investigationBarChart.exists()).toBeTruthy();
-        expect(investigationBarChart).toHaveLength(1);
-    })
-
     it('shows correct amount of investigations' , () => {
         const investigationsCount = wrapper.find('p#investigations-count');
 
