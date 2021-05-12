@@ -4,12 +4,12 @@ export interface InvesitgationInfoStatistics {
     unassignedInvestigations: number;
     inactiveInvestigations: number;
     unallocatedInvestigations: number;
+    transferRequestInvestigations: number;
 }
 interface InvesitgationStatistics extends InvesitgationInfoStatistics {
     allInvestigations: number;
     unusualInProgressInvestigations: number;
     unusualCompletedNoContactInvestigations: number;
-    transferRequestInvestigations: number;
     waitingForDetailsInvestigations: number;
 }
 

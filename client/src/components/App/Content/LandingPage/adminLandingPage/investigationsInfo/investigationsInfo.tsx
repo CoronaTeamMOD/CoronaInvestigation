@@ -11,9 +11,10 @@ import { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 import useHoverStyles from '../useHoverStyles';
 import LoadingCard from '../LoadingCard/LoadingCard';
 import useStyles, { cardHeight } from './investigationsInfoStyles';
-import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart';
+import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart'; // todo: remove and uninstall
 import InvestigationInfoButton from './investigationInfoButton/investigationInfoButton';
 
+// todo: seperate to another file
 export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit<InvestigationChart, 'value'> } = {
     newInvestigations: {
         id: FilterRulesDescription.NEW,
@@ -33,6 +34,10 @@ export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit
     },
     unallocatedInvestigations: {
         id: FilterRulesDescription.UNALLOCATED,
+        color: 'grey'
+    },
+    transferRequestInvestigations: {
+        id: FilterRulesDescription.TRANSFER_REQUEST,
         color: 'grey'
     }
 }
