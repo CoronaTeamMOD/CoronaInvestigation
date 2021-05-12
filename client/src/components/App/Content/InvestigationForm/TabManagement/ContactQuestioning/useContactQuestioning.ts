@@ -255,7 +255,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         });
 
         return ids.length !== new Set(ids).size;
-    }
+    };
 
     const parseFormBeforeSending = (data: FormInputs) => {
         const { form } = data;
