@@ -180,7 +180,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                             name={`form[${index}.${InteractedContactFields.OCCUPATION}]`}
                             defaultValue={interactedContact.occupation}
                             render={(props) => {
-                                return (<FormControl variant='outlined' className={classes.statusSelect}>
+                                return (<FormControl variant='outlined' className={classes.occupationSelect}>
                                     <Select
                                         {...props}
                                         placeholder={OCCUPATION_LABEL}
