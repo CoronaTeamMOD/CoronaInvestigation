@@ -11,6 +11,9 @@ const useStyles = makeStyles({
         maxHeight: '10vh',
         minHeight: '100px',
     },
+    investigationAmount: {
+        fontSize: '36px'
+    }
 });
 
 export default useStyles;
