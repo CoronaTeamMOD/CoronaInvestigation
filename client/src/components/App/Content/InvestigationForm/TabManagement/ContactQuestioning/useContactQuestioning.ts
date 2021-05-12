@@ -254,8 +254,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 return `${person.identificationNumber}-${person.identificationType}`  
         });
 
-        console.log(ids);
-        
         return ids.length !== new Set(ids).size;
     }
 
