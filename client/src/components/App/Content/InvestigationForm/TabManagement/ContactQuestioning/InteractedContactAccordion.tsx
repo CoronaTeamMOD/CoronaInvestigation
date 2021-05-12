@@ -88,7 +88,7 @@ const InteractedContactAccordion = (props: Props) => {
                         />
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Grid container justify='space-evenly'>
+                        <Grid container wrap='nowrap'>
                             <ContactQuestioningPersonal
                                 index={index}
                                 interactedContact={interactedContact}
