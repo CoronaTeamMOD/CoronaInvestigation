@@ -5,10 +5,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     form: {
         padding: '1vh 1.3vw 2.5vh 1.3vw',
     },
-    occupationSelect: {
-        width: '14vw',
-        height: '2vw'
-    },
     title: {
         paddingLeft: '2vw',
     },

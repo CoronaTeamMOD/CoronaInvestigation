@@ -180,7 +180,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                             name={`form[${index}.${InteractedContactFields.OCCUPATION}]`}
                             defaultValue={interactedContact.occupation}
                             render={(props) => {
-                                return (<FormControl variant='outlined' className={classes.occupationSelect}>
+                                return (<FormControl variant='outlined' fullWidth>
                                     <Select
                                         {...props}
                                         placeholder={OCCUPATION_LABEL}
@@ -188,7 +188,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                             props.onChange(event.target.value)
                                         }}>
                                         {
-                                            occupations.map((occupation) => (
+                                           occupations?.length > 0 && occupations.map((occupation) => (
                                                 <MenuItem className={classes.menuItem}
                                                     key={occupation}
                                                     value={occupation}>
