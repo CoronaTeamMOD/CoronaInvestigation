@@ -2,13 +2,12 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Controller, useFormContext } from 'react-hook-form';
 import {
-    Avatar,
-    FormControl,
-    FormControlLabel,
     Grid,
-    Radio,
-    RadioGroup,
+    Avatar,
+    Select,
+    MenuItem,
     Typography,
+    FormControl,
 } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
@@ -20,7 +19,7 @@ import InteractedContactFields from 'models/enums/InteractedContact';
 import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 
 import useStyles from './ContactQuestioningStyles';
-import { OCCUPATION_LABEL, RELEVANT_OCCUPATION_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
+import { OCCUPATION_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
 
 const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => {
     const {formErrors , contactStatus , control} = props;
@@ -174,42 +173,31 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <FieldName xs={7} fieldName={RELEVANT_OCCUPATION_LABEL}/>
-                        <Grid item xs={5}>
+                        <FieldName xs={5} fieldName={OCCUPATION_LABEL}/>
+                        <Grid item xs={7}>
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.OCCUPATION}]`}
                             defaultValue={interactedContact.occupation}
                             render={(props) => {
-                                return(
-                                    <FormControl>
-                                        <RadioGroup
-                                            {...props}
-                                            aria-label={OCCUPATION_LABEL}
-                                            >
-                                            {
-                                                occupations.map((occupation) => {
-                                                    return (
-                                                        <FormControlLabel
-                                                            value={occupation}
-                                                            key={occupation}
-                                                            control={
-                                                                <Radio
-                                                                    disabled={isFieldDisabled}
-                                                                    color='primary'
-                                                                    onChange={(event) => {
-                                                                        props.onChange(event.target.value);
-                                                                    }}
-                                                                />
-                                                            }
-                                                            label={occupation}
-                                                        />
-                                                    )
-                                                })
-                                            }
-                                        </RadioGroup>
-                                    </FormControl>
-                                )
+                                return (<FormControl variant='outlined' className={classes.statusSelect}>
+                                    <Select
+                                        {...props}
+                                        placeholder={OCCUPATION_LABEL}
+                                        onChange={(event) => {
+                                            props.onChange(event.target.value)
+                                        }}>
+                                        {
+                                            occupations.map((occupation) => (
+                                                <MenuItem className={classes.menuItem}
+                                                    key={occupation}
+                                                    value={occupation}>
+                                                    {occupation}
+                                                </MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                </FormControl>)
                             }}
                             />
                         </Grid>
