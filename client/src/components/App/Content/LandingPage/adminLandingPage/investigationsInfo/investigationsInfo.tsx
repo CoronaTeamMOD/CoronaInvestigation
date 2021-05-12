@@ -39,6 +39,18 @@ export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit
     transferRequestInvestigations: {
         id: FilterRulesDescription.TRANSFER_REQUEST,
         color: 'grey'
+    },
+    unusualInProgressInvestigations: {
+        id: FilterRulesDescription.UNUSUAL_IN_PROCESS,
+        color: 'grey'
+    },
+    unusualCompletedNoContactInvestigations: {
+        id: FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT,
+        color: 'grey'
+    },
+    waitingForDetailsInvestigations: {
+        id: FilterRulesDescription.WAITING_FOR_DETAILS,
+        color: 'grey'
     }
 }
 

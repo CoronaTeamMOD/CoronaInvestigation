@@ -6,7 +6,10 @@ const invesitgationInfoStatistics : InvesitgationInfoStatistics = {
     unassignedInvestigations: 3,
     inactiveInvestigations: 1,
     unallocatedInvestigations: 6,
-    transferRequestInvestigations: 7
+    transferRequestInvestigations: 7,
+    unusualInProgressInvestigations: 8,
+    unusualCompletedNoContactInvestigations: 9,
+    waitingForDetailsInvestigations: 10
 };
 
 export default invesitgationInfoStatistics;
