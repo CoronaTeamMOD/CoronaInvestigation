@@ -122,12 +122,12 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid item>
                     <Grid container>
-                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.FAMILY_RELATIONSHIP}/>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.FAMILY_RELATIONSHIP} className={classes.fieldName}/>
                         <Grid item xs={7}>
                             <Controller
                                 control={control}
                                 name={`form[${index}].${InteractedContactFields.FAMILY_RELATIONSHIP}`}
-                                defaultValue={interactedContact.familyRelationship}
+                                defaultValue={interactedContact.familyRelationship}                                            
                                 render={(props) => {
                                     return (<FormControl>
                                         <Select
@@ -135,6 +135,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                             disabled={isFieldDisabled || isFamilyContact}
                                             test-id='familyRelationshipSelect'
                                             placeholder='קרבה משפחתית'
+                                            className={classes.select}
                                             onChange={(event) => {
                                                 props.onChange(event.target.value)
                                             }}
@@ -157,7 +158,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     </Grid>
                 </Grid>
                 <Grid container item>
-                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.RELATIONSHIP}/>
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.RELATIONSHIP} className={classes.fieldName}/>
                     <Grid item xs={7}>
                         <Controller
                             control={control}
@@ -195,8 +196,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     </Grid>
                 </Grid>
                 <Grid item>
-                    <Grid container justify='space-between'>
-                        <FieldName xs={6} fieldName={ContactQuestioningFieldsNames.DOES_NEED_HELP_IN_ISOLATION}/>
+                    <Grid container>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_NEED_HELP_IN_ISOLATION} className={classes.fieldName}/>
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION}`}
@@ -222,8 +223,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     />
                 </Grid>
                 <Grid item>
-                    <Grid container justify='space-between'>
-                        <FieldName xs={6} fieldName={ContactQuestioningFieldsNames.DOES_NEED_ISOLATION}/>
+                    <Grid container>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_NEED_ISOLATION} className={classes.fieldName}/>
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.DOES_NEED_ISOLATION}`}
@@ -252,8 +253,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     />
                 </Grid>
                 <Grid container item>
-                    <FieldName xs={6} fieldName={ContactQuestioningFieldsNames.ISOLATION_END_DATE}/>
-                    <Grid item xs={6}>
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.ISOLATION_END_DATE} className={classes.fieldName}/>
+                    <Grid item xs={7}>
                         <AlphanumericTextField
                             disabled
                             testId='isolationEndDate'
