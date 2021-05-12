@@ -11,6 +11,8 @@ export interface NumericTextFieldProps<T> {
     placeholder?: string,
     label?: string,
     className?: string,
+    onKeyDown?: (e: any) => void,
+    fullWidth?: boolean  
 }
 
 type NumericTextFieldType = <T>(props: NumericTextFieldProps<T>) => JSX.Element;
