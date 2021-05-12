@@ -4,7 +4,8 @@ const invesitgationInfoStatistics : InvesitgationInfoStatistics = {
     inProcessInvestigations: 4,
     newInvestigations: 5,
     unassignedInvestigations: 3,
-    inactiveInvestigations: 1
+    inactiveInvestigations: 1,
+    unallocatedInvestigations: 6
 };
 
 export default invesitgationInfoStatistics;

@@ -30,6 +30,10 @@ export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit
     inactiveInvestigations: {
         id: FilterRulesDescription.INACTIVE,
         color: '#F95959'
+    },
+    unallocatedInvestigations: {
+        id: FilterRulesDescription.UNALLOCATED,
+        color: 'grey'
     }
 }
 
@@ -54,14 +58,16 @@ const InvestigationsInfo = (props: Props): JSX.Element => {
                         <Grid item container alignItems='stretch' justify='space-around' spacing={1} xs={12}>
                         {
                             investigationsGraphData.map((InvestigationData: InvestigationChart , index) => (
-                                <InvestigationInfoButton
-                                    id={`info-button-${index}`}
-                                    key={`investigationInfoButton-${index}`}
-                                    amountOfInvestigations={InvestigationData.value}
-                                    text={InvestigationData.id}
-                                    style={{ backgroundColor: InvestigationData.color }}
-                                    onClick={() => onInfoButtonClick(statusToFilterConvertor[InvestigationData.id], InvestigationData.id)}
-                                />
+                                <Grid item xs={3}>
+                                    <InvestigationInfoButton
+                                        id={`info-button-${index}`}
+                                        key={`investigationInfoButton-${index}`}
+                                        amountOfInvestigations={InvestigationData.value}
+                                        text={InvestigationData.id}
+                                        style={{ backgroundColor: InvestigationData.color }}
+                                        onClick={() => onInfoButtonClick(statusToFilterConvertor[InvestigationData.id], InvestigationData.id)}
+                                    />
+                                </Grid>
                             ))
                         }
                         </Grid>
