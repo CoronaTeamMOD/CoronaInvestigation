@@ -86,10 +86,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     fieldName: {
         alignSelf: 'center'
     },
-    select: {
-        width: '100%',
-        //not working
-    },
 }));
 
 export default useStyles;

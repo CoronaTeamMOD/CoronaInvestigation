@@ -1,5 +1,5 @@
 enum ContactQuestioningFieldsNames {
-    IDENTIFICATION_TYPE = 'סוג תעודה מזהה:',
+    IDENTIFICATION_TYPE = 'סוג מזהה:',
     IDENTIFICATION_NUMBER = 'מספר תעודה:',
     BIRTH_DATE = 'תאריך לידה:',
     AGE = 'גיל:',
