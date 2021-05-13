@@ -13,6 +13,7 @@ import LoadingCard from '../LoadingCard/LoadingCard';
 import useStyles, { cardHeight } from './investigationsInfoStyles';
 import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart'; // todo: remove and uninstall
 import InvestigationInfoButton from './investigationInfoButton/investigationInfoButton';
+import { checkedGroupsLimitIncludingNull } from '../../InvestigationTable/InvestigationTableFooter/GroupedInvestigations/useGroupedInvestigations';
 
 // todo: seperate to another file
 export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit<InvestigationChart, 'value'> } = {
@@ -22,28 +23,30 @@ export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit
     },
     inProcessInvestigations: {
         id: FilterRulesDescription.IN_PROCESS,
-        color: 'grey'
+        color: 'grey',
+        space: 2
     },
     unallocatedInvestigations: {
         id: FilterRulesDescription.UNALLOCATED,
-        color: 'grey'
+        color: '#F95959'
     },
     transferRequestInvestigations: {
         id: FilterRulesDescription.TRANSFER_REQUEST,
-        color: 'grey'
-    },
-    unusualInProgressInvestigations: {
-        id: FilterRulesDescription.UNUSUAL_IN_PROCESS,
-        color: 'grey'
-    },
-    unusualCompletedNoContactInvestigations: {
-        id: FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT,
-        color: 'grey'
+        color: '#F95959'
     },
     waitingForDetailsInvestigations: {
         id: FilterRulesDescription.WAITING_FOR_DETAILS,
-        color: 'grey'
-    }
+        color: '#F95959'
+    },
+    unusualInProgressInvestigations: {
+        id: FilterRulesDescription.UNUSUAL_IN_PROCESS,
+        color: '#F95959'
+    },
+    unusualCompletedNoContactInvestigations: {
+        id: FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT,
+        color: '#33A02C'
+    },
+
 }
 
 const InvestigationsInfo = (props: Props): JSX.Element => {
@@ -66,18 +69,29 @@ const InvestigationsInfo = (props: Props): JSX.Element => {
                     <Grid item container xs={12} alignItems='flex-end' justify='space-around'>
                         <Grid item container alignItems='stretch' spacing={3} xs={12}>
                         {
-                            investigationsGraphData.map((InvestigationData: InvestigationChart , index) => (
-                                <Grid item xs={3}>
-                                    <InvestigationInfoButton
-                                        id={`info-button-${index}`}
-                                        key={`investigationInfoButton-${index}`}
-                                        amountOfInvestigations={InvestigationData.value}
-                                        text={InvestigationData.id}
-                                        style={{ backgroundColor: InvestigationData.color }}
-                                        onClick={() => onInfoButtonClick(statusToFilterConvertor[InvestigationData.id], InvestigationData.id)}
-                                    />
-                                </Grid>
-                            ))
+                            investigationsGraphData.map((InvestigationData: InvestigationChart , index) => {
+                                return  (
+                                    <>
+                                    <Grid item xs={3}>
+                                        <InvestigationInfoButton
+                                            id={`info-button-${index}`}
+                                            key={`investigationInfoButton-${index}`}
+                                            amountOfInvestigations={InvestigationData.value}
+                                            text={InvestigationData.id}
+                                            style={{ backgroundColor: InvestigationData.color }}
+                                            onClick={() => onInfoButtonClick(statusToFilterConvertor[InvestigationData.id], InvestigationData.id)}
+                                        />
+                                    </Grid>
+                                    {InvestigationData.space &&  Array.from(Array(InvestigationData.space))
+                                        .map((_,i) => {
+                                            return (
+                                                <Grid key={`space-grid-${i}`} item xs={3} />
+                                            )
+                                        }
+                                    )}
+                                    </>
+                                )
+                            })
                         }
                         </Grid>
                     </Grid>
