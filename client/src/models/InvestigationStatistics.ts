@@ -1,8 +1,6 @@
 export interface InvesitgationInfoStatistics {
     inProcessInvestigations: number;
     newInvestigations: number;
-    unassignedInvestigations: number;
-    inactiveInvestigations: number;
     unallocatedInvestigations: number;
     transferRequestInvestigations: number;
     unusualInProgressInvestigations: number;

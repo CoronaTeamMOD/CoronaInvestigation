@@ -24,14 +24,6 @@ export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit
         id: FilterRulesDescription.IN_PROCESS,
         color: 'grey'
     },
-    unassignedInvestigations: {
-        id: FilterRulesDescription.UNASSIGNED,
-        color: '#33A02C'
-    },
-    inactiveInvestigations: {
-        id: FilterRulesDescription.INACTIVE,
-        color: '#F95959'
-    },
     unallocatedInvestigations: {
         id: FilterRulesDescription.UNALLOCATED,
         color: 'grey'

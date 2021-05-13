@@ -20,9 +20,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
     const [investigationsStatistics, setInvestigationsStatistics] = useState<InvestigationStatistics>({
         allInvestigations: 0,
         inProcessInvestigations: 0,
-        inactiveInvestigations: 0, 
         newInvestigations: 0,
-        unassignedInvestigations: 0,
         unallocatedInvestigations: 0,
         unusualInProgressInvestigations: 0,
         unusualCompletedNoContactInvestigations: 0,
