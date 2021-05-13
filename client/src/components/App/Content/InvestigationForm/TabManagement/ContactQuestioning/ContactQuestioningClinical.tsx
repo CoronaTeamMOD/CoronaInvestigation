@@ -81,7 +81,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     };
 
     const isIdAndPhoneNumValid = (): boolean => {
-        const isDoesNeedIsolationIsTheLastFormError = Object.keys(formErrors).length===1 && Object.keys(formErrors)[0]==='doesNeedIsolation'
+        const isDoesNeedIsolationIsTheLastFormError = formErrors && Object.keys(formErrors).length===1 && Object.keys(formErrors)[0]==='doesNeedIsolation'
         if (formErrors && !isDoesNeedIsolationIsTheLastFormError) {
             return Boolean(formErrors.id) || Boolean(formErrors.phoneNumber)
         }
