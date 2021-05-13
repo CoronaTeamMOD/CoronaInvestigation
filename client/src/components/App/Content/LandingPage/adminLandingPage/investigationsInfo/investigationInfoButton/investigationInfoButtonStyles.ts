@@ -6,8 +6,7 @@ const useStyles = makeStyles({
         borderRadius: '0.8vw',
         padding: '1vw 1vh',
         width: '100%',
-        maxHeight: '10vh',
-        minHeight: '100px',
+        minHeight: '125px',
     },
     investigationAmount: {
         fontSize: '36px'
