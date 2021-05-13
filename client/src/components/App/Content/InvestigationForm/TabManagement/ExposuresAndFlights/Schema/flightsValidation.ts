@@ -9,8 +9,8 @@ const endDateBeforeValidationDateText = 'תאריך לא יכול להיות י�
 const twoWeeksBeforeValidationDateText = 'תאריך לא יכול להיות יותר קטן משבועיים מתאריך תחילת מחלה';
 const EndDateBeforeStartDateText = 'זמן הנחיתה  צריך להיות לאחר זמן ההמראה';
 
-
 const flightValidation = (validationDate: Date): yup.Schema<any, object> => {
+    
     const twoWeeksBeforeValidationDate = subDays(new Date(validationDate), 14);
     const includeValidationDate = addDays(new Date(validationDate), 1);
 
@@ -38,7 +38,7 @@ const flightValidation = (validationDate: Date): yup.Schema<any, object> => {
                 : yup.date().required(requiredText)
                     .max(includeValidationDate, endDateBeforeValidationDateText)
                     .test('isDateValid', invalidDateText, (flightEndDate: any) => isValid(flightEndDate))
-                    .min((isValid(flightStartDate) ? flightStartDate : new Date(0)), EndDateBeforeStartDateText)
+                    .min((isValid(flightStartDate.setHours(0, 0, 0, 0)) ? flightStartDate : new Date(0)), EndDateBeforeStartDateText)
         }),
     });
 };
