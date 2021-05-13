@@ -214,7 +214,7 @@ const convertExposuresToDB = (request: Request) => {
 }
 
 const parseAirline = (airline : {id : number, displayName : string} | string | null) => {
-    if(typeof airline === 'object') {
+    if(typeof airline === 'object' && airline !== null) {
         return airline.displayName;
     } else if (typeof airline === 'string') {
         return airline
