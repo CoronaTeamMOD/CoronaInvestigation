@@ -5,7 +5,7 @@ import TypePreventiveTextFieldType from './TypingPreventionTextFieldTypes';
 
 const TypePreventiveTextField: TypePreventiveTextFieldType = (props) => {
     
-    const {  error, testId, name, onChange,  validationSchema,  label,...textFieldProps } = props;
+    const { error, testId, name, onChange, validationSchema, label, disabled, ...textFieldProps } = props;
 
     const value = props.value ?? '';
     
@@ -28,12 +28,11 @@ const TypePreventiveTextField: TypePreventiveTextFieldType = (props) => {
                 onChange={conditionalyTriggerOnChange}
                 error={Boolean(error)}
                 label={error || label}
+                disabled={disabled}
                 {...textFieldProps}
             />
         )
-
-    } , [value , name , error])
-    
+    } , [value, name, error, disabled])
     return (
         getTextField
     );

@@ -178,6 +178,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         <Select
                                             {...props}
                                             placeholder={ContactQuestioningFieldsNames.OCCUPATION}
+                                            disabled={isFieldDisabled}
                                             onChange={(event) => {
                                                 props.onChange(event.target.value)
                                             }}>
