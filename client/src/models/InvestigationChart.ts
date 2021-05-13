@@ -5,6 +5,7 @@ interface InvestigationChart {
     value: number;
     color: string;
     space?: number;
+    secondary?: string;
 };
 
 export default InvestigationChart;

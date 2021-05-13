@@ -21,19 +21,23 @@ export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit
     },
     unallocatedInvestigations: {
         id: FilterRulesDescription.UNALLOCATED,
-        color: DANGER
+        color: DANGER,
+        secondary: SECONDARY
     },
     transferRequestInvestigations: {
         id: FilterRulesDescription.TRANSFER_REQUEST,
-        color: DANGER
+        color: DANGER,
+        secondary: SECONDARY
     },
     waitingForDetailsInvestigations: {
         id: FilterRulesDescription.WAITING_FOR_DETAILS,
-        color: DANGER
+        color: DANGER,
+        secondary: SECONDARY
     },
     unusualInProgressInvestigations: {
         id: FilterRulesDescription.UNUSUAL_IN_PROCESS,
-        color: DANGER
+        color: DANGER,
+        secondary: SECONDARY
     },
     unusualCompletedNoContactInvestigations: {
         id: FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT,

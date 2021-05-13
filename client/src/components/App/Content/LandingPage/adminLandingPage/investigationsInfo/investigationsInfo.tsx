@@ -11,11 +11,13 @@ import { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 import useHoverStyles from '../useHoverStyles';
 import LoadingCard from '../LoadingCard/LoadingCard';
 import { convertorsToGraph } from './convertorsToGraph';
+import UseInvestigationInfo from './useInvestigationsInfo';
 import useStyles, { cardHeight } from './investigationsInfoStyles';
 import InvestigationInfoButton from './investigationInfoButton/investigationInfoButton';
 
 
 const InvestigationsInfo = (props: Props): JSX.Element => {
+    const { getCardBackgroundColor } = UseInvestigationInfo();
     const classes = useStyles();
     const hoverClasses = useHoverStyles();
 
@@ -36,6 +38,7 @@ const InvestigationsInfo = (props: Props): JSX.Element => {
                         <Grid item container alignItems='stretch' spacing={3} xs={12}>
                         {
                             investigationsGraphData.map((InvestigationData: InvestigationChart , index) => {
+                                const backgroundColor = getCardBackgroundColor(InvestigationData);
                                 return  (
                                     <>
                                     <Grid item xs={3}>
@@ -44,7 +47,7 @@ const InvestigationsInfo = (props: Props): JSX.Element => {
                                             key={`investigationInfoButton-${index}`}
                                             amountOfInvestigations={InvestigationData.value}
                                             text={InvestigationData.id}
-                                            style={{ backgroundColor: InvestigationData.color }}
+                                            style={{ backgroundColor }}
                                             onClick={() => onInfoButtonClick(statusToFilterConvertor[InvestigationData.id], InvestigationData.id)}
                                         />
                                     </Grid>
