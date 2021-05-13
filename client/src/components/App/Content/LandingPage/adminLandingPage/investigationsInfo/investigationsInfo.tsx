@@ -41,23 +41,23 @@ const InvestigationsInfo = (props: Props): JSX.Element => {
                                 const backgroundColor = getCardBackgroundColor(InvestigationData);
                                 return  (
                                     <>
-                                    <Grid item xs={3}>
-                                        <InvestigationInfoButton
-                                            id={`info-button-${index}`}
-                                            key={`investigationInfoButton-${index}`}
-                                            amountOfInvestigations={InvestigationData.value}
-                                            text={InvestigationData.id}
-                                            style={{ backgroundColor }}
-                                            onClick={() => onInfoButtonClick(statusToFilterConvertor[InvestigationData.id], InvestigationData.id)}
-                                        />
-                                    </Grid>
-                                    {InvestigationData.space &&  Array.from(Array(InvestigationData.space))
-                                        .map((_,i) => {
-                                            return (
-                                                <Grid key={`space-grid-${i}`} item xs={3} />
-                                            )
-                                        }
-                                    )}
+                                        <Grid item xs={3}>
+                                            <InvestigationInfoButton
+                                                id={`info-button-${index}`}
+                                                key={`investigationInfoButton-${index}`}
+                                                amountOfInvestigations={InvestigationData.value}
+                                                text={InvestigationData.id}
+                                                style={{ backgroundColor }}
+                                                onClick={() => onInfoButtonClick(statusToFilterConvertor[InvestigationData.id], InvestigationData.id)}
+                                            />
+                                        </Grid>
+                                        {InvestigationData.space &&  Array.from(Array(InvestigationData.space))
+                                            .map((_,i) => {
+                                                return (
+                                                    <Grid key={`space-grid-${i}`} item xs={3} />
+                                                )
+                                            }
+                                        )}
                                     </>
                                 )
                             })

@@ -1,8 +1,6 @@
-
 import InvestigationChart from 'models/InvestigationChart';
 import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 import { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
-
 
 const PRIMARY = '#1F78B4';
 const SECONDARY = 'grey';

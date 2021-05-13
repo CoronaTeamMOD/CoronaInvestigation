@@ -6,9 +6,9 @@ export interface InvesitgationInfoStatistics {
     unusualInProgressInvestigations: number;
     unusualCompletedNoContactInvestigations: number;
     waitingForDetailsInvestigations: number;
-}
+};
 interface InvesitgationStatistics extends InvesitgationInfoStatistics {
     allInvestigations: number;
-}
+};
 
 export default InvesitgationStatistics;
