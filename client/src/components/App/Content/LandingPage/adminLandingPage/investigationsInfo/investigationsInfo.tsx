@@ -11,9 +11,7 @@ import { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 import useHoverStyles from '../useHoverStyles';
 import LoadingCard from '../LoadingCard/LoadingCard';
 import useStyles, { cardHeight } from './investigationsInfoStyles';
-import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart'; // todo: remove and uninstall
 import InvestigationInfoButton from './investigationInfoButton/investigationInfoButton';
-import { checkedGroupsLimitIncludingNull } from '../../InvestigationTable/InvestigationTableFooter/GroupedInvestigations/useGroupedInvestigations';
 
 // todo: seperate to another file
 export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit<InvestigationChart, 'value'> } = {
