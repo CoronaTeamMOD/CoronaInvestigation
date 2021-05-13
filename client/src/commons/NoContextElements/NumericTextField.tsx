@@ -11,16 +11,16 @@ const stringAlphabet = yup.string().matches(NUMERIC_TEXT_REGEX, numericErrorMess
 
 const NumericTextField: NumericTextFieldType = (props) => {
 
-  const { value, error } = props;
+    const { value, error, ...other } = props;
 
-  return (
-    <TypePreventiveTextField
-      {...props}
-      error={error ?? ''}
-      value={value || ''}
-      validationSchema={stringAlphabet}
-    />
-  );
+    return (
+        <TypePreventiveTextField
+            error={error ?? ''}
+            value={value || ''}
+            validationSchema={stringAlphabet}
+            {...other}
+        />
+    );
 };
 
 export default NumericTextField;

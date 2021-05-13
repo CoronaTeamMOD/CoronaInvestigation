@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Search } from '@material-ui/icons';
 import { Grid, IconButton, TextField, Typography } from '@material-ui/core';
 
+import NumericTextField from 'commons/NoContextElements/NumericTextField';
 import PersonalDetailsQueryParams from 'models/ExposureForm/PersonalDetailsQueryParams';
 
 import useStyles from './searchStyles';
@@ -50,11 +51,12 @@ const SearchByPersonalDetails = (props: Props) => {
                 </Typography>
             </Grid>
             <Grid item xs={3}>
-                <TextField
+                <NumericTextField
                     fullWidth
+                    name={phoneNumberLabel}
                     value={phoneNumberQuery}
-                    onChange={(e) => {
-                        setPhoneNumberQuery(e.target.value ?? '')
+                    onChange={(newValue) => {
+                        setPhoneNumberQuery(newValue ?? '')
                     }}
                     label={phoneNumberLabel}
                     onKeyDown={handleKeyDown}
