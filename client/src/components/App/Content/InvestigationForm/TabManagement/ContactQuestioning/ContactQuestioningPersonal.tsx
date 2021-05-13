@@ -21,8 +21,7 @@ import IdentificationTextField from 'commons/NoContextElements/IdentificationTex
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 import useStyles from './ContactQuestioningStyles';
-
-const PHONE_LABEL = 'טלפון';
+import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
 
@@ -76,56 +75,59 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
 
     return (
         <Grid item xs={4}>
-            <Grid container direction='column' spacing={4}>
+            <Grid container direction='column' spacing={2}>
                 <Grid container item direction='row' alignItems='center'>
                     <Avatar className={classes.avatar}>1</Avatar>
                     <Typography>
                         <b>פרטים אישיים נוספים</b>
                     </Typography>
                 </Grid>
-                <Grid item container alignItems='center'>
-                    <FieldName fieldName='סוג תעודה מזהה:' />
+                <Grid item container alignItems='center' spacing={1}>
+                    <FieldName fieldName={ContactQuestioningFieldsNames.IDENTIFICATION_TYPE} className={classes.fieldName}/>
                     <Grid item xs={3}> 
-                        <FormControl fullWidth error={currentFormErrors ? !!(currentFormErrors[InteractedContactFields.IDENTIFICATION_TYPE]) : false}>
                             <Controller
                                 control={control}
                                 name={`form[${index}].${InteractedContactFields.IDENTIFICATION_TYPE}`}
                                 defaultValue={formValues.identificationType?.id}
                                 render={(props) => (
-                                    <Select
-                                        {...props}
-                                        disabled={shouldIdDisable}
-                                        className={classes.smallSizeText}
-                                        onChange={(event) => {
-                                            props.onChange(event.target.value)
-                                        }}
-                                        MenuProps={{
-                                            anchorOrigin: {
-                                                vertical: 'bottom',
-                                                horizontal: 'left'
-                                            },
-                                            transformOrigin: {
-                                                vertical: 'top',
-                                                horizontal: 'left'
-                                            },
-                                            getContentAnchorEl: null
-                                            }}
+                                    <FormControl 
+                                        fullWidth 
+                                        error={currentFormErrors ? !!(currentFormErrors[InteractedContactFields.IDENTIFICATION_TYPE]) : false}  
+                                        variant='outlined'
                                     >
-                                        {Object.values(identificationTypes).map((identificationType: IdentificationType) => (
-                                            <MenuItem
-                                                className={classes.smallSizeText}
-                                                key={identificationType.id}
-                                                value={identificationType.id}>
-                                                {identificationType.type}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
+                                        <Select
+                                            {...props}
+                                            disabled={shouldIdDisable}
+                                            onChange={(event) => {
+                                                props.onChange(event.target.value)
+                                            }}
+                                            MenuProps={{
+                                                anchorOrigin: {
+                                                    vertical: 'bottom',
+                                                    horizontal: 'left'
+                                                },
+                                                transformOrigin: {
+                                                    vertical: 'top',
+                                                    horizontal: 'left'
+                                                },
+                                                getContentAnchorEl: null
+                                                }}
+                                        >
+                                            {Object.values(identificationTypes).map((identificationType: IdentificationType) => (
+                                                <MenuItem
+                                                    className={classes.smallSizeText}
+                                                    key={identificationType.id}
+                                                    value={identificationType.id}>
+                                                    {identificationType.type}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
                                 )}
                             />
                             {currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_TYPE] && <FormHelperText>{requiredText}</FormHelperText>}
-                        </FormControl>
                     </Grid>
-                    <FieldName fieldName='מספר תעודה:' className={classes.fieldNameWithIcon}/>
+                    <FieldName fieldName={ContactQuestioningFieldsNames.IDENTIFICATION_NUMBER} className={classes.fieldName}/>
                     <Grid item xs={3}>
                         <Controller
                             control={control}
@@ -133,7 +135,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                             defaultValue={
                                 interactedContact.identificationNumber
                             }
-                            max={9}
                             render={(props) => {
                                 return (
                                     <IdentificationTextField
@@ -145,7 +146,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             props.onChange(newValue);
                                         }}
                                         placeholder='מספר תעודה'
-                                        className={classes.idTextField}
                                         isId={isId}
                                     />
                                 );
@@ -154,7 +154,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     </Grid>
                 </Grid>
                 <Grid container item alignItems='center'>
-                    <FieldName xs={5} fieldName='תאריך לידה:' />
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.BIRTH_DATE} className={classes.fieldName}/>
                     <Controller
                         control={control}
                         name={`form[${index}].${InteractedContactFields.BIRTH_DATE}`}
@@ -169,7 +169,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                     maxDate={new Date()}
                                     maxDateMessage='תאריך לידה לא יכול להיות יותר מאוחר מהיום'
                                     useBigCalender={false}
-                                    labelText={dateError ? invalidDateText : 'תאריך לידה'}
+                                    labelText={dateError ? invalidDateText : undefined}
                                     error={Boolean(dateError)}
                                     onChange={(newDate: Date) => {
                                         props.onChange(newDate);
@@ -181,7 +181,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     />
                 </Grid>
                 <Grid container item>
-                    <FieldName xs={5} fieldName='גיל:' />
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.AGE} className={classes.fieldName}/>
                     <AlphanumericTextField
                         disabled={true}
                         name='age'
@@ -192,7 +192,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     />
                 </Grid>
                 <Grid container item>
-                    <FieldName xs={5} fieldName={PHONE_LABEL} />
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.PHONE} className={classes.fieldName}/>
                     <Controller
                         control={control}
                         name={`form[${index}].${InteractedContactFields.PHONE_NUMBER}`}

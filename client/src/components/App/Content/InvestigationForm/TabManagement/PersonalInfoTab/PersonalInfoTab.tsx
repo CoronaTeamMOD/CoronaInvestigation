@@ -3,8 +3,7 @@ import { Autocomplete } from '@material-ui/lab';
 import React, { useMemo, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers';
 import { useForm, FormProvider, Controller } from 'react-hook-form';
-import { Grid, FormControl, TextField, 
-        InputLabel, Select, MenuItem, Collapse, Button } from '@material-ui/core';
+import { Grid, FormControl, TextField, Collapse, Button } from '@material-ui/core';
 
 import City from 'models/City';
 import dateToAge from 'Utils/DateUtils/dateToAge';
@@ -32,9 +31,8 @@ import InstitutionComponent from './InstitutionComponent/InstitutionComponent';
 
 const under16AllowedOccupations = ['מערכת החינוך', 'אחר'];
 
-export const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
-export const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
-export const OCCUPATION_LABEL = 'תעסוקה:';
+const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
+const OCCUPATION_LABEL = 'תעסוקה:';
 const PHONE_LABEL = 'טלפון:';
 const INSURANCE_LABEL = 'מבטח:';
 const ADDRESS_LABEL = 'כתובת:';

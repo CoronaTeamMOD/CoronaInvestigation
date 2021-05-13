@@ -35,8 +35,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     textField: {
         width: '9.5vw',
     },
-    idTextField: {
-    },
     addressTextField: {
         width: '14vw',
         paddingBottom: '1vh',
@@ -82,7 +80,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     contactDetail: {
         direction: 'ltr',
-    }
+    },
+    fieldName: {
+        alignSelf: 'center'
+    },
 }));
 
 export default useStyles;

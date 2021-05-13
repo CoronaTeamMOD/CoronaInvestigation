@@ -1,14 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Controller, useFormContext } from 'react-hook-form';
-import {
-    Grid,
-    Avatar,
-    Select,
-    MenuItem,
-    Typography,
-    FormControl,
-} from '@material-ui/core';
+import { Controller } from 'react-hook-form';
+import { Avatar, FormControl, Select, Grid, MenuItem, Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
@@ -19,28 +12,28 @@ import InteractedContactFields from 'models/enums/InteractedContact';
 import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 
 import useStyles from './ContactQuestioningStyles';
-import { OCCUPATION_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
+import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 
 const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => {
-    const {formErrors , contactStatus , control} = props;
+
+    const { formErrors, contactStatus, control, index, interactedContact } = props;
 
     const classes = useStyles();
 
     const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
-    const { index , interactedContact } = props;
 
     const { isFieldDisabled } = useContactFields(contactStatus);
 
     return (
         <Grid item xs={4}>
-            <Grid container direction='column' spacing={4}>
+            <Grid container direction='column' spacing={2}>
                 <Grid container item direction='row' alignItems='center'>
                     <Avatar className={classes.avatar}>3</Avatar>
                     <Typography><b>תשאול לצורך הפנייה לבדיקה</b></Typography>
                 </Grid>
                 <Grid item>
-                    <Grid container justify='space-between'>
-                        <FieldName xs={5} fieldName='חש/ה בטוב?'/>
+                    <Grid container>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_FEEL_GOOD} className={classes.fieldName}/>
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.DOES_FEEL_GOOD}]`}
@@ -66,8 +59,8 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     />
                 </Grid>
                 <Grid item>
-                    <Grid container justify='space-between'>
-                        <FieldName xs={5} fieldName='סובל/ת ממחלות רקע?'/>
+                    <Grid container>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_HAVE_BACKGROUND_DISEASES} className={classes.fieldName}/>
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES}]`}
@@ -93,8 +86,8 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     />
                 </Grid>
                 <Grid item>
-                    <Grid container justify='space-between'>
-                        <FieldName xs={5} fieldName='חי/ה באותו הבית עם המאומת?'/>
+                    <Grid container>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_LIVE_WITH_CONFIRMED} className={classes.fieldName}/>
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.DOES_LIVE_WITH_CONFIRMED}]`}
@@ -119,8 +112,8 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     />
                 </Grid>
                 <Grid item>
-                    <Grid container justify='space-between'>
-                        <FieldName xs={5} fieldName='מפגש חוזר עם המאומת?'/>
+                    <Grid container>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.REPEATING_OCCURANCE_WITH_CONFIRMED} className={classes.fieldName}/>
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED}]`}
@@ -145,8 +138,8 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     />
                 </Grid>
                 <Grid item>
-                    <Grid container justify='space-between'>
-                        <FieldName xs={5} fieldName='עבודה עם קהל במסגרת העבודה?'/>
+                    <Grid container>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_WORK_WITH_CROWD} className={classes.fieldName}/>
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.DOES_WORK_WITH_CROWD}]`}
@@ -172,32 +165,34 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     />
                 </Grid>
                 <Grid item>
-                    <Grid container justify='space-between'>
-                        <FieldName xs={5} fieldName={OCCUPATION_LABEL}/>
-                        <Grid item xs={7}>
+                    <Grid container>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.OCCUPATION} className={classes.fieldName}/>
+                        <Grid item xs={5}>
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.OCCUPATION}]`}
                             defaultValue={interactedContact.occupation}
                             render={(props) => {
-                                return (<FormControl variant='outlined' fullWidth>
-                                    <Select
-                                        {...props}
-                                        placeholder={OCCUPATION_LABEL}
-                                        onChange={(event) => {
-                                            props.onChange(event.target.value)
-                                        }}>
-                                        {
-                                           occupations?.length > 0 && occupations.map((occupation) => (
-                                                <MenuItem className={classes.menuItem}
-                                                    key={occupation}
-                                                    value={occupation}>
-                                                    {occupation}
-                                                </MenuItem>
-                                            ))
-                                        }
-                                    </Select>
-                                </FormControl>)
+                                return (
+                                    <FormControl variant='outlined' fullWidth>
+                                        <Select
+                                            {...props}
+                                            placeholder={ContactQuestioningFieldsNames.OCCUPATION}
+                                            onChange={(event) => {
+                                                props.onChange(event.target.value)
+                                            }}>
+                                            {
+                                            occupations?.length > 0 && occupations.map((occupation) => (
+                                                    <MenuItem className={classes.menuItem}
+                                                        key={occupation}
+                                                        value={occupation}>
+                                                        {occupation}
+                                                    </MenuItem>
+                                                ))
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                )
                             }}
                             />
                         </Grid>

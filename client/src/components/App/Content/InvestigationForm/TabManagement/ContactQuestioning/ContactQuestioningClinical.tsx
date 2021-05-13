@@ -12,13 +12,14 @@ import FamilyRelationship from 'models/FamilyRelationship';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import InteractedContactFields from 'models/enums/InteractedContact';
+import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 import HebrewTextField from 'commons/NoContextElements/HebrewTextField';
 import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextField';
 import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFields';
 import AddressForm, { AddressFormFields } from 'commons/NoContextElements/AddressForm';
-import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 
 import useStyles from './ContactQuestioningStyles';
+import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 
 const emptyFamilyRelationship: FamilyRelationship = {
     id: null as any,
@@ -26,14 +27,17 @@ const emptyFamilyRelationship: FamilyRelationship = {
 };
 
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
+
     const { index, familyRelationships, interactedContact, isFamilyContact, 
             control, watch, formValues, formErrors } = props;
 
     const classes = useStyles();
 
     const { shouldDisableContact } = useStatusUtils();
-    const shouldDisableIdByReopen = interactedContact.creationTime ?
-        shouldDisableContact(interactedContact.creationTime) : false;
+
+    const shouldDisableIdByReopen = interactedContact.creationTime 
+        ? shouldDisableContact(interactedContact.creationTime) 
+        : false;
 
     const { alertError, alertWarning } = useCustomSwal();
 
@@ -65,8 +69,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
             name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`,
             defaultValue: interactedContact.isolationAddress?.apartment
         }
-    }
-
+    };
 
     const formatContactToValidate = () => {
         return {
@@ -75,7 +78,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
             lastName: interactedContact.lastName,
             contactType: interactedContact.contactType,
         }
-    }
+    };
 
     const isIdAndPhoneNumValid = (): boolean => {
         const isDoesNeedIsolationIsTheLastFormError = Object.keys(formErrors).length===1 && Object.keys(formErrors)[0]==='doesNeedIsolation'
@@ -111,50 +114,52 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     };
 
     return (
-        <Grid item xs={3}>
-            <Grid container direction='column' spacing={4}>
+        <Grid item xs={4}>
+            <Grid container direction='column' spacing={2}>
                 <Grid container item direction='row' alignItems='center'>
                     <Avatar className={classes.avatar}>2</Avatar>
                     <Typography><b>פרטי מגע וכניסה לבידוד</b></Typography>
                 </Grid>
                 <Grid item>
                     <Grid container>
-                        <FieldName xs={5} fieldName='קרבה משפחתית:' />
-                        <Grid item xs={7}>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.FAMILY_RELATIONSHIP} className={classes.fieldName}/>
+                        <Grid item xs={5}>
                             <Controller
                                 control={control}
                                 name={`form[${index}].${InteractedContactFields.FAMILY_RELATIONSHIP}`}
-                                defaultValue={interactedContact.familyRelationship}
+                                defaultValue={interactedContact.familyRelationship}                                            
                                 render={(props) => {
-                                    return (<FormControl>
-                                        <Select
-                                            {...props}
-                                            disabled={isFieldDisabled || isFamilyContact}
-                                            test-id='familyRelationshipSelect'
-                                            placeholder='קרבה משפחתית'
-                                            onChange={(event) => {
-                                                props.onChange(event.target.value)
-                                            }}
-                                        >
-                                            {
-                                                familyRelationships?.length > 0 &&
-                                                [emptyFamilyRelationship].concat(familyRelationships).map((familyRelationship) => (
-                                                    <MenuItem className={classes.menuItem}
-                                                        key={familyRelationship.id}
-                                                        value={familyRelationship.id}>
-                                                        {familyRelationship.displayName}
-                                                    </MenuItem>
-                                                ))
-                                            }
-                                        </Select>
-                                    </FormControl>)
+                                    return (
+                                        <FormControl variant='outlined' fullWidth>
+                                            <Select
+                                                {...props}
+                                                disabled={isFieldDisabled || isFamilyContact}
+                                                test-id='familyRelationshipSelect'
+                                                placeholder='קרבה משפחתית'
+                                                onChange={(event) => {
+                                                    props.onChange(event.target.value)
+                                                }}
+                                            >
+                                                {
+                                                    familyRelationships?.length > 0 &&
+                                                    [emptyFamilyRelationship].concat(familyRelationships).map((familyRelationship) => (
+                                                        <MenuItem className={classes.menuItem}
+                                                            key={familyRelationship.id}
+                                                            value={familyRelationship.id}>
+                                                            {familyRelationship.displayName}
+                                                        </MenuItem>
+                                                    ))
+                                                }
+                                            </Select>
+                                        </FormControl>
+                                    )
                                 }}
                             />
                         </Grid>
                     </Grid>
                 </Grid>
                 <Grid container item>
-                    <FieldName xs={5} fieldName='קשר:' />
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.RELATIONSHIP} className={classes.fieldName}/>
                     <Grid item xs={7}>
                         <Controller
                             control={control}
@@ -178,7 +183,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid container item>
                     <Grid container item>
-                        <FieldName xs={5} fieldName='מיקום השהייה בבידוד:' />
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.ISOLATION_PLACE}/>
                         <Grid container item xs={7}>
                             <AddressForm
                                 unsized={true}
@@ -192,8 +197,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     </Grid>
                 </Grid>
                 <Grid item>
-                    <Grid container justify='space-between'>
-                        <FieldName xs={6} fieldName='נדרש סיוע עבור מקום בידוד?' />
+                    <Grid container>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_NEED_HELP_IN_ISOLATION} className={classes.fieldName}/>
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION}`}
@@ -219,8 +224,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     />
                 </Grid>
                 <Grid item>
-                    <Grid container justify='space-between'>
-                        <FieldName xs={6} fieldName='הקמת דיווח בידוד' />
+                    <Grid container>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_NEED_ISOLATION} className={classes.fieldName}/>
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.DOES_NEED_ISOLATION}`}
@@ -249,8 +254,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     />
                 </Grid>
                 <Grid container item>
-                    <FieldName xs={6} fieldName='תאריך סיום בידוד:' />
-                    <Grid item xs={6}>
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.ISOLATION_END_DATE} className={classes.fieldName}/>
+                    <Grid item xs={5}>
                         <AlphanumericTextField
                             disabled
                             testId='isolationEndDate'

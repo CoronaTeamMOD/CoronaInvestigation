@@ -17,14 +17,13 @@ import InteractedContactAccordion from './InteractedContactAccordion';
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 
 const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
-    const [allContactedInteractions, setAllContactedInteractions] = useState<
-        GroupedInteractedContact[]
-    >([]);
-    const [familyRelationships, setFamilyRelationships] = useState<
-        FamilyRelationship[]
-    >([]);
+
+    const [allContactedInteractions, setAllContactedInteractions] = useState<GroupedInteractedContact[]>([]);
+    const [familyRelationships, setFamilyRelationships] = useState<FamilyRelationship[]>([]);
     const [contactStatuses, setContactStatuses] = useState<ContactStatus[]>([]);
+
     const classes = useStyles();
+
     const { shouldDisable } = useContactFields();
     const { isInvolvedThroughFamily } = useInvolvedContact();
 
@@ -104,6 +103,6 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
 interface Props {
     id: number;
-}
+};
 
 export default ContactQuestioning;

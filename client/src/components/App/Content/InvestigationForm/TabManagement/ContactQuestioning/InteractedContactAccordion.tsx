@@ -1,13 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ExpandMore } from '@material-ui/icons';
 import { useFormContext } from 'react-hook-form';
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    AccordionActions,
-    Divider,
-    Grid,
+import { 
+    Accordion, AccordionDetails, AccordionSummary, 
+    AccordionActions, Divider, Grid 
 } from '@material-ui/core';
 
 import ContactStatus from 'models/ContactStatus';
@@ -20,27 +16,22 @@ import useStyles from './ContactQuestioningStyles';
 import { FormInputs } from './ContactQuestioningInterfaces';
 import ContactQuestioningInfo from './ContactQuestioningInfo';
 import ContactQuestioningCheck from './ContactQuestioningCheck';
+import InteractedContactFields from 'models/enums/InteractedContact';
 import ContactQuestioningPersonal from './ContactQuestioningPersonal';
 import ContactQuestioningClinical from './ContactQuestioningClinical';
-import InteractedContactFields from 'models/enums/InteractedContact';
 
 const InteractedContactAccordion = (props: Props) => {
+
     const {errors, watch, ...methods} = useFormContext<FormInputs>();
 
     const classes = useStyles();
 
     const {
-        interactedContact,
-        index,
-        contactStatuses,
-        saveContact,
-        parsePerson,
-        isFamilyContact,
-        familyRelationships,
-        shouldDisable,
+        interactedContact, index, contactStatuses, saveContact, parsePerson,
+        isFamilyContact, familyRelationships, shouldDisable
     } = props;
 
-    const watchCurrentStatus: number = watch(`form[${index}].${InteractedContactFields.CONTACT_STATUS}`)
+    const watchCurrentStatus: number = watch(`form[${index}].${InteractedContactFields.CONTACT_STATUS}`);
 
     const formErrors = errors?.form && errors?.form[index];
 
@@ -58,8 +49,8 @@ const InteractedContactAccordion = (props: Props) => {
         if(formHasErrors) {
             classesList.push(classes.errorAccordion);
         }
-        return classesList.join(" ");
-    }
+        return classesList.join(' ');
+    };
 
     const formValues = methods.getValues().form
         ? methods.getValues().form[index]
@@ -88,7 +79,7 @@ const InteractedContactAccordion = (props: Props) => {
                         />
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Grid container justify='space-evenly'>
+                        <Grid container wrap='nowrap'>
                             <ContactQuestioningPersonal
                                 index={index}
                                 interactedContact={interactedContact}
