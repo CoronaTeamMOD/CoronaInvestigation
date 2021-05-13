@@ -1,4 +1,4 @@
-import {makeStyles} from '@material-ui/styles';
+import { makeStyles } from '@material-ui/styles';
 
 import theme from 'styles/theme';
 
@@ -52,6 +52,7 @@ const useStyles = makeStyles({
         paddingLeft: '0 !important'
     },
     filterSelect: {
+        marginTop: '20px',
         '& .MuiSelect-root': {
             padding: '12px 32px 12px 12px'
         }
