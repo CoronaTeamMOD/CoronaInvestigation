@@ -10,42 +10,10 @@ import { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 
 import useHoverStyles from '../useHoverStyles';
 import LoadingCard from '../LoadingCard/LoadingCard';
+import { convertorsToGraph } from './convertorsToGraph';
 import useStyles, { cardHeight } from './investigationsInfoStyles';
 import InvestigationInfoButton from './investigationInfoButton/investigationInfoButton';
 
-// todo: seperate to another file
-export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit<InvestigationChart, 'value'> } = {
-    newInvestigations: {
-        id: FilterRulesDescription.NEW,
-        color: '#1F78B4'
-    },
-    inProcessInvestigations: {
-        id: FilterRulesDescription.IN_PROCESS,
-        color: 'grey',
-        space: 2
-    },
-    unallocatedInvestigations: {
-        id: FilterRulesDescription.UNALLOCATED,
-        color: '#F95959'
-    },
-    transferRequestInvestigations: {
-        id: FilterRulesDescription.TRANSFER_REQUEST,
-        color: '#F95959'
-    },
-    waitingForDetailsInvestigations: {
-        id: FilterRulesDescription.WAITING_FOR_DETAILS,
-        color: '#F95959'
-    },
-    unusualInProgressInvestigations: {
-        id: FilterRulesDescription.UNUSUAL_IN_PROCESS,
-        color: '#F95959'
-    },
-    unusualCompletedNoContactInvestigations: {
-        id: FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT,
-        color: '#33A02C'
-    },
-
-}
 
 const InvestigationsInfo = (props: Props): JSX.Element => {
     const classes = useStyles();
