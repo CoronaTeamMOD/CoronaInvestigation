@@ -8,7 +8,8 @@ import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import TypePreventiveTextFieldType from './TypingPreventionTextFieldTypes';
 
 const TypePreventiveTextField: TypePreventiveTextFieldType = (props) => {
-    const {  testId, name, onChange,  validationSchema,  label,...textFieldProps } = props;
+
+    const { testId, name, onChange, validationSchema, label, disabled, ...textFieldProps } = props;
     const { errors, setError, clearErrors } = useFormContext(); 
 
     const value = !props.value ? '' : props.value;
@@ -39,12 +40,11 @@ const TypePreventiveTextField: TypePreventiveTextFieldType = (props) => {
                 onChange={conditionalyTriggerOnChange}
                 error={errorObject ? true : false}
                 label={errorObject ? errorObject.message : label}
+                disabled={disabled}
                 {...textFieldProps}
             />
         )
-
-    } , [value , name , errorObject])
-    
+    } , [value, name, errorObject, disabled]);
     return (
         getTextField
     );
