@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { addDays, format } from 'date-fns';
 import { Controller, DeepMap, FieldError } from 'react-hook-form';
 import { Avatar, FormControl, Grid, MenuItem, Select, Typography } from '@material-ui/core';
@@ -29,7 +29,7 @@ const emptyFamilyRelationship: FamilyRelationship = {
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
 
     const { index, familyRelationships, interactedContact, isFamilyContact, 
-            control, watch, formValues, formErrors } = props;
+            control, watch, formValues, formErrors, trigger, contactStatus } = props;
 
     const classes = useStyles();
 
@@ -71,6 +71,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         }
     };
 
+    const isUnreachable = formValues.contactStatus === 6
+    const isUncooperative = formValues.contactStatus === 7
+
     const formatContactToValidate = () => {
         return {
             ...formValues,
@@ -81,12 +84,21 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     };
 
     const isIdAndPhoneNumValid = (): boolean => {
-        const isDoesNeedIsolationIsTheLastFormError = Object.keys(formErrors).length===1 && Object.keys(formErrors)[0]==='doesNeedIsolation'
+        const isDoesNeedIsolationIsTheLastFormError = formErrors && Object.keys(formErrors).length===1 && Object.keys(formErrors)[0]==='doesNeedIsolation'
         if (formErrors && !isDoesNeedIsolationIsTheLastFormError) {
             return Boolean(formErrors.id) || Boolean(formErrors.phoneNumber)
         }
         return true;
     };
+
+    const statusFieldName = `form[${index}].${InteractedContactFields.CONTACT_STATUS}`;
+    const watchStatus = watch(statusFieldName);
+
+    useEffect(() => {
+        if (watchStatus || contactStatus){
+            trigger();
+        }
+    }, [watchStatus, contactStatus]);
 
     const handleIsolation = (value: boolean, onChange: (...event: any[]) => void) => {
         const contactWithIsolationRequirement = { ...formatContactToValidate(), doesNeedIsolation: value };
@@ -112,6 +124,16 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 onChange(false)
         }
     };
+
+    const handelOnChangeDoesNeedIsolation = (event:any, booleanValue: boolean, onChange: (...event: any[]) => void) => {
+        if (booleanValue === false || isUnreachable || isUncooperative) {
+            onChange(booleanValue)
+        }
+        
+        if (booleanValue === true && !isUncooperative && !isUnreachable) {
+            handleIsolation(booleanValue, onChange)
+        }
+    }
 
     return (
         <Grid item xs={4}>
@@ -236,14 +258,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                         {...props}
                                         disabled={isFieldDisabled || (shouldDisableIdByReopen && interactedContact.doesNeedIsolation === true)}
                                         test-id='doesNeedIsolation'
-                                        onChange={(event, booleanValue) => {
-                                            if (booleanValue === false) {
-                                                props.onChange(booleanValue)
-                                            }
-                                            if (booleanValue === true) {
-                                                handleIsolation(booleanValue, props.onChange)
-                                            }
-                                        }}
+                                        onChange={(event, booleanValue) => handelOnChangeDoesNeedIsolation(event, booleanValue, props.onChange)}
                                     />
                                 )
                             }}
@@ -282,4 +297,6 @@ interface Props {
     watch: any
     formValues: InteractedContact;
     formErrors?: DeepMap<InteractedContact, FieldError> | any;
+    trigger: () => {};
+    contactStatus: number;
 };
