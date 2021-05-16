@@ -14,7 +14,6 @@ const IdentificationTextField = (props : Props) => {
     return (
         <TypePreventiveTextField
             {...props}
-            disabled={props.disabled}
             value={props.value || ''}
             validationSchema={schema}
         />

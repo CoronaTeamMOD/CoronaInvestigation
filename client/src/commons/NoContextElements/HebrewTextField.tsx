@@ -16,7 +16,6 @@ const HebrewTextField: HebrewTextFieldType = (props) => {
   return (
     <TypePreventiveTextField
         {...props}
-        disabled={props.disabled}
         error={props.error ?? ''}
         value={props.value || ''}
         validationSchema={stringHebrew}
