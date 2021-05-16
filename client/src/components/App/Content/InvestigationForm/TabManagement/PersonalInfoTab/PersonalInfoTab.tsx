@@ -31,7 +31,6 @@ import InstitutionComponent from './InstitutionComponent/InstitutionComponent';
 
 const under16AllowedOccupations = ['מערכת החינוך', 'אחר'];
 
-const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
 const OCCUPATION_LABEL = 'תעסוקה:';
 const PHONE_LABEL = 'טלפון:';
 const INSURANCE_LABEL = 'מבטח:';

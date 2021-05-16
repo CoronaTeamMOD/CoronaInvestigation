@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
+import { Grid, TextField } from '@material-ui/core';
 import { useFormContext, Controller } from 'react-hook-form';
-import { Grid, TextField, GridSize } from '@material-ui/core';
 
 import City from 'models/City';
 import Street from 'models/Street';
@@ -43,10 +43,9 @@ const AddressForm: React.FC<Props> = ({
         }
     }, [cityWatcher]);
 
-    const houseNumberFieldNameSplitted = houseNumberField?.name.split('.');
     const floorFieldNameSplitted = floorField?.name.split('.');
     const apartmentFieldNameSplitted = apartmentField?.name.split('.');
-    const smallFieldsClass = unsized ? [classes.fullHeight , classes.heightendTextField].join(" ") : classes.fullHeight;
+    const smallFieldsClass = unsized ? [classes.fullHeight , classes.heightendTextField].join(' ') : classes.fullHeight;
 
     return (
         <Grid item xs={unsized ? 12 : 8} container alignItems='stretch' spacing={2}>
@@ -79,12 +78,13 @@ const AddressForm: React.FC<Props> = ({
                                 getOptionLabel={(option) => option ? option.value?.displayName : option}
                                 value={props.value ? {id: props.value as string, value: cities.get(props.value) as City} : {id: '', value: {id: '', displayName: ''}}}
                                 onChange={(event, selectedCity) => props.onChange(selectedCity ? selectedCity.id : null)}
-                                renderInput={(params) => <TextField
-                                    error={Boolean(get(methods.errors, cityField.name))}
+                                renderInput={(params) => 
+                                    <TextField
+                                        error={Boolean(get(methods.errors, cityField.name))}
                                         test-id={cityField.testId || ''}
                                         label={get(methods.errors, cityField.name)?.message || `${CITY_LABEL}`}
-                                        {...params}
                                         placeholder={CITY_LABEL}
+                                        {...params}
                                     />}
                             />
                         )}
@@ -276,7 +276,7 @@ interface FormField {
     className?: string;
     testId?: string;
     defaultValue?: any;
-}
+};
 
 interface Props {
     disabled?: boolean;
@@ -286,7 +286,7 @@ interface Props {
     houseNumberField: FormField;
     floorField?: FormField;
     apartmentField?: FormField;
-}
+};
 
 export type AddressFormFields = Pick<Props, 'cityField' | 'streetField' | 'houseNumberField'> & Partial<Pick<Props, 'floorField' | 'apartmentField'>>;
 

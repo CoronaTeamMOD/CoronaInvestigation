@@ -8,4 +8,4 @@ export const setAddress = (address: FlattenedDBAddress): void => {
         type: actionTypes.SET_ADDRESS,
         payload: {address}
     })
-}
+};
