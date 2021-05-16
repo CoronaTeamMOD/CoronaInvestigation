@@ -114,6 +114,8 @@ const InteractedContactAccordion = (props: Props) => {
                                 control={methods.control}
                                 formValues={formValues}
                                 formErrors={formErrors}
+                                trigger={methods.trigger}
+                                contactStatus={watchCurrentStatus}
                             />
                             <Divider
                                 orientation='vertical'
