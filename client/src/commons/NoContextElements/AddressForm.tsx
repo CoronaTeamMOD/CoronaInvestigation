@@ -8,16 +8,13 @@ import City from 'models/City';
 import Street from 'models/Street';
 import FlattenedDBAddress from 'models/DBAddress';
 import StoreStateType from 'redux/storeStateType';
-import InteractedContact from 'models/InteractedContact';
 import { getStreetByCity } from 'Utils/Address/AddressUtils';
-import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 import useStyles from './AddressFormStyles';
 import AlphanumericTextField from './AlphanumericTextField';
 
 const CITY_LABEL = 'עיר';
 const STREET_LABEL = 'רחוב';
-const FLOOR_LABEL = 'קומה';
 const APARTMENT_LABEL = 'דירה';
 const HOUSE_NUM_LABEL = 'מספר בית';
 const UNKNOWN = 'לא ידוע';
@@ -50,8 +47,6 @@ const AddressForm: React.FC<Props> = ({
         }
     }, [cityWatcher]);
 
-    const houseNumberFieldNameSplitted = houseNumberField?.name.split('.');
-    const floorFieldNameSplitted = floorField?.name.split('.');
     const apartmentFieldNameSplitted = apartmentField?.name.split('.');
     const smallFieldsClass = unsized ? [classes.fullHeight , classes.heightendTextField].join(" ") : classes.fullHeight;
 

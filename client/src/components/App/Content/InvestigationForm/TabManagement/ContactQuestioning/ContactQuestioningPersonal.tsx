@@ -82,18 +82,19 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                         <b>פרטים אישיים נוספים</b>
                     </Typography>
                 </Grid>
-                <Grid item container alignItems='center' spacing={1}>
-                    <FieldName fieldName={ContactQuestioningFieldsNames.IDENTIFICATION_TYPE} className={classes.fieldName}/>
-                    <Grid item xs={3}> 
+                <Grid item>
+                    <Grid container>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.IDENTIFICATION_TYPE} className={classes.fieldName}/>
+                        <Grid item xs={5}>
                             <Controller
                                 control={control}
                                 name={`form[${index}].${InteractedContactFields.IDENTIFICATION_TYPE}`}
                                 defaultValue={formValues.identificationType?.id}
                                 render={(props) => (
                                     <FormControl 
-                                        fullWidth 
                                         error={currentFormErrors ? !!(currentFormErrors[InteractedContactFields.IDENTIFICATION_TYPE]) : false}  
                                         variant='outlined'
+                                        fullWidth
                                     >
                                         <Select
                                             {...props}
@@ -126,9 +127,11 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                 )}
                             />
                             {currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_TYPE] && <FormHelperText>{requiredText}</FormHelperText>}
+                        </Grid>
                     </Grid>
-                    <FieldName fieldName={ContactQuestioningFieldsNames.IDENTIFICATION_NUMBER} className={classes.fieldName}/>
-                    <Grid item xs={3}>
+                </Grid>
+                <Grid container item>
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.IDENTIFICATION_NUMBER} className={classes.fieldName}/>
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.IDENTIFICATION_NUMBER}`}
@@ -151,7 +154,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                 );
                             }}
                         />
-                    </Grid>
                 </Grid>
                 <Grid container item alignItems='center'>
                     <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.BIRTH_DATE} className={classes.fieldName}/>
