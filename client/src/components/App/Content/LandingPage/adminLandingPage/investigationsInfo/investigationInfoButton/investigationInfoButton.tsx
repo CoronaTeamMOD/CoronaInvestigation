@@ -19,7 +19,7 @@ const InvestigationInfoButton: React.FC<Props> = (props: Props): JSX.Element => 
                 size='large'
             >
                 <div>
-                    <Typography><b>{amountOfInvestigations}</b></Typography>
+                    <Typography className={classes.investigationAmount}><b>{amountOfInvestigations}</b></Typography>
                     <Typography aria-labelledby='button-name'><b>{text}</b></Typography>
                 </div>
             </Button>

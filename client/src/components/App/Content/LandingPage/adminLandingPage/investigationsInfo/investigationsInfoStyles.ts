@@ -5,7 +5,6 @@ export const cardHeight = '35vh';
 
 const useStyles = makeStyles({
     filtersCard: {
-        height: cardHeight,
         borderRadius: '1vw',
         display: 'flex',
         flexDirection: 'column',
@@ -30,10 +29,6 @@ const useStyles = makeStyles({
     navigateIcon: {
         backgroundColor: 'WhiteSmoke',
         borderRadius: '2vw',
-    },
-    investigationsGraphContainer: {
-        height: '14vh', 
-        width: '11vw' 
     }
 });
 

@@ -21,15 +21,6 @@ const statusToFilterConvertor = {
     [FilterRulesDescription.WAITING_FOR_DETAILS]: {
         subStatusFilter: [InvestigationSubStatusCodes.WAITING_FOR_DETAILS]
     },
-    [FilterRulesDescription.UNASSIGNED]: {
-        statusFilter: [InvestigationMainStatusCodes.NEW,InvestigationMainStatusCodes.IN_PROCESS],
-        unassignedUserFilter: true
-    },
-    [FilterRulesDescription.INACTIVE]: {
-        statusFilter: [InvestigationMainStatusCodes.NEW,InvestigationMainStatusCodes.IN_PROCESS],
-        inactiveUserFilter: true,
-        unassignedUserFilter: false
-    },
     [FilterRulesDescription.UNUSUAL_IN_PROCESS]: {
         statusFilter: [InvestigationMainStatusCodes.IN_PROCESS],
         updateDateFilter: new Date(Date.now() - FOUR_HOURS_IN_MS).toUTCString(),

@@ -10,30 +10,14 @@ import { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 
 import useHoverStyles from '../useHoverStyles';
 import LoadingCard from '../LoadingCard/LoadingCard';
+import { convertorsToGraph } from './convertorsToGraph';
+import UseInvestigationInfo from './useInvestigationsInfo';
 import useStyles, { cardHeight } from './investigationsInfoStyles';
-import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart';
 import InvestigationInfoButton from './investigationInfoButton/investigationInfoButton';
 
-export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit<InvestigationChart, 'value'> } = {
-    newInvestigations: {
-        id: FilterRulesDescription.NEW,
-        color: '#1F78B4'
-    },
-    inProcessInvestigations: {
-        id: FilterRulesDescription.IN_PROCESS,
-        color: 'grey'
-    },
-    unassignedInvestigations: {
-        id: FilterRulesDescription.UNASSIGNED,
-        color: '#33A02C'
-    },
-    inactiveInvestigations: {
-        id: FilterRulesDescription.INACTIVE,
-        color: '#F95959'
-    }
-}
 
 const InvestigationsInfo = (props: Props): JSX.Element => {
+    const { getCardBackgroundColor } = UseInvestigationInfo();
     const classes = useStyles();
     const hoverClasses = useHoverStyles();
 
@@ -51,21 +35,32 @@ const InvestigationsInfo = (props: Props): JSX.Element => {
             <CardContent>
                 <Grid container>
                     <Grid item container xs={12} alignItems='flex-end' justify='space-around'>
-                        <Grid item xs={3} className={classes.investigationsGraphContainer}>
-                            <InvestigationBarChart investigationsGraphData={investigationsGraphData} />
-                        </Grid>
-                        <Grid item container alignItems='flex-end' justify='space-around' spacing={1} xs={9}>
+                        <Grid item container alignItems='stretch' spacing={3} xs={12}>
                         {
-                            investigationsGraphData.map((InvestigationData: InvestigationChart , index) => (
-                                <InvestigationInfoButton
-                                    id={`info-button-${index}`}
-                                    key={`investigationInfoButton-${index}`}
-                                    amountOfInvestigations={InvestigationData.value}
-                                    text={InvestigationData.id}
-                                    style={{ backgroundColor: InvestigationData.color }}
-                                    onClick={() => onInfoButtonClick(statusToFilterConvertor[InvestigationData.id], InvestigationData.id)}
-                                />
-                            ))
+                            investigationsGraphData.map((InvestigationData: InvestigationChart , index) => {
+                                const backgroundColor = getCardBackgroundColor(InvestigationData);
+                                return  (
+                                    <>
+                                        <Grid item xs={3}>
+                                            <InvestigationInfoButton
+                                                id={`info-button-${index}`}
+                                                key={`investigationInfoButton-${index}`}
+                                                amountOfInvestigations={InvestigationData.value}
+                                                text={InvestigationData.id}
+                                                style={{ backgroundColor }}
+                                                onClick={() => onInfoButtonClick(statusToFilterConvertor[InvestigationData.id], InvestigationData.id)}
+                                            />
+                                        </Grid>
+                                        {InvestigationData.space &&  Array.from(Array(InvestigationData.space))
+                                            .map((_,i) => {
+                                                return (
+                                                    <Grid key={`space-grid-${i}`} item xs={3} />
+                                                )
+                                            }
+                                        )}
+                                    </>
+                                )
+                            })
                         }
                         </Grid>
                     </Grid>

@@ -5,9 +5,9 @@ import { act } from 'react-dom/test-utils';
 import statusToFilterConvertor from 'commons/statusToFilterConvertor';
 import invesitgationInfoStatistics from 'Utils/Testing/AdminLandingPage/investigationInfoStatistics';
 
-import InvestigationsInfo , { convertorsToGraph } from './investigationsInfo';
-import InvestigationBarChart from './InvestigationBarChart/InvestigationBarChart';
-
+import InvestigationsInfo from './investigationsInfo';
+import { convertorsToGraph } from './convertorsToGraph';
+ 
 const onInfoButtonClick = jest.fn();
 const allInvestigationsCount = 3;
 const investigationsInfoProps = {
@@ -64,13 +64,6 @@ describe('<InvestigationsInfo />', () => {
             });
         });
     });
-
-    it('shows investigationBarChart' , () => {
-        const investigationBarChart = wrapper.find(InvestigationBarChart);
-
-        expect(investigationBarChart.exists()).toBeTruthy();
-        expect(investigationBarChart).toHaveLength(1);
-    })
 
     it('shows correct amount of investigations' , () => {
         const investigationsCount = wrapper.find('p#investigations-count');
