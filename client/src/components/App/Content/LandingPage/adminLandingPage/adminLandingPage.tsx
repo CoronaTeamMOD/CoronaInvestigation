@@ -45,6 +45,9 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                     <Typography color='textPrimary' id='county-name'>
                         <b>{'נפת ' + countyDisplayName}</b>
                     </Typography>
+                    <Typography variant='h6' id='desks-card-headline'>
+                        <b>הדסקים בהם הינך צופה</b>
+                    </Typography>
                 </Grid>
                 <Grid item xs={6} md={9}>
                     <LastUpdateMessage lastUpdated={lastUpdated} fetchInvestigationStatistics={fetchInvestigationStatistics}/>

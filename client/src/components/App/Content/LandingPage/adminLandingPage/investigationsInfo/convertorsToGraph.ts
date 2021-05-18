@@ -10,12 +10,16 @@ const SUCCESS = '#33A02C';
 export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit<InvestigationChart, 'value'> } = {
     newInvestigations: {
         id: FilterRulesDescription.NEW,
-        color: PRIMARY
+        color: SECONDARY
     },
     inProcessInvestigations: {
         id: FilterRulesDescription.IN_PROCESS,
         color: SECONDARY,
-        space: 2
+    },
+    unusualCompletedNoContactInvestigations: {
+        id: FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT,
+        color: SUCCESS,
+        space: 1
     },
     unallocatedInvestigations: {
         id: FilterRulesDescription.UNALLOCATED,
@@ -36,9 +40,5 @@ export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit
         id: FilterRulesDescription.UNUSUAL_IN_PROCESS,
         color: DANGER,
         secondary: SECONDARY
-    },
-    unusualCompletedNoContactInvestigations: {
-        id: FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT,
-        color: SUCCESS
     },
 };
