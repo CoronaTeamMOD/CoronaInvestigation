@@ -6,10 +6,9 @@ const initialState: FlattenedDBAddress = { city: '', apartment: '', houseNum: ''
 
 const addressReducer = (state = initialState, action: Actions.AddressAction): FlattenedDBAddress => {
     switch (action.type) {
-        case Actions.SET_ADDRESS: return action.payload.address
-
+        case Actions.SET_ADDRESS: return action.payload.address;
         default: return state;
-    }
-}
+    };
+};
 
 export default addressReducer;

@@ -2,7 +2,6 @@ import axios from 'axios';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import theme from 'styles/theme';
 import logger from 'logger/logger';
 import {Severity} from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
@@ -131,8 +130,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     fetchClinicalDetailsLogger.info('got results back from the server', Severity.LOW);
                     const patientClinicalDetails = result.data;
                     let patientAddress = patientClinicalDetails.isolationAddress;
-                    if (tabsValidations[id] === null && !patientAddress?.cityByCity && !patientAddress?.streetByStreet &&
-                        !patientAddress?.floor && !patientAddress?.houseNum) {
+                    if (!patientAddress?.cityByCity && !patientAddress?.streetByStreet && !patientAddress?.houseNum&& !patientAddress?.apartment) {
                         patientAddress = address;
                     }
                     else {

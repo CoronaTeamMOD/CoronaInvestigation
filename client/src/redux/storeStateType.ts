@@ -1,6 +1,5 @@
 import Desk from 'models/Desk';
 import City from 'models/City';
-import Airline from 'models/Airline';
 import Country from 'models/Country';
 import District from 'models/District';
 import Authority from 'models/Authority';
@@ -8,8 +7,6 @@ import ContactType from 'models/ContactType';
 import CountyReducer from 'models/CountyReducer';
 import FlattenedDBAddress from 'models/DBAddress';
 import EducationGrade from 'models/EducationGrade';
-import GreenPassAnswer from 'models/GreenPassAnswer';
-import GreenPassQuestion from 'models/GreenPassQuestion';
 import InvestigationRedux from 'models/InvestigationRedux';
 import IdentificationType from 'models/IdentificationType';
 import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
