@@ -145,7 +145,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             props.onChange(newValue);
                                         }}
                                         placeholder='מספר תעודה'
-                                        className={classes.idTextField}
                                         isId={isId}
                                     />
                                 );

@@ -12,16 +12,20 @@ export const contactQuestioningPersonal = {
         .when(
             [InteractedContactFields.CONTACT_STATUS, InteractedContactFields.DOES_NEED_ISOLATION, InteractedContactFields.IDENTIFICATION_TYPE],
             (contactStatus: number, needIsolation: boolean, identificationType: number, schema: any, { originalValue }: { originalValue: string }) => {
-                return (contactStatus === ContactStatusCodes.COMPLETED ||  !needIsolation) &&  identificationType == null
+                return (contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
+                ? yup.string().nullable()
+                : (contactStatus === ContactStatusCodes.COMPLETED ||  !needIsolation) &&  identificationType == null
                     ? yup.string().nullable()
                     : ContactIdValidationSchema();
             }
         ),
     [InteractedContactFields.IDENTIFICATION_TYPE]: yup.number().when(
-        [InteractedContactFields.IDENTIFICATION_NUMBER], (identificationNumber: string | null) => {
-            return identificationNumber == null
-            ? yup.number().nullable() 
-            : yup.number().required(requiredText).nullable()
+        [InteractedContactFields.CONTACT_STATUS, InteractedContactFields.IDENTIFICATION_NUMBER], (contactStatus: number, identificationNumber: string | null) => {
+            return (contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
+            ? yup.number().nullable()
+            : identificationNumber == null
+                ? yup.number().nullable() 
+                : yup.number().required(requiredText).nullable()
         }
     ),
     [InteractedContactFields.BIRTH_DATE]: yup.date().max(new Date()).nullable(),
@@ -30,7 +34,9 @@ export const contactQuestioningPersonal = {
         .when(
             [InteractedContactFields.CONTACT_STATUS, InteractedContactFields.DOES_NEED_ISOLATION],
             (contactStatus: number, needIsolation: boolean, schema: any, { originalValue }: { originalValue: string }) => {
-                return contactStatus === ContactStatusCodes.COMPLETED || (originalValue === '' && !needIsolation)
+                return (contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
+                ? yup.string().nullable()
+                : contactStatus === ContactStatusCodes.COMPLETED || (originalValue === '' && !needIsolation)
                     ? yup.string().nullable()
                     : yup.string().nullable().matches(PHONE_NUMBER_REGEX, invalidPhoneText);
             }
