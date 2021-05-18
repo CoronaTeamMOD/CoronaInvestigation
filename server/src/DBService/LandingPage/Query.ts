@@ -174,6 +174,15 @@ query allInvestigationStatuses {
 }
 `;
 
+export const GET_ALL_ADMIN_INVESTIGATIONS = gql`
+mutation adminInvestigations ( $county: Int!, $desks: [Int], $orderBy: String! ) {
+  adminInvestigations(input: {countyInput: $county, desksInput: $desk, orderBy: $orderBy}) {
+    json
+  }
+}
+`;
+
+
 export const GET_ALL_INVESTIGATION_SUB_STATUS = gql`
 query allInvestigationSubStatuses {
   allInvestigationSubStatuses(orderBy: DISPLAY_NAME_ASC) {
