@@ -140,10 +140,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                 interactedContact.identificationNumber
                             }
                             render={(props) => { return (
-                                <FormControl 
-                                    variant='outlined'
-                                    fullWidth
-                                >
+                                <FormControl variant='outlined' fullWidth>
                                     <IdentificationTextField
                                         {...props}
                                         error={(currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_NUMBER]?.message ) || ''}
@@ -171,10 +168,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                             render={(props) => {
                                 const dateError = currentFormErrors && currentFormErrors[InteractedContactFields.BIRTH_DATE]?.message;
                                 return (
-                                    <FormControl 
-                                        variant='outlined'
-                                        fullWidth
-                                    >
+                                    <FormControl variant='outlined' fullWidth>
                                         <DatePick
                                             {...props}
                                             disabled={isFieldDisabled}
@@ -199,10 +193,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid container item>
                     <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.AGE} className={classes.fieldName}/>
                     <Grid item xs={5}>
-                        <FormControl 
-                            variant='outlined'
-                            fullWidth
-                        >
+                        <FormControl variant='outlined' fullWidth>
                             <AlphanumericTextField
                                 disabled={true}
                                 name='age'
@@ -223,10 +214,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                             name={`form[${index}].${InteractedContactFields.PHONE_NUMBER}`}
                             defaultValue={interactedContact.phoneNumber}
                             render={(props) => { return (
-                                <FormControl 
-                                    variant='outlined'
-                                    fullWidth
-                                >
+                                <FormControl variant='outlined' fullWidth>
                                     <NumericTextField
                                         {...props}
                                         error={currentFormErrors && currentFormErrors[InteractedContactFields.PHONE_NUMBER]?.message}
@@ -274,10 +262,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                             name={`form[${index}].${InteractedContactFields.EXTRA_INFO}`}
                             defaultValue={interactedContact.extraInfo}
                             render={(props) => { return (
-                                <FormControl 
-                                    variant='outlined'
-                                    fullWidth
-                                >
+                                <FormControl variant='outlined' fullWidth>
                                     <AlphanumericTextField
                                         {...props}
                                         disabled={isFieldDisabled}

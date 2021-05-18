@@ -63,10 +63,12 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         },
         houseNumberField: {
             name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`,
+            className: classes.addressTextField,
             defaultValue: interactedContact.isolationAddress?.houseNum,
         },
         apartmentField: {
             name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`,
+            className: classes.addressTextField,
             defaultValue: interactedContact.isolationAddress?.apartment
         }
     };
@@ -120,53 +122,53 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <Avatar className={classes.avatar}>2</Avatar>
                     <Typography><b>פרטי מגע וכניסה לבידוד</b></Typography>
                 </Grid>
-                <Grid item>
-                    <Grid container>
-                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.FAMILY_RELATIONSHIP} className={classes.fieldName}/>
-                        <Grid item xs={5}>
-                            <Controller
-                                control={control}
-                                name={`form[${index}].${InteractedContactFields.FAMILY_RELATIONSHIP}`}
-                                defaultValue={interactedContact.familyRelationship}                                            
-                                render={(props) => {
-                                    return (
-                                        <FormControl variant='outlined' fullWidth>
-                                            <Select
-                                                {...props}
-                                                disabled={isFieldDisabled || isFamilyContact}
-                                                test-id='familyRelationshipSelect'
-                                                placeholder='קרבה משפחתית'
-                                                onChange={(event) => {
-                                                    props.onChange(event.target.value)
-                                                }}
-                                            >
-                                                {
-                                                    familyRelationships?.length > 0 &&
-                                                    [emptyFamilyRelationship].concat(familyRelationships).map((familyRelationship) => (
-                                                        <MenuItem className={classes.menuItem}
-                                                            key={familyRelationship.id}
-                                                            value={familyRelationship.id}>
-                                                            {familyRelationship.displayName}
-                                                        </MenuItem>
-                                                    ))
-                                                }
-                                            </Select>
-                                        </FormControl>
-                                    )
-                                }}
-                            />
-                        </Grid>
+
+                <Grid item container>
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.FAMILY_RELATIONSHIP} className={classes.fieldName}/>
+                    <Grid item xs={5}>
+                        <Controller
+                            control={control}
+                            name={`form[${index}].${InteractedContactFields.FAMILY_RELATIONSHIP}`}
+                            defaultValue={interactedContact.familyRelationship}                                            
+                            render={(props) => {
+                                return (
+                                    <FormControl variant='outlined' fullWidth>
+                                        <Select
+                                            {...props}
+                                            disabled={isFieldDisabled || isFamilyContact}
+                                            test-id='familyRelationshipSelect'
+                                            placeholder='קרבה משפחתית'
+                                            onChange={(event) => {
+                                                props.onChange(event.target.value)
+                                            }}
+                                        >
+                                            {
+                                                familyRelationships?.length > 0 &&
+                                                [emptyFamilyRelationship].concat(familyRelationships).map((familyRelationship) => (
+                                                    <MenuItem className={classes.menuItem}
+                                                        key={familyRelationship.id}
+                                                        value={familyRelationship.id}>
+                                                        {familyRelationship.displayName}
+                                                    </MenuItem>
+                                                ))
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                )
+                            }}
+                        />
                     </Grid>
                 </Grid>
+
                 <Grid container item>
                     <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.RELATIONSHIP} className={classes.fieldName}/>
-                    <Grid item xs={7}>
+                    <Grid item xs={5}>
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.RELATIONSHIP}`}
                             defaultValue={interactedContact.relationship}
-                            render={(props) => {
-                                return (
+                            render={(props) => { return (
+                                <FormControl variant='outlined' fullWidth>
                                     <HebrewTextField
                                         {...props}
                                         error={formErrors && formErrors[InteractedContactFields.ADDITIONAL_PHONE_NUMBER]?.message}
@@ -176,26 +178,27 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                             props.onChange(newValue)
                                         }}
                                         placeholder='קשר'
-                                    />)
-                            }}
+                                    />
+                                </FormControl>
+                            )}}
                         />
                     </Grid>
                 </Grid>
+
                 <Grid container item>
-                    <Grid container item>
-                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.ISOLATION_PLACE}/>
-                        <Grid container item xs={7}>
-                            <AddressForm
-                                unsized={true}
-                                disabled={isFieldDisabled}
-                                control={control}
-                                watch={watch}
-                                errors={isolationAddressErrors}
-                                {...addressFormFields}
-                            />
-                        </Grid>
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.ISOLATION_PLACE}/>
+                    <Grid container item xs={5}>
+                        <AddressForm
+                            unsized={true}
+                            disabled={isFieldDisabled}
+                            control={control}
+                            watch={watch}
+                            errors={isolationAddressErrors}
+                            {...addressFormFields}
+                        />
                     </Grid>
                 </Grid>
+                
                 <Grid item>
                     <Grid container>
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_NEED_HELP_IN_ISOLATION} className={classes.fieldName}/>
@@ -223,6 +226,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         error={formErrors && formErrors[InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION]}
                     />
                 </Grid>
+
                 <Grid item>
                     <Grid container>
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_NEED_ISOLATION} className={classes.fieldName}/>
@@ -253,19 +257,23 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         error={formErrors && formErrors[InteractedContactFields.DOES_NEED_ISOLATION]}
                     />
                 </Grid>
+
                 <Grid container item>
                     <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.ISOLATION_END_DATE} className={classes.fieldName}/>
                     <Grid item xs={5}>
-                        <AlphanumericTextField
-                            disabled
-                            testId='isolationEndDate'
-                            name='isolationEndDate'
-                            value={formattedIsolationEndDate}
-                            onChange={() => {
-                            }}
-                        />
+                        <FormControl variant='outlined' fullWidth>
+                            <AlphanumericTextField
+                                disabled
+                                testId='isolationEndDate'
+                                name='isolationEndDate'
+                                value={formattedIsolationEndDate}
+                                onChange={() => {
+                                }}
+                            />
+                        </FormControl>
                     </Grid>
                 </Grid>
+
             </Grid>
         </Grid>
     )
