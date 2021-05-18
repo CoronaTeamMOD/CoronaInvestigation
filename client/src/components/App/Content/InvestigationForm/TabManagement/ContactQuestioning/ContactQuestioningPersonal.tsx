@@ -82,64 +82,68 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                         <b>פרטים אישיים נוספים</b>
                     </Typography>
                 </Grid>
-                <Grid item>
-                    <Grid container>
-                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.IDENTIFICATION_TYPE} className={classes.fieldName}/>
-                        <Grid item xs={5}>
-                            <Controller
-                                control={control}
-                                name={`form[${index}].${InteractedContactFields.IDENTIFICATION_TYPE}`}
-                                defaultValue={formValues.identificationType?.id}
-                                render={(props) => (
-                                    <FormControl 
-                                        error={currentFormErrors ? !!(currentFormErrors[InteractedContactFields.IDENTIFICATION_TYPE]) : false}  
-                                        variant='outlined'
-                                        fullWidth
-                                    >
-                                        <Select
-                                            {...props}
-                                            disabled={shouldIdDisable}
-                                            onChange={(event) => {
-                                                props.onChange(event.target.value)
+
+                <Grid container item>
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.IDENTIFICATION_TYPE} className={classes.fieldName}/>
+                    <Grid item xs={5}>
+                        <Controller
+                            control={control}
+                            name={`form[${index}].${InteractedContactFields.IDENTIFICATION_TYPE}`}
+                            defaultValue={formValues.identificationType?.id}
+                            render={(props) => (
+                                <FormControl 
+                                    error={currentFormErrors ? !!(currentFormErrors[InteractedContactFields.IDENTIFICATION_TYPE]) : false}  
+                                    variant='outlined'
+                                    fullWidth
+                                >
+                                    <Select
+                                        {...props}
+                                        disabled={shouldIdDisable}
+                                        onChange={(event) => {
+                                            props.onChange(event.target.value)
+                                        }}
+                                        MenuProps={{
+                                            anchorOrigin: {
+                                                vertical: 'bottom',
+                                                horizontal: 'left'
+                                            },
+                                            transformOrigin: {
+                                                vertical: 'top',
+                                                horizontal: 'left'
+                                            },
+                                            getContentAnchorEl: null
                                             }}
-                                            MenuProps={{
-                                                anchorOrigin: {
-                                                    vertical: 'bottom',
-                                                    horizontal: 'left'
-                                                },
-                                                transformOrigin: {
-                                                    vertical: 'top',
-                                                    horizontal: 'left'
-                                                },
-                                                getContentAnchorEl: null
-                                                }}
-                                        >
-                                            {Object.values(identificationTypes).map((identificationType: IdentificationType) => (
-                                                <MenuItem
-                                                    className={classes.smallSizeText}
-                                                    key={identificationType.id}
-                                                    value={identificationType.id}>
-                                                    {identificationType.type}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                )}
-                            />
-                            {currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_TYPE] && <FormHelperText>{requiredText}</FormHelperText>}
-                        </Grid>
+                                    >
+                                        {Object.values(identificationTypes).map((identificationType: IdentificationType) => (
+                                            <MenuItem
+                                                className={classes.smallSizeText}
+                                                key={identificationType.id}
+                                                value={identificationType.id}>
+                                                {identificationType.type}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            )}
+                        />
+                        {currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_TYPE] && <FormHelperText>{requiredText}</FormHelperText>}
                     </Grid>
                 </Grid>
+
                 <Grid container item>
                     <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.IDENTIFICATION_NUMBER} className={classes.fieldName}/>
+                    <Grid item xs={5}>
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.IDENTIFICATION_NUMBER}`}
                             defaultValue={
                                 interactedContact.identificationNumber
                             }
-                            render={(props) => {
-                                return (
+                            render={(props) => { return (
+                                <FormControl 
+                                    variant='outlined'
+                                    fullWidth
+                                >
                                     <IdentificationTextField
                                         {...props}
                                         error={(currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_NUMBER]?.message ) || ''}
@@ -151,67 +155,91 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                         placeholder='מספר תעודה'
                                         isId={isId}
                                     />
+                                </FormControl>
+                            )}}
+                        />
+                    </Grid>
+                </Grid>
+
+                <Grid container item alignItems='center'>
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.BIRTH_DATE} className={classes.fieldName}/>
+                    <Grid item xs={5}>
+                        <Controller
+                            control={control}
+                            name={`form[${index}].${InteractedContactFields.BIRTH_DATE}`}
+                            defaultValue={interactedContact.birthDate}
+                            render={(props) => {
+                                const dateError = currentFormErrors && currentFormErrors[InteractedContactFields.BIRTH_DATE]?.message;
+                                return (
+                                    <FormControl 
+                                        variant='outlined'
+                                        fullWidth
+                                    >
+                                        <DatePick
+                                            {...props}
+                                            disabled={isFieldDisabled}
+                                            testId='contactBirthDate'
+                                            maxDate={new Date()}
+                                            maxDateMessage='תאריך לידה לא יכול להיות יותר מאוחר מהיום'
+                                            useBigCalender={false}
+                                            labelText={dateError ? invalidDateText : undefined}
+                                            error={Boolean(dateError)}
+                                            onChange={(newDate: Date) => {
+                                                props.onChange(newDate);
+                                                setAge(calcAge(newDate));
+                                            }}
+                                        />
+                                    </FormControl>
                                 );
                             }}
                         />
+                    </Grid>
                 </Grid>
-                <Grid container item alignItems='center'>
-                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.BIRTH_DATE} className={classes.fieldName}/>
-                    <Controller
-                        control={control}
-                        name={`form[${index}].${InteractedContactFields.BIRTH_DATE}`}
-                        defaultValue={interactedContact.birthDate}
-                        render={(props) => {
-                            const dateError = currentFormErrors && currentFormErrors[InteractedContactFields.BIRTH_DATE]?.message;
-                            return (
-                                <DatePick
-                                    {...props}
-                                    disabled={isFieldDisabled}
-                                    testId='contactBirthDate'
-                                    maxDate={new Date()}
-                                    maxDateMessage='תאריך לידה לא יכול להיות יותר מאוחר מהיום'
-                                    useBigCalender={false}
-                                    labelText={dateError ? invalidDateText : undefined}
-                                    error={Boolean(dateError)}
-                                    onChange={(newDate: Date) => {
-                                        props.onChange(newDate);
-                                        setAge(calcAge(newDate));
-                                    }}
-                                />
-                            );
-                        }}
-                    />
-                </Grid>
+
                 <Grid container item>
                     <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.AGE} className={classes.fieldName}/>
-                    <AlphanumericTextField
-                        disabled={true}
-                        name='age'
-                        testId='contactAge'
-                        value={age}
-                        onChange={() => {}}
-                        placeholder='בחר תאריך לידה'
-                    />
+                    <Grid item xs={5}>
+                        <FormControl 
+                            variant='outlined'
+                            fullWidth
+                        >
+                            <AlphanumericTextField
+                                disabled={true}
+                                name='age'
+                                testId='contactAge'
+                                value={age}
+                                onChange={() => {}}
+                                placeholder='בחר תאריך לידה'
+                            />
+                        </FormControl>
+                    </Grid>
                 </Grid>
+
                 <Grid container item>
                     <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.PHONE} className={classes.fieldName}/>
-                    <Controller
-                        control={control}
-                        name={`form[${index}].${InteractedContactFields.PHONE_NUMBER}`}
-                        defaultValue={interactedContact.phoneNumber}
-                        render={(props) => {
-                            return (
-                                <NumericTextField
-                                    {...props}
-                                    error={currentFormErrors && currentFormErrors[InteractedContactFields.PHONE_NUMBER]?.message}
-                                    disabled={isFieldDisabled}
-                                    testId='phoneNumber'
-                                    placeholder='הכנס טלפון:'
-                                />
-                            );
-                        }}
-                    />
+                    <Grid item xs={5}>
+                        <Controller
+                            control={control}
+                            name={`form[${index}].${InteractedContactFields.PHONE_NUMBER}`}
+                            defaultValue={interactedContact.phoneNumber}
+                            render={(props) => { return (
+                                <FormControl 
+                                    variant='outlined'
+                                    fullWidth
+                                >
+                                    <NumericTextField
+                                        {...props}
+                                        error={currentFormErrors && currentFormErrors[InteractedContactFields.PHONE_NUMBER]?.message}
+                                        disabled={isFieldDisabled}
+                                        testId='phoneNumber'
+                                        placeholder='הכנס טלפון:'
+                                    />
+                                </FormControl>
+                            )}}
+                        />
+                    </Grid>
                 </Grid>
+
                 <Grid container item>
                     <Grid item xs={12}>
                         <Typography >
@@ -237,14 +265,19 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                         })
                     }
                 </Grid>
+
                 <Grid container item>
-                    <Grid item xs={12}>
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.EXTRA_INFO} className={classes.fieldName}/>
+                    <Grid item xs={5}>
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.EXTRA_INFO}`}
                             defaultValue={interactedContact.extraInfo}
-                            render={(props) => {
-                                return (
+                            render={(props) => { return (
+                                <FormControl 
+                                    variant='outlined'
+                                    fullWidth
+                                >
                                     <AlphanumericTextField
                                         {...props}
                                         disabled={isFieldDisabled}
@@ -253,8 +286,9 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             props.onChange(newValue)
                                         }}
                                         placeholder='הערות נוספות'
-                                />)
-                            }}
+                                    />
+                                </FormControl>
+                            )}}
                         />
                     </Grid>
                 </Grid>
