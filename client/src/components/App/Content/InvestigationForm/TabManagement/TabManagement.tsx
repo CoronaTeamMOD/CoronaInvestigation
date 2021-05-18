@@ -127,7 +127,6 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                                     label={tab.name}
                                     icon={isTabValid(tab.id) ? <ErrorOutlineIcon className={classes.icon} fontSize={'small'}/> : undefined}
                                     className={isTabValid(tab.id) ? classes.errorIcon : undefined}
-                                    ref={tabRef}
                                 />
                             )
                         }
@@ -158,7 +157,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                 </Grid>
             </Grid>
             
-            <div className={classes.displayedTab}>
+            <div className={classes.displayedTab} ref={tabRef}>
                 {tabs[currentTab].displayComponent}
             </div>
         </Card>
