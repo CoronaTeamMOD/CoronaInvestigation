@@ -265,7 +265,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                 <FormControl variant='outlined' fullWidth>
                                     <AlphanumericTextField
                                         {...props}
-                                        disabled={isFieldDisabled}
                                         testId='extrainfo'
                                         onChange={(newValue: string) => {
                                             props.onChange(newValue)
