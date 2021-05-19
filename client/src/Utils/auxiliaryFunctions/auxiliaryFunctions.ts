@@ -59,8 +59,4 @@ const isOtherIdValid = (id: string | null | undefined): boolean => {
     return true;
 };
 
-const doesStringHasMoreThanOneSlash = (givenStr: string) => {
-    return givenStr.split('/').length < moreThanOneSlashIndicator;
-};
-
 export { get, isIdValid, isPalestineIdValid, isOtherIdValid };

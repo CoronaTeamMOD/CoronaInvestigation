@@ -70,7 +70,7 @@ const interactionEventSchema = (eventIds : (string | undefined)[]) => yup.object
         ),
         [InteractionEventContactFields.IDENTIFICATION_NUMBER]: yup.string().when(
           [InteractionEventContactFields.IDENTIFICATION_TYPE], (identificationType: number | null) => {
-            return identificationType == null 
+            return identificationType == null || identificationType === 6
             ? yup.string().nullable()
             : ContactIdValidationSchema(contactBankValidation(eventIds))
           }
