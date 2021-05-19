@@ -12,6 +12,7 @@ import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import LastUpdateMessage from './LastUpdateMessage/LastUpdateMessage';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
 import TimeRangeFilterCard from './TimeRangeFilterCard/TimeRangeFilterCard';
+import AdminInvestigationsTable from './adminInvestigationsTable/adminInvestigationsTable';
 
 const AdminLandingPage: React.FC = (): JSX.Element => {
 
@@ -30,7 +31,8 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
     const [lastUpdated , setLastUpdated] = useState<Date>(new Date());
 
     const { redirectToInvestigationTable , fetchInvestigationStatistics, 
-            updateInvestigationFilterByDesks, updateInvestigationFilterByTime} = useAdminLandingPage({
+            updateInvestigationFilterByDesks, updateInvestigationFilterByTime,
+            setAdminInvestigationsSelected} = useAdminLandingPage({
         setIsLoading,
         setInvestigationsStatistics,
         setLastUpdated,
@@ -67,6 +69,11 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                         allInvestigationsCount={investigationsStatistics.allInvestigations}
                         investigationsStatistics={investigationsStatistics as InvesitgationInfoStatistics}
                         onInfoButtonClick={(infoFilter, filterType) => redirectToInvestigationTable(infoFilter, filterType)} />
+                </Grid>
+                <Grid>
+                    <AdminInvestigationsTable
+                        adminInvestigations={[]}
+                        setSelectedRow={setAdminInvestigationsSelected}/>
                 </Grid>
             </Grid>
         </div>

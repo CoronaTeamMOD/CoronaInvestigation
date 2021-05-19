@@ -17,7 +17,7 @@ BEGIN
 
  SELECT JSON_AGG(src) as src
 from (
-select inv.creation_date, de.desk_name, usr.user_name,
+select inv.epidemiology_number as id, inv.creation_date, de.desk_name, usr.user_name,
 		(DATE_PART('day', NOW() at time zone 'utc' - creation_date) * 24 + 
 		DATE_PART('hour', NOW() at time zone 'utc' - creation_date)) AS hours,
 		(DATE_PART('day', NOW() at time zone 'utc' - creation_date) * 24 * 60 + 
