@@ -39,14 +39,6 @@ describe('<DesksFilterCard />', () => {
         expect(loadingCard.props().isLoading).toBeFalsy();
     });
 
-    it('shows headline' , () => {
-        const headline = wrapper.find('h6#desks-card-headline');
-
-        expect(headline.exists()).toBeTruthy();
-        expect(headline).toHaveLength(1);
-        expect(headline.text()).toBe('הדסקים בהם הינך צופה');
-    });
-
     describe('clear all desks checkbox' , () => {
         const allDesksCheckbox = wrapper.find('input#all-desks-checkbox')
         it('renders', () => {
