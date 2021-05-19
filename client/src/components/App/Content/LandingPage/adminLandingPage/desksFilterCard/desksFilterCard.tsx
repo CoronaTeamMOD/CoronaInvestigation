@@ -26,9 +26,6 @@ const DesksFilterCard = (props: Props): JSX.Element => {
         <LoadingCard isLoading={countyDesks === null} width={cardWidth} height={cardHeight} className={classes.desksCard}>
             <CardContent>
                 <Box display='flex' flexDirection='column'>
-                    <Typography variant='h6' id='desks-card-headline'>
-                        <b>הדסקים בהם הינך צופה</b>
-                    </Typography>
                     <CustomCheckbox
                         checkboxElements={[{
                             id:'all-desks-checkbox',

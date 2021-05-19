@@ -13,8 +13,8 @@ const useStyles = makeStyles({
         flip: false
     },
     desksWrapper: {
-        minHeight: '150px',
-        maxHeight: '20vh',
+        minHeight: '75px',
+        maxHeight: '7vh',
         overflowY: 'auto',
     }
 });

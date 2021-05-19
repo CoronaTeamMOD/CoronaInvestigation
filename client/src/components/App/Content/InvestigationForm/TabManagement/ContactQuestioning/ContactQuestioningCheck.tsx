@@ -31,6 +31,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     <Avatar className={classes.avatar}>3</Avatar>
                     <Typography><b>תשאול לצורך הפנייה לבדיקה</b></Typography>
                 </Grid>
+
                 <Grid item>
                     <Grid container>
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_FEEL_GOOD} className={classes.fieldName}/>
@@ -58,6 +59,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         error={formErrors && formErrors[InteractedContactFields.DOES_FEEL_GOOD]}
                     />
                 </Grid>
+
                 <Grid item>
                     <Grid container>
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_HAVE_BACKGROUND_DISEASES} className={classes.fieldName}/>
@@ -85,6 +87,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         error={formErrors && formErrors[InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES]}
                     />
                 </Grid>
+
                 <Grid item>
                     <Grid container>
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_LIVE_WITH_CONFIRMED} className={classes.fieldName}/>
@@ -111,6 +114,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         error={formErrors && formErrors[InteractedContactFields.DOES_LIVE_WITH_CONFIRMED]}
                     />
                 </Grid>
+
                 <Grid item>
                     <Grid container>
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.REPEATING_OCCURANCE_WITH_CONFIRMED} className={classes.fieldName}/>
@@ -137,6 +141,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         error={formErrors && formErrors[InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED]}
                     />
                 </Grid>
+
                 <Grid item>
                     <Grid container>
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_WORK_WITH_CROWD} className={classes.fieldName}/>
@@ -164,10 +169,10 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         error={formErrors && formErrors[InteractedContactFields.DOES_WORK_WITH_CROWD]}
                     />
                 </Grid>
-                <Grid item>
-                    <Grid container>
-                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.OCCUPATION} className={classes.fieldName}/>
-                        <Grid item xs={5}>
+
+                <Grid item container>
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.OCCUPATION} className={classes.fieldName}/>
+                    <Grid item xs={5}>
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.OCCUPATION}]`}
@@ -196,9 +201,9 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                 )
                             }}
                             />
-                        </Grid>
                     </Grid>
                 </Grid>
+                
             </Grid>
         </Grid>
     )

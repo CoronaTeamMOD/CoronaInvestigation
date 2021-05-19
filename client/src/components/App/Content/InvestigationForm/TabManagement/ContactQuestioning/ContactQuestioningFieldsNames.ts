@@ -16,6 +16,7 @@ enum ContactQuestioningFieldsNames {
     REPEATING_OCCURANCE_WITH_CONFIRMED = 'מפגש חוזר עם המאומת?',
     DOES_WORK_WITH_CROWD = 'עבודה עם קהל במסגרת העבודה?',
     OCCUPATION = 'תעסוקה:',
+    EXTRA_INFO = 'הערות נוספות:',
 };
 
 export default ContactQuestioningFieldsNames;
