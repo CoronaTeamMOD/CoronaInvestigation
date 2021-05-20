@@ -6,6 +6,7 @@ import StoreStateType from 'redux/storeStateType';
 import InvestigationStatistics, { InvesitgationInfoStatistics } from 'models/InvestigationStatistics';
 
 import useStyles from './adminLandingPageStyles';
+import AdminActions from './adminActions/adminActions';
 import useAdminLandingPage from './useAdminLandingPage';
 import adminInvestigation from 'models/adminInvestigation';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
@@ -88,6 +89,9 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                         adminInvestigations={adminInvestigations}
                         setSelectedRow={setAdminInvestigationSelected}
                         fetchAdminInvestigations={fetchAdminInvestigations}/>
+                </Grid>
+                <Grid item xs={12} >
+                    <AdminActions/>
                 </Grid>
             </Grid>
         </div>
