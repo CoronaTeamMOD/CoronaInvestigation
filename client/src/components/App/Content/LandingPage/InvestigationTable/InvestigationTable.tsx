@@ -11,13 +11,13 @@ import { KeyboardArrowDown, KeyboardArrowLeft, Refresh } from '@material-ui/icon
 
 import Desk from 'models/Desk';
 import User from 'models/User';
+import SubStatus from 'models/SubStatus';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import useDesksUtils from 'Utils/Desk/useDesksUtils';
 import UserTypeCodes from 'models/enums/UserTypeCodes';
 import InvestigatorOption from 'models/InvestigatorOption';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import InvestigationSubStatus from 'models/InvestigationSubStatus';
 import InvestigationTableRowType from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
@@ -51,7 +51,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [order, setOrder] = useState<Order>(SortOrder.asc);
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
     const [allStatuses, setAllStatuses] = useState<InvestigationMainStatus[]>([]);
-    const [allSubStatuses, setAllSubStatuses] = useState<InvestigationSubStatus[]>([]);
+    const [allSubStatuses, setAllSubStatuses] = useState<SubStatus[]>([]);
     const [allComplexReasons, setAllComplexReasons] = useState<(number|null)[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(defaultPage);
     const [checkGroupedInvestigationOpen, setCheckGroupedInvestigationOpen] = useState<number[]>([])

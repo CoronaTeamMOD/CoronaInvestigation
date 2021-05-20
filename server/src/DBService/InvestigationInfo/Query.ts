@@ -65,6 +65,7 @@ query GetAllSubStatuses($parentStatus: Int!) {
     nodes {
       displayName
       parentStatus
+      id
     }
   }
 }

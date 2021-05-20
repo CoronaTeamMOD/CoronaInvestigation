@@ -1,20 +1,21 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import { Autocomplete } from '@material-ui/lab';
 import { Card, Checkbox, Collapse, FormControl, Grid, Box, TextField, Typography } from '@material-ui/core';
 
-import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
-import SearchBar from 'commons/SearchBar/SearchBar';
+import Desk from 'models/Desk';
+import SubStatus from 'models/SubStatus';
 import { TimeRange } from 'models/TimeRange';
-import timeRanges, { customTimeRange, timeRangeMinDate } from 'models/enums/timeRanges';
+import SearchBar from 'commons/SearchBar/SearchBar';
 import DateRangePick from 'commons/DatePick/DateRangePick';
 import SelectDropdown from 'commons/Select/SelectDropdown';
-import InvestigationSubStatus from 'models/InvestigationSubStatus';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
-import Desk from 'models/Desk';
+import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import timeRanges, { customTimeRange, timeRangeMinDate } from 'models/enums/timeRanges';
 
-import DeskFilter from '../DeskFilter/DeskFilter';
 import useStyles from './TableFilterStyles';
 import useTableFilter from './useTableFilter';
+import DeskFilter from '../DeskFilter/DeskFilter';
 import { StatusFilter as StatusFilterType, SubStatusFilter as SubStatusFilterType } from '../InvestigationTableInterfaces';
 
 const searchBarLabel = 'מספר אפידמיולוגי, ת"ז, שם או טלפון';
@@ -38,7 +39,14 @@ const TableFilter = (props: Props) => {
         onTimeRangeFilterChange
     });
 
+    const [statusesId, setStatusesIds] = useState([]);
     const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id
+
+
+    // const updatedSubStatuses = useMemo(() =>
+    //     status === InvestigationMainStatusCodes.IN_PROCESS ? [inProcess , ...subStatuses] : subStatuses,
+    //     [subStatuses, status]);
+
 
     return (
         <Card className={classes.card}>
@@ -137,7 +145,7 @@ const TableFilter = (props: Props) => {
                 )}
                 limitTags={1}
             />
-            <Grid className={classes.endCard} xs={3} direction="column">
+            <Grid className={classes.endCard} xs={3} direction='column'>
                 <div className={classes.row}>
                     <Checkbox
                         onChange={(event) => changeUnassginedUserFilter(event.target.checked)}
@@ -173,7 +181,7 @@ const TableFilter = (props: Props) => {
 
 interface Props {
     statuses: InvestigationMainStatus[];
-    subStatuses: InvestigationSubStatus[];
+    subStatuses: SubStatus[];
     filteredStatuses: StatusFilterType;
     filteredSubStatuses: SubStatusFilterType;
     unassignedUserFilter: boolean;
@@ -181,7 +189,7 @@ interface Props {
     changeUnassginedUserFilter: (isFilterOn: boolean) => void;
     changeInactiveUserFilter: (isFilterOn: boolean) => void;
     onFilterChange: (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => void;
-    onSubStatusChange: (event: React.ChangeEvent<{}>, selectedSubStatuses: InvestigationSubStatus[]) => void;
+    onSubStatusChange: (event: React.ChangeEvent<{}>, selectedSubStatuses: SubStatus[]) => void;
     timeRangeFilter: TimeRange;
     onTimeRangeFilterChange: (timeRangeFilter: TimeRange) => void;
     updateDateFilter: string;
