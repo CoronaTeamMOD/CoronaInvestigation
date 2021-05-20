@@ -175,8 +175,13 @@ query allInvestigationStatuses {
 `;
 
 export const GET_ALL_ADMIN_INVESTIGATIONS = gql`
-mutation adminInvestigations ( $county: Int!, $desks: [Int], $orderBy: String! ) {
-  adminInvestigations(input: {countyInput: $county, desksInput: $desk, orderBy: $orderBy}) {
+mutation adminInvestigations ( $county: Int!, $desks: [Int], $orderBy: String!, $startDate: Datetime, $endDate: Datetime ) {
+  adminInvestigations(input: {
+    countyInput: $county
+    desksInput: $desks
+    orderBy: $orderBy
+    endDateInput: $endDate
+    startDateInput: $startDate}) {
     json
   }
 }

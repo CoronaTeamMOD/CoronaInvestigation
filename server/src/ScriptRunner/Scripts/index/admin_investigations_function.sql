@@ -1,11 +1,13 @@
--- FUNCTION: public.ordered_investigations(character varying)
+-- FUNCTION: public.admin_investigations(integer,integer[],character varying,timestamp without time zone,timestamp without time zone)
 
--- DROP FUNCTION public.admin_investigations(integer,integer[],character varying);
+-- DROP FUNCTION public.admin_investigations(integer,integer[],character varying,start_date_input timestamp without time zone,end_date_input timestamp without time zone);
 
 CREATE OR REPLACE FUNCTION public.admin_investigations(
 	county_input integer,
 	desks_input integer[],
-	order_by character varying)
+	order_by character varying,
+	start_date_input timestamp without time zone,
+	end_date_input timestamp without time zone)
     RETURNS json
     LANGUAGE 'plpgsql'
     COST 100
@@ -34,14 +36,19 @@ and creator IN (
 		SELECT id FROM public.counties WHERE id = county_input
 	)
 )
+-- only if desks_input is sent - add the filter  
 AND (desks_input is NULL OR inv.desk_id IN (SELECT unnest(desks_input)))
+
+-- only if either start or end date filter is send - add the filter
+AND ( start_date_input is NULL OR end_date_input IS NULL OR creation_date >= start_date_input AND creation_date < end_date_input)
+	
 order by
 	CASE WHEN order_by='creation_dateDESC' THEN inv.creation_date END DESC,
 	CASE WHEN order_by='creation_dateASC' THEN inv.creation_date END ASC,
-	CASE WHEN order_by='investigationDeskDESC' THEN de.desk_name END DESC,
-	CASE WHEN order_by='investigationDeskASC' THEN de.desk_name END ASC,
-	CASE WHEN order_by='investigatorNameDESC' THEN usr.user_name END DESC,
-	CASE WHEN order_by='investigatorNameASC' THEN usr.user_name END ASC,
+	CASE WHEN order_by='desk_nameDESC' THEN de.desk_name END DESC,
+	CASE WHEN order_by='desk_nameASC' THEN de.desk_name END ASC,
+	CASE WHEN order_by='user_nameDESC' THEN usr.user_name END DESC,
+	CASE WHEN order_by='user_nameASC' THEN usr.user_name END ASC,
 	CASE WHEN order_by='hoursDESC' THEN (DATE_PART('day', NOW() at time zone 'utc' - creation_date) * 24 + 
 		DATE_PART('hour', NOW() at time zone 'utc' - creation_date)) END DESC,
 	CASE WHEN order_by='hoursASC' THEN (DATE_PART('day', NOW() at time zone 'utc' - creation_date) * 24 + 

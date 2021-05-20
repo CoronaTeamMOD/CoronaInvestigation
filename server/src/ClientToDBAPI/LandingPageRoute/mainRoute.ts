@@ -115,21 +115,24 @@ landingPageRoute.get('/investigationStatuses', (request: Request, response: Resp
         });
 })
 
-landingPageRoute.get('/adminInvestigations', (request: Request, response: Response) => {
+landingPageRoute.post('/adminInvestigations', (request: Request, response: Response) => {
     const adminInvestigationsLogger = logger.setup({
         workflow: 'query all admin investigations',
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber,
     });
 
-    const desks = request.body.deskFilter;
+    const desks = request.body.desks;
     const orderBy = request.body.orderBy; 
-    const county = request.body.county; 
+    const county = request.body.county;
+    const timeRange = request.body.timeRangeFilter;  
 
     const parameters = {
         county,
         desks,
-        orderBy
+        orderBy,
+        startDate: timeRange?.startDate,
+        endDate: timeRange?.endDate
     }
 
     adminInvestigationsLogger.info(launchingDBRequestLog(), Severity.LOW);
