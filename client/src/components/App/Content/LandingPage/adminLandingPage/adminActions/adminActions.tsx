@@ -16,7 +16,6 @@ const AdminActions = (): JSX.Element => {
     const classes = useStyles();
 
     const { onAdminActionChange, selectedAdminAction } = useAdminAction();
-
     
     return (
         <Card className={classes.adminActionCard}>
