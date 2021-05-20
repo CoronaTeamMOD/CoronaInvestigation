@@ -14,7 +14,7 @@ export const contactQuestioningPersonal = {
             (contactStatus: number, needIsolation: boolean, identificationType: number, schema: any, { originalValue }: { originalValue: string }) => {
                 return (contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
                 ? yup.string().nullable()
-                : (contactStatus === ContactStatusCodes.COMPLETED ||  !needIsolation) &&  identificationType == null
+                : (contactStatus === ContactStatusCodes.COMPLETED ||  !needIsolation) &&  (identificationType == null || identificationType === 6)
                     ? yup.string().nullable()
                     : ContactIdValidationSchema();
             }
