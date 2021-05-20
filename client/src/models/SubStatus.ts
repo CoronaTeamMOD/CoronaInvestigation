@@ -1,5 +1,6 @@
 interface SubStatus {
-    parentId: number;
+    id: number;
+    parentStatus: number;
     displayName: string;
 };
 
