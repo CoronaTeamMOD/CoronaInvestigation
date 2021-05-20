@@ -180,6 +180,7 @@ query allInvestigationSubStatuses {
     nodes {
       id
       displayName
+      parentStatus
     }
   }
 }

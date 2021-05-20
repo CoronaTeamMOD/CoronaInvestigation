@@ -39,14 +39,9 @@ const TableFilter = (props: Props) => {
         onTimeRangeFilterChange
     });
 
-    const [statusesId, setStatusesIds] = useState([]);
-    const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id
+    const [subStatusFiltered, setSubStatusFiltered] = useState<SubStatus[]>(subStatuses);
 
-
-    // const updatedSubStatuses = useMemo(() =>
-    //     status === InvestigationMainStatusCodes.IN_PROCESS ? [inProcess , ...subStatuses] : subStatuses,
-    //     [subStatuses, status]);
-
+    const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id;
 
     return (
         <Card className={classes.card}>
@@ -80,7 +75,7 @@ const TableFilter = (props: Props) => {
                 <Typography className={classes.timeRangeError}>{errorMes}</Typography>
             }
             <Autocomplete
-                disabled={updateDateFilter !== "" || nonContactFilter}
+                disabled={updateDateFilter !== '' || nonContactFilter}
                 ChipProps={{className:classes.chip}}
                 className={classes.autocomplete}
                 classes={{inputFocused: classes.autocompleteInputText}}
@@ -90,7 +85,12 @@ const TableFilter = (props: Props) => {
                 options={statuses}
                 value={statuses.filter(status => filteredStatuses.includes(status.id))}
                 getOptionLabel={(option) => option.displayName}
-                onChange={onFilterChange}
+                onChange={(event, value) => {
+                    onFilterChange(value);
+                    value.length > 0 
+                        ? setSubStatusFiltered(subStatuses.filter(subStatus => value.map(status => status.id).includes(subStatus.parentStatus)))
+                        : setSubStatusFiltered(subStatuses)
+                }}
                 renderInput={(params) =>
                     <TextField
                         label={'סטטוס'}
@@ -113,15 +113,15 @@ const TableFilter = (props: Props) => {
                 limitTags={1}
             />
             <Autocomplete
-                disabled={updateDateFilter !== ""}
+                disabled={updateDateFilter !== ''}
                 ChipProps={{className:classes.chip}}
                 className={classes.autocomplete}
                 classes={{inputFocused: classes.autocompleteInputText}}
                 size='small'
                 disableCloseOnSelect
                 multiple
-                options={subStatuses}
-                value={subStatuses.filter(subStatus => filteredSubStatuses.includes(subStatus.displayName))}
+                options={subStatusFiltered.length > 0 ? subStatusFiltered : subStatuses}
+                value={subStatusFiltered.filter(subStatus => filteredSubStatuses.includes(subStatus.displayName))}
                 getOptionLabel={(option) => option.displayName}
                 onChange={onSubStatusChange}
                 renderInput={(params) =>
@@ -188,7 +188,7 @@ interface Props {
     inactiveUserFilter: boolean;
     changeUnassginedUserFilter: (isFilterOn: boolean) => void;
     changeInactiveUserFilter: (isFilterOn: boolean) => void;
-    onFilterChange: (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => void;
+    onFilterChange: (selectedStatuses: InvestigationMainStatus[]) => void;
     onSubStatusChange: (event: React.ChangeEvent<{}>, selectedSubStatuses: SubStatus[]) => void;
     timeRangeFilter: TimeRange;
     onTimeRangeFilterChange: (timeRangeFilter: TimeRange) => void;
