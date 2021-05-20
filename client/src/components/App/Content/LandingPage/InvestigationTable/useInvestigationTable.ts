@@ -144,7 +144,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             timeRangeFilter: historyTimeRange = defaultTimeRange,
             inactiveUserFilter : historyInactiveUserFilter = false, 
             unassignedUserFilter : historyUnassignedUserFilter = false,
-            updateDateFilter : historyUpdateDateFilter = "",
+            updateDateFilter : historyUpdateDateFilter = '',
             nonContactFilter : historyNonContactFilter = false,
             isAdminLandingRedirect : historyisAdminLandingRedirect = false,
             filterTitle} = useMemo(() => {
@@ -672,7 +672,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.city]: row.city,
             [TableHeadersNames.subOccupation]: row.subOccupation,
             [TableHeadersNames.investigatorName]: row.investigator.authorityName ? 
-                                                    row.investigator.userName + " - " + row.investigator.authorityName : 
+                                                    row.investigator.userName + ' - ' + row.investigator.authorityName : 
                                                     row.investigator.userName,
             [investigatorIdPropertyName]: row.investigator.id,
             [TableHeadersNames.investigationStatus]: row.mainStatus,

@@ -231,9 +231,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         };
 
     useEffect(() => {
-        window.addEventListener("keydown", handleEscKey);
+        window.addEventListener('keydown', handleEscKey);
         return () => {
-            window.removeEventListener("keydown", handleEscKey);
+            window.removeEventListener('keydown', handleEscKey);
         };
     }, []);
 
