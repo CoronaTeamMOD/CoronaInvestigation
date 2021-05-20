@@ -1,12 +1,12 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
 
-const AdminDataBaseAction = (): JSX.Element => {
+const AdminDBAction = (): JSX.Element => {
     return (
         <Grid>
           טיסות  
         </Grid>
     )
-}
+};
 
-export default AdminDataBaseAction;
+export default AdminDBAction;
