@@ -2,9 +2,9 @@ import React from 'react';
 import { CardActions, CardContent, Typography, FormControl, Collapse, Card } from '@material-ui/core';
 
 import { TimeRange } from 'models/TimeRange';
-import timeRanges, { customTimeRange, timeRangeMinDate } from 'models/enums/timeRanges';
 import SelectDropdown from 'commons/Select/SelectDropdown';
 import DateRangePick from 'commons/DatePick/DateRangePick';
+import timeRanges, { customTimeRange, timeRangeMinDate } from 'models/enums/timeRanges';
 
 import useStyles from './TimeRangeFilterCardStyles';
 import UpdateButton from '../UpdateButton/UpdateButton';
@@ -16,7 +16,7 @@ const TimeRangeCard = (props : Props): JSX.Element => {
 
     const classes = useStyles();
     const { onUpdateButtonClicked } = props;
-    const { onTimeRangeChange, onStartDateSelect, onEndDateSelect, validateTimeRange, errorMes, timeRangeFilter} = useTimeRangeFilterCard();
+    const { onTimeRangeChange, onStartDateSelect, onEndDateSelect, validateTimeRange, errorMes, timeRangeFilter } = useTimeRangeFilterCard();
 
     return (
         <Card className={classes.timeRangeCard}>
@@ -51,6 +51,7 @@ const TimeRangeCard = (props : Props): JSX.Element => {
             <CardActions className={classes.timeCardActions}>
                 <UpdateButton
                     onClick={() => validateTimeRange() && onUpdateButtonClicked(timeRangeFilter)}
+                    text='עדכון'
                 />        
             </CardActions>
         </Card>
@@ -59,6 +60,5 @@ const TimeRangeCard = (props : Props): JSX.Element => {
 
 interface Props {
     onUpdateButtonClicked: (timeRangeFilter: TimeRange) => void;
-}
-
+};
 export default TimeRangeCard;
