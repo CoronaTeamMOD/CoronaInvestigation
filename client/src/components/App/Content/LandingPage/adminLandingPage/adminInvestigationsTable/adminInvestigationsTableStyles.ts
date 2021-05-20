@@ -1,6 +1,8 @@
 import { makeStyles } from '@material-ui/styles';
 import theme from 'styles/theme';
 
+export const cardHeight = '35vh'; 
+
 const useStyles = makeStyles({
   tableRow: {
     '&$selected, &$selected:hover': {
@@ -8,6 +10,9 @@ const useStyles = makeStyles({
     },
     cursor: 'pointer'
   },
+  icon: {},
+  active: {},
+  selected: {},
   activeSortIcon: {
     '&$active': {
       '&& $icon': {
@@ -16,23 +21,8 @@ const useStyles = makeStyles({
       }
     }
   },
-  icon: {},
-  active: {},
-  selected: {},
-  orderByAvailabilityButton: {
-    border: 'none',
-    fontWeight: 'bold',
-    color: 'rgb(74, 74, 74)',
-    fontSize: '1rem',
-    cursor: 'pointer',
-    position: 'absolute',
-    bottom: '0',
-    right: '0',
-    left: 'unset',
-    margin: '1vh',
-  },
-  investigatorAllocationTopBar: {
-    position: 'relative'
+  tableStyle: {
+    height: cardHeight
   }
 });
 

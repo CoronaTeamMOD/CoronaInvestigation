@@ -8,6 +8,11 @@ const useStyles = makeStyles({
     },
     gridContainer: {
         paddingTop: '3vh',
+    },
+    invTitle: {
+        marginTop: "-2vh",
+        marginBottom: "1vh",
+        fontSize: "18px"    
     }
 });
 

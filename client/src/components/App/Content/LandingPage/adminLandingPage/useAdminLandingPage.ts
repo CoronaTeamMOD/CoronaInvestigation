@@ -7,7 +7,8 @@ import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import { landingPageRoute } from 'Utils/Routes/Routes';
-import { defaultTimeRange } from 'models/enums/timeRanges'
+import { defaultTimeRange } from 'models/enums/timeRanges';
+import adminInvestigation from 'models/adminInvestigation';
 import { TimeRange, TimeRangeDates } from 'models/TimeRange';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import FilterRulesVariables from 'models/FilterRulesVariables';
@@ -16,13 +17,15 @@ import InvesitgationStatistics from 'models/InvestigationStatistics';
 import FilterRulesDescription from 'models/enums/FilterRulesDescription';
 
 import { HistoryState } from '../InvestigationTable/InvestigationTableInterfaces';
+import { defaultOrderBy } from './adminInvestigationsTable/adminInvestigationsTable';
+
 
 export const allTimeRangeId = [10, 11];
 
 const useAdminLandingPage = (parameters: Parameters) => {
     const { alertError } = useCustomSwal();
 
-    const [adminInvestigationsSelected, setAdminInvestigationsSelected] = useState<string>('');
+    const [adminInvestigationSelected, setAdminInvestigationSelected] = useState<string>('');
     const history = useHistory<HistoryState>();
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
     const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
@@ -41,7 +44,7 @@ const useAdminLandingPage = (parameters: Parameters) => {
 
     const { 
         setIsLoading, setInvestigationsStatistics, 
-        setLastUpdated
+        setadminInvestigations ,setLastUpdated,setAdminInvestigationsIsLoading
     } = parameters;    
 
     const updateInvestigationFilterByDesks =  (deskFilter: number[]) => {
@@ -74,6 +77,7 @@ const useAdminLandingPage = (parameters: Parameters) => {
     useEffect(() => {
         if(displayedCounty !== initialDisplayedCounty) {
             fetchInvestigationStatistics();
+            fetchAdminInvestigations(defaultOrderBy);
             updateFilterHistory();
         }
     }, [investigationInfoFilter, displayedCounty, userType])
@@ -101,6 +105,31 @@ const useAdminLandingPage = (parameters: Parameters) => {
         });
     }
 
+    const fetchAdminInvestigations = (orderBy : string) => {
+        const adminInvestigationsLogger = logger.setup('query admin investigations');
+        adminInvestigationsLogger.info('launching db request', Severity.LOW);
+        setAdminInvestigationsIsLoading(true);
+        console.log("AAA" + investigationInfoFilter?.deskFilter);
+        axios.post('/landingPage/adminInvestigations', {
+            desks: investigationInfoFilter?.deskFilter,
+            orderBy: orderBy,
+            county: displayedCounty,
+            timeRangeFilter: investigationInfoFilter.timeRangeFilter as TimeRangeDates
+        })
+        .then((response) => {
+            adminInvestigationsLogger.info('launching db request', Severity.LOW);
+            setadminInvestigations(response.data !== "" ? response.data : []);
+        })
+        .catch(error => {
+            adminInvestigationsLogger.error(`got error ${error}`, Severity.HIGH);
+            alertError('לא ניתן היה לקבל את הנתונים');
+        })
+        .finally(() => {
+            setAdminInvestigationsIsLoading(false)
+            setLastUpdated(new Date());
+        });
+    }
+
     const redirectToInvestigationTable = (investigationStatusFilter: FilterRulesVariables, filterType?: FilterRulesDescription) => {
         const filterTitle = filterType ? `חקירות ${filterType}` : undefined;
         const state : HistoryState = {...investigationStatusFilter, isAdminLandingRedirect: true, filterTitle, ...investigationInfoFilter}
@@ -112,14 +141,17 @@ const useAdminLandingPage = (parameters: Parameters) => {
         fetchInvestigationStatistics,
         updateInvestigationFilterByDesks,
         updateInvestigationFilterByTime, 
-        setAdminInvestigationsSelected
+        setAdminInvestigationSelected,
+        fetchAdminInvestigations
     }
 };
 
 interface Parameters {
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
     setInvestigationsStatistics: React.Dispatch<React.SetStateAction<InvesitgationStatistics>>;
+    setadminInvestigations: React.Dispatch<React.SetStateAction<adminInvestigation[]>>;
     setLastUpdated:  React.Dispatch<React.SetStateAction<Date>>;
+    setAdminInvestigationsIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default useAdminLandingPage;

@@ -1,17 +1,21 @@
+import _ from 'lodash';
+import { persistor } from 'redux/store';
 import React, { useEffect, useState } from 'react';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Tooltip, TableSortLabel } from '@material-ui/core';
-import _ from 'lodash'
 
+import SortOrder from 'models/enums/SortOrder';
+import LoadingCard from '../LoadingCard/LoadingCard';
 import adminInvestigation from 'models/adminInvestigation';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-
-import useStyles from './adminInvestigationsTableStyles';
-import { TableHeadersNames, TableHeaders, SortableTableHeaders } from './adminInvestigationsTableHeaders';
+import useStyles, { cardHeight } from './adminInvestigationsTableStyles';
 import { Order } from '../../InvestigationTable/InvestigationTablesHeaders';
-import SortOrder from 'models/enums/SortOrder';
+import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
+import { TableHeadersNames, TableHeaders, SortableTableHeaders } from './adminInvestigationsTableHeaders';
+
+const investigationURL = '/investigation';
 export const defaultOrderBy = 'defaultOrder';
 
-const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, setSelectedRow }) => {
+const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, setSelectedRow, fetchAdminInvestigations, isLoading }) => {
 
     const classes = useStyles();
     const orderBytype = adminInvestigations[0]
@@ -25,17 +29,8 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, setSel
     }, [adminInvestigations]);
 
     useEffect(() => {
-        //sortInvestigators(adminInvestigations)
+        fetchAdminInvestigations(orderByValue);
     }, [orderByValue]);
-
-    // const sortInvestigators = (investigatorsToOrder: User[]) => {
-    //     if(orderBy !== defaultOrderBy){
-    //         const orderd = _.orderBy(investigatorsToOrder, [investigator => investigator[orderBy]], [order])
-    //         setSortedInvestigators(orderd)
-    //     } else {
-    //         setSortedInvestigators(investigatorsToOrder)
-    //     }
-    // }
 
     const handleRequestSort = ( property: React.SetStateAction<keyof typeof orderBytype | 'defaultOrder'>) => {
         const isAsc = orderBy === property && order === SortOrder.asc;
@@ -54,9 +49,15 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, setSel
         }
     };
 
+    const moveToTheInvestigationForm = async (epidemiologyNumberVal: number) => {
+        setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
+        await persistor.flush();
+        window.open(investigationURL);
+    };
+
     return (
-        <>
-            <TableContainer component={Paper}>
+        <LoadingCard isLoading={isLoading} height={cardHeight}>
+            <TableContainer className={classes.tableStyle} component={Paper}>
                 <Table stickyHeader>
                     <TableHead id='investigators-table-header'>
                         <TableRow>
@@ -89,10 +90,9 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, setSel
                                 <TableRow
                                     id={`adminInvestigation-row-${adminInvestigation.id}`}
                                     key={adminInvestigation.id}
-                                    onClick={() => setSelectedRow(adminInvestigation.id)}
+                                    onClick={() => moveToTheInvestigationForm(adminInvestigation.id)}
                                     classes={{ selected: classes.selected }}
-                                    className={classes.tableRow}
-                                >
+                                    className={classes.tableRow}>
                                     {
                                         Object.keys(TableHeaders).map((cellHeader: string) => (
                                             <TableCell key={cellHeader}>
@@ -106,13 +106,15 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, setSel
                     </TableBody>
                 </Table>
             </TableContainer>
-        </>
+        </LoadingCard>
     );
 };
 
 interface Props {
     adminInvestigations: adminInvestigation[];
     setSelectedRow: React.Dispatch<React.SetStateAction<string>>;
+    fetchAdminInvestigations: (orderBy: string) => void;
+    isLoading: boolean;
 }
 
 export default AdminInvestigationsTable;

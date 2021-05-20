@@ -5,12 +5,13 @@ import RefreshIcon from 'commons/Icons/RefreshIcon';
 import getTimeSinceMessage from 'Utils/DateUtils/timeSince';
 
 import useStyles from './lastUpdateMessageStyles';
+import {defaultOrderBy} from '../adminInvestigationsTable/adminInvestigationsTable';
 
 const refreshRateInMs = 1000;
 
 const LastUpdateMessage = (props: Props) => {
     const classes = useStyles();
-    const { lastUpdated, fetchInvestigationStatistics } = props;
+    const { lastUpdated, fetchInvestigationStatistics, fetchAdminInvestigations } = props;
 
     const [lastUpdatedMsg, setLastUpdatedMsg] = useState<string>(getTimeSinceMessage(lastUpdated, false));
 
@@ -25,6 +26,10 @@ const LastUpdateMessage = (props: Props) => {
         }
     }, [lastUpdated]);
 
+    const fetchAll = () =>{
+        fetchInvestigationStatistics();
+        fetchAdminInvestigations(defaultOrderBy);
+    }
     return (
         <Grid container spacing={2}>
             <Grid item>
@@ -33,7 +38,7 @@ const LastUpdateMessage = (props: Props) => {
                 </Typography>
             </Grid>
             <Grid item>
-                <RefreshIcon className={classes.refreshIcon} onClick={fetchInvestigationStatistics} />
+                <RefreshIcon className={classes.refreshIcon} onClick={fetchAll} />
             </Grid>
         </Grid>
     )
@@ -44,4 +49,5 @@ export default LastUpdateMessage;
 interface Props {
     lastUpdated: Date;
     fetchInvestigationStatistics: () => void;
+    fetchAdminInvestigations: (orderBy: string) => void;
 };

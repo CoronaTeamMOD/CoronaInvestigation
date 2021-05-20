@@ -1,5 +1,5 @@
 interface adminInvestigation {
-    id: string;
+    id: number;
     creation_date: Date;
     minutes: number;
     deskName: string;
