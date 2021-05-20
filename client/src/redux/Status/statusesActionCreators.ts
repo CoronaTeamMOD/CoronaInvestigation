@@ -8,4 +8,4 @@ export const setStatuses = (statuses: InvestigationMainStatus[]): void => {
         type: actionTypes.SET_STATUSES,
         payload: { statuses }
     })
-}
+};
