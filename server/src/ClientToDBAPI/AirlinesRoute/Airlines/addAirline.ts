@@ -12,7 +12,7 @@ const addAirline = (req : Request , res : Response) => {
         user: res.locals.user.id
     });
     const paramaters = {
-        displayName: req.body.flightCompany
+        displayName: req.body.newFlightCompany
     };
 
     addAirlineLogger.info(launchingDBRequestLog(paramaters), Severity.LOW);
