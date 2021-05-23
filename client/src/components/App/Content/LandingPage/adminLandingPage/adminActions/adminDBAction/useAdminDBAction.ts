@@ -23,7 +23,7 @@ const useAdminDBAction = (props: Props) => {
             if(result.data)
             setSaveFlightCompanyLogger.info('Saved new flight company successfully', Severity.LOW);
         }).catch((error) => {
-            alertError('לא הצלחנו לשמור חברת תעופה');
+            alertError('לא הצלחנו לשמור את חברת התעופה');
             setSaveFlightCompanyLogger.error(`error in saving new flight company: ${error}`, Severity.HIGH);
         })
         .finally(() => setIsLoading(false));
@@ -39,7 +39,7 @@ const useAdminDBAction = (props: Props) => {
             if(result.data)
             setSaveFlightNumberLogger.info('Saved new flight number successfully', Severity.LOW);
         }).catch((error) => {
-            alertError('לא הצלחנו לשמור מספר טיסה');
+            alertError('לא הצלחנו לשמור את מספר הטיסה');
             setSaveFlightNumberLogger.error(`error in saving new flight number: ${error}`, Severity.HIGH);
         })
         .finally(() => setIsLoading(false));
