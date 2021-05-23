@@ -11,9 +11,13 @@ const addFlight = (req : Request , res : Response) => {
         investigation: res.locals.epidemiologynumber,
         user: res.locals.user.id
     });
+    const paramaters = {
+        airlineId: req.body.flightCompanyId,
+        displayName: req.body.newFlightNumber
+    };
 
-    addFlightLogger.info(launchingDBRequestLog(), Severity.LOW);
-    graphqlRequest(ADD_FLIGHT, res.locals)
+    addFlightLogger.info(launchingDBRequestLog(paramaters), Severity.LOW);
+    graphqlRequest(ADD_FLIGHT, res.locals, paramaters)
         .then((result: any) => {
             addFlightLogger.info(validDBResponseLog, Severity.LOW);
 

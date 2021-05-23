@@ -14,3 +14,6 @@ ALTER TABLE public.airlines
 
 ALTER TABLE public.airlines
     ALTER COLUMN display_name SET NOT NULL;
+
+ALTER TABLE public.flight_numbers
+    ALTER COLUMN display_name SET NOT NULL;
