@@ -108,7 +108,6 @@ const useAdminLandingPage = (parameters: Parameters) => {
         const adminInvestigationsLogger = logger.setup('query admin investigations');
         adminInvestigationsLogger.info('launching db request', Severity.LOW);
         setAdminInvestigationsIsLoading(true);
-        console.log("AAA" + investigationInfoFilter?.deskFilter);
         axios.post('/landingPage/adminInvestigations', {
             desks: investigationInfoFilter?.deskFilter,
             orderBy: orderBy,
