@@ -11,3 +11,6 @@ CREATE SEQUENCE public.airlines_id_seq
 
 ALTER TABLE public.airlines
     ALTER COLUMN id SET DEFAULT nextval('airlines_id_seq'::regclass);
+
+ALTER TABLE public.airlines
+    ALTER COLUMN display_name SET NOT NULL;
