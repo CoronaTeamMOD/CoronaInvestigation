@@ -17,7 +17,7 @@ const useAdminDBAction = (props: Props) => {
         const setSaveFlightCompanyLogger = logger.setup('Saving new flight company');
         setSaveFlightCompanyLogger.info('send request to server for saving new flight company', Severity.LOW);
         setIsLoading(true);
-        return axios.post('', {
+        return axios.post('/airlines/airline', {
             flightCompany
         }).then((result) => {
             if(result.data)
@@ -33,7 +33,7 @@ const useAdminDBAction = (props: Props) => {
         const setSaveFlightNumberLogger = logger.setup('Saving new flight number');
         setSaveFlightNumberLogger.info('send request to server for saving new flight number', Severity.LOW);
         setIsLoading(true);
-        return axios.post('', {
+        return axios.post('/airlines/flights/flight', {
             flightNumber
         }).then((result) => {
             if(result.data)
