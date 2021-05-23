@@ -44,6 +44,7 @@
         "@microsoft/applicationinsights-web": "^2.5.10",
         "@nivo/core": "^0.67.0",
         "@nivo/pie": "^0.67.0",
+        "@ramonak/react-progress-bar": "^3.1.0",
         "axios": "^0.21.1",
         "date-fns": "^2.19.0",
         "dotenv": "^8.2.0",

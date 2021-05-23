@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { persistor } from 'redux/store';
 import React, { useEffect, useState } from 'react';
+import ProgressBar from "@ramonak/react-progress-bar";
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Tooltip, TableSortLabel } from '@material-ui/core';
 
 import SortOrder from 'models/enums/SortOrder';
@@ -15,7 +16,7 @@ import { TableHeadersNames, TableHeaders, SortableTableHeaders } from './adminIn
 const investigationURL = '/investigation';
 export const defaultOrderBy = 'defaultOrder';
 
-const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, setSelectedRow, fetchAdminInvestigations, isLoading }) => {
+const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, fetchAdminInvestigations, isLoading }) => {
 
     const classes = useStyles();
     const orderBytype = adminInvestigations[0]
@@ -44,10 +45,34 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, setSel
         switch (cellName) {
             case TableHeadersNames.deskName:
                 return get(adminInvestigation, cellName) ? get(adminInvestigation, cellName) : 'לא משוייך';
+            case TableHeadersNames.hours:
+                let barProps = getProgressLength(get(adminInvestigation, cellName));
+                return (<Tooltip title={barProps.hours + " שעות"} arrow placement='top'>
+                            <div>
+                                <ProgressBar completed={barProps.progressLen} bgColor={barProps.color} isLabelVisible={false}/>
+                            </div>
+                         </Tooltip>);
             default:
                 return get(adminInvestigation, cellName);
         }
     };
+
+    const getProgressLength = (hours : number) => {
+        let props = {hours:hours, progressLen: 100, color: "red"};
+
+        if(hours <= 2) {
+            props.progressLen = 25;
+            props.color = "green";
+        } else if (hours <= 3) {
+            props.progressLen = 50;
+            props.color = "yellow";
+        } else if (hours <= 4) {
+            props.progressLen = 75;
+            props.color = "orange";
+        }
+
+        return props;
+    }
 
     const moveToTheInvestigationForm = async (epidemiologyNumberVal: number) => {
         setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
@@ -112,7 +137,6 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, setSel
 
 interface Props {
     adminInvestigations: adminInvestigation[];
-    setSelectedRow: React.Dispatch<React.SetStateAction<string>>;
     fetchAdminInvestigations: (orderBy: string) => void;
     isLoading: boolean;
 }

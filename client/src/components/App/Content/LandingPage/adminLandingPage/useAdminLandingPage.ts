@@ -25,7 +25,6 @@ export const allTimeRangeId = [10, 11];
 const useAdminLandingPage = (parameters: Parameters) => {
     const { alertError } = useCustomSwal();
 
-    const [adminInvestigationSelected, setAdminInvestigationSelected] = useState<string>('');
     const history = useHistory<HistoryState>();
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
     const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
@@ -141,7 +140,6 @@ const useAdminLandingPage = (parameters: Parameters) => {
         fetchInvestigationStatistics,
         updateInvestigationFilterByDesks,
         updateInvestigationFilterByTime, 
-        setAdminInvestigationSelected,
         fetchAdminInvestigations
     }
 };
