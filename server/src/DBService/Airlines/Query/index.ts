@@ -4,4 +4,4 @@ import FLIGHTS_BY_AIRLINE_ID from './FLIGHTS_BY_AIRLINE_ID';
 export {
     ALL_AIRLINES,
     FLIGHTS_BY_AIRLINE_ID
-}
+};
