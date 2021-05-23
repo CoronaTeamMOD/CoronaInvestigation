@@ -64,6 +64,8 @@ query GetAllSubStatuses($parentStatus: Int!) {
   allInvestigationSubStatuses(orderBy: DISPLAY_NAME_ASC, filter: {parentStatus: {equalTo: $parentStatus}}) {
     nodes {
       displayName
+      parentStatus
+      id
     }
   }
 }

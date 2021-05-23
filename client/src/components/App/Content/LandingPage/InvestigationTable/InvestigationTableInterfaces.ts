@@ -3,10 +3,10 @@ import { MutableRefObject } from 'react';
 import User from 'models/User';
 import Desk from 'models/Desk';
 import County from 'models/County';
+import SubStatus from 'models/SubStatus';
 import { TimeRange } from 'models/TimeRange';
 import InvestigatorOption from 'models/InvestigatorOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
-import InvestigationSubStatus from 'models/InvestigationSubStatus';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import AllocatedInvestigator from 'models/InvestigationTable/AllocateInvestigatorDialog/AllocatedInvestigator';
@@ -30,7 +30,7 @@ export interface HistoryState {
     inactiveUserFilter?: boolean;
     isAdminLandingRedirect?: boolean;
     filterTitle?: string;
-}
+};
 
 export interface useInvestigationTableParameters {
     currentPage: number;
@@ -38,11 +38,11 @@ export interface useInvestigationTableParameters {
     setSelectedRow: React.Dispatch<React.SetStateAction<SelectedRow>>;
     setAllStatuses: React.Dispatch<React.SetStateAction<InvestigationMainStatus[]>>;
     setAllComplexReasons: React.Dispatch<React.SetStateAction<(number|null)[]>>;
-    setAllSubStatuses: React.Dispatch<React.SetStateAction<InvestigationSubStatus[]>>;
+    setAllSubStatuses: React.Dispatch<React.SetStateAction<SubStatus[]>>;
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
     setAllGroupedInvestigations: React.Dispatch<React.SetStateAction<Map<string, InvestigationTableRow[]>>>;
     investigationColor: MutableRefObject<Map<string, string>>;
-}
+};
 
 export interface useInvestigationTableOutcome {
     tableRows: InvestigationTableRow[];
@@ -67,7 +67,7 @@ export interface useInvestigationTableOutcome {
     statusFilter: StatusFilter;
     subStatusFilter: SubStatusFilter;
     changeStatusFilter: (statuses: InvestigationMainStatus[]) => void;
-    changeSubStatusFilter: (subStatuses: InvestigationSubStatus[]) => void;
+    changeSubStatusFilter: (subStatuses: SubStatus[]) => void;
     deskFilter: DeskFilter;
     changeDeskFilter: (desks: Desk[]) => void;
     changeSearchFilter: (searchQuery: string) => void;

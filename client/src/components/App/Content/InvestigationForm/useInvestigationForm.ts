@@ -157,7 +157,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             subStatusesByStatusLogger.info(`recieved DB response ${JSON.stringify(result)}`, Severity.LOW);
             const resultNodes = result?.data?.data?.allInvestigationSubStatuses?.nodes;
             if (resultNodes) {
-                setSubStatuses(resultNodes.map((element: any) => element.displayName));
+                setSubStatuses(resultNodes);
             }
         }).catch((err: any) => {
             subStatusesByStatusLogger.error( `error DB response ${JSON.stringify(err)}`,  Severity.LOW);
