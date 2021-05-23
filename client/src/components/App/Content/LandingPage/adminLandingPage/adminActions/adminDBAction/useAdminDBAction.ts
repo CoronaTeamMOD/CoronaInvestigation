@@ -79,7 +79,7 @@ const useAdminDBAction = (props: Props) => {
         flightCompany, setFlightCompany,
         newFlightCompany, setNewFlightCompany,
         newFlightNumber, setNewFlightNumber,
-        saveNewFlightNumber, saveNewFlightCompany
+        saveNewFlightNumber, saveNewFlightCompany,
     };
 };
 

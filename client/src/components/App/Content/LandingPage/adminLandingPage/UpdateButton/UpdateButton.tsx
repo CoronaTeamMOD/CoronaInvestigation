@@ -7,7 +7,7 @@ const UpdateButton = (props : Props): JSX.Element => {
     
     const classes = useStyles();
     
-    const { onClick, id, text } = props;
+    const { onClick, id, text, disabled } = props;
     
     return (
         <Button
@@ -16,6 +16,7 @@ const UpdateButton = (props : Props): JSX.Element => {
             size='small'
             id={id}
             onClick={onClick}
+            disabled={disabled}
         >
             {text}
         </Button>
@@ -26,6 +27,7 @@ interface Props {
     onClick? : () => void;
     id?: string;
     text?: string;
+    disabled?: boolean;
 };
 
 export default UpdateButton;

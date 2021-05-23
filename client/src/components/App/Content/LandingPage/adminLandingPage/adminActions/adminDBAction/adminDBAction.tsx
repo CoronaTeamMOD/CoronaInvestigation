@@ -44,6 +44,7 @@ const AdminDBAction = (): JSX.Element => {
                     <UpdateButton 
                         onClick={() => saveNewFlightCompany(newFlightCompany)}
                         text={addText}
+                        disabled={newFlightCompany === ''}
                     />      
                 </Grid>
             </Grid>
@@ -60,7 +61,6 @@ const AdminDBAction = (): JSX.Element => {
                         }}
                         renderInput={(params) => 
                             <TextField
-                                error={Boolean(flightCompany)}
                                 placeholder={flightCompanyFieldName}
                                 {...params}
                             />}
@@ -79,6 +79,7 @@ const AdminDBAction = (): JSX.Element => {
                     <UpdateButton 
                         onClick={() => saveNewFlightNumber(flightCompany, newFlightNumber)}
                         text={addText}
+                        disabled={newFlightNumber === '' || !flightCompany}
                     />      
                 </Grid>
             </Grid>
