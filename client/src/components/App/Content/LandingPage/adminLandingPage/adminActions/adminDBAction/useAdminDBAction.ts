@@ -2,26 +2,31 @@ import axios  from 'axios';
 import { useState } from 'react';
 
 import logger from 'logger/logger';
+import Airline from 'models/Airline';
 import { Severity } from 'models/Logger';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import { setAirlines } from 'redux/Airlines/airlineActionCreators';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 const useAdminDBAction = (props: Props) => {
 
-    const [flightCompany, setFlightCompany] = useState<string>('');
-    const [flightNumber, setFlightNumber] = useState<string>('');
+    const [flightCompany, setFlightCompany] = useState<Airline | null>(null);
+    const [newFlightCompany, setNewFlightCompany] = useState<string>('');
+    const [newFlightNumber, setNewFlightNumber] = useState<string>('');
     
     const { alertError } = useCustomSwal();
 
-    const saveFlightCompany = (flightCompany: string) : Promise<any> => {
+    const saveNewFlightCompany = (newFlightCompany: string) : Promise<any> => {
         const setSaveFlightCompanyLogger = logger.setup('Saving new flight company');
         setSaveFlightCompanyLogger.info('send request to server for saving new flight company', Severity.LOW);
         setIsLoading(true);
         return axios.post('/airlines/airline', {
-            flightCompany
+            newFlightCompany
         }).then((result) => {
-            if(result.data)
-            setSaveFlightCompanyLogger.info('Saved new flight company successfully', Severity.LOW);
+            if(result.data){            
+                setSaveFlightCompanyLogger.info('Saved new flight company successfully', Severity.LOW);
+                fetchAirlines();
+            }
         }).catch((error) => {
             alertError('לא הצלחנו לשמור את חברת התעופה');
             setSaveFlightCompanyLogger.error(`error in saving new flight company: ${error}`, Severity.HIGH);
@@ -29,14 +34,14 @@ const useAdminDBAction = (props: Props) => {
         .finally(() => setIsLoading(false));
     };
     
-    const saveFlightNumber = (flightNumber: string) : Promise<any> => {
+    const saveNewFlightNumber = (flightCompany: Airline | null, newFlightNumber: string) : Promise<any> => {
         const setSaveFlightNumberLogger = logger.setup('Saving new flight number');
         setSaveFlightNumberLogger.info('send request to server for saving new flight number', Severity.LOW);
         setIsLoading(true);
         return axios.post('/airlines/flights/flight', {
-            flightNumber
+            flightCompanyId: flightCompany?.id,
+            newFlightNumber
         }).then((result) => {
-            if(result.data)
             setSaveFlightNumberLogger.info('Saved new flight number successfully', Severity.LOW);
         }).catch((error) => {
             alertError('לא הצלחנו לשמור את מספר הטיסה');
@@ -45,10 +50,32 @@ const useAdminDBAction = (props: Props) => {
         .finally(() => setIsLoading(false));
     };
 
+    
+    const fetchAirlines = () => {
+        const airlineLogger = logger.setup('Fetching Airlines');
+
+        airlineLogger.info('launching DB request', Severity.LOW);
+        axios.get<Airline[]>('/airlines')
+            .then(result => {
+                airlineLogger.info('request was successful', Severity.LOW);
+
+                const airlinesMap = airlineListToMap(result.data);
+                setAirlines(airlinesMap);
+            })
+            .catch(err => {
+                airlineLogger.error(`recived error during request, err: ${err}`, Severity.HIGH);
+            });
+    };
+
+    const airlineListToMap = (airlines : Airline[]) => {
+        return new Map(airlines.map(airline => [airline.id, airline.displayName]));
+    };
+
     return {
         flightCompany, setFlightCompany,
-        flightNumber, setFlightNumber,
-        saveFlightNumber, saveFlightCompany
+        newFlightCompany, setNewFlightCompany,
+        newFlightNumber, setNewFlightNumber,
+        saveNewFlightNumber, saveNewFlightCompany
     };
 };
 

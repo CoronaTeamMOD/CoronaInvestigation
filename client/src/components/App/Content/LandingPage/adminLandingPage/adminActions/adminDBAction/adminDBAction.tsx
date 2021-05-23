@@ -1,58 +1,83 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { Autocomplete } from '@material-ui/lab';
 import { Grid, TextField } from '@material-ui/core';
 
-import UpdateButton from '../../UpdateButton/UpdateButton';
+import StoreStateType from 'redux/storeStateType';
 import FieldName from 'commons/FieldName/FieldName';
+
 import useAdminDBAction from './useAdminDBAction';
+import UpdateButton from '../../UpdateButton/UpdateButton';
 
 const addText = 'הוספה';
-const flightCompanyFieldName = 'חברת תעופה:';
-const flightNumberFieldName = 'מספר טיסה:';
+const flightCompanyFieldName = 'בחר חברת תעופה';
+const newFlightCompanyFieldName = 'חברת תעופה:';
+const newFlightNumberFieldName = 'מספר טיסה:';
 
 const AdminDBAction = (): JSX.Element => {
-
+ 
+	const airlines = useSelector<StoreStateType, Map<number, string>>(state => state.airlines);
+	const formattedAirlines = Array.from(airlines).map(airline => {return {id: airline[0] , displayName : airline[1]}})
+    
     const {
         flightCompany, setFlightCompany,
-        flightNumber, setFlightNumber,
-        saveFlightNumber, saveFlightCompany
+        newFlightCompany, setNewFlightCompany,
+        newFlightNumber, setNewFlightNumber,
+        saveNewFlightNumber, saveNewFlightCompany
     } = useAdminDBAction({});
 
     return (
         <Grid container xs={12} spacing={1} direction='column'>
             
-            <Grid item container xs={6} spacing={1} alignItems='center'>
-                <FieldName xs={2} fieldName={flightCompanyFieldName}/>
-                <Grid item xs={5}>
+            <Grid item container xs={8} spacing={1} alignItems='center'>
+                <FieldName xs={2} fieldName={newFlightCompanyFieldName}/>
+                <Grid item xs={4}>
                     <TextField
                         fullWidth
-                        value={flightCompany}
+                        value={newFlightCompany}
                         onChange={(event: any) => {
-                            setFlightCompany(event?.target.value)
+                            setNewFlightCompany(event?.target.value)
                         }}
                     />
                 </Grid>
                 <Grid item xs ={2}>
                     <UpdateButton 
-                        onClick={() => saveFlightCompany(flightCompany)}
+                        onClick={() => saveNewFlightCompany(newFlightCompany)}
                         text={addText}
                     />      
                 </Grid>
             </Grid>
 
-            <Grid item container xs={6} spacing={1} alignItems='center'>
-                <FieldName xs={2} fieldName={flightNumberFieldName}/>
-                <Grid item xs={5}>
+            <Grid item container xs={8} spacing={1} alignItems='center'>
+                <FieldName xs={2} fieldName={newFlightNumberFieldName}/>
+                <Grid item xs={4}>
+                    <Autocomplete
+                        options={formattedAirlines}
+                        getOptionLabel={(option) => option.displayName}
+                        value={flightCompany}
+                        onChange={(event, chosenAirline) => { 
+                            setFlightCompany(chosenAirline);
+                        }}
+                        renderInput={(params) => 
+                            <TextField
+                                error={Boolean(flightCompany)}
+                                placeholder={flightCompanyFieldName}
+                                {...params}
+                            />}
+                    />
+                </Grid>
+                <Grid item xs={4}>
                     <TextField
                         fullWidth
-                        value={flightNumber}
+                        value={newFlightNumber}
                         onChange={(event: any) => {
-                            setFlightNumber(event?.target.value)
+                            setNewFlightNumber(event?.target.value)
                         }}
                     />
                 </Grid>
                 <Grid item xs ={2}>
                     <UpdateButton 
-                        onClick={() => saveFlightNumber(flightNumber)}
+                        onClick={() => saveNewFlightNumber(flightCompany, newFlightNumber)}
                         text={addText}
                     />      
                 </Grid>
