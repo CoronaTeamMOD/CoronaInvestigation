@@ -26,6 +26,7 @@ const useAdminDBAction = (props: Props) => {
             if(result.data){            
                 setSaveFlightCompanyLogger.info('Saved new flight company successfully', Severity.LOW);
                 fetchAirlines();
+                setNewFlightCompany('');
             }
         }).catch((error) => {
             alertError('לא הצלחנו לשמור את חברת התעופה');
@@ -42,7 +43,10 @@ const useAdminDBAction = (props: Props) => {
             flightCompanyId: flightCompany?.id,
             newFlightNumber
         }).then((result) => {
-            setSaveFlightNumberLogger.info('Saved new flight number successfully', Severity.LOW);
+            if(result.data){            
+                setSaveFlightNumberLogger.info('Saved new flight number successfully', Severity.LOW);
+                setNewFlightNumber('');
+            }
         }).catch((error) => {
             alertError('לא הצלחנו לשמור את מספר הטיסה');
             setSaveFlightNumberLogger.error(`error in saving new flight number: ${error}`, Severity.HIGH);
