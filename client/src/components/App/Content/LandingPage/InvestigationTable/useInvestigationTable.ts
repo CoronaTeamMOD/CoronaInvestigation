@@ -21,7 +21,6 @@ import InvestigatorOption from 'models/InvestigatorOption';
 import { defaultTimeRange } from 'models/enums/timeRanges';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
-import InvestigationSubStatus from 'models/InvestigationSubStatus';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import getColorByGroupId from 'Utils/GroupedInvestigations/getColorByGroupId';
@@ -42,6 +41,7 @@ import {
     TableHeadersNames, IndexedInvestigationData, investigatorIdPropertyName, TableKeys, HiddenTableKeys
 } from './InvestigationTablesHeaders';
 import { DeskFilter, HistoryState, StatusFilter, SubStatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
+import SubStatus from 'models/SubStatus';
 
 const investigationURL = '/investigation';
 
@@ -144,7 +144,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             timeRangeFilter: historyTimeRange = defaultTimeRange,
             inactiveUserFilter : historyInactiveUserFilter = false, 
             unassignedUserFilter : historyUnassignedUserFilter = false,
-            updateDateFilter : historyUpdateDateFilter = "",
+            updateDateFilter : historyUpdateDateFilter = '',
             nonContactFilter : historyNonContactFilter = false,
             isAdminLandingRedirect : historyisAdminLandingRedirect = false,
             filterTitle} = useMemo(() => {
@@ -243,8 +243,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setCurrentPage(defaultPage);
     };
 
-    const changeSubStatusFilter = (subStatuses: InvestigationSubStatus[]) => {
-        const subStatusesIds = subStatuses.map(subStatuse => subStatuse.displayName);
+    const changeSubStatusFilter = (subStatuses: SubStatus[]) => {
+        const subStatusesIds = subStatuses.map(subStatus => subStatus.displayName);
         updateFilterHistory('subStatusFilter', subStatusesIds);
         setSubStatusFilter(subStatusesIds);
         handleFilterChange(filterCreators.SUB_STATUS(subStatusesIds));
@@ -347,7 +347,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     subStatusesLogger.info('The investigations statuses were fetched successfully', Severity.LOW);
-                    const allSubStatuses: InvestigationMainStatus[] = result.data;
+                    const allSubStatuses: SubStatus[] = result.data;
                     setAllSubStatuses(allSubStatuses);
                 } else {
                     subStatusesLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
@@ -672,7 +672,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.city]: row.city,
             [TableHeadersNames.subOccupation]: row.subOccupation,
             [TableHeadersNames.investigatorName]: row.investigator.authorityName ? 
-                                                    row.investigator.userName + " - " + row.investigator.authorityName : 
+                                                    row.investigator.userName + ' - ' + row.investigator.authorityName : 
                                                     row.investigator.userName,
             [investigatorIdPropertyName]: row.investigator.id,
             [TableHeadersNames.investigationStatus]: row.mainStatus,

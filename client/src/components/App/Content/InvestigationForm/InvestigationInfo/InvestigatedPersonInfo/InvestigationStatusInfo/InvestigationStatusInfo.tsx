@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import React, {ChangeEvent, useEffect, useMemo} from 'react';
 import {Collapse, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography} from '@material-ui/core';
 
+import SubStatus from 'models/SubStatus';
 import StoreStateType from 'redux/storeStateType';
 import UserTypeCodes from 'models/enums/UserTypeCodes';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
@@ -27,7 +28,7 @@ const InvestigationStatusInfo = (props: any) => {
 
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     const statuses = useSelector<StoreStateType, InvestigationMainStatus[]>(state => state.statuses);
-    const subStatuses = useSelector<StoreStateType, string[]>(state => state.subStatuses);
+    const subStatuses = useSelector<StoreStateType, SubStatus[]>(state => state.subStatuses);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
 
     useEffect(() => {
@@ -37,7 +38,7 @@ const InvestigationStatusInfo = (props: any) => {
     }, [investigationStatus.subStatus]);
 
     const updatedSubStatuses = useMemo(() =>
-        investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ? [inProcess , ...subStatuses] : subStatuses,
+        investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ? [{displayName: inProcess, id: 0, parentStatus: 100000002} , ...subStatuses] : subStatuses,
         [subStatuses, investigationStatus]);
 
     const permittedStatuses = statuses.filter(status => status.id !== InvestigationMainStatusCodes.DONE);
@@ -123,8 +124,8 @@ const InvestigationStatusInfo = (props: any) => {
                                             test-id='currentSubStatus'
                                             label={subStatusLabel}
                                             value={investigationStatus.subStatus as string | undefined}
-                                            onChange={(event) => {
-                                                const newSubStatus = event.target.value as string
+                                            onChange={(event: any) => {
+                                                const newSubStatus = event.target.value?.displayName as string
                                                 setInvestigationStatus({
                                                     mainStatus: investigationStatus.mainStatus,
                                                     subStatus: newSubStatus ? String(newSubStatus) : null,
@@ -133,11 +134,11 @@ const InvestigationStatusInfo = (props: any) => {
                                             }}
                                         >
                                             {
-                                                updatedSubStatuses.map((subStatus: string) => (
+                                                updatedSubStatuses.map((subStatus: SubStatus) => (
                                                     <MenuItem
-                                                        key={subStatus}
-                                                        value={subStatus}>
-                                                        {subStatus}
+                                                        key={subStatus.id}
+                                                        value={subStatus.displayName}>
+                                                        {subStatus.displayName}
                                                     </MenuItem>
                                                 ))
                                             }
