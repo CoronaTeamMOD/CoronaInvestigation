@@ -6,7 +6,7 @@ import SelectDropdown from 'commons/Select/SelectDropdown';
 import useStyles from './adminActionStyles';
 import useAdminAction from './useAdminAction';
 import AdminDataBaseAction from './adminDataBaseAction/adminDataBaseAction';
-import AdminMessageAction from './adminMessageAction/adminMessageAction';
+import AdminMessages from './adminMessages/adminMessages';
 
 const AdminActions = (): JSX.Element => {
     const classes = useStyles();
@@ -32,7 +32,7 @@ const AdminActions = (): JSX.Element => {
                     <AdminDataBaseAction />
                 </Collapse>
                 <Collapse in={selectedAdminAction.id === adminActions[2].id} unmountOnExit>
-                    <AdminMessageAction />
+                    <AdminMessages />
                 </Collapse>
             </CardContent>
             
