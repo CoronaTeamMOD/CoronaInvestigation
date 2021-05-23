@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Grid, TextField } from '@material-ui/core';
 
 import UpdateButton from '../../UpdateButton/UpdateButton';
 import FieldName from 'commons/FieldName/FieldName';
+import useAdminDBAction from './useAdminDBAction';
 
 const addText = 'הוספה';
 const flightCompanyFieldName = 'חברת תעופה:';
@@ -10,9 +11,11 @@ const flightNumberFieldName = 'מספר טיסה:';
 
 const AdminDBAction = (): JSX.Element => {
 
-    const [flightCompany, setFlightCompany] = useState<string>('');
-    const [flightNumber, setFlightNumber] = useState<string>('');
-
+    const {
+        flightCompany, setFlightCompany,
+        flightNumber, setFlightNumber,
+        saveFlightNumber, saveFlightCompany
+    } = useAdminDBAction({});
 
     return (
         <Grid container xs={12} spacing={1} direction='column'>
@@ -30,7 +33,7 @@ const AdminDBAction = (): JSX.Element => {
                 </Grid>
                 <Grid item xs ={2}>
                     <UpdateButton 
-                        onClick={() => console.log('1')}
+                        onClick={() => saveFlightCompany(flightCompany)}
                         text={addText}
                     />      
                 </Grid>
@@ -49,7 +52,7 @@ const AdminDBAction = (): JSX.Element => {
                 </Grid>
                 <Grid item xs ={2}>
                     <UpdateButton 
-                        onClick={() => console.log('1')}
+                        onClick={() => saveFlightNumber(flightNumber)}
                         text={addText}
                     />      
                 </Grid>

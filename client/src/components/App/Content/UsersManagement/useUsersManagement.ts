@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import User from 'models/User';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
-import UserType from 'models/UserType';
 import Language from 'models/Language';
 import { Severity } from 'models/Logger';
 import SignUpUser from 'models/SignUpUser';
@@ -52,7 +51,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage, isDevelo
     const countyDisplayName = useSelector<StoreStateType, string>(state => state.user.data.countyByInvestigationGroup.displayName);
 
     const { alertError, alertWarning } = useCustomSwal();
-
 
     const deactivateAllCountyUsersWarningTitle = `האם אתה בטוח שתרצה לכבות את כל המשתמשים בנפת ${countyDisplayName}`;
 
@@ -154,7 +152,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage, isDevelo
 
     useEffect(() => {
         setCounter(users.filter((user => user.userName !== unassignedUserName)).length);
-    }, [users])
+    }, [users]);
     
     const watchUserInfo = (row: any) => {
         const userInfoToSet = {
