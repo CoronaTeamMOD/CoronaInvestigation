@@ -15,30 +15,18 @@ const AdminDBAction = (): JSX.Element => {
 
 
     return (
-        <Grid container xs={12} spacing={2}>
-            <Grid item container spacing={2} alignItems='center'>
+        <Grid container xs={12} spacing={1} direction='column'>
+            
+            <Grid item container xs={6} spacing={1} alignItems='center'>
+                <FieldName xs={2} fieldName={flightCompanyFieldName}/>
                 <Grid item xs={5}>
-                    <p>חברת תעופה</p>
-                </Grid>
-                <Grid item xs={2}>
-                    <UpdateButton 
-                        onClick={() => console.log('1')}
-                        text={addText}
-                    />                 
-                </Grid>
-          </Grid>
-
-          <Grid item container spacing={2} alignItems='center'>
-                <Grid item container xs={5}>
-                    <FieldName xs={2} fieldName={flightNumberFieldName}/>
-                    <Grid item xs={3}>
-                        <TextField
-                            value={flightNumber}
-                            onChange={(event: any) => {
-                                setFlightNumber(event?.target.value)
-                            }}
-                        />
-                    </Grid>
+                    <TextField
+                        fullWidth
+                        value={flightCompany}
+                        onChange={(event: any) => {
+                            setFlightCompany(event?.target.value)
+                        }}
+                    />
                 </Grid>
                 <Grid item xs ={2}>
                     <UpdateButton 
@@ -46,7 +34,27 @@ const AdminDBAction = (): JSX.Element => {
                         text={addText}
                     />      
                 </Grid>
-          </Grid>
+            </Grid>
+
+            <Grid item container xs={6} spacing={1} alignItems='center'>
+                <FieldName xs={2} fieldName={flightNumberFieldName}/>
+                <Grid item xs={5}>
+                    <TextField
+                        fullWidth
+                        value={flightNumber}
+                        onChange={(event: any) => {
+                            setFlightNumber(event?.target.value)
+                        }}
+                    />
+                </Grid>
+                <Grid item xs ={2}>
+                    <UpdateButton 
+                        onClick={() => console.log('1')}
+                        text={addText}
+                    />      
+                </Grid>
+            </Grid>
+
         </Grid>
     )
 };

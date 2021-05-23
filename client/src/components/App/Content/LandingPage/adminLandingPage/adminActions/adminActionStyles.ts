@@ -9,6 +9,9 @@ const useStyles = makeStyles({
     cardTitle: {
         marginBottom: theme.spacing(1)
     },
+    selectAction: {
+        marginBottom: theme.spacing(2)
+    }
 });
 
 export default useStyles;

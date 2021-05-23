@@ -16,7 +16,7 @@ const AdminActions = (): JSX.Element => {
     const classes = useStyles();
 
     const { onAdminActionChange, selectedAdminAction } = useAdminAction();
-    
+
     return (
         <Card className={classes.adminActionCard}>
             <CardContent >
@@ -24,7 +24,7 @@ const AdminActions = (): JSX.Element => {
                     <b>{adminActionTitle}</b>
                 </Typography>
 
-                <Grid xs={4}>
+                <Grid xs={4} className={classes.selectAction}>
                     <FormControl variant='outlined' fullWidth>
                         <SelectDropdown
                             onChange={onAdminActionChange}
