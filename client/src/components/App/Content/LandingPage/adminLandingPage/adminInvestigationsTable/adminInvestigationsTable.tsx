@@ -105,9 +105,9 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, fetchA
             })
             .catch((errorMessage) => { getComplexityReasonClickLogger.error(errorMessage, Severity.HIGH); })
         setInvestigationStatus({
-            mainStatus: adminInvestigation.investigationStatus,
-            subStatus: adminInvestigation.subStatus,
-            statusReason: adminInvestigation.statusReason
+            mainStatus: adminInvestigation.investigation_status,
+            subStatus: adminInvestigation.sub_status,
+            statusReason: adminInvestigation.status_reason
         });
 
         moveToTheInvestigationForm(adminInvestigation.id);
