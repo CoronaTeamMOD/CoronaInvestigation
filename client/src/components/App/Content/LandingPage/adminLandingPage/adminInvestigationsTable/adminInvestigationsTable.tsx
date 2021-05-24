@@ -1,19 +1,26 @@
 import _ from 'lodash';
+import axios from 'axios';
 import { format } from 'date-fns';
+import logger from 'logger/logger';
 import { persistor } from 'redux/store';
+import { useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import ProgressBar from "@ramonak/react-progress-bar";
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Tooltip, TableSortLabel } from '@material-ui/core';
 
+import User from 'models/User';
+import { Severity } from 'models/Logger';
+import StoreStateType from 'redux/storeStateType';
 import SortOrder from 'models/enums/SortOrder';
 import LoadingCard from '../LoadingCard/LoadingCard';
 import adminInvestigation from 'models/adminInvestigation';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import useStyles, { cardHeight } from './adminInvestigationsTableStyles';
 import { Order } from '../../InvestigationTable/InvestigationTablesHeaders';
+import { setComplexReasonsId } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { TableHeadersNames, TableHeaders, SortableTableHeaders } from './adminInvestigationsTableHeaders';
-import { setDisplayedDistrict } from 'redux/User/userActionCreators';
 
 const investigationURL = '/investigation';
 export const defaultOrderBy = 'defaultOrder';
@@ -21,7 +28,8 @@ export const defaultOrderBy = 'defaultOrder';
 const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, fetchAdminInvestigations, isLoading }) => {
 
     const classes = useStyles();
-    const orderBytype = adminInvestigations[0]
+    const orderBytype = adminInvestigations[0];
+    const user = useSelector<StoreStateType, User>(state => state.user.data);
     const [sortedAdminInvestigations, setSortedAdminInvestigations] = useState<adminInvestigation[]>(adminInvestigations);
     const [order, setOrder] = useState<Order>(SortOrder.asc);
     const [orderBy, setOrderBy] = useState<keyof typeof orderBytype | 'defaultOrder'>(defaultOrderBy);
@@ -79,6 +87,32 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, fetchA
         return props;
     }
 
+    const onInvestigationRowClick = async (adminInvestigation: adminInvestigation) => {
+        const getComplexityReasonClickLogger = logger.setupVerbose({
+            workflow: 'get Complexity Reason when opening an investigation',
+            investigation: adminInvestigation.id,
+            user: user.id
+        });
+        await axios.get('/investigationInfo/getComplexityReason/'+ adminInvestigation.id)
+            .then((result) => {
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    setComplexReasonsId(result.data)
+                    getComplexityReasonClickLogger.info('the chosen investigation have complexity reasons', Severity.LOW);
+                } else { 
+                    setComplexReasonsId([]) 
+                    getComplexityReasonClickLogger.info('the chosen investigation dont have complexity reasons', Severity.LOW);
+                    }
+            })
+            .catch((errorMessage) => { getComplexityReasonClickLogger.error(errorMessage, Severity.HIGH); })
+        setInvestigationStatus({
+            mainStatus: adminInvestigation.investigation_status,
+            subStatus: adminInvestigation.sub_status,
+            statusReason: adminInvestigation.status_reason
+        });
+
+        moveToTheInvestigationForm(adminInvestigation.id);
+    };
+
     const moveToTheInvestigationForm = async (epidemiologyNumberVal: number) => {
         setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
         await persistor.flush();
@@ -120,7 +154,7 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, fetchA
                                 <TableRow
                                     id={`adminInvestigation-row-${adminInvestigation.id}`}
                                     key={adminInvestigation.id}
-                                    onClick={() => moveToTheInvestigationForm(adminInvestigation.id)}
+                                    onClick={() => onInvestigationRowClick(adminInvestigation)}
                                     classes={{ selected: classes.selected }}
                                     className={classes.tableRow}>
                                     {

@@ -1,6 +1,6 @@
 -- FUNCTION: public.admin_investigations(integer,integer[],character varying,timestamp without time zone,timestamp without time zone)
 
--- DROP FUNCTION public.admin_investigations(integer,integer[],character varying,start_date_input timestamp without time zone,end_date_input timestamp without time zone);
+ DROP FUNCTION public.admin_investigations(integer,integer[],character varying,start_date_input timestamp without time zone,end_date_input timestamp without time zone);
 
 CREATE OR REPLACE FUNCTION public.admin_investigations(
 	county_input integer,
@@ -24,11 +24,13 @@ select inv.epidemiology_number as id, inv.creation_date, de.desk_name, usr.user_
 		DATE_PART('hour', NOW() at time zone 'utc' - creation_date)) AS hours,
 		(DATE_PART('day', NOW() at time zone 'utc' - creation_date) * 24 * 60 + 
 		DATE_PART('hour', NOW() at time zone 'utc' - creation_date) * 60 +
-		DATE_PART('minute', NOW() at time zone 'utc' - creation_date)) AS minutes
+		DATE_PART('minute', NOW() at time zone 'utc' - creation_date)) AS minutes,
+		inv.investigation_status, iss.display_name as sub_status, inv.status_reason
 	from public.investigation inv
 join public.covid_patients cp on cp.epidemiology_number = inv.epidemiology_number
 join public.desks de on de.id = inv.desk_id
 join public.user usr on usr.id = inv.creator
+join public.investigation_sub_status iss on iss.parent_status = inv.investigation_status
 where inv.investigation_status = 100000002
 and creator IN (
 	SELECT id FROM public.user 
