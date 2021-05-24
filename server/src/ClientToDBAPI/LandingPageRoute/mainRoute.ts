@@ -8,7 +8,7 @@ import { convertUserInvestigationsData, convertGroupInvestigationsData } from '.
 import { CHANGE_DESK_ID, UPDATE_DESK_BY_GROUP_ID } from '../../DBService/LandingPage/Mutation';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
-import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS, GET_INVESTIGATION_STATISTICS, GET_ALL_INVESTIGATION_SUB_STATUS } from '../../DBService/LandingPage/Query';
+import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS, GET_INVESTIGATION_STATISTICS, GET_ALL_INVESTIGATION_SUB_STATUS, GET_ALL_ADMIN_INVESTIGATIONS } from '../../DBService/LandingPage/Query';
 
 const landingPageRoute = Router();
 
@@ -111,6 +111,38 @@ landingPageRoute.get('/investigationStatuses', (request: Request, response: Resp
         })
         .catch(error => {
             investigationStatusesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
+})
+
+landingPageRoute.post('/adminInvestigations', (request: Request, response: Response) => {
+    const adminInvestigationsLogger = logger.setup({
+        workflow: 'query all admin investigations',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber,
+    });
+
+    const desks = request.body.desks;
+    const orderBy = request.body.orderBy; 
+    const county = request.body.county;
+    const timeRange = request.body.timeRangeFilter;  
+
+    const parameters = {
+        county,
+        desks,
+        orderBy,
+        startDate: timeRange?.startDate,
+        endDate: timeRange?.endDate
+    }
+
+    adminInvestigationsLogger.info(launchingDBRequestLog(), Severity.LOW);
+    graphqlRequest(GET_ALL_ADMIN_INVESTIGATIONS, response.locals, parameters)
+        .then((result: any) => {
+            adminInvestigationsLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data.adminInvestigations.json);
+        })
+        .catch(error => {
+            adminInvestigationsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         });
 })
