@@ -2,6 +2,7 @@
 
 -- DROP SEQUENCE public.airlines_id_seq;
 
+-- The number on START need to be last ID on airlines table so sequence will be right, now number is according to coronai-App-Testing DB.
 CREATE SEQUENCE public.airlines_id_seq
     INCREMENT 1
     START 77
