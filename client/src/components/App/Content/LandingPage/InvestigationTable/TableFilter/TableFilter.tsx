@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Autocomplete } from '@material-ui/lab';
 import { Card, Checkbox, Collapse, FormControl, Grid, Box, TextField, Typography } from '@material-ui/core';
 
@@ -10,7 +10,6 @@ import DateRangePick from 'commons/DatePick/DateRangePick';
 import SelectDropdown from 'commons/Select/SelectDropdown';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
-import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import timeRanges, { customTimeRange, timeRangeMinDate } from 'models/enums/timeRanges';
 
 import useStyles from './TableFilterStyles';
@@ -39,9 +38,16 @@ const TableFilter = (props: Props) => {
         onTimeRangeFilterChange
     });
 
-    const [subStatusFiltered, setSubStatusFiltered] = useState<SubStatus[]>(subStatuses);
+    const [subStatusFiltered, setSubStatusFiltered] = useState<SubStatus[]>([]);
+    const [selectedStatuses, setSelectedStatuses] = useState<InvestigationMainStatus[]>([]);
 
     const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id;
+
+    useEffect(() => {
+        selectedStatuses.length > 0 
+            ? setSubStatusFiltered(subStatuses.filter(subStatus => selectedStatuses.map(status => status.id).includes(subStatus.parentStatus)))
+            : setSubStatusFiltered(subStatuses)
+    }, [subStatuses, selectedStatuses]);
 
     return (
         <Card className={classes.card}>
@@ -87,9 +93,7 @@ const TableFilter = (props: Props) => {
                 getOptionLabel={(option) => option.displayName}
                 onChange={(event, value) => {
                     onFilterChange(value);
-                    value.length > 0 
-                        ? setSubStatusFiltered(subStatuses.filter(subStatus => value.map(status => status.id).includes(subStatus.parentStatus)))
-                        : setSubStatusFiltered(subStatuses)
+                    setSelectedStatuses(value);
                 }}
                 renderInput={(params) =>
                     <TextField
@@ -120,7 +124,7 @@ const TableFilter = (props: Props) => {
                 size='small'
                 disableCloseOnSelect
                 multiple
-                options={subStatusFiltered.length > 0 ? subStatusFiltered : subStatuses}
+                options={subStatusFiltered}
                 value={subStatusFiltered.filter(subStatus => filteredSubStatuses.includes(subStatus.displayName))}
                 getOptionLabel={(option) => option.displayName}
                 onChange={onSubStatusChange}
