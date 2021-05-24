@@ -78,7 +78,8 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                         isLoading={isLoading}
                         allInvestigationsCount={investigationsStatistics.allInvestigations}
                         investigationsStatistics={investigationsStatistics as InvesitgationInfoStatistics}
-                        onInfoButtonClick={(infoFilter, filterType) => redirectToInvestigationTable(infoFilter, filterType)} />
+                        onInfoButtonClick={(infoFilter, filterType) => redirectToInvestigationTable(infoFilter, filterType)} 
+                    />
                 </Grid>
                 <Grid item xs={12}>
                     <Typography  className={classes.invTitle}>
@@ -87,7 +88,8 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                     <AdminInvestigationsTable
                         isLoading={isAdminInvestigationsLoading}
                         adminInvestigations={adminInvestigations}
-                        fetchAdminInvestigations={fetchAdminInvestigations}/>
+                        fetchAdminInvestigations={fetchAdminInvestigations}
+                    />
                 </Grid>
                 <Grid item xs={12} >
                     <AdminActions/>

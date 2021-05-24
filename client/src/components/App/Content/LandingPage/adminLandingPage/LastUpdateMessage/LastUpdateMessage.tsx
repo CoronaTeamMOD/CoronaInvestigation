@@ -26,7 +26,7 @@ const LastUpdateMessage = (props: Props) => {
         }
     }, [lastUpdated]);
 
-    const fetchAll = () =>{
+    const fetchAll = () => {
         fetchInvestigationStatistics();
         fetchAdminInvestigations(defaultOrderBy);
     }

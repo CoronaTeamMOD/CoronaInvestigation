@@ -1,13 +1,13 @@
 interface adminInvestigation {
     id: number;
-    creation_date: Date;
+    creationDate: Date;
     minutes: number;
     deskName: string;
     userName: string;
     hours: number;
-    investigation_status: number;
-    sub_status: string | null;
-    status_reason: string | null;
+    investigationStatus: number;
+    subStatus: string | null;
+    statusReason: string | null;
 };
 
 export default adminInvestigation;
