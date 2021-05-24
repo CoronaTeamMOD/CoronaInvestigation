@@ -5,14 +5,14 @@ import { useEffect, useState } from 'react';
 
 import User from 'models/User';
 import logger from 'logger/logger';
+import Airline from 'models/Airline';
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import Environment from 'models/enums/Environments';
-import UserTypeCodes from 'models/enums/UserTypeCodes';
 import { setDesks } from 'redux/Desk/deskActionCreators';
-import { initialUserState } from 'redux/User/userReducer';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setCounties } from 'redux/County/countyActionCreators';
+import { setAirlines } from 'redux/Airlines/airlineActionCreators';
 import { setDistricts } from 'redux/District/districtActionCreators';
 import { setUser, setUserTypes } from 'redux/User/userActionCreators';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
@@ -58,6 +58,7 @@ const useApp = () => {
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const isUserLoggedIn = useSelector<StoreStateType, boolean>(state => state.user.isLoggedIn);
     const displayedDistrict = useSelector<StoreStateType, number>(state => state.user.displayedDistrict);
+    const airlines = useSelector<StoreStateType, Map<number, string>>(state => state.airlines);
 
     const [isSignUpOpen, setIsSignUpOpen] = useState<boolean>(false);
     const { alertError } = useCustomSwal();
@@ -170,6 +171,26 @@ const useApp = () => {
             });
     };
 
+    const fetchAirlines = () => {
+        const airlineLogger = logger.setup('Fetching Airlines');
+
+        airlineLogger.info('launching DB request', Severity.LOW);
+        axios.get<Airline[]>('/airlines')
+            .then(result => {
+                airlineLogger.info('request was successful', Severity.LOW);
+
+                const airlinesMap = airlineListToMap(result.data);
+                setAirlines(airlinesMap);
+            })
+            .catch(err => {
+                airlineLogger.error(`recived error during request, err: ${err}`, Severity.HIGH);
+            });
+    };
+
+    const airlineListToMap = (airlines : Airline[]) => {
+        return new Map(airlines.map(airline => [airline.id, airline.displayName]));
+    };
+
     useEffect(() => {
         if(!isUserLoggedIn) {
             initUser();
@@ -178,6 +199,7 @@ const useApp = () => {
         fetchUserTypes();
         fetchDistricts();            
         fetchAllCounties();
+        fetchAirlines();
     }, []);
 
     useEffect(() => {
