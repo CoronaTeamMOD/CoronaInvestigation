@@ -32,7 +32,7 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, fetchA
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const [sortedAdminInvestigations, setSortedAdminInvestigations] = useState<adminInvestigation[]>(adminInvestigations);
     const [order, setOrder] = useState<Order>(SortOrder.asc);
-    const [orderBy, setOrderBy] = useState<keyof typeof orderBytype | 'defaultOrder'>(defaultOrderBy);
+    const [orderBy, setOrderBy] = useState<keyof typeof orderBytype | typeof defaultOrderBy >(defaultOrderBy);
     const [orderByValue, setOrderByValue] = useState<string>(defaultOrderBy);
 
     useEffect(() => {
@@ -48,19 +48,19 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, fetchA
         const newOrder = isAsc ? SortOrder.desc : SortOrder.asc;
         setOrder(newOrder);
         setOrderBy(property);
-        property === defaultOrderBy ? setOrderByValue(property) : setOrderByValue(property + newOrder.toLocaleUpperCase());
+        property === defaultOrderBy ? setOrderByValue(property) : setOrderByValue(property + newOrder.toUpperCase());
     };
 
     const getTableCell = (adminInvestigation: adminInvestigation, cellName: string) => {
         switch (cellName) {
-            case TableHeadersNames.creation_date:
+            case TableHeadersNames.creationDate:
                 let creationDate = new Date(get(adminInvestigation, cellName));
                 return (format(creationDate,'dd/MM/yyyy HH:MM'));
             case TableHeadersNames.deskName:
                 return get(adminInvestigation, cellName) ? get(adminInvestigation, cellName) : 'לא משוייך';
             case TableHeadersNames.hours:
                 let barProps = getProgressLength(get(adminInvestigation, cellName));
-                return (<Tooltip title={barProps.hours + " שעות"} arrow placement='top'>
+                return (<Tooltip title={barProps.hours + ' שעות'} arrow placement='top'>
                             <div>
                                 <ProgressBar completed={barProps.progressLen} bgColor={barProps.color} isLabelVisible={false}/>
                             </div>
@@ -71,17 +71,17 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, fetchA
     };
 
     const getProgressLength = (hours : number) => {
-        let props = {hours:hours, progressLen: 100, color: "red"};
+        let props = {hours, progressLen: 100, color: 'red'};
 
         if(hours <= 2) {
             props.progressLen = 25;
-            props.color = "green";
+            props.color = 'green';
         } else if (hours <= 3) {
             props.progressLen = 50;
-            props.color = "yellow";
+            props.color = 'yellow';
         } else if (hours <= 4) {
             props.progressLen = 75;
-            props.color = "orange";
+            props.color = 'orange';
         }
 
         return props;
@@ -131,9 +131,7 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, fetchA
                                         <TableCell key={cellName}
                                             sortDirection={orderBy === cellName ? order : false}
                                         >
-                                            <Tooltip title={''}>
-                                                <b>{get(TableHeaders, cellName)} </b>
-                                            </Tooltip>
+                                            <b>{get(TableHeaders, cellName)}</b>
                                             { get(SortableTableHeaders, cellName) &&
                                                 <TableSortLabel
                                                     classes={{ root: cellName === orderBy ? classes.activeSortIcon : '', icon: classes.icon, active: classes.active }}

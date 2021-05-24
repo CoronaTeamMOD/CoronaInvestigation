@@ -43,7 +43,7 @@ const useAdminLandingPage = (parameters: Parameters) => {
 
     const { 
         setIsLoading, setInvestigationsStatistics, 
-        setadminInvestigations ,setLastUpdated,setAdminInvestigationsIsLoading
+        setadminInvestigations ,setLastUpdated, setAdminInvestigationsIsLoading
     } = parameters;    
 
     const updateInvestigationFilterByDesks =  (deskFilter: number[]) => {
