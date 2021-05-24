@@ -43,22 +43,12 @@ AND (desks_input is NULL OR inv.desk_id IN (SELECT unnest(desks_input)))
 AND ( start_date_input is NULL OR end_date_input IS NULL OR creation_date >= start_date_input AND creation_date < end_date_input)
 	
 order by
-	CASE WHEN order_by='creation_dateDESC' THEN inv.creation_date END DESC,
-	CASE WHEN order_by='creation_dateASC' THEN inv.creation_date END ASC,
+	CASE WHEN order_by in ('creation_dateDESC','hoursASC','minutesASC') THEN inv.creation_date END DESC,
+	CASE WHEN order_by in ('creation_dateASC','hoursDESC','minutesDESC') THEN inv.creation_date END ASC,
 	CASE WHEN order_by='desk_nameDESC' THEN de.desk_name END DESC,
 	CASE WHEN order_by='desk_nameASC' THEN de.desk_name END ASC,
 	CASE WHEN order_by='user_nameDESC' THEN usr.user_name END DESC,
 	CASE WHEN order_by='user_nameASC' THEN usr.user_name END ASC,
-	CASE WHEN order_by='hoursDESC' THEN (DATE_PART('day', NOW() at time zone 'utc' - creation_date) * 24 + 
-		DATE_PART('hour', NOW() at time zone 'utc' - creation_date)) END DESC,
-	CASE WHEN order_by='hoursASC' THEN (DATE_PART('day', NOW() at time zone 'utc' - creation_date) * 24 + 
-		DATE_PART('hour', NOW() at time zone 'utc' - creation_date)) END ASC,
-	CASE WHEN order_by='minutesDESC' THEN (DATE_PART('day', NOW() at time zone 'utc' - creation_date) * 24 * 60 + 
-		DATE_PART('hour', NOW() at time zone 'utc' - creation_date) * 60 +
-		DATE_PART('minute', NOW() at time zone 'utc' - creation_date)) END DESC,
-	CASE WHEN order_by='minutesASC' THEN (DATE_PART('day', NOW() at time zone 'utc' - creation_date) * 24 * 60 + 
-		DATE_PART('hour', NOW() at time zone 'utc' - creation_date) * 60 +
-		DATE_PART('minute', NOW() at time zone 'utc' - creation_date)) END ASC,
 	CASE WHEN order_by='defaultOrder' THEN inv.creation_date END DESC)
 	src into res ;
 return res;

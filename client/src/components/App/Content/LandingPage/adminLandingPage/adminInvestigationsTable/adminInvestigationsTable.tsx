@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { format } from 'date-fns';
 import { persistor } from 'redux/store';
 import React, { useEffect, useState } from 'react';
 import ProgressBar from "@ramonak/react-progress-bar";
@@ -12,6 +13,7 @@ import useStyles, { cardHeight } from './adminInvestigationsTableStyles';
 import { Order } from '../../InvestigationTable/InvestigationTablesHeaders';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { TableHeadersNames, TableHeaders, SortableTableHeaders } from './adminInvestigationsTableHeaders';
+import { setDisplayedDistrict } from 'redux/User/userActionCreators';
 
 const investigationURL = '/investigation';
 export const defaultOrderBy = 'defaultOrder';
@@ -43,6 +45,9 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, fetchA
 
     const getTableCell = (adminInvestigation: adminInvestigation, cellName: string) => {
         switch (cellName) {
+            case TableHeadersNames.creation_date:
+                let creationDate = new Date(get(adminInvestigation, cellName));
+                return (format(creationDate,'dd/MM/yyyy HH:MM'));
             case TableHeadersNames.deskName:
                 return get(adminInvestigation, cellName) ? get(adminInvestigation, cellName) : 'לא משוייך';
             case TableHeadersNames.hours:
