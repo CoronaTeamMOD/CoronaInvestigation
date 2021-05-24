@@ -1,6 +1,6 @@
 -- FUNCTION: public.admin_investigations(integer,integer[],character varying,timestamp without time zone,timestamp without time zone)
 
- DROP FUNCTION public.admin_investigations(integer,integer[],character varying,start_date_input timestamp without time zone,end_date_input timestamp without time zone);
+-- DROP FUNCTION public.admin_investigations(integer,integer[],character varying,start_date_input timestamp without time zone,end_date_input timestamp without time zone);
 
 CREATE OR REPLACE FUNCTION public.admin_investigations(
 	county_input integer,
