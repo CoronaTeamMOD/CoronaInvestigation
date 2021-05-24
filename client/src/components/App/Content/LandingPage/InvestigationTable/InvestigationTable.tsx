@@ -30,6 +30,7 @@ import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTa
 import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorAllocationDialog';
 import useInvestigationTable, { SelectedRow, DEFAULT_SELECTED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
+import AdminMessages from './adminMessages/adminMessages';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -244,6 +245,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     return (
         <div onClick={closeDropdowns} >
             <Grid className={classes.content}>
+            <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
+                <Grid item xs={12}>
+                    <AdminMessages />
+                </Grid>
+            </Grid>
                 <div className={classes.tableHeaderRow}>
                     <Typography color='primary' className={classes.counterLabel} >
                         {counterDescription}
