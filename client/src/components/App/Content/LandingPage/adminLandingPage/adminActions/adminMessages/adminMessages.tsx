@@ -21,6 +21,8 @@ const AdminMessages = (): JSX.Element => {
             messageText={''}
             onButtonClick={(message: string)=>{console.log('send ' , message)}}
             isNewMessage={true}
+            toDisable={false}
+            toEnableAction={true}
           />
           <Collapse in={messages.length>0} unmountOnExit>
             <div>
@@ -30,6 +32,8 @@ const AdminMessages = (): JSX.Element => {
                   messageText={message.messageText}
                   onButtonClick={(message: string)=>{console.log('remove ', message)}}
                   isNewMessage={false}
+                  toDisable={true}
+                  toEnableAction={true}
                 />
               ))}
             </div>

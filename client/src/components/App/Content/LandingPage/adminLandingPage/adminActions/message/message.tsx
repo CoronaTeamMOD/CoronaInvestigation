@@ -22,6 +22,7 @@ const Message: React.FC<Props> = (props: Props): JSX.Element => {
               id="outlined-basic" 
               variant="outlined"
               placeholder="הקלד הודעה חדשה"
+              disabled = {props.toDisable}
             />
           </Grid>
           <Grid item xs={1}>
@@ -36,7 +37,7 @@ const Message: React.FC<Props> = (props: Props): JSX.Element => {
                   <b>{sendText}</b>
               </Button>
             </Collapse>
-            <Collapse in={!props.isNewMessage}>
+            <Collapse in={!props.isNewMessage && props.toEnableAction}>
               <IconButton 
                 onClick={()=>{props.onButtonClick(message)}}
                 disabled={!(message && message !== '')}>
@@ -50,8 +51,10 @@ const Message: React.FC<Props> = (props: Props): JSX.Element => {
 
 interface Props {
   messageText: string;
-  onButtonClick: (message: string) => void
-  isNewMessage: boolean
+  onButtonClick: (message: string) => void;
+  isNewMessage: boolean;
+  toDisable: boolean;
+  toEnableAction: boolean;
 };
 
 export default Message;
