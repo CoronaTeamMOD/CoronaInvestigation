@@ -257,7 +257,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             filteredStatuses={statusFilter}
                             onFilterChange={changeStatusFilter}
                             filteredSubStatuses={subStatusFilter}
-                            onSubStatusChange={(event, value) => changeSubStatusFilter(value)}
+                            onSubStatusChange={changeSubStatusFilter}
                             changeInactiveUserFilter={changeInactiveUserFilter}
                             changeUnassginedUserFilter={changeUnassginedUserFilter}
                             inactiveUserFilter={inactiveUserFilter}
