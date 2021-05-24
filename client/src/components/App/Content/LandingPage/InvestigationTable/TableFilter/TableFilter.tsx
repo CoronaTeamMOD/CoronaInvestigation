@@ -9,6 +9,7 @@ import SearchBar from 'commons/SearchBar/SearchBar';
 import DateRangePick from 'commons/DatePick/DateRangePick';
 import SelectDropdown from 'commons/Select/SelectDropdown';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
 import timeRanges, { customTimeRange, timeRangeMinDate } from 'models/enums/timeRanges';
 
@@ -39,13 +40,13 @@ const TableFilter = (props: Props) => {
     });
 
     const [subStatusFiltered, setSubStatusFiltered] = useState<SubStatus[]>([]);
-    const [selectedStatuses, setSelectedStatuses] = useState<InvestigationMainStatus[]>([]);
+    const [selectedStatuses, setSelectedStatuses] = useState<InvestigationMainStatusCodes[]>(filteredStatuses);
 
     const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id;
 
     useEffect(() => {
         selectedStatuses.length > 0 
-            ? setSubStatusFiltered(subStatuses.filter(subStatus => selectedStatuses.map(status => status.id).includes(subStatus.parentStatus)))
+            ? setSubStatusFiltered(subStatuses.filter(subStatus => selectedStatuses.includes(subStatus.parentStatus)))
             : setSubStatusFiltered(subStatuses)
     }, [subStatuses, selectedStatuses]);
 
@@ -89,11 +90,11 @@ const TableFilter = (props: Props) => {
                 disableCloseOnSelect
                 multiple
                 options={statuses}
-                value={statuses.filter(status => filteredStatuses.includes(status.id))}
+                value={statuses.filter(status => selectedStatuses.includes(status.id))}
                 getOptionLabel={(option) => option.displayName}
-                onChange={(event, value) => {
-                    onFilterChange(value);
-                    setSelectedStatuses(value);
+                onChange={(event, values) => {
+                    onFilterChange(values);
+                    setSelectedStatuses(values.map(value => value.id));
                 }}
                 renderInput={(params) =>
                     <TextField
@@ -127,7 +128,13 @@ const TableFilter = (props: Props) => {
                 options={subStatusFiltered}
                 value={subStatusFiltered.filter(subStatus => filteredSubStatuses.includes(subStatus.displayName))}
                 getOptionLabel={(option) => option.displayName}
-                onChange={onSubStatusChange}
+                onChange={(event, value) => {
+                    onSubStatusChange(value);
+                    value.length > 0 
+                        ? setSelectedStatuses(statuses.filter(status => value.map(subStatus => subStatus.parentStatus).includes(status.id)).map(status => status.id))
+                        : setSelectedStatuses(filteredStatuses)
+                        
+                }}
                 renderInput={(params) =>
                     <TextField
                         label={'תת סטטוס'}
@@ -193,7 +200,7 @@ interface Props {
     changeUnassginedUserFilter: (isFilterOn: boolean) => void;
     changeInactiveUserFilter: (isFilterOn: boolean) => void;
     onFilterChange: (selectedStatuses: InvestigationMainStatus[]) => void;
-    onSubStatusChange: (event: React.ChangeEvent<{}>, selectedSubStatuses: SubStatus[]) => void;
+    onSubStatusChange: (selectedSubStatuses: SubStatus[]) => void;
     timeRangeFilter: TimeRange;
     onTimeRangeFilterChange: (timeRangeFilter: TimeRange) => void;
     updateDateFilter: string;
