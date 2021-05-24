@@ -3,23 +3,28 @@ import { CardContent, Typography, FormControl, Collapse, Card, Grid } from '@mat
 
 import adminActions from 'models/enums/adminActions';
 import SelectDropdown from 'commons/Select/SelectDropdown';
+
 import useStyles from './adminActionStyles';
 import useAdminAction from './useAdminAction';
-import AdminDataBaseAction from './adminDataBaseAction/adminDataBaseAction';
+import AdminDBAction from './adminDBAction/adminDBAction';
 import AdminMessageAction from './adminMessageAction/adminMessageAction';
 
+const adminActionTitle = 'פעולות אדמין';
+
 const AdminActions = (): JSX.Element => {
+
     const classes = useStyles();
 
-    const { onAdminActionChange, selectedAdminAction} = useAdminAction();
-    const adminActionTitle = 'פעולות אדמין';
+    const { onAdminActionChange, selectedAdminAction } = useAdminAction();
+
     return (
         <Card className={classes.adminActionCard}>
             <CardContent >
                 <Typography className={classes.cardTitle}>
                     <b>{adminActionTitle}</b>
                 </Typography>
-                <Grid xs={4}>
+
+                <Grid xs={4} className={classes.selectAction}>
                     <FormControl variant='outlined' fullWidth>
                         <SelectDropdown
                             onChange={onAdminActionChange}
@@ -28,16 +33,18 @@ const AdminActions = (): JSX.Element => {
                         />
                     </FormControl>
                 </Grid>
+
                 <Collapse in={selectedAdminAction.id === adminActions[1].id} unmountOnExit>
-                    <AdminDataBaseAction />
+                    <AdminDBAction />
                 </Collapse>
+
                 <Collapse in={selectedAdminAction.id === adminActions[2].id} unmountOnExit>
                     <AdminMessageAction />
                 </Collapse>
+
             </CardContent>
-            
         </Card>
     )
-}
+};
 
 export default AdminActions;

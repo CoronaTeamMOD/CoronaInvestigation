@@ -3,15 +3,12 @@ import { Button } from '@material-ui/core';
 
 import useStyles from './UpdateButtonStyles';
 
-interface Props {
-    onClick? : () => void;
-    id?: string;
-}
-
 const UpdateButton = (props : Props): JSX.Element => {
+    
     const classes = useStyles();
-    const {onClick, id} = props;
-
+    
+    const { onClick, id, text, disabled } = props;
+    
     return (
         <Button
             className={classes.updateButton}
@@ -19,10 +16,18 @@ const UpdateButton = (props : Props): JSX.Element => {
             size='small'
             id={id}
             onClick={onClick}
-            >
-            עדכון
+            disabled={disabled}
+        >
+            {text}
         </Button>
     )
-}
+};
+
+interface Props {
+    onClick? : () => void;
+    id?: string;
+    text?: string;
+    disabled?: boolean;
+};
 
 export default UpdateButton;
