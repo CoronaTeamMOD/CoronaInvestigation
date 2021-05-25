@@ -41,6 +41,7 @@ const TableFilter = (props: Props) => {
 
     const [subStatusFiltered, setSubStatusFiltered] = useState<SubStatus[]>([]);
     const [selectedStatuses, setSelectedStatuses] = useState<InvestigationMainStatusCodes[]>(filteredStatuses);
+    const [selectedSubStatuses, setSelectedSubStatuses] = useState<string[]>(filteredSubStatuses);
 
     const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id;
 
@@ -48,8 +49,14 @@ const TableFilter = (props: Props) => {
         selectedStatuses.length > 0 
             ? setSubStatusFiltered(subStatuses.filter(subStatus => selectedStatuses.includes(subStatus.parentStatus)))
             : setSubStatusFiltered(subStatuses)
-    }, [subStatuses, selectedStatuses]);
-
+    }, [subStatuses, selectedSubStatuses, filteredStatuses, selectedStatuses]);
+        
+    useEffect(() => {
+        filteredSubStatuses.length > 0 
+            ? setSelectedStatuses(subStatuses.filter(subStatus => filteredSubStatuses.includes(subStatus.displayName)).map(subStatus => subStatus.parentStatus))
+            : setSelectedStatuses(filteredStatuses)
+    }, [filteredSubStatuses, subStatuses]);
+        
     return (
         <Card className={classes.card}>
             <Grid className={classes.startCard}>
@@ -126,12 +133,13 @@ const TableFilter = (props: Props) => {
                 disableCloseOnSelect
                 multiple
                 options={subStatusFiltered}
-                value={subStatusFiltered.filter(subStatus => filteredSubStatuses.includes(subStatus.displayName))}
+                value={subStatusFiltered.filter(subStatus => selectedSubStatuses.includes(subStatus.displayName))}
                 getOptionLabel={(option) => option.displayName}
-                onChange={(event, value) => {
-                    onSubStatusChange(value);
-                    value.length > 0 
-                        ? setSelectedStatuses(statuses.filter(status => value.map(subStatus => subStatus.parentStatus).includes(status.id)).map(status => status.id))
+                onChange={(event, values) => {
+                    onSubStatusChange(values);
+                    setSelectedSubStatuses(values.map(value => value.displayName));
+                    values.length > 0 
+                        ? setSelectedStatuses(statuses.filter(status => values.map(subStatus => subStatus.parentStatus).includes(status.id)).map(status => status.id))
                         : setSelectedStatuses(filteredStatuses)
                         
                 }}
