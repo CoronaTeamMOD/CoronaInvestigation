@@ -113,7 +113,7 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
     },
     [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: (dateFilter: string) => {
         return dateFilter ? { [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: { 
-            lastUpdateTime: {
+            startTime: {
                 lessThan: dateFilter
             }
         } } :  { [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: null };

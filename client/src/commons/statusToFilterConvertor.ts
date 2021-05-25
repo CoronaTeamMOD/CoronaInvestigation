@@ -23,10 +23,7 @@ const statusToFilterConvertor = {
     },
     [FilterRulesDescription.UNUSUAL_IN_PROCESS]: {
         statusFilter: [InvestigationMainStatusCodes.IN_PROCESS],
-        updateDateFilter: new Date(Date.now() - FOUR_HOURS_IN_MS).toUTCString(),
-        subStatusFilter: [InvestigationSubStatusCodes.TRANSFER_REQUEST,
-                          InvestigationSubStatusCodes.WAITING_FOR_DETAILS,
-                          InvestigationSubStatusCodes.WAITING_FOR_RESPONSE]
+        updateDateFilter: new Date(Date.now() - FOUR_HOURS_IN_MS).toUTCString()
     },
     [FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT]: {
         statusFilter: [InvestigationMainStatusCodes.DONE],
