@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import UseCache from '../../../middlewares/UseCache';
 
-import getAirlines from './getAirlines';
 import addAirline from './addAirline';
+import getAirlines from './getAirlines';
+import { adminMiddleWare } from '../../../middlewares/Authentication';
 
 const router = Router();
 router.get('/', getAirlines);
-router.post('/airline', addAirline);
+router.post('/airline',adminMiddleWare, addAirline);
 
 export default router;
