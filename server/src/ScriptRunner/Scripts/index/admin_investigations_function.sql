@@ -27,10 +27,9 @@ select inv.epidemiology_number as id, inv.creation_date, de.desk_name, usr.user_
 		DATE_PART('minute', NOW() at time zone 'utc' - creation_date)) AS minutes,
 		inv.investigation_status, iss.display_name as sub_status, inv.status_reason
 	from public.investigation inv
-join public.covid_patients cp on cp.epidemiology_number = inv.epidemiology_number
-join public.desks de on de.id = inv.desk_id
-join public.user usr on usr.id = inv.creator
-join public.investigation_sub_status iss on iss.parent_status = inv.investigation_status
+left join public.desks de on de.id = inv.desk_id
+left join public.user usr on usr.id = inv.creator
+left join public.investigation_sub_status iss on iss.display_name = inv.investigation_sub_status
 where inv.investigation_status = 100000002
 and creator IN (
 	SELECT id FROM public.user 
