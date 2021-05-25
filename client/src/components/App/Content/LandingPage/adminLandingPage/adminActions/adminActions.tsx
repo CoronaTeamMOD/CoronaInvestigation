@@ -11,7 +11,7 @@ import AdminDBAction from './adminDBAction/adminDBAction';
 
 const adminActionTitle = 'פעולות אדמין';
 
-const AdminActions = (): JSX.Element => {
+const AdminActions: React.FC<Props> = (props: Props): JSX.Element => {
 
     const classes = useStyles();
 
@@ -39,7 +39,9 @@ const AdminActions = (): JSX.Element => {
                 </Collapse>
 
                 <Collapse in={selectedAdminAction.id === adminActions[2].id} unmountOnExit>
-                    <AdminMessages />
+                    <AdminMessages 
+                        investigationInfoFilter={props.investigationInfoFilter}
+                    />
                 </Collapse>
 
             </CardContent>
@@ -47,4 +49,8 @@ const AdminActions = (): JSX.Element => {
     )
 };
 
+interface Props {
+    investigationInfoFilter: any
+};
+  
 export default AdminActions;
