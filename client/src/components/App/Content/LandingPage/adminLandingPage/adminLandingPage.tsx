@@ -35,7 +35,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
 
     const { redirectToInvestigationTable , fetchInvestigationStatistics, 
             updateInvestigationFilterByDesks, updateInvestigationFilterByTime,
-            fetchAdminInvestigations} = useAdminLandingPage({
+            fetchAdminInvestigations, investigationInfoFilter} = useAdminLandingPage({
         setIsLoading,
         setInvestigationsStatistics,
         setadminInvestigations,
@@ -92,7 +92,8 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                     />
                 </Grid>
                 <Grid item xs={12} >
-                    <AdminActions/>
+                    <AdminActions
+                    investigationInfoFilter= {investigationInfoFilter}/>
                 </Grid>
             </Grid>
         </div>

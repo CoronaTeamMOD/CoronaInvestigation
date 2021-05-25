@@ -247,7 +247,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             <Grid className={classes.content}>
             <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
                 <Grid item xs={12}>
-                    <AdminMessages />
+                    <AdminMessages 
+                        deskFilter={deskFilter}/>
                 </Grid>
             </Grid>
                 <div className={classes.tableHeaderRow}>
