@@ -64,8 +64,7 @@ BEGIN
 	-- unusualInProgressInvestigations
 	SELECT COUNT(epidemiology_number) INTO unusualInProgressInvestigationsCount FROM filtered_investigations
 		WHERE investigation_status = 100000002
-		AND investigation_sub_status IN ('נדרשת העברה' , 'מחכה להשלמת פרטים',  'מחכה למענה')
-		AND last_update_time <= current_date - interval '4 hours';
+		AND start_time <= current_date - interval '4 hours';
 	
 	-- unusualCompletedNoContactInvestigations
 	SELECT COUNT(epidemiology_number) INTO unusualCompletedNoContactInvestigationsCount FROM (

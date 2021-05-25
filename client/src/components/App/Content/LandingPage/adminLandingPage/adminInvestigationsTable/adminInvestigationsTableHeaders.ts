@@ -1,7 +1,7 @@
 export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean };
 
 export enum TableHeadersNames {
-    creationDate = 'creation_date',
+    startTime = 'start_time',
     minutes = 'minutes',
     deskName = 'desk_name',
     userName = 'user_name',
@@ -9,7 +9,7 @@ export enum TableHeadersNames {
 }
 
 export const TableHeaders = {
-    [TableHeadersNames.creationDate]: 'הגעת חקירה',
+    [TableHeadersNames.startTime]: 'הגעת חקירה',
     [TableHeadersNames.minutes]: 'דקות',
     [TableHeadersNames.deskName]: 'דסק',
     [TableHeadersNames.userName]: 'חוקר',
@@ -17,7 +17,7 @@ export const TableHeaders = {
 }
 
 export const SortableTableHeaders = {
-    [TableHeadersNames.creationDate]: true,
+    [TableHeadersNames.startTime]: true,
     [TableHeadersNames.minutes]: true,
     [TableHeadersNames.deskName]: true,
     [TableHeadersNames.userName]: true,
