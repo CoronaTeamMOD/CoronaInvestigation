@@ -125,7 +125,7 @@ const InvestigationStatusInfo = (props: any) => {
                                             label={subStatusLabel}
                                             value={investigationStatus.subStatus as string | undefined}
                                             onChange={(event: any) => {
-                                                const newSubStatus = event.target.value?.displayName as string
+                                                const newSubStatus = event.target.value as string
                                                 setInvestigationStatus({
                                                     mainStatus: investigationStatus.mainStatus,
                                                     subStatus: newSubStatus ? String(newSubStatus) : null,
