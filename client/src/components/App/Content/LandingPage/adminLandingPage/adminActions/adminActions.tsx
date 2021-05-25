@@ -6,10 +6,8 @@ import SelectDropdown from 'commons/Select/SelectDropdown';
 
 import useStyles from './adminActionStyles';
 import useAdminAction from './useAdminAction';
-// import AdminDataBaseAction from './adminDataBaseAction/adminDataBaseAction';
 import AdminMessages from './adminMessages/adminMessages';
 import AdminDBAction from './adminDBAction/adminDBAction';
-// import AdminMessageAction from './adminMessageAction/adminMessageAction';
 
 const adminActionTitle = 'פעולות אדמין';
 
