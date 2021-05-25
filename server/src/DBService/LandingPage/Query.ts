@@ -174,12 +174,27 @@ query allInvestigationStatuses {
 }
 `;
 
+export const GET_ALL_ADMIN_INVESTIGATIONS = gql`
+mutation adminInvestigations ( $county: Int!, $desks: [Int], $orderBy: String!, $startDate: Datetime, $endDate: Datetime ) {
+  adminInvestigations(input: {
+    countyInput: $county
+    desksInput: $desks
+    orderBy: $orderBy
+    endDateInput: $endDate
+    startDateInput: $startDate}) {
+    json
+  }
+}
+`;
+
+
 export const GET_ALL_INVESTIGATION_SUB_STATUS = gql`
 query allInvestigationSubStatuses {
   allInvestigationSubStatuses(orderBy: DISPLAY_NAME_ASC) {
     nodes {
       id
       displayName
+      parentStatus
     }
   }
 }

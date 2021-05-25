@@ -2,6 +2,7 @@ import Desk from 'models/Desk';
 import City from 'models/City';
 import Country from 'models/Country';
 import District from 'models/District';
+import SubStatus from 'models/SubStatus';
 import Authority from 'models/Authority';
 import ContactType from 'models/ContactType';
 import CountyReducer from 'models/CountyReducer';
@@ -27,7 +28,7 @@ export default interface StoreStateType {
     countries: Map<string, Country>;
     contactTypes: Map<number, ContactType>;
     occupations: string[];
-    subStatuses: string[];
+    subStatuses: SubStatus[];
     statuses: InvestigationMainStatus[];
     formsValidations: { [key: number]: (boolean | null)[] };
     address: FlattenedDBAddress;

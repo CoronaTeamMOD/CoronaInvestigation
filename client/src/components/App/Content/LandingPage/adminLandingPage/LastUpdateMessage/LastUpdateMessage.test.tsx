@@ -9,10 +9,12 @@ import MockThemeProvider from 'Utils/Testing/MockThemeProvider';
 import LastUpdateMessage from './LastUpdateMessage';
 
 const fetchInvestigationStatistics = jest.fn();
+const fetchAdminInvestigations = jest.fn();
 
 const updateMessageProps = {
     lastUpdated : new Date(),
-    fetchInvestigationStatistics
+    fetchInvestigationStatistics,
+    fetchAdminInvestigations
 }
 
 describe('<LastUpdateMessage />', () => {
@@ -41,7 +43,8 @@ describe('<LastUpdateMessage />', () => {
         it('shows proper time message when' , async () => {
             const timeTestProps = {
                 lastUpdated : subHours(new Date(), 3),
-                fetchInvestigationStatistics
+                fetchInvestigationStatistics,
+                fetchAdminInvestigations
             }
             const timeTestWrapper = mount(
                 <MockThemeProvider>

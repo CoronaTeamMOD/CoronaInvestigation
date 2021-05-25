@@ -6,7 +6,6 @@ import City from 'models/City';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
 import Country from 'models/Country';
-import Airline from 'models/Airline';
 import { Severity } from 'models/Logger';
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
@@ -18,7 +17,6 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import { setStatuses } from 'redux/Status/statusesActionCreators';
-import { setAirlines } from 'redux/Airlines/airlineActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import  BroadcastMessage, { BC_TABS_NAME }  from 'models/BroadcastMessage';
@@ -40,7 +38,6 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
-    const airlines = useSelector<StoreStateType, Map<number, string>>(state => state.airlines);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
@@ -80,28 +77,6 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                 });
         }
     };
-
-    const fetchAirlines = () => {
-        if(!airlines.size) {
-            const airlineLogger = logger.setup('Fetching Airlines');
-
-            airlineLogger.info('launching DB request', Severity.LOW);
-            axios.get<Airline[]>('/airlines')
-                .then(result => {
-                    airlineLogger.info('request was successful', Severity.LOW);
-
-                    const airlinesMap = airlineListToMap(result.data);
-                    setAirlines(airlinesMap);
-                })
-                .catch(err => {
-                    airlineLogger.error(`recived error during request, err: ${err}`, Severity.HIGH);
-                });
-        }
-    }
-
-    const airlineListToMap = (airlines : Airline[]) => {
-        return new Map(airlines.map(airline => [airline.id, airline.displayName]));
-    }
 
     const fetchContactTypes = () => {
         const contactTypesLogger = logger.setup('Fetching Contact Types');
@@ -157,7 +132,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             subStatusesByStatusLogger.info(`recieved DB response ${JSON.stringify(result)}`, Severity.LOW);
             const resultNodes = result?.data?.data?.allInvestigationSubStatuses?.nodes;
             if (resultNodes) {
-                setSubStatuses(resultNodes.map((element: any) => element.displayName));
+                setSubStatuses(resultNodes);
             }
         }).catch((err: any) => {
             subStatusesByStatusLogger.error( `error DB response ${JSON.stringify(err)}`,  Severity.LOW);
@@ -211,7 +186,6 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             fetchCountries();
             fetchContactTypes();
             fetchStatuses();
-            fetchAirlines();
             investigationStatus.mainStatus && fetchSubStatusesByStatus(investigationStatus.mainStatus);
             fetchEducationGrades();
         };

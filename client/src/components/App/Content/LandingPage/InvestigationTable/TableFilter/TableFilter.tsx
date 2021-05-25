@@ -1,20 +1,21 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Autocomplete } from '@material-ui/lab';
 import { Card, Checkbox, Collapse, FormControl, Grid, Box, TextField, Typography } from '@material-ui/core';
 
-import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
-import SearchBar from 'commons/SearchBar/SearchBar';
+import Desk from 'models/Desk';
+import SubStatus from 'models/SubStatus';
 import { TimeRange } from 'models/TimeRange';
-import timeRanges, { customTimeRange, timeRangeMinDate } from 'models/enums/timeRanges';
+import SearchBar from 'commons/SearchBar/SearchBar';
 import DateRangePick from 'commons/DatePick/DateRangePick';
 import SelectDropdown from 'commons/Select/SelectDropdown';
-import InvestigationSubStatus from 'models/InvestigationSubStatus';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
-import Desk from 'models/Desk';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
+import timeRanges, { customTimeRange, timeRangeMinDate } from 'models/enums/timeRanges';
 
-import DeskFilter from '../DeskFilter/DeskFilter';
 import useStyles from './TableFilterStyles';
 import useTableFilter from './useTableFilter';
+import DeskFilter from '../DeskFilter/DeskFilter';
 import { StatusFilter as StatusFilterType, SubStatusFilter as SubStatusFilterType } from '../InvestigationTableInterfaces';
 
 const searchBarLabel = 'מספר אפידמיולוגי, ת"ז, שם או טלפון';
@@ -38,7 +39,16 @@ const TableFilter = (props: Props) => {
         onTimeRangeFilterChange
     });
 
-    const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id
+    const [subStatusFiltered, setSubStatusFiltered] = useState<SubStatus[]>([]);
+    const [selectedStatuses, setSelectedStatuses] = useState<InvestigationMainStatusCodes[]>(filteredStatuses);
+
+    const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id;
+
+    useEffect(() => {
+        selectedStatuses.length > 0 
+            ? setSubStatusFiltered(subStatuses.filter(subStatus => selectedStatuses.includes(subStatus.parentStatus)))
+            : setSubStatusFiltered(subStatuses)
+    }, [subStatuses, selectedStatuses]);
 
     return (
         <Card className={classes.card}>
@@ -72,7 +82,7 @@ const TableFilter = (props: Props) => {
                 <Typography className={classes.timeRangeError}>{errorMes}</Typography>
             }
             <Autocomplete
-                disabled={updateDateFilter !== "" || nonContactFilter}
+                disabled={updateDateFilter !== '' || nonContactFilter}
                 ChipProps={{className:classes.chip}}
                 className={classes.autocomplete}
                 classes={{inputFocused: classes.autocompleteInputText}}
@@ -80,9 +90,12 @@ const TableFilter = (props: Props) => {
                 disableCloseOnSelect
                 multiple
                 options={statuses}
-                value={statuses.filter(status => filteredStatuses.includes(status.id))}
+                value={statuses.filter(status => selectedStatuses.includes(status.id))}
                 getOptionLabel={(option) => option.displayName}
-                onChange={onFilterChange}
+                onChange={(event, values) => {
+                    onFilterChange(values);
+                    setSelectedStatuses(values.map(value => value.id));
+                }}
                 renderInput={(params) =>
                     <TextField
                         label={'סטטוס'}
@@ -105,17 +118,23 @@ const TableFilter = (props: Props) => {
                 limitTags={1}
             />
             <Autocomplete
-                disabled={updateDateFilter !== ""}
+                disabled={updateDateFilter !== ''}
                 ChipProps={{className:classes.chip}}
                 className={classes.autocomplete}
                 classes={{inputFocused: classes.autocompleteInputText}}
                 size='small'
                 disableCloseOnSelect
                 multiple
-                options={subStatuses}
-                value={subStatuses.filter(subStatus => filteredSubStatuses.includes(subStatus.displayName))}
+                options={subStatusFiltered}
+                value={subStatusFiltered.filter(subStatus => filteredSubStatuses.includes(subStatus.displayName))}
                 getOptionLabel={(option) => option.displayName}
-                onChange={onSubStatusChange}
+                onChange={(event, value) => {
+                    onSubStatusChange(value);
+                    value.length > 0 
+                        ? setSelectedStatuses(statuses.filter(status => value.map(subStatus => subStatus.parentStatus).includes(status.id)).map(status => status.id))
+                        : setSelectedStatuses(filteredStatuses)
+                        
+                }}
                 renderInput={(params) =>
                     <TextField
                         label={'תת סטטוס'}
@@ -137,7 +156,7 @@ const TableFilter = (props: Props) => {
                 )}
                 limitTags={1}
             />
-            <Grid className={classes.endCard} xs={3} direction="column">
+            <Grid className={classes.endCard} xs={3} direction='column'>
                 <div className={classes.row}>
                     <Checkbox
                         onChange={(event) => changeUnassginedUserFilter(event.target.checked)}
@@ -173,15 +192,15 @@ const TableFilter = (props: Props) => {
 
 interface Props {
     statuses: InvestigationMainStatus[];
-    subStatuses: InvestigationSubStatus[];
+    subStatuses: SubStatus[];
     filteredStatuses: StatusFilterType;
     filteredSubStatuses: SubStatusFilterType;
     unassignedUserFilter: boolean;
     inactiveUserFilter: boolean;
     changeUnassginedUserFilter: (isFilterOn: boolean) => void;
     changeInactiveUserFilter: (isFilterOn: boolean) => void;
-    onFilterChange: (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => void;
-    onSubStatusChange: (event: React.ChangeEvent<{}>, selectedSubStatuses: InvestigationSubStatus[]) => void;
+    onFilterChange: (selectedStatuses: InvestigationMainStatus[]) => void;
+    onSubStatusChange: (selectedSubStatuses: SubStatus[]) => void;
     timeRangeFilter: TimeRange;
     onTimeRangeFilterChange: (timeRangeFilter: TimeRange) => void;
     updateDateFilter: string;
