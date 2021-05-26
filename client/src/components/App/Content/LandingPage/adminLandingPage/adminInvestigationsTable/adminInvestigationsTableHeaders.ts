@@ -9,7 +9,7 @@ export enum TableHeadersNames {
 }
 
 export const TableHeaders = {
-    [TableHeadersNames.startTime]: 'הגעת חקירה',
+    [TableHeadersNames.startTime]: 'הקצאת חקירה',
     [TableHeadersNames.minutes]: 'דקות',
     [TableHeadersNames.deskName]: 'דסק',
     [TableHeadersNames.userName]: 'חוקר',
