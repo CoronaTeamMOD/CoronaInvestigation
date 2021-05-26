@@ -55,7 +55,7 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, fetchA
         switch (cellName) {
             case TableHeadersNames.startTime:
                 let startTime = new Date(get(adminInvestigation, cellName));
-                return (format(startTime,'dd/MM/yyyy HH:MM'));
+                return (format(startTime,'dd/MM/yyyy HH:mm'));
             case TableHeadersNames.deskName:
                 return get(adminInvestigation, cellName) ? get(adminInvestigation, cellName) : 'לא משוייך';
             case TableHeadersNames.hours:
