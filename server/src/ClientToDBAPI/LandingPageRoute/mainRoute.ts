@@ -271,7 +271,7 @@ landingPageRoute.get('/adminMessages/:desksId/:adminId', adminMiddleWare, (reque
 
     adminMessagesLogger.info(launchingDBRequestLog(), Severity.LOW);
     const parameters = {
-        desksIdInput: [request.params.desksId].map(deskId => parseInt(deskId)),
+        desksIdInput: request.params.desksId.split(',').map(deskId => parseInt(deskId)),
         adminIdInput: request.params.adminId
     }
 
