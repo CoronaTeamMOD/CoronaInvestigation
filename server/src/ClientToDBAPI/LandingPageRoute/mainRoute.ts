@@ -5,7 +5,7 @@ import { adminMiddleWare } from '../../middlewares/Authentication';
 import handleCountyRequest from '../../middlewares/HandleCountyRequest';
 import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
 import { convertUserInvestigationsData, convertGroupInvestigationsData } from './utils';
-import { CHANGE_DESK_ID, UPDATE_DESK_BY_GROUP_ID } from '../../DBService/LandingPage/Mutation';
+import { CHANGE_DESK_ID, UPDATE_DESK_BY_GROUP_ID, CREATE_ADMIN_MESSAGE, DELETE_ADMIN_MESSAGE } from '../../DBService/LandingPage/Mutation';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS, GET_INVESTIGATION_STATISTICS, GET_ALL_INVESTIGATION_SUB_STATUS, GET_ALL_ADMIN_INVESTIGATIONS, GET_ALL_ADMIN_MESSAGES_BY_DESK, GET_ALL_ADMIN_MESSAGES_BY_DESK_AND_ADMIN } from '../../DBService/LandingPage/Query';
@@ -232,7 +232,7 @@ landingPageRoute.post('/investigationStatistics', handleCountyRequest, (request:
     }
     investigationsStatisticsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
-    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals,parameters)
+    graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, parameters)
     .then((results) => {
         response.send(results.data.functionGetInvestigationStatistics.json); 
     })
@@ -242,7 +242,7 @@ landingPageRoute.post('/investigationStatistics', handleCountyRequest, (request:
     })
 })
 
-landingPageRoute.get('/adminMessages/:desksId', adminMiddleWare, (request: Request, response: Response) => {
+landingPageRoute.get('/adminMessages/:desksId', (request: Request, response: Response) => {
     const adminMessagesLogger = logger.setup({
         workflow: 'query get all admin messages filter by desks id',
         user: response.locals.user.id,
@@ -279,6 +279,42 @@ landingPageRoute.get('/adminMessages/:desksId/:adminId', adminMiddleWare, (reque
         .then((result: any) => {
             adminMessagesLogger.info(validDBResponseLog, Severity.LOW);
             response.send(result.data.allAdminMessages.nodes);
+        })
+        .catch(error => {
+            adminMessagesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
+})
+
+landingPageRoute.post('/sendMessage', adminMiddleWare, (request: Request, response: Response) => {
+    const adminMessagesLogger = logger.setup({
+        workflow: 'send new message',
+        user: response.locals.user.id,
+    });
+
+    adminMessagesLogger.info(launchingDBRequestLog(), Severity.LOW);
+    const parameters = { ...request.body };
+    graphqlRequest(CREATE_ADMIN_MESSAGE, response.locals, parameters)
+        .then((result: any) => {
+            adminMessagesLogger.info(validDBResponseLog, Severity.LOW);
+        })
+        .catch(error => {
+            adminMessagesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
+})
+
+landingPageRoute.post('/deleteMessage', adminMiddleWare, (request: Request, response: Response) => {
+    const adminMessagesLogger = logger.setup({
+        workflow: 'send new message',
+        user: response.locals.user.id,
+    });
+
+    adminMessagesLogger.info(launchingDBRequestLog(), Severity.LOW);
+    const parameters = { id: request.body };
+    graphqlRequest(DELETE_ADMIN_MESSAGE, response.locals, parameters)
+        .then((result: any) => {
+            adminMessagesLogger.info(validDBResponseLog, Severity.LOW);
         })
         .catch(error => {
             adminMessagesLogger.error(invalidDBResponseLog(error), Severity.HIGH);

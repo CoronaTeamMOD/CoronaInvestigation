@@ -51,7 +51,6 @@ const AdminMessages: React.FC<Props> = (props: Props) => {
                 <Message 
                   key={message.id}
                   messageText={message.message}
-                  onButtonClick={(message: string)=>{console.log('remove ', message)}}
                   isNewMessage={false}
                   toDisable={true}
                   toEnableAction={false}

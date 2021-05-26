@@ -11,7 +11,7 @@ import Desk from 'models/Desk';
 
 const AdminMessages: React.FC<Props> = (props: Props): JSX.Element => {
   const classes = useStyles();
-  const { getAdminsMessagesByAdmin, adminsMessagesByAdmin } = useAdminMessagesDBAction();
+  const { getAdminsMessagesByAdmin, adminsMessagesByAdmin, sendMessage, deleteMessage } = useAdminMessagesDBAction();
 
   const messageTitle = 'הודעה';
   const messageDescriptionTitle = '(תוצג בטבלת הדסק המסומן בעמוד זה)';
@@ -29,9 +29,10 @@ const AdminMessages: React.FC<Props> = (props: Props): JSX.Element => {
     )
   }
 
+  const isDesksFilterEmpty = !Boolean(desksId) || desksId.length === 0;
+  const desksIds = isDesksFilterEmpty ? getDesksFromDeskFilter(desks, displayedCounty) : desksId;
+
   useEffect(() => {
-    const isDesksFilterEmpty = desksId.length === 0;
-    const desksIds = isDesksFilterEmpty ? getDesksFromDeskFilter(desks, displayedCounty) : desksId;
     getAdminsMessagesByAdmin(desksIds, adminId);
   }, [])
 
@@ -48,9 +49,9 @@ const AdminMessages: React.FC<Props> = (props: Props): JSX.Element => {
             <b>{messageTitle}</b> {messageDescriptionTitle}
           </Typography>
           <Message 
-            key='0'
+            key={0}
             messageText={''}
-            onButtonClick={(message: string)=>{console.log('send ' , message)}}
+            sendMessage={(message: string)=>{sendMessage(message, adminId, desksIds)}}
             isNewMessage={true}
             toDisable={false}
             toEnableAction={true}
@@ -61,7 +62,7 @@ const AdminMessages: React.FC<Props> = (props: Props): JSX.Element => {
                 <Message 
                   key={message.id}
                   messageText={message.message}
-                  onButtonClick={(message: string)=>{console.log('remove ', message)}}
+                  deleteMessage={()=>{deleteMessage(message.id)}}
                   isNewMessage={false}
                   toDisable={true}
                   toEnableAction={true}

@@ -15,3 +15,23 @@ mutation updateInvestigatorByGroupId($desk: Int, $selectedGroups: [UUID!]!, $use
   }
 }
 `;
+
+export const CREATE_ADMIN_MESSAGE = gql`
+mutation createAdminMessage($id: Int!, $message: String!, $desks_id: [Int]!, $admin_id: String!) {
+  createAdminMessage(
+    input: {adminMessage: {id: $id, message: $message, desksId: $desks_id, adminId: $admin_id}}
+  ) {
+    clientMutationId
+  }
+}
+`;
+
+export const DELETE_ADMIN_MESSAGE = gql`
+mutation deleteAdminMessageById($id: Int!) {
+  deleteAdminMessageById(
+    input: {id: $id}
+  ) {
+    clientMutationId
+  }
+}
+`;

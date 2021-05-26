@@ -3,9 +3,9 @@ import { Delete } from '@material-ui/icons';
 import { Grid, Button, TextField, Collapse, IconButton } from '@material-ui/core';
 
 import useStyles from './messegeStyles';
+import { AdminMessage } from 'models/AdminMessage';
 
 const Message: React.FC<Props> = (props: Props): JSX.Element => {
- 
 
   const classes = useStyles();
   const [message, setMessage] = useState<string>(props.messageText);
@@ -32,14 +32,14 @@ const Message: React.FC<Props> = (props: Props): JSX.Element => {
                 className={classes.button}
                 variant="contained" 
                 color="primary"
-                onClick={()=>{props.onButtonClick(message)}}
+                onClick={()=>{props.sendMessage && props.sendMessage(message)}}
                 disabled={!(message && message !== '')}>
                   <b>{sendText}</b>
               </Button>
             </Collapse>
             <Collapse in={!props.isNewMessage && props.toEnableAction}>
               <IconButton 
-                onClick={()=>{props.onButtonClick(message)}}
+                onClick={()=>{props.deleteMessage && props.deleteMessage()}}
                 disabled={!(message && message !== '')}>
                 <Delete />
               </IconButton>
@@ -51,7 +51,8 @@ const Message: React.FC<Props> = (props: Props): JSX.Element => {
 
 interface Props {
   messageText: string;
-  onButtonClick: (message: string) => void;
+  sendMessage?: (message: string) => void;
+  deleteMessage?: () => void;
   isNewMessage: boolean;
   toDisable: boolean;
   toEnableAction: boolean;
