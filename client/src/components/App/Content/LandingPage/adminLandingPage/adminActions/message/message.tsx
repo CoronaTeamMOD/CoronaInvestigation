@@ -3,7 +3,6 @@ import { Delete } from '@material-ui/icons';
 import { Grid, Button, TextField, Collapse, IconButton } from '@material-ui/core';
 
 import useStyles from './messegeStyles';
-import { AdminMessage } from 'models/AdminMessage';
 
 const Message: React.FC<Props> = (props: Props): JSX.Element => {
 

@@ -11,7 +11,7 @@ import Desk from 'models/Desk';
 
 const AdminMessages: React.FC<Props> = (props: Props): JSX.Element => {
   const classes = useStyles();
-  const { getAdminsMessagesByAdmin, adminsMessagesByAdmin, sendMessage, deleteMessage } = useAdminMessagesDBAction();
+  const { getAdminsMessagesByAdmin, adminsMessagesByAdmin, sendMessage, deleteMessage, toRefresh } = useAdminMessagesDBAction();
 
   const messageTitle = 'הודעה';
   const messageDescriptionTitle = '(תוצג בטבלת הדסק המסומן בעמוד זה)';
@@ -42,6 +42,9 @@ const AdminMessages: React.FC<Props> = (props: Props): JSX.Element => {
     }
   }, [adminsMessagesByAdmin])
 
+  useEffect(() => {
+    getAdminsMessagesByAdmin(desksIds, adminId);
+  }, [toRefresh])
 
     return (
         <Grid>

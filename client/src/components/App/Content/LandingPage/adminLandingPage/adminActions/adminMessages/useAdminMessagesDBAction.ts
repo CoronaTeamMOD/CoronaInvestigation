@@ -11,6 +11,7 @@ const useAdminDBAction = () => {
     const { alertError } = useCustomSwal();
     const [adminMessagesByDesks, setAdminMessagesByDesks] = useState<AdminMessage[] | null>(null);
     const [adminsMessagesByAdmin, setAdminMessagesByAdmin] = useState<AdminMessage[] | null>(null);
+    const [toRefresh, setToRefresh] = useState<boolean>(false);
 
     const getAdminsMessages = (desksId: (number | null)[]) => {
         const adminMessageLogger = logger.setup('get admin messages by desks');
@@ -39,6 +40,7 @@ const useAdminDBAction = () => {
     }
 
     const sendMessage = (message: string, adminId: string, desksId: number[]) => {
+        setIsLoading(true);
         const adminMessageLogger = logger.setup('send admin messages');
         adminMessageLogger.info('launching DB request', Severity.LOW);
         const parameters: AdminMessage = {
@@ -49,22 +51,29 @@ const useAdminDBAction = () => {
         }
         axios.post('/landingPage/sendMessage',
             parameters).then((result) => {
+            setToRefresh(!toRefresh);
             adminMessageLogger.info('new successfully', Severity.LOW);
         }).catch((error) => {
             alertError('לא הצלחנו לעדכן את ההודעה שלך');
             adminMessageLogger.error(`error in sending new message ${error}`, Severity.LOW);
+        }).finally(() => {
+            setIsLoading(false);
         });
     };
 
     const deleteMessage = (id: number) => {
+        setIsLoading(true);
         const adminMessageLogger = logger.setup('delete admin messages');
         adminMessageLogger.info('launching DB request', Severity.LOW);
         axios.post('/landingPage/deleteMessage',
             id).then((result) => {
+            setToRefresh(!toRefresh);
             adminMessageLogger.info('delete messeage successfully', Severity.LOW);
         }).catch((error) => {
             alertError('לא הצלחנו למחוק את ההודעה שלך');
             adminMessageLogger.error(`error in delete message ${error}`, Severity.LOW);
+        }).finally(() => {
+            setIsLoading(false);
         });
     }
 
@@ -75,7 +84,8 @@ const useAdminDBAction = () => {
         setAdminMessagesByAdmin,
         adminsMessagesByAdmin,
         sendMessage,
-        deleteMessage
+        deleteMessage,
+        toRefresh
     };
 };
 

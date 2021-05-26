@@ -3,8 +3,8 @@ import { Router, Request, Response } from 'express';
 import { Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import handleCountyRequest from '../../middlewares/HandleCountyRequest';
-import { graphqlRequest, errorStatusCode } from '../../GraphqlHTTPRequest';
 import { convertUserInvestigationsData, convertGroupInvestigationsData } from './utils';
+import { graphqlRequest, errorStatusCode, validStatusCode } from '../../GraphqlHTTPRequest';
 import { CHANGE_DESK_ID, UPDATE_DESK_BY_GROUP_ID, CREATE_ADMIN_MESSAGE, DELETE_ADMIN_MESSAGE } from '../../DBService/LandingPage/Mutation';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
@@ -296,6 +296,7 @@ landingPageRoute.post('/sendMessage', adminMiddleWare, (request: Request, respon
     const parameters = { ...request.body };
     graphqlRequest(CREATE_ADMIN_MESSAGE, response.locals, parameters)
         .then((result: any) => {
+            response.sendStatus(validStatusCode)
             adminMessagesLogger.info(validDBResponseLog, Severity.LOW);
         })
         .catch(error => {
@@ -315,6 +316,7 @@ landingPageRoute.post('/deleteMessage', adminMiddleWare, (request: Request, resp
     graphqlRequest(DELETE_ADMIN_MESSAGE, response.locals, parameters)
         .then((result: any) => {
             adminMessagesLogger.info(validDBResponseLog, Severity.LOW);
+            response.sendStatus(validStatusCode)
         })
         .catch(error => {
             adminMessagesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
