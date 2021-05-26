@@ -31,8 +31,6 @@ const useAdminDBAction = () => {
         axios.get<AdminMessage[]>(`/landingPage/adminMessages/${desksId}/${adminId}`, {
         }).then(result => {
                 adminMessageLogger.info('request was successful', Severity.LOW);
-                console.log(result);
-                console.log('result.data');
                 setAdminMessagesByAdmin(result.data)
             })
             .catch(err => {
