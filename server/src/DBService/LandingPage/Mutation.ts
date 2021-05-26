@@ -17,9 +17,9 @@ mutation updateInvestigatorByGroupId($desk: Int, $selectedGroups: [UUID!]!, $use
 `;
 
 export const CREATE_ADMIN_MESSAGE = gql`
-mutation createAdminMessage($id: Int!, $message: String!, $desks_id: [Int]!, $admin_id: String!) {
+mutation createAdminMessage($message: String!, $desks_id: [Int]!, $admin_id: String!) {
   createAdminMessage(
-    input: {adminMessage: {id: $id, message: $message, desksId: $desks_id, adminId: $admin_id}}
+    input: {adminMessage: {message: $message, desksId: $desks_id, adminId: $admin_id}}
   ) {
     clientMutationId
   }
