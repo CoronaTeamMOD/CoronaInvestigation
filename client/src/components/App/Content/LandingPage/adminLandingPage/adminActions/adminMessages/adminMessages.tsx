@@ -7,6 +7,7 @@ import useStyles from './adminMessegesStyles';
 import StoreStateType from 'redux/storeStateType';
 import { AdminMessage } from 'models/AdminMessage';
 import useAdminMessagesDBAction from './useAdminMessagesDBAction';
+import Desk from 'models/Desk';
 
 const AdminMessages: React.FC<Props> = (props: Props): JSX.Element => {
   const classes = useStyles();
@@ -18,13 +19,20 @@ const AdminMessages: React.FC<Props> = (props: Props): JSX.Element => {
   let desksId = props.investigationInfoFilter?.deskFilter;
   const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
   const adminId = useSelector<StoreStateType, string>(state => state.user.data.id);
+  const desks = useSelector<StoreStateType, Desk[]>(state => state.desk);
 
+  const getDesksFromDeskFilter = (desks: Desk[], countyId: number) => {
+    return (
+      desks
+        .filter(desk => desk.county === countyId)
+        .map(desk => desk.id)
+    )
+  }
 
   useEffect(() => {
-    if(desksId === undefined){
-      //get from reduxs.desks an array the have all the desks with county number - displayedCounty
-    }
-    getAdminsMessagesByAdmin(desksId, adminId);
+    const isDesksFilterEmpty = desksId.length === 0;
+    const desksIds = isDesksFilterEmpty ? getDesksFromDeskFilter(desks, displayedCounty) : desksId;
+    getAdminsMessagesByAdmin(desksIds, adminId);
   }, [])
 
   useEffect(() => {
