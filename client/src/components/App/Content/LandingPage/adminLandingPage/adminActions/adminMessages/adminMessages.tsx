@@ -60,7 +60,7 @@ const AdminMessages: React.FC<Props> = (props: Props): JSX.Element => {
               {messages.map((message: any) => (
                 <Message 
                   key={message.id}
-                  messageText={message.messageText}
+                  messageText={message.message}
                   onButtonClick={(message: string)=>{console.log('remove ', message)}}
                   isNewMessage={false}
                   toDisable={true}
