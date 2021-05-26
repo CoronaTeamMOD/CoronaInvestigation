@@ -73,13 +73,13 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, fetchA
     const getProgressLength = (hours : number) => {
         let props = {hours, progressLen: 100, color: 'red'};
 
-        if(hours <= 2) {
+        if(hours < 2) {
             props.progressLen = 25;
             props.color = 'green';
-        } else if (hours <= 3) {
+        } else if (hours < 3) {
             props.progressLen = 50;
             props.color = 'yellow';
-        } else if (hours <= 4) {
+        } else if (hours < 4) {
             props.progressLen = 75;
             props.color = 'orange';
         }
