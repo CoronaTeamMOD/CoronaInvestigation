@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import { useSelector } from 'react-redux';
 import { Card, Typography, Collapse } from '@material-ui/core';
 
+import Desk from 'models/Desk';
+
 import useStyles from './adminMessegesStyles';
 import StoreStateType from 'redux/storeStateType';
 import { AdminMessage } from 'models/AdminMessage';
@@ -16,12 +18,20 @@ const AdminMessages: React.FC<Props> = (props: Props) => {
   const [messages, setMessages] = useState<AdminMessage[]>([]);
   let desksId = props.deskFilter;
   const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
+  const desks = useSelector<StoreStateType, Desk[]>(state => state.desk);
+  
+  const getDesksFromDeskFilter = (desks: Desk[], countyId: number) => {
+    return (
+      desks
+        .filter(desk => desk.county === countyId)
+        .map(desk => desk.id)
+    )
+  }
 
   useEffect(() => {
-    if(desksId === undefined){
-      //get from reduxs.desks an array the have all the desks with county number - displayedCounty
-    }
-    getAdminsMessages(desksId);
+    const isDesksFilterEmpty = desksId.length === 0;
+    const desksIds = isDesksFilterEmpty ? getDesksFromDeskFilter(desks, displayedCounty) : desksId;
+    getAdminsMessages(desksIds);
   }, [])
 
   useEffect(() => {
