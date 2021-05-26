@@ -1,15 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Grid, Typography, Collapse } from '@material-ui/core';
 
-import useStyles from './adminMessegesStyles';
 import Message from '../message/message';
+import useStyles from './adminMessegesStyles';
+import StoreStateType from 'redux/storeStateType';
+import { AdminMessage } from 'models/AdminMessage';
+import useAdminMessagesDBAction from './useAdminMessagesDBAction';
 
-const AdminMessages = (): JSX.Element => {
+const AdminMessages: React.FC<Props> = (props: Props): JSX.Element => {
   const classes = useStyles();
+  const { getAdminsMessagesByAdmin, adminsMessagesByAdmin } = useAdminMessagesDBAction();
 
   const messageTitle = 'הודעה';
   const messageDescriptionTitle = '(תוצג בטבלת הדסק המסומן בעמוד זה)';
-  const messages = [{messageText: 'yalla hi', id: '1', Desk: '', Admin: ''}, {messageText: 'yalla Bye', id: '2', Desk: '', Admin: ''}]
+  const [messages, setMessages] = useState<AdminMessage[]>([]);
+  let desksId = props.investigationInfoFilter?.deskFilter;
+  const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
+  const adminId = useSelector<StoreStateType, string>(state => state.user.data.id);
+
+
+  useEffect(() => {
+    if(desksId === undefined){
+      //get from reduxs.desks an array the have all the desks with county number - displayedCounty
+    }
+    getAdminsMessagesByAdmin(desksId, adminId);
+  }, [])
+
+  useEffect(() => {
+    if (adminsMessagesByAdmin && adminsMessagesByAdmin?.length > 0) {
+      setMessages(adminsMessagesByAdmin)
+    }
+  }, [adminsMessagesByAdmin])
+
 
     return (
         <Grid>
@@ -41,5 +64,9 @@ const AdminMessages = (): JSX.Element => {
         </Grid>
     )
 }
+
+interface Props {
+  investigationInfoFilter: any
+};
 
 export default AdminMessages;
