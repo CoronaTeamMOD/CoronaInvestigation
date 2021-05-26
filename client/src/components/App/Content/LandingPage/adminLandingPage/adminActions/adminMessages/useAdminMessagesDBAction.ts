@@ -12,7 +12,7 @@ const useAdminDBAction = () => {
   const [adminMessagesByDesks, setAdminMessagesByDesks] = useState<AdminMessage[] | null>(null);
   const [adminsMessagesByAdmin, setAdminMessagesByAdmin] = useState<AdminMessage[] | null>(null);
 
-    const getAdminsMessages = (desksId: number[]) => {
+    const getAdminsMessages = (desksId: (number | null)[]) => {
         const adminMessageLogger = logger.setup('get admin messages by desks');
         adminMessageLogger.info('launching DB request', Severity.LOW);
         axios.get<AdminMessage[]>(`/landingPage/adminMessages/${[desksId]}`, {
