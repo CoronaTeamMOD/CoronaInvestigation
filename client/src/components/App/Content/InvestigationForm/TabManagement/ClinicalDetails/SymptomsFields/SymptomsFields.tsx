@@ -24,8 +24,8 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
     const { wasInvestigationReopend } = useStatusUtils();
 
     const roundDate = (date: Date) => {
-        let coeff = 1000 * 60 * 60 * 24;
-        return new Date(Math.round(date.getTime() / coeff) * coeff)
+        let dayByMilisec = 1000 * 60 * 60 * 24;
+        return new Date(Math.round(date.getTime() / dayByMilisec) * dayByMilisec)
     }
 
     const validationDate = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
