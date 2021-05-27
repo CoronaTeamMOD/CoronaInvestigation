@@ -6,12 +6,12 @@ import SelectDropdown from 'commons/Select/SelectDropdown';
 
 import useStyles from './adminActionStyles';
 import useAdminAction from './useAdminAction';
+import AdminMessages from './adminMessages/adminMessages';
 import AdminDBAction from './adminDBAction/adminDBAction';
-import AdminMessageAction from './adminMessageAction/adminMessageAction';
 
 const adminActionTitle = 'פעולות אדמין';
 
-const AdminActions = (): JSX.Element => {
+const AdminActions: React.FC<Props> = (props: Props): JSX.Element => {
 
     const classes = useStyles();
 
@@ -39,7 +39,9 @@ const AdminActions = (): JSX.Element => {
                 </Collapse>
 
                 <Collapse in={selectedAdminAction.id === adminActions[2].id} unmountOnExit>
-                    <AdminMessageAction />
+                    <AdminMessages 
+                        investigationInfoFilter={props.investigationInfoFilter}
+                    />
                 </Collapse>
 
             </CardContent>
@@ -47,4 +49,8 @@ const AdminActions = (): JSX.Element => {
     )
 };
 
+interface Props {
+    investigationInfoFilter: any
+};
+  
 export default AdminActions;

@@ -139,7 +139,8 @@ const useAdminLandingPage = (parameters: Parameters) => {
         fetchInvestigationStatistics,
         updateInvestigationFilterByDesks,
         updateInvestigationFilterByTime, 
-        fetchAdminInvestigations
+        fetchAdminInvestigations,
+        investigationInfoFilter
     }
 };
 
