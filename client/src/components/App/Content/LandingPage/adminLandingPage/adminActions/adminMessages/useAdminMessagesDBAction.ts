@@ -12,6 +12,8 @@ const useAdminDBAction = () => {
     const [adminMessagesByDesks, setAdminMessagesByDesks] = useState<AdminMessage[] | null>(null);
     const [adminsMessagesByAdmin, setAdminMessagesByAdmin] = useState<AdminMessage[] | null>(null);
     const [toRefresh, setToRefresh] = useState<boolean>(false);
+    const errorUpdateMsgText = 'לא הצלחנו לעדכן את ההודעה שלך';
+    const errorDeleteMsgText = 'לא הצלחנו למחוק את ההודעה שלך';
 
     const getAdminsMessages = (desksId: (number | null)[]) => {
         const adminMessageLogger = logger.setup('get admin messages by desks');
@@ -43,18 +45,17 @@ const useAdminDBAction = () => {
         setIsLoading(true);
         const adminMessageLogger = logger.setup('send admin messages');
         adminMessageLogger.info('launching DB request', Severity.LOW);
-        const parameters: AdminMessage = {
+        const parameters: any = {
             message,
-            id: 555,
-            admin_id: adminId,
-            desks_id: desksId
+            adminId,
+            desksId
         }
         axios.post('/landingPage/sendMessage',
             parameters).then((result) => {
             setToRefresh(!toRefresh);
             adminMessageLogger.info('new successfully', Severity.LOW);
         }).catch((error) => {
-            alertError('לא הצלחנו לעדכן את ההודעה שלך');
+            alertError(errorUpdateMsgText);
             adminMessageLogger.error(`error in sending new message ${error}`, Severity.LOW);
         }).finally(() => {
             setIsLoading(false);
@@ -70,7 +71,7 @@ const useAdminDBAction = () => {
             setToRefresh(!toRefresh);
             adminMessageLogger.info('delete messeage successfully', Severity.LOW);
         }).catch((error) => {
-            alertError('לא הצלחנו למחוק את ההודעה שלך');
+            alertError(errorDeleteMsgText);
             adminMessageLogger.error(`error in delete message ${error}`, Severity.LOW);
         }).finally(() => {
             setIsLoading(false);

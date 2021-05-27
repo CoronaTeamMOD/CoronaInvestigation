@@ -25,12 +25,12 @@ import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCo
 
 import useStyles from './InvestigationTableStyles';
 import TableFilter from './TableFilter/TableFilter';
+import AdminMessages from './adminMessages/adminMessages';
 import InvestigationTableRow from './InvestigationTableRow/InvestigationTableRow';
 import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
 import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorAllocationDialog';
 import useInvestigationTable, { SelectedRow, DEFAULT_SELECTED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
-import AdminMessages from './adminMessages/adminMessages';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -248,7 +248,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
                 <Grid item xs={12}>
                     <AdminMessages 
-                        deskFilter={deskFilter}/>
+                        deskFilter={deskFilter}
+                    />
                 </Grid>
             </Grid>
                 <div className={classes.tableHeaderRow}>

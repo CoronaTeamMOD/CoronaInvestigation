@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
 import { useSelector } from 'react-redux';
+import React, {useEffect, useState} from 'react';
 import { Card, Typography, Collapse } from '@material-ui/core';
 
 import Desk from 'models/Desk';
@@ -63,7 +63,7 @@ const AdminMessages: React.FC<Props> = (props: Props) => {
 }
 
 interface Props {
-  deskFilter: any
+  deskFilter: (number|null)[];
 };
 
 export default AdminMessages;

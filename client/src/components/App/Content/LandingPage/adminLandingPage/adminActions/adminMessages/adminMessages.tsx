@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Grid, Typography, Collapse } from '@material-ui/core';
 
+import Desk from 'models/Desk';
 import Message from '../message/message';
 import useStyles from './adminMessegesStyles';
 import StoreStateType from 'redux/storeStateType';
 import { AdminMessage } from 'models/AdminMessage';
 import useAdminMessagesDBAction from './useAdminMessagesDBAction';
-import Desk from 'models/Desk';
 
 const AdminMessages: React.FC<Props> = (props: Props): JSX.Element => {
   const classes = useStyles();

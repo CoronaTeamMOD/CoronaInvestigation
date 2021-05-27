@@ -206,7 +206,7 @@ interface Props {
     updateDateFilter: string;
     nonContactFilter: boolean;
     desksToTransfer: Desk[];
-    deskFilter: any;
+    deskFilter: (number|null)[];
     changeDeskFilter: (desks: Desk[]) => void;
     handleRequestSort: (event: any, property: React.SetStateAction<string>) => void;
     changeSearchFilter: (searchQuery: string) => void;

@@ -18,9 +18,9 @@ const Message: React.FC<Props> = (props: Props): JSX.Element => {
               fullWidth
               value={message}
               onChange={event => setMessage(event.target.value as string)}
-              id="outlined-basic" 
-              variant="outlined"
-              placeholder="הקלד הודעה חדשה"
+              id='outlined-basic' 
+              variant='outlined'
+              placeholder='הקלד הודעה חדשה'
               disabled = {props.toDisable}
             />
           </Grid>
@@ -29,8 +29,8 @@ const Message: React.FC<Props> = (props: Props): JSX.Element => {
               <Button 
                 fullWidth
                 className={classes.button}
-                variant="contained" 
-                color="primary"
+                variant='contained' 
+                color='primary'
                 onClick={()=>{props.sendMessage && props.sendMessage(message)}}
                 disabled={!(message && message !== '')}>
                   <b>{sendText}</b>
