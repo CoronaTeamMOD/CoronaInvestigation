@@ -23,6 +23,11 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
     const { control, errors } = useFormContext();
     const { wasInvestigationReopend } = useStatusUtils();
 
+    const roundDate = (date: Date) => {
+        let coeff = 1000 * 60 * 60 * 24;
+        return new Date(Math.round(date.getTime() / coeff) * coeff)
+    }
+
     const validationDate = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
 
     const handleDidSymptomsDateChangeOccur = () => {
@@ -77,7 +82,10 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                 onChange={(newDate: Date) => {
                                                     if (newDate !== null) {
                                                         handleDidSymptomsDateChangeOccur();
-                                                        props.onChange(new Date(newDate.toDateString()));
+                                                        let date = new Date(newDate.toDateString())
+                                                        date = roundDate(date)
+                                                        props.onChange(date);
+
                                                     }
                                                 }}
                                                 error={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE] ? true : false}
