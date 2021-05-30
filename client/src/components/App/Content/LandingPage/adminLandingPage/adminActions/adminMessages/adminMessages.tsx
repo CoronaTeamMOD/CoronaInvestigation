@@ -61,7 +61,7 @@ const AdminMessages = (props: Props) => {
           />
           <Collapse in={messages.length>0} unmountOnExit>
             <div>
-              {messages.map((message: any) => (
+              {messages?.map((message: any) => (
                 <Message 
                   key={message.id}
                   messageText={message.message}
