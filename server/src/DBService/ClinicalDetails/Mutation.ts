@@ -49,3 +49,11 @@ mutation updateInvestigatedPatientById ($isPregnant: Boolean!, $id: Int!, $doesH
     }
 }
 `;
+
+export const SAVE_CLINICAL_DETAILS = gql`
+mutation saveClinicalDetails($input: JSON!) {
+    saveClinicalDetails(input:{clinicalDetails: $input}) {
+        clientMutationId
+    }
+}
+`;
