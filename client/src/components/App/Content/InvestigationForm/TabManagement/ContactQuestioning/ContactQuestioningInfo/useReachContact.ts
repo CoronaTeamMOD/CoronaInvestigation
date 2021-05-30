@@ -11,8 +11,6 @@ const useReachContact = (props: Props) => {
     const { errors, getValues } = useFormContext();
     const { saveContact, parsePerson, formValues, index } = props;
     const { alertWarning , alertError } = useCustomSwal();
-    
-    const formHaveMissingFields = true;
     const formHaveMissingFieldsText = `למגע זה ישנם שדות לא תקינים:`
 
     const formHasErrors = errors.form ? Boolean(errors.form[index]) : false;
@@ -20,10 +18,10 @@ const useReachContact = (props: Props) => {
         event: React.ChangeEvent<{}>,
         selectedStatus: ContactStatus | null,
         onChange: (...event: any[]) => void,
-        misingFieldsText: string
+        missingFieldsText: string
     ) => {
         event.stopPropagation();
-
+        const formHaveMissingFields = missingFieldsText!=='';
         if (selectedStatus?.id === ContactStatusCodes.COMPLETED) {
             if (!formHasErrors) {
                 if (!formHaveMissingFields) {
@@ -42,9 +40,9 @@ const useReachContact = (props: Props) => {
                         }
                     });
                 }
-                else if (misingFieldsText !== '') {
+                if (formHaveMissingFields && missingFieldsText !== '') {
                     alertError('לא ניתן לשנות סטטוס להושלם', {
-                        text: formHaveMissingFieldsText.concat(misingFieldsText),
+                        text: formHaveMissingFieldsText.concat(missingFieldsText),
                         confirmButtonColor: theme.palette.primary.main,
                         confirmButtonText: 'אוקיי',
                     }).then((result) => {}); 

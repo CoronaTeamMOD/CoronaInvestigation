@@ -58,13 +58,13 @@ const ReachContact = (props: Props) => {
                                     }
                                     value={currentValue}
                                     onChange={(e, data) =>{
-                                        let contactValidation = validateContact(interactedContact, ValidationReason.SAVE_CONTACT)
-                                        const misingFieldsText = contactValidation?.valid ? '' : removeUnusePartOfError(contactValidation.error);
+                                        let contactValidation = validateContact(parsePerson(formValues,index), ValidationReason.SAVE_CONTACT)
+                                        const missingFieldsText = contactValidation?.valid ? '' : removeUnusePartOfError(contactValidation.error);
                                         changeContactStatus(
                                             e,
                                             data,
                                             props.onChange,
-                                            misingFieldsText
+                                            missingFieldsText
                                         )}
                                     }
                                     inputValue={currentValue.displayName}
