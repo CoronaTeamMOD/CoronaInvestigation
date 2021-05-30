@@ -2,22 +2,19 @@ import { Router, Request, Response } from 'express';
 
 import { CREATE_ADDRESS } from '../../DBService/Address/Mutation';
 import { InitialLogData, Severity } from '../../Models/Logger/types';
-import Investigation from '../../Models/ClinicalDetails/Investigation';
 import CreateAddressResponse from '../../Models/Address/CreateAddress';
-import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import ClinicalDetails from '../../Models/ClinicalDetails/ClinicalDetails';
-import { formatToInsertAndGetAddressIdInput, formatToNullable} from '../../Utils/addressUtils';
+import { SAVE_CLINICAL_DETAILS } from '../../DBService/ClinicalDetails/Mutation';
 import InsertAndGetAddressIdInput from '../../Models/Address/InsertAndGetAddressIdInput';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
+import { errorStatusCode, graphqlRequest, validStatusCode } from '../../GraphqlHTTPRequest';
+import { formatToInsertAndGetAddressIdInput, formatToNullable} from '../../Utils/addressUtils';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import { calculateInvestigationComplexity } from '../../Utils/InvestigationComplexity/InvestigationComplexity';
 import {
     GET_ALL_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER,
     UPDATE_IS_DECEASED, UPDATE_IS_CURRENTLY_HOSPITIALIZED, GET_ISOLATION_SOURCES
 } from '../../DBService/ClinicalDetails/Query';
-import {
-    ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, UPDATE_INVESTIGATION
-} from '../../DBService/ClinicalDetails/Mutation';
 import { GetInvestigatedPatientClinicalDetailsFields } from '../../Models/ClinicalDetails/GetInvestigatedPatientClinicalDetailsFields';
 
 const clinicalDetailsRoute = Router();
@@ -118,87 +115,43 @@ clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields', handleI
 const saveClinicalDetails = (request: Request, response: Response, baseLog: InitialLogData, isolationAddress: number) => {
     const clinicalDetails: ClinicalDetails = request.body.clinicalDetails;
 
-    const requestInvestigation: Investigation = {
+    const requestInvestigation: ClinicalDetails = {
         epidemiologyNumber: clinicalDetails.epidemiologyNumber,
         hospital: clinicalDetails.hospital,
-        hospitalizationEndTime: clinicalDetails.hospitalizationEndDate,
-        hospitalizationStartTime: clinicalDetails.hospitalizationStartDate,
+        hospitalizationEndDate: clinicalDetails.hospitalizationEndDate,
+        hospitalizationStartDate: clinicalDetails.hospitalizationStartDate,
         isInIsolation: clinicalDetails.isInIsolation,
         isIsolationProblem: clinicalDetails.isIsolationProblem,
         isIsolationProblemMoreInfo: clinicalDetails.isIsolationProblemMoreInfo,
-        isolationEndTime: clinicalDetails.isolationEndDate,
-        isolationStartTime: clinicalDetails.isolationStartDate,
-        symptomsStartTime: clinicalDetails.symptomsStartDate,
+        isolationEndDate: clinicalDetails.isolationEndDate,
+        isolationStartDate: clinicalDetails.isolationStartDate,
+        symptomsStartDate: clinicalDetails.symptomsStartDate,
         doesHaveSymptoms: clinicalDetails.doesHaveSymptoms,
         wasHospitalized: clinicalDetails.wasHospitalized,
         otherSymptomsMoreInfo: clinicalDetails.otherSymptomsMoreInfo,
         isolationSource: clinicalDetails.isolationSource,
         isolationSourceDesc: clinicalDetails.isolationSourceDesc,
-        isolationAddress: isolationAddress || null
+        isolationAddressId: isolationAddress || null,
+        investigatedPatientId: clinicalDetails.investigatedPatientId,
+        backgroundDeseases: clinicalDetails.backgroundDeseases,
+        symptoms: clinicalDetails.symptoms,
+        isPregnant: clinicalDetails.isPregnant,
+        doesHaveBackgroundDiseases: clinicalDetails.doesHaveBackgroundDiseases,
+        otherBackgroundDiseasesMoreInfo: clinicalDetails.otherBackgroundDiseasesMoreInfo
     };
-    const saveClinicalInvestigationLogger = logger.setup({
+    const parameters = {input: JSON.stringify(requestInvestigation)};
+
+    const saveClinicalDetailsFunctionLogger = logger.setup({
         ...baseLog,
         workflow: `${baseLog.workflow}: investigation table fields`,
     });
-    saveClinicalInvestigationLogger.info(launchingDBRequestLog(requestInvestigation), Severity.LOW);
+    saveClinicalDetailsFunctionLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
-    graphqlRequest(UPDATE_INVESTIGATION, response.locals, requestInvestigation).then(() => {
-        saveClinicalInvestigationLogger.info(validDBResponseLog, Severity.LOW);
-        const addBackgroundDiseasesLogger = logger.setup({
-            ...baseLog,
-            workflow: `${baseLog.workflow}: add background diseases`,
-        });
-        const patientBackgroundDiseases = {
-            investigatedPatientId: clinicalDetails.investigatedPatientId,
-            backgroundDiseases: clinicalDetails.backgroundDeseases
-        };
-        addBackgroundDiseasesLogger.info(launchingDBRequestLog(patientBackgroundDiseases), Severity.LOW);
-
-        graphqlRequest(ADD_BACKGROUND_DISEASES, response.locals, patientBackgroundDiseases).then(() => {
-            addBackgroundDiseasesLogger.info(validDBResponseLog, Severity.LOW);
-            const addSymptomsLogger = logger.setup({
-                ...baseLog,
-                workflow: `${baseLog.workflow}: add symptoms`,
-            });
-            const investigatedPatientSymptoms = {
-                investigationIdValue: clinicalDetails.epidemiologyNumber,
-                symptomNames: clinicalDetails.symptoms
-            };
-            addSymptomsLogger.info(launchingDBRequestLog(investigatedPatientSymptoms), Severity.LOW);
-
-            graphqlRequest(ADD_SYMPTOMS, response.locals, investigatedPatientSymptoms).then(() => {
-                addSymptomsLogger.info(validDBResponseLog, Severity.LOW);
-                const saveInvestigatedPatientFieldsLogger = logger.setup({
-                    ...baseLog,
-                    workflow: `${baseLog.workflow}: investigated patient table fields`,
-                });                
-                const investigatedPatientClinicalInfo = {
-                    isPregnant: clinicalDetails.isPregnant,
-                    doesHaveBackgroundDiseases: clinicalDetails.doesHaveBackgroundDiseases,
-                    id: clinicalDetails.investigatedPatientId,
-                    otherBackgroundDiseasesMoreInfo: clinicalDetails.otherBackgroundDiseasesMoreInfo
-                };
-                saveInvestigatedPatientFieldsLogger.info(launchingDBRequestLog(investigatedPatientClinicalInfo), Severity.LOW);
-
-                graphqlRequest(UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, response.locals, investigatedPatientClinicalInfo).then(() => {
-                    saveInvestigatedPatientFieldsLogger.info(validDBResponseLog, Severity.LOW);
-                    const allClinicalDetailsLogger = logger.setup(baseLog); 
-                    allClinicalDetailsLogger.info(validDBResponseLog, Severity.LOW);     
-                    response.send('Added clinical details');
-                }).catch(error => {
-                    saveInvestigatedPatientFieldsLogger.error(invalidDBResponseLog(error),Severity.HIGH);
-                    response.status(errorStatusCode).send(error);
-                });
-            }).catch(error => {
-                addSymptomsLogger.error(invalidDBResponseLog(error),Severity.HIGH);
-                response.status(errorStatusCode).send(error);
-            });
-        }).catch(error => {
-            addBackgroundDiseasesLogger.error(invalidDBResponseLog(error),Severity.HIGH);
-            response.status(errorStatusCode).send(error);
-        });
+    graphqlRequest(SAVE_CLINICAL_DETAILS, response.locals, parameters).then(() => {
+        saveClinicalDetailsFunctionLogger.info(validDBResponseLog, Severity.LOW);
+        response.sendStatus(validStatusCode);
     }).catch(error => {
-        saveClinicalInvestigationLogger.error(invalidDBResponseLog(error),Severity.HIGH);
+        saveClinicalDetailsFunctionLogger.error(invalidDBResponseLog(error),Severity.HIGH);
         response.status(errorStatusCode).send(error);
     });
 }
