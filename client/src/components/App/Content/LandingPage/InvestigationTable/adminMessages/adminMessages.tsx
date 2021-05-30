@@ -30,7 +30,7 @@ const AdminMessages: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     const formattedDesksId = desksId ?? []; 
-const isDesksFilterEmpty = formattedDesksId.length === 0 
+    const isDesksFilterEmpty = formattedDesksId.length === 0 
     const desksIds = isDesksFilterEmpty ? getDesksFromDeskFilter(desks, displayedCounty) : formattedDesksId;
     getAdminsMessages(desksIds);
   }, [])
