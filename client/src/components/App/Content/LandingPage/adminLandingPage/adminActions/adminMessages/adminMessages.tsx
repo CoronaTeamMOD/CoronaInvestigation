@@ -9,7 +9,7 @@ import StoreStateType from 'redux/storeStateType';
 import { AdminMessage } from 'models/AdminMessage';
 import useAdminMessagesDBAction from './useAdminMessagesDBAction';
 
-const AdminMessages: React.FC<Props> = (props: Props): JSX.Element => {
+const AdminMessages = (props: Props) => {
   const classes = useStyles();
   const { getAdminsMessagesByAdmin, adminsMessagesByAdmin, sendMessage, deleteMessage, toRefresh } = useAdminMessagesDBAction();
 
@@ -28,9 +28,9 @@ const AdminMessages: React.FC<Props> = (props: Props): JSX.Element => {
         .map(desk => desk.id)
     )
   }
-
-  const isDesksFilterEmpty = !Boolean(desksId) || desksId.length === 0;
-  const desksIds = isDesksFilterEmpty ? getDesksFromDeskFilter(desks, displayedCounty) : desksId;
+  const formattedDesksId = desksId ?? []
+  const isDesksFilterEmpty = formattedDesksId.length === 0;
+  const desksIds = isDesksFilterEmpty ? getDesksFromDeskFilter(desks, displayedCounty) : formattedDesksId;
 
   useEffect(() => {
     getAdminsMessagesByAdmin(desksIds, adminId);
@@ -61,7 +61,7 @@ const AdminMessages: React.FC<Props> = (props: Props): JSX.Element => {
           />
           <Collapse in={messages.length>0} unmountOnExit>
             <div>
-              {messages.map((message: any) => (
+              {messages?.map((message: any) => (
                 <Message 
                   key={message.id}
                   messageText={message.message}

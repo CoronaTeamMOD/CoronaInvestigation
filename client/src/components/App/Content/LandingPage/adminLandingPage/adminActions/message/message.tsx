@@ -4,7 +4,7 @@ import { Grid, Button, TextField, Collapse, IconButton } from '@material-ui/core
 
 import useStyles from './messegeStyles';
 
-const Message: React.FC<Props> = (props: Props): JSX.Element => {
+const Message = (props: Props) => {
 
   const classes = useStyles();
   const [message, setMessage] = useState<string>(props.messageText);

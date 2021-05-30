@@ -6,7 +6,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 import ContactStatus from 'models/ContactStatus';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InteractedContact from 'models/InteractedContact';
-import useContactFields from 'Utils/Contacts/useContactFields';
+import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFields';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
@@ -26,11 +26,17 @@ const ReachContact = (props: Props) => {
         return contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === status);
     }
     const getCurrentValue = (status: number) => { return foundValue(status) || { id: -1, displayName: '...' } }
-    const { isFieldDisabled } = useContactFields(formValues.contactStatus);
+    const { isFieldDisabled, validateContact } = useContactFields(formValues.contactStatus);
 
     const { changeContactStatus } = useReachContact({
         saveContact, parsePerson, formValues, index
     });
+
+    const removeUnusePartOfError = (errorMsg: string) => {
+        errorMsg = errorMsg.replace('לא מילאת את שדות', '');
+        errorMsg = errorMsg.replace('לא מילאת את שדה', '');
+        return errorMsg;
+    }
 
     return (
         <div className={classes.reachContact}>
@@ -51,12 +57,15 @@ const ReachContact = (props: Props) => {
                                         option.displayName
                                     }
                                     value={currentValue}
-                                    onChange={(e, data) =>
+                                    onChange={(e, data) =>{
+                                        let contactValidation = validateContact(interactedContact, ValidationReason.SAVE_CONTACT)
+                                        const misingFieldsText = contactValidation?.valid ? '' : removeUnusePartOfError(contactValidation.error);
                                         changeContactStatus(
                                             e,
                                             data,
-                                            props.onChange
-                                        )
+                                            props.onChange,
+                                            misingFieldsText
+                                        )}
                                     }
                                     inputValue={currentValue.displayName}
                                     closeIcon={false}
