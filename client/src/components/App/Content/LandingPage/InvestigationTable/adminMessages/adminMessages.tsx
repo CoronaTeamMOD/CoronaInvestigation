@@ -29,7 +29,7 @@ const AdminMessages: React.FC<Props> = (props: Props) => {
   }
 
   useEffect(() => {
-    const isDesksFilterEmpty = desksId.length === 0;
+    const isDesksFilterEmpty = Boolean(desksId) || desksId.length === 0 
     const desksIds = isDesksFilterEmpty ? getDesksFromDeskFilter(desks, displayedCounty) : desksId;
     getAdminsMessages(desksIds);
   }, [])
