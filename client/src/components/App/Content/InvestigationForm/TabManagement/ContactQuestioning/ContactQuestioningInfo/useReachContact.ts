@@ -3,39 +3,52 @@ import { useFormContext } from 'react-hook-form';
 import theme from 'styles/theme';
 import ContactStatus from 'models/ContactStatus';
 import InteractedContact from 'models/InteractedContact';
-import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 const useReachContact = (props: Props) => {
     const { errors, getValues } = useFormContext();
     const { saveContact, parsePerson, formValues, index } = props;
     const { alertWarning , alertError } = useCustomSwal();
+    
+    const formHaveMissingFields = true;
+    const formHaveMissingFieldsText = `למגע זה ישנם שדות לא תקינים:`
 
     const formHasErrors = errors.form ? Boolean(errors.form[index]) : false;
     const changeContactStatus = (
         event: React.ChangeEvent<{}>,
         selectedStatus: ContactStatus | null,
-        onChange: (...event: any[]) => void
+        onChange: (...event: any[]) => void,
+        misingFieldsText: string
     ) => {
         event.stopPropagation();
 
         if (selectedStatus?.id === ContactStatusCodes.COMPLETED) {
             if (!formHasErrors) {
-                alertWarning('האם אתה בטוח שתרצה להעביר את המגע לסטטוס הושלם?', {
-                    text: 'לאחר העברת המגע, לא תהיה אפשרות לערוך שינויים',
-                    showCancelButton: true,
-                    cancelButtonText: 'בטל',
-                    cancelButtonColor: theme.palette.error.main,
-                    confirmButtonColor: theme.palette.primary.main,
-                    confirmButtonText: 'כן, המשך',
-                }).then((result) => {
-                    if (result.value) {
-                        onChange(selectedStatus?.id);
-                        let contacted_person = getValues().form[index];
-                        saveContact(parsePerson(contacted_person, index));
-                    }
-                });
+                if (!formHaveMissingFields) {
+                    alertWarning('האם אתה בטוח שתרצה להעביר את המגע לסטטוס הושלם?', {
+                        text: 'לאחר העברת המגע, לא תהיה אפשרות לערוך שינויים',
+                        showCancelButton: true,
+                        cancelButtonText: 'בטל',
+                        cancelButtonColor: theme.palette.error.main,
+                        confirmButtonColor: theme.palette.primary.main,
+                        confirmButtonText: 'כן, המשך',
+                    }).then((result) => {
+                        if (result.value) {
+                            onChange(selectedStatus?.id);
+                            let contacted_person = getValues().form[index];
+                            saveContact(parsePerson(contacted_person, index));
+                        }
+                    });
+                }
+                else if (misingFieldsText !== '') {
+                    alertError('לא ניתן לשנות סטטוס להושלם', {
+                        text: formHaveMissingFieldsText.concat(misingFieldsText),
+                        confirmButtonColor: theme.palette.primary.main,
+                        confirmButtonText: 'אוקיי',
+                    }).then((result) => {}); 
+                }
             } else {
                 alertError('לא ניתן לשנות סטטוס להושלם', {
                     text: 'שים לב שלמגע זה ישנם שדות לא תקינים',
