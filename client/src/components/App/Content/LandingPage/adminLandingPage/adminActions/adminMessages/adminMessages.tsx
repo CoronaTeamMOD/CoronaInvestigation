@@ -9,7 +9,7 @@ import StoreStateType from 'redux/storeStateType';
 import { AdminMessage } from 'models/AdminMessage';
 import useAdminMessagesDBAction from './useAdminMessagesDBAction';
 
-const AdminMessages: React.FC<Props> = (props: Props): JSX.Element => {
+const AdminMessages = (props: Props) => {
   const classes = useStyles();
   const { getAdminsMessagesByAdmin, adminsMessagesByAdmin, sendMessage, deleteMessage, toRefresh } = useAdminMessagesDBAction();
 

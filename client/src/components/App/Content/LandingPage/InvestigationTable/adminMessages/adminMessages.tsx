@@ -10,7 +10,7 @@ import { AdminMessage } from 'models/AdminMessage';
 import Message from '../../adminLandingPage/adminActions/message/message';
 import useAdminMessagesDBAction from '../../adminLandingPage/adminActions/adminMessages/useAdminMessagesDBAction';
 
-const AdminMessages: React.FC<Props> = (props: Props) => {
+const AdminMessages = (props: Props) => {
   const classes = useStyles();
   const { getAdminsMessages, adminMessagesByDesks } = useAdminMessagesDBAction();
 
