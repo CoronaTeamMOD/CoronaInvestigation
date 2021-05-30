@@ -28,9 +28,9 @@ const AdminMessages: React.FC<Props> = (props: Props): JSX.Element => {
         .map(desk => desk.id)
     )
   }
-
-  const isDesksFilterEmpty = !Boolean(desksId) || desksId.length === 0;
-  const desksIds = isDesksFilterEmpty ? getDesksFromDeskFilter(desks, displayedCounty) : desksId;
+  const formattedDesksId = desksId ?? []
+  const isDesksFilterEmpty = formattedDesksId.length === 0;
+  const desksIds = isDesksFilterEmpty ? getDesksFromDeskFilter(desks, displayedCounty) : formattedDesksId;
 
   useEffect(() => {
     getAdminsMessagesByAdmin(desksIds, adminId);
