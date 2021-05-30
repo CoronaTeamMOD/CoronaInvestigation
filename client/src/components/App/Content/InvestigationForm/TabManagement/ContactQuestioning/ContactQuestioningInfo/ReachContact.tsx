@@ -58,7 +58,7 @@ const ReachContact = (props: Props) => {
                                     }
                                     value={currentValue}
                                     onChange={(e, data) =>{
-                                        let contactValidation = validateContact(interactedContact, ValidationReason.SAVE_CONTACT)
+                                        let contactValidation = validateContact(parsePerson(formValues,index), ValidationReason.SAVE_CONTACT)
                                         const misingFieldsText = contactValidation?.valid ? '' : removeUnusePartOfError(contactValidation.error);
                                         changeContactStatus(
                                             e,
