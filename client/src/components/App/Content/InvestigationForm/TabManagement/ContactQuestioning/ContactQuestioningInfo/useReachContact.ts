@@ -18,10 +18,10 @@ const useReachContact = (props: Props) => {
         event: React.ChangeEvent<{}>,
         selectedStatus: ContactStatus | null,
         onChange: (...event: any[]) => void,
-        misingFieldsText: string
+        missingFieldsText: string
     ) => {
         event.stopPropagation();
-        const formHaveMissingFields = misingFieldsText!=='';
+        const formHaveMissingFields = missingFieldsText!=='';
         if (selectedStatus?.id === ContactStatusCodes.COMPLETED) {
             if (!formHasErrors) {
                 if (!formHaveMissingFields) {
@@ -40,9 +40,9 @@ const useReachContact = (props: Props) => {
                         }
                     });
                 }
-                if (formHaveMissingFields && misingFieldsText !== '') {
+                if (formHaveMissingFields && missingFieldsText !== '') {
                     alertError('לא ניתן לשנות סטטוס להושלם', {
-                        text: formHaveMissingFieldsText.concat(misingFieldsText),
+                        text: formHaveMissingFieldsText.concat(missingFieldsText),
                         confirmButtonColor: theme.palette.primary.main,
                         confirmButtonText: 'אוקיי',
                     }).then((result) => {}); 
