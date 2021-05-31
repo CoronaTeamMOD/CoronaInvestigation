@@ -9,10 +9,10 @@ const adminActions: AdminAction[] = [
             id: 1, 
             displayName: 'הוספה לבסיס הנתונים'
         }, 
-        {
-            id: 2, 
-            displayName: 'הודעת אדמין'
-        }
+        // {
+        //     id: 2, 
+        //     displayName: 'הודעת אדמין'
+        // }
     ]
 
 export const defaultAdminAction = adminActions[0];

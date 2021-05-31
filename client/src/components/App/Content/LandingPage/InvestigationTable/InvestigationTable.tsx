@@ -245,13 +245,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     return (
         <div onClick={closeDropdowns} >
             <Grid className={classes.content}>
-            <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
+            {/* <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
                 <Grid item xs={12}>
                     <AdminMessages 
                         deskFilter={deskFilter}
                     />
                 </Grid>
-            </Grid>
+            </Grid> */}
                 <div className={classes.tableHeaderRow}>
                     <Typography color='primary' className={classes.counterLabel} >
                         {counterDescription}

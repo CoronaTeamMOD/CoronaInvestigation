@@ -38,11 +38,11 @@ const AdminActions: React.FC<Props> = (props: Props): JSX.Element => {
                     <AdminDBAction />
                 </Collapse>
 
-                <Collapse in={selectedAdminAction.id === adminActions[2].id} unmountOnExit>
+                {/* <Collapse in={selectedAdminAction.id === adminActions[2].id} unmountOnExit>
                     <AdminMessages 
                         investigationInfoFilter={props.investigationInfoFilter}
                     />
-                </Collapse>
+                </Collapse> */}
 
             </CardContent>
         </Card>
