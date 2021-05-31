@@ -235,7 +235,7 @@ query unallocatedInvestigationsCount($allInvesitgationsFilter: [InvestigationFil
 
 export const GET_ALL_ADMIN_MESSAGES_BY_DESK = gql`
 query allAdminMessages($desksIdInput: [Int!]) {
-  allAdminMessages (filter: {desksId: {containedBy: $desksIdInput}}) {
+  allAdminMessages (filter: {desksId: {contains: $desksIdInput}}) {
     nodes {
       message
       id
@@ -248,7 +248,7 @@ query allAdminMessages($desksIdInput: [Int!]) {
 
 export const GET_ALL_ADMIN_MESSAGES_BY_DESK_AND_ADMIN = gql`
 query allAdminMessages($desksIdInput: [Int!], $adminIdInput: String! ) {
-  allAdminMessages (filter: {desksId: {containedBy: $desksIdInput}, adminId: {equalTo: $adminIdInput}}) {
+  allAdminMessages (filter: {desksId: {contains: $desksIdInput}, adminId: {equalTo: $adminIdInput}}) {
     nodes {
       adminId
       desksId
