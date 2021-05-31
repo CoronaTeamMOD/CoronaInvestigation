@@ -32,9 +32,6 @@ const AdminMessages = (props: Props) => {
   const isDesksFilterEmpty = formattedDesksId.length === 0;
   const desksIds = isDesksFilterEmpty ? getDesksFromDeskFilter(desks, displayedCounty) : formattedDesksId;
 
-  useEffect(() => {
-    getAdminsMessagesByAdmin(desksIds, adminId);
-  }, [])
 
   useEffect(() => {
     if (adminsMessagesByAdmin && adminsMessagesByAdmin?.length > 0) {
@@ -44,7 +41,7 @@ const AdminMessages = (props: Props) => {
 
   useEffect(() => {
     getAdminsMessagesByAdmin(desksIds, adminId);
-  }, [toRefresh])
+  }, [toRefresh, desksId])
 
     return (
         <Grid>
