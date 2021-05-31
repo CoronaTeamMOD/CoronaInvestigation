@@ -31,7 +31,10 @@ const Message = (props: Props) => {
                 className={classes.button}
                 variant='contained' 
                 color='primary'
-                onClick={()=>{props.sendMessage && props.sendMessage(message)}}
+                onClick={()=>{
+                  props.sendMessage && props.sendMessage(message)
+                  setMessage('');  
+                }}
                 disabled={!(message && message !== '')}>
                   <b>{sendText}</b>
               </Button>
