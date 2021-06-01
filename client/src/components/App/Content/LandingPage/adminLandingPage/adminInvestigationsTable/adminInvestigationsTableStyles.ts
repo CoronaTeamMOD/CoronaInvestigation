@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/styles';
 import theme from 'styles/theme';
 
-export const cardHeight = '35vh'; 
+export const cardHeight = '35vh';
 
 const useStyles = makeStyles({
   tableRow: {
@@ -23,7 +23,13 @@ const useStyles = makeStyles({
   },
   tableStyle: {
     height: cardHeight
-  }
+  },
+  adminInvestigationCard: {
+    borderRadius: '1vw',
+  },
+  cardTitle: {
+      marginBottom: theme.spacing(1)
+  },
 });
 
 export default useStyles;
