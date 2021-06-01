@@ -79,16 +79,13 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                     />
                 </Grid>
                 <Grid item xs={12}>
-                    <Typography  className={classes.invTitle}>
-                        <b>חקירות בטיפול</b>
-                    </Typography>
                     <AdminInvestigationsTable
                         isLoading={isAdminInvestigationsLoading}
                         adminInvestigations={adminInvestigations}
                         fetchAdminInvestigations={fetchAdminInvestigations}
                     />
                 </Grid>
-                <Grid item xs={12} >
+                <Grid item xs={12}>
                     <AdminActions
                     investigationInfoFilter= {investigationInfoFilter}/>
                 </Grid>

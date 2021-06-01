@@ -6,7 +6,7 @@ import { persistor } from 'redux/store';
 import { useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import ProgressBar from "@ramonak/react-progress-bar";
-import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Tooltip, TableSortLabel } from '@material-ui/core';
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Tooltip, TableSortLabel, CardContent, Card, Typography } from '@material-ui/core';
 
 import User from 'models/User';
 import { Severity } from 'models/Logger';
@@ -24,6 +24,7 @@ import { TableHeadersNames, TableHeaders, SortableTableHeaders } from './adminIn
 
 const investigationURL = '/investigation';
 export const defaultOrderBy = 'defaultOrder';
+const adminInvestigationTitle = 'חקירות בטיפול'
 
 const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, fetchAdminInvestigations, isLoading }) => {
 
@@ -120,7 +121,13 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, fetchA
     };
 
     return (
+        <Card className={classes.adminInvestigationCard}>
+            <CardContent >
+                <Typography className={classes.cardTitle}>
+                    <b>{adminInvestigationTitle}</b>
+                </Typography>
         <LoadingCard isLoading={isLoading} height={cardHeight}>
+
             <TableContainer className={classes.tableStyle} component={Paper}>
                 <Table stickyHeader>
                     <TableHead id='investigators-table-header'>
@@ -169,6 +176,8 @@ const AdminInvestigationsTable: React.FC<Props> = ({ adminInvestigations, fetchA
                 </Table>
             </TableContainer>
         </LoadingCard>
+        </CardContent>
+        </Card>
     );
 };
 
