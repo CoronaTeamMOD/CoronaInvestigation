@@ -58,7 +58,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                     fetchInvestigationStatistics={fetchInvestigationStatistics}
                     fetchAdminInvestigations={fetchAdminInvestigations}/>
                 </Grid>
-                <Grid container item xs={12} justify="space-between">
+                <Grid container item xs={12} justify='space-between'>
                     <Grid container direction='column' item spacing={3} xs={12} md={3}>
                         <Grid item>
                             <DesksFilterCard
