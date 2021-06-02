@@ -10,5 +10,10 @@ export const useStyles = makeStyles({
         borderRadius: '50px',
         width: '70px',
         lineHeight: '1.1rem'
+    },
+    quadrupleToggle: {
+        borderRadius: '50px',
+        width: '80px',
+        lineHeight: '1.1rem'
     }
 });

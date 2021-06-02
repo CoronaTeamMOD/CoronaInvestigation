@@ -5,11 +5,11 @@ import theme from 'styles/theme';
 
 import { useStyles } from './ToggleStyles';
 
-const TrippleToggle: React.FC<Props> = (props: Props): JSX.Element => {
+const QuadrupleToggle: React.FC<Props> = (props: Props): JSX.Element => {
 
     const classes = useStyles({});
 
-    const { firstOption, secondOption, thirdOption, value, disabled, ...rest } = props;
+    const { firstOption, secondOption, thirdOption, fourthOption, value, disabled, ...rest } = props;
 
     const activeButtonStyle = {
         backgroundColor: theme.palette.primary.main, 
@@ -19,31 +19,38 @@ const TrippleToggle: React.FC<Props> = (props: Props): JSX.Element => {
     return (
         <ToggleButtonGroup value={value} exclusive {...rest}>
             <ToggleButton 
-                className={classes.trippleToggle} 
+                className={classes.quadrupleToggle} 
                 disabled={disabled}
                 style={value === firstOption?.id ? activeButtonStyle : {}}
                 value={firstOption?.id}>
                 {firstOption?.displayName}
             </ToggleButton>
             <ToggleButton 
-                className={classes.trippleToggle}
+                className={classes.quadrupleToggle}
                 disabled={disabled}
                 style={value === secondOption?.id ? activeButtonStyle : {}}
                 value={secondOption?.id}>
                 {secondOption?.displayName}
             </ToggleButton>
             <ToggleButton 
-                className={classes.trippleToggle} 
+                className={classes.quadrupleToggle} 
                 disabled={disabled}
                 style={value === thirdOption?.id ? activeButtonStyle : {}}
                 value={thirdOption?.id}>
                 {thirdOption?.displayName}
             </ToggleButton>
+            <ToggleButton 
+                className={classes.quadrupleToggle} 
+                disabled={disabled}
+                style={value === fourthOption?.id ? activeButtonStyle : {}}
+                value={fourthOption?.id}>
+                {fourthOption?.displayName}
+            </ToggleButton>
         </ToggleButtonGroup>
     );
 };
 
-export default TrippleToggle;
+export default QuadrupleToggle;
 
 interface Option {
     displayName: string;
@@ -54,6 +61,7 @@ interface Props extends ToggleButtonGroupProps {
     firstOption?: Option;
     secondOption?: Option;
     thirdOption?: Option;
+    fourthOption?: Option;
     disabled?: boolean;
     value?: number;
 };

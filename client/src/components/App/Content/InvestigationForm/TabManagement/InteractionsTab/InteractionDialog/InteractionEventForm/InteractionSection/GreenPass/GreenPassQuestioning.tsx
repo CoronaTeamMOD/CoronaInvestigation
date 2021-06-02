@@ -10,6 +10,7 @@ import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogCo
     
 import useStyles from './GreenPassStyles';
 import useGreenPassQuestioning from './useGreenPassQuestioning';
+import QuadrupleToggle from 'commons/Toggle/QuadrupleToggle';
 
 const greenPassQuestionsTitle = 'הקפדה על נהלים:';
 const finalQuestionsTitle = 'מסקנת החוקר:';
@@ -33,7 +34,10 @@ const GreenPassQuestioning = (props :Props) => {
                                 control={control}
                                 defaultValue={greenPass.hasOwnProperty(greenPassQuestion.id) ? !!greenPass[greenPassQuestion.id] : undefined}
                                 render={(props) => (
-                                    <Toggle
+                                    <TripleToggle
+                                        firstOption={greenPassAnswers[0]}
+                                        secondOption={greenPassAnswers[1]}
+                                        thirdOption={greenPassAnswers[greenPassAnswers.length-1]}
                                         value={props.value}
                                         onChange={(e, value) => {
                                             if (value !== null) {
@@ -57,10 +61,11 @@ const GreenPassQuestioning = (props :Props) => {
                                 control={control}
                                 defaultValue={greenPass.hasOwnProperty(finalQuestion.id) ? greenPass[finalQuestion.id] : undefined}
                                 render={(props) => (
-                                    <TripleToggle
-                                        firstOption={greenPassAnswers[greenPassAnswers.length-3]}
-                                        secondOption={greenPassAnswers[greenPassAnswers.length-2]}
-                                        thirdOption={greenPassAnswers[greenPassAnswers.length-1]}
+                                    <QuadrupleToggle
+                                        firstOption={greenPassAnswers[greenPassAnswers.length-4]}
+                                        secondOption={greenPassAnswers[greenPassAnswers.length-3]}
+                                        thirdOption={greenPassAnswers[greenPassAnswers.length-2]}
+                                        fourthOption={greenPassAnswers[greenPassAnswers.length-1]}
                                         value={props.value}
                                         onChange={(e, value) => {
                                             if (value !== null) {
