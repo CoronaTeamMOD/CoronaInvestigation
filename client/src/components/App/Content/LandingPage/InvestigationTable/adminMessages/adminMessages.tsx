@@ -36,7 +36,7 @@ const AdminMessages = (props: Props) => {
   }, [desksId])
 
   useEffect(() => {
-    if (adminMessagesByDesks && adminMessagesByDesks?.length > 0) {
+    if (adminMessagesByDesks) {
       setMessages(adminMessagesByDesks)
     }
   }, [adminMessagesByDesks])
