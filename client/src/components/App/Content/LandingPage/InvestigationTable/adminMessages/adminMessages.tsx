@@ -33,7 +33,7 @@ const AdminMessages = (props: Props) => {
     const isDesksFilterEmpty = formattedDesksId.length === 0 
     const desksIds = isDesksFilterEmpty ? getDesksFromDeskFilter(desks, displayedCounty) : formattedDesksId;
     getAdminsMessages(desksIds);
-  }, [desksId])
+  }, [desksId, displayedCounty])
 
   useEffect(() => {
     if (adminMessagesByDesks) {
