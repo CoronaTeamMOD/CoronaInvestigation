@@ -41,7 +41,7 @@ const AdminMessages = (props: Props) => {
 
   useEffect(() => {
     getAdminsMessagesByAdmin(desksIds, adminId);
-  }, [toRefresh, desksId])
+  }, [toRefresh, desksId, displayedCounty])
 
     return (
         <Grid>
