@@ -76,8 +76,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     chip: {
         maxWidth: '100%',
         whiteSpace: 'nowrap',
-        textOverflow: 'ellipsis',
-
+        textOverflow: 'ellipsis'
     },
     timeRangeError: {
         fontSize: '1vw',
