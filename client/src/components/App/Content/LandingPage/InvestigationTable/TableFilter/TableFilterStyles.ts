@@ -34,6 +34,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     autocomplete: {
         width: '10%',
         marginRight: '7px',
+        '&.Mui-focused': {
+            '& div[role="button"]': { 
+                overflow: 'hidden' 
+            }
+        }
     },
     autocompleteInput: {
         paddingRight: 'unset'
@@ -71,8 +76,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     chip: {
         maxWidth: '100%',
         whiteSpace: 'nowrap',
-        //overflow: 'hidden',
         textOverflow: 'ellipsis',
+
     },
     timeRangeError: {
         fontSize: '1vw',
