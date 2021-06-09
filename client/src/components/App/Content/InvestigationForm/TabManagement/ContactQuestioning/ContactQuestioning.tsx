@@ -41,6 +41,7 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
         loadInteractedContacts,
         loadFamilyRelationships,
         loadContactStatuses,
+        getRulerApiData
     } = useContactQuestioning({
         id,
         setAllContactedInteractions,
@@ -61,6 +62,39 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
             trigger();
         }
     } , [allContactedInteractions]);
+
+    const params: any = 
+    {
+        "RulerCheckColorRequest":{     
+        "MOHHeader":{       
+            "ActivationID":"1",       
+            "CustID":"23",       
+            "AppID":"130",       
+            "SiteID":"2",       
+            "InterfaceID":"Ruler"
+        },
+        "Ids":[{
+                "IdType":3,
+                "IDnum":"??2563621",
+                "DOB":"24011971",
+                "Tel":"0542987778"
+                },
+                {
+                "IdType":2,
+                "IDnum":".T0901828",
+                "DOB":"24011971",
+                "Tel":"0542987778"
+                },
+                {
+                "IdType":2,
+                "IDnum":"?0901788",
+                "DOB":"24011971",
+                "Tel":"0542987778"
+                }
+            ]
+        }
+    }
+    const parameters: JSON = params;
 
     return (
         <>
@@ -94,6 +128,7 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                 );
                             }
                         )}
+                        <span onClick={()=>{getRulerApiData(parameters)}}>לחץ להדפסת נתוני הרמזור</span>
                     </Grid>
                 </form>
             </FormProvider>
