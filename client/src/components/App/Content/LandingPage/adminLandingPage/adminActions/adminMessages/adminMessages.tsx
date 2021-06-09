@@ -34,14 +34,14 @@ const AdminMessages = (props: Props) => {
 
 
   useEffect(() => {
-    if (adminsMessagesByAdmin && adminsMessagesByAdmin?.length > 0) {
+    if (adminsMessagesByAdmin) {
       setMessages(adminsMessagesByAdmin)
     }
   }, [adminsMessagesByAdmin])
 
   useEffect(() => {
     getAdminsMessagesByAdmin(desksIds, adminId);
-  }, [toRefresh, desksId])
+  }, [toRefresh, desksId, displayedCounty])
 
     return (
         <Grid>
