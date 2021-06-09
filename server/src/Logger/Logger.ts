@@ -25,9 +25,20 @@ export const launchingDBRequestLog = (parameters?: Object): string => {
     return log;
 }
 
+export const launchingAPIRequestLog = (parameters?: Object): string => {
+    let log = 'launching API request';
+    if (parameters) log = log.concat(` with parameters: ${formatParameters(parameters)}`);
+    return log;
+}
+
 export const validDBResponseLog : string = 'DB response is successful';
 
+export const validAPIResponseLog : string = 'API response is successful';
+
 export const invalidDBResponseLog = (errorMessage: string) : string => `got errors on graphql API ${errorMessage}`;
+
+export const invalidAPIResponseLog = (errorMessage: string) : string => `got errors on API ${errorMessage}`;
+
 class Logger {
 
     logger: winstonLogger;
