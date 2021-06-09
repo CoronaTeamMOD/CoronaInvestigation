@@ -128,7 +128,13 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         );
         setIsLoading(true);
         const minimalDate = datesToInvestigate.slice(-1)[0];
-        axios.get(`/contactedPeople/allContacts/${minimalDate?.toISOString()}`)
+
+        const requestData = {
+            size: 2,
+            currentPage: 1
+        };
+
+        axios.post(`/contactedPeople/allContacts/${minimalDate?.toISOString()}`,requestData)
             .then((result: any) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     interactedContactsLogger.info(
