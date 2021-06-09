@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontSize: '0.7vw'
     },
     chip: {
-        maxWidth: '50%',
+        maxWidth: '100%',
         whiteSpace: 'nowrap',
         overflow: 'hidden',
         textOverflow: 'ellipsis',

@@ -58,39 +58,38 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                     fetchInvestigationStatistics={fetchInvestigationStatistics}
                     fetchAdminInvestigations={fetchAdminInvestigations}/>
                 </Grid>
-                <Grid container direction='column' item spacing={3} xs={12} md={3}>
-                    <Grid item>
-                        <DesksFilterCard
-                            onUpdateButtonClicked={updateInvestigationFilterByDesks}
+                <Grid container item xs={12} justify='space-between'>
+                    <Grid container direction='column' item spacing={3} xs={12} md={3}>
+                        <Grid item>
+                            <DesksFilterCard
+                                onUpdateButtonClicked={updateInvestigationFilterByDesks}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <TimeRangeFilterCard 
+                                onUpdateButtonClicked={updateInvestigationFilterByTime}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12} md={9}>
+                        <InvestigationsInfo
+                            isLoading={isLoading}
+                            allInvestigationsCount={investigationsStatistics.allInvestigations}
+                            investigationsStatistics={investigationsStatistics as InvesitgationInfoStatistics}
+                            onInfoButtonClick={(infoFilter, filterType) => redirectToInvestigationTable(infoFilter, filterType)} 
                         />
                     </Grid>
-                    <Grid item>
-                        <TimeRangeFilterCard 
-                            onUpdateButtonClicked={updateInvestigationFilterByTime}
-                        />
-                    </Grid>
-                </Grid>
-                <Grid item xs={12} md={9}>
-                    <InvestigationsInfo
-                        isLoading={isLoading}
-                        allInvestigationsCount={investigationsStatistics.allInvestigations}
-                        investigationsStatistics={investigationsStatistics as InvesitgationInfoStatistics}
-                        onInfoButtonClick={(infoFilter, filterType) => redirectToInvestigationTable(infoFilter, filterType)} 
-                    />
                 </Grid>
                 <Grid item xs={12}>
-                    <Typography  className={classes.invTitle}>
-                        <b>חקירות בטיפול</b>
-                    </Typography>
                     <AdminInvestigationsTable
                         isLoading={isAdminInvestigationsLoading}
                         adminInvestigations={adminInvestigations}
                         fetchAdminInvestigations={fetchAdminInvestigations}
                     />
                 </Grid>
-                <Grid item xs={12} >
+                <Grid item xs={12}>
                     <AdminActions
-                    investigationInfoFilter= {investigationInfoFilter}/>
+                        investigationInfoFilter= {investigationInfoFilter}/>
                 </Grid>
             </Grid>
         </div>
