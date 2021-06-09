@@ -4,10 +4,10 @@ import { Severity } from '../../Models/Logger/types';
 import UseCache, { setToCache } from '../../middlewares/UseCache';
 import logger, { invalidAPIResponseLog, launchingAPIRequestLog, validAPIResponseLog, } from '../../Logger/Logger';
 
-const router = Router();
+const rulerRouter = Router();
 const rulerApiUrl = `http://192.168.2.26:8888/Corona/RulerCheckColor`;
 
-router.post('/ruler/', UseCache, (request: Request, response: Response) => {
+rulerRouter.post('/ruler/', UseCache, (request: Request, response: Response) => {
     const rulerLogger = logger.setup({
         workflow: 'query ruller by list of ids',
         user: response.locals.user.id,
@@ -46,17 +46,18 @@ router.post('/ruler/', UseCache, (request: Request, response: Response) => {
     }
     const parameters = <JSON> params
     rulerLogger.info(launchingAPIRequestLog(parameters), Severity.LOW);
-    callRullerApi(parameters)
-        .then((result: any) => {
-            const data = result.data;
-            rulerLogger.info(validAPIResponseLog, Severity.LOW);
-            setToCache(request.originalUrl, data);
-            response.send(data);
-        })
-        .catch((error: string) => {
-            rulerLogger.error(invalidAPIResponseLog(error), Severity.HIGH);
-            response.send(error);
-        });
+    console.log(callRullerApi(parameters))
+    
+        // .then((result: any) => {
+        //     const data = result.data;
+        //     rulerLogger.info(validAPIResponseLog, Severity.LOW);
+        //     setToCache(request.originalUrl, data);
+        //     response.send(data);
+        // })
+        // .catch((error: string) => {
+        //     rulerLogger.error(invalidAPIResponseLog(error), Severity.HIGH);
+        //     response.send(error);
+        // });
 });
 
 const callRullerApi = (parameters: JSON) => {
@@ -72,6 +73,8 @@ const callRullerApi = (parameters: JSON) => {
     };
     return request(options)
 }
+
+export default rulerRouter
 
 // headers: {
     // 'postman-token': '',

@@ -41,7 +41,8 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
         loadInteractedContacts,
         loadFamilyRelationships,
         loadContactStatuses,
-        getRulerApiData
+        getRulerApiData,
+        getRulerApiDataFromServer
     } = useContactQuestioning({
         id,
         setAllContactedInteractions,
@@ -128,7 +129,8 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                 );
                             }
                         )}
-                        <span onClick={()=>{getRulerApiData(parameters)}}>לחץ להדפסת נתוני הרמזור</span>
+                        <div onClick={()=>{getRulerApiData(parameters)}}>לחץ להדפסת נתוני הרמזור - קליינט</div>
+                        <div onClick={()=>{getRulerApiDataFromServer()}}>לחץ להדפסת נתוני הרמזור - סרבר</div>
                     </Grid>
                 </form>
             </FormProvider>

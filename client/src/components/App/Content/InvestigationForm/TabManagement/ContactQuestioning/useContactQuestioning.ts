@@ -65,6 +65,17 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             .finally(() => console.log('finally'));
     }
 
+    const getRulerApiDataFromServer = () => {
+        return axios.post('/ruler/ruler')
+            .then((response) => {
+                console.log('response', response);
+            })
+            .catch((err) => {
+                console.log('error', err);
+            })
+            .finally(() => console.log('finally'));
+    };
+
     const saveContact = (interactedContact: InteractedContact): boolean => {
         const contacts = [interactedContact];
         const contactsSavingVariable = {
@@ -336,6 +347,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         onSubmit,
         parsePerson,
         getRulerApiData,
+        getRulerApiDataFromServer
     };
 };
 
