@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import { yupResolver } from '@hookform/resolvers';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -21,6 +21,8 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const [allContactedInteractions, setAllContactedInteractions] = useState<GroupedInteractedContact[]>([]);
     const [familyRelationships, setFamilyRelationships] = useState<FamilyRelationship[]>([]);
     const [contactStatuses, setContactStatuses] = useState<ContactStatus[]>([]);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [isMore, setIsMore] = useState<boolean>(true);
 
     const classes = useStyles();
 
@@ -48,13 +50,15 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
         setFamilyRelationships,
         setContactStatuses,
         getValues,
+        currentPage,
+        setIsMore
     });
 
     useEffect(() => {
         loadInteractedContacts();
         loadFamilyRelationships();
         loadContactStatuses();
-    }, []);
+    }, [currentPage]);
 
     useEffect(() => {
         if(allContactedInteractions){
@@ -94,6 +98,11 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                 );
                             }
                         )}
+                        <div hidden={!isMore} >
+                            <Button onClick={() => setCurrentPage(currentPage+1)}>
+                                refresh
+                            </Button>
+                        </div>        
                     </Grid>
                 </form>
             </FormProvider>

@@ -19,6 +19,8 @@ import {
     
 const NEW_CONTACT_STATUS_CODE = 1;
 
+const SIZE_OF_CONTACTS = 2;
+
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {
         id,
@@ -27,6 +29,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         setFamilyRelationships,
         setContactStatuses,
         getValues,
+        currentPage,
+        setIsMore
     } = parameters;
     
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -130,8 +134,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         const minimalDate = datesToInvestigate.slice(-1)[0];
 
         const requestData = {
-            size: 2,
-            currentPage: 1
+            size: SIZE_OF_CONTACTS,
+            currentPage
         };
 
         axios.post(`/contactedPeople/allContacts/${minimalDate?.toISOString()}`,requestData)
@@ -194,8 +198,13 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     }
                         
                     );
-                    const groupedInteractedContacts = groupSimilarContactedPersons(interactedContacts);
+                    const allContactsSoFar = [...allContactedInteractions, ...interactedContacts];
+                    const groupedInteractedContacts = groupSimilarContactedPersons(allContactsSoFar);
                     setAllContactedInteractions(groupedInteractedContacts);
+
+                    if(interactedContacts.length < SIZE_OF_CONTACTS){
+                        setIsMore(false);
+                    }    
                 } else {
                     interactedContactsLogger.warn(
                         'got respond from the server without data',

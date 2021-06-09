@@ -14,6 +14,8 @@ export interface useContactQuestioningParameters {
     setFamilyRelationships: Dispatch<SetStateAction<FamilyRelationship[]>>;
     setContactStatuses: Dispatch<SetStateAction<FamilyRelationship[]>>;
     getValues: () => FormInputs;
+    currentPage: number;
+    setIsMore: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export interface useContactQuestioningOutcome {
     saveContact: (interactedContact: InteractedContact) => boolean;
