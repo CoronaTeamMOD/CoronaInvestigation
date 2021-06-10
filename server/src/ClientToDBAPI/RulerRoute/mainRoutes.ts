@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+const request = require('request');
 
 import { Severity } from '../../Models/Logger/types';
 import UseCache, { setToCache } from '../../middlewares/UseCache';
@@ -7,7 +8,7 @@ import logger, { invalidAPIResponseLog, launchingAPIRequestLog, validAPIResponse
 const rulerRoute = Router();
 const rulerApiUrl = `http://192.168.2.26:8888/Corona/RulerCheckColor`;
 
-rulerRoute.post('/ruler/', UseCache, (request: Request, response: Response) => {
+rulerRoute.post('/rulerapi/', UseCache, (request: Request, response: Response) => {
     const rulerLogger = logger.setup({
         workflow: 'query ruller by list of ids',
         user: response.locals.user.id,
@@ -46,7 +47,18 @@ rulerRoute.post('/ruler/', UseCache, (request: Request, response: Response) => {
     }
     const parameters = <JSON> params
     rulerLogger.info(launchingAPIRequestLog(parameters), Severity.LOW);
-    console.log(callRullerApi(parameters))
+    
+//     request.post(rulerApiUrl, { json: true }, (err: any, res: any, body: { url: any; explanation: any; }) => {
+//         if (err) { return console.log(err); }
+//         console.log(body.url);
+//         console.log(body.explanation);
+// });
+
+    
+
+    
+    
+    // return callRullerApi(parameters)
     
         // .then((result: any) => {
         //     const data = result.data;
@@ -60,18 +72,17 @@ rulerRoute.post('/ruler/', UseCache, (request: Request, response: Response) => {
         // });
 });
 
-const callRullerApi = (parameters: JSON) => {
-    const request = require('request');
-    const options = {
-        method: 'POST',
-        url: rulerApiUrl,
-        headers: {
-            'content-type': 'application/json'
-        },
-        body: parameters,
-        json: true
-    };
-    return request(options)
-}
+// const callRullerApi = (parameters: JSON) => {
+//     const options = {
+//         method: 'POST',
+//         url: rulerApiUrl,
+//         headers: {
+//             'content-type': 'application/json'
+//         },
+//         body: parameters,
+//         json: true
+//     };
+//     return request(options)
+// }
 
 export default rulerRoute;

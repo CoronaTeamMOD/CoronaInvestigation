@@ -66,7 +66,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     }
 
     const getRulerApiDataFromServer = () => {
-        return axios.post('/ruler/ruler')
+        return axios.post('/ruler/rulerapi')
             .then((response) => {
                 console.log('response', response);
             })
