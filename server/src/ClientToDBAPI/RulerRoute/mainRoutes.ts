@@ -4,10 +4,10 @@ import { Severity } from '../../Models/Logger/types';
 import UseCache, { setToCache } from '../../middlewares/UseCache';
 import logger, { invalidAPIResponseLog, launchingAPIRequestLog, validAPIResponseLog, } from '../../Logger/Logger';
 
-const rulerRouter = Router();
+const rulerRoute = Router();
 const rulerApiUrl = `http://192.168.2.26:8888/Corona/RulerCheckColor`;
 
-rulerRouter.post('/ruler/', UseCache, (request: Request, response: Response) => {
+rulerRoute.post('/ruler/', UseCache, (request: Request, response: Response) => {
     const rulerLogger = logger.setup({
         workflow: 'query ruller by list of ids',
         user: response.locals.user.id,
@@ -74,58 +74,4 @@ const callRullerApi = (parameters: JSON) => {
     return request(options)
 }
 
-export default rulerRouter
-
-// headers: {
-    // 'postman-token': '',
-    // 'cache-control': 'no-cache',
-    // autorization: '',
-
-
- // idType need to be: 
-    //1 – ת"ז ישראלית
-    //2 – דרכון
-    //3 – אחר / לא ידוע
-    //4 – ת"ז פלסטינאית
-    
-    //i'll get it from the client // request.body.idsArray
-    // const idsArray = [ 
-    //     {
-    //         IdType: '1',
-    //         IDnum: '235582947',
-    //         DOB: '03031999',
-    //         Tel: '0543455444'
-    //     },
-    //     {
-    //         IdType: '1',
-    //         IDnum: '236142543',
-    //         DOB: '03031999',
-    //         Tel: '0543455444'
-    //     },
-    //     {
-    //         IdType: '1',
-    //         IDnum: '237236377',
-    //         DOB: '03031999',
-    //         Tel: '0543455444'
-    //     }]
-
-    //add convert for id type (all types are the same exept of other that is 6 in our db)
-    // const params = {
-    //     RulerCheckColorRequest: {
-    //         MOHHeader: {
-    //             ActivationID: '1',
-    //             CustID: '23',
-    //             AppID: '123',
-    //             SiteID: '2',
-    //             InterfaceID: 'TrafficLightsMobile',
-    //         },
-    //         Ids: idsArray
-    //     }
-    // };
-
-
-// add timer (to talk about it with bar to add in the client side)
-
-//to filter only the relevant data that will need to be save
-
-// save the data in the node cache
+export default rulerRoute;
