@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-const request = require('request');
+import axios from 'axios';
 
 import { Severity } from '../../Models/Logger/types';
 import UseCache, { setToCache } from '../../middlewares/UseCache';
@@ -8,10 +8,10 @@ import logger, { invalidAPIResponseLog, launchingAPIRequestLog, validAPIResponse
 const rulerRoute = Router();
 const rulerApiUrl = `http://192.168.2.26:8888/Corona/RulerCheckColor`;
 
-rulerRoute.post('/rulerapi/', UseCache, (request: Request, response: Response) => {
+rulerRoute.post('/rulerapi/', UseCache, (req: Request, res: Response) => {
     const rulerLogger = logger.setup({
         workflow: 'query ruller by list of ids',
-        user: response.locals.user.id,
+        user: res.locals.user.id,
     });
 
     const params: any = 
@@ -48,41 +48,15 @@ rulerRoute.post('/rulerapi/', UseCache, (request: Request, response: Response) =
     const parameters = <JSON> params
     rulerLogger.info(launchingAPIRequestLog(parameters), Severity.LOW);
     
-//     request.post(rulerApiUrl, { json: true }, (err: any, res: any, body: { url: any; explanation: any; }) => {
-//         if (err) { return console.log(err); }
-//         console.log(body.url);
-//         console.log(body.explanation);
-// });
-
-    
-
-    
-    
-    // return callRullerApi(parameters)
-    
-        // .then((result: any) => {
-        //     const data = result.data;
-        //     rulerLogger.info(validAPIResponseLog, Severity.LOW);
-        //     setToCache(request.originalUrl, data);
-        //     response.send(data);
-        // })
-        // .catch((error: string) => {
-        //     rulerLogger.error(invalidAPIResponseLog(error), Severity.HIGH);
-        //     response.send(error);
-        // });
+    axios.post(rulerApiUrl, parameters).then((data) => {
+        rulerLogger.info(validAPIResponseLog, Severity.LOW);
+        setToCache(req.originalUrl, data.data);
+        res.send(data.data);
+    }
+    ).catch((err: any) => {
+        rulerLogger.error(invalidAPIResponseLog(err), Severity.HIGH);
+        res.send(err);
+    })
 });
-
-// const callRullerApi = (parameters: JSON) => {
-//     const options = {
-//         method: 'POST',
-//         url: rulerApiUrl,
-//         headers: {
-//             'content-type': 'application/json'
-//         },
-//         body: parameters,
-//         json: true
-//     };
-//     return request(options)
-// }
 
 export default rulerRoute;
