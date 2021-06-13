@@ -5,7 +5,6 @@ import {Controller, useFormContext} from 'react-hook-form';
 import GreenPassInfo from 'models/GreenPassInfo';
 import FormInput from 'commons/FormInput/FormInput';
 import CustomToggle from 'commons/Toggle/CustomToggle';
-import TripleToggle from 'commons/Toggle/TripleToggle';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
     
 import useStyles from './GreenPassStyles';
@@ -53,10 +52,8 @@ const GreenPassQuestioning = (props :Props) => {
                                     control={control}
                                     defaultValue={greenPass.hasOwnProperty(greenPassQuestion.id) ? greenPass[greenPassQuestion.id] : undefined}
                                     render={(props) => (
-                                        <TripleToggle
-                                            firstOption={greenPassAnswers[0]}
-                                            secondOption={greenPassAnswers[1]}
-                                            thirdOption={greenPassAnswers[greenPassAnswers.length-1]}
+                                        <CustomToggle
+                                            options={greenPassAnswers.slice(0,3)}
                                             value={props.value}
                                             onChange={(e, value) => {
                                                 if (value !== null) {
