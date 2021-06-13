@@ -7,7 +7,7 @@ import NumericTextField from 'commons/NumericTextField/NumericTextField';
 const nameLabel = 'מספר אפידמיולוגי';
 
 const SearchByEpidemiologyNumber = (props: Props) => {
-    const { getQueryParams } = props;
+    const { getQueryParams,isViewMode } = props;
 
     const [query,setQuery] = useState<string>('');
 
@@ -33,6 +33,7 @@ const SearchByEpidemiologyNumber = (props: Props) => {
                     }}
                     label={nameLabel}
                     onKeyDown={handleKeyDown}
+                    disabled={isViewMode}
                 />
             </Grid>
             <Grid xs='auto'>
@@ -40,6 +41,7 @@ const SearchByEpidemiologyNumber = (props: Props) => {
                         onClick={() => {
                             getQueryParams(query)
                         }}
+                        disabled={isViewMode}
                 >
                     <Search color='primary' />
                 </IconButton>
@@ -49,7 +51,8 @@ const SearchByEpidemiologyNumber = (props: Props) => {
 };
 
 interface Props {
-    getQueryParams: (query : string) => void
+    getQueryParams: (query : string) => void;
+    isViewMode:boolean;
 };
 
 

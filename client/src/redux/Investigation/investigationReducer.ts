@@ -32,7 +32,8 @@ const initialState: InvestigationRedux = {
     endTime: null,
     trackingRecommendation: {
         reason: null,
-    }
+    },
+    isViewMode: false
 }
 
 const investigationReducer = (state = initialState, action: Actions.InvestigationAction): InvestigationRedux => {
@@ -51,19 +52,20 @@ const investigationReducer = (state = initialState, action: Actions.Investigatio
             const validationDate = newValidationDate || state.validationDate;
             const doesHaveSymptoms = symptomsExistenceInfo ? symptomsExistenceInfo.doesHaveSymptoms : state.doesHaveSymptoms;
             const symptomsStartDate = symptomsExistenceInfo ? symptomsExistenceInfo.symptomsStartDate : state.symptomsStartDate;
-            return { 
+            return {
                 ...state,
                 validationDate,
                 doesHaveSymptoms,
                 symptomsStartDate,
-                datesToInvestigate: getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, validationDate) 
+                datesToInvestigate: getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, validationDate)
             }
         }
         case Actions.SET_END_TIME: return { ...state, endTime: action.payload.endTime }
-        case Actions.SET_TRACKING_RECOMMENDATION: return {...state, trackingRecommendation: action.payload.trackingRecommendation}
-        case Actions.SET_CREATOR: return  { ...state, creator: action.payload.creator }
-        case Actions.SET_BIRTH_DATE: return {...state , investigatedPatient: {...state.investigatedPatient , birthDate : action.payload.birthDate}}
-        case Actions.RESET_STATE: return  initialState
+        case Actions.SET_TRACKING_RECOMMENDATION: return { ...state, trackingRecommendation: action.payload.trackingRecommendation }
+        case Actions.SET_CREATOR: return { ...state, creator: action.payload.creator }
+        case Actions.SET_BIRTH_DATE: return { ...state, investigatedPatient: { ...state.investigatedPatient, birthDate: action.payload.birthDate } }
+        case Actions.RESET_STATE: return initialState
+        case Actions.SET_INVESTIGATION_VIEW_MODE: return { ...state, isViewMode: action.payload.isViewMode }
         default: return state;
     }
 }
