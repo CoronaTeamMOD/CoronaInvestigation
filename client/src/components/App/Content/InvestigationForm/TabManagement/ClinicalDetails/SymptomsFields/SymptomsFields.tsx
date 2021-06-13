@@ -19,7 +19,8 @@ import { ClinicalDetailsClasses } from '../ClinicalDetailsStyles';
 export const otherSymptomFieldName = 'אחר';
 
 const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, watchDoesHaveSymptoms, watchSymptoms, watchIsSymptomsDateUnknown, handleSymptomCheck, symptoms, didSymptomsDateChangeOccur, setDidSymptomsDateChangeOccur } = props;
+    const { classes, watchDoesHaveSymptoms, watchSymptoms, watchIsSymptomsDateUnknown, handleSymptomCheck, symptoms, didSymptomsDateChangeOccur, setDidSymptomsDateChangeOccur,
+        isViewMode } = props;
     const { control, errors } = useFormContext();
     const { wasInvestigationReopend } = useStatusUtils();
 
@@ -51,19 +52,20 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                         props.onChange(value);
                                     }
                                 }}
+                                disabled={isViewMode}
                             />
                         )}
                     />
-                <InlineErrorText 
-                    error={errors[ClinicalDetailsFields.DOES_HAVE_SYMPTOMS]}
-                />
+                    <InlineErrorText
+                        error={errors[ClinicalDetailsFields.DOES_HAVE_SYMPTOMS]}
+                    />
                 </Grid>
             </FormRowWithInput>
 
             <Collapse in={watchDoesHaveSymptoms}>
                 <FormRowWithInput fieldName='' labelLength={2}>
                     <Grid item xs={7}>
-                    <Collapse in={!watchIsSymptomsDateUnknown}>
+                        <Collapse in={!watchIsSymptomsDateUnknown}>
                             <div className={classes.dates}>
                                 {
                                     <Controller
@@ -88,6 +90,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
 
                                                     }
                                                 }}
+                                                disabled={isViewMode}
                                                 error={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE] ? true : false}
                                             />
                                         )}
@@ -113,6 +116,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                 }
                                             }
                                         }]}
+                                        isViewMode={isViewMode}
                                     />
                                 )}
                             />
@@ -120,7 +124,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                         {
                             watchDoesHaveSymptoms &&
                             <Typography color={errors[ClinicalDetailsFields.SYMPTOMS] ? 'error' : 'initial'}>תסמינים:
-                                (יש
+                            (יש
                                 לבחור לפחות תסמין אחד)</Typography>
                         }
                         <Grid item container className={classes.smallGrid}>
@@ -142,6 +146,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                             checked: props.value.includes(symptom),
                                                             onChange: () => handleSymptomCheck(symptom, props.onChange, props.value)
                                                         }]}
+                                                        isViewMode={isViewMode}
                                                     />
                                                 </Grid>
                                             ))
@@ -156,6 +161,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                     checked: props.value.includes(otherSymptomFieldName),
                                                     onChange: () => handleSymptomCheck(otherSymptomFieldName, props.onChange, props.value)
                                                 }]}
+                                                isViewMode={isViewMode}
                                             />
                                         </Grid>
                                     </>
@@ -202,6 +208,7 @@ interface Props {
     symptoms: string[];
     didSymptomsDateChangeOccur: boolean;
     setDidSymptomsDateChangeOccur: React.Dispatch<React.SetStateAction<boolean>>;
+    isViewMode: boolean;
 };
 
 export default SymptomsFields;

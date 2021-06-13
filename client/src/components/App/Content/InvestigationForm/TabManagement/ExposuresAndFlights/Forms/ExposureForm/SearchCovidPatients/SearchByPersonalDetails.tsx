@@ -11,13 +11,13 @@ const nameLabel = 'שם';
 const phoneNumberLabel = 'טלפון';
 
 const SearchByPersonalDetails = (props: Props) => {
-    const { getQueryParams } = props;
+    const { getQueryParams, isViewMode } = props;
 
     const classes = useStyles()
 
-    const [nameQuery,setFirstNameQuery] = useState<string>('');
-    const [phoneNumberQuery,setPhoneNumberQuery] = useState<string>('');
-    
+    const [nameQuery, setFirstNameQuery] = useState<string>('');
+    const [phoneNumberQuery, setPhoneNumberQuery] = useState<string>('');
+
     const triggerSearch = () => {
         getQueryParams({
             name: nameQuery,
@@ -25,8 +25,8 @@ const SearchByPersonalDetails = (props: Props) => {
         });
     };
 
-    const handleKeyDown = (e : React.KeyboardEvent) => {
-        if(e.key === "Enter") {
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === "Enter") {
             e.preventDefault();
             triggerSearch();
         }
@@ -43,6 +43,7 @@ const SearchByPersonalDetails = (props: Props) => {
                     }}
                     label={nameLabel}
                     onKeyDown={handleKeyDown}
+                    disabled={isViewMode}
                 />
             </Grid>
             <Grid item className={classes.andConnectorWrapper}>
@@ -60,6 +61,7 @@ const SearchByPersonalDetails = (props: Props) => {
                     }}
                     label={phoneNumberLabel}
                     onKeyDown={handleKeyDown}
+                    disabled={isViewMode}
                 />
             </Grid>
             <Grid item xs='auto' className={classes.buttonWrapper}>
@@ -67,6 +69,7 @@ const SearchByPersonalDetails = (props: Props) => {
                     onClick={() => {
                         triggerSearch();
                     }}
+                    disabled={isViewMode}
                 >
                     <Search color='primary' />
                 </IconButton>
@@ -76,7 +79,8 @@ const SearchByPersonalDetails = (props: Props) => {
 };
 
 interface Props {
-    getQueryParams: (params : PersonalDetailsQueryParams) => void
+    getQueryParams: (params: PersonalDetailsQueryParams) => void;
+    isViewMode: boolean;
 };
 
 

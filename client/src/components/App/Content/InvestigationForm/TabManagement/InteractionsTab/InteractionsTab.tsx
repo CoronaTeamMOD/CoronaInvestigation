@@ -27,7 +27,7 @@ const defaultInteractionsTabSettings: InteractionsTabSettings = {
 
 const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { id, setAreThereContacts } = props;
+    const { id, setAreThereContacts,isViewMode } = props;
 
     const familyMembersStateContext = useContext(familyMembersContext);
 
@@ -103,6 +103,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                 createNewInteractionEvent={() => setNewInteractionEventDate(interactionDate)}
                 interactions={interactionsMap.get(interactionDate.getTime())}
                 key={interactionDate.getTime()}
+                isViewMode={isViewMode}
             />
         )
     }
@@ -163,6 +164,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 interface Props {
     id: number;
     setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
+    isViewMode:boolean;
 };
 
 export default InteractionsTab;

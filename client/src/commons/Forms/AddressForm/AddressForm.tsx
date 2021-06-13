@@ -21,7 +21,7 @@ const HOUSE_NUM_LABEL = 'מספר בית';
 const UNKNOWN = 'לא ידוע';
 
 const AddressForm: React.FC<Props> = ({ 
-    disabled = false,
+    disabled,
     unsized = false,
     cityField, 
     streetField,

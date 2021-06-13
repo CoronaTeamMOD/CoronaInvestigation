@@ -8,7 +8,8 @@ import { alphaNumericWhiteSpaceErrorMessage, max50LengthErrorMessage } from 'com
 
 interface Props extends AlphabetTextFieldProps<string> {
   value: string | null;
-  fullWidth? : boolean;
+  fullWidth?: boolean;
+  isViewMode: boolean;
 };
 
 const stringAlphabet = yup
@@ -17,17 +18,18 @@ const stringAlphabet = yup
   .max(50, max50LengthErrorMessage);
 
 const ExposureSearchTextField = (props: Props) => {
-    const { value, ...rest } = props;
-    const serachValue : string = useMemo(() => value || '', [value]);
-    
-    return (
-        <TypePreventiveTextField
-            {...rest}
-            value={serachValue}
-            validationSchema={stringAlphabet}
-            test-id='exposureSource'
-        />
-    );
+  const { value, isViewMode, ...rest } = props;
+  const serachValue: string = useMemo(() => value || '', [value]);
+
+  return (
+    <TypePreventiveTextField
+      {...rest}
+      value={serachValue}
+      validationSchema={stringAlphabet}
+      test-id='exposureSource'
+      disabled={isViewMode}
+    />
+  );
 };
 
-export default ExposureSearchTextField; 
+export default ExposureSearchTextField;

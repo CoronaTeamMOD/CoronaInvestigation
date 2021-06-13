@@ -23,6 +23,7 @@ export interface AutocompletedFieldProps<T> {
     noOptionsMessage?: string;
     fullWidth?: boolean;
     error?: boolean;
+    isViewMode:boolean;
 }
 
 type AutocompletedFieldType = <T>(props: AutocompletedFieldProps<T>) => JSX.Element;

@@ -13,7 +13,7 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
 const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, watchIsInIsolation, watchIsolationStartDate, watchIsolationEndDate, isolationSources } = props;
+    const { classes, watchIsInIsolation, watchIsolationStartDate, watchIsolationEndDate, isolationSources,isViewMode } = props;
     const { control, errors, trigger } = useFormContext();
 
     React.useEffect(() => {
@@ -37,17 +37,18 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                         props.onChange(value)
                                     }
                                 }}
+                                disabled={isViewMode}
                             />
                         )}
                     />
-                    <InlineErrorText 
+                    <InlineErrorText
                         error={errors[ClinicalDetailsFields.IS_IN_ISOLATION]}
                     />
                 </Grid>
             </FormRowWithInput>
             <Collapse in={watchIsInIsolation}>
                 <Grid container alignItems='center' spacing={3}>
-                    <Grid item xs={2} className={classes.clinicalDetailsStub}/>
+                    <Grid item xs={2} className={classes.clinicalDetailsStub} />
                     <Grid item xs={3}>
                         <Controller
                             name={ClinicalDetailsFields.ISOLATION_START_DATE}
@@ -64,6 +65,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                         onChange={(newDate: Date) => {
                                             props.onChange(newDate);
                                         }}
+                                        disabled={isViewMode}
                                         error={errors[ClinicalDetailsFields.ISOLATION_START_DATE] ? true : false}
                                     />
                                 </div>
@@ -84,6 +86,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     onChange={(newDate: Date) => {
                                         props.onChange(newDate);
                                     }}
+                                    disabled={isViewMode}
                                     error={errors[ClinicalDetailsFields.ISOLATION_END_DATE] ? true : false}
                                 />
                             )}
@@ -99,13 +102,14 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 name={ClinicalDetailsFields.ISOLATION_SOURCE}
                                 control={control}
                                 render={(props) => (
-                                    <FormControl error={errors[ClinicalDetailsFields.ISOLATION_SOURCE]? true : false} variant='outlined' fullWidth>
+                                    <FormControl error={errors[ClinicalDetailsFields.ISOLATION_SOURCE] ? true : false} variant='outlined' fullWidth>
                                         <InputLabel shrink={!!props.value}>בחר אחת מהאופציות</InputLabel>
                                         <Select
-                                            label={errors[ClinicalDetailsFields.ISOLATION_SOURCE]? errors[ClinicalDetailsFields.ISOLATION_SOURCE].message : '* בחר אחת מהאופציות'}
+                                            label={errors[ClinicalDetailsFields.ISOLATION_SOURCE] ? errors[ClinicalDetailsFields.ISOLATION_SOURCE].message : '* בחר אחת מהאופציות'}
                                             name={ClinicalDetailsFields.ISOLATION_SOURCE}
-                                            value={props.value === null? '' : props.value}
-                                            onChange={(event) => props.onChange(event.target.value === ''? null : event.target.value)}
+                                            disabled={isViewMode}
+                                            value={props.value === null ? '' : props.value}
+                                            onChange={(event) => props.onChange(event.target.value === '' ? null : event.target.value)}
                                         >
                                             {
                                                 isolationSources.map((isolationSource: IsolationSource) => (
@@ -128,8 +132,9 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 render={(props) => {
                                     return (
                                         <AlphanumericTextField
-                                        {...props}
-                                        placeholder='פירוט נוסף'
+                                            {...props}
+                                            placeholder='פירוט נוסף'
+                                            disabled={isViewMode}
                                         />
                                     )
                                 }}
@@ -148,6 +153,7 @@ interface Props {
     watchIsolationStartDate: Date;
     watchIsolationEndDate: Date;
     isolationSources: IsolationSource[];
+    isViewMode: boolean;
 };
 
 export default IsolationDatesFields;

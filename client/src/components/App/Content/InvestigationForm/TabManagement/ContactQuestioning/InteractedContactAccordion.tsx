@@ -1,9 +1,9 @@
 import React from 'react';
 import { ExpandMore } from '@material-ui/icons';
 import { useFormContext } from 'react-hook-form';
-import { 
-    Accordion, AccordionDetails, AccordionSummary, 
-    AccordionActions, Divider, Grid 
+import {
+    Accordion, AccordionDetails, AccordionSummary,
+    AccordionActions, Divider, Grid
 } from '@material-ui/core';
 
 import ContactStatus from 'models/ContactStatus';
@@ -22,31 +22,31 @@ import ContactQuestioningClinical from './ContactQuestioningClinical';
 
 const InteractedContactAccordion = (props: Props) => {
 
-    const {errors, watch, ...methods} = useFormContext<FormInputs>();
+    const { errors, watch, ...methods } = useFormContext<FormInputs>();
 
     const classes = useStyles();
 
     const {
         interactedContact, index, contactStatuses, saveContact, parsePerson,
-        isFamilyContact, familyRelationships, shouldDisable
+        isFamilyContact, familyRelationships, shouldDisable, isViewMode
     } = props;
 
     const watchCurrentStatus: number = watch(`form[${index}].${InteractedContactFields.CONTACT_STATUS}`);
 
     const formErrors = errors?.form && errors?.form[index];
 
-    const getAccordionClasses = () : string => {
-        let classesList : string[] = [];
+    const getAccordionClasses = (): string => {
+        let classesList: string[] = [];
         classesList.push(classes.accordion);
-        
-        const formHasErrors = formErrors 
+
+        const formHasErrors = formErrors
             ? Object.entries(formErrors)
                 .some(([key, value]) => (
                     value !== undefined
                 ))
             : false
-    
-        if(formHasErrors) {
+
+        if (formHasErrors) {
             classesList.push(classes.errorAccordion);
         }
         return classesList.join(' ');
@@ -76,6 +76,7 @@ const InteractedContactAccordion = (props: Props) => {
                             contactStatuses={contactStatuses}
                             saveContact={saveContact}
                             parsePerson={parsePerson}
+                            isViewMode={isViewMode}
                         />
                     </AccordionSummary>
                     <AccordionDetails>
@@ -88,6 +89,7 @@ const InteractedContactAccordion = (props: Props) => {
                                 trigger={methods.trigger}
                                 currentFormErrors={formErrors}
                                 watch={watch}
+                                isViewMode={isViewMode}
                             />
                             <Divider
                                 orientation='vertical'
@@ -107,6 +109,7 @@ const InteractedContactAccordion = (props: Props) => {
                                 formErrors={formErrors}
                                 trigger={methods.trigger}
                                 contactStatus={watchCurrentStatus}
+                                isViewMode={isViewMode}
                             />
                             <Divider
                                 orientation='vertical'
@@ -119,28 +122,31 @@ const InteractedContactAccordion = (props: Props) => {
                                 formErrors={formErrors}
                                 control={methods.control}
                                 contactStatus={watchCurrentStatus}
+                                isViewMode={isViewMode}
                             />
                         </Grid>
                     </AccordionDetails>
                     <AccordionActions className={classes.accordionActions}>
-                        <PrimaryButton
-                            disabled={shouldDisable(watchCurrentStatus)}
-                            test-id='saveContact'
-                            onClick={() => {
-                                const currentParsedPerson = parsePerson(
-                                    methods.getValues().form[index] as GroupedInteractedContact,
-                                    index
-                                );
-                                saveContact(currentParsedPerson);
-                            }}
-                        >
-                            שמור מגע
-                        </PrimaryButton>
+                        {!isViewMode && (
+                            <PrimaryButton
+                                disabled={shouldDisable(watchCurrentStatus)}
+                                test-id='saveContact'
+                                onClick={() => {
+                                    const currentParsedPerson = parsePerson(
+                                        methods.getValues().form[index] as GroupedInteractedContact,
+                                        index
+                                    );
+                                    saveContact(currentParsedPerson);
+                                }}
+                            >
+                                שמור מגע
+                            </PrimaryButton>
+                        )}
                     </AccordionActions>
                 </Accordion>
             </div>
         )
-    } , [JSON.stringify(formValues) , formErrors, contactStatuses]);
+    }, [JSON.stringify(formValues), formErrors, contactStatuses]);
 
     return (
         getAccordion
@@ -158,4 +164,5 @@ interface Props {
     isFamilyContact: boolean;
     familyRelationships: FamilyRelationship[];
     shouldDisable: (status?: string | number | undefined) => boolean;
+    isViewMode: boolean;
 };
