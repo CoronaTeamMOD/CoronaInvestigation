@@ -10,19 +10,19 @@ import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 
 import useStyles from '../ExposuresAndFlightsStyles';
 
-
 interface Props {
-    wasInVacation: boolean | undefined;
-    wasInEvent: boolean | undefined;
+	wasInVacation: boolean | undefined;
+	wasInEvent: boolean | undefined;
+	isViewMode?: boolean;
 }
 
 export const VacationOrEvent = (props: Props) => {
 	const { control, errors } = useFormContext();
 
-    const { wasInVacation , wasInEvent} = props;
-    const classes = useStyles();
+	const { wasInVacation, wasInEvent, isViewMode } = props;
+	const classes = useStyles();
 
-    return (
+	return (
 		<div className={classes.subForm}>
 			<FormTitle title='שהייה באתרי נופש או אירועים' />
 			<FormRowWithInput fieldName='שהייה באתר נופש'>
@@ -40,11 +40,12 @@ export const VacationOrEvent = (props: Props) => {
 											props.onChange(value);
 										}
 									}}
+									disabled={isViewMode}
 								/>
 							);
 						}}
 					/>
-					<InlineErrorText 
+					<InlineErrorText
 						error={errors[fieldsNames.wasInVacation]}
 					/>
 				</Grid>
@@ -55,20 +56,21 @@ export const VacationOrEvent = (props: Props) => {
 						control={control}
 						name={fieldsNames.wasInEvent}
 						defaultValue={wasInEvent}
-						render={ (props) => {
+						render={(props) => {
 							return (
 								<Toggle
-								{...props}
-								onChange={(event, value) => {
-									if (value !== null) {
-										props.onChange(value);
-									}
-								}}
-							/>
+									{...props}
+									onChange={(event, value) => {
+										if (value !== null) {
+											props.onChange(value);
+										}
+									}}
+									disabled={isViewMode}
+								/>
 							)
 						}}
 					/>
-					<InlineErrorText 
+					<InlineErrorText
 						error={errors[fieldsNames.wasInEvent]}
 					/>
 				</Grid>

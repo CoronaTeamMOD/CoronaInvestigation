@@ -29,6 +29,7 @@ import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 import ValidationStatusSchema from './Schema/ValidationStatusSchema';
 import CommentInput from './InvestigationMenu/CommentDialog/CommentInput';
 import InvestigationStatusInfo from './InvestigationStatusInfo/InvestigationStatusInfo';
+import { setIsViewMode } from 'redux/Investigation/investigationActionCreators';
 
 const leaveInvestigationMessage = 'צא מחקירה';
 const saveStaticDetailsMessage = 'שמירת שינויים';
@@ -43,15 +44,15 @@ export const inProcess = 'בטיפול';
 
 const InvestigatedPersonInfo = (props: Props) => {
 
-    const { currentTab, investigationStaticInfo, epedemioligyNumber } = props;
+    const { currentTab, investigationStaticInfo, epedemioligyNumber, isViewMode } = props;
 
     const classes = useStyles();
 
     const [statusReasonError, setStatusReasonError] = useState<string[] | null>(null);
     const [staticFieldsChange, setStaticFieldsChange] = useState<boolean>(false);
-    
-    const { identityType, gender, isDeceased, isCurrentlyHospitalized, isInClosedInstitution, age, identityNumber, 
-        fullName, primaryPhone, birthDate, validationDate, isReturnSick, previousDiseaseStartDate, 
+
+    const { identityType, gender, isDeceased, isCurrentlyHospitalized, isInClosedInstitution, age, identityNumber,
+        fullName, primaryPhone, birthDate, validationDate, isReturnSick, previousDiseaseStartDate,
         isVaccinated, vaccinationEffectiveFrom, isSuspicionOfMutation, mutationName } = investigationStaticInfo;
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
@@ -59,7 +60,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
     const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
     const { comment, setComment } = useContext(commentContext);
-    const [commentInput, setCommentInput] = React.useState<string|null>('');
+    const [commentInput, setCommentInput] = React.useState<string | null>('');
 
     const { confirmExitUnfinishedInvestigation, staticFieldsSubmit } = useInvestigatedPersonInfo({ setStaticFieldsChange });
 
@@ -71,14 +72,14 @@ const InvestigatedPersonInfo = (props: Props) => {
         mode: 'all',
         resolver: yupResolver(StaticFieldsSchema)
     });
-  
+
     const onSubmit = () => {
         const data = methods.getValues();
         staticFieldsSubmit(data);
     };
 
     useEffect(() => {
-        methods.reset({fullName, identityType, identityNumber});
+        methods.reset({ fullName, identityType, identityNumber });
     }, [fullName, identityType, identityNumber])
 
     const handleLeaveInvestigationClick = (event: React.ChangeEvent<{}>) => {
@@ -106,7 +107,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     };
 
     const isMandatoryInfoMissing: boolean = !birthDate && !fullName && !isLoading;
-    
+
     const sendComment = (commentToSend: string | null) => {
         const sendCommentLogger = logger.setup(`POST request add comment to investigation ${epidemiologyNumber}`);
         axios.post('/investigationInfo/comment', { comment: commentToSend, epidemiologyNumber })
@@ -126,12 +127,12 @@ const InvestigatedPersonInfo = (props: Props) => {
                 <Paper className={classes.paper}>
                     <div className={classes.headerTopPart}>
                         <div className={classes.investigationHeaderInfo}>
-                            {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ? 
+                            {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ?
                                 <>
                                     <Typography className={classes.investigationNameTitle}>
                                         {'שם:'}
                                     </Typography>
-                                    <Controller 
+                                    <Controller
                                         name={StaticFields.FULL_NAME}
                                         control={methods.control}
                                         defaultValue={fullName}
@@ -142,8 +143,9 @@ const InvestigatedPersonInfo = (props: Props) => {
                                                 onChange={(event) => {
                                                     props.onChange(event.target.value)
                                                     setStaticFieldsChange(true)
-                                                }}     
-                                                error={methods.errors && methods.errors[StaticFields.FULL_NAME]}   
+                                                }}
+                                                disabled={isViewMode}
+                                                error={methods.errors && methods.errors[StaticFields.FULL_NAME]}
                                                 label={(methods.errors && methods.errors[StaticFields.FULL_NAME]?.message) || ''}
                                             />
                                         )}
@@ -159,13 +161,18 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 phoneNumber={primaryPhone}
                             />
                             <Typography className={classes.investigationTitle}>
-                                {`מספר אפדימיולוגי: ${epedemioligyNumber}`}   
+                                {`מספר אפדימיולוגי: ${epedemioligyNumber}`}
                             </Typography>
                         </div>
                         <PrimaryButton
                             onClick={(event) => {
-                                handleLeaveInvestigationClick(event);
-                                validateStatusReason(investigationStatus.statusReason)
+                                if (isViewMode) {
+                                    window.close();
+                                }
+                                else {
+                                    handleLeaveInvestigationClick(event);
+                                    validateStatusReason(investigationStatus.statusReason)
+                                }
                             }}
                             type='submit'
                             form={`form-${currentTab}`}
@@ -174,24 +181,25 @@ const InvestigatedPersonInfo = (props: Props) => {
                         </PrimaryButton>
                     </div>
 
-                    <InvestigationStatusInfo 
+                    <InvestigationStatusInfo
                         statusReasonError={statusReasonError}
                         validateStatusReason={validateStatusReason}
                         ValidationStatusSchema={ValidationStatusSchema}
+                        isViewMode={isViewMode}
                     />
 
                     <div className={classes.informationBar}>
                         <div className={classes.additionalInfo}>
                             <Grid container alignItems='center' className={classes.line}>
                                 {age !== null &&
-                                <>
-                                    <PatientInfoItem testId='age' name='גיל' value={+age < 1 ? 'פחות משנה' : age} />
-                                    {
-                                        +age <= maxComplexityAge && <ComplexityIcon tooltipText='המאומת מתחת לגיל 14' />
-                                    }
-                                </>
+                                    <>
+                                        <PatientInfoItem testId='age' name='גיל' value={+age < 1 ? 'פחות משנה' : age} />
+                                        {
+                                            +age <= maxComplexityAge && <ComplexityIcon tooltipText='המאומת מתחת לגיל 14' />
+                                        }
+                                    </>
                                 }
-                                {isMandatoryInfoMissing && 
+                                {isMandatoryInfoMissing &&
                                     <ComplexityIcon tooltipText='אימות מרשם נכשל' />
                                 }
                                 <PatientInfoItem testId='examinationDate' name='תחילת מחלה' value=
@@ -199,76 +207,76 @@ const InvestigatedPersonInfo = (props: Props) => {
                                         format(validationDate, displayDateFormat)
                                     }
                                 />
-                                <PatientInfoItem testId='gender' name='מין' value={gender==='נקבה'?'נ':'ז'} />
+                                <PatientInfoItem testId='gender' name='מין' value={gender === 'נקבה' ? 'נ' : 'ז'} />
                                 {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ?
-                                <>
-                                    <PatientInfoItem testId='idType' name='סוג תעודה מזהה' value={''}  />
-                                    <Controller
-                                        control={methods.control}
-                                        name={StaticFields.IDENTIFICATION_TYPE}
-                                        defaultValue={identityType.id}
-                                        render={(props) => (
-                                            <Select
-                                                {...props}
-                                                disabled
-                                                className={classes.smallSizeText}
-                                                onChange={(event) => {
-                                                    props.onChange(event.target.value)
-                                                    setStaticFieldsChange(true)
-                                                }}
-                                                MenuProps={{
-                                                    anchorOrigin: {
-                                                        vertical: 'bottom',
-                                                        horizontal: 'left'
-                                                    },
-                                                    transformOrigin: {
-                                                        vertical: 'top',
-                                                        horizontal: 'left'
-                                                    },
-                                                    getContentAnchorEl: null
+                                    <>
+                                        <PatientInfoItem testId='idType' name='סוג תעודה מזהה' value={''} />
+                                        <Controller
+                                            control={methods.control}
+                                            name={StaticFields.IDENTIFICATION_TYPE}
+                                            defaultValue={identityType.id}
+                                            render={(props) => (
+                                                <Select
+                                                    {...props}
+                                                    disabled
+                                                    className={classes.smallSizeText}
+                                                    onChange={(event) => {
+                                                        props.onChange(event.target.value)
+                                                        setStaticFieldsChange(true)
                                                     }}
-                                            >
-                                                {Object.values(identificationTypes).map((identificationType: IdentificationType) => (
-                                                    <MenuItem
-                                                        className={classes.smallSizeText}
-                                                        key={identificationType.id}
-                                                        value={identificationType.id}>
-                                                        {identificationType.type}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        )}
-                                    />
-                                </>
-                                :
-                                <PatientInfoItem testId='idType' name='סוג תעודה מזהה' value={identityType.type}  />
+                                                    MenuProps={{
+                                                        anchorOrigin: {
+                                                            vertical: 'bottom',
+                                                            horizontal: 'left'
+                                                        },
+                                                        transformOrigin: {
+                                                            vertical: 'top',
+                                                            horizontal: 'left'
+                                                        },
+                                                        getContentAnchorEl: null
+                                                    }}
+                                                >
+                                                    {Object.values(identificationTypes).map((identificationType: IdentificationType) => (
+                                                        <MenuItem
+                                                            className={classes.smallSizeText}
+                                                            key={identificationType.id}
+                                                            value={identificationType.id}>
+                                                            {identificationType.type}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            )}
+                                        />
+                                    </>
+                                    :
+                                    <PatientInfoItem testId='idType' name='סוג תעודה מזהה' value={identityType.type} />
                                 }
                                 {userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN ?
-                                <>
-                                    <PatientInfoItem testId='idNumber' name='מספר תעודה מזהה' value={''} />
-                                    <Controller 
-                                        name={StaticFields.ID}
-                                        control={methods.control}
-                                        defaultValue={identityNumber}
-                                        render={(props) => (
-                                            <TextField
-                                                {...props}
-                                                disabled
-                                                className={classes.smallSizeText}
-                                                InputProps={{className: classes.smallSizeText}}
-                                                test-id={props.name}
-                                                onChange={(event) => {
-                                                    props.onChange(event.target.value as string)
-                                                    setStaticFieldsChange(true)
-                                                }}
-                                                error={methods.errors && methods.errors[StaticFields.ID]}   
-                                                label={(methods.errors && methods.errors[StaticFields.ID]?.message) || ''}
-                                            />
-                                        )}
-                                    />
-                                </>
-                                :
-                                <PatientInfoItem testId='idNumber' name='מספר תעודה מזהה' value={identityNumber} />
+                                    <>
+                                        <PatientInfoItem testId='idNumber' name='מספר תעודה מזהה' value={''} />
+                                        <Controller
+                                            name={StaticFields.ID}
+                                            control={methods.control}
+                                            defaultValue={identityNumber}
+                                            render={(props) => (
+                                                <TextField
+                                                    {...props}
+                                                    disabled
+                                                    className={classes.smallSizeText}
+                                                    InputProps={{ className: classes.smallSizeText }}
+                                                    test-id={props.name}
+                                                    onChange={(event) => {
+                                                        props.onChange(event.target.value as string)
+                                                        setStaticFieldsChange(true)
+                                                    }}
+                                                    error={methods.errors && methods.errors[StaticFields.ID]}
+                                                    label={(methods.errors && methods.errors[StaticFields.ID]?.message) || ''}
+                                                />
+                                            )}
+                                        />
+                                    </>
+                                    :
+                                    <PatientInfoItem testId='idNumber' name='מספר תעודה מזהה' value={identityNumber} />
                                 }
                             </Grid>
                             <Grid container alignItems='center' className={classes.line}>
@@ -290,21 +298,21 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 {
                                     isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
                                 }
-                                <PatientInfoItem testId='isVaccinated' name='מחוסן' value={isVaccinated ? yes : noInfo} />  
+                                <PatientInfoItem testId='isVaccinated' name='מחוסן' value={isVaccinated ? yes : noInfo} />
                                 {
                                     isVaccinated && <ComplexityIcon tooltipText={formatDate(vaccinationEffectiveFrom)} />
                                 }
-                                <PatientInfoItem testId='isSuspicionOfMutation' name='חשד למוטציה' value={isSuspicionOfMutation ? yes : noInfo} />    
+                                <PatientInfoItem testId='isSuspicionOfMutation' name='חשד למוטציה' value={isSuspicionOfMutation ? yes : noInfo} />
                                 {
                                     isSuspicionOfMutation && <ComplexityIcon tooltipText={mutationName ? mutationName : noInfo} />
                                 }
-                                <PatientInfoItem testId='isReturnSick' name='חולה חוזר' value={isReturnSick ? yes : noInfo}/>   
+                                <PatientInfoItem testId='isReturnSick' name='חולה חוזר' value={isReturnSick ? yes : noInfo} />
                                 {
                                     isReturnSick && <ComplexityIcon tooltipText={formatDate(previousDiseaseStartDate)} />
                                 }
                             </Grid>
-                            </div>
                         </div>
+                    </div>
                     {staticFieldsChange &&
                         <div className={classes.saveButton}>
                             <PrimaryButton
@@ -315,24 +323,24 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 {saveStaticDetailsMessage}
                             </PrimaryButton>
                         </div>
-                
-                    }        
+
+                    }
                     <div className={classes.commentControllers}>
                         <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                             <div className={classes.commentLine}>
                                 <Typography className={classes.commentTitle}>
                                     {commentLabel}:
                                 </Typography>
-                                <CommentInput commentInput={commentInput} handleInput={setCommentInput} />
-                                <Button 
-                                    className={classes.button} 
-                                    onClick={()=>{sendComment(commentInput as string)}}
+                                <CommentInput commentInput={commentInput} handleInput={setCommentInput} isViewMode={isViewMode} />
+                                <Button
+                                    className={classes.button}
+                                    onClick={() => { sendComment(commentInput as string) }}
                                     disabled={!(commentInput && commentInput !== comment)}>
-                                        {SAVE_BUTTON_TEXT}
+                                    {SAVE_BUTTON_TEXT}
                                 </Button>
                             </div>
                         </Grid>
-                    </div>   
+                    </div>
                 </Paper>
             </form>
         </FormProvider>
@@ -343,6 +351,7 @@ interface Props {
     investigationStaticInfo: InvestigationInfo;
     epedemioligyNumber: number;
     currentTab: number;
+    isViewMode?: boolean;
 };
 
 export default InvestigatedPersonInfo;

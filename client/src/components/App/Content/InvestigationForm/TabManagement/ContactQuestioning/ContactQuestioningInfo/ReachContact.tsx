@@ -15,7 +15,7 @@ import useStyles from '../ContactQuestioningStyles';
 
 const ReachContact = (props: Props) => {
     const { control, getValues, watch } = useFormContext();
-    const { interactedContact, index, contactStatuses, saveContact, parsePerson } = props;
+    const { interactedContact, index, contactStatuses, saveContact, parsePerson,isViewMode } = props;
     const classes = useStyles({});
     
     const formValues = {...interactedContact, contactEvents: []};
@@ -48,22 +48,23 @@ const ReachContact = (props: Props) => {
                             const currentValue = getCurrentValue(props.value);
                             return (
                                 <Autocomplete
-                                    disabled={isFieldDisabled}
+                                    disabled={isFieldDisabled || isViewMode}
                                     className={classes.statusAutoComplete}
                                     options={contactStatuses}
                                     getOptionLabel={(option) =>
                                         option.displayName
                                     }
                                     value={currentValue}
-                                    onChange={(e, data) =>{
-                                        let contactValidation = validateContact(parsePerson(formValues,index), ValidationReason.SAVE_CONTACT)
+                                    onChange={(e, data) => {
+                                        let contactValidation = validateContact(parsePerson(formValues, index), ValidationReason.SAVE_CONTACT)
                                         const missingFieldsText = contactValidation?.valid ? '' : removeUnusePartOfError(contactValidation.error);
                                         changeContactStatus(
                                             e,
                                             data,
                                             props.onChange,
                                             missingFieldsText
-                                        )}
+                                        )
+                                    }
                                     }
                                     inputValue={currentValue.displayName}
                                     closeIcon={false}
@@ -71,7 +72,7 @@ const ReachContact = (props: Props) => {
                                         <TextField
                                             {...params}
                                             placeholder='סטטוס'
-                                            onClick={(event) => 
+                                            onClick={(event) =>
                                                 event.stopPropagation()
                                             }
                                             InputProps={{
@@ -105,4 +106,5 @@ interface Props {
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;
     parsePerson: (person: GroupedInteractedContact, index: number) => InteractedContact;
+    isViewMode?: boolean;
 }

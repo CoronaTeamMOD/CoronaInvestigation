@@ -53,17 +53,17 @@ const STUDENT = 'תלמיד/ה';
 const CLASS_NUMBER = 'מס כיתה';
 const ADD_CONTACT = '+ איש קשר'
 
-const PersonalInfoTab: React.FC<Props> = ({ id }) => {
+const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
 
     const classes = useStyles();
-    
+
     const methods = useForm<PersonalInfoTabState>({
         mode: 'all',
         resolver: yupResolver(validationSchema)
     });
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
-    const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
+    const occupations = useSelector<StoreStateType, string[]>(state => state.occupations);
     const educationGrades = useSelector<StoreStateType, EducationGrade[]>(state => state.educationGrades);
     const birthDate = useSelector<StoreStateType, Date>(state => state.investigation.investigatedPatient.birthDate);
     const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
@@ -71,15 +71,15 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
     const [toAddContactField, setToAddContactField] = React.useState<boolean>(false);
 
     const isOver16 = dateToAge(birthDate) > 16;
-    
-    const { subOccupations, 
-            getSubOccupations, 
-            getEducationSubOccupations, 
-            investigatedPatientRoles,
-            fetchPersonalInfo,
-            insuranceCompanies,
-            clearSubOccupations,
-            savePersonalData } = usePersonalTabInfo();
+
+    const { subOccupations,
+        getSubOccupations,
+        getEducationSubOccupations,
+        investigatedPatientRoles,
+        fetchPersonalInfo,
+        insuranceCompanies,
+        clearSubOccupations,
+        savePersonalData } = usePersonalTabInfo();
 
     const contactInfo = methods.watch(`${PersonalInfoDataContextFields.CONTACT_INFO}`);
     const contactPhoneNumber = methods.watch(`${PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER}`);
@@ -121,29 +121,29 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                 return value;
             }]
         ]);
-        return (specialConvertors.has(key)) ? 
-                    (specialConvertors.get(key) as DataParser)(value)
-                :
-                    value;
+        return (specialConvertors.has(key)) ?
+            (specialConvertors.get(key) as DataParser)(value)
+            :
+            value;
     };
 
     const convertToDBData = (): PersonalInfoDbData => {
         const data = methods.getValues();
         const dataKeys = Object.keys(data);
         const parsedData = Object.values(data)
-                                .map(value => value || null)
-                                .reduce((obj, value, index) => {
-                                    const key = dataKeys[index] as keyof PersonalInfoTabState;
-                                    return Object.assign(obj, {
-                                        [key]: parseDataValue(key, value)
-                                    })
-                                }, {})
+            .map(value => value || null)
+            .reduce((obj, value, index) => {
+                const key = dataKeys[index] as keyof PersonalInfoTabState;
+                return Object.assign(obj, {
+                    [key]: parseDataValue(key, value)
+                })
+            }, {})
 
         return parsedData;
     };
 
     useEffect(() => {
-        if ( Boolean(contactInfo) || Boolean(contactPhoneNumber) ) {   
+        if (Boolean(contactInfo) || Boolean(contactPhoneNumber)) {
             setToAddContactField(true);
         }
     }, [contactInfo, contactPhoneNumber]);
@@ -216,6 +216,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                             onBlur={props.onBlur}
                                             placeholder={PHONE_LABEL}
                                             label='טלפון*'
+                                            disabled={isViewMode}
                                         />
                                     )}
                                 />
@@ -224,7 +225,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                 <Button
                                     className={classes.addPersonButton}
                                     disabled={toAddContactField}
-                                    onClick={ ()=>{setToAddContactField(true)}}>
+                                    onClick={() => { setToAddContactField(true) }}>
                                     {ADD_CONTACT}
                                 </Button>
                             </Grid>
@@ -232,7 +233,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                     </FormRowWithInput>
                     <Collapse in={toAddContactField}>
                         <Grid item container xs={12} spacing={3} className={classes.addContactWrapper}>
-                            <Grid item xs={1} className={classes.contactDetailsStub}/>
+                            <Grid item xs={1} className={classes.contactDetailsStub} />
                             <Grid item xs={2}>
                                 <Controller
                                     name={PersonalInfoDataContextFields.CONTACT_INFO}
@@ -246,6 +247,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                             onBlur={props.onBlur}
                                             placeholder={'פרטי איש קשר'}
                                             label='פרטי איש קשר'
+                                            disabled={isViewMode}
                                         />
                                     )}
                                 />
@@ -263,6 +265,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                             onBlur={props.onBlur}
                                             placeholder={PHONE_LABEL}
                                             label='טלפון'
+                                            disabled={isViewMode}
                                         />
                                     )}
                                 />
@@ -281,6 +284,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                             onChange={(event, selectedInsuranceCompany) => {
                                                 props.onChange(selectedInsuranceCompany ? selectedInsuranceCompany : '')
                                             }}
+                                            disabled={isViewMode}
                                             value={props.value || ''}
                                             renderInput={(params) =>
                                                 <TextField
@@ -291,6 +295,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                     id={PersonalInfoDataContextFields.INSURANCE_COMPANY}
                                                     placeholder={INSERT_INSURANCE_COMPANY}
                                                     variant='outlined'
+                                                    disabled={isViewMode}
                                                     InputProps={{
                                                         ...params.InputProps,
                                                         classes: {
@@ -308,43 +313,45 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                     <FormRowWithInput fieldName={ADDRESS_LABEL} labelLength={1}>
                         <AddressForm
                             {...addressFormFields}
+                            disabled={isViewMode}
                         />
                     </FormRowWithInput>
                     <FormRowWithInput fieldName={OCCUPATION_LABEL} labelLength={1} appendantLabelIcon={occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? <ComplexityIcon tooltipText='עובד במשרד הבריאות/החינוך' /> : undefined}>
                         <>
-                        <Grid item xs={2}>
-                            <FormControl fullWidth>
-                            <Controller
-                                name={PersonalInfoDataContextFields.RELEVANT_OCCUPATION}
-                                control={methods.control}
-                                render={(props) => (
-                                    <Autocomplete
-                                        options={isOver16 ? occupations : occupations.filter(occupation => under16AllowedOccupations.indexOf(occupation) !== -1)}
-                                        onChange={(event, occupationOption) => {
-                                            props.onChange(occupationOption ? occupationOption : '')
-                                        }}
-                                        value={props.value || ''}
-                                        renderInput={(params) =>
-                                            <TextField
-                                                {...params}
-                                                label={methods.errors[PersonalInfoDataContextFields.RELEVANT_OCCUPATION]?.message || OCCUPATION}
-                                                error={Boolean(methods.errors[PersonalInfoDataContextFields.RELEVANT_OCCUPATION])}
-                                                id={PersonalInfoDataContextFields.RELEVANT_OCCUPATION}
-                                                placeholder={INSERT_OCCUPATION}
-                                                variant='outlined'
-                                                InputProps={{
-                                                    ...params.InputProps,
-                                                    classes: {
-                                                        notchedOutline: occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? classes.notchedOutline : ''
-                                                    }
+                            <Grid item xs={2}>
+                                <FormControl fullWidth>
+                                    <Controller
+                                        name={PersonalInfoDataContextFields.RELEVANT_OCCUPATION}
+                                        control={methods.control}
+                                        render={(props) => (
+                                            <Autocomplete
+                                                options={isOver16 ? occupations : occupations.filter(occupation => under16AllowedOccupations.indexOf(occupation) !== -1)}
+                                                onChange={(event, occupationOption) => {
+                                                    props.onChange(occupationOption ? occupationOption : '')
                                                 }}
+                                                disabled={isViewMode}
+                                                value={props.value || ''}
+                                                renderInput={(params) =>
+                                                    <TextField
+                                                        {...params}
+                                                        label={methods.errors[PersonalInfoDataContextFields.RELEVANT_OCCUPATION]?.message || OCCUPATION}
+                                                        error={Boolean(methods.errors[PersonalInfoDataContextFields.RELEVANT_OCCUPATION])}
+                                                        id={PersonalInfoDataContextFields.RELEVANT_OCCUPATION}
+                                                        placeholder={INSERT_OCCUPATION}
+                                                        variant='outlined'
+                                                        InputProps={{
+                                                            ...params.InputProps,
+                                                            classes: {
+                                                                notchedOutline: occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? classes.notchedOutline : ''
+                                                            }
+                                                        }}
+                                                    />
+                                                }
                                             />
-                                        }
+                                        )}
                                     />
-                                )}
-                            />
-                            </FormControl>
-                         </Grid>
+                                </FormControl>
+                            </Grid>
                             {
                                 occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ?
                                     <>
@@ -361,6 +368,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                             getOptionSelected={(option) => {
                                                                 return option.value?.displayName === props.value
                                                             }}
+                                                            disabled={isViewMode}
                                                             value={props.value}
                                                             onChange={(event, newValue) => {
                                                                 newValue && getEducationSubOccupations(newValue.value.displayName);
@@ -384,10 +392,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                             </Grid>
                                         }
                                         <Grid item xs={2}>
-                                            <InstitutionComponent 
-                                                options={subOccupations} 
-                                                placeholder={INSERT_INSTITUTION_NAME} 
-                                                fieldName={PersonalInfoDataContextFields.INSTITUTION_NAME} 
+                                            <InstitutionComponent
+                                                options={subOccupations}
+                                                placeholder={INSERT_INSTITUTION_NAME}
+                                                fieldName={PersonalInfoDataContextFields.INSTITUTION_NAME}
+                                                isViewMode={isViewMode}
                                             />
                                         </Grid>
                                         <Grid item xs={2}>
@@ -399,7 +408,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                         options={investigatedPatientRoles}
                                                         getOptionLabel={(option) => option.displayName}
                                                         getOptionSelected={(option) => option.id === props.value}
-                                                        value={props.value ? {id: props.value, displayName: (selectedRole?.displayName as string)} : null}
+                                                        disabled={isViewMode}
+                                                        value={props.value ? { id: props.value, displayName: (selectedRole?.displayName as string) } : null}
                                                         onChange={(event, selectedRole) => props.onChange(selectedRole?.id)}
                                                         renderInput={(params) =>
                                                             <TextField
@@ -431,8 +441,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                                 <Autocomplete
                                                                     options={educationGrades}
                                                                     getOptionLabel={(grade) => grade.displayName}
+                                                                    disabled={isViewMode}
                                                                     onChange={(event, grade) => props.onChange(grade ? grade : '')}
-                                                                    value={props.value?.id ? props.value || '' :  educationGrades.find(grade => grade.id === props.value)}
+                                                                    value={props.value?.id ? props.value || '' : educationGrades.find(grade => grade.id === props.value)}
                                                                     renderInput={(params) => (
                                                                         <TextField
                                                                             {...params}
@@ -448,7 +459,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                                         />)
                                                                     }
                                                                 />
-                                                            )}
+                                                            )
+                                                        }
                                                         }
                                                     />
                                                 </Grid>
@@ -460,6 +472,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                                             <NumericTextField
                                                                 name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
                                                                 value={props.value}
+                                                                disabled={isViewMode}
                                                                 onChange={props.onChange}
                                                                 onBlur={props.onBlur}
                                                                 label={CLASS_NUMBER}
@@ -478,45 +491,48 @@ const PersonalInfoTab: React.FC<Props> = ({ id }) => {
                                     </>
                                     : occupation === Occupations.DEFENSE_FORCES ?
                                         <Grid item xs={3}>
-                                            <InstitutionComponent 
-                                                options={subOccupations} 
-                                                placeholder={INSERT_INSTITUTION_NAME} 
-                                                fieldName={PersonalInfoDataContextFields.INSTITUTION_NAME} 
+                                            <InstitutionComponent
+                                                options={subOccupations}
+                                                placeholder={INSERT_INSTITUTION_NAME}
+                                                fieldName={PersonalInfoDataContextFields.INSTITUTION_NAME}
+                                                isViewMode={isViewMode}
                                             />
                                         </Grid>
                                         :
                                         <Grid item xs={2}>
                                             <Collapse in={occupation !== Occupations.UNEMPLOYED}>
-                                                    <Controller
-                                                        name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
-                                                        control={methods.control}
-                                                        render={(props) => (
-                                                            <AlphanumericTextField
-                                                                className={classes.otherTextField}
-                                                                InputProps={{className: classes.otherTextField}}
-                                                                testId='institutionName'
-                                                                name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
-                                                                value={props.value}
-                                                                onChange={props.onChange}
-                                                                onBlur={props.onBlur}
-                                                                placeholder={subOccupationsPlaceHolderByOccupation}
-                                                                label={subOccupationsLabelByOccupation}
-                                                            />
-                                                        )}
-                                                    />
+                                                <Controller
+                                                    name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
+                                                    control={methods.control}
+                                                    render={(props) => (
+                                                        <AlphanumericTextField
+                                                            className={classes.otherTextField}
+                                                            InputProps={{ className: classes.otherTextField }}
+                                                            testId='institutionName'
+                                                            disabled={isViewMode}
+                                                            name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
+                                                            value={props.value}
+                                                            onChange={props.onChange}
+                                                            onBlur={props.onBlur}
+                                                            placeholder={subOccupationsPlaceHolderByOccupation}
+                                                            label={subOccupationsLabelByOccupation}
+                                                        />
+                                                    )}
+                                                />
                                             </Collapse>
                                         </Grid>
                             }
                         </>
                     </FormRowWithInput>
                 </form>
-            </FormProvider>     
+            </FormProvider>
         </div>
     );
 };
 
 interface Props {
     id: number;
+    isViewMode?: boolean;
 };
 
 export default PersonalInfoTab;

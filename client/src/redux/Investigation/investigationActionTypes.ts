@@ -17,81 +17,93 @@ export const SET_DATES_TO_INVESTIGATE_PARAMS = 'SET_DATES_TO_INVESTIGATE_PARAMS'
 export const SET_TRACKING_RECOMMENDATION = 'SET_TRACKING_RECOMMENDATION';
 export const SET_BIRTH_DATE = 'SET_BIRTH_DATE';
 export const RESET_STATE = 'RESET_STATE';
+export const SET_VIEW_MODE_CLICKED = 'SET_INVESTIGATION_VIEW_MODE_CLICKED';
+export const SET_INVESTIGATION_VIEW_MODE = 'SET_INVESTIGATION_VIEW_MODE';
 
 interface SetEpidemiologyNum {
     type: typeof SET_EPIDEMIOLOGY_NUM,
-    payload: {epidemiologyNumber: number}
+    payload: { epidemiologyNumber: number }
 }
 
 interface SetComplexReasonsId {
     type: typeof SET_COMPLEX_REASONS_ID,
-    payload: {complexReasonsId: (number|null)[]}
+    payload: { complexReasonsId: (number | null)[] }
 }
 
 interface SetInvestigatedPatientId {
     type: typeof SET_INVESTIGATED_PATIENT_ID,
-    payload: {investigatedPatientId: number}
+    payload: { investigatedPatientId: number }
 }
 
 interface SetIsDeceased {
     type: typeof SET_IS_DECEASED,
-    payload: {isDeceased: boolean}
+    payload: { isDeceased: boolean }
 }
 
 interface SetIsCurrentlyHospitialized {
     type: typeof SET_IS_CURRENTLY_HOSPITIALIZED,
-    payload: {isCurrentlyHospitialized: boolean}
+    payload: { isCurrentlyHospitialized: boolean }
 }
 
 interface SetLastOpenedEpidemiologyNum {
     type: typeof SET_LAST_OPENED_EPIDEMIOLOGY_NUM,
-    payload: {lastOpenedEpidemiologyNumber: number}
+    payload: { lastOpenedEpidemiologyNumber: number }
 }
 
 interface SetIsCurrentlyLoading {
     type: typeof SET_IS_CURRENTLY_LOADING,
-    payload: {isCurrentlyLoading: boolean}
+    payload: { isCurrentlyLoading: boolean }
 }
 
 interface SetAxiosInterceptorId {
     type: typeof SET_AXIOS_INTERCEPTOR_ID,
-    payload: {axiosInterceptorId: number}
+    payload: { axiosInterceptorId: number }
 }
 
 interface SetInvestigationStatus {
     type: typeof SET_INVESTIGATION_STATUS,
-    payload: {investigationStatus: InvestigationStatus}
+    payload: { investigationStatus: InvestigationStatus }
 }
 
 interface SetEndTime {
     type: typeof SET_END_TIME,
-    payload: {endTime: Date | null}
+    payload: { endTime: Date | null }
 }
 
 interface SetCreator {
     type: typeof SET_CREATOR,
-    payload: {creator: string}
+    payload: { creator: string }
 }
 
 interface SetDatesToInvestigateParams {
     type: typeof SET_DATES_TO_INVESTIGATE_PARAMS,
-    payload: {symptomsExistenceInfo?: SymptomsExistenceInfo, validationDate?: Date}
+    payload: { symptomsExistenceInfo?: SymptomsExistenceInfo, validationDate?: Date }
 }
 
 interface ResetStateParams {
     type: typeof RESET_STATE,
 }
 
-interface SetBirthDate{
+interface SetBirthDate {
     type: typeof SET_BIRTH_DATE,
-    payload: {birthDate: Date}
+    payload: { birthDate: Date }
 }
 
 interface SetTrackingRecommendation {
     type: typeof SET_TRACKING_RECOMMENDATION,
-    payload: {trackingRecommendation : TrackingRecommendation}
+    payload: { trackingRecommendation: TrackingRecommendation }
+}
+
+interface SetViewModeClicked {
+    type: typeof SET_VIEW_MODE_CLICKED,
+    payload: { viewModeClicked: boolean }
+}
+
+interface SetInvestigationViewMode {
+    type: typeof SET_INVESTIGATION_VIEW_MODE,
+    payload: { isViewMode: boolean }
 }
 
 export type InvestigationAction = SetEpidemiologyNum | SetComplexReasonsId | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId
- | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetEndTime 
- | SetCreator | SetDatesToInvestigateParams |  ResetStateParams | SetTrackingRecommendation| SetBirthDate;
+    | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetEndTime
+    | SetCreator | SetDatesToInvestigateParams | ResetStateParams | SetTrackingRecommendation | SetBirthDate  | SetInvestigationViewMode;

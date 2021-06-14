@@ -19,7 +19,7 @@ const PossibleExposure = (props: Props) => {
         wereConfirmedExposures, onExposuresStatusChange,
         exposures, handleChangeExposureDataAndFlightsField,
         onExposureAdded, disableConfirmedExposureAddition,
-        onExposureDeleted, isExposureAdded, setIsExposureAdded
+        onExposureDeleted, isExposureAdded, setIsExposureAdded, isViewMode
     } = props;
 
     const classes = useStyles();
@@ -27,11 +27,11 @@ const PossibleExposure = (props: Props) => {
     const watchWasConfirmedExposure = watch(fieldsNames.wereConfirmedExposures, wereConfirmedExposures);
 
     useEffect(() => {
-		if (Boolean(isExposureAdded)) {
-             onExposureAdded(true, false)
-             setIsExposureAdded(undefined)
+        if (Boolean(isExposureAdded)) {
+            onExposureAdded(true, false)
+            setIsExposureAdded(undefined)
         }
-	}, [isExposureAdded]);
+    }, [isExposureAdded]);
 
     return (
         <div className={classes.subForm}>
@@ -45,26 +45,28 @@ const PossibleExposure = (props: Props) => {
                         render={(props) => {
                             return (
                                 <Toggle
-                                {...props}
-                                className={classes.wereConfirmedExposures}
-                                onChange={(e, value) => {
-                                    if (value !== null) {
-                                        props.onChange(value);
-                                        onExposuresStatusChange(fieldsNames.wereConfirmedExposures, value);
-                                    }
-                                }}
+                                    {...props}
+                                    className={classes.wereConfirmedExposures}
+                                    onChange={(e, value) => {
+                                        if (value !== null) {
+                                            props.onChange(value);
+                                            onExposuresStatusChange(fieldsNames.wereConfirmedExposures, value);
+                                        }
+                                    }}
+                                    disabled={isViewMode}
                                 />
                             );
-                            }}
-                        />
+                        }}
+                    />
                     <Controller
                         control={control}
                         name={fieldsNames.wereConfirmedExposuresDesc}
                         render={(props) => {
                             return (
-                                <AlphanumericTextField 
+                                <AlphanumericTextField
                                     {...props}
                                     label='פירוט'
+                                    disabled={isViewMode}
                                 />
                             );
                         }}
@@ -84,6 +86,7 @@ const PossibleExposure = (props: Props) => {
                                         index={index}
                                         handleChangeExposureDataAndFlightsField={handleChangeExposureDataAndFlightsField}
                                         onExposureDeleted={() => onExposureDeleted(index)}
+                                        isViewMode={isViewMode}
                                     />
                                     <Divider />
                                 </>
@@ -94,7 +97,7 @@ const PossibleExposure = (props: Props) => {
                         <Toggle
                             className={classes.anotherExposureToggle}
                             value={isExposureAdded}
-                            disabled={disableConfirmedExposureAddition}
+                            disabled={disableConfirmedExposureAddition || isViewMode}
                             onChange={(e, value) => {
                                 if (value !== null) {
                                     setIsExposureAdded(value)
@@ -118,6 +121,7 @@ interface Props {
     onExposureDeleted: (index: number) => void;
     isExposureAdded: boolean | undefined;
     setIsExposureAdded: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+    isViewMode?: boolean;
 };
 
 export default PossibleExposure;

@@ -59,6 +59,29 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             .finally(() => setIsLoading(false));
     };
 
+    const getRulerApiData = (parameters: JSON) => {
+        const rulerApiUrl = `http://192.168.2.26:8888/Corona/RulerCheckColor`;
+        return axios.post(rulerApiUrl, parameters)
+            .then((response) => {
+                console.log('response', response);
+            })
+            .catch((err) => {
+                console.log('error', err);
+            })
+            .finally(() => console.log('finally'));
+    }
+
+    const getRulerApiDataFromServer = () => {
+        return axios.post('/ruler/ruler')
+            .then((response) => {
+                console.log('response', response);
+            })
+            .catch((err) => {
+                console.log('error', err);
+            })
+            .finally(() => console.log('finally'));
+    };
+
     const saveContact = (interactedContact: InteractedContact): boolean => {
         const contacts = [interactedContact];
         const contactsSavingVariable = {
@@ -339,6 +362,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         checkAllContactsForDuplicateIds,
         onSubmit,
         parsePerson,
+        getRulerApiData,
+        getRulerApiDataFromServer
     };
 };
 
