@@ -16,7 +16,7 @@ import RepetitiveEventIcon from './RepetitiveEventIcon';
 const ContactDateCard: React.FC<Props> = (props: Props) => {
 
     const { contactDate, interactions, createNewInteractionEvent,
-        onEditClick, onDeleteClick, loadInteractions, loadInvolvedContacts, onDeleteContactClick, allInteractions } = props;
+        onEditClick, onDeleteClick, loadInteractions, loadInvolvedContacts, onDeleteContactClick, allInteractions, isViewMode } = props;
 
     const [areInteractionsOpen, setAreInteractionsOpen] = React.useState<boolean>(false);
 
@@ -33,7 +33,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                 <div className={classes.dateSection}>
                     <div className={classes.arrowWrapper}>
                         {
-                            interactions !== undefined && 
+                            interactions !== undefined &&
                             <IconButton test-id={'collpaseContactLocationDate'}>
                                 {areInteractionsOpen ? <KeyboardArrowDown /> : <KeyboardArrowLeft />}
                             </IconButton>
@@ -43,7 +43,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                         יום {DayOfWeek[contactDate.getDay()] + ' '}
                         {format(contactDate, 'dd/MM/yyyy')}
                     </Typography>
-                    {interactions?.some(interaction => interaction.isRepetitive) && <RepetitiveEventIcon/>}
+                    {interactions?.some(interaction => interaction.isRepetitive) && <RepetitiveEventIcon />}
                 </div>
                 {
                     interactions !== undefined &&
@@ -53,11 +53,11 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                         </Typography>
                     </div>
                 }
-                <PrimaryButton test-id='openNewContactLocation' onClick={() => createNewInteractionEvent()}>
+                <PrimaryButton test-id='openNewContactLocation' onClick={() => createNewInteractionEvent()} disabled={isViewMode}>
                     צור מקום/מגע
                 </PrimaryButton>
             </div>
-            <Collapse classes={{hidden: formClasses.hidden}} in={areInteractionsOpen}>
+            <Collapse classes={{ hidden: formClasses.hidden }} in={areInteractionsOpen}>
                 {interactions?.map(interaction =>
                     <InteractionCard
                         allInteractions={allInteractions}
@@ -83,6 +83,7 @@ interface Props {
     loadInteractions: () => void;
     loadInvolvedContacts: () => void;
     onDeleteContactClick: (contactedPersonId: number, involvedContactId: number | null) => void;
+    isViewMode?: boolean;
 };
 
 export default ContactDateCard;

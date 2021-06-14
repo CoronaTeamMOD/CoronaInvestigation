@@ -11,7 +11,7 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
 const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, watchIsIsolationProblem } = props;
+    const { classes, watchIsIsolationProblem, isViewMode } = props;
     const { control, errors } = useFormContext();
 
     return (
@@ -30,6 +30,7 @@ const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     props.onChange(value)
                                 }
                             }}
+                            disabled={isViewMode}
                         />
                     )}
                 />
@@ -56,6 +57,7 @@ const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 placeholder='הכנס סיבה:'
                                 label='סיבה *'
                                 className={classes.reasonInputField}
+                                disabled={isViewMode}
                             />
                         )}
                     />
@@ -69,6 +71,7 @@ const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
 interface Props {
     classes: ClinicalDetailsClasses;
     watchIsIsolationProblem: boolean;
+    isViewMode?: boolean;
 };
 
 export default IsolationProblemFields;

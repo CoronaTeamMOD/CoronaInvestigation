@@ -4,26 +4,28 @@ import MuiAlert from '@material-ui/lab/Alert';
 import StoreStateType from 'redux/storeStateType';
 import Snackbar from '@material-ui/core/Snackbar';
 import { Grid, Paper, Card } from '@material-ui/core';
-
+import { connect } from 'react-redux'
 import { setFormState } from 'redux/Form/formActionCreators';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
-import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
-        initialExposuresAndFlightsData, ExposureAndFlightsDetailsAndSet} from 'commons/Contexts/ExposuresAndFlights';
+import {
+    ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
+    initialExposuresAndFlightsData, ExposureAndFlightsDetailsAndSet
+} from 'commons/Contexts/ExposuresAndFlights';
 
 import useStyles from './InvestigationFormStyles';
 import useInvestigationForm from './useInvestigationForm';
 import TabManagement from './TabManagement/TabManagement';
 import ConvesrationScript from './ConversationScript/ConvesrationScript';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
-import useTabManagement ,{ LAST_TAB_ID } from './TabManagement/useTabManagement';
+import useTabManagement, { LAST_TAB_ID } from './TabManagement/useTabManagement';
 import TrackingRecommendationForm from './TrackingRecommendation/TrackingRecommendationForm';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 
-const InvestigationForm: React.FC = (): JSX.Element => {
+const InvestigationForm: React.FC = (props): JSX.Element => {
     const classes = useStyles({});
 
-    const initialSctiptState = ( localStorage.getItem('isScriptOpened') ?? 'true' ) === 'true';
-    
+    const initialSctiptState = (localStorage.getItem('isScriptOpened') ?? 'true') === 'true';
+
     const [showSnackbar, setShowSnackbar] = React.useState<boolean>(false);
     const [exposureDate, setExposureDate] = React.useState<Date>();
     const [exposureAndFlightsData, setExposureDataAndFlights] = React.useState<ExposureAndFlightsDetails>(initialExposuresAndFlightsData)
@@ -33,6 +35,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const [lastTabDisplayedId, setLastTabDisplayedId] = React.useState<number>(LAST_TAB_ID - 1);
     const [isScriptOpened, setIsScriptOpened] = React.useState<boolean>(initialSctiptState);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const isViewMode = useSelector<StoreStateType, boolean>(state => state.investigation.isViewMode);
 
     const exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet = React.useMemo(() => ({
         exposureAndFlightsData,
@@ -58,7 +61,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const {
         currentTab,
         setNextTab,
-    } = useTabManagement({lastTabDisplayedId});
+    } = useTabManagement({ lastTabDisplayedId });
 
     useEffect(() => {
         setLastTabDisplayedId(areThereContacts ? LAST_TAB_ID : LAST_TAB_ID - 1);
@@ -72,35 +75,37 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             <ExposureAndFlightsContextProvider value={exposuresAndFlightsVariables}>
                 <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
                     <InvestigationInfoBar
-                        currentTab = {currentTab}
+                        currentTab={currentTab}
+                        isViewMode={isViewMode}
                     />
-                        <div className={classes.interactiveForm}>
-                            <Grid container alignItems='flex-start'>
-                                <TabManagement
-                                    areThereContacts={areThereContacts}
-                                    setAreThereContacts={setAreThereContacts}
-                                    currentTab={currentTab}
-                                    setNextTab={setNextTab}
-                                    isScriptOpened={isScriptOpened}
-                                    setIsScriptOpened={setIsScriptOpened}
-                                    isLastTabDisplayed={isLastTabDisplayed}
-                                />
-                                <Grid item className={isScriptOpened ? classes.uncollapsed : classes.collapsed}>
-                                    <Card className={isScriptOpened ? classes.scriptWrapperWithMaxHeight : classes.scriptWrapper}>
-                                        <ConvesrationScript currentTab={currentTab}/>
-                                    </Card>
+                    <div className={classes.interactiveForm}>
+                        <Grid container alignItems='flex-start'>
+                            <TabManagement
+                                areThereContacts={areThereContacts}
+                                setAreThereContacts={setAreThereContacts}
+                                currentTab={currentTab}
+                                setNextTab={setNextTab}
+                                isScriptOpened={isScriptOpened}
+                                setIsScriptOpened={setIsScriptOpened}
+                                isLastTabDisplayed={isLastTabDisplayed}
+                                isViewMode={isViewMode}
+                            />
+                            <Grid item className={isScriptOpened ? classes.uncollapsed : classes.collapsed}>
+                                <Card className={isScriptOpened ? classes.scriptWrapperWithMaxHeight : classes.scriptWrapper}>
+                                    <ConvesrationScript currentTab={currentTab} />
+                                </Card>
+                            </Grid>
+                        </Grid>
+                        <Grid container alignItems='center' className={classes.buttonSection}>
+                            {isLastTabDisplayed &&
+                                <Grid item>
+                                    <Paper className={classes.trackingForm}>
+                                        <TrackingRecommendationForm isViewMode={isViewMode} />
+                                    </Paper>
                                 </Grid>
-                            </Grid>
-                            <Grid container alignItems='center' className={classes.buttonSection}>
-                                {isLastTabDisplayed && 
-                                    <Grid item>
-                                        <Paper className={classes.trackingForm}>
-                                            <TrackingRecommendationForm/>
-                                        </Paper>
-                                    </Grid>
-                                }
-                            </Grid>
-                        </div>
+                            }
+                        </Grid>
+                    </div>
                 </StartInvestigationDateVariablesProvider>
             </ExposureAndFlightsContextProvider>
 
@@ -113,4 +118,4 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     )
 }
 
-export default InvestigationForm;
+export default (InvestigationForm);

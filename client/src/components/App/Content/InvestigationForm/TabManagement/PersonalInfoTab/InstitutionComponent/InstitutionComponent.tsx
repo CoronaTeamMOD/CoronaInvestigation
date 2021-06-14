@@ -9,7 +9,7 @@ import { PersonalInfoTabState } from '../PersonalInfoTabInterfaces';
 
 const INSTITUTION_NAME = 'שם מוסד*';
 
-const InstitutionComponent: React.FC<Props> = ({ fieldName, placeholder, options }) => {
+const InstitutionComponent: React.FC<Props> = ({ fieldName, placeholder, options, isViewMode }) => {
 
     const { control, errors, watch } = useFormContext<PersonalInfoTabState>();
 
@@ -24,17 +24,18 @@ const InstitutionComponent: React.FC<Props> = ({ fieldName, placeholder, options
             render={(props) => (
                 <Autocomplete
                     options={options}
+                    disabled={isViewMode}
                     defaultValue={props.value}
                     getOptionLabel={(option) => {
                         if (options.length > 0) {
-                            return option ? (option.subOccupation + (option.street ? ('/' + option.street) : '')): option
+                            return option ? (option.subOccupation + (option.street ? ('/' + option.street) : '')) : option
                         }
                         return '';
                     }}
                     getOptionSelected={(option) => {
                         return option.id === props.value;
                     }}
-                    value={props.value ? {id: props.value, ...selectedInstitution}: {id: -1, subOccupation: ''}}
+                    value={props.value ? { id: props.value, ...selectedInstitution } : { id: -1, subOccupation: '' }}
                     onChange={(event, newValue) => {
                         props.onChange(newValue ? newValue.id : '')
                     }}
@@ -64,6 +65,7 @@ interface Props {
     placeholder: string;
     options: SubOccupationAndStreet[];
     fieldName: keyof PersonalInfoTabState;
+    isViewMode?: boolean;
 }
 
 export default InstitutionComponent;

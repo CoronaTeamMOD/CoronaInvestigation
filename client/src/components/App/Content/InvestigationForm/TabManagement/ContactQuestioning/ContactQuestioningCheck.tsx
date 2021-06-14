@@ -16,11 +16,11 @@ import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 
 const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { formErrors, contactStatus, control, index, interactedContact } = props;
+    const { formErrors, contactStatus, control, index, interactedContact, isViewMode } = props;
 
     const classes = useStyles();
 
-    const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
+    const occupations = useSelector<StoreStateType, string[]>(state => state.occupations);
 
     const { isFieldDisabled } = useContactFields(contactStatus);
 
@@ -34,7 +34,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
 
                 <Grid item>
                     <Grid container>
-                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_FEEL_GOOD} className={classes.fieldName}/>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_FEEL_GOOD} className={classes.fieldName} />
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.DOES_FEEL_GOOD}]`}
@@ -43,10 +43,10 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                 return (
                                     <Toggle
                                         {...props}
-                                        disabled={isFieldDisabled}
+                                        disabled={isFieldDisabled || isViewMode}
                                         test-id='doesFeelGood'
                                         onChange={(event, booleanValue) => {
-                                            if(booleanValue !== null) {
+                                            if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
                                             }
                                         }}
@@ -55,26 +55,26 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                             }}
                         />
                     </Grid>
-                    <InlineErrorText 
+                    <InlineErrorText
                         error={formErrors && formErrors[InteractedContactFields.DOES_FEEL_GOOD]}
                     />
                 </Grid>
 
                 <Grid item>
                     <Grid container>
-                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_HAVE_BACKGROUND_DISEASES} className={classes.fieldName}/>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_HAVE_BACKGROUND_DISEASES} className={classes.fieldName} />
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES}]`}
                             defaultValue={interactedContact.doesHaveBackgroundDiseases}
                             render={(props) => {
-                                return(
+                                return (
                                     <Toggle
                                         {...props}
-                                        disabled={isFieldDisabled}
+                                        disabled={isFieldDisabled || isViewMode}
                                         test-id='doesHaveBackgroundDiseases'
                                         onChange={(event, booleanValue) => {
-                                            if(booleanValue !== null) {
+                                            if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
                                             }
                                         }}
@@ -83,26 +83,26 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                             }}
                         />
                     </Grid>
-                    <InlineErrorText 
+                    <InlineErrorText
                         error={formErrors && formErrors[InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES]}
                     />
                 </Grid>
 
                 <Grid item>
                     <Grid container>
-                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_LIVE_WITH_CONFIRMED} className={classes.fieldName}/>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_LIVE_WITH_CONFIRMED} className={classes.fieldName} />
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.DOES_LIVE_WITH_CONFIRMED}]`}
                             defaultValue={interactedContact.doesLiveWithConfirmed}
                             render={(props) => {
-                                return(
+                                return (
                                     <Toggle
                                         {...props}
-                                        disabled={isFieldDisabled}
+                                        disabled={isFieldDisabled || isViewMode}
                                         test-id='doesLiveWithConfirmed'
                                         onChange={(event, booleanValue) => {
-                                            if(booleanValue !== null) {
+                                            if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
                                             }
                                         }}
@@ -110,26 +110,26 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                             }}
                         />
                     </Grid>
-                    <InlineErrorText 
+                    <InlineErrorText
                         error={formErrors && formErrors[InteractedContactFields.DOES_LIVE_WITH_CONFIRMED]}
                     />
                 </Grid>
 
                 <Grid item>
                     <Grid container>
-                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.REPEATING_OCCURANCE_WITH_CONFIRMED} className={classes.fieldName}/>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.REPEATING_OCCURANCE_WITH_CONFIRMED} className={classes.fieldName} />
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED}]`}
                             defaultValue={interactedContact.repeatingOccuranceWithConfirmed}
                             render={(props) => {
-                                return(
+                                return (
                                     <Toggle
                                         {...props}
-                                        disabled={isFieldDisabled}
+                                        disabled={isFieldDisabled || isViewMode}
                                         test-id='repeatingOccuranceWithConfirmed'
                                         onChange={(event, booleanValue) => {
-                                            if(booleanValue !== null) {
+                                            if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
                                             }
                                         }}
@@ -137,26 +137,26 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                             }}
                         />
                     </Grid>
-                    <InlineErrorText 
+                    <InlineErrorText
                         error={formErrors && formErrors[InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED]}
                     />
                 </Grid>
 
                 <Grid item>
                     <Grid container>
-                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_WORK_WITH_CROWD} className={classes.fieldName}/>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_WORK_WITH_CROWD} className={classes.fieldName} />
                         <Controller
                             control={control}
                             name={`form[${index}.${InteractedContactFields.DOES_WORK_WITH_CROWD}]`}
                             defaultValue={interactedContact.doesWorkWithCrowd}
                             render={(props) => {
-                                return(
+                                return (
                                     <Toggle
                                         {...props}
-                                        disabled={isFieldDisabled}
+                                        disabled={isFieldDisabled || isViewMode}
                                         test-id='doesWorkWithCrowd'
-                                        onChange={(event, booleanValue) => { 
-                                            if(booleanValue !== null) {
+                                        onChange={(event, booleanValue) => {
+                                            if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
                                             }
                                         }}
@@ -165,13 +165,13 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                             }}
                         />
                     </Grid>
-                    <InlineErrorText 
+                    <InlineErrorText
                         error={formErrors && formErrors[InteractedContactFields.DOES_WORK_WITH_CROWD]}
                     />
                 </Grid>
 
                 <Grid item container>
-                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.OCCUPATION} className={classes.fieldName}/>
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.OCCUPATION} className={classes.fieldName} />
                     <Grid item xs={5}>
                         <Controller
                             control={control}
@@ -183,12 +183,12 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         <Select
                                             {...props}
                                             placeholder={ContactQuestioningFieldsNames.OCCUPATION}
-                                            disabled={isFieldDisabled}
+                                            disabled={isFieldDisabled || isViewMode}
                                             onChange={(event) => {
                                                 props.onChange(event.target.value)
                                             }}>
                                             {
-                                            occupations?.length > 0 && occupations.map((occupation) => (
+                                                occupations?.length > 0 && occupations.map((occupation) => (
                                                     <MenuItem className={classes.menuItem}
                                                         key={occupation}
                                                         value={occupation}>
@@ -200,10 +200,10 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                     </FormControl>
                                 )
                             }}
-                            />
+                        />
                     </Grid>
                 </Grid>
-                
+
             </Grid>
         </Grid>
     )
@@ -217,4 +217,5 @@ interface Props {
     formErrors: any;
     control: any;
     contactStatus: number;
+    isViewMode?: boolean;
 };

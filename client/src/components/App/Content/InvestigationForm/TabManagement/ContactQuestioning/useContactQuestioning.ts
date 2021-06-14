@@ -1,4 +1,4 @@
-import axios  from 'axios';
+import axios from 'axios';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 
@@ -16,7 +16,7 @@ import {
     useContactQuestioningOutcome,
     useContactQuestioningParameters,
 } from './ContactQuestioningInterfaces';
-    
+
 const NEW_CONTACT_STATUS_CODE = 1;
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
@@ -28,14 +28,14 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         setContactStatuses,
         getValues,
     } = parameters;
-    
+
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
 
     const { alertError } = useCustomSwal();
 
     const createSaveContactRequest = (contactsSavingVariable: { unSavedContacts: { contacts: InteractedContact[] } },
-                                    workflowName: string) => {
+        workflowName: string) => {
         const contactLogger = logger.setup(workflowName);
 
         contactLogger.info(`launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`, Severity.LOW);
@@ -65,6 +65,17 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             .finally(() => console.log('finally'));
     }
 
+    const getRulerApiDataFromServer = () => {
+        return axios.post('/ruler/rulerapi')
+            .then((response) => {
+                return response;
+            })
+            .catch((err) => {
+                return err;
+            })
+            .finally(() => console.log('finally'));
+    };
+
     const saveContact = (interactedContact: InteractedContact): boolean => {
         const contacts = [interactedContact];
         const contactsSavingVariable = {
@@ -72,20 +83,20 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         };
 
         createSaveContactRequest(contactsSavingVariable, 'Saving single contact');
-        return true; 
+        return true;
     };
 
-    const saveContactQuestioning = (parsedFormData: InteractedContact[] , originalFormData: FormInputs) => {
+    const saveContactQuestioning = (parsedFormData: InteractedContact[], originalFormData: FormInputs) => {
         const contactsSavingVariable = {
-            unSavedContacts: {contacts: parsedFormData}
+            unSavedContacts: { contacts: parsedFormData }
         };
 
         createSaveContactRequest(contactsSavingVariable, 'Saving all contacts')
-        .finally(() => {
-            ContactQuestioningSchema.isValid(originalFormData).then(valid => {
-                setFormState(epidemiologyNumber, id, valid);
-            })
-        });
+            .finally(() => {
+                ContactQuestioningSchema.isValid(originalFormData).then(valid => {
+                    setFormState(epidemiologyNumber, id, valid);
+                })
+            });
     };
 
     const loadFamilyRelationships = () => {
@@ -107,29 +118,29 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         const contactStatusesLogger = logger.setup('Getting contact statuses');
         contactStatusesLogger.info('launching server request', Severity.LOW);
         axios.get('/contactedPeople/contactStatuses')
-        .then((result: any) => {
-            if (
-                result?.data &&
-                result.headers['content-type'].includes('application/json')
-            ) {
-                contactStatusesLogger.info(
-                    'got respond from the server that has data',
+            .then((result: any) => {
+                if (
+                    result?.data &&
+                    result.headers['content-type'].includes('application/json')
+                ) {
+                    contactStatusesLogger.info(
+                        'got respond from the server that has data',
+                        Severity.LOW
+                    );
+                    setContactStatuses(result.data);
+                } else {
+                    contactStatusesLogger.warn(
+                        'got respond from the server without data',
+                        Severity.MEDIUM
+                    );
+                }
+            })
+            .catch((err) => {
+                contactStatusesLogger.error(
+                    `got the following error from the server: ${err}`,
                     Severity.LOW
                 );
-                setContactStatuses(result.data);
-            } else {
-                contactStatusesLogger.warn(
-                    'got respond from the server without data',
-                    Severity.MEDIUM
-                );
-            }
-        })
-        .catch((err) => {
-            contactStatusesLogger.error(
-                `got the following error from the server: ${err}`,
-                Severity.LOW
-            );
-        });
+            });
     };
 
     const loadInteractedContacts = () => {
@@ -149,7 +160,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     );
                     const interactedContacts: InteractedContact[] = result.data.map((contact: any) => {
                         return ({
-                            personInfo : contact.personInfo,
+                            personInfo: contact.personInfo,
                             placeName: contact.contactEventByContactEvent.placeName,
                             id: contact.id,
                             firstName: contact.personByPersonInfo.firstName,
@@ -198,7 +209,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             involvedContactId: contact.involvedContactId,
                         })
                     }
-                        
+
                     );
                     const groupedInteractedContacts = groupSimilarContactedPersons(interactedContacts);
                     setAllContactedInteractions(groupedInteractedContacts);
@@ -227,7 +238,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 allContactedInteractions.findIndex(
                     (contact) =>
                         contact.identificationNumber ===
-                            identificationNumberToCheck &&
+                        identificationNumberToCheck &&
                         contact.id !== interactedContactId
                 ) === -1
             );
@@ -250,21 +261,21 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         e.preventDefault();
         const data = getValues();
         const parsedFormData = parseFormBeforeSending(data as FormInputs);
-        if(!areThereDuplicateIds(data)) {
-            parsedFormData && saveContactQuestioning(parsedFormData , data);
+        if (!areThereDuplicateIds(data)) {
+            parsedFormData && saveContactQuestioning(parsedFormData, data);
         } else {
             alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
         }
     };
 
-    const areThereDuplicateIds = (data : FormInputs) => {
+    const areThereDuplicateIds = (data: FormInputs) => {
         const ids = data.form
             .filter(person => {
                 const { identificationNumber, identificationType } = person;
                 return identificationNumber && identificationType;
             }).map(person => {
-                return `${person.identificationNumber}-${person.identificationType}`  
-        });
+                return `${person.identificationNumber}-${person.identificationType}`
+            });
 
         return ids.length !== new Set(ids).size;
     };
@@ -303,26 +314,26 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const groupSimilarContactedPersons = (interactedContacts: InteractedContact[]) => {
-        let contactsMap = new Map<number , GroupedInteractedContact>();
+        let contactsMap = new Map<number, GroupedInteractedContact>();
         interactedContacts.forEach(contact => {
             const { personInfo } = contact;
-            if(personInfo){
+            if (personInfo) {
                 const existingContactType = (contactsMap.get(personInfo)?.contactType);
-                const newEvent : GroupedInteractedContactEvent = {
-                    date : contact.contactDate,
-                    name : contact.placeName || '',
-                    contactType : +contact.contactType
+                const newEvent: GroupedInteractedContactEvent = {
+                    date: contact.contactDate,
+                    name: contact.placeName || '',
+                    contactType: +contact.contactType
                 }
                 const newEventArr = (contactsMap.get(personInfo)?.contactEvents || []).concat(newEvent);
-                
+
                 contactsMap.set(personInfo, {
-                    ...contact, 
+                    ...contact,
                     contactType: (existingContactType && +existingContactType === 1) ? existingContactType : contact.contactType,
-                    contactEvents : newEventArr,
+                    contactEvents: newEventArr,
                 });
             }
         });
-        
+
         return Array.from(contactsMap).map(contact => contact[1]);
     }
 
@@ -336,6 +347,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         onSubmit,
         parsePerson,
         getRulerApiData,
+        getRulerApiDataFromServer
     };
 };
 

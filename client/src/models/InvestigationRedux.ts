@@ -5,7 +5,7 @@ import TrackingRecommendation from './TrackingRecommendation/TrackingRecommendat
 
 interface InvestigationRedux extends SymptomsExistenceInfo {
     epidemiologyNumber: number;
-    complexReasonsId: (number|null)[];
+    complexReasonsId: (number | null)[];
     investigationStatus: InvestigationStatus;
     investigatedPatient: InvestigatedPatient;
     creator: string;
@@ -17,6 +17,7 @@ interface InvestigationRedux extends SymptomsExistenceInfo {
     validationDate: Date;
     endTime: Date | null;
     trackingRecommendation: TrackingRecommendation;
+    isViewMode: boolean;
 }
 
 export default InvestigationRedux;

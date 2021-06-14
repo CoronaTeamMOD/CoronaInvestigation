@@ -9,19 +9,19 @@ import StoreStateType from 'redux/storeStateType';
 import { exposureAndFlightsContext } from 'commons/Contexts/ExposuresAndFlights';
 
 import { BackFromAbroad } from './Forms/BackFromAbroad';
-import PossibleExposure from './Forms/PossibleExposure'; 
+import PossibleExposure from './Forms/PossibleExposure';
 import { VacationOrEvent } from './Forms/VacationOrEvent';
 import { FormData } from './ExposuresAndFlightsInterfaces';
 import ExposureSchema from './Schema/exposuresAndFlightsSchema';
 import { useExposuresAndFlights } from './useExposuresAndFlights';
 
-const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
+const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Element => {
 
     const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);
 
     const { exposures, wereFlights, wereConfirmedExposures, wasInVacation, wasInEvent } = exposureAndFlightsData;
-    const validationDate : Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
-	const [isExposureAdded, setIsExposureAdded] = useState<boolean| undefined>(undefined);
+    const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
+    const [isExposureAdded, setIsExposureAdded] = useState<boolean | undefined>(undefined);
 
     const ids = exposures.map(exposure => exposure.id);
 
@@ -30,13 +30,13 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
         resolver: yupResolver(ExposureSchema(validationDate)),
     });
 
-    const {reset , trigger} = methods;
+    const { reset, trigger } = methods;
 
-    const onSubmit = (e? : React.FormEvent) => {
+    const onSubmit = (e?: React.FormEvent) => {
         e && e.preventDefault();
         methods.trigger();
         const data = methods.getValues();
-        saveExposure(data , ids);
+        saveExposure(data, ids);
     };
 
     const {
@@ -48,10 +48,10 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
         disableFlightAddition,
         onExposureDeleted
     } = useExposuresAndFlights({
-            exposures, wereConfirmedExposures, wereFlights, 
-            exposureAndFlightsData, setExposureDataAndFlights, 
-            setIsExposureAdded, id, reset, trigger, onSubmit
-        });
+        exposures, wereConfirmedExposures, wereFlights,
+        exposureAndFlightsData, setExposureDataAndFlights,
+        setIsExposureAdded, id, reset, trigger, onSubmit
+    });
 
     return (
         <FormProvider {...methods}>
@@ -66,18 +66,20 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     onExposureDeleted={onExposureDeleted}
                     isExposureAdded={isExposureAdded}
                     setIsExposureAdded={setIsExposureAdded}
+                    isViewMode={isViewMode}
                 />
 
                 <Divider />
 
-                <VacationOrEvent 
+                <VacationOrEvent
                     wasInVacation={wasInVacation}
                     wasInEvent={wasInEvent}
+                    isViewMode={isViewMode}
                 />
 
                 <Divider />
 
-                <BackFromAbroad 
+                <BackFromAbroad
                     wereFlights={wereFlights}
                     onExposuresStatusChange={onExposuresStatusChange}
                     exposures={exposures}
@@ -85,8 +87,9 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     onExposureAdded={onExposureAdded}
                     disableFlightAddition={disableFlightAddition}
                     onExposureDeleted={onExposureDeleted}
+                    isViewMode={isViewMode}
                 />
-          
+
             </form>
         </FormProvider>
     );
@@ -94,6 +97,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
 interface Props {
     id: number;
+    isViewMode?: boolean;
 };
 
 export default ExposuresAndFlights;

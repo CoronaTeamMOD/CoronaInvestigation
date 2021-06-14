@@ -1,7 +1,6 @@
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import SymptomsExistenceInfo from 'models/SymptomsExistenceInfo';
 import TrackingRecommendation from 'models/TrackingRecommendation/TrackingRecommendation';
-
 import { store } from '../store';
 import * as actionTypes from './investigationActionTypes';
 
@@ -12,7 +11,7 @@ export const setEpidemiologyNum = (epidemiologyNumber: number): void => {
     })
 };
 
-export const setComplexReasonsId = (complexReasonsId: (number|null)[]): void => {
+export const setComplexReasonsId = (complexReasonsId: (number | null)[]): void => {
     store.dispatch({
         type: actionTypes.SET_COMPLEX_REASONS_ID,
         payload: { complexReasonsId }
@@ -47,17 +46,17 @@ export const setIsCurrentlyHospitialized = (isCurrentlyHospitialized: boolean) =
     })
 };
 
-export const setLastOpenedEpidemiologyNum = (lastOpenedEpidemiologyNumber : number): void => {
+export const setLastOpenedEpidemiologyNum = (lastOpenedEpidemiologyNumber: number): void => {
     store.dispatch({
         type: actionTypes.SET_LAST_OPENED_EPIDEMIOLOGY_NUM,
-        payload: {lastOpenedEpidemiologyNumber}
+        payload: { lastOpenedEpidemiologyNumber }
     })
 };
 
-export const setIsCurrentlyLoading = (isCurrentlyLoading : boolean): void => {
+export const setIsCurrentlyLoading = (isCurrentlyLoading: boolean): void => {
     store.dispatch({
         type: actionTypes.SET_IS_CURRENTLY_LOADING,
-        payload: {isCurrentlyLoading}
+        payload: { isCurrentlyLoading }
     })
 };
 
@@ -89,14 +88,14 @@ export const setDatesToInvestigateParams = (symptomsExistenceInfo?: SymptomsExis
     })
 };
 
-export const setBirthDate = (birthDate : Date) => {
+export const setBirthDate = (birthDate: Date) => {
     store.dispatch({
         type: actionTypes.SET_BIRTH_DATE,
-        payload: {birthDate}
+        payload: { birthDate }
     });
 };
 
-export const setTrackingRecommendation = (trackingRecommendation : TrackingRecommendation) => {
+export const setTrackingRecommendation = (trackingRecommendation: TrackingRecommendation) => {
     store.dispatch({
         type: actionTypes.SET_TRACKING_RECOMMENDATION,
         payload: { trackingRecommendation }
@@ -106,5 +105,12 @@ export const setTrackingRecommendation = (trackingRecommendation : TrackingRecom
 export const resetInvestigationState = () => {
     store.dispatch({
         type: actionTypes.RESET_STATE,
+    })
+}
+
+export const setIsViewMode = (isViewMode: boolean) => {
+    store.dispatch({
+        type: actionTypes.SET_INVESTIGATION_VIEW_MODE,
+        payload: { isViewMode }
     })
 };
