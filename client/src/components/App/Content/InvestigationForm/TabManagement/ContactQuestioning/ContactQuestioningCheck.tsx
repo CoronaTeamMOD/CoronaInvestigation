@@ -217,5 +217,5 @@ interface Props {
     formErrors: any;
     control: any;
     contactStatus: number;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };

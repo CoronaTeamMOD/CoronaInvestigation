@@ -351,7 +351,7 @@ interface Props {
     investigationStaticInfo: InvestigationInfo;
     epedemioligyNumber: number;
     currentTab: number;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };
 
 export default InvestigatedPersonInfo;

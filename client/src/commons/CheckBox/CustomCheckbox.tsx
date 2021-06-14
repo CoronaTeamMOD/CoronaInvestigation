@@ -40,5 +40,5 @@ interface Props {
     checkboxElements: CheckboxElement[];
     checkboxesClassWrapper?: string;
     testId?: string;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };

@@ -179,5 +179,5 @@ interface Props {
     isScriptOpened: boolean;
     setIsScriptOpened: React.Dispatch<React.SetStateAction<boolean>>;
     isLastTabDisplayed: boolean;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };

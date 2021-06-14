@@ -97,7 +97,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.El
 
 interface Props {
     id: number;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };
 
 export default ExposuresAndFlights;

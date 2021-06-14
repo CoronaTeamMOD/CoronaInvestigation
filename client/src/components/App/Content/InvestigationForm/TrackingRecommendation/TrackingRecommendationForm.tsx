@@ -104,7 +104,7 @@ const TrackingRecommendationForm = (props: Props) => {
 }
 
 interface Props {
-    isViewMode: boolean;
+    isViewMode?: boolean;
 }
 
 export default TrackingRecommendationForm;

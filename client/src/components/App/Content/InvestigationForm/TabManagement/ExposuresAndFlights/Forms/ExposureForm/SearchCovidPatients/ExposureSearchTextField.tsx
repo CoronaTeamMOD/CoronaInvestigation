@@ -9,7 +9,7 @@ import { alphaNumericWhiteSpaceErrorMessage, max50LengthErrorMessage } from 'com
 interface Props extends AlphabetTextFieldProps<string> {
   value: string | null;
   fullWidth?: boolean;
-  isViewMode: boolean;
+  isViewMode?: boolean;
 };
 
 const stringAlphabet = yup

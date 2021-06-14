@@ -246,7 +246,7 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
 
 interface Props {
     id: number;
-    isViewMode:boolean;
+    isViewMode?:boolean;
 }
 
 export default ClinicalDetails;
