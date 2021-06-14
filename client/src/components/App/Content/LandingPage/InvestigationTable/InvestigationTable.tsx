@@ -31,7 +31,7 @@ import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTa
 import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorAllocationDialog';
 import useInvestigationTable, { SelectedRow, DEFAULT_SELECTED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
-import { setIsViewMode, setViewModeClicked } from 'redux/Investigation/investigationActionCreators';
+import { setIsViewMode } from 'redux/Investigation/investigationActionCreators';
 import { store } from 'redux/store';
 
 export const defaultOrderBy = 'defaultOrder';
@@ -63,7 +63,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [shouldOpenPopover, setShouldOpenPopover] = useState<boolean>(false);
     const [isInvestigatorAllocationDialogOpen, setIsInvestigatorAllocationDialogOpen] = useState<boolean>(false);
     const [isGroupedExpanded, setIsGroupedExpanded] = useState<boolean>(false);
-    const viewModeClicked = useSelector<StoreStateType, boolean>((state) => state.investigation.viewModeClicked);
 
     const handleOpenGroupClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
