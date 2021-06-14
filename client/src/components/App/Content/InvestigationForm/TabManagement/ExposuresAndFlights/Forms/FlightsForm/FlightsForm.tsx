@@ -255,7 +255,7 @@ interface Props {
 	index: number;
 	handleChangeExposureDataAndFlightsField: (fieldName: string, value: any) => void;
 	onExposureDeleted: () => void;
-	isViewMode: boolean;
+	isViewMode?: boolean;
 };
 
 export default FlightsForm;

@@ -298,5 +298,5 @@ interface Props {
     trigger: (fieldname: string) => {};
     currentFormErrors?: DeepMap<InteractedContact, FieldError>;
     watch: any;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };

@@ -17,7 +17,6 @@ interface InvestigationRedux extends SymptomsExistenceInfo {
     validationDate: Date;
     endTime: Date | null;
     trackingRecommendation: TrackingRecommendation;
-    viewModeClicked: boolean;
     isViewMode: boolean;
 }
 

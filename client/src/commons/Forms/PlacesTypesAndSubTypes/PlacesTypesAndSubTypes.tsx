@@ -191,5 +191,5 @@ export interface PlacesTypesAndSubTypesProps {
     onPlaceTypeChange: (newPlaceType: string) => void;
     onPlaceSubTypeChange: (placeSubType: PlaceSubType | null) => void;
     size: FormSize;
-    isViewMode:boolean;
+    isViewMode?:boolean;
 };

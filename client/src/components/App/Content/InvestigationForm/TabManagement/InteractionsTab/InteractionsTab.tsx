@@ -164,7 +164,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 interface Props {
     id: number;
     setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
-    isViewMode:boolean;
+    isViewMode?:boolean;
 };
 
 export default InteractionsTab;

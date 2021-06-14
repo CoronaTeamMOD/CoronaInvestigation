@@ -52,7 +52,7 @@ const SearchByEpidemiologyNumber = (props: Props) => {
 
 interface Props {
     getQueryParams: (query : string) => void;
-    isViewMode:boolean;
+    isViewMode?:boolean;
 };
 
 

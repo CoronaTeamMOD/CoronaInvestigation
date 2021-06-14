@@ -532,7 +532,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
 
 interface Props {
     id: number;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };
 
 export default PersonalInfoTab;

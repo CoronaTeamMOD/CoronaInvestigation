@@ -44,7 +44,7 @@ const CommentInput = ({ commentInput, handleInput, isViewMode }: Props) => {
 interface Props {
     commentInput: string | null;
     handleInput: (input: string) => void;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };
 
 export default CommentInput;

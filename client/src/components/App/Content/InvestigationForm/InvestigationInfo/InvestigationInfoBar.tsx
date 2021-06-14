@@ -193,7 +193,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode }: Props
 
 interface Props {
     currentTab: number;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };
 
 export default InvestigationInfoBar;

@@ -130,8 +130,8 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                                 );
                             }
                         )}
-                        <div onClick={() => { getRulerApiData(parameters) }}>לחץ להדפסת נתוני הרמזור - קליינט</div>
-                        <div onClick={() => { getRulerApiDataFromServer() }}>לחץ להדפסת נתוני הרמזור - סרבר</div>
+                        <div onClick={()=>{getRulerApiData(parameters)}}>לחץ להדפסת נתוני הרמזור - קליינט</div>
+                        <div onClick={()=>{console.log('ruler response: ',getRulerApiDataFromServer())}}>לחץ להדפסת נתוני הרמזור - סרבר</div>
                     </Grid>
                 </form>
             </FormProvider>
@@ -141,7 +141,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
 
 interface Props {
     id: number;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };
 
 export default ContactQuestioning;

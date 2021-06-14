@@ -71,7 +71,7 @@ const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
 interface Props {
     classes: ClinicalDetailsClasses;
     watchIsIsolationProblem: boolean;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };
 
 export default IsolationProblemFields;

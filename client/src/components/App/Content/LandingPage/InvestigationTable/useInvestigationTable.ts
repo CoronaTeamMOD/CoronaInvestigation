@@ -27,7 +27,7 @@ import getColorByGroupId from 'Utils/GroupedInvestigations/getColorByGroupId';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setComplexReasons } from 'redux/ComplexReasons/complexReasonsActionCreators';
-import { setComplexReasonsId, setIsViewMode, setViewModeClicked } from 'redux/Investigation/investigationActionCreators';
+import { setComplexReasonsId } from 'redux/Investigation/investigationActionCreators';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
 import AllocatedInvestigator from 'models/InvestigationTable/AllocateInvestigatorDialog/AllocatedInvestigator';
@@ -201,7 +201,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
     const windowTabsBroadcastChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
-    const viewModeClicked = useSelector<StoreStateType, boolean>(state => state.investigation.viewModeClicked);
 
     const changeDeskFilter = (desks: Desk[]) => {
         const desksIds = desks.map(desk => desk.id);

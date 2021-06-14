@@ -164,5 +164,5 @@ interface Props {
     isFamilyContact: boolean;
     familyRelationships: FamilyRelationship[];
     shouldDisable: (status?: string | number | undefined) => boolean;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };
