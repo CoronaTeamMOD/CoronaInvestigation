@@ -1,8 +1,6 @@
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import SymptomsExistenceInfo from 'models/SymptomsExistenceInfo';
 import TrackingRecommendation from 'models/TrackingRecommendation/TrackingRecommendation';
-import { resolve } from 'node:path';
-
 import { store } from '../store';
 import * as actionTypes from './investigationActionTypes';
 
