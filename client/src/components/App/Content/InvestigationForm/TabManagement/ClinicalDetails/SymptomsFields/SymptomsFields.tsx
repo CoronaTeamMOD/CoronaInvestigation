@@ -208,7 +208,7 @@ interface Props {
     symptoms: string[];
     didSymptomsDateChangeOccur: boolean;
     setDidSymptomsDateChangeOccur: React.Dispatch<React.SetStateAction<boolean>>;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };
 
 export default SymptomsFields;

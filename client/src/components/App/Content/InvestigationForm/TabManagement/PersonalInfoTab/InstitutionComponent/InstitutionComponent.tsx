@@ -65,7 +65,7 @@ interface Props {
     placeholder: string;
     options: SubOccupationAndStreet[];
     fieldName: keyof PersonalInfoTabState;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 }
 
 export default InstitutionComponent;

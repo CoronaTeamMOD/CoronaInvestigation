@@ -83,7 +83,7 @@ interface Props {
     loadInteractions: () => void;
     loadInvolvedContacts: () => void;
     onDeleteContactClick: (contactedPersonId: number, involvedContactId: number | null) => void;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };
 
 export default ContactDateCard;

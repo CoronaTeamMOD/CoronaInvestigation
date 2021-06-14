@@ -122,5 +122,5 @@ interface Props {
     ) => void;
     watchBackgroundDiseases: string[];
     watchDoesHaveBackgroundDiseases: boolean;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };

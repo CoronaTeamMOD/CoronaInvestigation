@@ -121,7 +121,7 @@ interface Props {
     onExposureDeleted: (index: number) => void;
     isExposureAdded: boolean | undefined;
     setIsExposureAdded: React.Dispatch<React.SetStateAction<boolean | undefined>>;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };
 
 export default PossibleExposure;

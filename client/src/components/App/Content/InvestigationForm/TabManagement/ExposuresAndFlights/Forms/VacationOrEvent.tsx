@@ -13,7 +13,7 @@ import useStyles from '../ExposuresAndFlightsStyles';
 interface Props {
 	wasInVacation: boolean | undefined;
 	wasInEvent: boolean | undefined;
-	isViewMode: boolean;
+	isViewMode?: boolean;
 }
 
 export const VacationOrEvent = (props: Props) => {

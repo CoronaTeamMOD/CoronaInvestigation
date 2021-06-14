@@ -13,7 +13,7 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
 const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, watchIsInIsolation, watchIsolationStartDate, watchIsolationEndDate, isolationSources,isViewMode } = props;
+    const { classes, watchIsInIsolation, watchIsolationStartDate, watchIsolationEndDate, isolationSources, isViewMode } = props;
     const { control, errors, trigger } = useFormContext();
 
     React.useEffect(() => {
@@ -153,7 +153,7 @@ interface Props {
     watchIsolationStartDate: Date;
     watchIsolationEndDate: Date;
     isolationSources: IsolationSource[];
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };
 
 export default IsolationDatesFields;

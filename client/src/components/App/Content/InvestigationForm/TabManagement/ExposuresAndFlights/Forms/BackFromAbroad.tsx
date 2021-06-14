@@ -89,5 +89,5 @@ interface Props {
     onExposureAdded: (wasConfirmedExposure: boolean, wasAbroad: boolean) => void;
     disableFlightAddition: boolean;
     onExposureDeleted: (index: number) => void;
-    isViewMode:boolean;
+    isViewMode?:boolean;
 };

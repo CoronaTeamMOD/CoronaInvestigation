@@ -141,7 +141,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
 
 interface Props {
     id: number;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };
 
 export default ContactQuestioning;

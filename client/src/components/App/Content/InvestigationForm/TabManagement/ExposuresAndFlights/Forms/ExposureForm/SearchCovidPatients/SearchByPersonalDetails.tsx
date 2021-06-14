@@ -80,7 +80,7 @@ const SearchByPersonalDetails = (props: Props) => {
 
 interface Props {
     getQueryParams: (params: PersonalDetailsQueryParams) => void;
-    isViewMode: boolean;
+    isViewMode?: boolean;
 };
 
 
