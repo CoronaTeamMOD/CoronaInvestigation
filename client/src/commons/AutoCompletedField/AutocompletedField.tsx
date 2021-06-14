@@ -19,7 +19,8 @@ const AutocompletedField: AutocompletedFieldType = (props) => {
         filterOptions = (x: any) => x,
         noOptionsMessage = defaultNoOptionsMessage,
         fullWidth,
-        error
+        error,
+        isViewMode
     } = props;
     const classes = useStyles();
 
@@ -55,6 +56,7 @@ const AutocompletedField: AutocompletedFieldType = (props) => {
                     onInputChange(event, value, reason);
                 }
             }}
+            disabled={isViewMode}
         />
     );
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux';
-import { Grid , Collapse, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core';
+import { Grid, Collapse, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core';
 
 import StoreStateType from 'redux/storeStateType';
 import TrackingRecommendation from 'models/TrackingRecommendation/TrackingRecommendation';
@@ -15,6 +15,7 @@ import UseTrackingRecommendationForm from './useTrackingRecommendationForm';
 const TrackingRecommendationForm = (props: Props) => {
     const trackingRecommendation = useSelector<StoreStateType, TrackingRecommendation>(state => state.investigation.trackingRecommendation);
     const classes = useStyles();
+    const { isViewMode } = props;
     const { reason, subReason, extraInfo } = trackingRecommendation;
 
     const [trackingSubReasons, setTrackingSubReasons] = useState<Option[]>([]);
@@ -31,35 +32,37 @@ const TrackingRecommendationForm = (props: Props) => {
     return (
         <Grid container className={classes.container}>
             <Grid item>
-            <FormControl variant='outlined'>
-                <Select
-                    value={reason || 0}
-                    onChange={async (e) => {
-                        const newReason : number = e.target.value as number;
-                        reason !== null && setTrackingSubReasons(await fetchSubReasonsByReason(reason));
-                        setTrackingRecommendation({
-                            reason: newReason,
-                        });
-                    }}
-                >
-                    {trackingOptions.map(
-                        option => (
-                            <MenuItem key={option.id} value={option.id ?? 0}>
-                                {option.displayName}
-                            </MenuItem>
-                        )
-                    )}
-                </Select>
-            </FormControl>
+                <FormControl variant='outlined'>
+                    <Select
+                        value={reason || 0}
+                        disabled={isViewMode}
+                        onChange={async (e) => {
+                            const newReason: number = e.target.value as number;
+                            reason !== null && setTrackingSubReasons(await fetchSubReasonsByReason(reason));
+                            setTrackingRecommendation({
+                                reason: newReason,
+                            });
+                        }}
+                    >
+                        {trackingOptions.map(
+                            option => (
+                                <MenuItem key={option.id} value={option.id ?? 0}>
+                                    {option.displayName}
+                                </MenuItem>
+                            )
+                        )}
+                    </Select>
+                </FormControl>
             </Grid>
             <Collapse in={reason !== defaultTrackingReason}>
                 <Grid item>
                     {
-                        trackingSubReasons.length > 0 && 
+                        trackingSubReasons.length > 0 &&
                         <FormControl variant='outlined'>
                             <InputLabel>סיבה</InputLabel>
                             <Select
                                 value={subReason || 0}
+                                disabled={isViewMode}
                                 onChange={(e) => {
                                     setTrackingRecommendation({
                                         reason,
@@ -71,7 +74,7 @@ const TrackingRecommendationForm = (props: Props) => {
                                     <MenuItem key={subReason.id} value={subReason.id}>
                                         {subReason.displayName}
                                     </MenuItem>
-                                ))}    
+                                ))}
                             </Select>
                         </FormControl>
                     }
@@ -83,6 +86,7 @@ const TrackingRecommendationForm = (props: Props) => {
                         <AlphanumericTextField
                             name='trackingExtraInfo'
                             key={reason || ''}
+                            disabled={isViewMode}
                             value={extraInfo || ''}
                             onChange={(value) => {
                                 setTrackingRecommendation({
@@ -100,7 +104,7 @@ const TrackingRecommendationForm = (props: Props) => {
 }
 
 interface Props {
-    
+    isViewMode: boolean;
 }
 
 export default TrackingRecommendationForm;

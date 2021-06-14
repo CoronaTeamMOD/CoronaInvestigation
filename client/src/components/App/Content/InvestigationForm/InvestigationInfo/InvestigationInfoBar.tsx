@@ -15,16 +15,16 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setGender } from 'redux/Gender/GenderActionCreators';
 import { CommentContextProvider } from './Context/CommentContext';
 import { landingPageRoute, adminLandingPageRoute } from 'Utils/Routes/Routes';
-import InvestigationInfo , { InvestigationInfoData } from 'models/InvestigationInfo';
+import InvestigationInfo, { InvestigationInfoData } from 'models/InvestigationInfo';
 import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setDatesToInvestigateParams } from 'redux/Investigation/investigationActionCreators';
-import { setInvestigatedPatientId , setIsCurrentlyHospitialized, setIsDeceased, setEndTime, setTrackingRecommendation, setBirthDate } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigatedPatientId, setIsCurrentlyHospitialized, setIsDeceased, setEndTime, setTrackingRecommendation, setBirthDate } from 'redux/Investigation/investigationActionCreators';
 
 import useGroupedInvestigationContacts from '../useGroupedInvestigationContacts';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
 import InvestigationInfoButton from '../../LandingPage/adminLandingPage/investigationsInfo/investigationInfoButton/investigationInfoButton';
 
-const defaultInvestigationStaticInfo : InvestigationInfo = {
+const defaultInvestigationStaticInfo: InvestigationInfo = {
     comment: '',
     startTime: new Date(),
     lastUpdateTime: new Date(),
@@ -35,7 +35,7 @@ const defaultInvestigationStaticInfo : InvestigationInfo = {
     isDeceased: false,
     additionalPhoneNumber: '',
     gender: '',
-    identityType: {id: 0, type: ''},
+    identityType: { id: 0, type: '' },
     isCurrentlyHospitalized: false,
     isInClosedInstitution: false,
     fullName: '',
@@ -58,14 +58,14 @@ const defaultInvestigationStaticInfo : InvestigationInfo = {
 export const LandingPageTimer = 4000;
 
 const unauthorizedErrorMessages: Record<number, string> = {
-    [UserTypeCodes.INVESTIGATOR] : 'החקירה אינה מוקצית אליך',
-    [UserTypeCodes.ADMIN] : 'החקירה אינה נמצאת בנפה שלך',
-    [UserTypeCodes.SUPER_ADMIN] : 'החקירה אינה נמצאת במחוז שלך',
+    [UserTypeCodes.INVESTIGATOR]: 'החקירה אינה מוקצית אליך',
+    [UserTypeCodes.ADMIN]: 'החקירה אינה נמצאת בנפה שלך',
+    [UserTypeCodes.SUPER_ADMIN]: 'החקירה אינה נמצאת במחוז שלך',
 }
 
 const UNAUTHORIZED_ERROR_TEXT = 'אין לך הרשאות לבצע פעולות על החקירה';
 
-const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
+const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode }: Props) => {
 
     let history = useHistory();
     const { alertWarning, alertError } = useCustomSwal();
@@ -77,12 +77,12 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     const lastOpenedEpidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.lastOpenedEpidemiologyNumber);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
 
-    const {setGroupedInvestigationsDetailsAsync} = useGroupedInvestigationContacts();
+    const { setGroupedInvestigationsDetailsAsync } = useGroupedInvestigationContacts();
 
     const unauthorizedResponseInterceptor = axios.interceptors.response.use(response => {
         return response
     }, error => {
-        if(error.response.status === 401) {
+        if (error.response.status === 401) {
             setAuthorized(false);
         }
         return error
@@ -98,7 +98,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     }, []);
 
     React.useEffect(() => {
-        if(!authorized) {
+        if (!authorized) {
             axios.interceptors.response.eject(unauthorizedResponseInterceptor);
             handleUnauthorizedResponse();
         }
@@ -107,48 +107,48 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     React.useEffect(() => {
         const investigationInfoLogger = logger.setup('Fetching investigation Info');
         investigationInfoLogger.info('launching investigation info request', Severity.LOW);
-        if(epidemiologyNumber !== defaultEpidemiologyNumber) { 
+        if (epidemiologyNumber !== defaultEpidemiologyNumber) {
             axios.get('/investigationInfo/staticInfo')
-            .then((result: any) => {
-                if (result && result.data) {
-                    investigationInfoLogger.info('investigation info request was successful', Severity.LOW);
-                    const investigationInfo : InvestigationInfoData = result.data;
-                    setInvestigatedPatientId(investigationInfo.investigatedPatientId);
-                    setIsDeceased(investigationInfo.isDeceased);
-                    setIsCurrentlyHospitialized(investigationInfo.isCurrentlyHospitalized);
-                    setBirthDate(investigationInfo.birthDate ? new Date(investigationInfo.birthDate) : new Date('01.01.1970'));
-                    const gender = investigationInfo.gender;
-                    setGender(gender ? gender : '');
-                    const formattedValidationDate  = truncateDate(investigationInfo.validationDate);
-                    const formattedSymptomsDate = truncateDate(investigationInfo.symptomsStartDate);
-                    const formattedInvestigationInfo = {
-                        ...investigationInfo,
-                        symptomsStartDate: formattedSymptomsDate,
-                        validationDate: formattedValidationDate,
-                        identityType: result.data.identificationType
+                .then((result: any) => {
+                    if (result && result.data) {
+                        investigationInfoLogger.info('investigation info request was successful', Severity.LOW);
+                        const investigationInfo: InvestigationInfoData = result.data;
+                        setInvestigatedPatientId(investigationInfo.investigatedPatientId);
+                        setIsDeceased(investigationInfo.isDeceased);
+                        setIsCurrentlyHospitialized(investigationInfo.isCurrentlyHospitalized);
+                        setBirthDate(investigationInfo.birthDate ? new Date(investigationInfo.birthDate) : new Date('01.01.1970'));
+                        const gender = investigationInfo.gender;
+                        setGender(gender ? gender : '');
+                        const formattedValidationDate = truncateDate(investigationInfo.validationDate);
+                        const formattedSymptomsDate = truncateDate(investigationInfo.symptomsStartDate);
+                        const formattedInvestigationInfo = {
+                            ...investigationInfo,
+                            symptomsStartDate: formattedSymptomsDate,
+                            validationDate: formattedValidationDate,
+                            identityType: result.data.identificationType
+                        }
+                        setDatesToInvestigateParams({
+                            symptomsStartDate: truncateDate(investigationInfo.symptomsStartDate),
+                            doesHaveSymptoms: investigationInfo.doesHaveSymptoms,
+                        },
+                            formattedValidationDate
+                        );
+                        setEndTime(investigationInfo.endTime);
+                        setInvestigationStaticInfo(formattedInvestigationInfo);
+                        setTrackingRecommendation({
+                            reason: investigationInfo.trackingSubReasonByTrackingSubReason?.reasonId ?? 0,
+                            subReason: investigationInfo.trackingSubReasonByTrackingSubReason?.subReasonId,
+                            extraInfo: investigationInfo.trackingExtraInfo
+                        })
                     }
-                    setDatesToInvestigateParams({
-                        symptomsStartDate: truncateDate(investigationInfo.symptomsStartDate), 
-                        doesHaveSymptoms: investigationInfo.doesHaveSymptoms,
-                        }, 
-                        formattedValidationDate
-                    );
-                    setEndTime(investigationInfo.endTime);
-                    setInvestigationStaticInfo(formattedInvestigationInfo);
-                    setTrackingRecommendation({
-                        reason: investigationInfo.trackingSubReasonByTrackingSubReason?.reasonId ?? 0,
-                        subReason: investigationInfo.trackingSubReasonByTrackingSubReason?.subReasonId,
-                        extraInfo: investigationInfo.trackingExtraInfo 
-                    })
-                }
-                else {
-                    investigationInfoLogger.warn('got status 200 but wrong data', Severity.HIGH);
-                    handleInvalidEntrance();
-                }
-            }).catch((error) => {
-                investigationInfoLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-                handleInvalidEntrance()
-            });
+                    else {
+                        investigationInfoLogger.warn('got status 200 but wrong data', Severity.HIGH);
+                        handleInvalidEntrance();
+                    }
+                }).catch((error) => {
+                    investigationInfoLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+                    handleInvalidEntrance()
+                });
             setGroupedInvestigationsDetailsAsync();
         }
     }, [epidemiologyNumber]);
@@ -164,7 +164,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
 
     const handleUnauthorizedResponse = () => {
         const errorText = `${UNAUTHORIZED_ERROR_TEXT}: ${unauthorizedErrorMessages[userType]}. הינך מועבר/ת לעמוד הראשי`
-    
+
         alertError(errorText, {
             showConfirmButton: false
         });
@@ -173,14 +173,15 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     };
 
     const updateComment = (comment: string | null) => {
-        setInvestigationStaticInfo(prevData => ({...prevData, comment}));
+        setInvestigationStaticInfo(prevData => ({ ...prevData, comment }));
     }
 
     return (
-        <CommentContextProvider value={{comment:investigationStaticInfo.comment, setComment:updateComment}}>
+        <CommentContextProvider value={{ comment: investigationStaticInfo.comment, setComment: updateComment }}>
             <InvestigatedPersonInfo
                 investigationStaticInfo={investigationStaticInfo}
                 currentTab={currentTab}
+                isViewMode={isViewMode}
                 epedemioligyNumber={epidemiologyNumber}
             />
             <InvestigationMetadata
@@ -192,6 +193,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
 
 interface Props {
     currentTab: number;
+    isViewMode: boolean;
 };
 
 export default InvestigationInfoBar;

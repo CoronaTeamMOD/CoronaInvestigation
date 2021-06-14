@@ -21,7 +21,7 @@ export const BackFromAbroad = (props: Props) => {
     const { control, watch } = useFormContext();
     const { fieldContainer } = useFormStyles();
     const { wereFlights, onExposuresStatusChange, exposures, handleChangeExposureDataAndFlightsField,
-        onExposureAdded, disableFlightAddition, onExposureDeleted
+        onExposureAdded, disableFlightAddition, onExposureDeleted,isViewMode
     } = props;
     const classes = useStyles();
     const watchWereFlights = watch(fieldsNames.wereFlights, wereFlights);
@@ -44,6 +44,7 @@ export const BackFromAbroad = (props: Props) => {
                                         onExposuresStatusChange(fieldsNames.wereFlights, value);
                                     }
                                 }}
+                                disabled={isViewMode}
                             />
                         );
                     }}
@@ -65,11 +66,12 @@ export const BackFromAbroad = (props: Props) => {
                                     handleChangeExposureDataAndFlightsField(index, fieldName, value)
                                 }
                                 onExposureDeleted={() => onExposureDeleted(index)}
+                                isViewMode={isViewMode}
                             />
                             <Divider />
                         </>
                     )}
-                    <IconButton test-id='addFlight' onClick={() => onExposureAdded(false, true)} disabled={disableFlightAddition}>
+                    <IconButton test-id='addFlight' onClick={() => onExposureAdded(false, true)} disabled={disableFlightAddition || isViewMode}>
                         <AddCircle color={disableFlightAddition ? 'disabled' : 'primary'} />
                     </IconButton>
                     <Typography variant='caption'>{addFlightButton}</Typography>
@@ -87,4 +89,5 @@ interface Props {
     onExposureAdded: (wasConfirmedExposure: boolean, wasAbroad: boolean) => void;
     disableFlightAddition: boolean;
     onExposureDeleted: (index: number) => void;
+    isViewMode:boolean;
 };

@@ -27,7 +27,7 @@ import getColorByGroupId from 'Utils/GroupedInvestigations/getColorByGroupId';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setComplexReasons } from 'redux/ComplexReasons/complexReasonsActionCreators';
-import { setComplexReasonsId } from 'redux/Investigation/investigationActionCreators';
+import { setComplexReasonsId, setIsViewMode, setViewModeClicked } from 'redux/Investigation/investigationActionCreators';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
 import AllocatedInvestigator from 'models/InvestigationTable/AllocateInvestigatorDialog/AllocatedInvestigator';
@@ -49,7 +49,7 @@ export const createRowData = (
     epidemiologyNumber: number,
     validationDate: string,
     isComplex: boolean,
-    complexityReasonsId: (number|null)[],
+    complexityReasonsId: (number | null)[],
     priority: number,
     mainStatus: InvestigationMainStatus,
     subStatus: string,
@@ -138,19 +138,19 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const { alertError } = useCustomSwal();
     const history = useHistory<HistoryState>();
 
-    const { statusFilter: historyStatusFilter = [], 
-            subStatusFilter: historySubStatusFilter = [],
-            deskFilter: historyDeskFilter = [], 
-            timeRangeFilter: historyTimeRange = defaultTimeRange,
-            inactiveUserFilter : historyInactiveUserFilter = false, 
-            unassignedUserFilter : historyUnassignedUserFilter = false,
-            updateDateFilter : historyUpdateDateFilter = '',
-            nonContactFilter : historyNonContactFilter = false,
-            isAdminLandingRedirect : historyisAdminLandingRedirect = false,
-            filterTitle} = useMemo(() => {
-        const { location: { state } } = history;
-        return state || {};
-    }, []);
+    const { statusFilter: historyStatusFilter = [],
+        subStatusFilter: historySubStatusFilter = [],
+        deskFilter: historyDeskFilter = [],
+        timeRangeFilter: historyTimeRange = defaultTimeRange,
+        inactiveUserFilter: historyInactiveUserFilter = false,
+        unassignedUserFilter: historyUnassignedUserFilter = false,
+        updateDateFilter: historyUpdateDateFilter = '',
+        nonContactFilter: historyNonContactFilter = false,
+        isAdminLandingRedirect: historyisAdminLandingRedirect = false,
+        filterTitle } = useMemo(() => {
+            const { location: { state } } = history;
+            return state || {};
+        }, []);
 
     const [rows, setRows] = useState<InvestigationTableRow[]>([]);
     const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
@@ -189,7 +189,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: nonContactFilterToSet && Object.values(nonContactFilterToSet)[0],
         }
     };
-    
+
     const [filterRules, setFitlerRules] = useState<any>(getFilterRules());
     const [isBadgeInVisible, setIsBadgeInVisible] = useState<boolean>(true);
 
@@ -201,6 +201,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
     const windowTabsBroadcastChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
+    const viewModeClicked = useSelector<StoreStateType, boolean>(state => state.investigation.viewModeClicked);
 
     const changeDeskFilter = (desks: Desk[]) => {
         const desksIds = desks.map(desk => desk.id);
@@ -216,7 +217,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         handleFilterChange(filterCreators.TIME_RANGE(timeRangeFilter))
         setCurrentPage(defaultPage);
     };
-    
+
     const changeUpdateDateFilter = (dateStringFilter: string) => {
         updateFilterHistory('updateDateFilter', dateStringFilter);
         setUpdateDateFilter(dateStringFilter);
@@ -232,9 +233,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const changeSearchFilter = (searchQuery: string) => {
-        handleFilterChange(filterCreators.SEARCH_BAR(searchQuery)) 
+        handleFilterChange(filterCreators.SEARCH_BAR(searchQuery))
     };
-    
+
     const changeStatusFilter = (statuses: InvestigationMainStatus[]) => {
         const statusesIds = statuses.map(status => status.id);
         updateFilterHistory('statusFilter', statusesIds);
@@ -250,7 +251,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         handleFilterChange(filterCreators.SUB_STATUS(subStatusesIds));
         setCurrentPage(defaultPage);
     };
-    
+
     const changeUnassginedUserFilter = (value: boolean) => {
         updateFilterHistory('unassignedUserFilter', value);
         setUnassignedUserFilter(value);
@@ -328,7 +329,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     investigationStatusesLogger.info('The investigations complexity reasons were fetched successfully', Severity.LOW);
-                    const allComplexReasons: (number|null)[] = (result.data).map((reason: { description: any; }) => reason.description)
+                    const allComplexReasons: (number | null)[] = (result.data).map((reason: { description: any; }) => reason.description)
                     setComplexReasons(allComplexReasons)
                 } else {
                     investigationStatusesLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
@@ -380,7 +381,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const handleFilterChange = (filterBy: () => any) => {
-        let filterRulesToSet = {...filterRules};
+        let filterRulesToSet = { ...filterRules };
         if (Object.values(filterBy)[0] !== null) {
             filterRulesToSet = {
                 ...filterRulesToSet,
@@ -399,12 +400,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             orderBy,
             size: rowsPerPage,
             currentPage,
-            filterRules: Object.values(filterRules).reduce((obj, item) => Object.assign(obj, item) , {}),
+            filterRules: Object.values(filterRules).reduce((obj, item) => Object.assign(obj, item), {}),
         };
 
         if (userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN) {
             investigationsLogger.info('user is admin so landingPage/groupInvestigations route is chosen', Severity.LOW);
-            return axios.post('landingPage/groupInvestigations', {...requestData, county: displayedCounty})
+            return axios.post('landingPage/groupInvestigations', { ...requestData, county: displayedCounty })
         }
 
         investigationsLogger.info('user isnt admin so landingPage/investigations route is chosen', Severity.LOW);
@@ -413,7 +414,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const sortUsersByAvailability = (firstUser: User, secondUser: User) => {
         return (
-            firstUser.newInvestigationsCount - secondUser.newInvestigationsCount 
+            firstUser.newInvestigationsCount - secondUser.newInvestigationsCount
             || firstUser.activeInvestigationsCount - secondUser.activeInvestigationsCount
         )
     };
@@ -439,13 +440,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 countyUsersLogger.info('fetched all the users successfully', Severity.LOW);
             } else {
                 countyUsersLogger.warn('the connected admin doesnt have group users', Severity.MEDIUM);
-            }                    
+            }
         } catch (err) {
             countyUsersLogger.error(err, Severity.HIGH);
             alertError('לא ניתן היה לשלוף חוקרים');
         };
         const sortedCountyUsers = new Map(Array.from(countyUsers.entries())
-        .sort((fisrtUser, secondUser) => sortUsersByAvailability(fisrtUser[1], secondUser[1])));
+            .sort((fisrtUser, secondUser) => sortUsersByAvailability(fisrtUser[1], secondUser[1])));
         return sortedCountyUsers;
     };
 
@@ -500,7 +501,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     '';
                                 const subOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.displayName;
                                 const parentOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.parentOccupation;
-                                const isInInstitute  =  investigation.investigatedPatientByInvestigatedPatientId?.investigatedPatientRoleByRole?.displayName === 'שוהה במוסד'
+                                const isInInstitute = investigation.investigatedPatientByInvestigatedPatientId?.investigatedPatientRoleByRole?.displayName === 'שוהה במוסד'
                                 return createRowData(
                                     investigation.epidemiologyNumber,
                                     covidPatient.validationDate,
@@ -573,21 +574,21 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }, [displayedCounty, userType]);
 
     const onInvestigationRowClick = async (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
-        const epidemiologyNum :number = investigationRow.epidemiologyNumber
+        const epidemiologyNum: number = investigationRow.epidemiologyNumber
         const getComplexityReasonClickLogger = logger.setupVerbose({
             workflow: 'get Complexity Reason when opening an investigation',
             investigation: investigationRow.epidemiologyNumber,
             user: user.id
         });
-        await axios.get('/investigationInfo/getComplexityReason/'+ epidemiologyNum)
+        await axios.get('/investigationInfo/getComplexityReason/' + epidemiologyNum)
             .then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     setComplexReasonsId(result.data)
                     getComplexityReasonClickLogger.info('the chosen investigation have complexity reasons', Severity.LOW);
-                } else { 
-                    setComplexReasonsId([]) 
+                } else {
+                    setComplexReasonsId([])
                     getComplexityReasonClickLogger.info('the chosen investigation dont have complexity reasons', Severity.LOW);
-                    }
+                }
             })
             .catch((errorMessage) => { getComplexityReasonClickLogger.error(errorMessage, Severity.HIGH); })
 
@@ -671,9 +672,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.age]: row.age,
             [TableHeadersNames.city]: row.city,
             [TableHeadersNames.subOccupation]: row.subOccupation,
-            [TableHeadersNames.investigatorName]: row.investigator.authorityName ? 
-                                                    row.investigator.userName + ' - ' + row.investigator.authorityName : 
-                                                    row.investigator.userName,
+            [TableHeadersNames.investigatorName]: row.investigator.authorityName ?
+                row.investigator.userName + ' - ' + row.investigator.authorityName :
+                row.investigator.userName,
             [investigatorIdPropertyName]: row.investigator.id,
             [TableHeadersNames.investigationStatus]: row.mainStatus,
             [TableHeadersNames.investigationSubStatus]: row.subStatus,
@@ -697,22 +698,22 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const getInvestigationsOldValues = (investigations: InvestigationTableRow[], key: TableKeys, isCounty?: boolean) => (
         investigations
-        .map(investigation => `${investigation.epidemiologyNumber}: ${isCounty ? investigation.county.id : convertToIndexedRow(investigation)[key as TableHeadersNames]}`)
-        .join(', ')
+            .map(investigation => `${investigation.epidemiologyNumber}: ${isCounty ? investigation.county.id : convertToIndexedRow(investigation)[key as TableHeadersNames]}`)
+            .join(', ')
     );
 
     const logInvestigationTransfer = (epidemiologyNumbers: number[], key: TableKeys, newValue: number | string, reason?: string) => {
-        const investigations =  rows.filter(investigation => epidemiologyNumbers.includes(investigation.epidemiologyNumber))
-        const investigationsPreviousValues = getInvestigationsOldValues(investigations, key, key  === HiddenTableKeys.county);
+        const investigations = rows.filter(investigation => epidemiologyNumbers.includes(investigation.epidemiologyNumber))
+        const investigationsPreviousValues = getInvestigationsOldValues(investigations, key, key === HiddenTableKeys.county);
         return `launching request to transfer the investigations ${key} to ${newValue} from their old values: {${investigationsPreviousValues}} ${reason ? `due to ${reason}` : ''}`;
     };
 
     const logGroupTransfer = (groupIds: string[], key: TableKeys, newValue: number | string, reason?: string) => {
-        const groups =  Array.from(allGroupedInvestigations.keys()).filter(groupId => groupIds.includes(groupId))
+        const groups = Array.from(allGroupedInvestigations.keys()).filter(groupId => groupIds.includes(groupId))
         const investigationsPreviousValues = groups
-        .map(groupId => `group ${groupId}- investigations:{${getInvestigationsOldValues
-            (allGroupedInvestigations.get(groupId) as InvestigationTableRow[], key, key  === HiddenTableKeys.county)}}`)
-        .join(', ');
+            .map(groupId => `group ${groupId}- investigations:{${getInvestigationsOldValues
+                (allGroupedInvestigations.get(groupId) as InvestigationTableRow[], key, key === HiddenTableKeys.county)}}`)
+            .join(', ');
         return `launching request to transfer the groups investigations ${key} to ${newValue} from their old values: ${investigationsPreviousValues} ${reason ? `due to ${reason}` : ''}`;
     };
 
@@ -804,7 +805,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         await fetchInvestigationsByGroupId(groupId);
                     })
                 );
-            };            
+            };
             fetchTableData();
         } catch (error) {
             changeCountyLogger.error(`couldn't change the county for groups ${groupIds} due to ${error}`, Severity.HIGH);
@@ -859,9 +860,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             classNames.push(classes.columnBorder);
         }
         else
-        if (cellKey === TableHeadersNames.priority) {
-            classNames.push(classes.priorityTableCell);
-        }
+            if (cellKey === TableHeadersNames.priority) {
+                classNames.push(classes.priorityTableCell);
+            }
 
         return classNames;
     };
@@ -948,7 +949,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             '';
                         const subOccupation = investigation.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.displayName;
                         const parentOccupation = investigation.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.parentOccupation;
-                        const isInInstitute  =  investigation.investigatedPatientByInvestigatedPatientId?.investigatedPatientRoleByRole?.displayName === 'שוהה במוסד'
+                        const isInInstitute = investigation.investigatedPatientByInvestigatedPatientId?.investigatedPatientRoleByRole?.displayName === 'שוהה במוסד'
                         return createRowData(
                             investigation.epidemiologyNumber,
                             covidPatient.validationDate,
@@ -1012,7 +1013,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const fetchAllGroupedInvestigations = async () => {
         const allGroupIds = new Set<string>();
         rows.forEach(row => {
-            const {groupId} = row;
+            const { groupId } = row;
             groupId && allGroupIds.add(groupId)
         });
         const allGroupIdsArr = Array.from(allGroupIds);
@@ -1061,7 +1062,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeInactiveUserFilter,
         inactiveUserFilter,
         fetchAllCountyUsers,
-        tableTitle, 
+        tableTitle,
         timeRangeFilter,
         isBadgeInVisible,
         nonContactFilter,

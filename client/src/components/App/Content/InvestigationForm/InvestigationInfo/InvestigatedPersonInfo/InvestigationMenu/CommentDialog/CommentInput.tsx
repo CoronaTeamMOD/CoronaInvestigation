@@ -20,7 +20,7 @@ const stringAlphabet = yup
 const commentFieldName = 'comment';
 const commentSchema = yup.object().shape({ [commentFieldName]: yup.string() });
 
-const CommentInput = ({ commentInput, handleInput }: Props) => {
+const CommentInput = ({ commentInput, handleInput, isViewMode }: Props) => {
     const methods = useForm({
         mode: 'all',
         defaultValues: { [commentFieldName]: initialComment },
@@ -34,6 +34,7 @@ const CommentInput = ({ commentInput, handleInput }: Props) => {
                 multiline fullWidth
                 validationSchema={stringAlphabet}
                 placeholder={COMMENT_PLACEHOLDER}
+                disabled={isViewMode}
                 value={commentInput} onChange={handleInput}
             />
         </FormProvider>
@@ -43,6 +44,7 @@ const CommentInput = ({ commentInput, handleInput }: Props) => {
 interface Props {
     commentInput: string | null;
     handleInput: (input: string) => void;
+    isViewMode: boolean;
 };
 
 export default CommentInput;
