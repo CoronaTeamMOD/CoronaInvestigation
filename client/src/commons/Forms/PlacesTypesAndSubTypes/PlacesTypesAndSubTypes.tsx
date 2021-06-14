@@ -17,7 +17,7 @@ const defaultSubType = { displayName: '', id: -1 };
 
 const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: PlacesTypesAndSubTypesProps): JSX.Element => {
 
-    const { placeTypeName, placeSubTypeName, onPlaceTypeChange, onPlaceSubTypeChange } = props;
+    const { placeTypeName, placeSubTypeName, onPlaceTypeChange, onPlaceSubTypeChange,isViewMode } = props;
     const { control, errors, watch } = useFormContext();
 
     const formClasses = useFormStyles();
@@ -119,6 +119,7 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                                                 test-id='placeType'
                                             />
                                         }
+                                        disabled={isViewMode}
                                     />
                                 )}
                             />
@@ -162,6 +163,7 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                                                         test-id='placeSubType'
                                                     />
                                                 }
+                                                disabled={isViewMode}
                                             />
                                             :
                                             <>
@@ -189,4 +191,5 @@ export interface PlacesTypesAndSubTypesProps {
     onPlaceTypeChange: (newPlaceType: string) => void;
     onPlaceSubTypeChange: (placeSubType: PlaceSubType | null) => void;
     size: FormSize;
+    isViewMode?:boolean;
 };

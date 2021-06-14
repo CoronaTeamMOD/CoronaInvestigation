@@ -18,6 +18,7 @@ import intersectionsRoute from './IntersectionsRoute/mainRoute';
 import personalDetailsRoute from './PersonalDetailsRoute/mainRoute';
 import clinicalDetailsRoute from './ClinicalDetailsRoute/mainRoute';
 import groupedInvestigationsRoute from './GroupedInvestigationsRoute/mainRoute';
+import rulerRoute from './RulerRoute/mainRoutes';
 
 const clientToDBRouter = Router();
 clientToDBRouter.use(authMiddleware);
@@ -38,5 +39,6 @@ clientToDBRouter.use('/contactedPeople', contactedPeopleRoute);
 clientToDBRouter.use('/groupedInvestigations', groupedInvestigationsRoute);
 clientToDBRouter.use('/scripts', scriptsRoute);
 clientToDBRouter.use('/airlines', airlinesRoute);
+clientToDBRouter.use('/ruler', rulerRoute);
 
 export default clientToDBRouter;

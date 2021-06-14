@@ -15,6 +15,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
         contactStatuses,
         saveContact,
         parsePerson,
+        isViewMode
     } = props;
 
     return (
@@ -26,6 +27,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                     contactStatuses={contactStatuses}
                     saveContact={saveContact}
                     parsePerson={parsePerson}
+                    isViewMode={isViewMode}
                 />
                 <Divider variant='fullWidth' orientation='vertical' flexItem />
             </Grid>
@@ -51,4 +53,5 @@ interface Props {
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;
     parsePerson: (person: GroupedInteractedContact, index: number) => InteractedContact;
+    isViewMode?: boolean;
 }

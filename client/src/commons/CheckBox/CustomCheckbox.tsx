@@ -3,7 +3,7 @@ import { FormControlLabel, Checkbox, CheckboxProps } from '@material-ui/core';
 
 const CustomCheckbox: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { checkboxElements, checkboxesClassWrapper } = props;
+    const { checkboxElements, checkboxesClassWrapper, isViewMode } = props;
 
     return (
         <div className={checkboxesClassWrapper}>
@@ -18,6 +18,7 @@ const CustomCheckbox: React.FC<Props> = (props: Props): JSX.Element => {
                                 size='small'
                                 name='checked'
                                 color='primary'
+                                disabled={isViewMode}
                                 {...rest}
                             />
                         }
@@ -39,4 +40,5 @@ interface Props {
     checkboxElements: CheckboxElement[];
     checkboxesClassWrapper?: string;
     testId?: string;
+    isViewMode?: boolean;
 };

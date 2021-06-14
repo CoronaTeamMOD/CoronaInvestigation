@@ -31,4 +31,3 @@ export interface useContactQuestioningOutcome {
         index: number
     ) => InteractedContact;
     getRulerApiData: (parameterns: JSON) => void;
-}

@@ -16,7 +16,7 @@ import useContactQuestioning from './useContactQuestioning';
 import InteractedContactAccordion from './InteractedContactAccordion';
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 
-const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
+const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Element => {
 
     const [allContactedInteractions, setAllContactedInteractions] = useState<GroupedInteractedContact[]>([]);
     const [familyRelationships, setFamilyRelationships] = useState<FamilyRelationship[]>([]);
@@ -32,8 +32,8 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
         resolver: yupResolver(ContactQuestioningSchema),
     });
 
-    const { getValues , trigger } = methods;
-    
+    const { getValues, trigger } = methods;
+
     const {
         onSubmit,
         parsePerson,
@@ -41,7 +41,8 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
         loadInteractedContacts,
         loadFamilyRelationships,
         loadContactStatuses,
-        getRulerApiData
+        getRulerApiData,
+        getRulerApiDataFromServer
     } = useContactQuestioning({
         id,
         setAllContactedInteractions,
@@ -58,10 +59,43 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
     }, []);
 
     useEffect(() => {
-        if(allContactedInteractions){
+        if (allContactedInteractions) {
             trigger();
         }
-    } , [allContactedInteractions]);
+    }, [allContactedInteractions]);
+
+    const params: any =
+    {
+        "RulerCheckColorRequest": {
+            "MOHHeader": {
+                "ActivationID": "1",
+                "CustID": "23",
+                "AppID": "130",
+                "SiteID": "2",
+                "InterfaceID": "Ruler"
+            },
+            "Ids": [{
+                "IdType": 3,
+                "IDnum": "??2563621",
+                "DOB": "24011971",
+                "Tel": "0542987778"
+            },
+            {
+                "IdType": 2,
+                "IDnum": ".T0901828",
+                "DOB": "24011971",
+                "Tel": "0542987778"
+            },
+            {
+                "IdType": 2,
+                "IDnum": "?0901788",
+                "DOB": "24011971",
+                "Tel": "0542987778"
+            }
+            ]
+        }
+    }
+    const parameters: JSON = params;
 
     const params: any = 
     {
@@ -101,7 +135,7 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
             <FormProvider {...methods}>
                 <form
                     id={`form-${id}`}
-                    onSubmit={(e : React.FormEvent) => {onSubmit(e)}}
+                    onSubmit={(e: React.FormEvent) => { onSubmit(e) }}
                 >
                     <FormTitle
                         title={`טופס תשאול מגעים (${allContactedInteractions.length})`}
@@ -123,12 +157,14 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                             isFamilyContact={isFamilyContact}
                                             familyRelationships={familyRelationships}
                                             shouldDisable={shouldDisable}
+                                            isViewMode={isViewMode}
                                         />
                                     </Grid>
                                 );
                             }
                         )}
-                        <span onClick={()=>{getRulerApiData(parameters)}}>לחץ להדפסת נתוני הרמזור</span>
+                        <div onClick={()=>{getRulerApiData(parameters)}}>לחץ להדפסת נתוני הרמזור - קליינט</div>
+                        <div onClick={()=>{console.log('ruler response: ',getRulerApiDataFromServer())}}>לחץ להדפסת נתוני הרמזור - סרבר</div>
                     </Grid>
                 </form>
             </FormProvider>
@@ -138,6 +174,7 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
 interface Props {
     id: number;
+    isViewMode?: boolean;
 };
 
 export default ContactQuestioning;

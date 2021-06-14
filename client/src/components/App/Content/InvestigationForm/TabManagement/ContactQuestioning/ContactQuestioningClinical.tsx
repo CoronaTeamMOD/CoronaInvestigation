@@ -28,38 +28,38 @@ const emptyFamilyRelationship: FamilyRelationship = {
 
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { index, familyRelationships, interactedContact, isFamilyContact, 
-            control, watch, formValues, formErrors, trigger, contactStatus } = props;
+    const { index, familyRelationships, interactedContact, isFamilyContact,
+        control, watch, formValues, formErrors, trigger, contactStatus, isViewMode } = props;
 
     const classes = useStyles();
 
     const { shouldDisableContact } = useStatusUtils();
 
-    const shouldDisableIdByReopen = interactedContact.creationTime 
-        ? shouldDisableContact(interactedContact.creationTime) 
+    const shouldDisableIdByReopen = interactedContact.creationTime
+        ? shouldDisableContact(interactedContact.creationTime)
         : false;
 
     const { alertError, alertWarning } = useCustomSwal();
 
     const { isFieldDisabled, validateContact } = useContactFields(formValues.contactStatus);
-    
+
     const daysToIsolate = 14;
     const isolationEndDate = addDays(new Date(interactedContact.contactDate), daysToIsolate);
     const formattedIsolationEndDate = format(new Date(isolationEndDate), 'dd/MM/yyyy');
 
-    const isolationAddressErrors = formErrors && (formErrors[InteractedContactFields.ISOLATION_ADDRESS] as DeepMap<FlattenedDBAddress , FieldError>);
+    const isolationAddressErrors = formErrors && (formErrors[InteractedContactFields.ISOLATION_ADDRESS] as DeepMap<FlattenedDBAddress, FieldError>);
 
     const addressFormFields: AddressFormFields = {
         cityField: {
-            name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`, 
-            className: classes.addressTextField, 
+            name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`,
+            className: classes.addressTextField,
             testId: 'contactedPersonCity',
             defaultValue: interactedContact.isolationAddress?.city?.id
         },
         streetField: {
-            name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`, 
+            name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`,
             className: classes.addressTextField,
-            defaultValue: interactedContact.isolationAddress?.street?.id  || null
+            defaultValue: interactedContact.isolationAddress?.street?.id || null
         },
         houseNumberField: {
             name: `form[${index}].${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`,
@@ -86,7 +86,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     };
 
     const isIdAndPhoneNumValid = (): boolean => {
-        const isDoesNeedIsolationIsTheLastFormError = formErrors && Object.keys(formErrors).length===1 && Object.keys(formErrors)[0]==='doesNeedIsolation'
+        const isDoesNeedIsolationIsTheLastFormError = formErrors && Object.keys(formErrors).length === 1 && Object.keys(formErrors)[0] === 'doesNeedIsolation'
         if (formErrors && !isDoesNeedIsolationIsTheLastFormError) {
             return Boolean(formErrors.id) || Boolean(formErrors.phoneNumber)
         }
@@ -97,7 +97,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const watchStatus = watch(statusFieldName);
 
     useEffect(() => {
-        if (watchStatus || contactStatus){
+        if (watchStatus || contactStatus) {
             trigger();
         }
     }, [watchStatus, contactStatus]);
@@ -127,11 +127,11 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         }
     };
 
-    const handelOnChangeDoesNeedIsolation = (event:any, booleanValue: boolean, onChange: (...event: any[]) => void) => {
+    const handelOnChangeDoesNeedIsolation = (event: any, booleanValue: boolean, onChange: (...event: any[]) => void) => {
         if (booleanValue === false || isUnreachable || isUncooperative) {
             onChange(booleanValue)
         }
-        
+
         if (booleanValue === true && !isUncooperative && !isUnreachable) {
             handleIsolation(booleanValue, onChange)
         }
@@ -146,18 +146,18 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
 
                 <Grid item container>
-                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.FAMILY_RELATIONSHIP} className={classes.fieldName}/>
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.FAMILY_RELATIONSHIP} className={classes.fieldName} />
                     <Grid item xs={5}>
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.FAMILY_RELATIONSHIP}`}
-                            defaultValue={interactedContact.familyRelationship}                                            
+                            defaultValue={interactedContact.familyRelationship}
                             render={(props) => {
                                 return (
                                     <FormControl variant='outlined' fullWidth>
                                         <Select
                                             {...props}
-                                            disabled={isFieldDisabled || isFamilyContact}
+                                            disabled={isFieldDisabled || isFamilyContact || isViewMode}
                                             test-id='familyRelationshipSelect'
                                             placeholder='קרבה משפחתית'
                                             onChange={(event) => {
@@ -183,36 +183,38 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
 
                 <Grid container item>
-                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.RELATIONSHIP} className={classes.fieldName}/>
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.RELATIONSHIP} className={classes.fieldName} />
                     <Grid item xs={5}>
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.RELATIONSHIP}`}
                             defaultValue={interactedContact.relationship}
-                            render={(props) => { return (
-                                <FormControl variant='outlined' fullWidth>
-                                    <HebrewTextField
-                                        {...props}
-                                        error={formErrors && formErrors[InteractedContactFields.ADDITIONAL_PHONE_NUMBER]?.message}
-                                        disabled={isFieldDisabled}
-                                        testId='relationship'
-                                        onChange={(newValue: string) => {
-                                            props.onChange(newValue)
-                                        }}
-                                        placeholder='קשר'
-                                    />
-                                </FormControl>
-                            )}}
+                            render={(props) => {
+                                return (
+                                    <FormControl variant='outlined' fullWidth>
+                                        <HebrewTextField
+                                            {...props}
+                                            error={formErrors && formErrors[InteractedContactFields.ADDITIONAL_PHONE_NUMBER]?.message}
+                                            disabled={isFieldDisabled || isViewMode}
+                                            testId='relationship'
+                                            onChange={(newValue: string) => {
+                                                props.onChange(newValue)
+                                            }}
+                                            placeholder='קשר'
+                                        />
+                                    </FormControl>
+                                )
+                            }}
                         />
                     </Grid>
                 </Grid>
 
                 <Grid container item>
-                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.ISOLATION_PLACE}/>
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.ISOLATION_PLACE} />
                     <Grid container item xs={5}>
                         <AddressForm
                             unsized={true}
-                            disabled={isFieldDisabled}
+                            disabled={isFieldDisabled ||isViewMode}
                             control={control}
                             watch={watch}
                             errors={isolationAddressErrors}
@@ -220,10 +222,10 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         />
                     </Grid>
                 </Grid>
-                
+
                 <Grid item>
                     <Grid container>
-                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_NEED_HELP_IN_ISOLATION} className={classes.fieldName}/>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_NEED_HELP_IN_ISOLATION} className={classes.fieldName} />
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION}`}
@@ -232,14 +234,14 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                 return (
                                     <Toggle
                                         {...props}
-                                        disabled={isFieldDisabled}
+                                        disabled={isFieldDisabled||isViewMode}
                                         test-id='doesNeedHelpInIsolation'
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
                                             }
                                         }
-                                    } />
+                                        } />
                                 )
                             }}
                         />
@@ -251,7 +253,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
                 <Grid item>
                     <Grid container>
-                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_NEED_ISOLATION} className={classes.fieldName}/>
+                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_NEED_ISOLATION} className={classes.fieldName} />
                         <Controller
                             control={control}
                             name={`form[${index}].${InteractedContactFields.DOES_NEED_ISOLATION}`}
@@ -260,7 +262,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                 return (
                                     <Toggle
                                         {...props}
-                                        disabled={isFieldDisabled || (shouldDisableIdByReopen && interactedContact.doesNeedIsolation === true)}
+                                        disabled={isFieldDisabled || (shouldDisableIdByReopen && interactedContact.doesNeedIsolation === true)||isViewMode}
                                         test-id='doesNeedIsolation'
                                         onChange={(event, booleanValue) => handelOnChangeDoesNeedIsolation(event, booleanValue, props.onChange)}
                                     />
@@ -274,7 +276,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
 
                 <Grid container item>
-                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.ISOLATION_END_DATE} className={classes.fieldName}/>
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.ISOLATION_END_DATE} className={classes.fieldName} />
                     <Grid item xs={5}>
                         <FormControl variant='outlined' fullWidth>
                             <AlphanumericTextField
@@ -307,4 +309,5 @@ interface Props {
     formErrors?: DeepMap<InteractedContact, FieldError> | any;
     trigger: () => {};
     contactStatus: number;
+    isViewMode?: boolean;
 };
