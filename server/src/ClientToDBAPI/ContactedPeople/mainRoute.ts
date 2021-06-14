@@ -72,7 +72,7 @@ ContactedPeopleRoute.post('/allContacts/:minimalDateToFilter', handleInvestigati
             allContactsLogger.info(validDBResponseLog, Severity.LOW);
             const allContactedPersons = result.data.allContactedPeople.nodes;
             const convertedContacts = allContactedPersons.map((contact: any) => ({...contact, ...contact.involvementReason, ...contact.personByPersonInfo.personContactDetailByPersonInfo}));
-            response.send(convertedContacts);
+            response.send({convertedContacts,total:result.data.allContactedPeople.totalCount});
         })
         .catch(error => {
             allContactsLogger.error(invalidDBResponseLog(error), Severity.HIGH);

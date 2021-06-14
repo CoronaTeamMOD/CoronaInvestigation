@@ -6,6 +6,7 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!, $minimalDateToFi
   allContactedPeople(filter: {contactEventByContactEvent: {investigationId: {equalTo: $investigationId}, startTime: {greaterThanOrEqualTo: $minimalDateToFilter}}},
     orderBy: [INVOLVED_CONTACT_BY_INVOLVED_CONTACT_ID__INVOLVEMENT_REASON_ASC, PERSON_BY_PERSON_INFO__PHONE_NUMBER_ASC],
     ,offset: $offset, first: $size) {
+    totalCount
     nodes {
       personInfo
       personByPersonInfo {

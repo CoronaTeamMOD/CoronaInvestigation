@@ -16,6 +16,8 @@ import useContactQuestioning from './useContactQuestioning';
 import InteractedContactAccordion from './InteractedContactAccordion';
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 
+import {SIZE_OF_CONTACTS} from './useContactQuestioning';
+
 const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
     const [allContactedInteractions, setAllContactedInteractions] = useState<GroupedInteractedContact[]>([]);
@@ -23,6 +25,7 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const [contactStatuses, setContactStatuses] = useState<ContactStatus[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [isMore, setIsMore] = useState<boolean>(true);
+    const [contactsLength, setContactsLength] = useState<number>(0);
 
     const classes = useStyles();
 
@@ -51,7 +54,9 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
         setContactStatuses,
         getValues,
         currentPage,
-        setIsMore
+        setIsMore,
+        contactsLength, 
+        setContactsLength
     });
 
     useEffect(() => {
@@ -76,6 +81,10 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     <FormTitle
                         title={`טופס תשאול מגעים (${allContactedInteractions.length})`}
                     />
+                    <span className={classes.numOfContacts}>מוצגים {Math.min(SIZE_OF_CONTACTS*currentPage,contactsLength)} מתוך {contactsLength} מגעים 
+                        <a className={classes.loadMore} hidden={!isMore} onClick={() => setCurrentPage(currentPage+1)}> טען עוד</a>
+                    </span>
+
                     <Grid container className={classes.accordionContainer}>
                         {allContactedInteractions.map(
                             (interactedContact, index) => {
@@ -97,12 +106,7 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                     </Grid>
                                 );
                             }
-                        )}
-                        <div hidden={!isMore} >
-                            <Button onClick={() => setCurrentPage(currentPage+1)}>
-                                refresh
-                            </Button>
-                        </div>        
+                        )}    
                     </Grid>
                 </form>
             </FormProvider>

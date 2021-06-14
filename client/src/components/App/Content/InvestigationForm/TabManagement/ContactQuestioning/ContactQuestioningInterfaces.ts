@@ -16,6 +16,8 @@ export interface useContactQuestioningParameters {
     getValues: () => FormInputs;
     currentPage: number;
     setIsMore: React.Dispatch<React.SetStateAction<boolean>>;
+    contactsLength: number;
+    setContactsLength: React.Dispatch<React.SetStateAction<number>>;
 }
 export interface useContactQuestioningOutcome {
     saveContact: (interactedContact: InteractedContact) => boolean;

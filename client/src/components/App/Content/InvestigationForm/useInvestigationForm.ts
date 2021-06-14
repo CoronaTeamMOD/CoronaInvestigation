@@ -53,7 +53,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         axios.post(`/contactedPeople/allContacts/${formattedMinimalDate}`)
         .then((result: any) => {
             tabShowLogger.info('amount of contacts request was successful', Severity.LOW);
-            setAreThereContacts(result?.data.length > 0);
+            setAreThereContacts(result?.data?.convertedContacts.length > 0);
         }).catch((error) => {
             tabShowLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
         });

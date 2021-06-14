@@ -19,7 +19,7 @@ import {
     
 const NEW_CONTACT_STATUS_CODE = 1;
 
-const SIZE_OF_CONTACTS = 2;
+export const SIZE_OF_CONTACTS = 10;
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {
@@ -30,7 +30,9 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         setContactStatuses,
         getValues,
         currentPage,
-        setIsMore
+        setIsMore,
+        contactsLength, 
+        setContactsLength
     } = parameters;
     
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -145,7 +147,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         'got respond from the server that has data',
                         Severity.LOW
                     );
-                    const interactedContacts: InteractedContact[] = result.data.map((contact: any) => {
+                    const interactedContacts: InteractedContact[] = result.data.convertedContacts.map((contact: any) => {
                         return ({
                             personInfo : contact.personInfo,
                             placeName: contact.contactEventByContactEvent.placeName,
@@ -195,14 +197,13 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             involvementReason: contact.involvementReason,
                             involvedContactId: contact.involvedContactId,
                         })
-                    }
-                        
-                    );
+                    });
+                    setContactsLength(result.data.total);
                     const allContactsSoFar = [...allContactedInteractions, ...interactedContacts];
                     const groupedInteractedContacts = groupSimilarContactedPersons(allContactsSoFar);
                     setAllContactedInteractions(groupedInteractedContacts);
 
-                    if(interactedContacts.length < SIZE_OF_CONTACTS){
+                    if(SIZE_OF_CONTACTS*currentPage >= result.data.total){
                         setIsMore(false);
                     }    
                 } else {
