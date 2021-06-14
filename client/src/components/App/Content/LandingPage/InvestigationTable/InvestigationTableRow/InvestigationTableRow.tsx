@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import StoreStateType from 'redux/storeStateType';
 import React, { MutableRefObject, useMemo } from 'react';
-import { Call, Comment, KeyboardArrowDown, KeyboardArrowLeft } from '@material-ui/icons';
+import { Call, Comment, KeyboardArrowDown, KeyboardArrowLeft, Visibility } from '@material-ui/icons';
 import { Checkbox, IconButton, TableCell, TableRow, TextField, Tooltip } from '@material-ui/core';
 
 import Desk from 'models/Desk';
@@ -21,6 +21,7 @@ import { IndexedInvestigationData, TableHeadersNames } from '../InvestigationTab
 import InvestigatorAllocationCell from '../InvestigatorAllocation/InvestigatorAllocationCell';
 import InvestigationStatusColumn from '../InvestigationStatusColumn/InvestigationStatusColumn';
 import InvestigationIndicatorsColumn from '../InvestigationIndicatorsColumn/InvestigationIndicatorsColumn';
+import { setIsViewMode } from 'redux/Investigation/investigationActionCreators';
 
 interface RowTooltipProps {
     titleOverride?: string;
@@ -58,7 +59,7 @@ const RowTooltip = (props: RowTooltipProps) => {
 };
 
 interface Props {
-    complexityReasonsId: (number|null)[];
+    complexityReasonsId: (number | null)[];
     columns: string[];
     groupColor?: string;
     selected: boolean;
@@ -82,6 +83,7 @@ interface Props {
     onGroupExpandClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     onInvestigationRowClick: (indexedRow: { [T in keyof IndexedInvestigationData]: any }) => void;
     onCellClick: (event: any, key: string, epidemiologyNumber: any, groupId: any) => void;
+    onSetViewMode?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 const unassignedToDesk = 'לא שוייך לדסק';
@@ -112,7 +114,8 @@ const InvestigationTableRow = ({
     onMultiCheckClick,
     onGroupExpandClick,
     onInvestigationRowClick,
-    onCellClick
+    onCellClick,
+    onSetViewMode
 }: Props) => {
     const classes = useStyles();
     const user = useSelector<StoreStateType, User>(state => state.user.data);
@@ -131,7 +134,7 @@ const InvestigationTableRow = ({
                 )
             case TableHeadersNames.rowIndicators:
                 return (
-                    <InvestigationIndicatorsColumn 
+                    <InvestigationIndicatorsColumn
                         isComplex={indexedRow.isComplex}
                         complexityReasonsId={row.complexityReasonsId}
                         wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
@@ -183,7 +186,7 @@ const InvestigationTableRow = ({
                 </Tooltip>
             case TableHeadersNames.comment:
                 return (
-                    <CommentCell 
+                    <CommentCell
                         comment={indexedRow[cellName as keyof typeof TableHeadersNames]}
                     />
                 )
@@ -213,6 +216,11 @@ const InvestigationTableRow = ({
                                 </IconButton>
                             </Tooltip>
                         }
+                        <Tooltip title='צפייה בלבד' placement='top' arrow>
+                            <IconButton color='primary' onClick={onSetViewMode}>
+                                <Visibility />
+                            </IconButton>
+                        </Tooltip>
                     </>
                 )
             case TableHeadersNames.settings:
@@ -230,7 +238,7 @@ const InvestigationTableRow = ({
                     />
                 );
             case TableHeadersNames.age:
-                return  indexedRow[cellName as keyof typeof TableHeadersNames] ?? '-';
+                return indexedRow[cellName as keyof typeof TableHeadersNames] ?? '-';
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames];
         }
@@ -263,7 +271,7 @@ const InvestigationTableRow = ({
                     ))
                 }
             </TableRow>
-        </RowTooltip>
+        </RowTooltip >
     )
 }
 

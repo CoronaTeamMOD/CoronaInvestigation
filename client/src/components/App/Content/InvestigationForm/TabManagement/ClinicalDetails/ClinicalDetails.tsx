@@ -21,7 +21,7 @@ import useClinicalDetails, { initialClinicalDetails } from './useClinicalDetails
 import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields/SymptomsFields';
 import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
 
-const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
+const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element => {
     const classes = useStyles();
 
     const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
@@ -171,12 +171,14 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                 watchIsolationStartDate={watchIsolationStartDate}
                                 watchIsolationEndDate={watchIsolationEndDate}
                                 isolationSources={isolationSources}
+                                isViewMode={isViewMode}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <FormRowWithInput fieldName='כתובת לבידוד:' labelLength={2}>
                                 <AddressForm
                                     {...addressFormFields}
+                                    disabled={isViewMode}
                                 />
                             </FormRowWithInput>
                         </Grid>
@@ -184,6 +186,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                             <IsolationProblemFields
                                 classes={classes}
                                 watchIsIsolationProblem={watchIsIsolationProblem}
+                                isViewMode={isViewMode}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -196,6 +199,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                 symptoms={symptoms}
                                 didSymptomsDateChangeOccur={didSymptomsDateChangeOccur}
                                 setDidSymptomsDateChangeOccur={setDidSymptomsDateChangeOccur}
+                                isViewMode={isViewMode}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -205,6 +209,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                 handleBackgroundIllnessCheck={handleBackgroundIllnessCheck}
                                 watchBackgroundDiseases={watchBackgroundDiseases}
                                 watchDoesHaveBackgroundDiseases={watchDoesHaveBackgroundDiseases}
+                                isViewMode={isViewMode}
                             />
                         </Grid>
                         <Grid item xs={12} className={patientGender === Gender.MALE ? classes.hiddenIsPregnant : ''}>
@@ -222,6 +227,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                         props.onChange(value)
                                                     }
                                                 }}
+                                                disabled={isViewMode}
                                             />
                                         )}
                                     />
@@ -240,6 +246,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
 interface Props {
     id: number;
+    isViewMode?:boolean;
 }
 
 export default ClinicalDetails;

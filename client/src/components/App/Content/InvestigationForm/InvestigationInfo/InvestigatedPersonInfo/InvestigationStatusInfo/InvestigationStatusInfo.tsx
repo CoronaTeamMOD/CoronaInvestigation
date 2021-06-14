@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
-import React, {ChangeEvent, useEffect, useMemo} from 'react';
-import {Collapse, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography} from '@material-ui/core';
+import React, { ChangeEvent, useEffect, useMemo } from 'react';
+import { Collapse, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 
 import SubStatus from 'models/SubStatus';
 import StoreStateType from 'redux/storeStateType';
@@ -21,9 +21,9 @@ const statusReasonLabel = 'פירוט';
 
 const InvestigationStatusInfo = (props: any) => {
 
-    const  { statusReasonError, validateStatusReason, ValidationStatusSchema } = props;
+    const { statusReasonError, validateStatusReason, ValidationStatusSchema, isViewMode } = props;
     const classes = useStyles();
-    
+
     const { wasInvestigationReopend } = useStatusUtils();
 
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
@@ -38,7 +38,7 @@ const InvestigationStatusInfo = (props: any) => {
     }, [investigationStatus.subStatus]);
 
     const updatedSubStatuses = useMemo(() =>
-        investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ? [{displayName: inProcess, id: 0, parentStatus: 100000002} , ...subStatuses] : subStatuses,
+        investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ? [{ displayName: inProcess, id: 0, parentStatus: 100000002 }, ...subStatuses] : subStatuses,
         [subStatuses, investigationStatus]);
 
     const permittedStatuses = statuses.filter(status => status.id !== InvestigationMainStatusCodes.DONE);
@@ -74,6 +74,7 @@ const InvestigationStatusInfo = (props: any) => {
                                             },
                                             getContentAnchorEl: null
                                         }}
+                                        disabled={isViewMode}
                                         labelId='status-label'
                                         test-id='currentStatus'
                                         variant='outlined'
@@ -123,6 +124,7 @@ const InvestigationStatusInfo = (props: any) => {
                                             labelId='sub-status-label'
                                             test-id='currentSubStatus'
                                             label={subStatusLabel}
+                                            disabled={isViewMode}
                                             value={investigationStatus.subStatus as string | undefined}
                                             onChange={(event: any) => {
                                                 const newSubStatus = event.target.value as string

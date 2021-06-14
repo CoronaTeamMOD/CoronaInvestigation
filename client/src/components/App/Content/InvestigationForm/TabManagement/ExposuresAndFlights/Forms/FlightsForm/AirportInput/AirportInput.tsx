@@ -22,6 +22,7 @@ const AirportInput = (props: any) => {
         airportFieldName,
         handleChangeExposureDataAndFlightsField,
         index,
+        isViewMode
     } = props;
 
     const { control, errors } = useFormContext();
@@ -79,6 +80,7 @@ const AirportInput = (props: any) => {
                                 error={Boolean(countryFieldError)}
                                 label={getCountryLabel(countryFieldError)}
                                 placeholder='מדינה'
+                                isViewMode={isViewMode}
                             />
                         );
                     }}
@@ -100,6 +102,7 @@ const AirportInput = (props: any) => {
                                 }}
                                 placeholder='עיר'
                                 label='עיר'
+                                disabled={isViewMode}
                             />
                         );
                     }}
@@ -121,6 +124,7 @@ const AirportInput = (props: any) => {
                                 }}
                                 placeholder='שדה תעופה'
                                 label='שדה תעופה*'
+                                disabled={isViewMode}
                             />
                         );
                     }}

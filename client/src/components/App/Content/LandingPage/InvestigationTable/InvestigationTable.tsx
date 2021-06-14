@@ -31,6 +31,8 @@ import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTa
 import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorAllocationDialog';
 import useInvestigationTable, { SelectedRow, DEFAULT_SELECTED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
+import { setIsViewMode } from 'redux/Investigation/investigationActionCreators';
+import { store } from 'redux/store';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -45,7 +47,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const classes = useStyles(isScreenWide);
     const { alertSuccess } = useCustomSwal();
     const onAllocationSuccess = () => alertSuccess('החוקר הוקצה בהצלחה');
-    
+
     const [checkedIndexedRows, setCheckedIndexedRows] = useState<IndexedInvestigation[]>([]);
     const [selectedRow, setSelectedRow] = useState<SelectedRow>(DEFAULT_SELECTED_ROW);
     const [deskAutoCompleteClicked, setDeskAutoCompleteClicked] = useState<boolean>(false);
@@ -53,7 +55,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
     const [allStatuses, setAllStatuses] = useState<InvestigationMainStatus[]>([]);
     const [allSubStatuses, setAllSubStatuses] = useState<SubStatus[]>([]);
-    const [allComplexReasons, setAllComplexReasons] = useState<(number|null)[]>([]);
+    const [allComplexReasons, setAllComplexReasons] = useState<(number | null)[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(defaultPage);
     const [checkGroupedInvestigationOpen, setCheckGroupedInvestigationOpen] = useState<number[]>([])
     const [allGroupedInvestigations, setAllGroupedInvestigations] = useState<Map<string, InvestigationTableRowType[]>>(new Map());
@@ -86,7 +88,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
         statusFilter, subStatusFilter, changeStatusFilter, changeSubStatusFilter, deskFilter, changeDeskFilter, changeSearchFilter,
         changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers,
-        tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter,updateDateFilter, nonContactFilter, fetchAllGroupedInvestigations
+        tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter, updateDateFilter, nonContactFilter, fetchAllGroupedInvestigations
     } = useInvestigationTable({
         setSelectedRow, allGroupedInvestigations, setAllStatuses, currentPage, setCurrentPage, setAllGroupedInvestigations,
         investigationColor, setAllSubStatuses, setAllComplexReasons
@@ -96,9 +98,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const { countyDesks, displayedCounty } = useDesksUtils();
 
-    const desksToTransfer : Desk[] = useMemo(() =>
-        [...countyDesks, { id: null, deskName: 'לא שוייך לדסק', county: displayedCounty}]
-    , [countyDesks]);
+    const desksToTransfer: Desk[] = useMemo(() =>
+        [...countyDesks, { id: null, deskName: 'לא שוייך לדסק', county: displayedCounty }]
+        , [countyDesks]);
 
     const totalPageCount = Math.ceil(totalCount / rowsPerPage);
 
@@ -245,13 +247,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     return (
         <div onClick={closeDropdowns} >
             <Grid className={classes.content}>
-            <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
-                <Grid item xs={12}>
-                    <AdminMessages 
-                        deskFilter={deskFilter}
-                    />
+                <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
+                    <Grid item xs={12}>
+                        <AdminMessages
+                            deskFilter={deskFilter}
+                        />
+                    </Grid>
                 </Grid>
-            </Grid>
                 <div className={classes.tableHeaderRow}>
                     <Typography color='primary' className={classes.counterLabel} >
                         {counterDescription}
@@ -273,11 +275,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             timeRangeFilter={timeRangeFilter}
                             onTimeRangeFilterChange={changeTimeRangeFilter}
                             updateDateFilter={updateDateFilter}
-                            nonContactFilter={nonContactFilter} 
+                            nonContactFilter={nonContactFilter}
                             desksToTransfer={desksToTransfer}
                             deskFilter={deskFilter}
                             changeDeskFilter={changeDeskFilter}
-                            handleRequestSort= {handleRequestSort}
+                            handleRequestSort={handleRequestSort}
                             changeSearchFilter={changeSearchFilter}
                         />
                     </Grid>
@@ -308,25 +310,25 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             {
                                                 key === TableHeadersNames.multipleCheck &&
                                                 <>
-                                                <Tooltip title={resetSortButtonText} placement='top' arrow>
-                                                    <Button
-                                                        color='primary'
-                                                        className={classes.sortResetButton}
-                                                        startIcon={<Refresh />}
-                                                        onClick={(event: any) => handleRequestSort(event, defaultOrderBy)}
-                                                    >
-                                                    </Button>
-                                                </Tooltip>
-                                                <Tooltip title={(isGroupedExpanded ? 'הסתר' : 'הצג') + ' ' + 'את כל החקירות המקושרות'} placement='top' arrow>
-                                                    <IconButton onClick={
-                                                        isGroupedExpanded ? collapseAllGroupedInvestigations : expandAllGroupedInvestigations
-                                                    }>
-                                                        {isGroupedExpanded ?
-                                                            <KeyboardArrowDown /> :
-                                                            <KeyboardArrowLeft />}
-                                                    </IconButton>
-                                                </Tooltip>
-                                             </>
+                                                    <Tooltip title={resetSortButtonText} placement='top' arrow>
+                                                        <Button
+                                                            color='primary'
+                                                            className={classes.sortResetButton}
+                                                            startIcon={<Refresh />}
+                                                            onClick={(event: any) => handleRequestSort(event, defaultOrderBy)}
+                                                        >
+                                                        </Button>
+                                                    </Tooltip>
+                                                    <Tooltip title={(isGroupedExpanded ? 'הסתר' : 'הצג') + ' ' + 'את כל החקירות המקושרות'} placement='top' arrow>
+                                                        <IconButton onClick={
+                                                            isGroupedExpanded ? collapseAllGroupedInvestigations : expandAllGroupedInvestigations
+                                                        }>
+                                                            {isGroupedExpanded ?
+                                                                <KeyboardArrowDown /> :
+                                                                <KeyboardArrowLeft />}
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </>
                                             }
                                         </TableCell>
                                     ))
@@ -357,7 +359,10 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             checkGroupedInvestigationOpen={checkGroupedInvestigationOpen}
                                             tableCellStyleFunction={getRegularCellStyle(index, isGroupShown)}
                                             onInvestigationDeskChange={alertInvestigationDeskChange(indexedRow)}
-                                            onInvestigationRowClick={onInvestigationRowClick}
+                                            onInvestigationRowClick={()=>{  
+                                                setIsViewMode(false);
+                                                onInvestigationRowClick(indexedRow)
+                                            }}
                                             onCellClick={handleCellClick}
                                             fetchTableData={fetchTableData}
                                             fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
@@ -378,6 +383,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                     openGroupedInvestigation(indexedRow.epidemiologyNumber, indexedRow.groupId)
                                                 }
                                                 setShouldOpenPopover(groupToOpen?.length === 1)
+                                            }}
+                                            onSetViewMode={event => {
+                                                event.stopPropagation();
+                                                setIsViewMode(true);
+                                                onInvestigationRowClick(indexedRow)
                                             }}
                                         />
                                         {checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber) &&
