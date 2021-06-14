@@ -68,9 +68,11 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const getRulerApiDataFromServer = () => {
         return axios.post('/ruler/rulerapi')
             .then((response) => {
+                console.log('response useContactQuest...', response)
                 return response;
             })
             .catch((err) => {
+                console.log('response err...', err)
                 return err;
             })
             .finally(() => console.log('finally'));
