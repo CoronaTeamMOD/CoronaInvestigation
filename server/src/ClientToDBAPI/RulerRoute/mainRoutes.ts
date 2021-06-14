@@ -15,7 +15,7 @@ rulerRoute.post('/rulerapi/', UseCache, (req: Request, res: Response) => {
         user: res.locals.user.id,
     });
 
-    const params: any =
+    const parameters: any =
     {
         "RulerCheckColorRequest": {
             "MOHHeader": {
@@ -46,7 +46,7 @@ rulerRoute.post('/rulerapi/', UseCache, (req: Request, res: Response) => {
             ]
         }
     }
-    const parameters = <JSON>params
+    // const parameters = <JSON>params
     rulerLogger.info(launchingAPIRequestLog(parameters), Severity.LOW);
 
     axios.post(rulerApiUrl, parameters).then((data) => {
