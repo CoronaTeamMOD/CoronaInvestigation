@@ -11,12 +11,12 @@ import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 import useStyles from './ContactQuestioningStyles';
+import {SIZE_OF_CONTACTS} from './useContactQuestioning';   
 import { FormInputs } from './ContactQuestioningInterfaces';
 import useContactQuestioning from './useContactQuestioning';
 import InteractedContactAccordion from './InteractedContactAccordion';
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 
-import {SIZE_OF_CONTACTS} from './useContactQuestioning';
 
 const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Element => {
     const [allContactedInteractions, setAllContactedInteractions] = useState<GroupedInteractedContact[]>([]);
