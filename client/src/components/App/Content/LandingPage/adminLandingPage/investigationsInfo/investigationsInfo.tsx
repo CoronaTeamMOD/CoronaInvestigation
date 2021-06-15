@@ -37,7 +37,8 @@ const InvestigationsInfo = (props: Props): JSX.Element => {
                     <Grid item container xs={12} alignItems='flex-end' justify='space-around'>
                         <Grid item container alignItems='stretch' spacing={3} xs={12}>
                         {
-                            investigationsGraphData.map((InvestigationData: InvestigationChart , index) => {
+                            // The filter() method was added as a temporary solution for Bug 1831 
+                            investigationsGraphData.filter((data => data.id !== 'הושלמו ללא מגעים')).map((InvestigationData: InvestigationChart , index) => {
                                 const backgroundColor = getCardBackgroundColor(InvestigationData);
                                 return  (
                                     <>

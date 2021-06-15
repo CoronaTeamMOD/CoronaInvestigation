@@ -7,6 +7,7 @@ import invesitgationInfoStatistics from 'Utils/Testing/AdminLandingPage/investig
 
 import InvestigationsInfo from './investigationsInfo';
 import { convertorsToGraph } from './convertorsToGraph';
+import FilterRulesDescription from 'models/enums/FilterRulesDescription';
  
 const onInfoButtonClick = jest.fn();
 const allInvestigationsCount = 3;
@@ -28,7 +29,8 @@ describe('<InvestigationsInfo />', () => {
     });
 
     describe('columns:' , () => {
-        const foramttedColumns = Object.values(convertorsToGraph).map(obj => obj.id);
+        // The filter() method was added as a temporary solution for Bug 1831 
+        const foramttedColumns = Object.values(convertorsToGraph).map(obj => obj.id).filter((value => value !== FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT));
         foramttedColumns.forEach((column , index) => {
             const onInfoButtonClick = jest.fn();
             const columnsWrapper = mount(
