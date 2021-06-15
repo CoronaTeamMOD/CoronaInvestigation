@@ -2,9 +2,11 @@ import { gql } from 'postgraphile';
 
 
 export const GET_CONTACTED_PEOPLE = gql`
-query ContactedPeopleByInvestigationId ($investigationId: Int!, $minimalDateToFilter: Datetime!) {
+query ContactedPeopleByInvestigationId ($investigationId: Int!, $minimalDateToFilter: Datetime!, $offset: Int, $size: Int) {
   allContactedPeople(filter: {contactEventByContactEvent: {investigationId: {equalTo: $investigationId}, startTime: {greaterThanOrEqualTo: $minimalDateToFilter}}},
-    orderBy: [INVOLVED_CONTACT_BY_INVOLVED_CONTACT_ID__INVOLVEMENT_REASON_ASC, PERSON_BY_PERSON_INFO__PHONE_NUMBER_ASC]) {
+    orderBy: [INVOLVED_CONTACT_BY_INVOLVED_CONTACT_ID__INVOLVEMENT_REASON_ASC, PERSON_BY_PERSON_INFO__PHONE_NUMBER_ASC],
+    ,offset: $offset, first: $size) {
+    totalCount
     nodes {
       personInfo
       personByPersonInfo {
