@@ -115,7 +115,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                     <FormTitle
                         title={`טופס תשאול מגעים (${allContactedInteractions.length})`}
                     />
-                    <span className={classes.numOfContacts}>מוצגים {Math.min(SIZE_OF_CONTACTS*currentPage,contactsLength)} מתוך {contactsLength} מגעים 
+                    <span className={classes.numOfContacts}>מוצגים {Math.min(SIZE_OF_CONTACTS*currentPage,contactsLength)} מתוך {contactsLength} מגעים (לפני צמצום מגעים כפולים) 
                         <a className={classes.loadMore} hidden={!isMore} onClick={() => setCurrentPage(currentPage+1)}> טען עוד</a>
                     </span>
 
