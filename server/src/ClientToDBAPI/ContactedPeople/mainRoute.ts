@@ -132,8 +132,8 @@ ContactedPeopleRoute.post('/excel',  handleInvestigationRequest, async (request:
 
         try {
             excelLogger.info(`GET_FOREIGN_KEYS_BY_NAMES: ${launchingDBRequestLog(parsingVariables)}`, Severity.LOW);
-            const parsedForeignKeys = await graphqlRequest(GET_FOREIGN_KEYS_BY_NAMES, response.locals, parsingVariables)
-
+            const parsedForeignKeys = await graphqlRequest(GET_FOREIGN_KEYS_BY_NAMES, response.locals, parsingVariables);
+            
             const {allContactTypes, allFamilyRelationships, allContactStatuses} = parsedForeignKeys.data;
             const contactType = getIdFromResult(allContactTypes),
                 familyRelationship = getIdFromResult(allFamilyRelationships),
