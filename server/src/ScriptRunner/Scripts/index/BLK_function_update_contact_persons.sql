@@ -168,7 +168,7 @@ BEGIN
  			raise notice 'insert new person %', personId;   
 
 		 	INSERT INTO public.contacted_person (
-                person_info,contact_event, contact_type, creation_time, 
+                person_info,contact_event, contact_type, creation_time
             ) VALUES (
                 personId, contactEvent, contactType, now()
             );
