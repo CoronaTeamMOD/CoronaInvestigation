@@ -52,7 +52,6 @@ const TableFilter = (props: Props) => {
     }, [subStatuses, selectedSubStatuses, filteredStatuses, selectedStatuses]);
         
     useEffect(() => {
-        console.log(selectedStatuses)
         filteredSubStatuses.length > 0 
             ? setSelectedStatuses([...selectedStatuses, ...subStatuses.filter(subStatus => filteredSubStatuses.includes(subStatus.displayName)).map(subStatus => subStatus.parentStatus)])
             : setSelectedStatuses(filteredStatuses)
