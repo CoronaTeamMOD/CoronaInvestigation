@@ -19,6 +19,8 @@ import {
 
 const NEW_CONTACT_STATUS_CODE = 1;
 
+export const SIZE_OF_CONTACTS = 10;
+
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {
         id,
@@ -27,6 +29,10 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         setFamilyRelationships,
         setContactStatuses,
         getValues,
+        currentPage,
+        setIsMore,
+        contactsLength, 
+        setContactsLength
     } = parameters;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -151,14 +157,20 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         );
         setIsLoading(true);
         const minimalDate = datesToInvestigate.slice(-1)[0];
-        axios.get(`/contactedPeople/allContacts/${minimalDate?.toISOString()}`)
+
+        const requestData = {
+            size: SIZE_OF_CONTACTS,
+            currentPage
+        };
+
+        axios.post(`/contactedPeople/allContacts/${minimalDate?.toISOString()}`,requestData)
             .then((result: any) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     interactedContactsLogger.info(
                         'got respond from the server that has data',
                         Severity.LOW
                     );
-                    const interactedContacts: InteractedContact[] = result.data.map((contact: any) => {
+                    const interactedContacts: InteractedContact[] = result.data.convertedContacts.map((contact: any) => {
                         return ({
                             personInfo: contact.personInfo,
                             placeName: contact.contactEventByContactEvent.placeName,
@@ -208,11 +220,16 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             involvementReason: contact.involvementReason,
                             involvedContactId: contact.involvedContactId,
                         })
-                    }
-
-                    );
-                    const groupedInteractedContacts = groupSimilarContactedPersons(interactedContacts);
+                    });
+                    setContactsLength(result.data.total);
+                    const allContactsSoFar = [...allContactedInteractions, ...interactedContacts];
+                    const groupedInteractedContacts = groupSimilarContactedPersons(allContactsSoFar);
+                    
                     setAllContactedInteractions(groupedInteractedContacts);
+
+                    if(SIZE_OF_CONTACTS*currentPage >= result.data.total){
+                        setIsMore(false);
+                    }    
                 } else {
                     interactedContactsLogger.warn(
                         'got respond from the server without data',

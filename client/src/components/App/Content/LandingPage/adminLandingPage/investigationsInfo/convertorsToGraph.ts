@@ -15,6 +15,7 @@ export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit
     inProcessInvestigations: {
         id: FilterRulesDescription.IN_PROCESS,
         color: SECONDARY,
+        space: 2 // The space was added as a temporary solution for Bug 1831
     },
     unusualCompletedNoContactInvestigations: {
         id: FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT,
