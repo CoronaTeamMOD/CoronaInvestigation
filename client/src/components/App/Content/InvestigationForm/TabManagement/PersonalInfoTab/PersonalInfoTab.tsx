@@ -224,7 +224,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                             <Grid item xs={4}>
                                 <Button
                                     className={classes.addPersonButton}
-                                    disabled={toAddContactField}
+                                    disabled={toAddContactField || isViewMode}
                                     onClick={() => { setToAddContactField(true) }}>
                                     {ADD_CONTACT}
                                 </Button>
