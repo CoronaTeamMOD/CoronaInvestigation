@@ -170,7 +170,20 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         'got respond from the server that has data',
                         Severity.LOW
                     );
+
+                    let contactsToApi = [];
                     const interactedContacts: InteractedContact[] = result.data.convertedContacts.map((contact: any) => {
+                        const idType = !contact.personByPersonInfo.identificationType ? 3 : 
+                                       contact.personByPersonInfo.identificationType === 4 ? 3 :
+                                       contact.personByPersonInfo.identificationType === 5 ? 4 :
+                                       contact.personByPersonInfo.identificationType;
+                        contactsToApi.push({
+                            idType,
+                            IDnum: contact.personByPersonInfo.identificationNumber,
+                            DOB: contact.personByPersonInfo.birthDate,
+                            Tel: contact.personByPersonInfo.phoneNumber  
+                        });
+                        
                         return ({
                             personInfo: contact.personInfo,
                             placeName: contact.contactEventByContactEvent.placeName,
