@@ -59,27 +59,55 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             .finally(() => setIsLoading(false));
     };
 
-    const getRulerApiData = (parameters: JSON) => {
-        const rulerApiUrl = `http://192.168.2.26:8888/Corona/RulerCheckColor`;
-        return axios.post(rulerApiUrl, parameters)
-            .then((response) => {
-                console.log('response', response);
-            })
-            .catch((err) => {
-                console.log('error', err);
-            })
-            .finally(() => console.log('finally'));
-    }
-
     const getRulerApiDataFromServer = () => {
-        return axios.post('/ruler/rulerapi')
-            .then((response) => {
-                return response;
-            })
-            .catch((err) => {
-                return err;
-            })
-            .finally(() => console.log('finally'));
+        
+        const MOHHeader= {
+            ActivationID: 1,
+            CustID: 23,
+            AppID: 130,
+            SiteID: 2,
+            InterfaceID: 'Ruler'
+        }
+
+        const Ids= [{
+                IdType: 3,
+                IDnum: '??2563621',
+                DOB: '24011971',
+                Tel: '0542987778'
+            },
+            {
+                IdType: 2,
+                IDnum: '.T0901828',
+                DOB: '24011971',
+                Tel: '0542987778'
+            },
+            {
+                IdType: 2,
+                IDnum: '?0901788',
+                DOB: '24011971',
+                Tel: '0542987778'
+            }
+        ]
+        const RulerCheckColorRequestParameters = { RulerCheckColorRequest:
+            MOHHeader,
+            Ids
+        }
+        const rulerLogger = logger.setup('client ruler logger setup');
+        rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
+        setIsLoading(true);
+        axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters)
+        .then((response) => {
+            console.log('ruler client got response: ' , response)
+            if (response.data?.ColorData) {
+                rulerLogger.info('got response from the ruler server', Severity.LOW);
+            }
+        })
+        .catch((err) => {
+            console.log('ruler client got err: ' , err)
+            rulerLogger.error(`got the following error from the ruler server: ${err}`, Severity.HIGH);
+            alertError('חלה שגיאה בקבלת נתונים משירות הרמזור');
+        })
+        .finally(() => setIsLoading(false));
     };
 
     const saveContact = (interactedContact: InteractedContact): boolean => {
@@ -363,7 +391,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         checkAllContactsForDuplicateIds,
         onSubmit,
         parsePerson,
-        getRulerApiData,
         getRulerApiDataFromServer
     };
 };
