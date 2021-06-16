@@ -32,7 +32,6 @@ import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorA
 import useInvestigationTable, { SelectedRow, DEFAULT_SELECTED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
 import { setIsViewMode } from 'redux/Investigation/investigationActionCreators';
-import { store } from 'redux/store';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;

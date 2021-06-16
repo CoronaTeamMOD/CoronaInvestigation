@@ -53,7 +53,7 @@ const TableFilter = (props: Props) => {
         
     useEffect(() => {
         filteredSubStatuses.length > 0 
-            ? setSelectedStatuses(subStatuses.filter(subStatus => filteredSubStatuses.includes(subStatus.displayName)).map(subStatus => subStatus.parentStatus))
+            ? setSelectedStatuses([...selectedStatuses, ...subStatuses.filter(subStatus => filteredSubStatuses.includes(subStatus.displayName)).map(subStatus => subStatus.parentStatus)])
             : setSelectedStatuses(filteredStatuses)
     }, [filteredSubStatuses, subStatuses]);
         
@@ -139,7 +139,7 @@ const TableFilter = (props: Props) => {
                     onSubStatusChange(values);
                     setSelectedSubStatuses(values.map(value => value.displayName));
                     values.length > 0 
-                        ? setSelectedStatuses(statuses.filter(status => values.map(subStatus => subStatus.parentStatus).includes(status.id)).map(status => status.id))
+                        ? setSelectedStatuses([...selectedStatuses, ...statuses.filter(status => values.map(subStatus => subStatus.parentStatus).includes(status.id)).map(status => status.id)])
                         : setSelectedStatuses(filteredStatuses)
                         
                 }}
