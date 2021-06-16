@@ -19,6 +19,8 @@ import {
 
 const NEW_CONTACT_STATUS_CODE = 1;
 
+export const SIZE_OF_CONTACTS = 10;
+
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {
         id,
@@ -27,6 +29,10 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         setFamilyRelationships,
         setContactStatuses,
         getValues,
+        currentPage,
+        setIsMore,
+        contactsLength, 
+        setContactsLength
     } = parameters;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -53,29 +59,55 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             .finally(() => setIsLoading(false));
     };
 
-    const getRulerApiData = (parameters: JSON) => {
-        const rulerApiUrl = `http://192.168.2.26:8888/Corona/RulerCheckColor`;
-        return axios.post(rulerApiUrl, parameters)
-            .then((response) => {
-                console.log('response', response);
-            })
-            .catch((err) => {
-                console.log('error', err);
-            })
-            .finally(() => console.log('finally'));
-    }
-
     const getRulerApiDataFromServer = () => {
-        return axios.post('/ruler/rulerapi')
-            .then((response) => {
-                console.log('response useContactQuest...', response)
-                return response;
-            })
-            .catch((err) => {
-                console.log('response err...', err)
-                return err;
-            })
-            .finally(() => console.log('finally'));
+        
+        const MOHHeader= {
+            ActivationID: 1,
+            CustID: 23,
+            AppID: 130,
+            SiteID: 2,
+            InterfaceID: 'Ruler'
+        }
+
+        const Ids= [{
+                IdType: 3,
+                IDnum: '??2563621',
+                DOB: '24011971',
+                Tel: '0542987778'
+            },
+            {
+                IdType: 2,
+                IDnum: '.T0901828',
+                DOB: '24011971',
+                Tel: '0542987778'
+            },
+            {
+                IdType: 2,
+                IDnum: '?0901788',
+                DOB: '24011971',
+                Tel: '0542987778'
+            }
+        ]
+        const RulerCheckColorRequestParameters = { RulerCheckColorRequest:
+            MOHHeader,
+            Ids
+        }
+        const rulerLogger = logger.setup('client ruler logger setup');
+        rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
+        setIsLoading(true);
+        axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters)
+        .then((response) => {
+            console.log('ruler client got response: ' , response)
+            if (response.data?.ColorData) {
+                rulerLogger.info('got response from the ruler server', Severity.LOW);
+            }
+        })
+        .catch((err) => {
+            console.log('ruler client got err: ' , err)
+            rulerLogger.error(`got the following error from the ruler server: ${err}`, Severity.HIGH);
+            alertError('חלה שגיאה בקבלת נתונים משירות הרמזור');
+        })
+        .finally(() => setIsLoading(false));
     };
 
     const saveContact = (interactedContact: InteractedContact): boolean => {
@@ -153,14 +185,20 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         );
         setIsLoading(true);
         const minimalDate = datesToInvestigate.slice(-1)[0];
-        axios.get(`/contactedPeople/allContacts/${minimalDate?.toISOString()}`)
+
+        const requestData = {
+            size: SIZE_OF_CONTACTS,
+            currentPage
+        };
+
+        axios.post(`/contactedPeople/allContacts/${minimalDate?.toISOString()}`,requestData)
             .then((result: any) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     interactedContactsLogger.info(
                         'got respond from the server that has data',
                         Severity.LOW
                     );
-                    const interactedContacts: InteractedContact[] = result.data.map((contact: any) => {
+                    const interactedContacts: InteractedContact[] = result.data.convertedContacts.map((contact: any) => {
                         return ({
                             personInfo: contact.personInfo,
                             placeName: contact.contactEventByContactEvent.placeName,
@@ -210,11 +248,16 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             involvementReason: contact.involvementReason,
                             involvedContactId: contact.involvedContactId,
                         })
-                    }
-
-                    );
-                    const groupedInteractedContacts = groupSimilarContactedPersons(interactedContacts);
+                    });
+                    setContactsLength(result.data.total);
+                    const allContactsSoFar = [...allContactedInteractions, ...interactedContacts];
+                    const groupedInteractedContacts = groupSimilarContactedPersons(allContactsSoFar);
+                    
                     setAllContactedInteractions(groupedInteractedContacts);
+
+                    if(SIZE_OF_CONTACTS*currentPage >= result.data.total){
+                        setIsMore(false);
+                    }    
                 } else {
                     interactedContactsLogger.warn(
                         'got respond from the server without data',
@@ -348,7 +391,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         checkAllContactsForDuplicateIds,
         onSubmit,
         parsePerson,
-        getRulerApiData,
         getRulerApiDataFromServer
     };
 };

@@ -17,10 +17,8 @@ const ReachContact = (props: Props) => {
     const { control, getValues, watch } = useFormContext();
     const { interactedContact, index, contactStatuses, saveContact, parsePerson,isViewMode } = props;
     const classes = useStyles({});
-
-    const formValues = getValues().form
-        ? getValues().form[index]
-        : interactedContact;
+    
+    const formValues = {...interactedContact, contactEvents: []};
 
     const foundValue = (status: number) => {
         return contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === status);
