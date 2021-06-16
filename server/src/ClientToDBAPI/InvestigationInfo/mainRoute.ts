@@ -4,9 +4,9 @@ import { Severity } from '../../Models/Logger/types';
 import { getPatientAge } from '../../Utils/patientUtils';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
-import { 
-    GET_INVESTIGATION_INFO, 
-    GET_SUB_STATUSES_BY_STATUS, 
+import {
+    GET_INVESTIGATION_INFO,
+    GET_SUB_STATUSES_BY_STATUS,
     GET_INVESTIGAION_SETTINGS_FAMILY_DATA,
     GROUP_ID_BY_EPIDEMIOLOGY_NUMBER,
     GET_INVESTIGATION_COMPLEXITY_REASONS,
@@ -54,14 +54,14 @@ const convertInvestigationInfoFromDB = (investigationInfo: any) => {
     return convertedInvestigation;
 };
 
-investigationInfo.get('/staticInfo', handleInvestigationRequest,(request: Request, response: Response) => {
+investigationInfo.get('/staticInfo', handleInvestigationRequest, (request: Request, response: Response) => {
     const staticInfoLogger = logger.setup({
         workflow: 'query investigation static info',
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
 
-    const parameters = {investigationId: parseInt(response.locals.epidemiologynumber)};
+    const parameters = { investigationId: parseInt(response.locals.epidemiologynumber) };
     staticInfoLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_INVESTIGATION_INFO, response.locals, parameters)
@@ -83,8 +83,8 @@ investigationInfo.post('/comment', handleInvestigationRequest, (request: Request
         investigation: epidemiologyNumber,
     });
 
-    const parameters = { 
-        comment: request.body.comment, 
+    const parameters = {
+        comment: request.body.comment,
         epidemiologyNumber
     };
     updateCommentLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
@@ -101,7 +101,7 @@ investigationInfo.post('/comment', handleInvestigationRequest, (request: Request
 });
 
 investigationInfo.post('/updateInvestigationStatus', handleInvestigationRequest, (request: Request, response: Response) => {
-    const { investigationMainStatus, investigationSubStatus, statusReason, epidemiologyNumber } = request.body;
+    const { investigationMainStatus, investigationSubStatus, statusReason, epidemiologyNumber, startTime } = request.body;
     const logData = {
         workflow: 'update investigation status',
         user: response.locals.user.id,
@@ -113,75 +113,76 @@ investigationInfo.post('/updateInvestigationStatus', handleInvestigationRequest,
         epidemiologyNumber,
         investigationStatus: investigationMainStatus,
         investigationSubStatus: investigationSubStatus,
-        statusReason: statusReason
+        statusReason: statusReason,
+        startTime: startTime
     };
     updateInvestigationStatusLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(UPDATE_INVESTIGATION_STATUS, response.locals, parameters)
-    .then(result => {
-        updateInvestigationStatusLogger.info(validDBResponseLog, Severity.LOW);
-        if (investigationMainStatus === InvestigationMainStatusCodes.DONE) {
-            const closeContactsParameters = {epiNumber: epidemiologyNumber};
-            const closeContactsLogger = logger.setup({...logData, workflow: `${logData.workflow}: close open isloated contactes`});
-            closeContactsLogger.info(launchingDBRequestLog(closeContactsParameters), Severity.LOW);
+        .then(result => {
+            updateInvestigationStatusLogger.info(validDBResponseLog, Severity.LOW);
+            if (investigationMainStatus === InvestigationMainStatusCodes.DONE) {
+                const closeContactsParameters = { epiNumber: epidemiologyNumber };
+                const closeContactsLogger = logger.setup({ ...logData, workflow: `${logData.workflow}: close open isloated contactes` });
+                closeContactsLogger.info(launchingDBRequestLog(closeContactsParameters), Severity.LOW);
 
-            graphqlRequest(CLOSE_ISOLATED_CONTACT, response.locals, closeContactsParameters)
-            .then(() => {
-                closeContactsLogger.info(validDBResponseLog, Severity.LOW);
-                const investigationEndTime = new Date();
-                const updateEndTimeLogger = logger.setup({
-                    workflow: 'update investigation end time',
+                graphqlRequest(CLOSE_ISOLATED_CONTACT, response.locals, closeContactsParameters)
+                    .then(() => {
+                        closeContactsLogger.info(validDBResponseLog, Severity.LOW);
+                        const investigationEndTime = new Date();
+                        const updateEndTimeLogger = logger.setup({
+                            workflow: 'update investigation end time',
+                            user: response.locals.user.id,
+                            investigation: epidemiologyNumber,
+                        });
+                        const updateEndTimeParameters = {
+                            investigationIdInput: epidemiologyNumber,
+                            timeInput: investigationEndTime
+                        };
+                        updateEndTimeLogger.info(launchingDBRequestLog(updateEndTimeParameters), Severity.LOW);
+
+                        graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, updateEndTimeParameters)
+                            .then(result => {
+                                updateEndTimeLogger.info(validDBResponseLog, Severity.LOW);
+                                response.send(result);
+                            }).catch(error => {
+                                updateEndTimeLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                                response.status(errorStatusCode).send(error);
+                            });
+                    })
+                    .catch(error => {
+                        closeContactsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                        response.status(errorStatusCode).send(error);
+                    })
+            } else if (investigationMainStatus === InvestigationMainStatusCodes.IN_PROCESS) {
+                const investigationStartTime = new Date();
+                const addInvestigationStartTimeLogger = logger.setup({
+                    workflow: 'add investigation start time',
                     user: response.locals.user.id,
                     investigation: epidemiologyNumber,
                 });
-                const updateEndTimeParameters = {
+                const updateStartTimeParameters = {
                     investigationIdInput: epidemiologyNumber,
-                    timeInput: investigationEndTime
-                };
-                updateEndTimeLogger.info(launchingDBRequestLog(updateEndTimeParameters), Severity.LOW);
+                    timeInput: investigationStartTime
+                }
+                addInvestigationStartTimeLogger.info(launchingDBRequestLog(updateStartTimeParameters), Severity.LOW);
 
-                graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, updateEndTimeParameters)
-                .then(result => {
-                    updateEndTimeLogger.info(validDBResponseLog, Severity.LOW);
-                    response.send(result);
-                }).catch(error => {
-                    updateEndTimeLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-                    response.status(errorStatusCode).send(error);
-                });
-            })
-            .catch(error=> {
-                closeContactsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-                response.status(errorStatusCode).send(error);
-            })     
-        } else if (investigationMainStatus === InvestigationMainStatusCodes.IN_PROCESS) {
-            const investigationStartTime = new Date();
-            const addInvestigationStartTimeLogger = logger.setup({
-                workflow: 'add investigation start time',
-                user: response.locals.user.id,
-                investigation: epidemiologyNumber,
-            });
-            const updateStartTimeParameters = {
-                investigationIdInput: epidemiologyNumber,
-                timeInput: investigationStartTime
-            }
-            addInvestigationStartTimeLogger.info(launchingDBRequestLog(updateStartTimeParameters), Severity.LOW);
-
-            graphqlRequest(ADD_INVESTIGATION_START_TIME, response.locals, updateStartTimeParameters)
-            .then(result => {
-                addInvestigationStartTimeLogger.info(validDBResponseLog, Severity.LOW);
+                graphqlRequest(ADD_INVESTIGATION_START_TIME, response.locals, updateStartTimeParameters)
+                    .then(result => {
+                        addInvestigationStartTimeLogger.info(validDBResponseLog, Severity.LOW);
+                        response.send(result);
+                    }).catch(error => {
+                        addInvestigationStartTimeLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                        response.status(errorStatusCode).send(error);
+                    });
+            } else {
                 response.send(result);
-            }).catch(error => {
-                addInvestigationStartTimeLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-                response.status(errorStatusCode).send(error);
-            });     
-        } else {
-            response.send(result);
-        };
-    })
-    .catch(error => {
-        updateInvestigationStatusLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-        response.status(errorStatusCode).send(error);
-    });
+            };
+        })
+        .catch(error => {
+            updateInvestigationStatusLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
 });
 
 investigationInfo.post('/updateInvestigationStartTime', handleInvestigationRequest, (request: Request, response: Response) => {
@@ -197,7 +198,7 @@ investigationInfo.post('/updateInvestigationStartTime', handleInvestigationReque
         timeInput: investigationStartTime
     };
     updateInvestigationStartTimeLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-    
+
     graphqlRequest(UPDATE_INVESTIGATION_START_TIME, response.locals, parameters)
         .then(result => {
             updateInvestigationStartTimeLogger.info(validDBResponseLog, Severity.LOW);
@@ -237,12 +238,12 @@ investigationInfo.get('/resorts/:id', handleInvestigationRequest, (request: Requ
         investigation: response.locals.epidemiologynumber,
     });
 
-    const parameters = {id: parseInt(request.params.id)};
+    const parameters = { id: parseInt(request.params.id) };
     resortsByIdLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     return graphqlRequest(GET_INVESTIGATED_PATIENT_RESORTS_DATA, response.locals, parameters)
         .then((result) => {
-            const resortsData = result.data.investigatedPatientById; 
+            const resortsData = result.data.investigatedPatientById;
             resortsByIdLogger.info(validDBResponseLog, Severity.LOW);
             response.send(resortsData);
         })
@@ -258,8 +259,8 @@ investigationInfo.post('/resorts', handleInvestigationRequest, (request: Request
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber,
     });
-    
-    const queryVariables = {...request.body};
+
+    const queryVariables = { ...request.body };
     resortsLogger.info(launchingDBRequestLog(queryVariables), Severity.LOW);
 
     return graphqlRequest(UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA, response.locals, queryVariables)
@@ -281,7 +282,7 @@ investigationInfo.get('/interactionsTabSettings', handleInvestigationRequest, (r
         investigation: epidemiologyNumber
     });
 
-    const parameters = {id: epidemiologyNumber};
+    const parameters = { id: epidemiologyNumber };
     settingsFamilyLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_INVESTIGAION_SETTINGS_FAMILY_DATA, response.locals, parameters)
@@ -302,7 +303,7 @@ investigationInfo.post('/investigationSettingsFamily', handleInvestigationReques
         investigation: epidemiologyNumber,
     });
 
-    const queryVariables = {...request.body , id : epidemiologyNumber};
+    const queryVariables = { ...request.body, id: epidemiologyNumber };
     settingsFamilyLogger.info(launchingDBRequestLog(queryVariables), Severity.LOW);
 
     return graphqlRequest(UPDATE_INVESTIGAION_SETTINGS_FAMILY_DATA, response.locals, queryVariables)
@@ -316,16 +317,16 @@ investigationInfo.post('/investigationSettingsFamily', handleInvestigationReques
         })
 });
 
-investigationInfo.get('/groupedInvestigationsId', handleInvestigationRequest, (request : Request , response : Response) => {
-    const {epidemiologynumber} = response.locals;
-    
+investigationInfo.get('/groupedInvestigationsId', handleInvestigationRequest, (request: Request, response: Response) => {
+    const { epidemiologynumber } = response.locals;
+
     const groupedInvestigationsIdLogger = logger.setup({
         workflow: 'save investigation settings family data',
         user: response.locals.user.id,
         investigation: epidemiologynumber,
     });
-    const params = {epidemiologynumber : parseInt(epidemiologynumber)};
-    groupedInvestigationsIdLogger.info(launchingDBRequestLog(params) , Severity.LOW);
+    const params = { epidemiologynumber: parseInt(epidemiologynumber) };
+    groupedInvestigationsIdLogger.info(launchingDBRequestLog(params), Severity.LOW);
 
     return graphqlRequest(GROUP_ID_BY_EPIDEMIOLOGY_NUMBER, response.locals, params)
         .then((result) => {
@@ -343,27 +344,27 @@ investigationInfo.get('/complexityReasons', (request: Request, response: Respons
         workflow: 'get all descriptions of investigations complexity reasons',
         user: response.locals.user.id,
     });
-    investigationComplexityReasonsLogger.info(launchingDBRequestLog() , Severity.LOW);
+    investigationComplexityReasonsLogger.info(launchingDBRequestLog(), Severity.LOW);
 
     return graphqlRequest(GET_INVESTIGATION_COMPLEXITY_REASONS, response.locals)
-    .then((result) => {
-        investigationComplexityReasonsLogger.info('query from db successfully', Severity.LOW)
-        response.send(result.data.allInvestigationComplexityReasons.nodes);
-    })
-    .catch(error => {
-        investigationComplexityReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-        response.status(errorStatusCode).send(error);
-    })
+        .then((result) => {
+            investigationComplexityReasonsLogger.info('query from db successfully', Severity.LOW)
+            response.send(result.data.allInvestigationComplexityReasons.nodes);
+        })
+        .catch(error => {
+            investigationComplexityReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        })
 });
 
 investigationInfo.post('/updateComplexityReason', (request: Request, response: Response) => {
-    const parameters = {epidemiologyNumberInput: request.body.epidemiologyNumberInput, newComplexityReasonId: request.body.newComplexityReasonId};
+    const parameters = { epidemiologyNumberInput: request.body.epidemiologyNumberInput, newComplexityReasonId: request.body.newComplexityReasonId };
     const updateInvestigationComplexityReasonsLogger = logger.setup({
         workflow: 'get all descriptions of investigations complexity reasons',
         user: response.locals.user.id,
         investigation: request.body.epidemiologyNumberInput,
     });
-    updateInvestigationComplexityReasonsLogger.info(launchingDBRequestLog(parameters) , Severity.LOW);
+    updateInvestigationComplexityReasonsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     return graphqlRequest(UPDATE_INVESTIGATION_COMPLEXITY_REASON_ID, response.locals, parameters)
         .then((result) => {
             updateInvestigationComplexityReasonsLogger.info('mutation from db was successfully', Severity.LOW)
@@ -376,13 +377,13 @@ investigationInfo.post('/updateComplexityReason', (request: Request, response: R
 });
 
 investigationInfo.post('/deleteComplexityReason', (request: Request, response: Response) => {
-    const queryVariables = {epidemiologyNumberInput: request.body.epidemiologyNumberInput, oldComplexityReasonId: request.body.oldComplexityReasonId};
+    const queryVariables = { epidemiologyNumberInput: request.body.epidemiologyNumberInput, oldComplexityReasonId: request.body.oldComplexityReasonId };
     const deleteInvestigationComplexityReasonsLogger = logger.setup({
         workflow: 'get all descriptions of investigations complexity reasons',
         user: response.locals.user.id,
         investigation: request.body.epidemiologyNumberInput,
     });
-    deleteInvestigationComplexityReasonsLogger.info(launchingDBRequestLog(queryVariables) , Severity.LOW);
+    deleteInvestigationComplexityReasonsLogger.info(launchingDBRequestLog(queryVariables), Severity.LOW);
     return graphqlRequest(DELETE_INVESTIGATION_COMPLEXITY_REASON_ID, response.locals, queryVariables)
         .then((result) => {
             deleteInvestigationComplexityReasonsLogger.info('query from db successfully', Severity.LOW)
@@ -401,16 +402,16 @@ investigationInfo.get('/getComplexityReason/:epidemiologyNumber', (request: Requ
         user: response.locals.user.id,
         investigation: request.body.epidemiologyNumberInput,
     });
-    getInvestigationComplexityReasonsLogger.info(launchingDBRequestLog(queryVariables) , Severity.LOW);
+    getInvestigationComplexityReasonsLogger.info(launchingDBRequestLog(queryVariables), Severity.LOW);
     return graphqlRequest(GET_INVESTIGATION_COMPLEXITY_REASON_ID, response.locals, queryVariables)
-    .then((result) => {
-        getInvestigationComplexityReasonsLogger.info('query from db successfully', Severity.LOW)
-        response.send(result.data.investigationByEpidemiologyNumber.complexityReasonsId);
-    })
-    .catch(error => {
-        getInvestigationComplexityReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-        response.status(errorStatusCode).send(error);
-    });
+        .then((result) => {
+            getInvestigationComplexityReasonsLogger.info('query from db successfully', Severity.LOW)
+            response.send(result.data.investigationByEpidemiologyNumber.complexityReasonsId);
+        })
+        .catch(error => {
+            getInvestigationComplexityReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
 });
 
 investigationInfo.get('/trackingSubReasons/:reasonId', (request: Request, response: Response) => {
@@ -420,20 +421,20 @@ investigationInfo.get('/trackingSubReasons/:reasonId', (request: Request, respon
         user: response.locals.user.id,
         investigation: request.body.epidemiologyNumberInput,
     });
-    trackingSubReasonsLogger.info(launchingDBRequestLog({reasonId}) , Severity.LOW);
-    return graphqlRequest(TRACKING_SUB_REASONS_BY_REASON_ID, response.locals, {reasonId})
-    .then((result) => {
-        trackingSubReasonsLogger.info('query from db successfully', Severity.LOW)
-        response.send(result.data.allTrackingSubReasons.nodes);
-    })
-    .catch(error => {
-        trackingSubReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-        response.status(errorStatusCode).send(error);
-    })
+    trackingSubReasonsLogger.info(launchingDBRequestLog({ reasonId }), Severity.LOW);
+    return graphqlRequest(TRACKING_SUB_REASONS_BY_REASON_ID, response.locals, { reasonId })
+        .then((result) => {
+            trackingSubReasonsLogger.info('query from db successfully', Severity.LOW)
+            response.send(result.data.allTrackingSubReasons.nodes);
+        })
+        .catch(error => {
+            trackingSubReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        })
 });
 
 investigationInfo.post('/updateTrackingRecommendation', (request: Request, response: Response) => {
-    const {reason} = request.body;
+    const { reason } = request.body;
     const subReason = request.body.subReason ?? null;
     const extraInfo = request.body.extraInfo ?? null;
 
@@ -450,16 +451,16 @@ investigationInfo.post('/updateTrackingRecommendation', (request: Request, respo
         investigation: request.body.epidemiologyNumberInput,
     });
 
-    updateTrackingRecommendationLogger.info(launchingDBRequestLog({parameters}) , Severity.LOW);
+    updateTrackingRecommendationLogger.info(launchingDBRequestLog({ parameters }), Severity.LOW);
     return graphqlRequest(UPDATE_INVESTIGATION_TRACKING, response.locals, parameters)
-    .then(result => {
-        updateTrackingRecommendationLogger.info(validDBResponseLog, Severity.LOW);
-        return response.send(result);
-    })
-    .catch((error) => {
-        updateTrackingRecommendationLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-        response.status(errorStatusCode).send(error);
-    });
+        .then(result => {
+            updateTrackingRecommendationLogger.info(validDBResponseLog, Severity.LOW);
+            return response.send(result);
+        })
+        .catch((error) => {
+            updateTrackingRecommendationLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
 });
 
 
@@ -471,7 +472,7 @@ investigationInfo.post('/updateStaticInfo', handleInvestigationRequest, (request
         investigation: epidemiologyNumber,
     });
 
-    const parameters = { 
+    const parameters = {
         fullNameInput: request.body.data.fullName === '' ? null : request.body.data.fullName,
         identificationTypeInput: request.body.data.identificationType === 0 ? null : request.body.data.identificationType,
         identityNumberInput: request.body.data.identityNumber === '' ? null : request.body.data.identityNumber,
@@ -496,17 +497,17 @@ investigationInfo.get('/identificationTypes', (request: Request, response: Respo
         workflow: 'get all identification types',
         user: response.locals.user.id,
     });
-    identificationTypesLogger.info(launchingDBRequestLog() , Severity.LOW);
+    identificationTypesLogger.info(launchingDBRequestLog(), Severity.LOW);
 
     return graphqlRequest(GET_IDENTIFICATION_TYPES, response.locals)
-    .then((result) => {
-        identificationTypesLogger.info('query from db to get identification types went successfully', Severity.LOW)
-        response.send(result.data.allIdentificationTypes.nodes);
-    })
-    .catch(error => {
-        identificationTypesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-        response.status(errorStatusCode).send(error);
-    })
+        .then((result) => {
+            identificationTypesLogger.info('query from db to get identification types went successfully', Severity.LOW)
+            response.send(result.data.allIdentificationTypes.nodes);
+        })
+        .catch(error => {
+            identificationTypesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        })
 });
 
 export default investigationInfo;
