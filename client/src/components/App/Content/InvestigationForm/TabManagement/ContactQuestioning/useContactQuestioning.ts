@@ -62,10 +62,10 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const getRulerApiDataFromServer = () => {
         
         const MOHHeader= {
-            ActivationID: 1,
-            CustID: 23,
-            AppID: 130,
-            SiteID: 2,
+            ActivationID: '1',
+            CustID: '23',
+            AppID: '123',
+            SiteID: '2',
             InterfaceID: 'Ruler'
         }
 
