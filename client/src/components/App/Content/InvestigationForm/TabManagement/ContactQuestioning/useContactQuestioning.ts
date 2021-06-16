@@ -88,11 +88,9 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 Tel: '0542987778'
             }
         ]
-        const RulerCheckColorRequestParameters = { 
-            RulerCheckColorRequest: {
-                'MOHHeader': MOHHeader,
-                Ids
-            }
+        const RulerCheckColorRequestParameters = { RulerCheckColorRequest: 
+            MOHHeader,
+            Ids
         }
         const rulerLogger = logger.setup('client ruler logger setup');
         rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
