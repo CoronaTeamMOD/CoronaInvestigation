@@ -60,38 +60,37 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const getRulerApiDataFromServer = () => {
-        
-        const MOHHeader= {
-            ActivationID: 1,
-            CustID: 23,
-            AppID: 130,
-            SiteID: 2,
-            InterfaceID: 'Ruler'
-        }
-
-        const Ids= [{
-                IdType: 3,
-                IDnum: '??2563621',
-                DOB: '24011971',
-                Tel: '0542987778'
-            },
-            {
-                IdType: 2,
-                IDnum: '.T0901828',
-                DOB: '24011971',
-                Tel: '0542987778'
-            },
-            {
-                IdType: 2,
-                IDnum: '?0901788',
-                DOB: '24011971',
-                Tel: '0542987778'
+        const RulerCheckColorRequestParameters = {
+            "RulerCheckColorRequest":{     
+                "MOHHeader":{       
+                    "ActivationID":"1",     
+                    "CustID":"23",
+                    "AppID":"123",
+                    "SiteID":"2",       
+                    "InterfaceID":"Ruler"
+                },
+                "Ids":[{
+                        "IdType":3,
+                        "IDnum":"??2563621",
+                        "DOB":"24011971",
+                        "Tel":"0542987778"
+                        },
+                        {
+                        "IdType":2,
+                        "IDnum":".T0901828",
+                        "DOB":"24011971",
+                        "Tel":"0542987778"
+                        },
+                        {
+                        "IdType":2,
+                        "IDnum":"?0901788",
+                        "DOB":"24011971",
+                        "Tel":"0542987778"
+                        }
+                    ]
             }
-        ]
-        const RulerCheckColorRequestParameters = { RulerCheckColorRequest:
-            MOHHeader,
-            Ids
         }
+            
         const rulerLogger = logger.setup('client ruler logger setup');
         rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
         setIsLoading(true);
