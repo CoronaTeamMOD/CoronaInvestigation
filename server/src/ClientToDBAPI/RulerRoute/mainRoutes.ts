@@ -11,7 +11,36 @@ const errorStatusCode = 500;
 
 // rulerRoute.post('/rulerapi/', UseCache, (req: Request, res: Response) => {
 rulerRoute.post('/rulerapi/', (req: Request, res: Response) => {
-    const parameters =  req.body.data;
+    const parameters =  {"RulerCheckColorRequest":{     
+        "MOHHeader":{       
+            "ActivationID":"1",     
+            "CustID":"23",
+            "AppID":"123",
+            "SiteID":"2",       
+            "InterfaceID":"Ruler"
+        },
+        "Ids":[{
+                "IdType":3,
+                "IDnum":"??2563621",
+                "DOB":"24011971",
+                "Tel":"0542987778"
+                },
+                {
+                "IdType":2,
+                "IDnum":".T0901828",
+                "DOB":"24011971",
+                "Tel":"0542987778"
+                },
+                {
+                "IdType":2,
+                "IDnum":"?0901788",
+                "DOB":"24011971",
+                "Tel":"0542987778"
+                }
+            ]
+    }
+    }
+
     const rulerLogger = logger.setup({
         workflow: `call ruler check color api with list of ids with parameters: ${JSON.stringify(parameters)}`,
     });
