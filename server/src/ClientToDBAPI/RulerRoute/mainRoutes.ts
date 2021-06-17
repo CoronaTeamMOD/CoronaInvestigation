@@ -11,7 +11,7 @@ const errorStatusCode = 500;
 
 // rulerRoute.post('/rulerapi/', UseCache, (req: Request, res: Response) => {
 rulerRoute.post('/rulerapi/', (req: Request, res: Response) => {
-    const parameters = req.body;
+    const parameters =  JSON.parse(req.body);
     const rulerLogger = logger.setup({
         workflow: `call ruler check color api with list of ids with parameters: ${JSON.stringify(parameters)}`,
     });
