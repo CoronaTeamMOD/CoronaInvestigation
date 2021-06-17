@@ -47,11 +47,11 @@ rulerRoute.post('/rulerapi/', (req: Request, res: Response) => {
     
     rulerLogger.info(launchingAPIRequestLog(parameters), Severity.LOW);
 
-    axios.post(rulerApiUrl, parameters)
-        .then((data) => {
+    axios.post(rulerApiUrl, JSON.stringify(parameters))
+        .then((result) => {
             rulerLogger.info(validAPIResponseLog, Severity.LOW);
-            // setToCache(req.originalUrl, data.data);
-            res.send(data);
+            // setToCache(req.originalUrl, result.result);
+            res.send(result);
         }
         ).catch((err: any) => {
             rulerLogger.error(invalidAPIResponseLog(err), Severity.HIGH);
