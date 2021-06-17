@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+
+import StoreStateType from 'redux/storeStateType';
 
 import { HistoryState } from '../../InvestigationTable/InvestigationTableInterfaces';
 
@@ -8,6 +11,11 @@ const useDesksFilterCard = () => {
     const [filteredDesks, setFilteredDesks] = useState<number[] | null>(null);
     
     const history = useHistory<HistoryState>();    
+    const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
+
+    useEffect(() => {
+        clearAllDesks();
+    }, [displayedCounty])
 
     const getHistoryData = () => {
         const { location: { state } } = history;
