@@ -11,7 +11,7 @@ const errorStatusCode = 500;
 
 // rulerRoute.post('/rulerapi/', UseCache, (req: Request, res: Response) => {
 rulerRoute.post('/rulerapi/', (req: Request, res: Response) => {
-    const parameters =  {"RulerCheckColorRequest":{     
+    const parameters =  {RulerCheckColorRequest:{     
         "MOHHeader":{       
             "ActivationID":"1",     
             "CustID":"23",
@@ -47,7 +47,7 @@ rulerRoute.post('/rulerapi/', (req: Request, res: Response) => {
 
     rulerLogger.info(launchingAPIRequestLog(parameters), Severity.LOW);
 
-    axios.post(rulerApiUrl, JSON.stringify(parameters))
+    axios.post(rulerApiUrl, parameters)
         .then((result) => {
             rulerLogger.info(launchingAPIRequestLog(result), Severity.LOW);
             rulerLogger.info(validAPIResponseLog, Severity.LOW);
