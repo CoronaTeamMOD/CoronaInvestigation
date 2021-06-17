@@ -6,12 +6,12 @@ import UseCache, { setToCache } from '../../middlewares/UseCache';
 import logger, { invalidAPIResponseLog, launchingAPIRequestLog, validAPIResponseLog, } from '../../Logger/Logger';
 
 const rulerRoute = Router();
-const rulerApiUrl = `https://moh-internal-api-m.azure-api.net/epiinvappbacktest/Corona/RulerCheckColor`;
+const rulerApiUrl = `http://192.168.2.26:8888/Corona/RulerCheckColor`;
 const errorStatusCode = 500;
 
 // rulerRoute.post('/rulerapi/', UseCache, (req: Request, res: Response) => {
 rulerRoute.post('/rulerapi/', (req: Request, res: Response) => {
-    const parameters =  {RulerCheckColorRequest:{     
+    const parameters =  {"RulerCheckColorRequest":{     
         "MOHHeader":{       
             "ActivationID":"1",     
             "CustID":"23",
