@@ -94,7 +94,9 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         //     MOHHeader,
         //     Ids
         // }
-        const RulerCheckColorRequestParameters = 
+        const RulerCheckColorRequestParameters = {
+            data:
+        
         {"RulerCheckColorRequest":{     
             "MOHHeader":{       
                 "ActivationID":"1",     
@@ -124,6 +126,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 ]
         }
         }
+    }
             
         const rulerLogger = logger.setup('client ruler logger setup');
         rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
