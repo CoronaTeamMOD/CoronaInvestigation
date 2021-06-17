@@ -13,8 +13,6 @@ import useGreenPassQuestioning from './useGreenPassQuestioning';
 const greenPassQuestionsTitle = 'הקפדה על נהלים:';
 const finalQuestionsTitle = 'מסקנת החוקר:';
 
-const relevantGreenPassQuestions = [1, 2, 3];
-
 const GreenPassQuestioning = (props :Props) => {
 
     const { greenPassInformation } = props;
@@ -29,41 +27,22 @@ const GreenPassQuestioning = (props :Props) => {
                 { greenPassQuestions.slice(0, -2).map((greenPassQuestion, index) => {
                     return (
                         <FormInput fieldName={greenPassQuestion.displayName} className={classes.field} isQuestion={true}>
-                            { relevantGreenPassQuestions.includes(index) ?
-                                <Controller
-                                    name={`${InteractionEventDialogFields.IS_GREEN_PASS}-${greenPassQuestion.id}`}
-                                    control={control}
-                                    defaultValue={greenPass.hasOwnProperty(greenPassQuestion.id) ? greenPass[greenPassQuestion.id] : undefined}
-                                    render={(props) => (
-                                        <CustomToggle
-                                            options={greenPassAnswers.slice(0,2)}
-                                            value={props.value}
-                                            onChange={(e, value) => {
-                                                if (value !== null) {
-                                                    props.onChange(value)
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                />
-                            :
-                                <Controller
-                                    name={`${InteractionEventDialogFields.IS_GREEN_PASS}-${greenPassQuestion.id}`}
-                                    control={control}
-                                    defaultValue={greenPass.hasOwnProperty(greenPassQuestion.id) ? greenPass[greenPassQuestion.id] : undefined}
-                                    render={(props) => (
-                                        <CustomToggle
-                                            options={greenPassAnswers.slice(0,3)}
-                                            value={props.value}
-                                            onChange={(e, value) => {
-                                                if (value !== null) {
-                                                    props.onChange(value)
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                />
-                            }
+                            <Controller
+                                name={`${InteractionEventDialogFields.IS_GREEN_PASS}-${greenPassQuestion.id}`}
+                                control={control}
+                                defaultValue={greenPass.hasOwnProperty(greenPassQuestion.id) ? greenPass[greenPassQuestion.id] : undefined}
+                                render={(props) => (
+                                    <CustomToggle
+                                        options={greenPassAnswers.slice(0,3)}
+                                        value={props.value}
+                                        onChange={(e, value) => {
+                                            if (value !== null) {
+                                                props.onChange(value)
+                                            }
+                                        }}
+                                    />
+                                )}
+                            />
                         </FormInput>
                     )
                 })}                 
