@@ -95,38 +95,35 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         //     Ids
         // }
         const RulerCheckColorRequestParameters = {
-            data:
-        
-        {"RulerCheckColorRequest":{     
-            "MOHHeader":{       
-                "ActivationID":"1",     
-                "CustID":"23",
-                "AppID":"123",
-                "SiteID":"2",       
-                "InterfaceID":"Ruler"
-            },
-            "Ids":[{
-                    "IdType":3,
-                    "IDnum":"??2563621",
-                    "DOB":"24011971",
-                    "Tel":"0542987778"
-                    },
-                    {
-                    "IdType":2,
-                    "IDnum":".T0901828",
-                    "DOB":"24011971",
-                    "Tel":"0542987778"
-                    },
-                    {
-                    "IdType":2,
-                    "IDnum":"?0901788",
-                    "DOB":"24011971",
-                    "Tel":"0542987778"
-                    }
-                ]
+            "RulerCheckColorRequest":{     
+                "MOHHeader":{       
+                    "ActivationID":"1",     
+                    "CustID":"23",
+                    "AppID":"123",
+                    "SiteID":"2",       
+                    "InterfaceID":"Ruler"
+                },
+                "Ids":[{
+                        "IdType":3,
+                        "IDnum":"??2563621",
+                        "DOB":"24011971",
+                        "Tel":"0542987778"
+                        },
+                        {
+                        "IdType":2,
+                        "IDnum":".T0901828",
+                        "DOB":"24011971",
+                        "Tel":"0542987778"
+                        },
+                        {
+                        "IdType":2,
+                        "IDnum":"?0901788",
+                        "DOB":"24011971",
+                        "Tel":"0542987778"
+                        }
+                    ]
+            }
         }
-        }
-    }
             
         const rulerLogger = logger.setup('client ruler logger setup');
         rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
