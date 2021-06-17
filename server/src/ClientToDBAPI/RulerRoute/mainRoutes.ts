@@ -50,7 +50,7 @@ rulerRoute.post('/rulerapi/', (req: Request, res: Response) => {
     axios.post(rulerApiUrl, parameters)
         .then((result) => {
             rulerLogger.info(launchingAPIRequestLog(result), Severity.LOW);
-            rulerLogger.info(validAPIResponseLog, Severity.LOW);
+            // rulerLogger.info(validAPIResponseLog, Severity.LOW);
             // setToCache(req.originalUrl, result.result);
             res.send(result);
         }
