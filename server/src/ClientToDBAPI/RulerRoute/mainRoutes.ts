@@ -44,11 +44,12 @@ rulerRoute.post('/rulerapi/', (req: Request, res: Response) => {
     const rulerLogger = logger.setup({
         workflow: `call ruler check color api with list of ids with parameters: ${JSON.stringify(parameters)}`,
     });
-    
+
     rulerLogger.info(launchingAPIRequestLog(parameters), Severity.LOW);
 
     axios.post(rulerApiUrl, JSON.stringify(parameters))
         .then((result) => {
+            rulerLogger.info(launchingAPIRequestLog(result), Severity.LOW);
             rulerLogger.info(validAPIResponseLog, Severity.LOW);
             // setToCache(req.originalUrl, result.result);
             res.send(result);
