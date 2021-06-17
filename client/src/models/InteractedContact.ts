@@ -27,6 +27,13 @@ interface InteractedContact extends Person {
     involvementReason: number | null;
     involvedContactId: number | null;
     placeName?: string;
-};
+    finalEpidemiologicalStatusDesc?: string;
+    ColorCode?: string;
+    certificateEligibilityTypeDesc?: string;
+    immuneDefinitionBasedOnSerologyStatusDesc?: string;
+    vaccinationStatusDesc?: string;
+    isolationReportStatusDesc?: string;
+    isolationObligationStatusDesc?: string;
+    };
 
 export default InteractedContact;

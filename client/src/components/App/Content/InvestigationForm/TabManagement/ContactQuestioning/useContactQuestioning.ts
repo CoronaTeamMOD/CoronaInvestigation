@@ -262,6 +262,17 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             involvedContactId: contact.involvedContactId,
                         })
                     });
+
+                    for(let interactedContact of interactedContacts){
+                        interactedContact.finalEpidemiologicalStatusDesc = "";
+                        interactedContact.ColorCode=""
+                        interactedContact.certificateEligibilityTypeDesc=""
+                        interactedContact.immuneDefinitionBasedOnSerologyStatusDesc=""
+                        interactedContact.vaccinationStatusDesc=""
+                        interactedContact.isolationReportStatusDesc=""
+                        interactedContact.isolationObligationStatusDesc=""
+                    }
+                    
                     setContactsLength(result.data.total);
                     const allContactsSoFar = [...allContactedInteractions, ...interactedContacts];
                     const groupedInteractedContacts = groupSimilarContactedPersons(allContactsSoFar);
