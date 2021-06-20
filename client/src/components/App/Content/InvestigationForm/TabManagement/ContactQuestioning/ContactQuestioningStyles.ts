@@ -117,7 +117,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     statusInfo: {
         backgroundColor: 'gray',
         color: '#ffffff',
-        // border: '2px solid white',
         height: '60px',
         padding: '4px 10px'
     }
