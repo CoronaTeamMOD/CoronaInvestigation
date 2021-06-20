@@ -52,9 +52,7 @@ const InteractedContactAccordion = (props: Props) => {
         return classesList.join(' ');
     };
 
-    const formValues = methods.getValues().form
-        ? methods.getValues().form[index]
-        : interactedContact;
+    const formValues = interactedContact;
 
     const getAccordion = React.useMemo(() => {
         return (

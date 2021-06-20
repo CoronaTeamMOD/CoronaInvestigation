@@ -50,21 +50,29 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
     });
 });
 
-ContactedPeopleRoute.get('/allContacts/:minimalDateToFilter', handleInvestigationRequest, (request: Request, response: Response) => {
+ContactedPeopleRoute.post('/allContacts/:minimalDateToFilter', handleInvestigationRequest, (request: Request, response: Response) => {
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const allContactsLogger = logger.setup({
         workflow: `query all investigation's contacts`,
         investigation: epidemiologyNumber,
         user: response.locals.user.id
     });
-    const parameters = { investigationId: epidemiologyNumber, minimalDateToFilter: new Date(request.params.minimalDateToFilter)}
+
+    const { size, currentPage } = request.body;
+
+    const parameters = { 
+        investigationId: epidemiologyNumber, 
+        minimalDateToFilter: new Date(request.params.minimalDateToFilter),
+        offset: currentPage ? ((currentPage - 1) * size) : null,
+        size: size ? size : null
+    }
     allContactsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     graphqlRequest(GET_CONTACTED_PEOPLE, response.locals, parameters)
         .then(result => {
             allContactsLogger.info(validDBResponseLog, Severity.LOW);
             const allContactedPersons = result.data.allContactedPeople.nodes;
             const convertedContacts = allContactedPersons.map((contact: any) => ({...contact, ...contact.involvementReason, ...contact.personByPersonInfo.personContactDetailByPersonInfo}));
-            response.send(convertedContacts);
+            response.send({convertedContacts,total:result.data.allContactedPeople.totalCount});
         })
         .catch(error => {
             allContactsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
@@ -124,8 +132,8 @@ ContactedPeopleRoute.post('/excel',  handleInvestigationRequest, async (request:
 
         try {
             excelLogger.info(`GET_FOREIGN_KEYS_BY_NAMES: ${launchingDBRequestLog(parsingVariables)}`, Severity.LOW);
-            const parsedForeignKeys = await graphqlRequest(GET_FOREIGN_KEYS_BY_NAMES, response.locals, parsingVariables)
-
+            const parsedForeignKeys = await graphqlRequest(GET_FOREIGN_KEYS_BY_NAMES, response.locals, parsingVariables);
+            
             const {allContactTypes, allFamilyRelationships, allContactStatuses} = parsedForeignKeys.data;
             const contactType = getIdFromResult(allContactTypes),
                 familyRelationship = getIdFromResult(allFamilyRelationships),

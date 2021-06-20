@@ -29,7 +29,6 @@ import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 import ValidationStatusSchema from './Schema/ValidationStatusSchema';
 import CommentInput from './InvestigationMenu/CommentDialog/CommentInput';
 import InvestigationStatusInfo from './InvestigationStatusInfo/InvestigationStatusInfo';
-import { setIsViewMode } from 'redux/Investigation/investigationActionCreators';
 
 const leaveInvestigationMessage = 'צא מחקירה';
 const saveStaticDetailsMessage = 'שמירת שינויים';

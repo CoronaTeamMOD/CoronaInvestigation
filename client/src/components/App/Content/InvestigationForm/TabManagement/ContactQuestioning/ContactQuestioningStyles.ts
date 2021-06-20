@@ -84,6 +84,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     fieldName: {
         alignSelf: 'center'
     },
+    numOfContacts: {
+        fontFamily: 'Assistant',
+        marginLeft: '20%'
+    },
+    loadMore: {
+        cursor: 'pointer',
+        color: 'slateblue',
+        font: 'caption'
+    }
 }));
 
 export default useStyles;
