@@ -201,16 +201,16 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     let contactsToApi = [];
                     const interactedContacts: InteractedContact[] = result.data.convertedContacts.map((contact: any) => {
                         // Save For API:
-                        const idType = !contact.personByPersonInfo.identificationType.id ? 3 : 
-                                       contact.personByPersonInfo.identificationType.id === 4 ? 3 :
-                                       contact.personByPersonInfo.identificationType.id === 5 ? 4 :
-                                       contact.personByPersonInfo.identificationType.id;
-                        contactsToApi.push({
-                            idType,
-                            IDnum: contact.personByPersonInfo.identificationNumber,
-                            DOB: new Date(contact.personByPersonInfo.birthDate).toLocaleDateString(),
-                            Tel: contact.personByPersonInfo.phoneNumber  
-                        });
+                        // const idType = !contact.personByPersonInfo.identificationType.id ? 3 : 
+                        //                contact.personByPersonInfo.identificationType.id === 4 ? 3 :
+                        //                contact.personByPersonInfo.identificationType.id === 5 ? 4 :
+                        //                contact.personByPersonInfo.identificationType.id;
+                        // contactsToApi.push({
+                        //     idType,
+                        //     IDnum: contact.personByPersonInfo.identificationNumber,
+                        //     DOB: new Date(contact.personByPersonInfo.birthDate).toLocaleDateString(),
+                        //     Tel: contact.personByPersonInfo.phoneNumber  
+                        // });
                         
                         return ({
                             personInfo: contact.personInfo,
@@ -265,15 +265,15 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
                     // CALL API
                     // Set values in the cintacts array
-                    for(let interactedContact of interactedContacts){
-                        interactedContact.finalEpidemiologicalStatusDesc = "";
-                        interactedContact.ColorCode=""
-                        interactedContact.certificateEligibilityTypeDesc=""
-                        interactedContact.immuneDefinitionBasedOnSerologyStatusDesc=""
-                        interactedContact.vaccinationStatusDesc=""
-                        interactedContact.isolationReportStatusDesc=""
-                        interactedContact.isolationObligationStatusDesc=""
-                    }
+                    // for(let interactedContact of interactedContacts){
+                    //     interactedContact.finalEpidemiologicalStatusDesc = "";
+                    //     interactedContact.ColorCode=""
+                    //     interactedContact.certificateEligibilityTypeDesc=""
+                    //     interactedContact.immuneDefinitionBasedOnSerologyStatusDesc=""
+                    //     interactedContact.vaccinationStatusDesc=""
+                    //     interactedContact.isolationReportStatusDesc=""
+                    //     interactedContact.isolationObligationStatusDesc=""
+                    // }
                     
                     setContactsLength(result.data.total);
                     const allContactsSoFar = [...allContactedInteractions, ...interactedContacts];
