@@ -59,7 +59,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             .finally(() => setIsLoading(false));
     };
 
-    const getRulerApiDataFromServer = () => {
+    const getRulerApiDataFromServer = (ids : any []) => {
         const RulerCheckColorRequestParameters = {
             "RulerCheckColorRequest":{     
                 "MOHHeader":{       
@@ -69,25 +69,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     "SiteID":"2",       
                     "InterfaceID":"Ruler"
                 },
-                "Ids":[{
-                        "IdType":3,
-                        "IDnum":"??2563621",
-                        "DOB":"24011971",
-                        "Tel":"0542987778"
-                        },
-                        {
-                        "IdType":2,
-                        "IDnum":".T0901828",
-                        "DOB":"24011971",
-                        "Tel":"0542987778"
-                        },
-                        {
-                        "IdType":2,
-                        "IDnum":"?0901788",
-                        "DOB":"24011971",
-                        "Tel":"0542987778"
-                        }
-                    ]
+                "Ids":ids
             }
         }
             
@@ -99,6 +81,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             console.log('ruler client got response: ' , response)
             if (response.data?.ColorData) {
                 rulerLogger.info('got response from the ruler server', Severity.LOW);
+                return response.data;
             }
         })
         .catch((err) => {
@@ -198,7 +181,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         Severity.LOW
                     );
 
-                    let contactsToApi = [];
+                    //let contactsToApi: any[] = [];
+
                     const interactedContacts: InteractedContact[] = result.data.convertedContacts.map((contact: any) => {
                         // Save For API:
                         // const idType = !contact.personByPersonInfo.identificationType.id ? 3 : 
@@ -264,6 +248,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     });
 
                     // CALL API
+                    // const resultFromAPI = getRulerApiDataFromServer(contactsToApi);
                     // Set values in the cintacts array
                     // for(let interactedContact of interactedContacts){
                     //     interactedContact.finalEpidemiologicalStatusDesc = "";
