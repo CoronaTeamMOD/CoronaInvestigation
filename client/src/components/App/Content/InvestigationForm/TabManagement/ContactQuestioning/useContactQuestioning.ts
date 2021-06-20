@@ -201,14 +201,15 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
                     let contactsToApi = [];
                     const interactedContacts: InteractedContact[] = result.data.convertedContacts.map((contact: any) => {
-                        const idType = !contact.personByPersonInfo.identificationType ? 3 : 
-                                       contact.personByPersonInfo.identificationType === 4 ? 3 :
-                                       contact.personByPersonInfo.identificationType === 5 ? 4 :
-                                       contact.personByPersonInfo.identificationType;
+                        // Save For API:
+                        const idType = !contact.personByPersonInfo.identificationType.id ? 3 : 
+                                       contact.personByPersonInfo.identificationType.id === 4 ? 3 :
+                                       contact.personByPersonInfo.identificationType.id === 5 ? 4 :
+                                       contact.personByPersonInfo.identificationType.id;
                         contactsToApi.push({
                             idType,
                             IDnum: contact.personByPersonInfo.identificationNumber,
-                            DOB: contact.personByPersonInfo.birthDate,
+                            DOB: new Date(contact.personByPersonInfo.birthDate).toLocaleDateString(),
                             Tel: contact.personByPersonInfo.phoneNumber  
                         });
                         
@@ -263,6 +264,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         })
                     });
 
+                    // CALL API
+                    // Set values in the cintacts array
                     for(let interactedContact of interactedContacts){
                         interactedContact.finalEpidemiologicalStatusDesc = "";
                         interactedContact.ColorCode=""
