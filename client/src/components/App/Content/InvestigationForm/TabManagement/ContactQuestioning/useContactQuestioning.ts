@@ -77,17 +77,15 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
         setIsLoading(true);
         return await axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters)
-        .then((response) => {
-            console.log('ruler client got response: ' , response)
-            if (response.data?.ColorData) {
+        .then((response: any) => {
+            if (response?.ColorData) {
                 rulerLogger.info('got response from the ruler server', Severity.LOW);
-                return response.data;
+                return response;
             } else {
                 alertError('חלה שגיאה בקבלת נתונים משירות הרמזור');
             }
         })
         .catch((err) => {
-            console.log('ruler client got err: ' , err)
             rulerLogger.error(`got the following error from the ruler server: ${err}`, Severity.HIGH);
             alertError('חלה שגיאה בקבלת נתונים משירות הרמזור');
             return err;
