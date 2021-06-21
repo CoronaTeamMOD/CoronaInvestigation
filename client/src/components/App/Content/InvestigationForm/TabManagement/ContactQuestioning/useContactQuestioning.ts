@@ -78,9 +78,9 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         setIsLoading(true);
         return await axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters)
         .then((response: any) => {
-            if (response?.ColorData) {
+            if (response.data?.ColorData) {
                 rulerLogger.info('got response from the ruler server', Severity.LOW);
-                return response;
+                return response.data;
             } else {
                 alertError('חלה שגיאה בקבלת נתונים משירות הרמזור');
             }
