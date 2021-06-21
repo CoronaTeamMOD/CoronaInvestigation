@@ -86,7 +86,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             }
         })
         .catch((err) => {
-            console.log('ruler client got err: ' , err)
             rulerLogger.error(`got the following error from the ruler server: ${err}`, Severity.HIGH);
             alertError('חלה שגיאה בקבלת נתונים משירות הרמזור');
             return err;
