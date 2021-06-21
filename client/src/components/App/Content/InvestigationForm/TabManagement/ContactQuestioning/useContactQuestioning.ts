@@ -59,7 +59,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             .finally(() => setIsLoading(false));
     };
 
-    const getRulerApiDataFromServer = (ids : any []) => {
+    const getRulerApiDataFromServer = async (ids : any []) => {
         const RulerCheckColorRequestParameters = {
             "RulerCheckColorRequest":{     
                 "MOHHeader":{       
@@ -76,7 +76,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         const rulerLogger = logger.setup('client ruler logger setup');
         rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
         setIsLoading(true);
-        axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters)
+        return await axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters)
         .then((response) => {
             console.log('ruler client got response: ' , response)
             if (response.data?.ColorData) {
@@ -88,6 +88,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             console.log('ruler client got err: ' , err)
             rulerLogger.error(`got the following error from the ruler server: ${err}`, Severity.HIGH);
             alertError('חלה שגיאה בקבלת נתונים משירות הרמזור');
+            return err;
         })
         .finally(() => setIsLoading(false));
     };
@@ -245,22 +246,31 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             creationTime: contact.creationTime,
                             involvementReason: contact.involvementReason,
                             involvedContactId: contact.involvedContactId,
+                            finalEpidemiologicalStatusDesc: 'אין נתונים',
+                            colorCode: 'אין נתונים',
+                            certificateEligibilityTypeDesc: 'אין נתונים',
+                            immuneDefinitionBasedOnSerologyStatusDesc: 'אין נתונים',
+                            vaccinationStatusDesc: 'אין נתונים',
+                            isolationReportStatusDesc: 'אין נתונים',
+                            isolationObligationStatusDesc: 'אין נתונים'
                         })
                     };
 
                     // CALL API
-                    const resultFromAPI = getRulerApiDataFromServer(contactsToApi);
-                    
-                    //Set values in the cintacts array
-                    for(let interactedContact of interactedContacts){
-                        interactedContact.finalEpidemiologicalStatusDesc = "";
-                        interactedContact.colorCode=""
-                        interactedContact.certificateEligibilityTypeDesc=""
-                        interactedContact.immuneDefinitionBasedOnSerologyStatusDesc=""
-                        interactedContact.vaccinationStatusDesc=""
-                        interactedContact.isolationReportStatusDesc=""
-                        interactedContact.isolationObligationStatusDesc=""
-                    }
+                    getRulerApiDataFromServer(contactsToApi).then((resultFromAPI) => {
+                        //Set values in the cintacts array
+                        if(resultFromAPI?.ColorData) {
+                            for (let interactedContact in interactedContacts){
+                                interactedContacts[interactedContact].finalEpidemiologicalStatusDesc = resultFromAPI.ColorData[interactedContact]?.finalEpidemiologicalStatusDesc;
+                                interactedContacts[interactedContact].colorCode = resultFromAPI.ColorData[interactedContact]?.colorCode;
+                                interactedContacts[interactedContact].certificateEligibilityTypeDesc = resultFromAPI.ColorData[interactedContact]?.certificateEligibilityTypeDesc;
+                                interactedContacts[interactedContact].immuneDefinitionBasedOnSerologyStatusDesc = resultFromAPI.ColorData[interactedContact]?.immuneDefinitionBasedOnSerologyStatusDesc;
+                                interactedContacts[interactedContact].vaccinationStatusDesc = resultFromAPI.ColorData[interactedContact]?.vaccinationStatusDesc;
+                                interactedContacts[interactedContact].isolationReportStatusDesc = resultFromAPI.ColorData[interactedContact]?.isolationReportStatusDesc; 
+                                interactedContacts[interactedContact].isolationObligationStatusDesc = resultFromAPI.ColorData[interactedContact]?.isolationObligationStatusDesc;
+                            }
+                        }
+                    });
                     
                     setContactsLength(result.data.total);
                     const allContactsSoFar = [...allContactedInteractions, ...interactedContacts];
