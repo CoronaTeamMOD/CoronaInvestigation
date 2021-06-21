@@ -181,22 +181,23 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         Severity.LOW
                     );
 
-                    //let contactsToApi: any[] = [];
+                    let contactsToApi: any[] = [];
 
-                    const interactedContacts: InteractedContact[] = result.data.convertedContacts.map((contact: any) => {
+                    const interactedContacts: InteractedContact[] = []
+                    for (let contact of result.data.convertedContacts) {
                         // Save For API:
-                        // const idType = !contact.personByPersonInfo.identificationType.id ? 3 : 
-                        //                contact.personByPersonInfo.identificationType.id === 4 ? 3 :
-                        //                contact.personByPersonInfo.identificationType.id === 5 ? 4 :
-                        //                contact.personByPersonInfo.identificationType.id;
-                        // contactsToApi.push({
-                        //     idType,
-                        //     IDnum: contact.personByPersonInfo.identificationNumber,
-                        //     DOB: new Date(contact.personByPersonInfo.birthDate).toLocaleDateString(),
-                        //     Tel: contact.personByPersonInfo.phoneNumber  
-                        // });
+                        let idType = !contact.personByPersonInfo.identificationType?.id ? 3 : 
+                                       contact.personByPersonInfo.identificationType?.id === 4 ? 3 :
+                                       contact.personByPersonInfo.identificationType?.id === 5 ? 4 :
+                                       contact.personByPersonInfo.identificationType?.id;
+                        contactsToApi.push({
+                            idType,
+                            IDnum: contact.personByPersonInfo.identificationNumber,
+                            DOB: new Date(contact.personByPersonInfo.birthDate).toLocaleDateString(),
+                            Tel: contact.personByPersonInfo.phoneNumber  
+                        });
                         
-                        return ({
+                        interactedContacts.push({
                             personInfo: contact.personInfo,
                             placeName: contact.contactEventByContactEvent.placeName,
                             id: contact.id,
@@ -245,20 +246,21 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             involvementReason: contact.involvementReason,
                             involvedContactId: contact.involvedContactId,
                         })
-                    });
+                    };
 
                     // CALL API
-                    // const resultFromAPI = getRulerApiDataFromServer(contactsToApi);
-                    // Set values in the cintacts array
-                    // for(let interactedContact of interactedContacts){
-                    //     interactedContact.finalEpidemiologicalStatusDesc = "";
-                    //     interactedContact.ColorCode=""
-                    //     interactedContact.certificateEligibilityTypeDesc=""
-                    //     interactedContact.immuneDefinitionBasedOnSerologyStatusDesc=""
-                    //     interactedContact.vaccinationStatusDesc=""
-                    //     interactedContact.isolationReportStatusDesc=""
-                    //     interactedContact.isolationObligationStatusDesc=""
-                    // }
+                    const resultFromAPI = getRulerApiDataFromServer(contactsToApi);
+                    
+                    //Set values in the cintacts array
+                    for(let interactedContact of interactedContacts){
+                        interactedContact.finalEpidemiologicalStatusDesc = "";
+                        interactedContact.ColorCode=""
+                        interactedContact.certificateEligibilityTypeDesc=""
+                        interactedContact.immuneDefinitionBasedOnSerologyStatusDesc=""
+                        interactedContact.vaccinationStatusDesc=""
+                        interactedContact.isolationReportStatusDesc=""
+                        interactedContact.isolationObligationStatusDesc=""
+                    }
                     
                     setContactsLength(result.data.total);
                     const allContactsSoFar = [...allContactedInteractions, ...interactedContacts];
