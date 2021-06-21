@@ -3,7 +3,7 @@ import { ExpandMore } from '@material-ui/icons';
 import { useFormContext } from 'react-hook-form';
 import {
     Accordion, AccordionDetails, AccordionSummary,
-    AccordionActions, Divider, Grid
+    AccordionActions, Divider, Grid, Collapse
 } from '@material-ui/core';
 
 import ContactStatus from 'models/ContactStatus';
