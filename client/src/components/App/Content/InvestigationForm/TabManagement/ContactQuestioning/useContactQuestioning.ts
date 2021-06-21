@@ -77,8 +77,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
         setIsLoading(true);
         return await axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters)
-        .then((response) => {
-            console.log('ruler client got response: ' , response)
+        .then((response: any) => {
             if (response.data?.ColorData) {
                 rulerLogger.info('got response from the ruler server', Severity.LOW);
                 return response.data;
