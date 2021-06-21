@@ -77,9 +77,6 @@ const InteractedContactAccordion = (props: Props) => {
                             isViewMode={isViewMode}
                         />
                     </AccordionSummary>
-                    {/* <Collapse in={true}>
-bla bla bla
-                    </Collapse> */}
                     <AccordionDetails>
                         <Grid container wrap='nowrap'>
                             <ContactQuestioningPersonal

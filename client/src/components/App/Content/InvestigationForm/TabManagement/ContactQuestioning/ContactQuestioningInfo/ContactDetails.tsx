@@ -50,8 +50,7 @@ const ContactDetails = (props: Props) => {
     const handleStatusInfoClick = (event: React.ChangeEvent<{}>) => {
         event.stopPropagation();
         setShowRulerStatusInfo(!showRulerStatusInfo);
-
-    }
+    };
     const colorCode = 'אין נתונים'//interactedContact.colorCode;
     
     const generateBackgroundColorClass = (colorCode: Number | any) => {
