@@ -6,8 +6,8 @@ import UseCache, { setToCache } from '../../middlewares/UseCache';
 import logger, { invalidAPIResponseLog, launchingAPIRequestLog, validAPIResponseLog, } from '../../Logger/Logger';
 
 const rulerRoute = Router();
-// const rulerApiUrl = `http://192.168.2.26:8888/Corona/RulerCheckColor`;
-const rulerApiUrl = `https://moh-internal-api-m.azure-api.net/epiinvappbacktest/Corona/RulerCheckColor`;
+const rulerApiUrl = `http://192.168.2.26:8888/Corona/RulerCheckColor`;
+// const rulerApiUrl = `https://moh-internal-api-m.azure-api.net/epiinvappbacktest/Corona/RulerCheckColor`;
 
 const errorStatusCode = 500;
 
