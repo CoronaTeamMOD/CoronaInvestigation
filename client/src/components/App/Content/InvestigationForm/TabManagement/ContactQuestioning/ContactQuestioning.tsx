@@ -108,7 +108,6 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                                 );
                             } 
                         )}
-                        <div onClick={()=>{getRulerApiDataFromServer()}}>לחץ להדפסת נתוני הרמזור - סרבר</div>
                     </Grid>
                 </form>
             </FormProvider>
