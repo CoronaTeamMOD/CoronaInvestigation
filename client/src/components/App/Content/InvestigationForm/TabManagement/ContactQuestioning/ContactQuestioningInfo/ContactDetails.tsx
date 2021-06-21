@@ -51,7 +51,7 @@ const ContactDetails = (props: Props) => {
         event.stopPropagation();
         setShowRulerStatusInfo(!showRulerStatusInfo);
     };
-    const colorCode = interactedContact.colorCode ? interactedContact.colorCode : 'אין נתונים';
+    const colorCode = interactedContact.colorCode;
     
     const generateBackgroundColorClass = (colorCode: Number | any) => {
         switch (colorCode) {

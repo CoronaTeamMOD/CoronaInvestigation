@@ -188,7 +188,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
                     const interactedContacts: InteractedContact[] = []
                     for (let contact of result.data.convertedContacts) {
-                        // Save For API:
+
                         let idType = !contact.personByPersonInfo.identificationType?.id ? 3 : 
                                        contact.personByPersonInfo.identificationType?.id === 4 ? 3 :
                                        contact.personByPersonInfo.identificationType?.id === 5 ? 4 :
@@ -258,9 +258,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         })
                     };
 
-                    // CALL API
                     getRulerApiDataFromServer(contactsToApi).then((resultFromAPI) => {
-                        //Set values in the cintacts array
                         if(resultFromAPI?.ColorData) {
                             for (let interactedContact in interactedContacts){
                                 interactedContacts[interactedContact].finalEpidemiologicalStatusDesc = resultFromAPI.ColorData[interactedContact]?.finalEpidemiologicalStatusDesc;
