@@ -34,5 +34,5 @@ export interface useContactQuestioningOutcome {
         person: GroupedInteractedContact,
         index: number
     ) => InteractedContact;
-    getRulerApiDataFromServer: () => void;
+    getRulerApiDataFromServer: (ids: any[]) => any;
 }

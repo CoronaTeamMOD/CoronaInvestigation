@@ -51,7 +51,7 @@ const ContactDetails = (props: Props) => {
         event.stopPropagation();
         setShowRulerStatusInfo(!showRulerStatusInfo);
     };
-    const colorCode = 'אין נתונים'//interactedContact.colorCode;
+    const colorCode = interactedContact.colorCode;
     
     const generateBackgroundColorClass = (colorCode: Number | any) => {
         switch (colorCode) {
@@ -88,8 +88,7 @@ const ContactDetails = (props: Props) => {
                     תחלואה:
                     </Typography>
                     <Typography variant='body2' className={classes.contactDetail }>
-                    <b>אין נתונים</b> 
-                    {/* interactedContact.certificateEligibilityTypeDesc */}
+                    <b>{interactedContact.certificateEligibilityTypeDesc}</b>
                     </Typography>
                 </Grid>
                 <Grid container item xs={3} direction='column'>
@@ -97,8 +96,7 @@ const ContactDetails = (props: Props) => {
                     חסינות סרולוגית:
                     </Typography>
                     <Typography variant='body2' className={classes.contactDetail }>
-                    <b>אין נתונים</b> 
-                    {/* interactedContact.immuneDefinitionBasedOnSerologyStatusDesc  */}
+                    <b>{interactedContact.immuneDefinitionBasedOnSerologyStatusDesc}</b> 
                     </Typography>
                 </Grid>
                 <Grid container item xs={2} direction='column'>
@@ -106,8 +104,7 @@ const ContactDetails = (props: Props) => {
                     התחסנות:
                     </Typography>
                     <Typography variant='body2' className={classes.contactDetail }>
-                    <b>אין נתונים</b> 
-                    {/* interactedContact.vaccinationStatusDesc  */}
+                    <b>{interactedContact.vaccinationStatusDesc}</b>
                     </Typography>
                 </Grid>
                 <Grid container item xs={2} direction='column'>
@@ -115,8 +112,7 @@ const ContactDetails = (props: Props) => {
                     דיווח בידוד:
                     </Typography>
                     <Typography variant='body2' className={classes.contactDetail }>
-                    <b>אין נתונים</b> 
-                    {/* interactedContact.isolationReportStatusDesc  */}
+                    <b>{interactedContact.isolationReportStatusDesc}</b>
                     </Typography>
                 </Grid>
                 <Grid container item xs={2} direction='column'>
@@ -124,8 +120,7 @@ const ContactDetails = (props: Props) => {
                     חובת בידוד:
                     </Typography>
                     <Typography variant='body2' className={classes.contactDetail }>
-                    <b>אין נתונים</b> 
-                    {/* interactedContact.isolationObligationStatusDesc  */}
+                    <b>{interactedContact.isolationObligationStatusDesc}</b>
                     </Typography>
                 </Grid>
             </Grid>
