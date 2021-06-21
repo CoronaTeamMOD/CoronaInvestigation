@@ -1,4 +1,4 @@
-import axios  from 'axios';
+import axios from 'axios';
 import { useSelector } from 'react-redux';
 
 import theme from 'styles/theme';
@@ -17,6 +17,7 @@ import { transferredSubStatus } from 'components/App/Content/LandingPage/Investi
 
 import { inProcess } from './InvestigatedPersonInfo';
 import { InvestigatedPersonInfoIncome, InvestigatedPersonInfoOutcome, StaticFieldsFormInputs } from './InvestigatedPersonInfoInterfaces';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): InvestigatedPersonInfoOutcome => {
     const { setStaticFieldsChange } = parameters;
@@ -47,11 +48,15 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
         const statusReason = investigationStatus.statusReason === '' ? null : investigationStatus.statusReason;
         const updateInvestigationStatusLogger = logger.setup('Update Investigation Status');
         updateInvestigationStatusLogger.info('launching investigation status request', Severity.LOW);
+        const startTime = investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS && investigationStatus.previousStatus === InvestigationMainStatusCodes.NEW 
+        ? new Date() 
+        : undefined;
         investigationStatus.mainStatus !== DEFAULT_INVESTIGATION_STATUS && await axios.post('/investigationInfo/updateInvestigationStatus', {
             investigationMainStatus: investigationStatus.mainStatus,
             investigationSubStatus: subStatus !== inProcess ? subStatus : null,
             statusReason: statusReason,
-            epidemiologyNumber: epidemiologyNumber
+            epidemiologyNumber: epidemiologyNumber,
+            startTime
         }).then(() => {
             updateInvestigationStatusLogger.info('update investigation status request was successful', Severity.LOW);
         }).catch((error) => {
@@ -97,18 +102,18 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
         axios.post('/investigationInfo/updateStaticInfo', ({
             data
         }))
-        .then(() => {
-            updateStaticFieldsLogger.info('updated static info successfully', Severity.LOW);
-            setIsLoading(false);
-            setStaticFieldsChange(false);
-        })
-        .catch((error) => {
-            updateStaticFieldsLogger.error(`got error from server: ${error}`, Severity.HIGH);
-            alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
-            setIsLoading(false);
-        })
+            .then(() => {
+                updateStaticFieldsLogger.info('updated static info successfully', Severity.LOW);
+                setIsLoading(false);
+                setStaticFieldsChange(false);
+            })
+            .catch((error) => {
+                updateStaticFieldsLogger.error(`got error from server: ${error}`, Severity.HIGH);
+                alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
+                setIsLoading(false);
+            })
     };
-  
+
     return {
         confirmExitUnfinishedInvestigation,
         staticFieldsSubmit

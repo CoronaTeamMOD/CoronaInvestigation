@@ -92,6 +92,33 @@ const useStyles = makeStyles((theme: Theme) => ({
         cursor: 'pointer',
         color: 'slateblue',
         font: 'caption'
+    },
+    red:{
+        background: '#ff8080',
+    },
+    orange: {
+        background: '#ffbf80',
+    },
+    green: {
+        background: '#b3ffcc',
+    },
+    yellow: {
+        background: '#ffff99',
+    },
+    white: {
+        backgroundColor: '#ffffff'
+    },
+    statusInfoBtn: {
+        backgroundColor: 'gray',
+        color: '#ffffff',
+        cursor: 'pointer',
+        border: '1px solid white',
+    },
+    statusInfo: {
+        backgroundColor: 'gray',
+        color: '#ffffff',
+        height: '60px',
+        padding: '4px 10px'
     }
 }));
 

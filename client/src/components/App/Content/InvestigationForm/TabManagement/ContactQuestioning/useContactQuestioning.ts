@@ -60,40 +60,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const getRulerApiDataFromServer = () => {
-        
-        // const MOHHeader= {
-        //     MOHHeader: {
-        //         ActivationID: '1',
-        //         CustID: '23',
-        //         AppID: '123',
-        //         SiteID: '2',
-        //         InterfaceID: 'Ruler'
-        //     }
-        // }
-
-        // const Ids= [{
-        //         IdType: 3,
-        //         IDnum: '??2563621',
-        //         DOB: '24011971',
-        //         Tel: '0542987778'
-        //     },
-        //     {
-        //         IdType: 2,
-        //         IDnum: '.T0901828',
-        //         DOB: '24011971',
-        //         Tel: '0542987778'
-        //     },
-        //     {
-        //         IdType: 2,
-        //         IDnum: '?0901788',
-        //         DOB: '24011971',
-        //         Tel: '0542987778'
-        //     }
-        // ]
-        // const RulerCheckColorRequestParameters = { RulerCheckColorRequest: 
-        //     MOHHeader,
-        //     Ids
-        // }
         const RulerCheckColorRequestParameters = {
             "RulerCheckColorRequest":{     
                 "MOHHeader":{       
