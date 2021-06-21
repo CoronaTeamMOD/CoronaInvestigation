@@ -21,7 +21,6 @@ import { IndexedInvestigationData, TableHeadersNames } from '../InvestigationTab
 import InvestigatorAllocationCell from '../InvestigatorAllocation/InvestigatorAllocationCell';
 import InvestigationStatusColumn from '../InvestigationStatusColumn/InvestigationStatusColumn';
 import InvestigationIndicatorsColumn from '../InvestigationIndicatorsColumn/InvestigationIndicatorsColumn';
-import { setIsViewMode } from 'redux/Investigation/investigationActionCreators';
 
 interface RowTooltipProps {
     titleOverride?: string;

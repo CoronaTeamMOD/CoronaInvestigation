@@ -59,27 +59,40 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             .finally(() => setIsLoading(false));
     };
 
-    const getRulerApiData = (parameters: JSON) => {
-        const rulerApiUrl = `http://192.168.2.26:8888/Corona/RulerCheckColor`;
-        return axios.post(rulerApiUrl, parameters)
-            .then((response) => {
-                console.log('response', response);
-            })
-            .catch((err) => {
-                console.log('error', err);
-            })
-            .finally(() => console.log('finally'));
-    }
-
-    const getRulerApiDataFromServer = () => {
-        return axios.post('/ruler/rulerapi')
-            .then((response) => {
-                return response;
-            })
-            .catch((err) => {
-                return err;
-            })
-            .finally(() => console.log('finally'));
+    const getRulerApiDataFromServer = async (ids : any []) => {
+        const RulerCheckColorRequestParameters = {
+            "RulerCheckColorRequest":{     
+                "MOHHeader":{       
+                    "ActivationID":"1",     
+                    "CustID":"23",
+                    "AppID":"123",
+                    "SiteID":"2",       
+                    "InterfaceID":"Ruler"
+                },
+                "Ids":ids
+            }
+        }
+            
+        const rulerLogger = logger.setup('client ruler logger setup');
+        rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
+        setIsLoading(true);
+        return await axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters)
+        .then((response) => {
+            console.log('ruler client got response: ' , response)
+            if (response.data?.ColorData) {
+                rulerLogger.info('got response from the ruler server', Severity.LOW);
+                return response.data;
+            } else {
+                alertError('חלה שגיאה בקבלת נתונים משירות הרמזור');
+            }
+        })
+        .catch((err) => {
+            console.log('ruler client got err: ' , err)
+            rulerLogger.error(`got the following error from the ruler server: ${err}`, Severity.HIGH);
+            alertError('חלה שגיאה בקבלת נתונים משירות הרמזור');
+            return err;
+        })
+        .finally(() => setIsLoading(false));
     };
 
     const saveContact = (interactedContact: InteractedContact): boolean => {
@@ -170,8 +183,24 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         'got respond from the server that has data',
                         Severity.LOW
                     );
-                    const interactedContacts: InteractedContact[] = result.data.convertedContacts.map((contact: any) => {
-                        return ({
+
+                    let contactsToApi: any[] = [];
+
+                    const interactedContacts: InteractedContact[] = []
+                    for (let contact of result.data.convertedContacts) {
+
+                        let idType = !contact.personByPersonInfo.identificationType?.id ? 3 : 
+                                       contact.personByPersonInfo.identificationType?.id === 4 ? 3 :
+                                       contact.personByPersonInfo.identificationType?.id === 5 ? 4 :
+                                       contact.personByPersonInfo.identificationType?.id;
+                        contactsToApi.push({
+                            idType,
+                            IDnum: contact.personByPersonInfo.identificationNumber,
+                            DOB: new Date(contact.personByPersonInfo.birthDate).toLocaleDateString(),
+                            Tel: contact.personByPersonInfo.phoneNumber  
+                        });
+                        
+                        interactedContacts.push({
                             personInfo: contact.personInfo,
                             placeName: contact.contactEventByContactEvent.placeName,
                             id: contact.id,
@@ -219,8 +248,30 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             creationTime: contact.creationTime,
                             involvementReason: contact.involvementReason,
                             involvedContactId: contact.involvedContactId,
+                            finalEpidemiologicalStatusDesc: 'אין נתונים',
+                            colorCode: 'אין נתונים',
+                            certificateEligibilityTypeDesc: 'אין נתונים',
+                            immuneDefinitionBasedOnSerologyStatusDesc: 'אין נתונים',
+                            vaccinationStatusDesc: 'אין נתונים',
+                            isolationReportStatusDesc: 'אין נתונים',
+                            isolationObligationStatusDesc: 'אין נתונים'
                         })
+                    };
+
+                    getRulerApiDataFromServer(contactsToApi).then((resultFromAPI) => {
+                        if(resultFromAPI?.ColorData) {
+                            for (let interactedContact in interactedContacts){
+                                interactedContacts[interactedContact].finalEpidemiologicalStatusDesc = resultFromAPI.ColorData[interactedContact]?.finalEpidemiologicalStatusDesc;
+                                interactedContacts[interactedContact].colorCode = resultFromAPI.ColorData[interactedContact]?.colorCode;
+                                interactedContacts[interactedContact].certificateEligibilityTypeDesc = resultFromAPI.ColorData[interactedContact]?.certificateEligibilityTypeDesc;
+                                interactedContacts[interactedContact].immuneDefinitionBasedOnSerologyStatusDesc = resultFromAPI.ColorData[interactedContact]?.immuneDefinitionBasedOnSerologyStatusDesc;
+                                interactedContacts[interactedContact].vaccinationStatusDesc = resultFromAPI.ColorData[interactedContact]?.vaccinationStatusDesc;
+                                interactedContacts[interactedContact].isolationReportStatusDesc = resultFromAPI.ColorData[interactedContact]?.isolationReportStatusDesc; 
+                                interactedContacts[interactedContact].isolationObligationStatusDesc = resultFromAPI.ColorData[interactedContact]?.isolationObligationStatusDesc;
+                            }
+                        }
                     });
+                    
                     setContactsLength(result.data.total);
                     const allContactsSoFar = [...allContactedInteractions, ...interactedContacts];
                     const groupedInteractedContacts = groupSimilarContactedPersons(allContactsSoFar);
@@ -363,7 +414,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         checkAllContactsForDuplicateIds,
         onSubmit,
         parsePerson,
-        getRulerApiData,
         getRulerApiDataFromServer
     };
 };

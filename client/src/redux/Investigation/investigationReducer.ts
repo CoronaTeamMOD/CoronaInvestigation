@@ -46,7 +46,7 @@ const investigationReducer = (state = initialState, action: Actions.Investigatio
         case Actions.SET_AXIOS_INTERCEPTOR_ID: return { ...state, axiosInterceptorId: action.payload.axiosInterceptorId }
         case Actions.SET_IS_CURRENTLY_LOADING: return { ...state, isCurrentlyLoading: action.payload.isCurrentlyLoading }
         case Actions.SET_LAST_OPENED_EPIDEMIOLOGY_NUM: return { ...state, lastOpenedEpidemiologyNumber: action.payload.lastOpenedEpidemiologyNumber }
-        case Actions.SET_INVESTIGATION_STATUS: return { ...state, investigationStatus: action.payload.investigationStatus }
+        case Actions.SET_INVESTIGATION_STATUS: return { ...state, investigationStatus: { ...action.payload.investigationStatus, previousStatus: state.investigationStatus.mainStatus } }
         case Actions.SET_DATES_TO_INVESTIGATE_PARAMS: {
             const { validationDate: newValidationDate, symptomsExistenceInfo } = action.payload;
             const validationDate = newValidationDate || state.validationDate;

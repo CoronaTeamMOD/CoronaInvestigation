@@ -22,11 +22,12 @@ const useTabManagement = ({lastTabDisplayedId}: {lastTabDisplayedId: number}) =>
     const nextTab: RefObject<number> = useRef<number>(0);
     const epidemiologyNumber = useSelector<StoreStateType, number>(store => store.investigation.epidemiologyNumber);
     const tabsValidations  = useSelector<StoreStateType, (boolean | null)[]>(store => store.formsValidations[epidemiologyNumber]);
+    const isViewMode  = useSelector<StoreStateType, boolean>(store => store.investigation.isViewMode);
     
     useEffect(() => {
         if (tabsValidations !== undefined) {
             const areTabsNotValid: boolean = validTabsBeforeExport.some(tabId => !tabsValidations[tabId]);
-            if (exportToMabarTabs.includes(nextTab.current as number) && areTabsNotValid) {
+            if (exportToMabarTabs.includes(nextTab.current as number) && areTabsNotValid && !isViewMode) {
                 alertError('חלק מן השדות אינם תקינים, נא מלא אותם מחדש ונסה שוב.', {
                     text: 'שים לב שלא עברת בחלק מהטאבים'
                 });

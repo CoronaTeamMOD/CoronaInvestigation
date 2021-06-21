@@ -4,7 +4,6 @@ import MuiAlert from '@material-ui/lab/Alert';
 import StoreStateType from 'redux/storeStateType';
 import Snackbar from '@material-ui/core/Snackbar';
 import { Grid, Paper, Card } from '@material-ui/core';
-import { connect } from 'react-redux'
 import { setFormState } from 'redux/Form/formActionCreators';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
 import {
@@ -118,4 +117,4 @@ const InvestigationForm: React.FC = (props): JSX.Element => {
     )
 }
 
-export default (InvestigationForm);
+export default InvestigationForm;
