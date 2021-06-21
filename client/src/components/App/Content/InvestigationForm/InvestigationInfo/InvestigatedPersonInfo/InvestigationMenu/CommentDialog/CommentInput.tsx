@@ -10,7 +10,7 @@ import { alphaNumericSpecialCharsErrorMessage, max500LengthErrorMessage } from '
 import { initialComment } from '../../../Context/CommentContext';
 
 const COMMENT_PLACEHOLDER = 'ההערה שלך...';
-const MAX_CHARS_ALLOWED = 500;
+const MAX_CHARS_ALLOWED = 700;
 
 const stringAlphabet = yup
     .string()
