@@ -88,8 +88,7 @@ const ContactDetails = (props: Props) => {
                     תחלואה:
                     </Typography>
                     <Typography variant='body2' className={classes.contactDetail }>
-                    <b>אין נתונים</b> 
-                    {/* interactedContact.certificateEligibilityTypeDesc */}
+                    {interactedContact.certificateEligibilityTypeDesc ? interactedContact.certificateEligibilityTypeDesc : <b>אין נתונים</b>}
                     </Typography>
                 </Grid>
                 <Grid container item xs={3} direction='column'>
@@ -97,8 +96,7 @@ const ContactDetails = (props: Props) => {
                     חסינות סרולוגית:
                     </Typography>
                     <Typography variant='body2' className={classes.contactDetail }>
-                    <b>אין נתונים</b> 
-                    {/* interactedContact.immuneDefinitionBasedOnSerologyStatusDesc  */}
+                    {interactedContact.immuneDefinitionBasedOnSerologyStatusDesc ? interactedContact.immuneDefinitionBasedOnSerologyStatusDesc : <b>אין נתונים</b>} 
                     </Typography>
                 </Grid>
                 <Grid container item xs={2} direction='column'>
@@ -106,8 +104,7 @@ const ContactDetails = (props: Props) => {
                     התחסנות:
                     </Typography>
                     <Typography variant='body2' className={classes.contactDetail }>
-                    <b>אין נתונים</b> 
-                    {/* interactedContact.vaccinationStatusDesc  */}
+                    {interactedContact.vaccinationStatusDesc ? interactedContact.vaccinationStatusDesc : <b>אין נתונים</b>} 
                     </Typography>
                 </Grid>
                 <Grid container item xs={2} direction='column'>
@@ -115,8 +112,7 @@ const ContactDetails = (props: Props) => {
                     דיווח בידוד:
                     </Typography>
                     <Typography variant='body2' className={classes.contactDetail }>
-                    <b>אין נתונים</b> 
-                    {/* interactedContact.isolationReportStatusDesc  */}
+                    {interactedContact.isolationReportStatusDesc ? interactedContact.isolationReportStatusDesc : <b>אין נתונים</b> }
                     </Typography>
                 </Grid>
                 <Grid container item xs={2} direction='column'>
@@ -124,8 +120,7 @@ const ContactDetails = (props: Props) => {
                     חובת בידוד:
                     </Typography>
                     <Typography variant='body2' className={classes.contactDetail }>
-                    <b>אין נתונים</b> 
-                    {/* interactedContact.isolationObligationStatusDesc  */}
+                    {interactedContact.isolationObligationStatusDesc ? interactedContact.isolationObligationStatusDesc : <b>אין נתונים</b>}
                     </Typography>
                 </Grid>
             </Grid>
