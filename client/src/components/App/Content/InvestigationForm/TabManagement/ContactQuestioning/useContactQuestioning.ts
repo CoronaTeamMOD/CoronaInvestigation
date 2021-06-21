@@ -254,7 +254,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     //Set values in the cintacts array
                     for(let interactedContact of interactedContacts){
                         interactedContact.finalEpidemiologicalStatusDesc = "";
-                        interactedContact.ColorCode=""
+                        interactedContact.colorCode=""
                         interactedContact.certificateEligibilityTypeDesc=""
                         interactedContact.immuneDefinitionBasedOnSerologyStatusDesc=""
                         interactedContact.vaccinationStatusDesc=""
