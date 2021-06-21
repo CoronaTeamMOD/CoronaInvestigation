@@ -82,6 +82,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             if (response.data?.ColorData) {
                 rulerLogger.info('got response from the ruler server', Severity.LOW);
                 return response.data;
+            } else {
+                alertError('חלה שגיאה בקבלת נתונים משירות הרמזור');
             }
         })
         .catch((err) => {
