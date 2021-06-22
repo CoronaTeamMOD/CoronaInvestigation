@@ -89,7 +89,7 @@ const TableFilter = (props: Props) => {
                 <Typography className={classes.timeRangeError}>{errorMes}</Typography>
             }
             <Autocomplete
-                disabled={updateDateFilter !== '' || nonContactFilter}
+                disabled={nonContactFilter}
                 ChipProps={{className:classes.chip}}
                 className={classes.autocomplete}
                 classes={{inputFocused: classes.autocompleteInputText}}
@@ -125,7 +125,6 @@ const TableFilter = (props: Props) => {
                 limitTags={1}
             />
             <Autocomplete
-                disabled={updateDateFilter !== ''}
                 ChipProps={{className:classes.chip}}
                 className={classes.autocomplete}
                 classes={{inputFocused: classes.autocompleteInputText}}
