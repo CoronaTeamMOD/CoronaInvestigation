@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
+import { format } from 'date-fns'
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
@@ -186,7 +187,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
                     const interactedContacts: InteractedContact[] = []
                     for (let contact of result.data.convertedContacts) {
-
                         let idType = !contact.personByPersonInfo.identificationType?.id ? 3 : 
                                        contact.personByPersonInfo.identificationType?.id === 4 ? 3 :
                                        contact.personByPersonInfo.identificationType?.id === 5 ? 4 :
@@ -194,7 +194,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         contactsToApi.push({
                             idType,
                             IDnum: contact.personByPersonInfo.identificationNumber,
-                            DOB: new Date(contact.personByPersonInfo.birthDate).toLocaleDateString(),
+                            DOB: format(new Date(contact.personByPersonInfo.birthDate), 'ddMMyyyy'),
                             Tel: contact.personByPersonInfo.phoneNumber  
                         });
                         
