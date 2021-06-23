@@ -187,12 +187,12 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
                     const interactedContacts: InteractedContact[] = []
                     for (let contact of result.data.convertedContacts) {
-                        let idType = !contact.personByPersonInfo.identificationType?.id ? 3 : 
+                        let IdType = !contact.personByPersonInfo.identificationType?.id ? 3 : 
                                        contact.personByPersonInfo.identificationType?.id === 4 ? 3 :
                                        contact.personByPersonInfo.identificationType?.id === 5 ? 4 :
                                        contact.personByPersonInfo.identificationType?.id;
                         contactsToApi.push({
-                            idType,
+                            IdType,
                             IDnum: contact.personByPersonInfo.identificationNumber,
                             DOB: format(new Date(contact.personByPersonInfo.birthDate), 'ddMMyyyy'),
                             Tel: contact.personByPersonInfo.phoneNumber  
