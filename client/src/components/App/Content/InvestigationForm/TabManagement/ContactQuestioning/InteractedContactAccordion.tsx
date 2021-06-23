@@ -52,7 +52,7 @@ const InteractedContactAccordion = (props: Props) => {
         return classesList.join(' ');
     };
 
-    const formValues = methods.getValues().form
+    const formValues = methods.getValues().form && methods.getValues().form[index]
         ? methods.getValues().form[index]
         : interactedContact;
 
