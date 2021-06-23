@@ -20,12 +20,14 @@ import IsolationProblemFields from './IsolationProblemFields';
 import useClinicalDetails, { initialClinicalDetails } from './useClinicalDetails';
 import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields/SymptomsFields';
 import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
+import { setFormState } from 'redux/Form/formActionCreators';
 
-const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element => {
+const ClinicalDetails: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Element => {
     const classes = useStyles();
 
     const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const methods = useForm({
         mode: 'all',
@@ -68,7 +70,7 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
     const saveForm = (e: any) => {
         e.preventDefault();
         const values = methods.getValues();
-        saveClinicalDetailsAndDeleteContactEvents(values as ClinicalDetailsData, id);
+        isViewMode ? setFormState(epidemiologyNumber, id, true) : saveClinicalDetailsAndDeleteContactEvents(values as ClinicalDetailsData, id);
     }
 
     const watchIsInIsolation = methods.watch(ClinicalDetailsFields.IS_IN_ISOLATION);
@@ -231,7 +233,7 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
                                             />
                                         )}
                                     />
-                                    <InlineErrorText 
+                                    <InlineErrorText
                                         error={methods.errors[ClinicalDetailsFields.IS_PREGNANT]}
                                     />
                                 </Grid>
@@ -246,7 +248,7 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
 
 interface Props {
     id: number;
-    isViewMode?:boolean;
+    isViewMode?: boolean;
 }
 
 export default ClinicalDetails;

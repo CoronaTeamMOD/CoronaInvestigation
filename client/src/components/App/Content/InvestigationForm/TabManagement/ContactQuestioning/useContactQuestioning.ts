@@ -32,7 +32,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         getValues,
         currentPage,
         setIsMore,
-        contactsLength, 
+        contactsLength,
         setContactsLength
     } = parameters;
 
@@ -61,38 +61,38 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             .finally(() => setIsLoading(false));
     };
 
-    const getRulerApiDataFromServer = async (ids : any []) => {
+    const getRulerApiDataFromServer = async (ids: any[]) => {
         const RulerCheckColorRequestParameters = {
-            "RulerCheckColorRequest":{     
-                "MOHHeader":{       
-                    "ActivationID":"1",     
-                    "CustID":"23",
-                    "AppID":"123",
-                    "SiteID":"2",       
-                    "InterfaceID":"Ruler"
+            "RulerCheckColorRequest": {
+                "MOHHeader": {
+                    "ActivationID": "1",
+                    "CustID": "23",
+                    "AppID": "123",
+                    "SiteID": "2",
+                    "InterfaceID": "Ruler"
                 },
-                "Ids":ids
+                "Ids": ids
             }
         }
-            
+
         const rulerLogger = logger.setup('client ruler logger setup');
         rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
         setIsLoading(true);
         return await axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters)
-        .then((response: any) => {
-            if (response.data?.ColorData) {
-                rulerLogger.info('got response from the ruler server', Severity.LOW);
-                return response.data;
-            } else {
+            .then((response: any) => {
+                if (response.data?.ColorData) {
+                    rulerLogger.info('got response from the ruler server', Severity.LOW);
+                    return response.data;
+                } else {
+                    alertError('חלה שגיאה בקבלת נתונים משירות הרמזור');
+                }
+            })
+            .catch((err) => {
+                rulerLogger.error(`got the following error from the ruler server: ${err}`, Severity.HIGH);
                 alertError('חלה שגיאה בקבלת נתונים משירות הרמזור');
-            }
-        })
-        .catch((err) => {
-            rulerLogger.error(`got the following error from the ruler server: ${err}`, Severity.HIGH);
-            alertError('חלה שגיאה בקבלת נתונים משירות הרמזור');
-            return err;
-        })
-        .finally(() => setIsLoading(false));
+                return err;
+            })
+            .finally(() => setIsLoading(false));
     };
 
     const saveContact = (interactedContact: InteractedContact): boolean => {
@@ -176,7 +176,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             currentPage
         };
 
-        axios.post(`/contactedPeople/allContacts/${minimalDate?.toISOString()}`,requestData)
+        axios.post(`/contactedPeople/allContacts/${minimalDate?.toISOString()}`, requestData)
             .then((result: any) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     interactedContactsLogger.info(
@@ -188,17 +188,17 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
                     const interactedContacts: InteractedContact[] = []
                     for (let contact of result.data.convertedContacts) {
-                        let idType = !contact.personByPersonInfo.identificationType?.id ? 3 : 
-                                       contact.personByPersonInfo.identificationType?.id === 4 ? 3 :
-                                       contact.personByPersonInfo.identificationType?.id === 5 ? 4 :
-                                       contact.personByPersonInfo.identificationType?.id;
+                        let idType = !contact.personByPersonInfo.identificationType?.id ? 3 :
+                            contact.personByPersonInfo.identificationType?.id === 4 ? 3 :
+                                contact.personByPersonInfo.identificationType?.id === 5 ? 4 :
+                                    contact.personByPersonInfo.identificationType?.id;
                         contactsToApi.push({
                             idType,
                             IDnum: contact.personByPersonInfo.identificationNumber,
                             DOB: format(new Date(contact.personByPersonInfo.birthDate), 'ddMMyyyy'),
-                            Tel: contact.personByPersonInfo.phoneNumber  
+                            Tel: contact.personByPersonInfo.phoneNumber
                         });
-                        
+
                         interactedContacts.push({
                             personInfo: contact.personInfo,
                             placeName: contact.contactEventByContactEvent.placeName,
@@ -258,28 +258,28 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     };
 
                     getRulerApiDataFromServer(contactsToApi).then((resultFromAPI) => {
-                        if(resultFromAPI?.ColorData) {
-                            for (let interactedContact in interactedContacts){
+                        if (resultFromAPI?.ColorData) {
+                            for (let interactedContact in interactedContacts) {
                                 interactedContacts[interactedContact].finalEpidemiologicalStatusDesc = resultFromAPI.ColorData[interactedContact]?.finalEpidemiologicalStatusDesc;
                                 interactedContacts[interactedContact].colorCode = resultFromAPI.ColorData[interactedContact]?.colorCode;
                                 interactedContacts[interactedContact].certificateEligibilityTypeDesc = resultFromAPI.ColorData[interactedContact]?.certificateEligibilityTypeDesc;
                                 interactedContacts[interactedContact].immuneDefinitionBasedOnSerologyStatusDesc = resultFromAPI.ColorData[interactedContact]?.immuneDefinitionBasedOnSerologyStatusDesc;
                                 interactedContacts[interactedContact].vaccinationStatusDesc = resultFromAPI.ColorData[interactedContact]?.vaccinationStatusDesc;
-                                interactedContacts[interactedContact].isolationReportStatusDesc = resultFromAPI.ColorData[interactedContact]?.isolationReportStatusDesc; 
+                                interactedContacts[interactedContact].isolationReportStatusDesc = resultFromAPI.ColorData[interactedContact]?.isolationReportStatusDesc;
                                 interactedContacts[interactedContact].isolationObligationStatusDesc = resultFromAPI.ColorData[interactedContact]?.isolationObligationStatusDesc;
                             }
                         }
                     });
-                    
+
                     setContactsLength(result.data.total);
                     const allContactsSoFar = [...allContactedInteractions, ...interactedContacts];
                     const groupedInteractedContacts = groupSimilarContactedPersons(allContactsSoFar);
-                    
+
                     setAllContactedInteractions(groupedInteractedContacts);
 
-                    if(SIZE_OF_CONTACTS*currentPage >= result.data.total){
+                    if (SIZE_OF_CONTACTS * currentPage >= result.data.total) {
                         setIsMore(false);
-                    }    
+                    }
                 } else {
                     interactedContactsLogger.warn(
                         'got respond from the server without data',
@@ -326,12 +326,17 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const data = getValues();
-        const parsedFormData = parseFormBeforeSending(data as FormInputs);
-        if (!areThereDuplicateIds(data) || isViewMode) {
-            parsedFormData && saveContactQuestioning(parsedFormData, data);
-        } else {
-            alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
+        if (isViewMode) {
+            setFormState(epidemiologyNumber, id, true);
+        }
+        else {
+            const data = getValues();
+            const parsedFormData = parseFormBeforeSending(data as FormInputs);
+            if (!areThereDuplicateIds(data)) {
+                parsedFormData && saveContactQuestioning(parsedFormData, data);
+            } else {
+                alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
+            }
         }
     };
 

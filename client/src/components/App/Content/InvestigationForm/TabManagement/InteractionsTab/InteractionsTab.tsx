@@ -27,7 +27,7 @@ const defaultInteractionsTabSettings: InteractionsTabSettings = {
 
 const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { id, setAreThereContacts,isViewMode } = props;
+    const { id, setAreThereContacts, isViewMode } = props;
 
     const familyMembersStateContext = useContext(familyMembersContext);
 
@@ -60,11 +60,11 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
             completeTabChange
         });
 
-    const interactionsMap : Map<number, InteractionEventDialogData[]> = useMemo(() => {
+    const interactionsMap: Map<number, InteractionEventDialogData[]> = useMemo(() => {
         const mappedInteractionsArray = new Map<number, Interaction[]>();
         interactions.forEach(interaction => {
-            const interactionStartTime : Date | undefined = interaction.startTime;
-            
+            const interactionStartTime: Date | undefined = interaction.startTime;
+
             if (interactionStartTime) {
                 const interactionDate = startOfDay(interactionStartTime).getTime();
                 if (mappedInteractionsArray.get(interactionDate) === undefined) {
@@ -77,14 +77,19 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
         return mappedInteractionsArray;
     }, [interactions]);
 
-    const submitTab = (event : React.FormEvent<HTMLFormElement>) => {
+    const submitTab = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const uncontactedFamilyMembersArray : InvolvedContact[] = familyMembersStateContext.familyMembers.filter(member => !member.isContactedPerson);
-        const areThereUncontactedMembers = uncontactedFamilyMembersArray.length > 0;
-        if (!interactionsTabSettings.allowUncontactedFamily && areThereUncontactedMembers) {
-            setUncontactedFamilyMembers(uncontactedFamilyMembersArray);
-        } else {
+        if (isViewMode) {
             completeTabChange();
+        }
+        else {
+            const uncontactedFamilyMembersArray: InvolvedContact[] = familyMembersStateContext.familyMembers.filter(member => !member.isContactedPerson);
+            const areThereUncontactedMembers = uncontactedFamilyMembersArray.length > 0;
+            if (!interactionsTabSettings.allowUncontactedFamily && areThereUncontactedMembers) {
+                setUncontactedFamilyMembers(uncontactedFamilyMembersArray);
+            } else {
+                completeTabChange();
+            }
         }
     };
 
@@ -113,17 +118,17 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     return (
         <>
             {
-                educationMembers.length > 0 &&    
+                educationMembers.length > 0 &&
                 <div className={classes.eudcationContactsTrigger}>
-                    <SchoolIcon/>
-                    <Typography 
-                        variant='body1' 
+                    <SchoolIcon />
+                    <Typography
+                        variant='body1'
                         onClick={() => setShowEducationMembers(true)}>
-                            לחקירה זו יש מגעי חינוך, לצפיה לחצו כאן
+                        לחקירה זו יש מגעי חינוך, לצפיה לחצו כאן
                     </Typography>
                 </div>
             }
-            <form id={`form-${id}`} onSubmit={(e) => submitTab(e)}/>
+            <form id={`form-${id}`} onSubmit={(e) => submitTab(e)} />
             {
                 datesToInvestigate.map(date => generateContactCard(date))
             }
@@ -147,16 +152,16 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                     interactions={interactions}
                 />
             }
-            <FamilyContactsDialog 
+            <FamilyContactsDialog
                 uncontactedFamilyMembers={uncontactedFamilyMembers}
-                isOpen={uncontactedFamilyMembers.length > 0} 
+                isOpen={uncontactedFamilyMembers.length > 0}
                 closeDialog={closeFamilyDialog}
-                confirmDialog={saveInvestigaionSettingsFamily}/>
-                
-            <EducationContactsDialog 
-                isOpen={showEducationMembers} 
+                confirmDialog={saveInvestigaionSettingsFamily} />
+
+            <EducationContactsDialog
+                isOpen={showEducationMembers}
                 educationContacts={educationMembers}
-                closeDialog={() => closeDialog()}/>
+                closeDialog={() => closeDialog()} />
         </>
     )
 };
@@ -164,7 +169,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 interface Props {
     id: number;
     setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
-    isViewMode?:boolean;
+    isViewMode?: boolean;
 };
 
 export default InteractionsTab;
