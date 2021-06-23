@@ -246,20 +246,20 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             creationTime: contact.creationTime,
                             involvementReason: contact.involvementReason,
                             involvedContactId: contact.involvedContactId,
-                            finalEpidemiologicalStatusDesc: 'אין נתונים',
-                            colorCode: 'אין נתונים',
-                            certificateEligibilityTypeDesc: 'אין נתונים',
-                            immuneDefinitionBasedOnSerologyStatusDesc: 'אין נתונים',
-                            vaccinationStatusDesc: 'אין נתונים',
-                            isolationReportStatusDesc: 'אין נתונים',
-                            isolationObligationStatusDesc: 'אין נתונים'
+                            finalEpidemiologicalStatusDesc: contact.finalEpidemiologicalStatusDesc ? contact.finalEpidemiologicalStatusDesc : 'אין נתונים',
+                            colorCode: contact.colorCode ? contact.colorCode : 'אין נתונים',
+                            certificateEligibilityTypeDesc: contact.certificateEligibilityTypeDesc ? contact.certificateEligibilityTypeDesc : 'אין נתונים',
+                            immuneDefinitionBasedOnSerologyStatusDesc: contact.immuneDefinitionBasedOnSerologyStatusDesc ? contact.immuneDefinitionBasedOnSerologyStatusDesc : 'אין נתונים',
+                            vaccinationStatusDesc: contact.vaccinationStatusDesc ? contact.vaccinationStatusDesc : 'אין נתונים',
+                            isolationReportStatusDesc: contact.isolationReportStatusDesc ? contact.isolationReportStatusDesc : 'אין נתונים',
+                            isolationObligationStatusDesc: contact.isolationObligationStatusDesc ? contact.isolationObligationStatusDesc : 'אין נתונים'
                         })
                     };
 
                     getRulerApiDataFromServer(contactsToApi).then((resultFromAPI) => {
                         if(resultFromAPI?.ColorData) {
                             for (let interactedContact in interactedContacts){
-                                interactedContacts[interactedContact].finalEpidemiologicalStatusDesc = resultFromAPI.ColorData[interactedContact]?.finalEpidemiologicalStatusDesc;
+                                interactedContacts[interactedContact].finalEpidemiologicalStatusDesc = resultFromAPI.ColorData[interactedContact]?.Indicators?.jsonstring?.finalEpidemiologicalStatusDesc;
                                 interactedContacts[interactedContact].colorCode = resultFromAPI.ColorData[interactedContact]?.ColorCode;
                                 interactedContacts[interactedContact].certificateEligibilityTypeDesc = resultFromAPI.ColorData[interactedContact]?.Indicators?.jsonstring?.certificateEligibilityTypeDesc;
                                 interactedContacts[interactedContact].immuneDefinitionBasedOnSerologyStatusDesc = resultFromAPI.ColorData[interactedContact]?.Indicators?.jsonstring?.immuneDefinitionBasedOnSerologyStatusDesc;
