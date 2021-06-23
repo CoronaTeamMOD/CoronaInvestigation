@@ -27,3 +27,4 @@ UPDATE public.green_pass_information
 UPDATE public.green_pass_information
 	SET answer_id=3
 	WHERE answer_id=2;
+	
