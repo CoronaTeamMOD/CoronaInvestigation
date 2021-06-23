@@ -38,7 +38,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
-    const isViewMode = useSelector<StoreStateType, boolean>(state => state.investigation.isViewMode);
 
     const { alertError } = useCustomSwal();
 
@@ -188,12 +187,12 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
                     const interactedContacts: InteractedContact[] = []
                     for (let contact of result.data.convertedContacts) {
-                        let idType = !contact.personByPersonInfo.identificationType?.id ? 3 : 
+                        let IdType = !contact.personByPersonInfo.identificationType?.id ? 3 : 
                                        contact.personByPersonInfo.identificationType?.id === 4 ? 3 :
                                        contact.personByPersonInfo.identificationType?.id === 5 ? 4 :
                                        contact.personByPersonInfo.identificationType?.id;
                         contactsToApi.push({
-                            idType,
+                            IdType,
                             IDnum: contact.personByPersonInfo.identificationNumber,
                             DOB: format(new Date(contact.personByPersonInfo.birthDate), 'ddMMyyyy'),
                             Tel: contact.personByPersonInfo.phoneNumber  
@@ -328,7 +327,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         e.preventDefault();
         const data = getValues();
         const parsedFormData = parseFormBeforeSending(data as FormInputs);
-        if (!areThereDuplicateIds(data) || isViewMode) {
+        if (!areThereDuplicateIds(data)) {
             parsedFormData && saveContactQuestioning(parsedFormData, data);
         } else {
             alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
