@@ -260,12 +260,12 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         if(resultFromAPI?.ColorData) {
                             for (let interactedContact in interactedContacts){
                                 interactedContacts[interactedContact].finalEpidemiologicalStatusDesc = resultFromAPI.ColorData[interactedContact]?.finalEpidemiologicalStatusDesc;
-                                interactedContacts[interactedContact].colorCode = resultFromAPI.ColorData[interactedContact]?.colorCode;
-                                interactedContacts[interactedContact].certificateEligibilityTypeDesc = resultFromAPI.ColorData[interactedContact]?.certificateEligibilityTypeDesc;
-                                interactedContacts[interactedContact].immuneDefinitionBasedOnSerologyStatusDesc = resultFromAPI.ColorData[interactedContact]?.immuneDefinitionBasedOnSerologyStatusDesc;
-                                interactedContacts[interactedContact].vaccinationStatusDesc = resultFromAPI.ColorData[interactedContact]?.vaccinationStatusDesc;
-                                interactedContacts[interactedContact].isolationReportStatusDesc = resultFromAPI.ColorData[interactedContact]?.isolationReportStatusDesc; 
-                                interactedContacts[interactedContact].isolationObligationStatusDesc = resultFromAPI.ColorData[interactedContact]?.isolationObligationStatusDesc;
+                                interactedContacts[interactedContact].colorCode = resultFromAPI.ColorData[interactedContact]?.ColorCode;
+                                interactedContacts[interactedContact].certificateEligibilityTypeDesc = resultFromAPI.ColorData[interactedContact]?.Indicators?.jsonstring?.certificateEligibilityTypeDesc;
+                                interactedContacts[interactedContact].immuneDefinitionBasedOnSerologyStatusDesc = resultFromAPI.ColorData[interactedContact]?.Indicators?.jsonstring?.immuneDefinitionBasedOnSerologyStatusDesc;
+                                interactedContacts[interactedContact].vaccinationStatusDesc = resultFromAPI.ColorData[interactedContact]?.Indicators?.jsonstring?.vaccinationStatusDesc;
+                                interactedContacts[interactedContact].isolationReportStatusDesc = resultFromAPI.ColorData[interactedContact]?.Indicators?.jsonstring?.isolationReportStatusDesc; 
+                                interactedContacts[interactedContact].isolationObligationStatusDesc = resultFromAPI.ColorData[interactedContact]?.Indicators?.jsonstring?.isolationObligationStatusDesc;
                             }
                         }
                     });
