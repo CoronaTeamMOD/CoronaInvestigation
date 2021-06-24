@@ -13,6 +13,8 @@ interface InvolvedContact extends Person {
 	educationClassNumber: number,
 	institutionName: string,
 	contactType: number,
+	colorCode?: string,
+	finalEpidemiologicalStatusDesc?: string
 };
 
 export default InvolvedContact;
