@@ -55,20 +55,20 @@ const ContactDetails = (props: Props) => {
     
     const generateBackgroundColorClass = (colorCode: Number | any) => {
         switch (colorCode) {
-            case 1:
+            case '1':
                 return classes.red;
-            case 2:
+            case '2':
                 return classes.orange;
-            case 3:
+            case '3':
                 return classes.green;
-            case 4:
+            case '4':
                 return classes.yellow;
             default:
                 return classes.white;
         }
     }
     const backgroundColorClass: any  = generateBackgroundColorClass(colorCode)
-    const finalEpidemiologicalStatusDesc = 'אין נתונים'//interactedContact.finalEpidemiologicalStatusDesc;
+    const finalEpidemiologicalStatusDesc = interactedContact.finalEpidemiologicalStatusDesc;
 
     const tooltipText = highestContactType.contactType === TIGHT_CONTACT_STATUS 
         ? formatDate(highestContactType.date)
