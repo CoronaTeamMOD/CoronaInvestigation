@@ -77,7 +77,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         const rulerLogger = logger.setup('client ruler logger setup');
         rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
         setIsLoading(true);
-        return await axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters)
+        return await axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters,{timeout: 5000})
         .then((response: any) => {
             if (response.data?.ColorData) {
                 rulerLogger.info('got response from the ruler server', Severity.LOW);
@@ -258,27 +258,34 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
                     getRulerApiDataFromServer(contactsToApi).then((resultFromAPI) => {
                         if(resultFromAPI?.ColorData) {
-                            for (let interactedContact in interactedContacts){
-                                interactedContacts[interactedContact].finalEpidemiologicalStatusDesc = resultFromAPI.ColorData[interactedContact]?.Indicators?.jsonstring?.finalEpidemiologicalStatusDesc;
-                                interactedContacts[interactedContact].colorCode = resultFromAPI.ColorData[interactedContact]?.ColorCode;
-                                interactedContacts[interactedContact].certificateEligibilityTypeDesc = resultFromAPI.ColorData[interactedContact]?.Indicators?.jsonstring?.certificateEligibilityTypeDesc;
-                                interactedContacts[interactedContact].immuneDefinitionBasedOnSerologyStatusDesc = resultFromAPI.ColorData[interactedContact]?.Indicators?.jsonstring?.immuneDefinitionBasedOnSerologyStatusDesc;
-                                interactedContacts[interactedContact].vaccinationStatusDesc = resultFromAPI.ColorData[interactedContact]?.Indicators?.jsonstring?.vaccinationStatusDesc;
-                                interactedContacts[interactedContact].isolationReportStatusDesc = resultFromAPI.ColorData[interactedContact]?.Indicators?.jsonstring?.isolationReportStatusDesc; 
-                                interactedContacts[interactedContact].isolationObligationStatusDesc = resultFromAPI.ColorData[interactedContact]?.Indicators?.jsonstring?.isolationObligationStatusDesc;
+                            for (let eachResult of resultFromAPI?.ColorData) {
+                                for (let interactedContact of interactedContacts) {
+                                    if(interactedContact.identificationNumber === eachResult.IDnum) {
+                                        interactedContact.finalEpidemiologicalStatusDesc = eachResult?.Indicators?.jsonstring?.finalEpidemiologicalStatusDesc;
+                                        interactedContact.colorCode = eachResult?.ColorCode;
+                                        interactedContact.certificateEligibilityTypeDesc = eachResult?.Indicators?.jsonstring?.certificateEligibilityTypeDesc;
+                                        interactedContact.immuneDefinitionBasedOnSerologyStatusDesc = eachResult?.Indicators?.jsonstring?.immuneDefinitionBasedOnSerologyStatusDesc;
+                                        interactedContact.vaccinationStatusDesc = eachResult?.Indicators?.jsonstring?.vaccinationStatusDesc;
+                                        interactedContact.isolationReportStatusDesc = eachResult?.Indicators?.jsonstring?.isolationReportStatusDesc; 
+                                        interactedContact.isolationObligationStatusDesc = eachResult?.Indicators?.jsonstring?.isolationObligationStatusDesc;
+                                    }
+                                }
                             }
                         }
-                    });
-                    
-                    setContactsLength(result.data.total);
-                    const allContactsSoFar = [...allContactedInteractions, ...interactedContacts];
-                    const groupedInteractedContacts = groupSimilarContactedPersons(allContactsSoFar);
-                    
-                    setAllContactedInteractions(groupedInteractedContacts);
 
-                    if(SIZE_OF_CONTACTS*currentPage >= result.data.total){
-                        setIsMore(false);
-                    }    
+                        setContactsLength(result.data.total);
+                        const allContactsSoFar = [...allContactedInteractions, ...interactedContacts];
+                        const groupedInteractedContacts = groupSimilarContactedPersons(allContactsSoFar);
+                        
+                        setAllContactedInteractions(groupedInteractedContacts);
+
+                        if(SIZE_OF_CONTACTS*currentPage >= result.data.total){
+                            setIsMore(false);
+                        }
+                        
+                        setIsLoading(false)
+                    });
+                       
                 } else {
                     interactedContactsLogger.warn(
                         'got respond from the server without data',
@@ -292,7 +299,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     Severity.LOW
                 );
             })
-            .finally(() => setIsLoading(false));
     };
 
     const checkForSpecificDuplicateIds = (
