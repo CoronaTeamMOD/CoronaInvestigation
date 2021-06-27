@@ -29,11 +29,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         allContactedInteractions,
         setFamilyRelationships,
         setContactStatuses,
-        getValues,
-        currentPage,
-        setIsMore,
-        contactsLength, 
-        setContactsLength
+        getValues
     } = parameters;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -171,12 +167,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         setIsLoading(true);
         const minimalDate = datesToInvestigate.slice(-1)[0];
 
-        const requestData = {
-            size: SIZE_OF_CONTACTS,
-            currentPage
-        };
-
-        axios.post(`/contactedPeople/allContacts/${minimalDate?.toISOString()}`,requestData)
+        axios.get(`/contactedPeople/allContacts/${minimalDate?.toISOString()}`)            
             .then((result: any) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     interactedContactsLogger.info(
@@ -187,7 +178,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     let contactsToApi: any[] = [];
 
                     const interactedContacts: InteractedContact[] = []
-                    for (let contact of result.data.convertedContacts) {
+                    for (let contact of result.data) {
                         let IdType = !contact.personByPersonInfo.identificationType?.id ? 3 : 
                                        contact.personByPersonInfo.identificationType?.id === 4 ? 3 :
                                        contact.personByPersonInfo.identificationType?.id === 5 ? 4 :
@@ -273,14 +264,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                                 }
                             }
                         }
-                        setContactsLength(result.data.total);
-                        const allContactsSoFar = [...allContactedInteractions, ...interactedContacts];
-                        const groupedInteractedContacts = groupSimilarContactedPersons(allContactsSoFar);
+                        const groupedInteractedContacts = groupSimilarContactedPersons(interactedContacts);
                         setAllContactedInteractions(groupedInteractedContacts);
-
-                        if(SIZE_OF_CONTACTS*currentPage >= result.data.total) {
-                            setIsMore(false);
-                        }
                         setIsLoading(false);
                     });
                        

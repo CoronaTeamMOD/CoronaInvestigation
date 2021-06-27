@@ -50,7 +50,7 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
     });
 });
 
-ContactedPeopleRoute.post('/allContacts/:minimalDateToFilter', handleInvestigationRequest, (request: Request, response: Response) => {
+ContactedPeopleRoute.get('/allContacts/:minimalDateToFilter', handleInvestigationRequest, (request: Request, response: Response) => {
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const allContactsLogger = logger.setup({
         workflow: `query all investigation's contacts`,
@@ -58,21 +58,15 @@ ContactedPeopleRoute.post('/allContacts/:minimalDateToFilter', handleInvestigati
         user: response.locals.user.id
     });
 
-    const { size, currentPage } = request.body;
+    const parameters = { investigationId: epidemiologyNumber, minimalDateToFilter: new Date(request.params.minimalDateToFilter)};
 
-    const parameters = { 
-        investigationId: epidemiologyNumber, 
-        minimalDateToFilter: new Date(request.params.minimalDateToFilter),
-        offset: currentPage ? ((currentPage - 1) * size) : null,
-        size: size ? size : null
-    }
     allContactsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     graphqlRequest(GET_CONTACTED_PEOPLE, response.locals, parameters)
         .then(result => {
             allContactsLogger.info(validDBResponseLog, Severity.LOW);
             const allContactedPersons = result.data.allContactedPeople.nodes;
             const convertedContacts = allContactedPersons.map((contact: any) => ({...contact, ...contact.involvementReason, ...contact.personByPersonInfo.personContactDetailByPersonInfo}));
-            response.send({convertedContacts,total:result.data.allContactedPeople.totalCount});
+            response.send(convertedContacts);
         })
         .catch(error => {
             allContactsLogger.error(invalidDBResponseLog(error), Severity.HIGH);

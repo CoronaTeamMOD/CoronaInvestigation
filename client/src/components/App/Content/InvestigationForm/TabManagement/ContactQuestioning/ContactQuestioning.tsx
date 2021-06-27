@@ -22,9 +22,6 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     const [allContactedInteractions, setAllContactedInteractions] = useState<GroupedInteractedContact[]>([]);
     const [familyRelationships, setFamilyRelationships] = useState<FamilyRelationship[]>([]);
     const [contactStatuses, setContactStatuses] = useState<ContactStatus[]>([]);
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [isMore, setIsMore] = useState<boolean>(true);
-    const [contactsLength, setContactsLength] = useState<number>(0);
 
     const classes = useStyles();
 
@@ -52,18 +49,14 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
         allContactedInteractions,
         setFamilyRelationships,
         setContactStatuses,
-        getValues,
-        currentPage,
-        setIsMore,
-        contactsLength, 
-        setContactsLength
+        getValues
     });
 
     useEffect(() => {
         loadInteractedContacts();
         loadFamilyRelationships();
         loadContactStatuses();
-    }, [currentPage]);
+    }, []);
 
     useEffect(() => {
         if (allContactedInteractions) {
@@ -81,9 +74,6 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                     <FormTitle
                         title={`טופס תשאול מגעים (${allContactedInteractions.length})`}
                     />
-                    <span className={classes.numOfContacts}>מוצגים {Math.min(SIZE_OF_CONTACTS*currentPage,contactsLength)} מתוך {contactsLength} מגעים (לפני צמצום מגעים כפולים) 
-                        <a className={classes.loadMore} hidden={!isMore} onClick={() => setCurrentPage(currentPage+1)}> טען עוד</a>
-                    </span>
 
                     <Grid container className={classes.accordionContainer}>
                         {allContactedInteractions.map(
