@@ -67,6 +67,36 @@ const useStyles = makeStyles({
     },
     formSize: {
         width: '100vw'
+    },
+    red:{
+        border: '3px solid #ff8080',
+        borderRadius: '14px',
+        padding: '0 10px',
+        margin: '5px 0'
+    },
+    orange: {
+        border: '3px solid #ffbf80',
+        borderRadius: '14px',
+        padding: '0 10px',
+        margin: '5px 0'
+    },
+    green: {
+        border: '3px solid #b3ffcc',
+        borderRadius: '14px',
+        padding: '0 10px',
+        margin: '5px 0'
+    },
+    yellow: {
+        border: '3px solid #ffff99',
+        borderRadius: '14px',
+        padding: '0 10px',
+        margin: '5px 0'
+    },
+    white: {
+        border: '3px solid #ffffff',
+        borderRadius: '14px',
+        padding: '0 10px',
+        margin: '5px 0'
     }
 });
 

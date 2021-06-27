@@ -1,6 +1,6 @@
 import React from 'react';
 import SchoolIcon from '@material-ui/icons/SchoolOutlined';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Divider } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@material-ui/core';
 
 import InvolvedContact from 'models/InvolvedContact';
 
@@ -13,7 +13,7 @@ const EducationContactsDialog: React.FC<Props> = (props: Props): JSX.Element => 
     const { isOpen, closeDialog, educationContacts } = props;
     
     const classes = useStyles();
-    
+
     return (
         <Dialog classes={{paper: classes.paper}} open={isOpen} maxWidth={false}>
             <DialogTitle className={classes.title}>
@@ -27,7 +27,6 @@ const EducationContactsDialog: React.FC<Props> = (props: Props): JSX.Element => 
                     educationContacts.map(contact => 
                         <>
                             <EducationContact contact={contact}/>
-                            <Divider/>
                         </>
                     )
                 }
