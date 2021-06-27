@@ -192,17 +192,16 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             Tel: contact.personByPersonInfo.phoneNumber  
                         });
 
-                        const { personInfo } = contact;
-                        if (personInfo) {
-                            const existingContactType = (contactsMap.get(personInfo)?.contactType);
+                        if (contact.personInfo) {
+                            const existingContactType = (contactsMap.get(contact.personInfo)?.contactType);
                             const newEvent: GroupedInteractedContactEvent = {
                                 date: contact.contactDate,
                                 name: contact.placeName || '',
                                 contactType: +contact.contactType
                             }
-                            const newEventArr = (contactsMap.get(personInfo)?.contactEvents || []).concat(newEvent);
+                            const newEventArr = (contactsMap.get(contact.personInfo)?.contactEvents || []).concat(newEvent);
 
-                            contactsMap.set(personInfo, {
+                            contactsMap.set(contact.personInfo, {
                                 personInfo: contact.personInfo,
                                 placeName: contact.contactEventByContactEvent.placeName,
                                 id: contact.id,
@@ -261,63 +260,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             });
                         }
                     }
-                        // interactedContacts.push({
-                        //     personInfo: contact.personInfo,
-                        //     placeName: contact.contactEventByContactEvent.placeName,
-                        //     id: contact.id,
-                        //     firstName: contact.personByPersonInfo.firstName,
-                        //     lastName: contact.personByPersonInfo.lastName,
-                        //     phoneNumber: contact.personByPersonInfo.phoneNumber,
-                        //     identificationType: contact.personByPersonInfo.identificationType,
-                        //     identificationNumber: contact.personByPersonInfo.identificationNumber,
-                        //     birthDate: contact.personByPersonInfo.birthDate,
-                        //     additionalPhoneNumber:
-                        //         contact.personByPersonInfo
-                        //             .additionalPhoneNumber,
-                        //     gender: contact.personByPersonInfo.gender,
-                        //     contactDate:
-                        //         contact.contactEventByContactEvent.startTime,
-                        //     contactEvent: contact.contactEventByContactEvent.id,
-                        //     contactType: contact.contactType,
-                        //     contactStatus: contact.contactStatus ?? NEW_CONTACT_STATUS_CODE,
-                        //     extraInfo: contact.extraInfo,
-                        //     relationship: contact.relationship,
-                        //     familyRelationship: contact.familyRelationship,
-                        //     isolationAddress: contact.isolationAddress,
-                        //     occupation: contact.occupation,
-                        //     doesFeelGood: contact.doesFeelGood !== null
-                        //         ? contact.doesFeelGood
-                        //         : null,
-                        //     doesHaveBackgroundDiseases: contact.doesHaveBackgroundDiseases !== null
-                        //         ? contact.doesHaveBackgroundDiseases
-                        //         : null,
-                        //     doesLiveWithConfirmed: contact.doesLiveWithConfirmed !== null
-                        //         ? contact.doesLiveWithConfirmed
-                        //         : null,
-                        //     doesNeedHelpInIsolation: contact.doesNeedHelpInIsolation !== null
-                        //         ? contact.doesNeedHelpInIsolation
-                        //         : null,
-                        //     repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed !== null
-                        //         ? contact.repeatingOccuranceWithConfirmed
-                        //         : null,
-                        //     doesWorkWithCrowd: contact.doesWorkWithCrowd !== null
-                        //         ? contact.doesWorkWithCrowd
-                        //         : null,
-                        //     doesNeedIsolation: contact.doesNeedIsolation !== null
-                        //         ? contact.doesNeedIsolation
-                        //         : null,
-                        //     creationTime: contact.creationTime,
-                        //     involvementReason: contact.involvementReason,
-                        //     involvedContactId: contact.involvedContactId,
-                        //     finalEpidemiologicalStatusDesc: 'אין נתונים',
-                        //     colorCode: 'אין נתונים',
-                        //     certificateEligibilityTypeDesc: 'אין נתונים',
-                        //     immuneDefinitionBasedOnSerologyStatusDesc: 'אין נתונים',
-                        //     vaccinationStatusDesc: 'אין נתונים',
-                        //     isolationReportStatusDesc: 'אין נתונים',
-                        //     isolationObligationStatusDesc: 'אין נתונים'
-                        // })
-                    // };
 
                     getRulerApiDataFromServer(contactsToApi).then((resultFromAPI) => {
                         let contacts = Array.from(contactsMap).map(contact => contact[1]);
@@ -341,7 +283,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         setAllContactedInteractions(contacts);
                         setIsLoading(false);     
                     });
-                    //const groupedInteractedContacts = groupSimilarContactedPersons(interactedContacts);
                     
                 } else {
                     interactedContactsLogger.warn(
