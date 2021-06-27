@@ -28,7 +28,7 @@ rulerRoute.post('/rulerapi/', (req: Request, res: Response) => {
         }
         ).catch((err: any) => {
             rulerLogger.error(invalidAPIResponseLog(err), Severity.HIGH);
-            res.send(err);
+            res.status(errorStatusCode).send(err);        
         })
 });
 

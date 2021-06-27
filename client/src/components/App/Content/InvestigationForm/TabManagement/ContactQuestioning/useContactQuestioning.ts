@@ -34,6 +34,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
+    const isViewMode = useSelector<StoreStateType, boolean>(state => state.investigation.isViewMode);
 
     const { alertError } = useCustomSwal();
 
@@ -73,8 +74,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         const rulerLogger = logger.setup('client ruler logger setup');
         rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
         setIsLoading(true);
-        return await axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters)
-        .then((response: any) => {
+        return await axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters,{timeout: 5000})        .then((response: any) => {
             if (response.data?.ColorData) {
                 rulerLogger.info('got response from the ruler server', Severity.LOW);
                 return response.data;
@@ -295,7 +295,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     Severity.LOW
                 );
             })
-            .finally(() => setIsLoading(false));
         };
 
     const checkForSpecificDuplicateIds = (
@@ -330,7 +329,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         e.preventDefault();
         const data = getValues();
         const parsedFormData = parseFormBeforeSending(data as FormInputs);
-        if (!areThereDuplicateIds(data)) {
+        if (!areThereDuplicateIds(data) || isViewMode) {
             parsedFormData && saveContactQuestioning(parsedFormData, data);
         } else {
             alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
