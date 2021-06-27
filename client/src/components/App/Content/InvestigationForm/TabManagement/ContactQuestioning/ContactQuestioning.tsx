@@ -87,6 +87,9 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                     <FormTitle
                         title={`טופס תשאול מגעים (${allContactedInteractions.length})`}
                     />
+                    <span className={classes.numOfContacts}>מוצגים {Math.min(loaded,allContactedInteractions.length)} מתוך {allContactedInteractions.length}
+                        <a className={classes.loadMore} hidden={loaded > allContactedInteractions.length} onClick={() => handleShowMoreContacts()}> טען עוד</a>
+                    </span> 
 
                     <Grid container className={classes.accordionContainer}>
                         {contactsToShow.map(
@@ -111,7 +114,6 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                                 );
                             } 
                         )}
-                        <a className={classes.loadMore} hidden={loaded > allContactedInteractions.length} onClick={() => handleShowMoreContacts()}> טען עוד</a>
                     </Grid>
                 </form>
             </FormProvider>
