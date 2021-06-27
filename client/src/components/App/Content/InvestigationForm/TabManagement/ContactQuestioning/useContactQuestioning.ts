@@ -177,7 +177,9 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
                     let contactsToApi: any[] = [];
 
-                    const interactedContacts: InteractedContact[] = []
+                    const interactedContacts: InteractedContact[] = [];
+                    let contactsMap = new Map<number, GroupedInteractedContact>();
+
                     for (let contact of result.data) {
                         let IdType = !contact.personByPersonInfo.identificationType?.id ? 3 : 
                                        contact.personByPersonInfo.identificationType?.id === 4 ? 3 :
@@ -189,69 +191,140 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             DOB: format(new Date(contact.personByPersonInfo.birthDate), 'ddMMyyyy'),
                             Tel: contact.personByPersonInfo.phoneNumber  
                         });
-                        
-                        interactedContacts.push({
-                            personInfo: contact.personInfo,
-                            placeName: contact.contactEventByContactEvent.placeName,
-                            id: contact.id,
-                            firstName: contact.personByPersonInfo.firstName,
-                            lastName: contact.personByPersonInfo.lastName,
-                            phoneNumber: contact.personByPersonInfo.phoneNumber,
-                            identificationType: contact.personByPersonInfo.identificationType,
-                            identificationNumber: contact.personByPersonInfo.identificationNumber,
-                            birthDate: contact.personByPersonInfo.birthDate,
-                            additionalPhoneNumber:
-                                contact.personByPersonInfo
-                                    .additionalPhoneNumber,
-                            gender: contact.personByPersonInfo.gender,
-                            contactDate:
-                                contact.contactEventByContactEvent.startTime,
-                            contactEvent: contact.contactEventByContactEvent.id,
-                            contactType: contact.contactType,
-                            contactStatus: contact.contactStatus ?? NEW_CONTACT_STATUS_CODE,
-                            extraInfo: contact.extraInfo,
-                            relationship: contact.relationship,
-                            familyRelationship: contact.familyRelationship,
-                            isolationAddress: contact.isolationAddress,
-                            occupation: contact.occupation,
-                            doesFeelGood: contact.doesFeelGood !== null
-                                ? contact.doesFeelGood
-                                : null,
-                            doesHaveBackgroundDiseases: contact.doesHaveBackgroundDiseases !== null
-                                ? contact.doesHaveBackgroundDiseases
-                                : null,
-                            doesLiveWithConfirmed: contact.doesLiveWithConfirmed !== null
-                                ? contact.doesLiveWithConfirmed
-                                : null,
-                            doesNeedHelpInIsolation: contact.doesNeedHelpInIsolation !== null
-                                ? contact.doesNeedHelpInIsolation
-                                : null,
-                            repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed !== null
-                                ? contact.repeatingOccuranceWithConfirmed
-                                : null,
-                            doesWorkWithCrowd: contact.doesWorkWithCrowd !== null
-                                ? contact.doesWorkWithCrowd
-                                : null,
-                            doesNeedIsolation: contact.doesNeedIsolation !== null
-                                ? contact.doesNeedIsolation
-                                : null,
-                            creationTime: contact.creationTime,
-                            involvementReason: contact.involvementReason,
-                            involvedContactId: contact.involvedContactId,
-                            finalEpidemiologicalStatusDesc: 'אין נתונים',
-                            colorCode: 'אין נתונים',
-                            certificateEligibilityTypeDesc: 'אין נתונים',
-                            immuneDefinitionBasedOnSerologyStatusDesc: 'אין נתונים',
-                            vaccinationStatusDesc: 'אין נתונים',
-                            isolationReportStatusDesc: 'אין נתונים',
-                            isolationObligationStatusDesc: 'אין נתונים'
-                        })
-                    };
+
+                        const { personInfo } = contact;
+                        if (personInfo) {
+                            const existingContactType = (contactsMap.get(personInfo)?.contactType);
+                            const newEvent: GroupedInteractedContactEvent = {
+                                date: contact.contactDate,
+                                name: contact.placeName || '',
+                                contactType: +contact.contactType
+                            }
+                            const newEventArr = (contactsMap.get(personInfo)?.contactEvents || []).concat(newEvent);
+
+                            contactsMap.set(personInfo, {
+                                personInfo: contact.personInfo,
+                                placeName: contact.contactEventByContactEvent.placeName,
+                                id: contact.id,
+                                firstName: contact.personByPersonInfo.firstName,
+                                lastName: contact.personByPersonInfo.lastName,
+                                phoneNumber: contact.personByPersonInfo.phoneNumber,
+                                identificationType: contact.personByPersonInfo.identificationType,
+                                identificationNumber: contact.personByPersonInfo.identificationNumber,
+                                birthDate: contact.personByPersonInfo.birthDate,
+                                additionalPhoneNumber:
+                                    contact.personByPersonInfo
+                                        .additionalPhoneNumber,
+                                gender: contact.personByPersonInfo.gender,
+                                contactDate:
+                                    contact.contactEventByContactEvent.startTime,
+                                contactEvent: contact.contactEventByContactEvent.id,
+                                contactStatus: contact.contactStatus ?? NEW_CONTACT_STATUS_CODE,
+                                extraInfo: contact.extraInfo,
+                                relationship: contact.relationship,
+                                familyRelationship: contact.familyRelationship,
+                                isolationAddress: contact.isolationAddress,
+                                occupation: contact.occupation,
+                                doesFeelGood: contact.doesFeelGood !== null
+                                    ? contact.doesFeelGood
+                                    : null,
+                                doesHaveBackgroundDiseases: contact.doesHaveBackgroundDiseases !== null
+                                    ? contact.doesHaveBackgroundDiseases
+                                    : null,
+                                doesLiveWithConfirmed: contact.doesLiveWithConfirmed !== null
+                                    ? contact.doesLiveWithConfirmed
+                                    : null,
+                                doesNeedHelpInIsolation: contact.doesNeedHelpInIsolation !== null
+                                    ? contact.doesNeedHelpInIsolation
+                                    : null,
+                                repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed !== null
+                                    ? contact.repeatingOccuranceWithConfirmed
+                                    : null,
+                                doesWorkWithCrowd: contact.doesWorkWithCrowd !== null
+                                    ? contact.doesWorkWithCrowd
+                                    : null,
+                                doesNeedIsolation: contact.doesNeedIsolation !== null
+                                    ? contact.doesNeedIsolation
+                                    : null,
+                                creationTime: contact.creationTime,
+                                involvementReason: contact.involvementReason,
+                                involvedContactId: contact.involvedContactId,
+                                finalEpidemiologicalStatusDesc: 'אין נתונים',
+                                colorCode: 'אין נתונים',
+                                certificateEligibilityTypeDesc: 'אין נתונים',
+                                immuneDefinitionBasedOnSerologyStatusDesc: 'אין נתונים',
+                                vaccinationStatusDesc: 'אין נתונים',
+                                isolationReportStatusDesc: 'אין נתונים',
+                                isolationObligationStatusDesc: 'אין נתונים',
+                                contactType: (existingContactType && +existingContactType === 1) ? existingContactType : contact.contactType,
+                                contactEvents: newEventArr,
+                            });
+                        }
+                    }
+                        // interactedContacts.push({
+                        //     personInfo: contact.personInfo,
+                        //     placeName: contact.contactEventByContactEvent.placeName,
+                        //     id: contact.id,
+                        //     firstName: contact.personByPersonInfo.firstName,
+                        //     lastName: contact.personByPersonInfo.lastName,
+                        //     phoneNumber: contact.personByPersonInfo.phoneNumber,
+                        //     identificationType: contact.personByPersonInfo.identificationType,
+                        //     identificationNumber: contact.personByPersonInfo.identificationNumber,
+                        //     birthDate: contact.personByPersonInfo.birthDate,
+                        //     additionalPhoneNumber:
+                        //         contact.personByPersonInfo
+                        //             .additionalPhoneNumber,
+                        //     gender: contact.personByPersonInfo.gender,
+                        //     contactDate:
+                        //         contact.contactEventByContactEvent.startTime,
+                        //     contactEvent: contact.contactEventByContactEvent.id,
+                        //     contactType: contact.contactType,
+                        //     contactStatus: contact.contactStatus ?? NEW_CONTACT_STATUS_CODE,
+                        //     extraInfo: contact.extraInfo,
+                        //     relationship: contact.relationship,
+                        //     familyRelationship: contact.familyRelationship,
+                        //     isolationAddress: contact.isolationAddress,
+                        //     occupation: contact.occupation,
+                        //     doesFeelGood: contact.doesFeelGood !== null
+                        //         ? contact.doesFeelGood
+                        //         : null,
+                        //     doesHaveBackgroundDiseases: contact.doesHaveBackgroundDiseases !== null
+                        //         ? contact.doesHaveBackgroundDiseases
+                        //         : null,
+                        //     doesLiveWithConfirmed: contact.doesLiveWithConfirmed !== null
+                        //         ? contact.doesLiveWithConfirmed
+                        //         : null,
+                        //     doesNeedHelpInIsolation: contact.doesNeedHelpInIsolation !== null
+                        //         ? contact.doesNeedHelpInIsolation
+                        //         : null,
+                        //     repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed !== null
+                        //         ? contact.repeatingOccuranceWithConfirmed
+                        //         : null,
+                        //     doesWorkWithCrowd: contact.doesWorkWithCrowd !== null
+                        //         ? contact.doesWorkWithCrowd
+                        //         : null,
+                        //     doesNeedIsolation: contact.doesNeedIsolation !== null
+                        //         ? contact.doesNeedIsolation
+                        //         : null,
+                        //     creationTime: contact.creationTime,
+                        //     involvementReason: contact.involvementReason,
+                        //     involvedContactId: contact.involvedContactId,
+                        //     finalEpidemiologicalStatusDesc: 'אין נתונים',
+                        //     colorCode: 'אין נתונים',
+                        //     certificateEligibilityTypeDesc: 'אין נתונים',
+                        //     immuneDefinitionBasedOnSerologyStatusDesc: 'אין נתונים',
+                        //     vaccinationStatusDesc: 'אין נתונים',
+                        //     isolationReportStatusDesc: 'אין נתונים',
+                        //     isolationObligationStatusDesc: 'אין נתונים'
+                        // })
+                    // };
 
                     getRulerApiDataFromServer(contactsToApi).then((resultFromAPI) => {
+                        let contacts = Array.from(contactsMap).map(contact => contact[1]);
+
                         if(resultFromAPI?.ColorData) {
                             for (let eachResult of resultFromAPI?.ColorData) {
-                                for (let interactedContact of interactedContacts) {
+                                for (let interactedContact of contacts) {
                                     if(interactedContact.identificationNumber === eachResult.IDnum) {
                                         interactedContact.finalEpidemiologicalStatusDesc = eachResult?.Indicators?.jsonstring?.finalEpidemiologicalStatusDesc;
                                         interactedContact.colorCode = eachResult?.ColorCode;
@@ -264,11 +337,12 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                                 }
                             }
                         }
-                        const groupedInteractedContacts = groupSimilarContactedPersons(interactedContacts);
-                        setAllContactedInteractions(groupedInteractedContacts);
-                        setIsLoading(false);
+
+                        setAllContactedInteractions(contacts);
+                        setIsLoading(false);     
                     });
-                       
+                    //const groupedInteractedContacts = groupSimilarContactedPersons(interactedContacts);
+                    
                 } else {
                     interactedContactsLogger.warn(
                         'got respond from the server without data',
