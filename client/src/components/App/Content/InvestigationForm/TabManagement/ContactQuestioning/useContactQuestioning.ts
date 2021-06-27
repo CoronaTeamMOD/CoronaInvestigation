@@ -74,7 +74,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         const rulerLogger = logger.setup('client ruler logger setup');
         rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
         setIsLoading(true);
-        return await axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters,{timeout: 5000})        .then((response: any) => {
+        return await axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters,{timeout: 5000})        
+            .then((response: any) => {
             if (response.data?.ColorData) {
                 rulerLogger.info('got response from the ruler server', Severity.LOW);
                 return response.data;
