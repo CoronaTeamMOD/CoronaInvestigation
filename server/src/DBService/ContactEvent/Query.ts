@@ -26,9 +26,6 @@ query getAllContactTypes {
   }
 }
 `;
-// to add here according to the place that bar will insert
-// colorCode
-// finalEpidemiologicalStatusDesc
 const involvedFieldsToQuery = `
 id
 familyRelationship: familyRelationshipByFamilyRelationship {
@@ -40,6 +37,8 @@ personByPersonId {
   additionalPhoneNumber
   firstName
   identificationNumber
+  finalEpidemiologicalStatusDesc
+  colorCode
   identificationType: identificationTypeByIdentificationType {
     type
     id
