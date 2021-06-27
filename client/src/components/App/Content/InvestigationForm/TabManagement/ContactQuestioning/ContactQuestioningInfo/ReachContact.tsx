@@ -19,8 +19,8 @@ const ReachContact = (props: Props) => {
     const classes = useStyles({});
     
     const formValues = getValues().form && getValues().form[index]
-        ? getValues().form[index]
-        : interactedContact;
+    ? getValues().form[index]
+    : interactedContact;
 
     const foundValue = (status: number) => {
         return contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === status);
