@@ -26,6 +26,7 @@ const serologicStartDate = 'תחילת חסינות סרולוגית';
 const serologicExpieryDate = 'תוקף חסינות סרולוגית';
 const vaccineEffectivenessDate = 'אפקטיביות חיסון';
 const vaccineExpieryDate = 'תוקף חיסון';
+const finalEpidemiologicalStatusDesc = 'סטטוס מסכם';
 
 
 const noDataIndication = '---';
@@ -40,8 +41,27 @@ const EducationContact: React.FC<Props> = (props: Props): JSX.Element => {
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
     const {epidemiologicStatus} = contact;
 
+    const colorCode = contact.colorCode;
+
+    const generateRulerBorderColorClass = (colorCode: Number | any) => {
+        switch (colorCode) {
+            case '1':
+                return formClasses.red;
+            case '2':
+                return formClasses.orange;
+            case '3':
+                return formClasses.green;
+            case '4':
+                return formClasses.yellow;
+            default:
+                return formClasses.white;
+        }
+    }
+
+    const rulerBorderColorClass: any  = generateRulerBorderColorClass(colorCode)
+
     return (
-        <>
+        <Grid className={rulerBorderColorClass}>
             <Grid item xs={12} className={formClasses.formRow}>
                 <FormInput xs={2} fieldName={contactedPersonFirstName}>
                     <Typography variant='caption'>
@@ -122,8 +142,13 @@ const EducationContact: React.FC<Props> = (props: Props): JSX.Element => {
                         {formatDate(epidemiologicStatus?.vaccineExpirationDate)}
                     </Typography>
                 </FormInput>
+                <FormInput xs={2} fieldName={finalEpidemiologicalStatusDesc}>
+                    <Typography variant='caption'>
+                        <b>{contact.finalEpidemiologicalStatusDesc || noDataIndication}</b>
+                    </Typography>
+                </FormInput>
             </Grid>
-        </>
+        </Grid>
     );
 };
 

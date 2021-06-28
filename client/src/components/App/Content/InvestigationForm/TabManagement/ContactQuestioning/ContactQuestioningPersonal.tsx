@@ -62,7 +62,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
             trigger(identificationTypeFieldName);
             trigger(identificationNumberFieldName);
             setIsId(watchIdentificationType === IdentificationTypesCodes.PALESTINE_ID || watchIdentificationType === IdentificationTypesCodes.ID);
-        }
+        }       
     }, [watchIdentificationType, watchIdentificationNumber]);
 
     useEffect(() => {
