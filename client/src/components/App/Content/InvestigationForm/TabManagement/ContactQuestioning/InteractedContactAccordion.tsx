@@ -53,8 +53,8 @@ const InteractedContactAccordion = (props: Props) => {
     };
 
     const formValues = methods.getValues().form && methods.getValues().form[index]
-        ? methods.getValues().form[index]
-        : interactedContact;
+    ? methods.getValues().form[index]
+    : interactedContact;
 
     const getAccordion = React.useMemo(() => {
         return (

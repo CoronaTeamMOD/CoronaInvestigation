@@ -26,7 +26,6 @@ query getAllContactTypes {
   }
 }
 `;
-
 const involvedFieldsToQuery = `
 id
 familyRelationship: familyRelationshipByFamilyRelationship {
@@ -38,6 +37,8 @@ personByPersonId {
   additionalPhoneNumber
   firstName
   identificationNumber
+  finalEpidemiologicalStatusDesc
+  colorCode
   identificationType: identificationTypeByIdentificationType {
     type
     id
