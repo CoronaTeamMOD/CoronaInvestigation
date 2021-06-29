@@ -52,6 +52,21 @@ const useFamilyMemebersTable = (parameters: Parameters) => {
        return existingFamilyMembers.indexOf(identificationNumber) !== -1 || eventContactIds?.indexOf(identificationNumber) !== -1; 
     };
 
+    const generateRulerBorderColorClass = (colorCode: Number | any) => {
+        switch (colorCode) {
+            case '1':
+                return classes.red;
+            case '2':
+                return classes.orange;
+            case '3':
+                return classes.green;
+            case '4':
+                return classes.yellow;
+            default:
+                return classes.white;
+        }
+    }
+
     const getRowClass = (familyMember: InvolvedContact) => {
         if(isRowDisabled(familyMember.identificationNumber)) {
             return classes.disabledRow;
@@ -61,13 +76,18 @@ const useFamilyMemebersTable = (parameters: Parameters) => {
         return '';
     };
 
+    const getRulerBorderClass = (colorCode: String | undefined) => {
+        return generateRulerBorderColorClass(colorCode)
+    };
+
     return {
         selectRow,
         counterDescription,
         isRowSelected,
         isHouseMember,
         isRowDisabled,
-        getRowClass
+        getRowClass,
+        getRulerBorderClass
     };
 };
 
