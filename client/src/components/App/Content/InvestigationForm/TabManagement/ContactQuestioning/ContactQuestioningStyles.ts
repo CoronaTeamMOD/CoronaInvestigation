@@ -22,6 +22,21 @@ const useStyles = makeStyles((theme: Theme) => ({
     errorAccordion: {
         border: `2px solid ${theme.palette.error.light}`,
     },
+    red:{
+        border: '3px solid #ff8080'
+    },
+    orange: {
+        border: '3px solid #ffbf80'
+    },
+    green: {
+        border: '3px solid #b3ffcc'
+    },
+    yellow: {
+        border: '3px solid #ffff99'
+    },
+    white: {
+        border: '3px solid #ffffff'
+    },
     avatar: {
         backgroundColor: theme.palette.primary.main,
         width: 30,
@@ -92,21 +107,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         cursor: 'pointer',
         color: 'slateblue',
         font: 'caption'
-    },
-    red:{
-        background: '#ff8080',
-    },
-    orange: {
-        background: '#ffbf80',
-    },
-    green: {
-        background: '#b3ffcc',
-    },
-    yellow: {
-        background: '#ffff99',
-    },
-    white: {
-        backgroundColor: '#ffffff'
     },
     statusInfoBtn: {
         backgroundColor: 'gray',

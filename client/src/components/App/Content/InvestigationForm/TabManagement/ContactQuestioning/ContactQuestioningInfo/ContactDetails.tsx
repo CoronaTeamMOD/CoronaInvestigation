@@ -51,23 +51,7 @@ const ContactDetails = (props: Props) => {
         event.stopPropagation();
         setShowRulerStatusInfo(!showRulerStatusInfo);
     };
-    const colorCode = interactedContact.colorCode;
-    
-    const generateBackgroundColorClass = (colorCode: Number | any) => {
-        switch (colorCode) {
-            case '1':
-                return classes.red;
-            case '2':
-                return classes.orange;
-            case '3':
-                return classes.green;
-            case '4':
-                return classes.yellow;
-            default:
-                return classes.white;
-        }
-    }
-    const backgroundColorClass: any  = generateBackgroundColorClass(colorCode)
+
     const finalEpidemiologicalStatusDesc = interactedContact.finalEpidemiologicalStatusDesc;
 
     const tooltipText = highestContactType.contactType === TIGHT_CONTACT_STATUS 
@@ -144,7 +128,6 @@ const ContactDetails = (props: Props) => {
                 direction='row-reverse'
                 alignItems='center'
                 justify='space-evenly'
-                className={backgroundColorClass}
             >
                 <Typography variant='body2' className={classes.contactDetail}>
                     <b>שם פרטי:</b>{' '}
