@@ -22,6 +22,7 @@ const useFamilyContactsUtils = () => {
         [FamilyContactsTableHeadersNames.SEROLOGIC_IMMUNITY_EXPIERY_DATE]: formatDate(row.epidemiologicStatus?.serologicImmunityExpirationDate, '---'),
         [FamilyContactsTableHeadersNames.VACCINE_EFFECTIVENESS_START_DATE]: formatDate(row.epidemiologicStatus?.vaccineEffectivenessStartDate, '---'),
         [FamilyContactsTableHeadersNames.VACCINE_EFFECTIVENESS_EXPIERY_DATE]: formatDate(row.epidemiologicStatus?.vaccineExpirationDate, '---'),
+        [FamilyContactsTableHeadersNames.FINAL_EPIDEMIOLOGICAL_STATUS_DESC]: row?.finalEpidemiologicalStatusDesc ? row?.finalEpidemiologicalStatusDesc : '---',
         [FamilyContactsTableHeadersNames.ISOLATION_CITY]: row.isolationAddress?.city?.displayName,
     });
 
