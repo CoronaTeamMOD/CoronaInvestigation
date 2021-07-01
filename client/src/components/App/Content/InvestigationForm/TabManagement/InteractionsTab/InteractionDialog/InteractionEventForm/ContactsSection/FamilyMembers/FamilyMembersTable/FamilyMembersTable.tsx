@@ -31,13 +31,13 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
     }, []);
 
     const { selectRow, counterDescription, isRowSelected, 
-            isHouseMember, isRowDisabled, getRowClass 
+            isHouseMember, isRowDisabled, getRowClass, getRulerBorderClass 
     } = useFamilyMemebersTable({ familyMembers, existingFamilyMembers, eventContactIds });
 
     return (
         <>
             <TableContainer component={Paper}>
-                <Table stickyHeader>
+                <Table>
                     <TableHead>
                         <TableRow>
                             {
@@ -53,7 +53,7 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
                         {
                             familyMembers.map((familyMember: InvolvedContact) => (
                                 <>
-                                    <TableRow className={getRowClass(familyMember)}>
+                                    <TableRow className={`${getRowClass(familyMember)} ${getRulerBorderClass(familyMember?.colorCode)}`}>
                                         {
                                             <Checkbox
                                                 disabled={isRowDisabled(familyMember.identificationNumber)}
