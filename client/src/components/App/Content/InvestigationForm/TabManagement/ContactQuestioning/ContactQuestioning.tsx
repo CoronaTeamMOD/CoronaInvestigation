@@ -30,12 +30,12 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     const { shouldDisable } = useContactFields();
     const { isInvolvedThroughFamily } = useInvolvedContact();
 
-    const methods = useForm<FormInputs>({
-        mode: 'all',
-        resolver: yupResolver(ContactQuestioningSchema),
-    });
+    // const methods = useForm<FormInputs>({
+    //     mode: 'all',
+    //     resolver: yupResolver(ContactQuestioningSchema),
+    // });
 
-    const { getValues, trigger } = methods;
+    //const { getValues, trigger } = methods;
 
     const {
         onSubmit,
@@ -50,8 +50,8 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
         setAllContactedInteractions,
         allContactedInteractions,
         setFamilyRelationships,
-        setContactStatuses,
-        getValues
+        setContactStatuses//,
+        // getValues
     });
 
     const loopWithSlice = (start: number, end: number) => {
@@ -72,18 +72,18 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
 
     useEffect(() => {
         if (allContactedInteractions) {
-            trigger();
+           // trigger();
             loopWithSlice(0, SIZE_OF_CONTACTS);
         }
     }, [allContactedInteractions]);
 
     return (
         <>
-            <FormProvider {...methods}>
-                <form
+            {/* <FormProvider {...methods}> */}
+                {/* <form
                     id={`form-${id}`}
                     onSubmit={(e: React.FormEvent) => { onSubmit(e) }}
-                >
+                > */}
                     <FormTitle
                         title={`טופס תשאול מגעים (${allContactedInteractions.length})`}
                     />
@@ -115,8 +115,8 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                             } 
                         )}
                     </Grid>
-                </form>
-            </FormProvider>
+                {/* </form> */}
+            {/* </FormProvider> */}
         </>
     );
 };

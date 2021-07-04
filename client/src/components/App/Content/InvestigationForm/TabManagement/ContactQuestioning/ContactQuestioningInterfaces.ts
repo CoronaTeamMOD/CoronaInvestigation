@@ -5,7 +5,7 @@ import FamilyRelationship from 'models/FamilyRelationship';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 export interface FormInputs {
-    form : InteractedContact[]
+    form : InteractedContact//[]
 }
 export interface useContactQuestioningParameters {
     id: number;
@@ -13,7 +13,7 @@ export interface useContactQuestioningParameters {
     setAllContactedInteractions: Dispatch<SetStateAction<GroupedInteractedContact[]>>;
     setFamilyRelationships: Dispatch<SetStateAction<FamilyRelationship[]>>;
     setContactStatuses: Dispatch<SetStateAction<FamilyRelationship[]>>;
-    getValues: () => FormInputs;
+ 
 }
 
 export interface useContactQuestioningOutcome {

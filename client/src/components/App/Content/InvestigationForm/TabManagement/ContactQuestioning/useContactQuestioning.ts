@@ -28,8 +28,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         setAllContactedInteractions,
         allContactedInteractions,
         setFamilyRelationships,
-        setContactStatuses,
-        getValues
+        setContactStatuses//,
+       // getValues
     } = parameters;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -328,7 +328,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const data = getValues();
+        const data = {} as FormInputs//getValues();
         const parsedFormData = parseFormBeforeSending(data as FormInputs);
         if (!areThereDuplicateIds(data) || isViewMode) {
             parsedFormData && saveContactQuestioning(parsedFormData, data);
@@ -338,26 +338,33 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const areThereDuplicateIds = (data: FormInputs) => {
-        const ids = data.form
-            .filter(person => {
-                const { identificationNumber, identificationType } = person;
-                return identificationNumber && identificationType;
-            }).map(person => {
-                return `${person.identificationNumber}-${person.identificationType}`
-            });
+        // const ids = data.form
+        //     .filter(person => {
+        //         const { identificationNumber, identificationType } = person;
+        //         return identificationNumber && identificationType;
+        //     }).map(person => {
+        //         return `${person.identificationNumber}-${person.identificationType}`
+        //     });
 
-        return ids.length !== new Set(ids).size;
+        // return ids.length !== new Set(ids).size;
+
+        //TODO validation from redux data
+        return false;
     };
 
     const parseFormBeforeSending = (data: FormInputs) => {
         const { form } = data;
-        const mappedForm = form?.map(
-            (person: InteractedContact, index: number) => {
-                return parsePerson(person, index);
-            }
-        ) || [];
+        // const mappedForm = form?.map(
+        //     (person: InteractedContact, index: number) => {
+        //         return parsePerson(person, index);
+        //     }
+        // ) || [];
 
-        return mappedForm;
+        // return mappedForm;
+
+        //TODO parse from redux data
+        return [];
+
     };
 
     /*
