@@ -27,7 +27,7 @@ const InteractedContactAccordion = (props: Props) => {
 
   //  const { errors, watch, ...methods } = useFormContext<FormInputs>();
   
-    const methods1 = useForm<FormInputs>({
+    const methods = useForm<FormInputs>({
         mode: 'all',
         resolver: yupResolver(ContactQuestioningSchema),
     });
@@ -65,7 +65,7 @@ const InteractedContactAccordion = (props: Props) => {
 
     const getAccordion = React.useMemo(() => {
         return (
-    
+            <FormProvider {...methods}>
             <form
             id={`form-${interactedContact.id}`} >
             {/* <div key={interactedContact.id}> */}
@@ -118,7 +118,7 @@ const InteractedContactAccordion = (props: Props) => {
                               //  formValues={formValues}
                                // formErrors={formErrors}
                               //  trigger={methods.trigger}
-                              //  contactStatus={watchCurrentStatus}
+                                //contactStatus={watchCurrentStatus}
                                 isViewMode={isViewMode}
                             />
                             <Divider
@@ -156,6 +156,7 @@ const InteractedContactAccordion = (props: Props) => {
                 </Accordion>
             {/* </div> */}
             </form>
+            </FormProvider>
         )
     }, [interactedContact/*JSON.stringify(formValues), formErrors, contactStatuses*/]);
 

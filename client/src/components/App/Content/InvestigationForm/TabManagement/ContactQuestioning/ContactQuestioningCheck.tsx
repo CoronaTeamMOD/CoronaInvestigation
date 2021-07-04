@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Controller } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { Avatar, FormControl, Select, Grid, MenuItem, Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
@@ -13,16 +13,19 @@ import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
+import { FormInputs } from './ContactQuestioningInterfaces';
 
 const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { formErrors, contactStatus, control, index, interactedContact, isViewMode } = props;
+    const { errors, watch, ...methods } = useFormContext<FormInputs>();
+
+    const {index, interactedContact, isViewMode } = props;
 
     const classes = useStyles();
 
     const occupations = useSelector<StoreStateType, string[]>(state => state.occupations);
 
-    const { isFieldDisabled } = useContactFields(contactStatus);
+    const { isFieldDisabled } = useContactFields(interactedContact.contactStatus);
 
     return (
         <Grid item xs={4}>
@@ -36,7 +39,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     <Grid container>
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_FEEL_GOOD} className={classes.fieldName} />
                         <Controller
-                            control={control}
+                            control={methods.control}
                             name={`form[${index}.${InteractedContactFields.DOES_FEEL_GOOD}]`}
                             defaultValue={interactedContact.doesFeelGood}
                             render={(props) => {
@@ -56,7 +59,8 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         />
                     </Grid>
                     <InlineErrorText
-                        error={formErrors && formErrors[InteractedContactFields.DOES_FEEL_GOOD]}
+                        //error={formErrors && formErrors[InteractedContactFields.DOES_FEEL_GOOD]}
+                        error={undefined}
                     />
                 </Grid>
 
@@ -64,7 +68,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     <Grid container>
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_HAVE_BACKGROUND_DISEASES} className={classes.fieldName} />
                         <Controller
-                            control={control}
+                            control={methods.control}
                             name={`form[${index}.${InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES}]`}
                             defaultValue={interactedContact.doesHaveBackgroundDiseases}
                             render={(props) => {
@@ -84,7 +88,8 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         />
                     </Grid>
                     <InlineErrorText
-                        error={formErrors && formErrors[InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES]}
+                        //error={formErrors && formErrors[InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES]}
+                        error={undefined}
                     />
                 </Grid>
 
@@ -92,7 +97,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     <Grid container>
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_LIVE_WITH_CONFIRMED} className={classes.fieldName} />
                         <Controller
-                            control={control}
+                            control={methods.control}
                             name={`form[${index}.${InteractedContactFields.DOES_LIVE_WITH_CONFIRMED}]`}
                             defaultValue={interactedContact.doesLiveWithConfirmed}
                             render={(props) => {
@@ -111,7 +116,8 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         />
                     </Grid>
                     <InlineErrorText
-                        error={formErrors && formErrors[InteractedContactFields.DOES_LIVE_WITH_CONFIRMED]}
+                        //error={formErrors && formErrors[InteractedContactFields.DOES_LIVE_WITH_CONFIRMED]}
+                        error={undefined}
                     />
                 </Grid>
 
@@ -119,7 +125,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     <Grid container>
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.REPEATING_OCCURANCE_WITH_CONFIRMED} className={classes.fieldName} />
                         <Controller
-                            control={control}
+                            control={methods.control}
                             name={`form[${index}.${InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED}]`}
                             defaultValue={interactedContact.repeatingOccuranceWithConfirmed}
                             render={(props) => {
@@ -138,7 +144,8 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         />
                     </Grid>
                     <InlineErrorText
-                        error={formErrors && formErrors[InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED]}
+                        //error={formErrors && formErrors[InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED]}
+                        error={undefined}
                     />
                 </Grid>
 
@@ -146,7 +153,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     <Grid container>
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_WORK_WITH_CROWD} className={classes.fieldName} />
                         <Controller
-                            control={control}
+                            control={methods.control}
                             name={`form[${index}.${InteractedContactFields.DOES_WORK_WITH_CROWD}]`}
                             defaultValue={interactedContact.doesWorkWithCrowd}
                             render={(props) => {
@@ -166,7 +173,8 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         />
                     </Grid>
                     <InlineErrorText
-                        error={formErrors && formErrors[InteractedContactFields.DOES_WORK_WITH_CROWD]}
+                        //error={formErrors && formErrors[InteractedContactFields.DOES_WORK_WITH_CROWD]}
+                        error={undefined}
                     />
                 </Grid>
 
@@ -174,7 +182,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.OCCUPATION} className={classes.fieldName} />
                     <Grid item xs={5}>
                         <Controller
-                            control={control}
+                            control={methods.control}
                             name={`form[${index}.${InteractedContactFields.OCCUPATION}]`}
                             defaultValue={interactedContact.occupation}
                             render={(props) => {
@@ -214,8 +222,8 @@ export default ContactQuestioningCheck;
 interface Props {
     index: number,
     interactedContact: InteractedContact;
-    formErrors: any;
-    control: any;
-    contactStatus: number;
+    // formErrors: any;
+    // control: any;
+    // contactStatus: number;
     isViewMode?: boolean;
 };
