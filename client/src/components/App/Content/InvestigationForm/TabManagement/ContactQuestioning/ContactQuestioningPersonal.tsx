@@ -58,8 +58,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
         ? shouldDisableContact(interactedContact.creationTime)
         : false;
     
-    const identificationTypeFieldName = `form.${InteractedContactFields.IDENTIFICATION_TYPE}`;
-    const identificationNumberFieldName = `form.${InteractedContactFields.IDENTIFICATION_NUMBER}`;
+    const identificationTypeFieldName = `${InteractedContactFields.IDENTIFICATION_TYPE}`;
+    const identificationNumberFieldName = `${InteractedContactFields.IDENTIFICATION_NUMBER}`;
 
     const watchIdentificationType = watch(identificationTypeFieldName);
     const watchIdentificationNumber = watch(identificationNumberFieldName);
@@ -96,7 +96,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid item xs={5}>
                         <Controller
                             control={methods.control}
-                            name={`form.${InteractedContactFields.IDENTIFICATION_TYPE}`}
+                            name={`${InteractedContactFields.IDENTIFICATION_TYPE}`}
                             defaultValue={interactedContact.identificationType?.id}
                             render={(props) => (
                                 <FormControl
@@ -144,7 +144,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid item xs={5}>
                         <Controller
                             control={methods.control}
-                            name={`form.${InteractedContactFields.IDENTIFICATION_NUMBER}`}
+                            name={`${InteractedContactFields.IDENTIFICATION_NUMBER}`}
                             defaultValue={
                                 interactedContact.identificationNumber
                             }
@@ -175,7 +175,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid item xs={5}>
                         <Controller
                             control={methods.control}
-                            name={`form.${InteractedContactFields.BIRTH_DATE}`}
+                            name={`${InteractedContactFields.BIRTH_DATE}`}
                             defaultValue={interactedContact.birthDate}
                             render={(props) => {
                                 const dateError = errors && errors.form && (errors.form as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.BIRTH_DATE]?.message;
@@ -224,7 +224,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid item xs={5}>
                         <Controller
                             control={methods.control}
-                            name={`form.${InteractedContactFields.PHONE_NUMBER}`}
+                            name={`${InteractedContactFields.PHONE_NUMBER}`}
                             defaultValue={interactedContact.phoneNumber}
                             render={(props) => {
                                 return (
@@ -275,7 +275,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid item xs={5}>
                         <Controller
                             control={methods.control}
-                            name={`form.${InteractedContactFields.EXTRA_INFO}`}
+                            name={`${InteractedContactFields.EXTRA_INFO}`}
                             defaultValue={interactedContact.extraInfo}
                             render={(props) => {
                                 return (

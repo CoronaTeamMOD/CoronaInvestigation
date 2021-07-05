@@ -18,9 +18,7 @@ const ReachContact = (props: Props) => {
     const { interactedContact, index, contactStatuses, saveContact, parsePerson,isViewMode } = props;
     const classes = useStyles({});
     
-    const formValues = getValues().form && getValues().form[index]
-    ? getValues().form[index]
-    : interactedContact;
+    const formValues = {...interactedContact, contactEvents:[]};
 
     const foundValue = (status: number) => {
         return contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === status);
@@ -44,7 +42,7 @@ const ReachContact = (props: Props) => {
                 <Grid item xs={8}>
                     <Controller
                         control={control}
-                        name={`form[${index}].${InteractedContactFields.CONTACT_STATUS}`}
+                        name={`${InteractedContactFields.CONTACT_STATUS}`}
                         defaultValue={interactedContact.contactStatus}
                         render={(props) => {
                             const currentValue = getCurrentValue(props.value);

@@ -53,23 +53,23 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const addressFormFields: AddressFormFields = {
         cityField: {
-            name: `form.${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`,
+            name: `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`,
             className: classes.addressTextField,
             testId: 'contactedPersonCity',
             defaultValue: interactedContact.isolationAddress?.city?.id
         },
         streetField: {
-            name: `form.${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`,
+            name: `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`,
             className: classes.addressTextField,
             defaultValue: interactedContact.isolationAddress?.street?.id || null
         },
         houseNumberField: {
-            name: `form.${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`,
+            name: `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`,
             className: classes.addressTextField,
             defaultValue: interactedContact.isolationAddress?.houseNum,
         },
         apartmentField: {
-            name: `form.${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`,
+            name: `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_APARTMENT_NUMBER}`,
             className: classes.addressTextField,
             defaultValue: interactedContact.isolationAddress?.apartment
         }
@@ -95,7 +95,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         return true;
     };
 
-    const statusFieldName = `form.${InteractedContactFields.CONTACT_STATUS}`;
+    const statusFieldName = `${InteractedContactFields.CONTACT_STATUS}`;
     const watchStatus = watch(statusFieldName);
     
 
@@ -153,7 +153,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid item xs={5}>
                         <Controller
                             control={methods.control}
-                            name={`form.${InteractedContactFields.FAMILY_RELATIONSHIP}`}
+                            name={`${InteractedContactFields.FAMILY_RELATIONSHIP}`}
                             defaultValue={interactedContact.familyRelationship}
                             render={(props) => {
                                 return (
@@ -190,7 +190,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid item xs={5}>
                         <Controller
                             control={methods.control}
-                            name={`form.${InteractedContactFields.RELATIONSHIP}`}
+                            name={`${InteractedContactFields.RELATIONSHIP}`}
                             defaultValue={interactedContact.relationship}
                             render={(props) => {
                                 return (
@@ -231,7 +231,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_NEED_HELP_IN_ISOLATION} className={classes.fieldName} />
                         <Controller
                             control={methods.control}
-                            name={`form.${InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION}`}
+                            name={`${InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION}`}
                             defaultValue={interactedContact.doesNeedHelpInIsolation}
                             render={(props) => {
                                 return (
@@ -260,7 +260,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_NEED_ISOLATION} className={classes.fieldName} />
                         <Controller
                             control={methods.control}
-                            name={`form.${InteractedContactFields.DOES_NEED_ISOLATION}`}
+                            name={`${InteractedContactFields.DOES_NEED_ISOLATION}`}
                             defaultValue={interactedContact.doesNeedIsolation}
                             render={(props) => {
                                 return (

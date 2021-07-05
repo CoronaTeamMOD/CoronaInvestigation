@@ -40,7 +40,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_FEEL_GOOD} className={classes.fieldName} />
                         <Controller
                             control={methods.control}
-                            name={`form[${index}.${InteractedContactFields.DOES_FEEL_GOOD}]`}
+                            name={`${InteractedContactFields.DOES_FEEL_GOOD}`}
                             defaultValue={interactedContact.doesFeelGood}
                             render={(props) => {
                                 return (
@@ -69,7 +69,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_HAVE_BACKGROUND_DISEASES} className={classes.fieldName} />
                         <Controller
                             control={methods.control}
-                            name={`form[${index}.${InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES}]`}
+                            name={`${InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES}`}
                             defaultValue={interactedContact.doesHaveBackgroundDiseases}
                             render={(props) => {
                                 return (
@@ -98,7 +98,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_LIVE_WITH_CONFIRMED} className={classes.fieldName} />
                         <Controller
                             control={methods.control}
-                            name={`form[${index}.${InteractedContactFields.DOES_LIVE_WITH_CONFIRMED}]`}
+                            name={`${InteractedContactFields.DOES_LIVE_WITH_CONFIRMED}`}
                             defaultValue={interactedContact.doesLiveWithConfirmed}
                             render={(props) => {
                                 return (
@@ -126,7 +126,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.REPEATING_OCCURANCE_WITH_CONFIRMED} className={classes.fieldName} />
                         <Controller
                             control={methods.control}
-                            name={`form[${index}.${InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED}]`}
+                            name={`${InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED}`}
                             defaultValue={interactedContact.repeatingOccuranceWithConfirmed}
                             render={(props) => {
                                 return (
@@ -154,7 +154,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_WORK_WITH_CROWD} className={classes.fieldName} />
                         <Controller
                             control={methods.control}
-                            name={`form[${index}.${InteractedContactFields.DOES_WORK_WITH_CROWD}]`}
+                            name={`${InteractedContactFields.DOES_WORK_WITH_CROWD}`}
                             defaultValue={interactedContact.doesWorkWithCrowd}
                             render={(props) => {
                                 return (
@@ -183,7 +183,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     <Grid item xs={5}>
                         <Controller
                             control={methods.control}
-                            name={`form[${index}.${InteractedContactFields.OCCUPATION}]`}
+                            name={`${InteractedContactFields.OCCUPATION}`}
                             defaultValue={interactedContact.occupation}
                             render={(props) => {
                                 return (

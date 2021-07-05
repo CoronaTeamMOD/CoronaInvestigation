@@ -48,16 +48,16 @@ const InteractedContactAccordion = (props: Props) => {
         let classesList: string[] = [];
         classesList.push(classes.accordion);
 
-        // const formHasErrors = formErrors
-        //     ? Object.entries(formErrors)
-        //         .some(([key, value]) => (
-        //             value !== undefined
-        //         ))
-        //     : false
+        const formHasErrors = methods.errors.form
+            ? Object.entries(methods.errors.form)
+                .some(([key, value]) => (
+                    value !== undefined
+                ))
+            : false
 
-        // if (formHasErrors) {
-        //     classesList.push(classes.errorAccordion);
-        // }
+        if (formHasErrors) {
+            classesList.push(classes.errorAccordion);
+        }
         return classesList.join(' ');
     };
 
@@ -94,11 +94,11 @@ const InteractedContactAccordion = (props: Props) => {
                             <ContactQuestioningPersonal
                                 index={index}
                                 interactedContact={interactedContact}
-                                // control={methods.control}
-                                // formValues={formValues}
+                                //  control={methods.control}
+                                // // formValues={formValues}
                                 // trigger={methods.trigger}
-                                // currentFormErrors={formErrors}
-                                // watch={watch}
+                                // currentFormErrors={methods.errors?.form}
+                                // watch={methods.watch}
                                 isViewMode={isViewMode}
                             />
                             <Divider

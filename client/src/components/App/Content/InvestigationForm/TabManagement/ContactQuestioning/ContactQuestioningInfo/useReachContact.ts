@@ -13,7 +13,7 @@ const useReachContact = (props: Props) => {
     const { alertWarning , alertError } = useCustomSwal();
     const formHaveMissingFieldsText = `למגע זה ישנם שדות לא תקינים:`
 
-    const formHasErrors = errors.form ? Boolean(errors.form[index]) : false;
+    const formHasErrors = errors.form; // ? Boolean(errors.form[index]) : false;
     const changeContactStatus = (
         event: React.ChangeEvent<{}>,
         selectedStatus: ContactStatus | null,
@@ -35,7 +35,7 @@ const useReachContact = (props: Props) => {
                     }).then((result) => {
                         if (result.value) {
                             onChange(selectedStatus?.id);
-                            let contactedPerson = getValues().form[index];
+                            let contactedPerson = getValues().form;
                             saveContact(parsePerson(contactedPerson, index));
                         }
                     });
