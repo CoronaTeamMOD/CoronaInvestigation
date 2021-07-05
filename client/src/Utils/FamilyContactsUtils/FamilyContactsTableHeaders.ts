@@ -12,22 +12,24 @@ enum FamilyContactsTableHeadersNames {
     SEROLOGIC_IMMUNITY_EXPIERY_DATE = 'serologicImmunityExpieryDate',
     VACCINE_EFFECTIVENESS_START_DATE = 'vaccineEffectivenessStartDate',
     VACCINE_EFFECTIVENESS_EXPIERY_DATE = 'vaccineEffectivenessExpieryDate',
+    FINAL_EPIDEMIOLOGICAL_STATUS_DESC = 'finalEpidemiologicalStatusDesc',
 };
 
 export const FamilyContactsTableHeaders = {
     [FamilyContactsTableHeadersNames.FAMILY_RELATIONSHIP]: 'קרבה',
     [FamilyContactsTableHeadersNames.FIRST_NAME]: 'שם',
     [FamilyContactsTableHeadersNames.LAST_NAME]: 'משפחה',
-    [FamilyContactsTableHeadersNames.IDENTIFICATION_TYPE]: 'סוג מזהה',
+    [FamilyContactsTableHeadersNames.IDENTIFICATION_TYPE]: 'מזהה',
     [FamilyContactsTableHeadersNames.IDENTIFICATION_NUMBER]: 'מספר מזהה',
-    [FamilyContactsTableHeadersNames.BIRTH_DATE]: 'תאריך לידה',
-    [FamilyContactsTableHeadersNames.PHONE_NUMBER]: 'טלפון ראשי',
-    [FamilyContactsTableHeadersNames.ISOLATION_CITY]: 'ישוב השהייה בבידוד',
+    [FamilyContactsTableHeadersNames.BIRTH_DATE]: 'ת. לידה',
+    [FamilyContactsTableHeadersNames.PHONE_NUMBER]: 'טלפון',
     [FamilyContactsTableHeadersNames.RECOVERY_DATE]: 'תאריך החלמה',
     [FamilyContactsTableHeadersNames.SEROLOGIC_IMMUNITY_START_DATE]: 'תחילת חסינות סרולוגית',
     [FamilyContactsTableHeadersNames.SEROLOGIC_IMMUNITY_EXPIERY_DATE]: 'תוקף חסינות סרולוגית',
     [FamilyContactsTableHeadersNames.VACCINE_EFFECTIVENESS_START_DATE]: 'אפקטיביות חיסון',
     [FamilyContactsTableHeadersNames.VACCINE_EFFECTIVENESS_EXPIERY_DATE]: 'תוקף חיסון',
+    [FamilyContactsTableHeadersNames.FINAL_EPIDEMIOLOGICAL_STATUS_DESC ]: 'סטטוס מסכם',
+    [FamilyContactsTableHeadersNames.ISOLATION_CITY]: 'ישוב השהייה בבידוד',
 }
 
 export default FamilyContactsTableHeadersNames;
