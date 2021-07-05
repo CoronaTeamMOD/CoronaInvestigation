@@ -10,14 +10,16 @@ import { contactQuestioningPersonal } from './contactQuestioningPersonalSchema';
 
 const interactionEventSchema = yup.object().shape({
    /*form: yup.array().of(*/
-      form: yup.object().shape({
+      // form: yup.object().shape({
             ...contactQuestioningInfo,
             ...contactQuestioningPersonal,
             ...contactQuestioningClinical,
             ...contactQuestioningCheck,
-       }
+      //  }
+   }
     ,[[InteractedContactFields.IDENTIFICATION_TYPE, InteractedContactFields.IDENTIFICATION_NUMBER]])
    //),
-});
+   //}
+//);
 
 export default interactionEventSchema;

@@ -40,9 +40,9 @@ const InteractedContactAccordion = (props: Props) => {
         isFamilyContact, familyRelationships, shouldDisable, isViewMode
     } = props;
 
-   // const watchCurrentStatus: number = watch(`form-${interactedContact.id}.${InteractedContactFields.CONTACT_STATUS}`);
+   const watchCurrentStatus: number = methods.watch(`form-${interactedContact.id}.${InteractedContactFields.CONTACT_STATUS}`);
 
-  //  const formErrors = errors?.form; //&& errors?.form[index];
+    //const formErrors = errors?.form; //&& errors?.form[index];
 
     const getAccordionClasses = (): string => {
         let classesList: string[] = [];
@@ -63,8 +63,8 @@ const InteractedContactAccordion = (props: Props) => {
 
     const formValues = interactedContact;
 
-    const getAccordion = React.useMemo(() => {
-        return (
+    const getAccordion =// React.useMemo(() => {
+     ()=> { return (
             <FormProvider {...methods}>
             <form
             id={`form-${interactedContact.id}`} >
@@ -158,10 +158,10 @@ const InteractedContactAccordion = (props: Props) => {
             </form>
             </FormProvider>
         )
-    }, [interactedContact/*JSON.stringify(formValues), formErrors, contactStatuses*/]);
+    }//, [interactedContact/*JSON.stringify(formValues), formErrors, contactStatuses*/]);
 
     return (
-        getAccordion
+        getAccordion()
     );
 };
 

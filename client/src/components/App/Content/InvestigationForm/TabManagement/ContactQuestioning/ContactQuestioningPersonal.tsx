@@ -23,6 +23,7 @@ import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteracte
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 import { FormInputs } from './ContactQuestioningInterfaces';
+import { ErrorSharp } from '@material-ui/icons';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
 
@@ -56,7 +57,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     const shouldDisableIdByReopen = interactedContact.creationTime
         ? shouldDisableContact(interactedContact.creationTime)
         : false;
-
+    
     const identificationTypeFieldName = `form.${InteractedContactFields.IDENTIFICATION_TYPE}`;
     const identificationNumberFieldName = `form.${InteractedContactFields.IDENTIFICATION_NUMBER}`;
 
@@ -68,6 +69,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
             methods.trigger(identificationTypeFieldName);
             methods.trigger(identificationNumberFieldName);
             setIsId(watchIdentificationType === IdentificationTypesCodes.PALESTINE_ID || watchIdentificationType === IdentificationTypesCodes.ID);
+            console.log('Im watching')
         }       
     }, [watchIdentificationType, watchIdentificationNumber]);
 
@@ -79,7 +81,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
         setShouldIdDisable(shouldDisable);
     }, [interactedContact.contactStatus, isFieldDisabled]);
 
-    return (
+   const getContactQuestioningPersonal =  React.useMemo(() => { return (
         <Grid item xs={4}>
             <Grid container direction='column' spacing={2}>
                 <Grid container item direction='row' alignItems='center'>
@@ -107,7 +109,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                         disabled={shouldIdDisable || isViewMode}
                                         onChange={(event) => {
                                             props.onChange(event.target.value)
-                                           
+                                           console.log(errors);
                                         }}
                                         MenuProps={{
                                             anchorOrigin: {
@@ -156,6 +158,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             testId='identificationNumber'
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue);
+                                                console.log(errors.form)
                                             }}
                                             placeholder='מספר תעודה'
                                             isId={isId}
@@ -190,6 +193,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             onChange={(newDate: Date) => {
                                                 props.onChange(newDate);
                                                 setAge(calcAge(newDate));
+                                                console.log(dateError);
                                             }}
                                         />
                                     </FormControl>
@@ -231,6 +235,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             disabled={isFieldDisabled || isViewMode}
                                             testId='phoneNumber'
                                             placeholder='הכנס טלפון:'
+                                            onBlur={()=>console.log(errors)}
                                         />
                                     </FormControl>
                                 )
@@ -246,7 +251,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                         </Typography>
                     </Grid>
                     {
-                        interactedContact.contactEvents.map((event) => {
+                        interactedContact.contactEvents.map((event: any) => {
                             return (
                                 <Grid container item xs={12} className={classes.eventRow}>
                                     <Grid item>
@@ -293,8 +298,12 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
             </Grid>
         </Grid>
     );
-};
+  }, [interactedContact, errors?.form]);
 
+
+    return (getContactQuestioningPersonal);
+
+}
 export default ContactQuestioningPersonal;
 
 interface Props {

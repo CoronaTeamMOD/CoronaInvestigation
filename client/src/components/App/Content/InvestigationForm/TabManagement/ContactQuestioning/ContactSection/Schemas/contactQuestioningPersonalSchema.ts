@@ -12,6 +12,7 @@ export const contactQuestioningPersonal = {
         .when(
             [InteractedContactFields.CONTACT_STATUS, InteractedContactFields.DOES_NEED_ISOLATION, InteractedContactFields.IDENTIFICATION_TYPE],
             (contactStatus: number, needIsolation: boolean, identificationType: number, schema: any, { originalValue }: { originalValue: string }) => {
+               console.log('contact status in validation', needIsolation)
                 return (contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
                 ? yup.string().nullable()
                 : (contactStatus === ContactStatusCodes.COMPLETED ||  !needIsolation) &&  (identificationType == null || identificationType === 6)
