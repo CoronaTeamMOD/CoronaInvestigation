@@ -62,6 +62,7 @@ const InteractedContactAccordion = (props: Props) => {
                 <Accordion
                     className={getAccordionClasses()}
                     style={{ borderRadius: '3vw' }}
+                    TransitionProps={{ unmountOnExit: true }}
                 >
                     <AccordionSummary
                         test-id='contactLocation'
