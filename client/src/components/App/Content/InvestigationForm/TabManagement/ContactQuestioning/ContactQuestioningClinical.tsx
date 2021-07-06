@@ -21,6 +21,7 @@ import AddressForm, { AddressFormFields } from 'commons/NoContextElements/Addres
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 import { FormInputs } from './ContactQuestioningInterfaces';
+import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 const emptyFamilyRelationship: FamilyRelationship = {
     id: null as any,
@@ -29,7 +30,7 @@ const emptyFamilyRelationship: FamilyRelationship = {
 
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { errors, watch, ...methods } = useFormContext<InteractedContact>();//FormInputs
+    const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();//FormInputs
 
     const { index, familyRelationships, interactedContact, isFamilyContact, isViewMode } = props;
 
@@ -98,7 +99,10 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const statusFieldName = `${InteractedContactFields.CONTACT_STATUS}`;
     const watchStatus = watch(statusFieldName);
     
-
+    useEffect(() => {
+        methods.trigger();     
+    }, []);
+    
     useEffect(() => {
         if (watchStatus || isFieldDisabled) {
             methods.trigger();

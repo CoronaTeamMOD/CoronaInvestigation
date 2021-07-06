@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Avatar, FormControl, Select, Grid, MenuItem, Typography } from '@material-ui/core';
@@ -14,10 +14,11 @@ import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 import { FormInputs } from './ContactQuestioningInterfaces';
+import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { errors, watch, ...methods } = useFormContext<InteractedContact>();//FormInputs
+    const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();//FormInputs
 
     const {index, interactedContact, isViewMode } = props;
 
@@ -26,6 +27,10 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
     const occupations = useSelector<StoreStateType, string[]>(state => state.occupations);
 
     const { isFieldDisabled } = useContactFields(interactedContact.contactStatus);
+
+    useEffect(() => {
+        methods.trigger();     
+    }, []);
 
     return (
         <Grid item xs={4}>

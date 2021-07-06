@@ -35,8 +35,8 @@ const useReachContact = (props: Props) => {
                     }).then((result) => {
                         if (result.value) {
                             onChange(selectedStatus?.id);
-                            let contactedPerson = getValues().form;
-                            saveContact(parsePerson(contactedPerson, index));
+                            let contactedPerson = getValues();
+                            saveContact(parsePerson(contactedPerson as GroupedInteractedContact, index));
                         }
                     });
                 }

@@ -28,7 +28,7 @@ import { ErrorSharp } from '@material-ui/icons';
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
 
 
-    const { errors, watch, ...methods } = useFormContext<InteractedContact>();//FormInputs
+    const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();//FormInputs
 
     const { index, interactedContact , isViewMode } = props;
 
@@ -110,7 +110,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                 >
                                     <Select
                                         {...props}
-                                        disabled={shouldIdDisable || isViewMode}
+                                        disabled={isFieldDisabled || shouldIdDisable || isViewMode}
                                         onChange={(event) => {
                                             props.onChange(event.target.value)
                                            console.log(errors);
@@ -158,7 +158,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                         <IdentificationTextField
                                             {...props}
                                             error={(errors &&  (errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_NUMBER]?.message) || ''}
-                                            disabled={shouldIdDisable || isViewMode}
+                                            disabled={isFieldDisabled || shouldIdDisable || isViewMode}
                                             testId='identificationNumber'
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue);

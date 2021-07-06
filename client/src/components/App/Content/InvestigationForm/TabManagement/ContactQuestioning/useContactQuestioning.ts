@@ -373,7 +373,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
      * so im parsing the data and adding all of those fields before sending them
      */
     const parsePerson = (person: InteractedContact, index: number) => {
-        let updatedPerson = person;
+        let updatedPerson = person || {};
         updatedPerson.contactDate = allContactedInteractions[index].contactDate;
         updatedPerson.contactEvent = allContactedInteractions[index].contactEvent;
         updatedPerson.contactType = allContactedInteractions[index].contactType;

@@ -15,19 +15,17 @@ import useStyles from '../ContactQuestioningStyles';
 
 const ReachContact = (props: Props) => {
     const { control, getValues, watch } = useFormContext();
-    const { interactedContact, index, contactStatuses, saveContact, parsePerson,isViewMode } = props;
+    const { interactedContact, index, contactStatuses, saveContact,parsePerson,isViewMode } = props;
     const classes = useStyles({});
-    
-    const formValues = {...interactedContact, contactEvents:[]};
 
     const foundValue = (status: number) => {
         return contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === status);
     }
     const getCurrentValue = (status: number) => { return foundValue(status) || { id: -1, displayName: '...' } }
-    const { isFieldDisabled, validateContact } = useContactFields(formValues.contactStatus);
+    const { isFieldDisabled, validateContact } = useContactFields(interactedContact.contactStatus);
 
     const { changeContactStatus } = useReachContact({
-        saveContact, parsePerson, formValues, index
+        saveContact, parsePerson, formValues: interactedContact, index
     });
 
     const removeUnusePartOfError = (errorMsg: string) => {
@@ -56,7 +54,7 @@ const ReachContact = (props: Props) => {
                                     }
                                     value={currentValue}
                                     onChange={(e, data) => {
-                                        let contactValidation = validateContact(parsePerson(formValues, index), ValidationReason.SAVE_CONTACT)
+                                        let contactValidation = validateContact(parsePerson(interactedContact, index), ValidationReason.SAVE_CONTACT)
                                         const missingFieldsText = contactValidation?.valid ? '' : removeUnusePartOfError(contactValidation.error);
                                         changeContactStatus(
                                             e,
@@ -101,7 +99,7 @@ const ReachContact = (props: Props) => {
 export default ReachContact;
 
 interface Props {
-    interactedContact: InteractedContact;
+    interactedContact: GroupedInteractedContact;
     index: number;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;

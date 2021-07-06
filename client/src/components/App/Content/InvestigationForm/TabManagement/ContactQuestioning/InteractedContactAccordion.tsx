@@ -27,7 +27,7 @@ const InteractedContactAccordion = (props: Props) => {
 
   //  const { errors, watch, ...methods } = useFormContext<FormInputs>();
   
-    const methods = useForm<InteractedContact>({ //FormInputs
+    const methods = useForm<GroupedInteractedContact>({ //FormInputs
         mode: 'all',
         resolver: yupResolver(ContactQuestioningSchema),
     });
