@@ -78,7 +78,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
             methods.trigger(identificationTypeFieldName);
             methods.trigger(identificationNumberFieldName);
             setIsId(watchIdentificationType === IdentificationTypesCodes.PALESTINE_ID || watchIdentificationType === IdentificationTypesCodes.ID);
-            console.log('Im watching')
+           
         }       
     }, [watchIdentificationType, watchIdentificationNumber]);
 
@@ -119,7 +119,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                         disabled={isFieldDisabled || shouldIdDisable || isViewMode}
                                         onChange={(event) => {
                                             props.onChange(event.target.value)
-                                           console.log(errors);
+                                           
                                         }}
                                         MenuProps={{
                                             anchorOrigin: {
@@ -168,7 +168,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             testId='identificationNumber'
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue);
-                                                console.log(errors)
                                             }}
                                             placeholder='מספר תעודה'
                                             isId={isId}
@@ -203,7 +202,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             onChange={(newDate: Date) => {
                                                 props.onChange(newDate);
                                                 setAge(calcAge(newDate));
-                                                console.log(dateError);
                                             }}
                                         />
                                     </FormControl>
@@ -245,7 +243,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             disabled={isFieldDisabled || isViewMode}
                                             testId='phoneNumber'
                                             placeholder='הכנס טלפון:'
-                                            onBlur={()=>console.log(errors)}
                                         />
                                     </FormControl>
                                 )

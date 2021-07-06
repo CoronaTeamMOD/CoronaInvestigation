@@ -328,13 +328,15 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const data = {} as FormInputs//getValues();
-        const parsedFormData = parseFormBeforeSending(data as FormInputs);
-        if (!areThereDuplicateIds(data) || isViewMode) {
-            parsedFormData && saveContactQuestioning(parsedFormData, data);
-        } else {
-            alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
-        }
+        setFormState(epidemiologyNumber, id, true);
+
+        // const data = {} as FormInputs//getValues();
+        // const parsedFormData = parseFormBeforeSending(data as FormInputs);
+        // if (!areThereDuplicateIds(data) || isViewMode) {
+        //     parsedFormData && saveContactQuestioning(parsedFormData, data);
+        // } else {
+        //     alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
+        // }
     };
 
     const areThereDuplicateIds = (data: FormInputs) => {

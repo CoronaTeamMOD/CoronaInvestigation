@@ -80,10 +80,9 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     return (
         <>
             {/* <FormProvider {...methods}> */}
-                {/* <form
+                  <form
                     id={`form-${id}`}
-                    onSubmit={(e: React.FormEvent) => { onSubmit(e) }}
-                > */}
+                    onSubmit={(e: React.FormEvent) => { onSubmit(e) }} > </form> 
                     <FormTitle
                         title={`טופס תשאול מגעים (${allContactedInteractions.length})`}
                     />
@@ -115,7 +114,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                             } 
                         )}
                     </Grid>
-                {/* </form> */}
+               
             {/* </FormProvider> */}
         </>
     );
