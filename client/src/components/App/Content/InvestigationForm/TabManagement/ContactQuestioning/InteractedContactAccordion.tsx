@@ -27,7 +27,7 @@ const InteractedContactAccordion = (props: Props) => {
 
   //  const { errors, watch, ...methods } = useFormContext<FormInputs>();
   
-    const methods = useForm<FormInputs>({
+    const methods = useForm<InteractedContact>({ //FormInputs
         mode: 'all',
         resolver: yupResolver(ContactQuestioningSchema),
     });
@@ -48,8 +48,8 @@ const InteractedContactAccordion = (props: Props) => {
         let classesList: string[] = [];
         classesList.push(classes.accordion);
 
-        const formHasErrors = methods.errors.form
-            ? Object.entries(methods.errors.form)
+        const formHasErrors = methods.errors
+            ? Object.entries(methods.errors)
                 .some(([key, value]) => (
                     value !== undefined
                 ))
@@ -72,6 +72,7 @@ const InteractedContactAccordion = (props: Props) => {
                 <Accordion
                     className={getAccordionClasses()}
                     style={{ borderRadius: '3vw' }}
+                    TransitionProps={{ unmountOnExit: true }}
                 >
                     <AccordionSummary
                         test-id='contactLocation'

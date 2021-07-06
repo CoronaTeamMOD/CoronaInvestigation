@@ -28,7 +28,7 @@ import { ErrorSharp } from '@material-ui/icons';
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
 
 
-    const { errors, watch, ...methods } = useFormContext<FormInputs>();
+    const { errors, watch, ...methods } = useFormContext<InteractedContact>();//FormInputs
 
     const { index, interactedContact , isViewMode } = props;
 
@@ -100,7 +100,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                             defaultValue={interactedContact.identificationType?.id}
                             render={(props) => (
                                 <FormControl
-                                    error={errors && errors.form ? !!((errors.form as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_TYPE]) : false}
+                                    error={errors? !!((errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_TYPE]) : false}
                                     variant='outlined'
                                     fullWidth
                                 >
@@ -135,7 +135,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                 </FormControl>
                             )}
                         />
-                        {errors && errors.form && (errors.form as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_TYPE] && <FormHelperText>{requiredText}</FormHelperText>}
+                        {errors && (errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_TYPE] && <FormHelperText>{requiredText}</FormHelperText>}
                     </Grid>
                 </Grid>
 
@@ -153,12 +153,12 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                     <FormControl variant='outlined' fullWidth>
                                         <IdentificationTextField
                                             {...props}
-                                            error={(errors && errors.form &&  (errors.form as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_NUMBER]?.message) || ''}
+                                            error={(errors &&  (errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_NUMBER]?.message) || ''}
                                             disabled={shouldIdDisable || isViewMode}
                                             testId='identificationNumber'
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue);
-                                                console.log(errors.form)
+                                                console.log(errors)
                                             }}
                                             placeholder='מספר תעודה'
                                             isId={isId}
@@ -178,7 +178,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                             name={`${InteractedContactFields.BIRTH_DATE}`}
                             defaultValue={interactedContact.birthDate}
                             render={(props) => {
-                                const dateError = errors && errors.form && (errors.form as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.BIRTH_DATE]?.message;
+                                const dateError = errors && (errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.BIRTH_DATE]?.message;
                                 return (
                                     <FormControl variant='outlined' fullWidth>
                                         <DatePick
@@ -231,7 +231,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                     <FormControl variant='outlined' fullWidth>
                                         <NumericTextField
                                             {...props}
-                                            error={errors && errors.form && (errors.form as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.PHONE_NUMBER]?.message}
+                                            error={errors && (errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.PHONE_NUMBER]?.message}
                                             disabled={isFieldDisabled || isViewMode}
                                             testId='phoneNumber'
                                             placeholder='הכנס טלפון:'
@@ -298,7 +298,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
             </Grid>
         </Grid>
     );
-  }, [interactedContact, errors?.form]);
+  }, [interactedContact, errors]);
 
 
     return (getContactQuestioningPersonal);

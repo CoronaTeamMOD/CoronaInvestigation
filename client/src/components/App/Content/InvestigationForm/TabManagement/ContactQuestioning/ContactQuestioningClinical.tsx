@@ -29,7 +29,7 @@ const emptyFamilyRelationship: FamilyRelationship = {
 
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { errors, watch, ...methods } = useFormContext<FormInputs>();
+    const { errors, watch, ...methods } = useFormContext<InteractedContact>();//FormInputs
 
     const { index, familyRelationships, interactedContact, isFamilyContact, isViewMode } = props;
 
@@ -49,7 +49,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const isolationEndDate = addDays(new Date(interactedContact.contactDate), daysToIsolate);
     const formattedIsolationEndDate = format(new Date(isolationEndDate), 'dd/MM/yyyy');
 
-    const isolationAddressErrors = errors && errors.form && (errors.form[InteractedContactFields.ISOLATION_ADDRESS] as DeepMap<FlattenedDBAddress, FieldError>);
+    const isolationAddressErrors = errors && (errors[InteractedContactFields.ISOLATION_ADDRESS] as DeepMap<FlattenedDBAddress, FieldError>);
 
     const addressFormFields: AddressFormFields = {
         cityField: {
@@ -88,9 +88,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     };
 
     const isIdAndPhoneNumValid = (): boolean => {
-        const isDoesNeedIsolationIsTheLastFormError = errors && errors.form && Object.keys(errors.form).length === 1 && Object.keys(errors.form)[0] === 'doesNeedIsolation'
-        if (errors && errors.form && !isDoesNeedIsolationIsTheLastFormError) {
-            return Boolean(errors.form.id) || Boolean(errors.form.phoneNumber)
+        const isDoesNeedIsolationIsTheLastFormError = errors && Object.keys(errors).length === 1 && Object.keys(errors)[0] === 'doesNeedIsolation'
+        if (errors && !isDoesNeedIsolationIsTheLastFormError) {
+            return Boolean(errors.id) || Boolean(errors.phoneNumber)
         }
         return true;
     };
@@ -197,7 +197,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                     <FormControl variant='outlined' fullWidth>
                                         <HebrewTextField
                                             {...props}
-                                            error={ errors && errors.form && errors.form[InteractedContactFields.ADDITIONAL_PHONE_NUMBER]?.message}
+                                            error={ errors  && errors[InteractedContactFields.ADDITIONAL_PHONE_NUMBER]?.message}
                                             disabled={isFieldDisabled || isViewMode}
                                             testId='relationship'
                                             onChange={(newValue: string) => {

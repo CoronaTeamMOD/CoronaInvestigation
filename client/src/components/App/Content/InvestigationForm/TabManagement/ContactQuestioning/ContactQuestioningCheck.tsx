@@ -17,7 +17,7 @@ import { FormInputs } from './ContactQuestioningInterfaces';
 
 const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { errors, watch, ...methods } = useFormContext<FormInputs>();
+    const { errors, watch, ...methods } = useFormContext<InteractedContact>();//FormInputs
 
     const {index, interactedContact, isViewMode } = props;
 
