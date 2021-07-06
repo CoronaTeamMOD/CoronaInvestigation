@@ -59,8 +59,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         />
                     </Grid>
                     <InlineErrorText
-                        //error={formErrors && formErrors[InteractedContactFields.DOES_FEEL_GOOD]}
-                        error={undefined}
+                        error={errors && errors[InteractedContactFields.DOES_FEEL_GOOD]}
                     />
                 </Grid>
 
@@ -88,8 +87,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         />
                     </Grid>
                     <InlineErrorText
-                        //error={formErrors && formErrors[InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES]}
-                        error={undefined}
+                        error={errors && errors[InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES]}
                     />
                 </Grid>
 
@@ -116,8 +114,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         />
                     </Grid>
                     <InlineErrorText
-                        //error={formErrors && formErrors[InteractedContactFields.DOES_LIVE_WITH_CONFIRMED]}
-                        error={undefined}
+                        error={errors && errors[InteractedContactFields.DOES_LIVE_WITH_CONFIRMED]}
                     />
                 </Grid>
 
@@ -144,8 +141,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         />
                     </Grid>
                     <InlineErrorText
-                        //error={formErrors && formErrors[InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED]}
-                        error={undefined}
+                        error={errors && errors[InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED]}
                     />
                 </Grid>
 
@@ -173,8 +169,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         />
                     </Grid>
                     <InlineErrorText
-                        //error={formErrors && formErrors[InteractedContactFields.DOES_WORK_WITH_CROWD]}
-                        error={undefined}
+                        error={errors && errors[InteractedContactFields.DOES_WORK_WITH_CROWD]}
                     />
                 </Grid>
 

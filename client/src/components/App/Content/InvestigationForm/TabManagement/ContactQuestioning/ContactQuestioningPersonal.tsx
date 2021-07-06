@@ -65,6 +65,10 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     const watchIdentificationNumber = watch(identificationNumberFieldName);
 
     useEffect(() => {
+        methods.trigger();     
+    }, []);
+
+    useEffect(() => {
         if (watchIdentificationType || watchIdentificationNumber) {
             methods.trigger(identificationTypeFieldName);
             methods.trigger(identificationNumberFieldName);

@@ -250,8 +250,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         />
                     </Grid>
                     <InlineErrorText
-                        //error={formErrors && formErrors[InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION]}
-                        error={ undefined}
+                        error={errors && errors[InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION]}
                     />
                 </Grid>
 
@@ -275,8 +274,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         />
                     </Grid>
                     <InlineErrorText
-                        //error={formErrors && formErrors[InteractedContactFields.DOES_NEED_ISOLATION]}
-                        error={ undefined}
+                        error={errors && errors[InteractedContactFields.DOES_NEED_ISOLATION]}
                     />
                 </Grid>
 

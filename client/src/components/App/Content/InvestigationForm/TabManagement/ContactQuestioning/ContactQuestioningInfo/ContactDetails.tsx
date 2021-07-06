@@ -26,7 +26,7 @@ const ContactDetails = (props: Props) => {
 
     const [showRulerStatusInfo, setShowRulerStatusInfo] = useState<boolean>(false);
 
-    const formErrors = errors.form || {};
+    const formErrors = errors || {};
     const formHasErrors = Object.entries(formErrors)
         .some(([key, value]) => value !== undefined);
 
