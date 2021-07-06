@@ -45,12 +45,13 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
 
     const [shouldIdDisable, setShouldIdDisable] = useState<boolean>(false);
   
+    
 
     const [age, setAge] = useState<string>(calcAge(interactedContact.birthDate));
     const [isId, setIsId] = useState<boolean>(false);
 
-    const { isFieldDisabled } = useContactFields(interactedContact.contactStatus);
-
+   const { isFieldDisabled } = useContactFields(methods.getValues().contactStatus);
+  
     const classes = useStyles();
 
     const { shouldDisableContact } = useStatusUtils();
@@ -65,7 +66,11 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     const watchIdentificationNumber = watch(identificationNumberFieldName);
 
     useEffect(() => {
-        methods.trigger();     
+        methods.trigger();   
+        const shouldDisable =
+        (shouldDisableIdByReopen &&
+             !!interactedContact.identificationNumber);
+     setShouldIdDisable(shouldDisable);  
     }, []);
 
     useEffect(() => {
@@ -77,15 +82,16 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
         }       
     }, [watchIdentificationType, watchIdentificationNumber]);
 
-    useEffect(() => {
-        const shouldDisable =
-            isFieldDisabled ||
-            (shouldDisableIdByReopen &&
-                !!interactedContact.identificationNumber);
-        setShouldIdDisable(shouldDisable);
-    }, [interactedContact.contactStatus, isFieldDisabled]);
+    // useEffect(() => {
+    //     const shouldDisable =
+    //        isFieldDisabled ||
+    //         (shouldDisableIdByReopen &&
+    //             !!interactedContact.identificationNumber);
+    //     setShouldIdDisable(shouldDisable);
+    // }, [methods.getValues().contactStatus, isFieldDisabled]);
 
-   const getContactQuestioningPersonal =  React.useMemo(() => { return (
+   
+ return (
         <Grid item xs={4}>
             <Grid container direction='column' spacing={2}>
                 <Grid container item direction='row' alignItems='center'>
@@ -302,10 +308,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
             </Grid>
         </Grid>
     );
-  }, [interactedContact, errors]);
-
-
-    return (getContactQuestioningPersonal);
 
 }
 export default ContactQuestioningPersonal;

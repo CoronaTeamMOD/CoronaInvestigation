@@ -100,6 +100,7 @@ const InteractedContactAccordion = (props: Props) => {
                                 // trigger={methods.trigger}
                                 // currentFormErrors={methods.errors?.form}
                                 // watch={methods.watch}
+                                //contactStatus={watchCurrentStatus}
                                 isViewMode={isViewMode}
                             />
                             <Divider
@@ -119,7 +120,7 @@ const InteractedContactAccordion = (props: Props) => {
                               //  formValues={formValues}
                                // formErrors={formErrors}
                               //  trigger={methods.trigger}
-                                //contactStatus={watchCurrentStatus}
+                               // contactStatus={watchCurrentStatus}
                                 isViewMode={isViewMode}
                             />
                             <Divider
@@ -132,7 +133,7 @@ const InteractedContactAccordion = (props: Props) => {
                                 interactedContact={interactedContact}
                                 // formErrors={formErrors}
                                 // control={methods.control}
-                                // contactStatus={watchCurrentStatus}
+                                //contactStatus={watchCurrentStatus}
                                 isViewMode={isViewMode}
                             />
                         </Grid>

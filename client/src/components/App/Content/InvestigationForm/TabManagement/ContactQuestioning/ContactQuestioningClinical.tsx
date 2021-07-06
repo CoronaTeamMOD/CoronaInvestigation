@@ -44,7 +44,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const { alertError, alertWarning } = useCustomSwal();
 
-    const { isFieldDisabled, validateContact } = useContactFields(interactedContact.contactStatus);
+    const { isFieldDisabled, validateContact } = useContactFields(methods.getValues().contactStatus);//interactedContact.contactStatus);
 
     const daysToIsolate = 14;
     const isolationEndDate = addDays(new Date(interactedContact.contactDate), daysToIsolate);
