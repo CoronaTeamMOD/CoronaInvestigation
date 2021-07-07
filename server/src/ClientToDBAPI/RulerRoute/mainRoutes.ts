@@ -6,7 +6,7 @@ import UseCache, { setToCache } from '../../middlewares/UseCache';
 import logger, { invalidAPIResponseLog, launchingAPIRequestLog, validAPIResponseLog, } from '../../Logger/Logger';
 
 const rulerRoute = Router();
-const rulerApiUrl = `http://192.168.2.26:8888/Corona/RulerCheckColor`;
+const rulerApiUrl = process.env.RULER_URL;
 
 const errorStatusCode = 500;
 
