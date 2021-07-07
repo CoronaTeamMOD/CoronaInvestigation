@@ -28,8 +28,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         setAllContactedInteractions,
         allContactedInteractions,
         setFamilyRelationships,
-        setContactStatuses,
-        getValues
+        setContactStatuses//,
+       // getValues
     } = parameters;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -328,36 +328,45 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const data = getValues();
-        const parsedFormData = parseFormBeforeSending(data as FormInputs);
-        if (!areThereDuplicateIds(data) || isViewMode) {
-            parsedFormData && saveContactQuestioning(parsedFormData, data);
-        } else {
-            alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
-        }
+        setFormState(epidemiologyNumber, id, true);
+
+        // const data = {} as FormInputs//getValues();
+        // const parsedFormData = parseFormBeforeSending(data as FormInputs);
+        // if (!areThereDuplicateIds(data) || isViewMode) {
+        //     parsedFormData && saveContactQuestioning(parsedFormData, data);
+        // } else {
+        //     alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
+        // }
     };
 
     const areThereDuplicateIds = (data: FormInputs) => {
-        const ids = data.form
-            .filter(person => {
-                const { identificationNumber, identificationType } = person;
-                return identificationNumber && identificationType;
-            }).map(person => {
-                return `${person.identificationNumber}-${person.identificationType}`
-            });
+        // const ids = data.form
+        //     .filter(person => {
+        //         const { identificationNumber, identificationType } = person;
+        //         return identificationNumber && identificationType;
+        //     }).map(person => {
+        //         return `${person.identificationNumber}-${person.identificationType}`
+        //     });
 
-        return ids.length !== new Set(ids).size;
+        // return ids.length !== new Set(ids).size;
+
+        //TODO validation from redux data
+        return false;
     };
 
     const parseFormBeforeSending = (data: FormInputs) => {
         const { form } = data;
-        const mappedForm = form?.map(
-            (person: InteractedContact, index: number) => {
-                return parsePerson(person, index);
-            }
-        ) || [];
+        // const mappedForm = form?.map(
+        //     (person: InteractedContact, index: number) => {
+        //         return parsePerson(person, index);
+        //     }
+        // ) || [];
 
-        return mappedForm;
+        // return mappedForm;
+
+        //TODO parse from redux data
+        return [];
+
     };
 
     /*
@@ -366,7 +375,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
      * so im parsing the data and adding all of those fields before sending them
      */
     const parsePerson = (person: InteractedContact, index: number) => {
-        let updatedPerson = person;
+        let updatedPerson = person || {};
         updatedPerson.contactDate = allContactedInteractions[index].contactDate;
         updatedPerson.contactEvent = allContactedInteractions[index].contactEvent;
         updatedPerson.contactType = allContactedInteractions[index].contactType;

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { differenceInYears } from 'date-fns';
 import React, { useState, useEffect } from 'react';
-import { Controller, DeepMap, FieldError } from 'react-hook-form';
+import { Controller, DeepMap, FieldError, useFormContext } from 'react-hook-form';
 import { Avatar, Grid, Typography, Select, MenuItem, FormHelperText, FormControl } from '@material-ui/core';
 
 import DatePick from 'commons/DatePick/DatePick';
@@ -22,10 +22,15 @@ import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteracte
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
+import { FormInputs } from './ContactQuestioningInterfaces';
+import { ErrorSharp } from '@material-ui/icons';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { index, interactedContact, currentFormErrors, formValues, control, trigger, watch, isViewMode } = props;
+
+    const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();//FormInputs
+
+    const { index, interactedContact , isViewMode } = props;
 
     const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
 
@@ -39,41 +44,53 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     };
 
     const [shouldIdDisable, setShouldIdDisable] = useState<boolean>(false);
+  
+    
+
     const [age, setAge] = useState<string>(calcAge(interactedContact.birthDate));
     const [isId, setIsId] = useState<boolean>(false);
 
-    const { isFieldDisabled } = useContactFields(formValues.contactStatus);
-
+   const { isFieldDisabled } = useContactFields(methods.getValues("contactStatus"));
     const classes = useStyles();
 
     const { shouldDisableContact } = useStatusUtils();
     const shouldDisableIdByReopen = interactedContact.creationTime
         ? shouldDisableContact(interactedContact.creationTime)
         : false;
-
-    const identificationTypeFieldName = `form[${index}].${InteractedContactFields.IDENTIFICATION_TYPE}`;
-    const identificationNumberFieldName = `form[${index}].${InteractedContactFields.IDENTIFICATION_NUMBER}`;
+    
+    const identificationTypeFieldName = `${InteractedContactFields.IDENTIFICATION_TYPE}`;
+    const identificationNumberFieldName = `${InteractedContactFields.IDENTIFICATION_NUMBER}`;
 
     const watchIdentificationType = watch(identificationTypeFieldName);
     const watchIdentificationNumber = watch(identificationNumberFieldName);
 
     useEffect(() => {
+        methods.trigger();   
+        const shouldDisable =
+        (shouldDisableIdByReopen &&
+             !!interactedContact.identificationNumber);
+     setShouldIdDisable(shouldDisable);  
+    }, []);
+
+    useEffect(() => {
         if (watchIdentificationType || watchIdentificationNumber) {
-            trigger(identificationTypeFieldName);
-            trigger(identificationNumberFieldName);
+            methods.trigger(identificationTypeFieldName);
+            methods.trigger(identificationNumberFieldName);
             setIsId(watchIdentificationType === IdentificationTypesCodes.PALESTINE_ID || watchIdentificationType === IdentificationTypesCodes.ID);
+           
         }       
     }, [watchIdentificationType, watchIdentificationNumber]);
 
-    useEffect(() => {
-        const shouldDisable =
-            isFieldDisabled ||
-            (shouldDisableIdByReopen &&
-                !!interactedContact.identificationNumber);
-        setShouldIdDisable(shouldDisable);
-    }, [interactedContact.contactStatus, isFieldDisabled]);
+    // useEffect(() => {
+    //     const shouldDisable =
+    //        isFieldDisabled ||
+    //         (shouldDisableIdByReopen &&
+    //             !!interactedContact.identificationNumber);
+    //     setShouldIdDisable(shouldDisable);
+    // }, [methods.getValues().contactStatus, isFieldDisabled]);
 
-    return (
+   
+ return (
         <Grid item xs={4}>
             <Grid container direction='column' spacing={2}>
                 <Grid container item direction='row' alignItems='center'>
@@ -87,20 +104,21 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.IDENTIFICATION_TYPE} className={classes.fieldName} />
                     <Grid item xs={5}>
                         <Controller
-                            control={control}
-                            name={`form[${index}].${InteractedContactFields.IDENTIFICATION_TYPE}`}
-                            defaultValue={formValues.identificationType?.id}
+                            control={methods.control}
+                            name={`${InteractedContactFields.IDENTIFICATION_TYPE}`}
+                            defaultValue={interactedContact.identificationType?.id}
                             render={(props) => (
                                 <FormControl
-                                    error={currentFormErrors ? !!(currentFormErrors[InteractedContactFields.IDENTIFICATION_TYPE]) : false}
+                                    error={errors? !!((errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_TYPE]) : false}
                                     variant='outlined'
                                     fullWidth
                                 >
                                     <Select
                                         {...props}
-                                        disabled={shouldIdDisable || isViewMode}
+                                        disabled={isFieldDisabled || shouldIdDisable || isViewMode}
                                         onChange={(event) => {
                                             props.onChange(event.target.value)
+                                           
                                         }}
                                         MenuProps={{
                                             anchorOrigin: {
@@ -126,7 +144,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                 </FormControl>
                             )}
                         />
-                        {currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_TYPE] && <FormHelperText>{requiredText}</FormHelperText>}
+                        {errors && (errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_TYPE] && <FormHelperText>{requiredText}</FormHelperText>}
                     </Grid>
                 </Grid>
 
@@ -134,8 +152,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.IDENTIFICATION_NUMBER} className={classes.fieldName} />
                     <Grid item xs={5}>
                         <Controller
-                            control={control}
-                            name={`form[${index}].${InteractedContactFields.IDENTIFICATION_NUMBER}`}
+                            control={methods.control}
+                            name={`${InteractedContactFields.IDENTIFICATION_NUMBER}`}
                             defaultValue={
                                 interactedContact.identificationNumber
                             }
@@ -144,8 +162,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                     <FormControl variant='outlined' fullWidth>
                                         <IdentificationTextField
                                             {...props}
-                                            error={(currentFormErrors && currentFormErrors[InteractedContactFields.IDENTIFICATION_NUMBER]?.message) || ''}
-                                            disabled={shouldIdDisable || isViewMode}
+                                            error={(errors &&  (errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_NUMBER]?.message) || ''}
+                                            disabled={isFieldDisabled || shouldIdDisable || isViewMode}
                                             testId='identificationNumber'
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue);
@@ -164,11 +182,11 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.BIRTH_DATE} className={classes.fieldName} />
                     <Grid item xs={5}>
                         <Controller
-                            control={control}
-                            name={`form[${index}].${InteractedContactFields.BIRTH_DATE}`}
+                            control={methods.control}
+                            name={`${InteractedContactFields.BIRTH_DATE}`}
                             defaultValue={interactedContact.birthDate}
                             render={(props) => {
-                                const dateError = currentFormErrors && currentFormErrors[InteractedContactFields.BIRTH_DATE]?.message;
+                                const dateError = errors && (errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.BIRTH_DATE]?.message;
                                 return (
                                     <FormControl variant='outlined' fullWidth>
                                         <DatePick
@@ -212,15 +230,15 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.PHONE} className={classes.fieldName} />
                     <Grid item xs={5}>
                         <Controller
-                            control={control}
-                            name={`form[${index}].${InteractedContactFields.PHONE_NUMBER}`}
+                            control={methods.control}
+                            name={`${InteractedContactFields.PHONE_NUMBER}`}
                             defaultValue={interactedContact.phoneNumber}
                             render={(props) => {
                                 return (
                                     <FormControl variant='outlined' fullWidth>
                                         <NumericTextField
                                             {...props}
-                                            error={currentFormErrors && currentFormErrors[InteractedContactFields.PHONE_NUMBER]?.message}
+                                            error={errors && (errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.PHONE_NUMBER]?.message}
                                             disabled={isFieldDisabled || isViewMode}
                                             testId='phoneNumber'
                                             placeholder='הכנס טלפון:'
@@ -239,7 +257,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                         </Typography>
                     </Grid>
                     {
-                        interactedContact.contactEvents.map((event) => {
+                        interactedContact.contactEvents.map((event: any) => {
                             return (
                                 <Grid container item xs={12} className={classes.eventRow}>
                                     <Grid item>
@@ -262,8 +280,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.EXTRA_INFO} className={classes.fieldName} />
                     <Grid item xs={5}>
                         <Controller
-                            control={control}
-                            name={`form[${index}].${InteractedContactFields.EXTRA_INFO}`}
+                            control={methods.control}
+                            name={`${InteractedContactFields.EXTRA_INFO}`}
                             defaultValue={interactedContact.extraInfo}
                             render={(props) => {
                                 return (
@@ -286,17 +304,17 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
             </Grid>
         </Grid>
     );
-};
 
+}
 export default ContactQuestioningPersonal;
 
 interface Props {
     index: number;
     interactedContact: GroupedInteractedContact;
-    control: any;
-    formValues: InteractedContact;
-    trigger: (fieldname: string) => {};
-    currentFormErrors?: DeepMap<InteractedContact, FieldError>;
-    watch: any;
+    //control: any;
+    //formValues: InteractedContact;
+   // trigger: (fieldname: string) => {};
+   // currentFormErrors?: DeepMap<InteractedContact, FieldError>;
+   // watch: any;
     isViewMode?: boolean;
 };
