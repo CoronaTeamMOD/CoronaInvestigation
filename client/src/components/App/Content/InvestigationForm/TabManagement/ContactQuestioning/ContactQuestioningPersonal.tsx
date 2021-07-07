@@ -50,8 +50,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     const [age, setAge] = useState<string>(calcAge(interactedContact.birthDate));
     const [isId, setIsId] = useState<boolean>(false);
 
-   const { isFieldDisabled } = useContactFields(methods.getValues().contactStatus);
-  
+   const { isFieldDisabled } = useContactFields(methods.getValues("contactStatus"));
     const classes = useStyles();
 
     const { shouldDisableContact } = useStatusUtils();

@@ -26,7 +26,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
 
     const occupations = useSelector<StoreStateType, string[]>(state => state.occupations);
 
-    const { isFieldDisabled } = useContactFields(methods.getValues().contactStatus);
+    const { isFieldDisabled } = useContactFields(methods.getValues("contactStatus"));
 
     useEffect(() => {
         methods.trigger();     
