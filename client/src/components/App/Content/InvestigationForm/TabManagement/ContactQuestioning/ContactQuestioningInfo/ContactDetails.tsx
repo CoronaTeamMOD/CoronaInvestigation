@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import { useSelector } from 'react-redux';
-import { ExpandMore, ExpandLess } from '@material-ui/icons';
 import { useFormContext } from 'react-hook-form';
-import { Tooltip, Typography, Grid } from '@material-ui/core';
+import { ExpandMore, ExpandLess } from '@material-ui/icons';
+import { Tooltip, Typography, Grid, Button, MenuItem, Menu } from '@material-ui/core';
 
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
@@ -20,11 +20,25 @@ const TIGHT_CONTACT_STATUS = 1;
 
 const ContactDetails = (props: Props) => {
 
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClick = (event: any) => {
+        event.stopPropagation();
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = (event: any) => {
+        event.stopPropagation();
+        setAnchorEl(null);
+    };
+
+    const handleClickStopPropagation = (event: any) => {
+        event.stopPropagation();
+    };
+
     const { errors } = useFormContext();
     const { index , interactedContact } = props;
     const classes = useStyles({});
-
-    const [showRulerStatusInfo, setShowRulerStatusInfo] = useState<boolean>(false);
 
     const formErrors = errors.form ? (errors.form[index] ? errors.form[index] : {}) : {};
     const formHasErrors = Object.entries(formErrors)
@@ -47,69 +61,81 @@ const ContactDetails = (props: Props) => {
         return prev;
     });
 
-    const handleStatusInfoClick = (event: React.ChangeEvent<{}>) => {
-        event.stopPropagation();
-        setShowRulerStatusInfo(!showRulerStatusInfo);
-    };
-
     const finalEpidemiologicalStatusDesc = interactedContact.finalEpidemiologicalStatusDesc;
 
     const tooltipText = highestContactType.contactType === TIGHT_CONTACT_STATUS 
         ? formatDate(highestContactType.date)
         : '';
 
-    const renderRulerStatusInfo = () => {
+    const renderRulerButtonAndStatusInfo = () => {
         return (
-            <Grid 
-                container
-                xs={12}
-                direction='row-reverse'
-                justify='flex-start'
-                className={classes.statusInfo}
-            >
-                <Grid container item xs={2} direction='column'>
+            <>
+                <Button
+                    aria-controls='simple-menu' aria-haspopup='true'
+                    className={classes.statusInfoBtn}
+                    onClick={ handleClick }
+                >
+                    {!anchorEl &&<ExpandLess/>}
+                    {!!anchorEl &&<ExpandMore/>}
                     <Typography variant='body2' className={classes.contactDetail }>
-                    תחלואה:
+                    <b>מרכיבי הסטטוס:</b>{' '}
                     </Typography>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    <b>{interactedContact.certificateEligibilityTypeDesc}</b>
-                    </Typography>
-                </Grid>
-                <Grid container item xs={3} direction='column'>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    חסינות סרולוגית:
-                    </Typography>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    <b>{interactedContact.immuneDefinitionBasedOnSerologyStatusDesc}</b> 
-                    </Typography>
-                </Grid>
-                <Grid container item xs={2} direction='column'>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    התחסנות:
-                    </Typography>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    <b>{interactedContact.vaccinationStatusDesc}</b>
-                    </Typography>
-                </Grid>
-                <Grid container item xs={2} direction='column'>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    דיווח בידוד:
-                    </Typography>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    <b>{interactedContact.isolationReportStatusDesc}</b>
-                    </Typography>
-                </Grid>
-                <Grid container item xs={2} direction='column'>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    חובת בידוד:
-                    </Typography>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    <b>{interactedContact.isolationObligationStatusDesc}</b>
-                    </Typography>
-                </Grid>
-            </Grid>
+                </Button>
+
+                <Menu
+                    id="simple-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    className={classes.statusInfoMenu}
+                    open={!!anchorEl}
+                    onClose={handleClose}
+                    onClick={handleClickStopPropagation}
+                    >
+                    <MenuItem >
+                        <Grid container>
+                            <Typography variant='body2' className={classes.rulerFieldInfo }>תחלואה: </Typography>
+                            <Typography variant='body2' className={classes.contactDetail }>
+                            <b>{interactedContact.certificateEligibilityTypeDesc}</b>
+                            </Typography>
+                        </Grid>
+                    </MenuItem>
+                    <MenuItem>
+                        <Grid container>
+                            <Typography variant='body2' className={classes.rulerFieldInfo }> חסינות סרולוגית: </Typography>
+                            <Typography variant='body2' className={classes.contactDetail }>
+                            <b>{interactedContact.immuneDefinitionBasedOnSerologyStatusDesc}</b> 
+                            </Typography>
+                        </Grid>
+                    </MenuItem>
+                    <MenuItem>
+                        <Grid container>
+                            <Typography variant='body2' className={classes.rulerFieldInfo }>התחסנות: </Typography>
+                            <Typography variant='body2' className={classes.contactDetail }>
+                            <b>{interactedContact.vaccinationStatusDesc}</b>
+                            </Typography>
+                        </Grid>
+                    </MenuItem>
+                    <MenuItem>
+                        <Grid container>
+                            <Typography variant='body2' className={classes.rulerFieldInfo }>דיווח בידוד:</Typography>
+                            <Typography variant='body2' className={classes.contactDetail }>
+                            <b>{interactedContact.isolationReportStatusDesc}</b>
+                            </Typography>
+                        </Grid>
+                    </MenuItem>
+                    <MenuItem>
+                        <Grid container item>
+                            <Typography variant='body2' className={classes.rulerFieldInfo }>חובת בידוד:</Typography>
+                            <Typography variant='body2' className={classes.contactDetail }>
+                            <b>{interactedContact.isolationObligationStatusDesc}</b>
+                            </Typography>
+                        </Grid>
+                    </MenuItem>
+                </Menu>     
+          </>
         )
     }
+
     return (
         <>
             {isInvolvedThroughFamily(interactedContact.involvementReason) && (
@@ -153,29 +179,7 @@ const ContactDetails = (props: Props) => {
                 {finalEpidemiologicalStatusDesc}
                 
                 </Typography>
-                <Grid 
-                    className={classes.statusInfoBtn}
-                    container
-                    direction='row-reverse'
-                    xs={3}
-                    justify='flex-end'
-                    onClick={handleStatusInfoClick}
-                >
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    <b>מרכיבי הסטטוס:</b>{' '}
-                    </Typography>
-                    {!showRulerStatusInfo &&<ExpandLess/>}
-                    {showRulerStatusInfo &&<ExpandMore/>}
-                </Grid>
-                {showRulerStatusInfo && 
-                    <Grid 
-                        className={classes.statusInfoBtn}
-                        container
-                        direction='row-reverse'
-                    >
-                        {renderRulerStatusInfo()}
-                    </Grid>
-                }
+                <>{renderRulerButtonAndStatusInfo()}</>
             </Grid>
         </>
     );

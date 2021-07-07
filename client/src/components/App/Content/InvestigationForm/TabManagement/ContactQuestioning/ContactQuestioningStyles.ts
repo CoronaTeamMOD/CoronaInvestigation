@@ -109,16 +109,23 @@ const useStyles = makeStyles((theme: Theme) => ({
         font: 'caption'
     },
     statusInfoBtn: {
-        backgroundColor: 'gray',
-        color: '#ffffff',
         cursor: 'pointer',
-        border: '1px solid white',
+        display: 'flex',
+        flexDirection: 'row-reverse',
+        border: '1px solid black',
+        borderRadius: '20px'
     },
     statusInfo: {
-        backgroundColor: 'gray',
-        color: '#ffffff',
-        height: '60px',
-        padding: '4px 10px'
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    rulerFieldInfo: {
+        direction: 'ltr',
+        paddingRight: '4px',
+    },
+    statusInfoMenu: {
+        marginTop: '46px',
+        maxHeight: '220px',
     }
 }));
 
