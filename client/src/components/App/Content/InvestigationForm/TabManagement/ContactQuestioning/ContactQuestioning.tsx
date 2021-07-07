@@ -2,6 +2,8 @@ import { Button, Grid } from '@material-ui/core';
 import { yupResolver } from '@hookform/resolvers';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
 
 import ContactStatus from 'models/ContactStatus';
 import FormTitle from 'commons/FormTitle/FormTitle';
@@ -29,6 +31,10 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
 
     const { shouldDisable } = useContactFields();
     const { isInvolvedThroughFamily } = useInvolvedContact();
+
+  // const interactedContacts = useSelector<StoreStateType,GroupedInteractedContact[]>(state=>state.interactedContacts.interactedContacts);
+    
+
 
     // const methods = useForm<FormInputs>({
     //     mode: 'all',
@@ -71,10 +77,12 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     }, []);
 
     useEffect(() => {
+       
         if (allContactedInteractions) {
            // trigger();
             loopWithSlice(0, SIZE_OF_CONTACTS);
         }
+        
     }, [allContactedInteractions]);
 
     return (
