@@ -15,6 +15,7 @@ import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteracte
 import GetGroupedInvestigationsIds from 'Utils/GroupedInvestigationsContacts/getGroupedInvestigationIds';
 
 import useStyles from '../ContactQuestioningStyles';
+import ContactQuestioningSchema from '../ContactSection/Schemas/ContactQuestioningSchema';
 
 const TIGHT_CONTACT_STATUS = 1;
 
@@ -26,9 +27,17 @@ const ContactDetails = (props: Props) => {
 
     const [showRulerStatusInfo, setShowRulerStatusInfo] = useState<boolean>(false);
 
-    const formErrors = errors || {};
-    const formHasErrors = Object.entries(formErrors)
-        .some(([key, value]) => value !== undefined);
+    // const formErrors = errors || {};
+    // const formHasErrors = Object.entries(formErrors)
+    //     .some(([key, value]) => value !== undefined);
+
+    const [formHasErrors, setFormHasErrors] = useState<boolean>(false);
+
+    ContactQuestioningSchema.isValid({...interactedContact,identificationType : interactedContact?.identificationType?.id}).then(valid => {
+        setFormHasErrors(!valid);
+    });
+
+
 
     const { isInvolvedThroughFamily } = useInvolvedContact();
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(

@@ -7,13 +7,14 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
+
 const useReachContact = (props: Props) => {
     const { errors, getValues } = useFormContext();
     const { saveContact, parsePerson, formValues, index } = props;
     const { alertWarning , alertError } = useCustomSwal();
     const formHaveMissingFieldsText = `למגע זה ישנם שדות לא תקינים:`
 
-    const formHasErrors = errors.form; // ? Boolean(errors.form[index]) : false;
+    const formHasErrors = errors; // ? Boolean(errors.form[index]) : false;
     const changeContactStatus = (
         event: React.ChangeEvent<{}>,
         selectedStatus: ContactStatus | null,
@@ -23,7 +24,7 @@ const useReachContact = (props: Props) => {
         event.stopPropagation();
         const formHaveMissingFields = missingFieldsText!=='';
         if (selectedStatus?.id === ContactStatusCodes.COMPLETED) {
-            if (!formHasErrors) {
+            if (!formHasErrors ||  Object.keys(formHasErrors).length === 0 || formHasErrors.constructor === Object) {
                 if (!formHaveMissingFields) {
                     alertWarning('האם אתה בטוח שתרצה להעביר את המגע לסטטוס הושלם?', {
                         text: 'לאחר העברת המגע, לא תהיה אפשרות לערוך שינויים',
