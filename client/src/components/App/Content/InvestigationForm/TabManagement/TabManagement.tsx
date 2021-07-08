@@ -16,6 +16,7 @@ import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
 import { ArrowLeft, ChevronLeft, ChevronRight } from '@material-ui/icons';
+import TabNames from "../../../../../models/enums/TabNames";
 
 const END_INVESTIGATION = 'סיום חקירה';
 const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
@@ -162,7 +163,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                 </Grid>
             </Grid>
 
-            <div className={classes.displayedTab} ref={tabRef}>
+            <div className={tabs[currentTab].name === TabNames.CONTACT_QUESTIONING ? ''  : classes.displayedTab} ref={tabRef}>
                 {tabs[currentTab].displayComponent}
             </div>
         </Card>

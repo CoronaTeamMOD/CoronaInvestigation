@@ -98,7 +98,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     useEffect(() => {
         if (watchStatus || contactStatus) {
-            trigger();
+          // this trigger rerender the form extra times when clicking on "show more" button
+          //  trigger();
         }
     }, [watchStatus, contactStatus]);
 

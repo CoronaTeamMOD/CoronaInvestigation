@@ -16,7 +16,7 @@ import useContactQuestioning from './useContactQuestioning';
 import InteractedContactAccordion from './InteractedContactAccordion';
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 
-const SIZE_OF_CONTACTS = 10;
+const SIZE_OF_CONTACTS = 4;
 let loaded = SIZE_OF_CONTACTS;
 
 const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Element => {
@@ -60,8 +60,8 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     };
 
     const handleShowMoreContacts = () => {
-        loopWithSlice(loaded, loaded + SIZE_OF_CONTACTS);
-        loaded = loaded + SIZE_OF_CONTACTS;
+        loopWithSlice(loaded, loaded + 2);
+        loaded = loaded + 2;
     };
 
     useEffect(() => {
@@ -77,8 +77,18 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
         }
     }, [allContactedInteractions]);
 
+    const listenScrollEvent = (event:React.UIEvent<HTMLDivElement>): void=> {
+        const element  = event.target as HTMLElement;
+        console.log(element.scrollHeight - element.scrollTop)
+        console.log(element.clientHeight)
+        if (element.scrollHeight - element.scrollTop >= element.clientHeight &&  element.scrollHeight - element.scrollTop < element.clientHeight + 50)
+        {
+            handleShowMoreContacts();
+        }
+    }
+
     return (
-        <>
+        <div className={classes.scrolledTab}  onScroll={listenScrollEvent}>
             <FormProvider {...methods}>
                 <form
                     id={`form-${id}`}
@@ -98,7 +108,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                                     interactedContact.involvementReason
                                 );
                                 return (
-                                    <Grid item xs={12}>
+                                    <Grid item xs={12} key={interactedContact.id}>
                                         <InteractedContactAccordion
                                             interactedContact={interactedContact}
                                             index={index}
@@ -117,7 +127,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                     </Grid>
                 </form>
             </FormProvider>
-        </>
+        </div>
     );
 };
 

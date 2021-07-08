@@ -2,6 +2,10 @@ import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
+    scrolledTab: {
+        maxHeight: '54vh',
+        overflowY: 'scroll'
+    },
     form: {
         padding: '1vh 1.3vw 2.5vh 1.3vw',
     },
