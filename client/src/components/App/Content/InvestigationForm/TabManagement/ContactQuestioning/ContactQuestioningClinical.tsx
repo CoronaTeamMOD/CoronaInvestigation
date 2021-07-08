@@ -96,18 +96,18 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         return true;
     };
 
-    const statusFieldName = `${InteractedContactFields.CONTACT_STATUS}`;
-    const watchStatus = watch(statusFieldName);
+    // const statusFieldName = `${InteractedContactFields.CONTACT_STATUS}`;
+    // const watchStatus = watch(statusFieldName);
     
     useEffect(() => {
         methods.trigger();     
     }, []);
     
-    useEffect(() => {
-        if (watchStatus || isFieldDisabled) {
-            methods.trigger();
-        }
-    }, [watchStatus, isFieldDisabled]);
+    // useEffect(() => {
+    //     if (watchStatus || isFieldDisabled) {
+    //         methods.trigger();
+    //     }
+    // }, [watchStatus, isFieldDisabled]);
 
     const handleIsolation = (value: boolean, onChange: (...event: any[]) => void) => {
         const contactWithIsolationRequirement = { ...formatContactToValidate(), doesNeedIsolation: value };

@@ -17,6 +17,7 @@ import { FormInputs } from './ContactQuestioningInterfaces';
 import useContactQuestioning from './useContactQuestioning';
 import InteractedContactAccordion from './InteractedContactAccordion';
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 const SIZE_OF_CONTACTS = 10;
 let loaded = SIZE_OF_CONTACTS;
@@ -32,7 +33,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     const { shouldDisable } = useContactFields();
     const { isInvolvedThroughFamily } = useInvolvedContact();
 
-  // const interactedContacts = useSelector<StoreStateType,GroupedInteractedContact[]>(state=>state.interactedContacts.interactedContacts);
+   const interactedContacts = useSelector<StoreStateType,GroupedInteractedContact[]>(state=>state.interactedContacts.interactedContacts);
     
 
 
@@ -78,12 +79,17 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
 
     useEffect(() => {
        
+        if (interactedContacts){
+            setAllContactedInteractions(interactedContacts);
+            setIsLoading(false);
+        }
+        
         if (allContactedInteractions) {
            // trigger();
             loopWithSlice(0, SIZE_OF_CONTACTS);
         }
         
-    }, [allContactedInteractions]);
+    }, [interactedContacts]);
 
     return (
         <>

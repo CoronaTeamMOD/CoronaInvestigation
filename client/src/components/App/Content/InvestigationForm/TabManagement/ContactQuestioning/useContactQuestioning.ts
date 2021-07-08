@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { format } from 'date-fns'
 
@@ -37,7 +37,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
     const isViewMode = useSelector<StoreStateType, boolean>(state => state.investigation.isViewMode);
     const interactedContacts = useSelector<StoreStateType,GroupedInteractedContact[]>(state=>state.interactedContacts.interactedContacts);
-    
+    const dispatch = useDispatch()
 
 
     const { alertError } = useCustomSwal();
@@ -170,9 +170,9 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         );
         setIsLoading(true);
         const minimalDate = datesToInvestigate.slice(-1)[0];
-         
-        getInteractedContacts(minimalDate);
-        setAllContactedInteractions(interactedContacts);
+     
+       dispatch(getInteractedContacts(minimalDate));
+       
         
 
         // axios.get(`/contactedPeople/allContacts/${minimalDate?.toISOString()}`)            
