@@ -72,7 +72,7 @@ const InteractedContactAccordion = (props: Props) => {
                 <Accordion
                     className={getAccordionClasses()}
                     style={{ borderRadius: '3vw' }}
-                    // TransitionProps={{ unmountOnExit: true }}
+                    TransitionProps={{ unmountOnExit: true }}
                 >
                     <AccordionSummary
                         test-id='contactLocation'
@@ -139,21 +139,21 @@ const InteractedContactAccordion = (props: Props) => {
                         </Grid>
                     </AccordionDetails>
                     <AccordionActions className={classes.accordionActions}>
-                        {/* {!isViewMode && (
-                            // <PrimaryButton
-                            //   //  disabled={shouldDisable(watchCurrentStatus)}
-                            //     test-id='saveContact'
-                            //     onClick={() => {
-                            //         const currentParsedPerson = parsePerson(
-                            //             methods.getValues().form as GroupedInteractedContact,
-                            //             index
-                            //         );
-                            //         saveContact(currentParsedPerson);
-                            //     }}
-                            // >
-                            //     שמור מגע
-                            // </PrimaryButton>
-                        )} */}
+                        {!isViewMode && (
+                            <PrimaryButton
+                              //  disabled={shouldDisable(watchCurrentStatus)}
+                                test-id='saveContact'
+                                onClick={() => {
+                                    const currentParsedPerson = parsePerson(
+                                        methods.getValues() as GroupedInteractedContact,
+                                        index
+                                    );
+                                    saveContact(currentParsedPerson);
+                                }}
+                            >
+                                שמור מגע
+                            </PrimaryButton>
+                        )}
                     </AccordionActions>
                 </Accordion>
             {/* </div> */}
