@@ -15,19 +15,23 @@ const useStyles = makeStyles({
         marginLeft: '1vw',
     },
     red:{
-        border: '4px solid #ff8080'
+        color: '#ff8080',
+        margin: '0 3px'
     },
     orange: {
-        border: '4px solid #ffbf80'
+        color: '#ffbf80',
+        margin: '0 3px'
     },
     green: {
-        border: '4px solid #b3ffcc'
+        color: '#b3ffcc',
+        margin: '0 3px'
     },
     yellow: {
-        border: '4px solid #ffff99'
+        color: '#ffff99',
+        margin: '0 3px'
     },
     white: {
-        border: '4px solid #ffffff'
+        display: 'none'
     }
 });
 
