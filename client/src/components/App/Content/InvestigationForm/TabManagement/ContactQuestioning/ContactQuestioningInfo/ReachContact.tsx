@@ -3,6 +3,8 @@ import { Autocomplete } from '@material-ui/lab';
 import { TextField, Grid } from '@material-ui/core';
 import { Controller, useFormContext } from 'react-hook-form';
 
+
+
 import ContactStatus from 'models/ContactStatus';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InteractedContact from 'models/InteractedContact';
@@ -13,19 +15,20 @@ import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteracte
 import useReachContact from './useReachContact';
 import useStyles from '../ContactQuestioningStyles';
 
+
 const ReachContact = (props: Props) => {
-    const { control, getValues, watch } = useFormContext<GroupedInteractedContact>();
+    const methods = useFormContext<GroupedInteractedContact>();
     const { interactedContact, index, contactStatuses, saveContact,parsePerson,isViewMode } = props;
     const classes = useStyles({});
-
+   
     const foundValue = (status: number) => {
         return contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === status);
     }
     const getCurrentValue = (status: number) => { return foundValue(status) || { id: -1, displayName: '...' } }
-    const { isFieldDisabled, validateContact } = useContactFields(interactedContact.contactStatus);
+    const { isFieldDisabled, validateContact } = useContactFields(methods.getValues("contactStatus")/*interactedContact.contactStatus*/);
 
     const { changeContactStatus } = useReachContact({
-        saveContact, parsePerson, formValues: interactedContact, index
+        saveContact, parsePerson, formValues: methods.getValues() /*interactedContact*/, index
     });
 
     const removeUnusePartOfError = (errorMsg: string) => {
@@ -39,7 +42,7 @@ const ReachContact = (props: Props) => {
             <Grid container spacing={2}>
                 <Grid item xs={8}>
                     <Controller
-                        control={control}
+                        control={methods.control}
                         name={`${InteractedContactFields.CONTACT_STATUS}`}
                         defaultValue={interactedContact.contactStatus}
                         render={(props) => {
@@ -64,6 +67,7 @@ const ReachContact = (props: Props) => {
                                         )
                                     }
                                     }
+                                   
                                     inputValue={currentValue.displayName}
                                     closeIcon={false}
                                     renderInput={(params) => (

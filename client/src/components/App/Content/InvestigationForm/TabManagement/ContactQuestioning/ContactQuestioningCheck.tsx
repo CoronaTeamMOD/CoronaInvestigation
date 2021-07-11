@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Avatar, FormControl, Select, Grid, MenuItem, Typography } from '@material-ui/core';
 
@@ -15,6 +15,7 @@ import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 import { FormInputs } from './ContactQuestioningInterfaces';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
+import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
 
 const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => {
 
@@ -23,6 +24,8 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
     const {index, interactedContact, isViewMode } = props;
 
     const classes = useStyles();
+
+    const dispatch = useDispatch();
 
     const occupations = useSelector<StoreStateType, string[]>(state => state.occupations);
 
@@ -56,6 +59,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
+                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }
                                         }}
                                     />
@@ -84,6 +88,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
+                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }
                                         }}
                                     />
@@ -112,6 +117,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
+                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }
                                         }}
                                     />)
@@ -139,6 +145,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
+                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }
                                         }}
                                     />)
@@ -166,6 +173,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
+                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }
                                         }}
                                     />
@@ -193,7 +201,8 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                             placeholder={ContactQuestioningFieldsNames.OCCUPATION}
                                             disabled={isFieldDisabled || isViewMode}
                                             onChange={(event) => {
-                                                props.onChange(event.target.value)
+                                                props.onChange(event.target.value);
+                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }}>
                                             {
                                                 occupations?.length > 0 && occupations.map((occupation) => (

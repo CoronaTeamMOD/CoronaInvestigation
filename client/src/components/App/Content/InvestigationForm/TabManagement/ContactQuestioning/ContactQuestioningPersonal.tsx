@@ -3,6 +3,7 @@ import { differenceInYears } from 'date-fns';
 import React, { useState, useEffect } from 'react';
 import { Controller, DeepMap, FieldError, useFormContext } from 'react-hook-form';
 import { Avatar, Grid, Typography, Select, MenuItem, FormHelperText, FormControl } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
 
 import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
@@ -24,6 +25,7 @@ import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 import { FormInputs } from './ContactQuestioningInterfaces';
 import { ErrorSharp } from '@material-ui/icons';
+import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
 
@@ -31,7 +33,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();//FormInputs
 
     const { index, interactedContact , isViewMode } = props;
-
+    const dispatch = useDispatch();
     const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
 
     const calcAge = (birthDate: Date) => {
@@ -118,7 +120,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                         disabled={isFieldDisabled || shouldIdDisable || isViewMode}
                                         onChange={(event) => {
                                             props.onChange(event.target.value)
-                                           
+                                            dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                         }}
                                         MenuProps={{
                                             anchorOrigin: {
@@ -168,6 +170,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue);
                                             }}
+                                            onBlur ={()=>dispatch(setInteractedContact(methods.getValues(),methods.formState))}
                                             placeholder='מספר תעודה'
                                             isId={isId}
                                         />
@@ -201,6 +204,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             onChange={(newDate: Date) => {
                                                 props.onChange(newDate);
                                                 setAge(calcAge(newDate));
+                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }}
                                         />
                                     </FormControl>
@@ -220,6 +224,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                 testId='contactAge'
                                 value={age}
                                 onChange={() => { }}
+                                onBlur={()=> dispatch(setInteractedContact(methods.getValues(),methods.formState))}
                                 placeholder='בחר תאריך לידה'
                             />
                         </FormControl>
@@ -242,6 +247,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             disabled={isFieldDisabled || isViewMode}
                                             testId='phoneNumber'
                                             placeholder='הכנס טלפון:'
+                                            onBlur={()=> dispatch(setInteractedContact(methods.getValues(),methods.formState))}
                                         />
                                     </FormControl>
                                 )
@@ -292,6 +298,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue)
                                             }}
+                                            onBlur={()=> dispatch(setInteractedContact(methods.getValues(),methods.formState))}
                                             placeholder='הערות נוספות'
                                             disabled={isViewMode}
                                         />

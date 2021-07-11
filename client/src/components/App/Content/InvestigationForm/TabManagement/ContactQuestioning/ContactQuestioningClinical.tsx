@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { addDays, format } from 'date-fns';
 import { Controller, DeepMap, FieldError, useFormContext } from 'react-hook-form';
 import { Avatar, FormControl, Grid, MenuItem, Select, Typography } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
 
 import theme from 'styles/theme';
 import Toggle from 'commons/Toggle/Toggle';
@@ -22,6 +23,7 @@ import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 import { FormInputs } from './ContactQuestioningInterfaces';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
+import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
 
 const emptyFamilyRelationship: FamilyRelationship = {
     id: null as any,
@@ -35,6 +37,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const { index, familyRelationships, interactedContact, isFamilyContact, isViewMode } = props;
 
     const classes = useStyles();
+
+    const dispatch = useDispatch()
 
     const { shouldDisableContact } = useStatusUtils();
 
@@ -117,7 +121,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         } else if (!isIdAndPhoneNumValid()) {
             alertError('ישנם שדות לא תקינים ולכן לא ניתן להקים דיווח בידוד');
         } else {
-            value ?
+           if (value)
+           {
                 alertWarning('האם להקים דיווח בידוד?', {
                     showCancelButton: true,
                     cancelButtonText: 'בטל',
@@ -127,16 +132,24 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 }).then((result) => {
                     if (result.value) {
                         onChange(true);
+                        dispatch(setInteractedContact(methods.getValues(),methods.formState));
                     }
                 })
-                :
-                onChange(false)
+            }
+               else {
+                onChange(false);
+                dispatch(setInteractedContact(methods.getValues(),methods.formState));
+               }
+               
+                
+                
         }
     };
 
     const handelOnChangeDoesNeedIsolation = (event: any, booleanValue: boolean, onChange: (...event: any[]) => void) => {
         if (booleanValue === false || isUnreachable || isUncooperative) {
             onChange(booleanValue)
+            dispatch(setInteractedContact(methods.getValues(),methods.formState));
         }
 
         if (booleanValue === true && !isUncooperative && !isUnreachable) {
@@ -169,7 +182,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                             placeholder='קרבה משפחתית'
                                             onChange={(event) => {
                                                 props.onChange(event.target.value)
+                                                dispatch(setInteractedContact(methods.getValues(),methods.formState))
                                             }}
+                                           
                                         >
                                             {
                                                 familyRelationships?.length > 0 &&
@@ -207,6 +222,10 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue)
                                             }}
+                                            onBlur={() => {
+                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
+                                                props.onBlur();
+                                            }}
                                             placeholder='קשר'
                                         />
                                     </FormControl>
@@ -225,7 +244,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                             control={methods.control}
                             watch={watch}
                             errors={isolationAddressErrors}
+                            onBlur = {dispatch(setInteractedContact(methods.getValues(),methods.formState))}
                             {...addressFormFields}
+                            
                         />
                     </Grid>
                 </Grid>
@@ -246,6 +267,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
+                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }
                                         }
                                         } />
@@ -291,7 +313,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                 testId='isolationEndDate'
                                 name='isolationEndDate'
                                 value={formattedIsolationEndDate}
-                                onChange={() => {
+                                onChange={()=>{}}
+                                onBlur={() => {
+                                    dispatch(setInteractedContact(methods.getValues(),methods.formState))
                                 }}
                             />
                         </FormControl>

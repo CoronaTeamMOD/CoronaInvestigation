@@ -1,4 +1,6 @@
 import { useFormContext } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
 
 import theme from 'styles/theme';
 import ContactStatus from 'models/ContactStatus';
@@ -6,12 +8,14 @@ import InteractedContact from 'models/InteractedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
-
+import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
 
 const useReachContact = (props: Props) => {
-    const { errors, getValues } = useFormContext<GroupedInteractedContact>();
+    const { errors, getValues,formState } = useFormContext<GroupedInteractedContact>();
     const { saveContact, parsePerson, formValues, index } = props;
     const { alertWarning , alertError } = useCustomSwal();
+    const dispatch = useDispatch();
+
     const formHaveMissingFieldsText = `למגע זה ישנם שדות לא תקינים:`
 
     const formHasErrors = errors; // ? Boolean(errors.form[index]) : false;
@@ -20,7 +24,8 @@ const useReachContact = (props: Props) => {
         selectedStatus: ContactStatus | null,
         onChange: (...event: any[]) => void,
         missingFieldsText: string
-    ) => {
+    ) => { 
+        
         event.stopPropagation();
         const formHaveMissingFields = missingFieldsText!=='';
         if (selectedStatus?.id === ContactStatusCodes.COMPLETED) {
@@ -37,6 +42,7 @@ const useReachContact = (props: Props) => {
                         if (result.value) {
                             onChange(selectedStatus?.id);
                             let contactedPerson = getValues();
+                            dispatch(setInteractedContact(contactedPerson,formState))
                             saveContact(parsePerson(contactedPerson as GroupedInteractedContact, index));
                         }
                     });
@@ -58,7 +64,9 @@ const useReachContact = (props: Props) => {
             }
         } else if (selectedStatus?.id) {
             onChange(selectedStatus?.id);
-            saveContact(parsePerson(formValues, index));
+            let contactedPerson = getValues();
+            dispatch(setInteractedContact(contactedPerson,formState))
+            saveContact(parsePerson(contactedPerson as GroupedInteractedContact, index));
         }
     };
 
