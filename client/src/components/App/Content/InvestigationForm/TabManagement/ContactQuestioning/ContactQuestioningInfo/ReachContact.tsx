@@ -14,7 +14,7 @@ import useReachContact from './useReachContact';
 import useStyles from '../ContactQuestioningStyles';
 
 const ReachContact = (props: Props) => {
-    const { control, getValues, watch } = useFormContext();
+    const { control, getValues, watch } = useFormContext<GroupedInteractedContact>();
     const { interactedContact, index, contactStatuses, saveContact,parsePerson,isViewMode } = props;
     const classes = useStyles({});
 

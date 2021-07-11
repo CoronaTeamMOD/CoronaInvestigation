@@ -9,7 +9,7 @@ import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteracte
 
 
 const useReachContact = (props: Props) => {
-    const { errors, getValues } = useFormContext();
+    const { errors, getValues } = useFormContext<GroupedInteractedContact>();
     const { saveContact, parsePerson, formValues, index } = props;
     const { alertWarning , alertError } = useCustomSwal();
     const formHaveMissingFieldsText = `למגע זה ישנם שדות לא תקינים:`
