@@ -35,20 +35,28 @@ const InteractedContactAccordion = (props: Props) => {
 
     const formErrors = errors?.form && errors?.form[index];
 
+    const generateBackgroundColorClass = (colorCode: Number | any) => {
+        switch (colorCode) {
+            case '1':
+                return classes.red;
+            case '2':
+                return classes.orange;
+            case '3':
+                return classes.green;
+            case '4':
+                return classes.yellow;
+            default:
+                return classes.white;
+        }
+    }
+
     const getAccordionClasses = (): string => {
         let classesList: string[] = [];
         classesList.push(classes.accordion);
 
-        const formHasErrors = formErrors
-            ? Object.entries(formErrors)
-                .some(([key, value]) => (
-                    value !== undefined
-                ))
-            : false
+        const colorCode = interactedContact.colorCode;
+        classesList.push(generateBackgroundColorClass(colorCode))
 
-        if (formHasErrors) {
-            classesList.push(classes.errorAccordion);
-        }
         return classesList.join(' ');
     };
 
