@@ -26,6 +26,7 @@ import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 import { FormInputs } from './ContactQuestioningInterfaces';
 import { ErrorSharp } from '@material-ui/icons';
 import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
+import  contacQuestioningData from './ContactQuestioningData';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
 
@@ -47,7 +48,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
 
     const [shouldIdDisable, setShouldIdDisable] = useState<boolean>(false);
   
-    
+    const {validateIdentityData} = contacQuestioningData();
 
     const [age, setAge] = useState<string>(calcAge(interactedContact.birthDate));
     const [isId, setIsId] = useState<boolean>(false);
@@ -119,8 +120,17 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                         {...props}
                                         disabled={isFieldDisabled || shouldIdDisable || isViewMode}
                                         onChange={(event) => {
-                                            props.onChange(event.target.value)
-                                            dispatch(setInteractedContact(methods.getValues(),methods.formState));
+                                            if(false /*validateIdentityData(interactedContact.id, methods.getValues("identificationType").id , methods.getValues("identificationNumber"))*/)
+                                            {
+                                                props.onChange(event.target.value)
+                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
+                                            }
+                                            else {
+                                              
+                                                methods.setError(InteractedContactFields.IDENTIFICATION_TYPE, { type: "focus" ,message:"blabla"});
+                                                console.log(errors);
+                                            }
+
                                         }}
                                         MenuProps={{
                                             anchorOrigin: {
