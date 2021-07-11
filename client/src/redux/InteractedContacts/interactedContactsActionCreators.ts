@@ -1,12 +1,14 @@
 import * as actionTypes from './interactedContactsActionTypes';
 import axios from 'axios';
 import { ThunkAction } from 'redux-thunk';
-import { InteractedContactsState } from './interactedContactsReducer';
-import GroupedInteractedContact, { GroupedInteractedContactEvent } from 'models/ContactQuestioning/GroupedInteractedContact';
+import { FormStateObject, InteractedContactsState } from './interactedContactsReducer';
 import { format } from 'date-fns';
-import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
-import logger from 'logger/logger';
-import { Severity } from 'models/Logger';
+import InteractedContact from '../../models/InteractedContact';
+import GroupedInteractedContact, { GroupedInteractedContactEvent } from '../../models/ContactQuestioning/GroupedInteractedContact';
+import logger from '../../logger/logger';
+import { Severity } from '../../models/Logger';
+import { FormState } from 'react-hook-form';
+import ContactQuestioningSchema from 'components/App/Content/InvestigationForm/TabManagement/ContactQuestioning/ContactSection/Schemas/ContactQuestioningSchema';
 
 export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, InteractedContactsState, unknown, actionTypes.InteractedContactAction> => async dispatch => {
     dispatch({
@@ -97,30 +99,45 @@ export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, Int
                 }
             }
 
-            getRulerApiDataFromServer(contactsToApi).then((resultFromAPI) => {
-                let contacts = Array.from(contactsMap).map(contact => contact[1]);
+            getRulerApiDataFromServer(contactsToApi)
+                .then((resultFromAPI) => {
+                    let contacts = Array.from(contactsMap).map(contact => contact[1]);
 
-                if (resultFromAPI?.ColorData) {
-                    for (let eachResult of resultFromAPI?.ColorData) {
-                        for (let interactedContact of contacts) {
-                            if (interactedContact.identificationNumber === eachResult.IDnum) {
-                                interactedContact.finalEpidemiologicalStatusDesc = eachResult?.Indicators?.jsonstring?.finalEpidemiologicalStatusDesc;
-                                interactedContact.colorCode = eachResult?.ColorCode;
-                                interactedContact.certificateEligibilityTypeDesc = eachResult?.Indicators?.jsonstring?.certificateEligibilityTypeDesc;
-                                interactedContact.immuneDefinitionBasedOnSerologyStatusDesc = eachResult?.Indicators?.jsonstring?.immuneDefinitionBasedOnSerologyStatusDesc;
-                                interactedContact.vaccinationStatusDesc = eachResult?.Indicators?.jsonstring?.vaccinationStatusDesc;
-                                interactedContact.isolationReportStatusDesc = eachResult?.Indicators?.jsonstring?.isolationReportStatusDesc;
-                                interactedContact.isolationObligationStatusDesc = eachResult?.Indicators?.jsonstring?.isolationObligationStatusDesc;
+                    if (resultFromAPI?.ColorData) {
+                        for (let eachResult of resultFromAPI?.ColorData) {
+                            for (let interactedContact of contacts) {
+                                if (interactedContact.identificationNumber === eachResult.IDnum) {
+                                    interactedContact.finalEpidemiologicalStatusDesc = eachResult?.Indicators?.jsonstring?.finalEpidemiologicalStatusDesc;
+                                    interactedContact.colorCode = eachResult?.ColorCode;
+                                    interactedContact.certificateEligibilityTypeDesc = eachResult?.Indicators?.jsonstring?.certificateEligibilityTypeDesc;
+                                    interactedContact.immuneDefinitionBasedOnSerologyStatusDesc = eachResult?.Indicators?.jsonstring?.immuneDefinitionBasedOnSerologyStatusDesc;
+                                    interactedContact.vaccinationStatusDesc = eachResult?.Indicators?.jsonstring?.vaccinationStatusDesc;
+                                    interactedContact.isolationReportStatusDesc = eachResult?.Indicators?.jsonstring?.isolationReportStatusDesc;
+                                    interactedContact.isolationObligationStatusDesc = eachResult?.Indicators?.jsonstring?.isolationObligationStatusDesc;
+                                }
                             }
                         }
                     }
-                }
 
-                dispatch({
-                    type: actionTypes.GET_INTERACTED_CONTACTS_SUCCESS,
-                    payload: { interactedContacts: contacts }
+                    let map = new Map();
+                    contacts.forEach(contact => {
+                        ContactQuestioningSchema.isValid(contact).then(valid => {
+                            map.set(contact.id, new FormStateObject(valid))
+                        })
+                    });
+                    dispatch({
+                        type: actionTypes.GET_INTERACTED_CONTACTS_SUCCESS,
+                        payload: {
+                            interactedContacts: contacts,
+                            formState: map
+                        }
+                    });
+                }).catch(err => {
+                    dispatch({
+                        type: actionTypes.GET_INTERACTED_CONTACTS_ERROR,
+                        error: err
+                    });
                 });
-            });
         })
         .catch(err => {
             dispatch({
@@ -129,6 +146,64 @@ export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, Int
             });
         });
 }
+
+export const setInteractedContact = (contact: GroupedInteractedContact, formState: FormState<GroupedInteractedContact>):
+    ThunkAction<void, InteractedContactsState, unknown, actionTypes.InteractedContactAction> => async (dispatch, getState) => {
+        dispatch({
+            type: actionTypes.SET_INTERACTED_CONTACT_PENDING
+        });
+
+        const contacts = [contact];
+        const data = {
+            unSavedContacts: {
+                contacts
+            },
+        };
+        axios.post('/contactedPeople/interactedContacts', data)
+            .then(res => {
+                dispatch({
+                    type: actionTypes.SET_INTERACTED_CONTACT_SUCCESS,
+                    payload: {
+                        interactedContact: res.data,
+                        formState: getState().formState.set(contact.id, new FormStateObject(formState.isValid))
+                    }
+                });
+            })
+            .catch(err => {
+                dispatch({
+                    type: actionTypes.SET_INTERACTED_CONTACT_ERROR,
+                    error: err
+                });
+            });
+    }
+
+export const updateInteractedContacts = (contacts: InteractedContact[]):
+    ThunkAction<void, InteractedContactsState, unknown, actionTypes.InteractedContactAction> => async dispatch => {
+        dispatch({
+            type: actionTypes.SET_INTERACTED_CONTACTS_PENDING
+        });
+
+        const data = {
+            unSavedContacts: {
+                contacts
+            },
+        };
+
+        axios.post('/contactedPeople/interactedContacts', data)
+            .then(res => {
+                dispatch({
+                    type: actionTypes.SET_INTERACTED_CONTACTS_SUCCESS,
+                    payload: { interactedContacts: res.data }
+                });
+            })
+            .catch(err => {
+                dispatch({
+                    type: actionTypes.SET_INTERACTED_CONTACTS_ERROR,
+                    error: err
+                });
+            });
+    }
+
 
 const getRulerApiDataFromServer = async (ids: any[]) => {
     const RulerCheckColorRequestParameters = {
@@ -146,7 +221,7 @@ const getRulerApiDataFromServer = async (ids: any[]) => {
 
     const rulerLogger = logger.setup('client ruler logger setup');
     rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
-    setIsLoading(true);
+    //setIsLoading(true);
     return await axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters, { timeout: 5000 })
         .then((response: any) => {
             if (response.data?.ColorData) {
