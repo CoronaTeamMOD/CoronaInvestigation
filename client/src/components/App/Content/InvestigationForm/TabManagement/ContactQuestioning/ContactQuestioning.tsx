@@ -19,7 +19,7 @@ import InteractedContactAccordion from './InteractedContactAccordion';
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
-const SIZE_OF_CONTACTS = 10;
+const SIZE_OF_CONTACTS = 4;//10;
 let loaded = SIZE_OF_CONTACTS;
 
 const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Element => {
@@ -62,14 +62,27 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     });
 
     const loopWithSlice = (start: number, end: number) => {
-        const slicedContacts = allContactedInteractions.slice(start, end);
+        const slicedContacts = interactedContacts.slice(start, end);
         setContactsToShow([...contactsToShow, ...slicedContacts]);
     };
 
     const handleShowMoreContacts = () => {
-        loopWithSlice(loaded, loaded + SIZE_OF_CONTACTS);
-        loaded = loaded + SIZE_OF_CONTACTS;
+        // loopWithSlice(loaded, loaded + SIZE_OF_CONTACTS);
+        // loaded = loaded + SIZE_OF_CONTACTS;
+        loopWithSlice(loaded, loaded + 2);
+        loaded = loaded + 2;
     };
+
+    const listenScrollEvent = (event:React.UIEvent<HTMLDivElement>): void=> {
+        const element  = event.target as HTMLElement;
+        console.log(element.scrollHeight - element.scrollTop)
+        console.log(element.clientHeight)
+        if (element.scrollHeight - element.scrollTop >= element.clientHeight &&  element.scrollHeight - element.scrollTop < element.clientHeight + 50)
+        {
+            handleShowMoreContacts();
+        }
+    }
+
 
     useEffect(() => {
         loadInteractedContacts();
@@ -79,29 +92,30 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
 
     useEffect(() => {
        
-        if (interactedContacts){
+        if (interactedContacts && interactedContacts.length>0){
             setAllContactedInteractions(interactedContacts);
             setIsLoading(false);
         }
         
-        if (allContactedInteractions) {
-           // trigger();
+        if (interactedContacts) {
             loopWithSlice(0, SIZE_OF_CONTACTS);
         }
         
     }, [interactedContacts]);
 
+
     return (
-        <>
+        <div className={classes.scrolledTab}  onScroll={listenScrollEvent}>
+
             {/* <FormProvider {...methods}> */}
                   <form
                     id={`form-${id}`}
                     onSubmit={(e: React.FormEvent) => { onSubmit(e) }} > </form> 
                     <FormTitle
-                        title={`טופס תשאול מגעים (${allContactedInteractions.length})`}
+                        title={`טופס תשאול מגעים (${interactedContacts.length})`}
                     />
-                    <span className={classes.numOfContacts}>מוצגים {Math.min(loaded,allContactedInteractions.length)} מתוך {allContactedInteractions.length}
-                        <a className={classes.loadMore} hidden={loaded > allContactedInteractions.length} onClick={() => handleShowMoreContacts()}> טען עוד</a>
+                    <span className={classes.numOfContacts}>מוצגים {Math.min(loaded,interactedContacts.length)} מתוך {interactedContacts.length}
+                        <a className={classes.loadMore} hidden={loaded > interactedContacts.length} onClick={() => handleShowMoreContacts()}> טען עוד</a>
                     </span> 
 
                     <Grid container className={classes.accordionContainer}>
@@ -111,7 +125,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                                     interactedContact.involvementReason
                                 );
                                 return (
-                                    <Grid item xs={12}>
+                                    <Grid item xs={12}   key={interactedContact.id}>
                                         <InteractedContactAccordion
                                             interactedContact={interactedContact}
                                             index={index}
@@ -130,7 +144,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                     </Grid>
                
             {/* </FormProvider> */}
-        </>
+        </div>
     );
 };
 
