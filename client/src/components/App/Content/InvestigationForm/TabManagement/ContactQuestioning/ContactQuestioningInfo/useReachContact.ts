@@ -42,7 +42,7 @@ const useReachContact = (props: Props) => {
                         if (result.value) {
                             onChange(selectedStatus?.id);
                             let contactedPerson = getValues();
-                            dispatch(setInteractedContact(contactedPerson,formState))
+                     //       dispatch(setInteractedContact(contactedPerson,formState))
                             saveContact(parsePerson(contactedPerson as GroupedInteractedContact, index));
                         }
                     });
@@ -65,7 +65,7 @@ const useReachContact = (props: Props) => {
         } else if (selectedStatus?.id) {
             onChange(selectedStatus?.id);
             let contactedPerson = getValues();
-            dispatch(setInteractedContact(contactedPerson,formState))
+         //   dispatch(setInteractedContact(contactedPerson,formState))
             saveContact(parsePerson(contactedPerson as GroupedInteractedContact, index));
         }
     };

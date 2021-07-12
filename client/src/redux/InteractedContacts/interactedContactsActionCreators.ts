@@ -7,8 +7,6 @@ import GroupedInteractedContact from '../../models/ContactQuestioning/GroupedInt
 import { FormState } from 'react-hook-form';
 import ContactQuestioningSchema from 'components/App/Content/InvestigationForm/TabManagement/ContactQuestioning/ContactSection/Schemas/ContactQuestioningSchema';
 import { getAllInteractedContacts } from '../../httpClient/InteractedContacts/interactedContacts';
-import { store } from 'redux/store';
-import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 
 export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, InteractedContactsState, unknown, actionTypes.InteractedContactAction> => async dispatch => {
@@ -39,12 +37,19 @@ export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, Int
     }
 }
 
-export const setInteractedContact = (contact: GroupedInteractedContact, formState: FormState<GroupedInteractedContact>):
+type ValueOf<T> = T[keyof T];
+
+export const setInteractedContact = 
+(id: number, propertyName: keyof GroupedInteractedContact, value: ValueOf<GroupedInteractedContact>, formState: FormState<GroupedInteractedContact>):
     ThunkAction<void, StoreStateType, unknown, actionTypes.InteractedContactAction> => async (dispatch, getState) => {
         dispatch({
             type: actionTypes.SET_INTERACTED_CONTACT_FORM_STATE,
             payload: {
-                formState: getState().interactedContacts.formState.set(contact.id, new FormStateObject(formState.isValid))
+                interactedContacts: getState().interactedContacts.interactedContacts.filter(x => x.id == id).map(contact => {
+                    (contact[propertyName] as ValueOf<GroupedInteractedContact>) = value;
+                    return contact;
+                }),
+                formState: getState().interactedContacts.formState.set(id, new FormStateObject(formState.isValid)),
             }
         });
     }

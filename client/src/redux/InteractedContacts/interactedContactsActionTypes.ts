@@ -21,7 +21,10 @@ interface GetInteractedContactsPending {
 
 interface SetInteractedContactsFormState {
     type: typeof SET_INTERACTED_CONTACT_FORM_STATE,
-    payload: { formState: Map<number, FormStateObject> }
+    payload: {
+        interactedContacts: GroupedInteractedContact[],
+        formState: Map<number, FormStateObject>
+    }
 }
 
 interface GetInteractedContactsSuccess {
@@ -69,4 +72,4 @@ interface SetInteractedContactsError {
 }
 
 export type InteractedContactAction = GetInteractedContactsPending | SetInteractedContactsFormState | GetInteractedContactsSuccess | GetInteractedContactsError
-    | SetInteractedContactPending | SetInteractedContactSuccess | SetInteractedContactError | SetInteractedContactsPending | SetInteractedContactsSuccess | SetInteractedContactsError; 
+    | SetInteractedContactPending | SetInteractedContactSuccess | SetInteractedContactError | SetInteractedContactsPending | SetInteractedContactsSuccess | SetInteractedContactsError;

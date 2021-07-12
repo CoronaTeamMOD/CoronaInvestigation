@@ -59,7 +59,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
+                                                //dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }
                                         }}
                                     />
@@ -88,7 +88,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
+                                                //dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }
                                         }}
                                     />
@@ -117,7 +117,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
+                                               // dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }
                                         }}
                                     />)
@@ -145,7 +145,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
+                                                //dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }
                                         }}
                                     />)
@@ -173,7 +173,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
+                                              //  dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }
                                         }}
                                     />
@@ -202,7 +202,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                             disabled={isFieldDisabled || isViewMode}
                                             onChange={(event) => {
                                                 props.onChange(event.target.value);
-                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
+                                          //      dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }}>
                                             {
                                                 occupations?.length > 0 && occupations.map((occupation) => (

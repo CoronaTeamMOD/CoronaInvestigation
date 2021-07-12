@@ -122,7 +122,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             if(false /*validateIdentityData(interactedContact.id, methods.getValues("identificationType").id , methods.getValues("identificationNumber"))*/)
                                             {
                                                 props.onChange(event.target.value)
-                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
+                                          //      dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }
                                             else {
                                               
@@ -181,7 +181,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                                 
                                             }}
                                             onBlur ={()=>{
-                                            dispatch(setInteractedContact(methods.getValues(),methods.formState));
+                                    //        dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                                 console.log('prop',interactedContact);
                                                 console.log('redux',contact);
                                         }
@@ -219,7 +219,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             onChange={(newDate: Date) => {
                                                 props.onChange(newDate);
                                                 setAge(calcAge(newDate));
-                                                dispatch(setInteractedContact(methods.getValues(),methods.formState));
+                                           //     dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }}
                                         />
                                     </FormControl>
@@ -239,7 +239,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                 testId='contactAge'
                                 value={age}
                                 onChange={() => { }}
-                                onBlur={()=> dispatch(setInteractedContact(methods.getValues(),methods.formState))}
+                               // onBlur={()=> dispatch(setInteractedContact(methods.getValues(),methods.formState))}
                                 placeholder='בחר תאריך לידה'
                             />
                         </FormControl>
@@ -262,7 +262,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             disabled={isFieldDisabled || isViewMode}
                                             testId='phoneNumber'
                                             placeholder='הכנס טלפון:'
-                                            onBlur={()=> dispatch(setInteractedContact(methods.getValues(),methods.formState))}
+                                  //          onBlur={()=> dispatch(setInteractedContact(methods.getValues(),methods.formState))}
                                         />
                                     </FormControl>
                                 )
@@ -313,7 +313,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue)
                                             }}
-                                            onBlur={()=> dispatch(setInteractedContact(methods.getValues(),methods.formState))}
+                                       //     onBlur={()=> dispatch(setInteractedContact(methods.getValues(),methods.formState))}
                                             placeholder='הערות נוספות'
                                             disabled={isViewMode}
                                         />
