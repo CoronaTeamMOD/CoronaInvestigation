@@ -26,7 +26,6 @@ import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 import { FormInputs } from './ContactQuestioningInterfaces';
 import { ErrorSharp } from '@material-ui/icons';
 import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
-import  contacQuestioningData from './ContactQuestioningData';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
 
@@ -48,8 +47,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
 
     const [shouldIdDisable, setShouldIdDisable] = useState<boolean>(false);
   
-    const {validateIdentityData} = contacQuestioningData();
-
     const [age, setAge] = useState<string>(calcAge(interactedContact.birthDate));
     const [isId, setIsId] = useState<boolean>(false);
 
