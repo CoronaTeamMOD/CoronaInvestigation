@@ -40,23 +40,13 @@ export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, Int
 }
 
 export const setInteractedContact = (contact: GroupedInteractedContact, formState: FormState<GroupedInteractedContact>):
-    ThunkAction<void, InteractedContactsState, unknown, actionTypes.InteractedContactAction> => async (dispatch, getState) => {
-        // dispatch({
-        //     type: actionTypes.SET_INTERACTED_CONTACT_FORM_STATE,
-        //     payload: { 
-        //         formState: getState().formState.set(contact.id, new FormStateObject(formState.isValid))
-        //      }
-        // });
-
-        const dispatchFunc=async ()=>{
-            dispatch({
-                type: actionTypes.SET_INTERACTED_CONTACT_FORM_STATE,
-                payload: { 
-                    formState: getState().formState.set(contact.id, new FormStateObject(formState.isValid))
-                 }
-            });
-        }
-       await dispatchFunc();
+    ThunkAction<void, StoreStateType, unknown, actionTypes.InteractedContactAction> => async (dispatch, getState) => {
+        dispatch({
+            type: actionTypes.SET_INTERACTED_CONTACT_FORM_STATE,
+            payload: {
+                formState: getState().interactedContacts.formState.set(contact.id, new FormStateObject(formState.isValid))
+            }
+        });
     }
 
 export const updateInteractedContacts = (contacts: InteractedContact[]):
