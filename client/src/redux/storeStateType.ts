@@ -16,6 +16,7 @@ import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import { UserState } from './User/userReducer';
 import { GreenPassReducerType } from './GreenPass/greenPassReducer';
 import GroupedInvestigationReducerType from './GroupedInvestigations/GroupedInvestigationsType';
+import { InteractedContactsState } from './InteractedContacts/interactedContactsReducer';
 
 export default interface StoreStateType {
     user: UserState;
@@ -41,5 +42,6 @@ export default interface StoreStateType {
     complexReasons: (number|null)[];
     greenPass: GreenPassReducerType;
     identificationTypes: IdentificationType[];
-    airlines: Map<number, string>
+    airlines: Map<number, string>;
+    interactedContacts:InteractedContactsState;
 };

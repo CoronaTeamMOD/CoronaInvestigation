@@ -25,8 +25,9 @@ import complexReasonsReducer from './ComplexReasons/complexReasonsReducer';
 import isInInvestigationReducer from './IsInInvestigations/isInInvestigationReducer';
 import identificationTypesReducer from './IdentificationTypes/identificationTypesReducer';
 import groupedInvestigationReducer from './GroupedInvestigations/GroupedInvestigationsReducer';
+import interactedContactsReducer from './InteractedContacts/interactedContactsReducer';
 
-export default combineReducers <StoreStateType> ({
+export default combineReducers<StoreStateType>({
      occupations: occupationsReducer,
      user: userReducer,
      isLoading: isLoadingReducer,
@@ -45,10 +46,11 @@ export default combineReducers <StoreStateType> ({
      district: districtReducer,
      county: countyReducer,
      desk: deskReducer,
-     groupedInvestigations : groupedInvestigationReducer,
+     groupedInvestigations: groupedInvestigationReducer,
      authorities: authorityReducer,
      complexReasons: complexReasonsReducer,
      greenPass: greenPassReducer,
      identificationTypes: identificationTypesReducer,
-     airlines: airlineReducer
+     airlines: airlineReducer,
+     interactedContacts: interactedContactsReducer
 }) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;
