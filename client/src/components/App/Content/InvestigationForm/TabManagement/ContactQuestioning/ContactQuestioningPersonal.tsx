@@ -33,7 +33,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();//FormInputs
 
     const { index, interactedContact , isViewMode } = props;
-    const contact = useSelector<StoreStateType,GroupedInteractedContact[]>(state=>state.interactedContacts.interactedContacts)[index];
     const dispatch = useDispatch();
     const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
 
@@ -130,8 +129,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                         onChange={(event) => {
                                             if(validateIdentityData(interactedContact.id, event.target.value as number, methods.getValues("identificationNumber")))
                                             {
-                                                props.onChange(event.target.value)
-                                          //      dispatch(setInteractedContact(methods.getValues(),methods.formState));
+                                                props.onChange(event.target.value);
+                                                dispatch(setInteractedContact(interactedContact.id,'identificationType',methods.getValues('identificationType') ,methods.formState));
                                             }
                                             else {
                                                 methods.setError(InteractedContactFields.IDENTIFICATION_TYPE, { message:"מזהה זה כבר קיים" });
@@ -188,12 +187,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                                 props.onChange(newValue);
                                                 
                                             }}
-                                            onBlur ={()=>{
-                                    //        dispatch(setInteractedContact(methods.getValues(),methods.formState));
-                                                console.log('prop',interactedContact);
-                                                console.log('redux',contact);
-                                        }
-                                            }
+                                            onBlur ={()=>dispatch(setInteractedContact(interactedContact.id,'identificationNumber', methods.getValues("identificationNumber"),methods.formState))}
                                             placeholder='מספר תעודה'
                                             isId={isId}
                                         />
@@ -226,8 +220,9 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             error={Boolean(dateError)}
                                             onChange={(newDate: Date) => {
                                                 props.onChange(newDate);
-                                                setAge(calcAge(newDate));
-                                           //     dispatch(setInteractedContact(methods.getValues(),methods.formState));
+                                                setAge(calcAge(newDate));  
+                                                dispatch(setInteractedContact(interactedContact.id,'birthDate', newDate,methods.formState));
+                                               
                                             }}
                                         />
                                     </FormControl>
@@ -246,8 +241,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                 name='age'
                                 testId='contactAge'
                                 value={age}
-                                onChange={() => { }}
-                               // onBlur={()=> dispatch(setInteractedContact(methods.getValues(),methods.formState))}
+                                onChange={() => {/*dispatch(setInteractedContact(interactedContact.id, 'age',methods.getValues('age'),methods.formState)) */}}
                                 placeholder='בחר תאריך לידה'
                             />
                         </FormControl>
@@ -270,7 +264,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             disabled={isFieldDisabled || isViewMode}
                                             testId='phoneNumber'
                                             placeholder='הכנס טלפון:'
-                                  //          onBlur={()=> dispatch(setInteractedContact(methods.getValues(),methods.formState))}
+                                            onBlur={()=> dispatch(setInteractedContact(interactedContact.id,'phoneNumber',methods.getValues('phoneNumber'),methods.formState))}
                                         />
                                     </FormControl>
                                 )
@@ -321,7 +315,11 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue)
                                             }}
-                                       //     onBlur={()=> dispatch(setInteractedContact(methods.getValues(),methods.formState))}
+                                            onBlur={()=> {
+                                                dispatch(setInteractedContact(interactedContact.id,'extraInfo',methods.getValues('extraInfo'),methods.formState));
+                                                console.log('interactedContact',interactedContact)
+                                            }
+                                            }
                                             placeholder='הערות נוספות'
                                             disabled={isViewMode}
                                         />

@@ -67,16 +67,12 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     };
 
     const handleShowMoreContacts = () => {
-        // loopWithSlice(loaded, loaded + SIZE_OF_CONTACTS);
-        // loaded = loaded + SIZE_OF_CONTACTS;
         loopWithSlice(loaded, loaded + 2);
         loaded = loaded + 2;
     };
 
     const listenScrollEvent = (event:React.UIEvent<HTMLDivElement>): void=> {
-        const element  = event.target as HTMLElement;
-        console.log(element.scrollHeight - element.scrollTop)
-        console.log(element.clientHeight)
+        const element  = event.target as HTMLElement; 
         if (element.scrollHeight - element.scrollTop >= element.clientHeight &&  element.scrollHeight - element.scrollTop < element.clientHeight + 50)
         {
             handleShowMoreContacts();
