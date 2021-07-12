@@ -250,7 +250,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                                 involvedContactId: contact.involvedContactId,
                                 finalEpidemiologicalStatusDesc: 'אין נתונים',
                                 colorCode: 'אין נתונים',
-                                certificateEligibilityTypeDesc: 'אין נתונים',
+                                caseStatusDesc: 'אין נתונים',
                                 immuneDefinitionBasedOnSerologyStatusDesc: 'אין נתונים',
                                 vaccinationStatusDesc: 'אין נתונים',
                                 isolationReportStatusDesc: 'אין נתונים',
@@ -270,7 +270,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                                     if(interactedContact.identificationNumber === eachResult.IDnum) {
                                         interactedContact.finalEpidemiologicalStatusDesc = eachResult?.Indicators?.jsonstring?.finalEpidemiologicalStatusDesc;
                                         interactedContact.colorCode = eachResult?.ColorCode;
-                                        interactedContact.certificateEligibilityTypeDesc = eachResult?.Indicators?.jsonstring?.certificateEligibilityTypeDesc;
+                                        interactedContact.caseStatusDesc = eachResult?.Indicators?.jsonstring?.caseStatusDesc;
                                         interactedContact.immuneDefinitionBasedOnSerologyStatusDesc = eachResult?.Indicators?.jsonstring?.immuneDefinitionBasedOnSerologyStatusDesc;
                                         interactedContact.vaccinationStatusDesc = eachResult?.Indicators?.jsonstring?.vaccinationStatusDesc;
                                         interactedContact.isolationReportStatusDesc = eachResult?.Indicators?.jsonstring?.isolationReportStatusDesc; 
