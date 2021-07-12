@@ -95,7 +95,7 @@ const ContactDetails = (props: Props) => {
                         <Grid container>
                             <Typography variant='body2' className={classes.rulerFieldInfo }>תחלואה: </Typography>
                             <Typography variant='body2' className={classes.contactDetail }>
-                            <b>{interactedContact.certificateEligibilityTypeDesc}</b>
+                            <b>{interactedContact.caseStatusDesc}</b>
                             </Typography>
                         </Grid>
                     </MenuItem>
