@@ -108,13 +108,12 @@ export const getAllInteractedContacts = async (minimalDate?: Date): Promise<Grou
             const rulerLogger = logger.setup('client ruler logger setup');
             rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
 
+            let contacts = Array.from(contactsMap).map(contact => contact[1]);
+
             try {
                 const response = await axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters, { timeout: 5000 });
                 if (response.data?.ColorData) {
                     rulerLogger.info('got response from the ruler server', Severity.LOW);
-
-                    let contacts = Array.from(contactsMap).map(contact => contact[1]);
-
                     if (response.data?.ColorData) {
                         for (let eachResult of response.data?.ColorData) {
                             for (let interactedContact of contacts) {
@@ -133,11 +132,12 @@ export const getAllInteractedContacts = async (minimalDate?: Date): Promise<Grou
                     return contacts;
 
                 } else {
-                    throw ('חלה שגיאה בקבלת נתונים משירות הרמזור');
+                    rulerLogger.error('חלה שגיאה בקבלת נתונים משירות הרמזור', Severity.HIGH);
+                    return contacts;
                 }
             } catch (err) {
                 rulerLogger.error(`got the following error from the ruler server: ${err}`, Severity.HIGH);
-                throw ('חלה שגיאה בקבלת נתונים משירות הרמזור');
+                return contacts;
             }
         }
         else {

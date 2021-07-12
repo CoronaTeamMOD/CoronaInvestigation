@@ -19,11 +19,10 @@ export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, Int
     try {
         const contacts = await getAllInteractedContacts(minimalDate);
         let map = new Map();
-        contacts.forEach(contact => {
-            ContactQuestioningSchema.isValid(contact).then(valid => {
-                map.set(contact.id, new FormStateObject(valid))
-            })
-        });
+        for (let i = 0; i < contacts.length; i++) {
+            const valid = await ContactQuestioningSchema.isValid(contacts[i]);
+            map.set(contacts[i].id, new FormStateObject(valid));
+        }
         dispatch({
             type: actionTypes.GET_INTERACTED_CONTACTS_SUCCESS,
             payload: {
