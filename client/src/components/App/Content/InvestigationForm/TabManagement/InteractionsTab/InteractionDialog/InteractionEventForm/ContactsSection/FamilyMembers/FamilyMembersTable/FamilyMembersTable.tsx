@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { Home } from '@material-ui/icons';
+import InfoIcon from '@material-ui/icons/Info';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Typography, Tooltip } from '@material-ui/core';
 
 import InvolvedContact from 'models/InvolvedContact';
@@ -12,6 +13,7 @@ import useFamilyMemebersTable from './useFamilyMembersTable';
 
 const houseMember = 'בן בית';
 const cityCellName = 'isolationCity';
+const finalEpidemiologicalStatusDescCellName = 'finalEpidemiologicalStatusDesc'
 
 const FamilyMembersTable: React.FC<Props> = (props: Props) => {
     const { eventContactIds } = useContext(groupedInvestigationsContext);
@@ -31,7 +33,7 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
     }, []);
 
     const { selectRow, counterDescription, isRowSelected, 
-            isHouseMember, isRowDisabled, getRowClass, getRulerBorderClass 
+            isHouseMember, isRowDisabled, getRowClass, getRulerColorClass 
     } = useFamilyMemebersTable({ familyMembers, existingFamilyMembers, eventContactIds });
 
     return (
@@ -53,7 +55,7 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
                         {
                             familyMembers.map((familyMember: InvolvedContact) => (
                                 <>
-                                    <TableRow className={`${getRowClass(familyMember)} ${getRulerBorderClass(familyMember?.colorCode)}`}>
+                                    <TableRow className={getRowClass(familyMember)}>
                                         {
                                             <Checkbox
                                                 disabled={isRowDisabled(familyMember.identificationNumber)}
@@ -70,6 +72,10 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
                                                         <Tooltip title={houseMember}>
                                                             <Home className={classes.homeIcon} />
                                                         </Tooltip>
+                                                    }
+                                                    {
+                                                        cellName === finalEpidemiologicalStatusDescCellName && familyMember.finalEpidemiologicalStatusDesc  &&
+                                                        <InfoIcon className={getRulerColorClass(familyMember?.colorCode)} />
                                                     }
                                                 </TableCell>
                                             ))
