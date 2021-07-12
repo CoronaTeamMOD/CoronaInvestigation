@@ -189,19 +189,9 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                                 
                                             }}
                                             onBlur ={()=>{
-<<<<<<< HEAD
                                     //        dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                                 console.log('prop',interactedContact);
                                                 console.log('redux',contact);
-=======
-                                                if(validateIdentityData(interactedContact.id, methods.getValues("identificationType") as any, methods.getValues("identificationNumber")))
-                                                {
-                                                    dispatch(setInteractedContact(methods.getValues(),methods.formState));
-                                                }
-                                                else {
-                                                    methods.setError(InteractedContactFields.IDENTIFICATION_NUMBER, { message:"מזהה זה כבר קיים" });
-                                                }
->>>>>>> 0138f5aea8cfeb7faf518c9e667e9ad05272dcdb
                                         }
                                             }
                                             placeholder='מספר תעודה'
