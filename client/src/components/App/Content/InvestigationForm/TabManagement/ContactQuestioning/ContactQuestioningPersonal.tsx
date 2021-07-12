@@ -20,6 +20,7 @@ import IdentificationTypesCodes from 'models/enums/IdentificationTypesCodes';
 import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextField';
 import IdentificationTextField from 'commons/NoContextElements/IdentificationTextField';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
+import useContactQuestioning from './useContactQuestioning';
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
@@ -28,9 +29,7 @@ import { ErrorSharp } from '@material-ui/icons';
 import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
-
-  
-    
+    const interactedContacts = useSelector<StoreStateType,GroupedInteractedContact[]>(state=>state.interactedContacts.interactedContacts);
     const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();//FormInputs
 
     const { index, interactedContact , isViewMode } = props;
@@ -52,7 +51,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     const [age, setAge] = useState<string>(calcAge(interactedContact.birthDate));
     const [isId, setIsId] = useState<boolean>(false);
 
-   const { isFieldDisabled } = useContactFields(methods.getValues("contactStatus"));
+    const { isFieldDisabled } = useContactFields(methods.getValues("contactStatus"));
     const classes = useStyles();
 
     const { shouldDisableContact } = useStatusUtils();
@@ -91,7 +90,17 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     //     setShouldIdDisable(shouldDisable);
     // }, [methods.getValues().contactStatus, isFieldDisabled]);
 
-   
+    const validateIdentityData = (id:number,identityType:number,identityNumber:string)=>{
+        let duplicate = [];
+        if(id && identityType && identityNumber){
+            duplicate = interactedContacts.filter (contact=>{
+                return id!==contact.id && identityType===contact.identificationType?.id && identityNumber===contact.identificationNumber;
+                })
+        }
+        
+        return duplicate.length == 0;
+    } 
+
  return (
         <Grid item xs={4}>
             <Grid container direction='column' spacing={2}>
@@ -119,15 +128,13 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                         {...props}
                                         disabled={isFieldDisabled || shouldIdDisable || isViewMode}
                                         onChange={(event) => {
-                                            if(false /*validateIdentityData(interactedContact.id, methods.getValues("identificationType").id , methods.getValues("identificationNumber"))*/)
+                                            if(validateIdentityData(interactedContact.id, event.target.value as number, methods.getValues("identificationNumber")))
                                             {
                                                 props.onChange(event.target.value)
                                           //      dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                             }
                                             else {
-                                              
-                                                methods.setError(InteractedContactFields.IDENTIFICATION_TYPE, { type: "focus" ,message:"blabla"});
-                                                console.log(errors);
+                                                methods.setError(InteractedContactFields.IDENTIFICATION_TYPE, { message:"מזהה זה כבר קיים" });
                                             }
 
                                         }}
@@ -155,7 +162,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                 </FormControl>
                             )}
                         />
-                        {errors && (errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_TYPE] && <FormHelperText>{requiredText}</FormHelperText>}
+                        {errors && <FormHelperText>{(errors as any)[InteractedContactFields.IDENTIFICATION_TYPE]?.message}</FormHelperText>}
+                        {/* {errors && (errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_TYPE] && <FormHelperText>{requiredText}</FormHelperText>} */}
                     </Grid>
                 </Grid>
 
@@ -181,9 +189,19 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                                 
                                             }}
                                             onBlur ={()=>{
+<<<<<<< HEAD
                                     //        dispatch(setInteractedContact(methods.getValues(),methods.formState));
                                                 console.log('prop',interactedContact);
                                                 console.log('redux',contact);
+=======
+                                                if(validateIdentityData(interactedContact.id, methods.getValues("identificationType") as any, methods.getValues("identificationNumber")))
+                                                {
+                                                    dispatch(setInteractedContact(methods.getValues(),methods.formState));
+                                                }
+                                                else {
+                                                    methods.setError(InteractedContactFields.IDENTIFICATION_NUMBER, { message:"מזהה זה כבר קיים" });
+                                                }
+>>>>>>> 0138f5aea8cfeb7faf518c9e667e9ad05272dcdb
                                         }
                                             }
                                             placeholder='מספר תעודה'
