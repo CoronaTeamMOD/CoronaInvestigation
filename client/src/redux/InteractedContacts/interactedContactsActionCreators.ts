@@ -40,43 +40,13 @@ export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, Int
     }
 }
 
-export const setInteractedContact = (contact: InteractedContact, formState: FormState<GroupedInteractedContact>) => {
-    const formStateFromStore = useSelector<StoreStateType, Map<number, FormStateObject>>(state => state.interactedContacts.formState);
-    store.dispatch({
-        type: actionTypes.SET_INTERACTED_CONTACT_FORM_STATE,
-        payload: { formState: formStateFromStore.set(contact.id, new FormStateObject(formState.isValid)) }
-    });
-}
-
-// export const setInteractedContact = (contact: GroupedInteractedContact, formState: FormState<GroupedInteractedContact>):
-//     ThunkAction<void, InteractedContactsState, unknown, actionTypes.InteractedContactAction> => async (dispatch, getState) => {
-//         dispatch({
-//             type: actionTypes.SET_INTERACTED_CONTACT_PENDING
-//         });
-
-//         const contacts = [contact];
-//         const data = {
-//             unSavedContacts: {
-//                 contacts
-//             },
-//         };
-//         axios.post('/contactedPeople/interactedContacts', data)
-//             .then(res => {
-//                 dispatch({
-//                     type: actionTypes.SET_INTERACTED_CONTACT_SUCCESS,
-//                     payload: {
-//                         interactedContact: res.data,
-//                         formState: getState().formState.set(contact.id, new FormStateObject(formState.isValid))
-//                     }
-//                 });
-//             })
-//             .catch(err => {
-//                 dispatch({
-//                     type: actionTypes.SET_INTERACTED_CONTACT_ERROR,
-//                     error: err
-//                 });
-//             });
-//     }
+export const setInteractedContact = (contact: GroupedInteractedContact, formState: FormState<GroupedInteractedContact>):
+    ThunkAction<void, InteractedContactsState, unknown, actionTypes.InteractedContactAction> => async (dispatch, getState) => {
+        dispatch({
+            type: actionTypes.SET_INTERACTED_CONTACT_FORM_STATE,
+            payload: { formState: getState().formState.set(contact.id, new FormStateObject(formState.isValid)) }
+        });
+    }
 
 export const updateInteractedContacts = (contacts: InteractedContact[]):
     ThunkAction<void, InteractedContactsState, unknown, actionTypes.InteractedContactAction> => async dispatch => {

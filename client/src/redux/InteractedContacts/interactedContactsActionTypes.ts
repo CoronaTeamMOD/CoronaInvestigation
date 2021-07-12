@@ -20,7 +20,7 @@ interface GetInteractedContactsPending {
 }
 
 interface SetInteractedContactsFormState {
-    type: typeof GET_INTERACTED_CONTACTS_SUCCESS,
+    type: typeof SET_INTERACTED_CONTACT_FORM_STATE,
     payload: { formState: Map<number, FormStateObject> }
 }
 
