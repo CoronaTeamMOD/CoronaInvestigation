@@ -30,13 +30,13 @@ const interactedContactsReducer = (state = initialState, action: Actions.Interac
                 ...state,
                 pending: true
             }
-        case Actions.GET_INTERACTED_CONTACTS_SUCCESS:
-            return {
-                ...state,
-                pending: false,
-                interactedContacts: action.payload.interactedContacts,
-                formState: action.payload.formState
-            }
+        // case Actions.GET_INTERACTED_CONTACTS_SUCCESS:
+        //     return {
+        //         ...state,
+        //         pending: false,
+        //         interactedContacts: action.payload.interactedContacts,
+        //         formState: action.payload.formState
+        //     }
         case Actions.GET_INTERACTED_CONTACTS_ERROR:
             return {
                 ...state,
