@@ -52,7 +52,7 @@ const useFamilyMemebersTable = (parameters: Parameters) => {
        return existingFamilyMembers.indexOf(identificationNumber) !== -1 || eventContactIds?.indexOf(identificationNumber) !== -1; 
     };
 
-    const generateRulerBorderColorClass = (colorCode: Number | any) => {
+    const generateRulerColorClass = (colorCode: Number | any) => {
         switch (colorCode) {
             case '1':
                 return classes.red;
@@ -76,8 +76,8 @@ const useFamilyMemebersTable = (parameters: Parameters) => {
         return '';
     };
 
-    const getRulerBorderClass = (colorCode: String | undefined) => {
-        return generateRulerBorderColorClass(colorCode)
+    const getRulerColorClass = (colorCode: String | undefined) => {
+        return generateRulerColorClass(colorCode)
     };
 
     return {
@@ -87,7 +87,7 @@ const useFamilyMemebersTable = (parameters: Parameters) => {
         isHouseMember,
         isRowDisabled,
         getRowClass,
-        getRulerBorderClass
+        getRulerColorClass
     };
 };
 
