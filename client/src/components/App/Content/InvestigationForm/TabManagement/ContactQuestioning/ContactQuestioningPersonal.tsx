@@ -1,9 +1,9 @@
-import { useSelector } from 'react-redux';
+import { useSelector , useDispatch} from 'react-redux';
 import { differenceInYears } from 'date-fns';
 import React, { useState, useEffect } from 'react';
 import { Controller, DeepMap, FieldError, useFormContext } from 'react-hook-form';
 import { Avatar, Grid, Typography, Select, MenuItem, FormHelperText, FormControl } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+
 
 import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
@@ -30,10 +30,12 @@ import  contacQuestioningData from './ContactQuestioningData';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
 
-
+  
+    
     const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();//FormInputs
 
     const { index, interactedContact , isViewMode } = props;
+    const contact = useSelector<StoreStateType,GroupedInteractedContact[]>(state=>state.interactedContacts.interactedContacts)[index];
     const dispatch = useDispatch();
     const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
 
@@ -179,8 +181,14 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             testId='identificationNumber'
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue);
+                                                
                                             }}
-                                            onBlur ={()=>dispatch(setInteractedContact(methods.getValues(),methods.formState))}
+                                            onBlur ={()=>{
+                                            dispatch(setInteractedContact(methods.getValues(),methods.formState));
+                                                console.log('prop',interactedContact);
+                                                console.log('redux',contact);
+                                        }
+                                            }
                                             placeholder='מספר תעודה'
                                             isId={isId}
                                         />
