@@ -16,6 +16,7 @@ import GetGroupedInvestigationsIds from 'Utils/GroupedInvestigationsContacts/get
 
 import useStyles from '../ContactQuestioningStyles';
 import ContactQuestioningSchema from '../ContactSection/Schemas/ContactQuestioningSchema';
+import { FormStateObject } from 'redux/InteractedContacts/interactedContactsReducer';
 
 const TIGHT_CONTACT_STATUS = 1;
 
@@ -47,11 +48,16 @@ const ContactDetails = (props: Props) => {
     // const formHasErrors = Object.entries(formErrors)
     //     .some(([key, value]) => value !== undefined);
 
-    const [formHasErrors, setFormHasErrors] = useState<boolean>(false);
+    // const [formHasErrors, setFormHasErrors] = useState<boolean>(false);
 
-    ContactQuestioningSchema.isValid({...interactedContact,identificationType : interactedContact?.identificationType?.id}).then(valid => {
-        setFormHasErrors(!valid);
-    });
+    // ContactQuestioningSchema.isValid({...interactedContact,identificationType : interactedContact?.identificationType?.id}).then(valid => {
+    //     setFormHasErrors(!valid);
+    // });
+
+    const formStates = useSelector<StoreStateType, Map<number, FormStateObject>>(state=>state.interactedContacts.formState);
+    const isFormInvalid = false;//!formStates.get(interactedContact.id)?.isValid;
+    console.log('formStates',formStates);
+    
 
     const { isInvolvedThroughFamily } = useInvolvedContact();
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(
@@ -154,7 +160,7 @@ const ContactDetails = (props: Props) => {
                 <GroupedContactIcon />
             )}
             {
-                formHasErrors && <InvalidFormIcon />
+               /* formHasErrors*/ isFormInvalid && <InvalidFormIcon />
             }
              <Grid
                 container
