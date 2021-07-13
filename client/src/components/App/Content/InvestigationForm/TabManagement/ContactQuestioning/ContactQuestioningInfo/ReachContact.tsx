@@ -14,6 +14,7 @@ import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteracte
 
 import useReachContact from './useReachContact';
 import useStyles from '../ContactQuestioningStyles';
+import interactedContactsReducer from 'redux/InteractedContacts/interactedContactsReducer';
 
 
 const ReachContact = (props: Props) => {
@@ -57,10 +58,10 @@ const ReachContact = (props: Props) => {
                                     }
                                     value={currentValue}
                                     onChange={(e, data) => {
-                                        let contactValidation = validateContact(parsePerson(interactedContact, index), ValidationReason.SAVE_CONTACT)
+                                        let contactValidation = validateContact(interactedContact, ValidationReason.SAVE_CONTACT)
                                         const missingFieldsText = contactValidation?.valid ? '' : removeUnusePartOfError(contactValidation.error);
                                         changeContactStatus(
-                                            interactedContact.id,
+                                            interactedContact,
                                             e,
                                             data,
                                             props.onChange,

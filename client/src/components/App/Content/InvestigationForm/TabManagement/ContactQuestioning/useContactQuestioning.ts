@@ -11,6 +11,7 @@ import {getInteractedContacts} from 'redux/InteractedContacts/interactedContacts
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import GroupedInteractedContact, { GroupedInteractedContactEvent } from 'models/ContactQuestioning/GroupedInteractedContact';
+import {updateInteractedContacts} from 'httpClient/InteractedContacts/interactedContacts' ;
 
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 import {
@@ -42,23 +43,27 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
     const { alertError } = useCustomSwal();
 
-    const createSaveContactRequest = (contactsSavingVariable: { unSavedContacts: { contacts: InteractedContact[] } },
+    const createSaveContactRequest = async (contactsSavingVariable: { unSavedContacts: { contacts: InteractedContact[] } },
         workflowName: string) => {
         const contactLogger = logger.setup(workflowName);
 
         contactLogger.info(`launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`, Severity.LOW);
         setIsLoading(true);
-        return axios.post('/contactedPeople/interactedContacts', contactsSavingVariable)
-            .then((response) => {
-                if (response.data?.data?.updateContactPersons) {
-                    contactLogger.info('got response from the server', Severity.LOW);
-                }
-            })
-            .catch((err) => {
-                contactLogger.error(`got the following error from the server: ${err}`, Severity.HIGH);
-                alertError('חלה שגיאה בשמירת הנתונים');
-            })
-            .finally(() => setIsLoading(false));
+
+        await updateInteractedContacts(contactsSavingVariable.unSavedContacts.contacts);
+        
+        setIsLoading(false);
+        // return axios.post('/contactedPeople/interactedContacts', contactsSavingVariable)
+        //     .then((response) => {
+        //         if (response.data?.data?.updateContactPersons) {
+        //             contactLogger.info('got response from the server', Severity.LOW);
+        //         }
+        //     })
+        //     .catch((err) => {
+        //         contactLogger.error(`got the following error from the server: ${err}`, Severity.HIGH);
+        //         alertError('חלה שגיאה בשמירת הנתונים');
+        //     })
+        //     .finally(() => setIsLoading(false));
     };
 
     const getRulerApiDataFromServer = async (ids : any []) => {
@@ -105,14 +110,14 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         return true;
     };
 
-    const saveContactQuestioning = (parsedFormData: InteractedContact[], originalFormData: FormInputs) => {
+    const saveContactQuestioning = (data:InteractedContact[]/*parsedFormData: InteractedContact[], originalFormData: FormInputs*/) => {
         const contactsSavingVariable = {
-            unSavedContacts: { contacts: parsedFormData }
+            unSavedContacts: { contacts: data }
         };
 
         createSaveContactRequest(contactsSavingVariable, 'Saving all contacts')
             .finally(() => {
-                ContactQuestioningSchema.isValid(originalFormData).then(valid => {
+                ContactQuestioningSchema.isValid(data).then(valid => {
                     setFormState(epidemiologyNumber, id, valid);
                 })
             });
@@ -333,35 +338,34 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             allIdentificationNumbersToCheck.length
         );
     };
+    const areThereDuplicateIds = (data:GroupedInteractedContact[]) => {
+        const ids = data
+            .filter(person => {
+                const { identificationNumber, identificationType } = person;
+                return identificationNumber && identificationType;
+            }).map(person => {
+                return `${person.identificationNumber}-${person.identificationType}`
+            });
+
+         return ids.length !== new Set(ids).size;
+
+    };
+
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setFormState(epidemiologyNumber, id, true);
 
-        // const data = {} as FormInputs//getValues();
-        // const parsedFormData = parseFormBeforeSending(data as FormInputs);
-        // if (!areThereDuplicateIds(data) || isViewMode) {
-        //     parsedFormData && saveContactQuestioning(parsedFormData, data);
-        // } else {
-        //     alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
-        // }
+        const data = interactedContacts;//{} as FormInputs//getValues();
+      //  const parsedFormData = parseFormBeforeSending(data as FormInputs);
+         if (!areThereDuplicateIds(data) || isViewMode) {
+            saveContactQuestioning(data);
+        } else {
+            alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
+        }
     };
 
-    const areThereDuplicateIds = (data: FormInputs) => {
-        // const ids = data.form
-        //     .filter(person => {
-        //         const { identificationNumber, identificationType } = person;
-        //         return identificationNumber && identificationType;
-        //     }).map(person => {
-        //         return `${person.identificationNumber}-${person.identificationType}`
-        //     });
-
-        // return ids.length !== new Set(ids).size;
-
-        //TODO validation from redux data
-        return false;
-    };
-
+  
     const parseFormBeforeSending = (data: FormInputs) => {
         const { form } = data;
         // const mappedForm = form?.map(
