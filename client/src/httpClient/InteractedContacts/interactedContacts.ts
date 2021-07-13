@@ -149,11 +149,10 @@ export const getAllInteractedContacts = async (minimalDate?: Date): Promise<Grou
     }
 }
 
-export const updateInteractedContact = async (contact: InteractedContact) => {
-    const contactLogger = logger.setup('Saving Single Contact');
+export const updateInteractedContacts = async (contacts: InteractedContact[]) => {
+    const contactLogger = logger.setup('Saving Contacts');
 
     try {
-        const contacts = [contact];
         const data = {
             unSavedContacts: {
                 contacts
@@ -163,12 +162,12 @@ export const updateInteractedContact = async (contact: InteractedContact) => {
 
         const res = await axios.post('/contactedPeople/interactedContacts', data);
         if (res.data?.data?.updateContactPersons) {
-            contactLogger.info('got response from the server', Severity.LOW);
+            contactLogger.info('Response from server', Severity.LOW);
             return res.data?.data?.updateContactPersons;
         }
         return res;
     } catch (err) {
-        contactLogger.error(`got the following error from the server: ${err}`, Severity.HIGH);
+        contactLogger.error(`Error from server: ${err}`, Severity.HIGH);
         return err;
     }
 } 
