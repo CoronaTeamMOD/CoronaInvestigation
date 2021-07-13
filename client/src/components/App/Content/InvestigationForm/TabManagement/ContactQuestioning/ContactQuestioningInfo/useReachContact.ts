@@ -9,6 +9,7 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
+import interactedContactsReducer from 'redux/InteractedContacts/interactedContactsReducer';
 
 const useReachContact = (props: Props) => {
     const { errors, getValues,formState } = useFormContext<GroupedInteractedContact>();
@@ -18,8 +19,9 @@ const useReachContact = (props: Props) => {
 
     const formHaveMissingFieldsText = `למגע זה ישנם שדות לא תקינים:`
 
-    const formHasErrors = errors; // ? Boolean(errors.form[index]) : false;
+    const formHasErrors = errors ? Boolean(errors) : false; // ? Boolean(errors.form[index]) : false;
     const changeContactStatus = (
+        contactId:number,
         event: React.ChangeEvent<{}>,
         selectedStatus: ContactStatus | null,
         onChange: (...event: any[]) => void,
@@ -40,10 +42,10 @@ const useReachContact = (props: Props) => {
                         confirmButtonText: 'כן, המשך',
                     }).then((result) => {
                         if (result.value) {
-                            onChange(selectedStatus?.id);
-                            let contactedPerson = getValues();
-                     //       dispatch(setInteractedContact(contactedPerson,formState))
-                            saveContact(parsePerson(contactedPerson as GroupedInteractedContact, index));
+                           onChange(selectedStatus?.id);
+                           let contactedPerson = getValues();
+                           dispatch(setInteractedContact(contactId,'contactStatus', contactedPerson.contactStatus,formState));
+                            saveContact(/*parsePerson(*/contactedPerson as GroupedInteractedContact/*, index)*/); // TODO uncomment - for testing only
                         }
                     });
                 }
@@ -63,10 +65,11 @@ const useReachContact = (props: Props) => {
                 });
             }
         } else if (selectedStatus?.id) {
-            onChange(selectedStatus?.id);
             let contactedPerson = getValues();
-         //   dispatch(setInteractedContact(contactedPerson,formState))
-            saveContact(parsePerson(contactedPerson as GroupedInteractedContact, index));
+            saveContact(/*parsePerson(*/contactedPerson as GroupedInteractedContact/*, index)*/);
+            dispatch(setInteractedContact(contactId,'contactStatus', contactedPerson.contactStatus,formState));
+            onChange(selectedStatus?.id);
+          
         }
     };
 
