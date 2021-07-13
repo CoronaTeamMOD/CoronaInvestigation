@@ -94,6 +94,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
         }
         
         if (interactedContacts) {
+            loaded = SIZE_OF_CONTACTS
             loopWithSlice(0, SIZE_OF_CONTACTS);
         }
         
