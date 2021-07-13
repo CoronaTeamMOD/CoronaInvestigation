@@ -244,7 +244,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                             control={methods.control}
                             watch={watch}
                             errors={isolationAddressErrors}
-                            onBlur = {dispatch(setInteractedContact(interactedContact.id,'isolationAddress', methods.getValues('isolationAddress'),methods.formState))}
+                            onBlur= {dispatch(setInteractedContact(interactedContact.id,'isolationAddress', methods.getValues().isolationAddress ,methods.formState))}
                             {...addressFormFields}
                             
                         />
