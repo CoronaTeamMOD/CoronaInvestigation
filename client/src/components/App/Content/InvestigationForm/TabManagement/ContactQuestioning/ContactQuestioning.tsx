@@ -90,7 +90,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
        
         if (interactedContacts && interactedContacts.length>0){
             setAllContactedInteractions(interactedContacts);
-            setIsLoading(false);
+            //setIsLoading(false);
         }
         
         if (interactedContacts) {

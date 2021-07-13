@@ -4,10 +4,12 @@ import logger from 'logger/logger';
 import GroupedInteractedContact, { GroupedInteractedContactEvent } from 'models/ContactQuestioning/GroupedInteractedContact';
 import InteractedContact from 'models/InteractedContact';
 import { Severity } from 'models/Logger';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 export const getAllInteractedContacts = async (minimalDate?: Date): Promise<GroupedInteractedContact[]> => {
 
     try {
+        setIsLoading(true);
         const interactedContactsLogger = logger.setup('Getting contacts');
         const res = await axios.get(`/contactedPeople/allContacts/${minimalDate?.toISOString()}`);
         if (res?.data && res.headers['content-type'].includes('application/json')) {
@@ -129,22 +131,27 @@ export const getAllInteractedContacts = async (minimalDate?: Date): Promise<Grou
                             }
                         }
                     }
+                    setIsLoading(false);
                     return contacts;
 
                 } else {
                     rulerLogger.error('חלה שגיאה בקבלת נתונים משירות הרמזור', Severity.HIGH);
+                    setIsLoading(false);
                     return contacts;
                 }
             } catch (err) {
                 rulerLogger.error(`got the following error from the ruler server: ${err}`, Severity.HIGH);
+                setIsLoading(false);
                 return contacts;
             }
         }
         else {
             interactedContactsLogger.warn('response from server without data', Severity.MEDIUM);
+            setIsLoading(false);
             return [];
         }
     } catch (err) {
+        setIsLoading(false);
         return err;
     }
 }
