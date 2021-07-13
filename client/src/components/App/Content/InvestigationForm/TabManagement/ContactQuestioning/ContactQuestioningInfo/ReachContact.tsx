@@ -60,6 +60,7 @@ const ReachContact = (props: Props) => {
                                         let contactValidation = validateContact(parsePerson(interactedContact, index), ValidationReason.SAVE_CONTACT)
                                         const missingFieldsText = contactValidation?.valid ? '' : removeUnusePartOfError(contactValidation.error);
                                         changeContactStatus(
+                                            interactedContact.id,
                                             e,
                                             data,
                                             props.onChange,
