@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ExpandMore } from '@material-ui/icons';
 import { FormProvider,useForm, useFormContext } from 'react-hook-form';
 import {
@@ -40,7 +40,7 @@ const InteractedContactAccordion = (props: Props) => {
         isFamilyContact, familyRelationships, shouldDisable, isViewMode
     } = props;
 
-   const watchCurrentStatus: number = methods.watch(`form-${interactedContact.id}.${InteractedContactFields.CONTACT_STATUS}`);
+   const watchCurrentStatus: number = methods.watch(InteractedContactFields.CONTACT_STATUS);
 
     //const formErrors = errors?.form; //&& errors?.form[index];
 
@@ -68,6 +68,12 @@ const InteractedContactAccordion = (props: Props) => {
 
         return classesList.join(' ');
     };
+
+    useEffect(() => {
+        if (watchCurrentStatus) {
+            methods.trigger();
+        }
+    }, [watchCurrentStatus]);
 
     const formValues = interactedContact;
 
