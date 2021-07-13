@@ -94,7 +94,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
         if(id && identityType && identityNumber){
             duplicate = interactedContacts.filter (contact=>{
                 return id!==contact.id && identityType===contact.identificationType?.id && identityNumber===contact.identificationNumber;
-                })
+            })
         }
         
         return duplicate.length == 0;
@@ -130,12 +130,11 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             if(validateIdentityData(interactedContact.id, event.target.value as number, methods.getValues("identificationNumber")))
                                             {
                                                 props.onChange(event.target.value);
-                                                dispatch(setInteractedContact(interactedContact.id,'identificationType',methods.getValues('identificationType') ,methods.formState));
+                                                dispatch(setInteractedContact(interactedContact.id, 'identificationType', event.target.value as number, methods.formState));
                                             }
                                             else {
                                                 methods.setError(InteractedContactFields.IDENTIFICATION_TYPE, { message:"מזהה זה כבר קיים" });
                                             }
-
                                         }}
                                         MenuProps={{
                                             anchorOrigin: {
@@ -187,7 +186,15 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                                 props.onChange(newValue);
                                                 
                                             }}
-                                            onBlur ={()=>dispatch(setInteractedContact(interactedContact.id,'identificationNumber', methods.getValues("identificationNumber"),methods.formState))}
+                                            onBlur ={()=>{
+                                                if(validateIdentityData(interactedContact.id, methods.getValues("identificationType") as any, methods.getValues("identificationNumber")))
+                                                {
+                                                    dispatch(setInteractedContact(interactedContact.id,'identificationNumber', methods.getValues("identificationNumber"),methods.formState))
+                                                }
+                                                else {
+                                                    methods.setError(InteractedContactFields.IDENTIFICATION_NUMBER, { message:"מזהה זה כבר קיים" });
+                                                }
+                                            }}
                                             placeholder='מספר תעודה'
                                             isId={isId}
                                         />
@@ -221,7 +228,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             onChange={(newDate: Date) => {
                                                 props.onChange(newDate);
                                                 setAge(calcAge(newDate));  
-                                                dispatch(setInteractedContact(interactedContact.id,'birthDate', newDate,methods.formState));
+                                                dispatch(setInteractedContact(interactedContact.id,'birthDate',newDate,methods.formState));
                                                
                                             }}
                                         />
