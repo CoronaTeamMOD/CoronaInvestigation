@@ -111,7 +111,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                         <Controller
                             control={methods.control}
                             name={`${InteractedContactFields.IDENTIFICATION_TYPE}`}
-                            defaultValue={interactedContact.identificationType?.id}
+                            defaultValue={interactedContact.identificationType?.id||interactedContact.identificationType}
                             render={(props) => (
                                 <FormControl
                                     error={errors ? !!((errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_TYPE]) : false}

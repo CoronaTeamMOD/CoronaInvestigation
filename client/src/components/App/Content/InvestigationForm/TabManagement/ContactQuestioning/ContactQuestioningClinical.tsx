@@ -62,12 +62,12 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
             name: `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`,
             className: classes.addressTextField,
             testId: 'contactedPersonCity',
-            defaultValue: interactedContact.isolationAddress?.city?.id
+            defaultValue: interactedContact.isolationAddress?.city?.id ||  interactedContact.isolationAddress?.city
         },
         streetField: {
             name: `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`,
             className: classes.addressTextField,
-            defaultValue: interactedContact.isolationAddress?.street?.id || null
+            defaultValue: interactedContact.isolationAddress?.street?.id ||  interactedContact.isolationAddress?.street||null
         },
         houseNumberField: {
             name: `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`,

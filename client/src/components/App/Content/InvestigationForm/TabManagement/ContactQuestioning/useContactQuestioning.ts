@@ -234,7 +234,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
      */
     const parsePerson = (person: InteractedContact) => {
         let updatedPerson = person || {};
-        updatedPerson.identificationType = person.identificationType?.id as any;
+        updatedPerson.identificationType =(person.identificationType?.id || person.identificationType) as any;
         updatedPerson.isolationAddress.city = (person.isolationAddress.city?.id || person.isolationAddress.city) as any;
         updatedPerson.isolationAddress.street = (person.isolationAddress.street?.id || person.isolationAddress.street) as any;
         return updatedPerson;
