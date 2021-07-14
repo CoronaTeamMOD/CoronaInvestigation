@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { addDays, format } from 'date-fns';
 import { Controller, DeepMap, FieldError, useFormContext } from 'react-hook-form';
 import { Avatar, FormControl, Grid, MenuItem, Select, Typography } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import theme from 'styles/theme';
 import Toggle from 'commons/Toggle/Toggle';
@@ -24,6 +24,7 @@ import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 import { FormInputs } from './ContactQuestioningInterfaces';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
+import StoreStateType from 'redux/storeStateType';
 
 const emptyFamilyRelationship: FamilyRelationship = {
     id: null as any,
@@ -34,8 +35,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();//FormInputs
 
-    const { index, familyRelationships, interactedContact, isFamilyContact, isViewMode } = props;
-
+    const { index, familyRelationships,/* interactedContact,*/ isFamilyContact, isViewMode } = props;
+    const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
+    
     const classes = useStyles();
 
     const dispatch = useDispatch()
@@ -332,7 +334,7 @@ export default ContactQuestioningClinical;
 interface Props {
     index: number;
     familyRelationships: FamilyRelationship[];
-    interactedContact: InteractedContact;
+   // interactedContact: InteractedContact;
     isFamilyContact: boolean;
     // control: any;
     // watch: any

@@ -21,8 +21,9 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
 
     const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();//FormInputs
 
-    const {index, interactedContact, isViewMode } = props;
-
+    const {index,/* interactedContact,*/ isViewMode } = props;
+    const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
+    
     const classes = useStyles();
 
     const dispatch = useDispatch();
@@ -230,7 +231,7 @@ export default ContactQuestioningCheck;
 
 interface Props {
     index: number,
-    interactedContact: InteractedContact;
+   // interactedContact: InteractedContact;
     // formErrors: any;
     // control: any;
     // contactStatus: number;

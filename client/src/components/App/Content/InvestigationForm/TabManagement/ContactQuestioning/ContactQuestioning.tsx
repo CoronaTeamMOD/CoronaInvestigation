@@ -124,7 +124,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                                 return (
                                     <Grid item xs={12}   key={interactedContact.id}>
                                         <InteractedContactAccordion
-                                            interactedContact={interactedContact}
+                                            //interactedContact={interactedContact}
                                             index={index}
                                             contactStatuses={contactStatuses}
                                             saveContact={saveContact}

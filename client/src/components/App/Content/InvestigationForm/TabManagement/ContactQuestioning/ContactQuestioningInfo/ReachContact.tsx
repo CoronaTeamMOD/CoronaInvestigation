@@ -15,11 +15,15 @@ import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteracte
 import useReachContact from './useReachContact';
 import useStyles from '../ContactQuestioningStyles';
 import interactedContactsReducer from 'redux/InteractedContacts/interactedContactsReducer';
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
 
 
 const ReachContact = (props: Props) => {
     const methods = useFormContext<GroupedInteractedContact>();
-    const { interactedContact, index, contactStatuses, saveContact,parsePerson,isViewMode } = props;
+    const { /*interactedContact,*/ index, contactStatuses, saveContact,parsePerson,isViewMode } = props;
+    const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
+    
     const classes = useStyles({});
    
     const foundValue = (status: number) => {
@@ -105,7 +109,7 @@ const ReachContact = (props: Props) => {
 export default ReachContact;
 
 interface Props {
-    interactedContact: GroupedInteractedContact;
+    //interactedContact: GroupedInteractedContact;
     index: number;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;

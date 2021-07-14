@@ -22,6 +22,8 @@ import ContactQuestioningPersonal from './ContactQuestioningPersonal';
 import ContactQuestioningClinical from './ContactQuestioningClinical';
 
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
+import StoreStateType from 'redux/storeStateType';
+import { useSelector } from 'react-redux';
 
 const InteractedContactAccordion = (props: Props) => {
 
@@ -36,10 +38,11 @@ const InteractedContactAccordion = (props: Props) => {
     const classes = useStyles();
 
     const {
-        interactedContact, index, contactStatuses, saveContact, parsePerson,
+  /*interactedContact,*/ index, contactStatuses, saveContact, parsePerson,
         isFamilyContact, familyRelationships, shouldDisable, isViewMode
     } = props;
-
+    const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
+    
    const watchCurrentStatus: number = methods.watch(InteractedContactFields.CONTACT_STATUS);
 
     //const formErrors = errors?.form; //&& errors?.form[index];
@@ -108,7 +111,7 @@ const InteractedContactAccordion = (props: Props) => {
                         <Grid container wrap='nowrap'>
                             <ContactQuestioningPersonal
                                 index={index}
-                                interactedContact={interactedContact}
+                               // interactedContact={interactedContact}
                                 //  control={methods.control}
                                 // // formValues={formValues}
                                 // trigger={methods.trigger}
@@ -128,7 +131,7 @@ const InteractedContactAccordion = (props: Props) => {
                                 familyRelationships={
                                     familyRelationships as FamilyRelationship[]
                                 }
-                                interactedContact={interactedContact}
+                               // interactedContact={interactedContact}
                                 isFamilyContact={isFamilyContact}
                               //  control={methods.control}
                               //  formValues={formValues}
@@ -144,7 +147,7 @@ const InteractedContactAccordion = (props: Props) => {
                             />
                             <ContactQuestioningCheck
                                 index={index}
-                                interactedContact={interactedContact}
+                               // interactedContact={interactedContact}
                                 // formErrors={formErrors}
                                 // control={methods.control}
                                 //contactStatus={watchCurrentStatus}
@@ -153,21 +156,21 @@ const InteractedContactAccordion = (props: Props) => {
                         </Grid>
                     </AccordionDetails>
                     <AccordionActions className={classes.accordionActions}>
-                        {/* {!isViewMode && (
-                            // <PrimaryButton
-                            //   //  disabled={shouldDisable(watchCurrentStatus)}
-                            //     test-id='saveContact'
-                            //     onClick={() => {
-                            //         const currentParsedPerson = parsePerson(
-                            //             methods.getValues().form as GroupedInteractedContact,
-                            //             index
-                            //         );
-                            //         saveContact(currentParsedPerson);
-                            //     }}
-                            // >
-                            //     שמור מגע
-                            // </PrimaryButton>
-                        )} */}
+                        {!isViewMode && (
+                            <PrimaryButton
+                                disabled={shouldDisable(watchCurrentStatus)}
+                                test-id='saveContact'
+                                onClick={() => {
+                                    const currentParsedPerson = parsePerson(
+                                       interactedContact,
+                                        index
+                                    );
+                                    saveContact(currentParsedPerson);
+                                }}
+                            >
+                                שמור מגע
+                            </PrimaryButton>
+                        )}
                     </AccordionActions>
                 </Accordion>
             {/* </div> */}
@@ -184,7 +187,7 @@ const InteractedContactAccordion = (props: Props) => {
 export default InteractedContactAccordion;
 
 interface Props {
-    interactedContact: GroupedInteractedContact;
+   // interactedContact: GroupedInteractedContact;
     index: number;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;
