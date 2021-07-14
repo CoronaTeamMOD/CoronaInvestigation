@@ -100,7 +100,6 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                 title={`טופס תשאול מגעים (${interactedContacts.length})`}
             />
             <span className={classes.numOfContacts}>מוצגים {Math.min(loaded, interactedContacts.length)} מתוך {interactedContacts.length}
-                <a className={classes.loadMore} hidden={loaded > interactedContacts.length} onClick={() => handleShowMoreContacts()}> טען עוד</a>
             </span>
 
             <Grid container className={classes.accordionContainer}>
