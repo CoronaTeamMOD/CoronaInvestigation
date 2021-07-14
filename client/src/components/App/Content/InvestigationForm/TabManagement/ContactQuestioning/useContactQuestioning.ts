@@ -96,6 +96,18 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         return true;
     };
 
+    const mapContacts = (data:InteractedContact[]) => new Promise<number>((resolve, reject) => {
+        let count = 0;
+        data.map((contact: InteractedContact) => {
+            ContactQuestioningSchema.isValid(data).then(valid => {
+                if(!valid){
+                    count++;
+                }
+            })
+        })
+        resolve(count);
+    });
+
     const saveContactQuestioning = (data:InteractedContact[]/*parsedFormData: InteractedContact[], originalFormData: FormInputs*/) => {
         const contactsSavingVariable = {
             unSavedContacts: { contacts: data }
@@ -103,8 +115,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
         createSaveContactRequest(contactsSavingVariable, 'Saving all contacts')
             .finally(() => {
-                ContactQuestioningSchema.isValid(data).then(valid => {
-                    setFormState(epidemiologyNumber, id, valid);
+                mapContacts(data).then((count: number) =>{
+                    setFormState(epidemiologyNumber, id, count === 0);
                 })
             });
     };
@@ -207,7 +219,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setFormState(epidemiologyNumber, id, true);
+        //setFormState(epidemiologyNumber, id, true);
         const parsedFormData = parseFormBeforeSending(interactedContacts);
         if (!areThereDuplicateIds(interactedContacts) || isViewMode) {
             saveContactQuestioning(parsedFormData);
@@ -235,8 +247,10 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const parsePerson = (person: InteractedContact) => {
         let updatedPerson = person || {};
         updatedPerson.identificationType =(person.identificationType?.id || person.identificationType) as any;
-        updatedPerson.isolationAddress.city = (person.isolationAddress.city?.id || person.isolationAddress.city) as any;
-        updatedPerson.isolationAddress.street = (person.isolationAddress.street?.id || person.isolationAddress.street) as any;
+        if(updatedPerson.isolationAddress) {
+            updatedPerson.isolationAddress.city = (person.isolationAddress.city?.id || person.isolationAddress.city) as any;
+            updatedPerson.isolationAddress.street = (person.isolationAddress.street?.id || person.isolationAddress.street) as any;
+        }
         return updatedPerson;
     };
 
