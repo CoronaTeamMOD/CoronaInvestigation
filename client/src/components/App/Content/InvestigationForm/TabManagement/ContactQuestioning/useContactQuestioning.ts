@@ -355,30 +355,23 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setFormState(epidemiologyNumber, id, true);
-
-        const data = interactedContacts;//{} as FormInputs//getValues();
-      //  const parsedFormData = parseFormBeforeSending(data as FormInputs);
-         if (!areThereDuplicateIds(data) || isViewMode) {
-            saveContactQuestioning(data);
+        const parsedFormData = parseFormBeforeSending(interactedContacts);
+        if (!areThereDuplicateIds(interactedContacts) || isViewMode) {
+            saveContactQuestioning(parsedFormData);
         } else {
             alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
         }
     };
 
   
-    const parseFormBeforeSending = (data: FormInputs) => {
-        const { form } = data;
-        // const mappedForm = form?.map(
-        //     (person: InteractedContact, index: number) => {
-        //         return parsePerson(person, index);
-        //     }
-        // ) || [];
+    const parseFormBeforeSending = (data: GroupedInteractedContact[]) => {
+        const mappedForm = data.map(
+            (person: InteractedContact) => {
+                return parsePerson(person);
+            }
+        ) || [];
 
-        // return mappedForm;
-
-        //TODO parse from redux data
-        return [];
-
+        return mappedForm;
     };
 
     /*
@@ -386,19 +379,22 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
      * however, the server expects fields that cannot be edited to be sent (i.e first name)
      * so im parsing the data and adding all of those fields before sending them
      */
-    const parsePerson = (person: InteractedContact, index: number) => {
+    const parsePerson = (person: InteractedContact) => {
         let updatedPerson = person || {};
-        updatedPerson.contactDate = allContactedInteractions[index].contactDate;
-        updatedPerson.contactEvent = allContactedInteractions[index].contactEvent;
-        updatedPerson.contactType = allContactedInteractions[index].contactType;
-        updatedPerson.creationTime = allContactedInteractions[index].creationTime;
-        updatedPerson.firstName = allContactedInteractions[index].firstName;
-        updatedPerson.gender = allContactedInteractions[index].gender;
-        updatedPerson.id = allContactedInteractions[index].id;
-        updatedPerson.personInfo = allContactedInteractions[index].personInfo;
-        updatedPerson.involvedContactId = allContactedInteractions[index].involvedContactId;
-        updatedPerson.involvementReason = allContactedInteractions[index].involvementReason;
-        updatedPerson.lastName = allContactedInteractions[index].lastName;
+        updatedPerson.identificationType = person.identificationType?.id as any;
+        updatedPerson.isolationAddress.city = (person.isolationAddress.city?.id || person.isolationAddress.city) as any;
+        updatedPerson.isolationAddress.street = (person.isolationAddress.street?.id || person.isolationAddress.street) as any;
+        // updatedPerson.contactDate = allContactedInteractions[index].contactDate;
+        // updatedPerson.contactEvent = allContactedInteractions[index].contactEvent;
+        // updatedPerson.contactType = allContactedInteractions[index].contactType;
+        // updatedPerson.creationTime = allContactedInteractions[index].creationTime;
+        // updatedPerson.firstName = allContactedInteractions[index].firstName;
+        // updatedPerson.gender = allContactedInteractions[index].gender;
+        // updatedPerson.id = allContactedInteractions[index].id;
+        // updatedPerson.personInfo = allContactedInteractions[index].personInfo;
+        // updatedPerson.involvedContactId = allContactedInteractions[index].involvedContactId;
+        // updatedPerson.involvementReason = allContactedInteractions[index].involvementReason;
+        // updatedPerson.lastName = allContactedInteractions[index].lastName;
 
         return updatedPerson;
     };

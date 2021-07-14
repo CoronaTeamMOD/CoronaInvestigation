@@ -62,8 +62,10 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     });
 
     const loopWithSlice = (start: number, end: number) => {
-        const slicedContacts = interactedContacts.slice(start, end);
-        setContactsToShow([...contactsToShow, ...slicedContacts]);
+        if(contactsToShow.length < interactedContacts.length){
+            const slicedContacts = interactedContacts.slice(start, end);
+            setContactsToShow([...contactsToShow, ...slicedContacts]);
+        }
     };
 
     const handleShowMoreContacts = () => {
@@ -94,7 +96,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
         }
         
         if (interactedContacts) {
-            loaded = SIZE_OF_CONTACTS
+            loaded = SIZE_OF_CONTACTS;
             loopWithSlice(0, SIZE_OF_CONTACTS);
         }
         
@@ -124,7 +126,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                                 return (
                                     <Grid item xs={12}   key={interactedContact.id}>
                                         <InteractedContactAccordion
-                                            //interactedContact={interactedContact}
+                                            interactedContact={interactedContact}
                                             index={index}
                                             contactStatuses={contactStatuses}
                                             saveContact={saveContact}

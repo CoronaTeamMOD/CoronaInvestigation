@@ -38,10 +38,10 @@ const InteractedContactAccordion = (props: Props) => {
     const classes = useStyles();
 
     const {
-  /*interactedContact,*/ index, contactStatuses, saveContact, parsePerson,
+  interactedContact,index, contactStatuses, saveContact, parsePerson,
         isFamilyContact, familyRelationships, shouldDisable, isViewMode
     } = props;
-    const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
+    //const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
     
    const watchCurrentStatus: number = methods.watch(InteractedContactFields.CONTACT_STATUS);
 
@@ -110,8 +110,8 @@ const InteractedContactAccordion = (props: Props) => {
                     <AccordionDetails>
                         <Grid container wrap='nowrap'>
                             <ContactQuestioningPersonal
-                                index={index}
-                               // interactedContact={interactedContact}
+                                //index={index}
+                                interactedContact={interactedContact}
                                 //  control={methods.control}
                                 // // formValues={formValues}
                                 // trigger={methods.trigger}
@@ -127,11 +127,11 @@ const InteractedContactAccordion = (props: Props) => {
                             />
                             <ContactQuestioningClinical
                                // watch={watch}
-                                index={index}
+                                //index={index}
                                 familyRelationships={
                                     familyRelationships as FamilyRelationship[]
                                 }
-                               // interactedContact={interactedContact}
+                               interactedContact={interactedContact}
                                 isFamilyContact={isFamilyContact}
                               //  control={methods.control}
                               //  formValues={formValues}
@@ -146,8 +146,8 @@ const InteractedContactAccordion = (props: Props) => {
                                 light={true}
                             />
                             <ContactQuestioningCheck
-                                index={index}
-                               // interactedContact={interactedContact}
+                                //index={index}
+                                interactedContact={interactedContact}
                                 // formErrors={formErrors}
                                 // control={methods.control}
                                 //contactStatus={watchCurrentStatus}
@@ -162,8 +162,7 @@ const InteractedContactAccordion = (props: Props) => {
                                 test-id='saveContact'
                                 onClick={() => {
                                     const currentParsedPerson = parsePerson(
-                                       interactedContact,
-                                        index
+                                       interactedContact
                                     );
                                     saveContact(currentParsedPerson);
                                 }}
@@ -187,11 +186,11 @@ const InteractedContactAccordion = (props: Props) => {
 export default InteractedContactAccordion;
 
 interface Props {
-   // interactedContact: GroupedInteractedContact;
+    interactedContact: GroupedInteractedContact;
     index: number;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;
-    parsePerson: (person: GroupedInteractedContact, index: number) => InteractedContact;
+    parsePerson: (person: GroupedInteractedContact) => InteractedContact;
     isFamilyContact: boolean;
     familyRelationships: FamilyRelationship[];
     shouldDisable: (status?: string | number | undefined) => boolean;

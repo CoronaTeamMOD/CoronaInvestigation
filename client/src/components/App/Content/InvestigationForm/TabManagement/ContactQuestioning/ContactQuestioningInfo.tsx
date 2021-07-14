@@ -22,7 +22,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
         <>
             <Grid item xs={3} container>
                 <ReachContact
-                   // interactedContact={interactedContact}
+                    interactedContact={interactedContact}
                     index={index}
                     contactStatuses={contactStatuses}
                     saveContact={saveContact}
@@ -39,7 +39,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                 alignItems='center'
                 justify='space-evenly'
             >
-                <ContactDetails index={index} /*interactedContact={interactedContact}*/ />
+                <ContactDetails index={index} interactedContact={interactedContact} />
             </Grid>
         </>
     );
@@ -52,6 +52,6 @@ interface Props {
     interactedContact: GroupedInteractedContact;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;
-    parsePerson: (person: GroupedInteractedContact, index: number) => InteractedContact;
+    parsePerson: (person: GroupedInteractedContact) => InteractedContact;
     isViewMode?: boolean;
 }

@@ -28,8 +28,7 @@ export interface useContactQuestioningOutcome {
     checkAllContactsForDuplicateIds: () => boolean;
     onSubmit: (data: React.FormEvent) => void;
     parsePerson: (
-        person: GroupedInteractedContact,
-        index: number
+        person: GroupedInteractedContact
     ) => InteractedContact;
     getRulerApiDataFromServer: (ids: any[]) => any;
 }

@@ -51,7 +51,7 @@ const useReachContact = (props: Props) => {
                            // dispatch(setInteractedContact(contact.id,'contactStatus', getValues("contactStatus"),formState));
                            onChange(selectedStatus?.id);
                            dispachUpdateStatus(contact.id, getValues("contactStatus") as number,formState).then(()=>{
-                            saveContact(/*parsePerson(*/contact as GroupedInteractedContact/*, index)*/); // TODO uncomment - for testing only
+                            saveContact(parsePerson(contact as GroupedInteractedContact/*, index)*/)); // TODO uncomment - for testing only
                            })
                            
                         }
@@ -77,7 +77,7 @@ const useReachContact = (props: Props) => {
             onChange(selectedStatus?.id);
             dispachUpdateStatus(contact.id, getValues("contactStatus") as number,formState).then(()=>{
 
-                saveContact(/*parsePerson(*/contact as GroupedInteractedContact/*, index)*/); // TODO uncomment - for testing only
+                saveContact(parsePerson(contact as GroupedInteractedContact/*, index)*/)); // TODO uncomment - for testing only
                });
           
         }
@@ -98,7 +98,7 @@ export default useReachContact;
 
 interface Props {
     saveContact: (interactedContact: InteractedContact) => boolean;
-    parsePerson: (person: GroupedInteractedContact, index: number) => InteractedContact;
+    parsePerson: (person: GroupedInteractedContact) => InteractedContact;
     formValues: GroupedInteractedContact;
     index: number;
 }

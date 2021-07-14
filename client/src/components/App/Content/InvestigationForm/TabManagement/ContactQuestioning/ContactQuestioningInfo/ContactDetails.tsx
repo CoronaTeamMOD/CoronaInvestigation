@@ -40,7 +40,7 @@ const ContactDetails = (props: Props) => {
     };
 
     const { errors } = useFormContext();
-    const { index /* , interactedContact*/ } = props;
+    const { index , interactedContact } = props;
     const classes = useStyles({});
 
     const [showRulerStatusInfo, setShowRulerStatusInfo] = useState<boolean>(false);
@@ -56,7 +56,7 @@ const ContactDetails = (props: Props) => {
     // });
 
     const formStates = useSelector<StoreStateType, Map<number, FormStateObject>>(state=>state.interactedContacts.formState);
-    const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
+    //const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
     
     const isFormInvalid = formStates?.get ? !formStates.get(interactedContact.id)?.isValid : false;
 
@@ -204,6 +204,6 @@ const ContactDetails = (props: Props) => {
 export default ContactDetails;
 
 interface Props {
-    //interactedContact: GroupedInteractedContact;
+    interactedContact: GroupedInteractedContact;
     index : number;
 };

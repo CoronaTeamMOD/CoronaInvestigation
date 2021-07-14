@@ -21,8 +21,8 @@ import StoreStateType from 'redux/storeStateType';
 
 const ReachContact = (props: Props) => {
     const methods = useFormContext<GroupedInteractedContact>();
-    const { /*interactedContact,*/ index, contactStatuses, saveContact,parsePerson,isViewMode } = props;
-    const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
+    const { interactedContact, index, contactStatuses, saveContact,parsePerson,isViewMode } = props;
+    //const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
     
     const classes = useStyles({});
    
@@ -109,10 +109,10 @@ const ReachContact = (props: Props) => {
 export default ReachContact;
 
 interface Props {
-    //interactedContact: GroupedInteractedContact;
+    interactedContact: GroupedInteractedContact;
     index: number;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;
-    parsePerson: (person: GroupedInteractedContact, index: number) => InteractedContact;
+    parsePerson: (person: GroupedInteractedContact) => InteractedContact;
     isViewMode?: boolean;
 }

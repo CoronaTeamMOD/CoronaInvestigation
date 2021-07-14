@@ -35,8 +35,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();//FormInputs
 
-    const { index, familyRelationships,/* interactedContact,*/ isFamilyContact, isViewMode } = props;
-    const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
+    const { /* index,*/ familyRelationships,interactedContact, isFamilyContact, isViewMode } = props;
+    // const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
     
     const classes = useStyles();
 
@@ -332,9 +332,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 export default ContactQuestioningClinical;
 
 interface Props {
-    index: number;
+    //index: number;
     familyRelationships: FamilyRelationship[];
-   // interactedContact: InteractedContact;
+    interactedContact: InteractedContact;
     isFamilyContact: boolean;
     // control: any;
     // watch: any

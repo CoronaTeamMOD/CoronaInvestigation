@@ -33,8 +33,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     
    
     const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();//FormInputs
-    const { index,/* interactedContact ,*/ isViewMode } = props;
-    const interactedContact= interactedContacts[index];
+    const { /*index,*/ interactedContact , isViewMode } = props;
+    // const interactedContact= interactedContacts[index];
 
     const dispatch = useDispatch();
     const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
@@ -195,9 +195,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                                 if(validateIdentityData(interactedContact.id, methods.getValues("identificationType") as any, methods.getValues("identificationNumber")))
                                                 {
                                                     dispatch(setInteractedContact(interactedContact.id,'identificationNumber', methods.getValues("identificationNumber"),methods.formState))
-                                                    console.log('prop',interactedContact);
-                                                    console.log('redux',interactedContacts.find(obj=>obj.id===interactedContact.id));
-
                                                 }
                                                 else {
                                                     methods.setError(InteractedContactFields.IDENTIFICATION_NUMBER, { message:"מזהה זה כבר קיים" });
@@ -352,8 +349,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
 export default ContactQuestioningPersonal;
 
 interface Props {
-    index: number;
-   // interactedContact: GroupedInteractedContact;
+    //index: number;
+   interactedContact: GroupedInteractedContact;
     //control: any;
     //formValues: InteractedContact;
    // trigger: (fieldname: string) => {};
