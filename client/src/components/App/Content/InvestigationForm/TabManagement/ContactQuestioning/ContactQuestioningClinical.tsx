@@ -35,9 +35,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();//FormInputs
 
-    const { /* index,*/ familyRelationships,interactedContact, isFamilyContact, isViewMode } = props;
-    // const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
-    
+    const { familyRelationships, interactedContact, isFamilyContact, isViewMode } = props;
+
     const classes = useStyles();
 
     const dispatch = useDispatch()
@@ -102,18 +101,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         return true;
     };
 
-    // const statusFieldName = `${InteractedContactFields.CONTACT_STATUS}`;
-    // const watchStatus = watch(statusFieldName);
-    
     useEffect(() => {
-        methods.trigger();     
+        methods.trigger();
     }, []);
-    
-    // useEffect(() => {
-    //     if (watchStatus || isFieldDisabled) {
-    //         methods.trigger();
-    //     }
-    // }, [watchStatus, isFieldDisabled]);
 
     const handleIsolation = (value: boolean, onChange: (...event: any[]) => void) => {
         const contactWithIsolationRequirement = { ...formatContactToValidate(), doesNeedIsolation: value };
@@ -123,8 +113,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         } else if (!isIdAndPhoneNumValid()) {
             alertError('ישנם שדות לא תקינים ולכן לא ניתן להקים דיווח בידוד');
         } else {
-           if (value)
-           {
+            if (value) {
                 alertWarning('האם להקים דיווח בידוד?', {
                     showCancelButton: true,
                     cancelButtonText: 'בטל',
@@ -134,24 +123,24 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 }).then((result) => {
                     if (result.value) {
                         onChange(true);
-                        dispatch(setInteractedContact(interactedContact.id,'doesNeedIsolation',true,methods.formState));
+                        dispatch(setInteractedContact(interactedContact.id, 'doesNeedIsolation', true, methods.formState));
                     }
                 })
             }
-               else {
+            else {
                 onChange(false);
-                dispatch(setInteractedContact(interactedContact.id,'doesNeedIsolation',false,methods.formState));
-               }
-               
-                
-                
+                dispatch(setInteractedContact(interactedContact.id, 'doesNeedIsolation', false, methods.formState));
+            }
+
+
+
         }
     };
 
     const handelOnChangeDoesNeedIsolation = (event: any, booleanValue: boolean, onChange: (...event: any[]) => void) => {
         if (booleanValue === false || isUnreachable || isUncooperative) {
             onChange(booleanValue)
-            dispatch(setInteractedContact(interactedContact.id,'doesNeedIsolation',booleanValue,methods.formState));
+            dispatch(setInteractedContact(interactedContact.id, 'doesNeedIsolation', booleanValue, methods.formState));
         }
 
         if (booleanValue === true && !isUncooperative && !isUnreachable) {
@@ -184,9 +173,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                             placeholder='קרבה משפחתית'
                                             onChange={(event) => {
                                                 props.onChange(event.target.value);
-                                                dispatch(setInteractedContact(interactedContact.id,'familyRelationship', event.target.value as number,methods.formState));
+                                                dispatch(setInteractedContact(interactedContact.id, 'familyRelationship', event.target.value as number, methods.formState));
                                             }}
-                                           
+
                                         >
                                             {
                                                 familyRelationships?.length > 0 &&
@@ -218,14 +207,14 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                     <FormControl variant='outlined' fullWidth>
                                         <HebrewTextField
                                             {...props}
-                                            error={ errors  && errors[InteractedContactFields.ADDITIONAL_PHONE_NUMBER]?.message}
+                                            error={errors && errors[InteractedContactFields.ADDITIONAL_PHONE_NUMBER]?.message}
                                             disabled={isFieldDisabled || isViewMode}
                                             testId='relationship'
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue)
                                             }}
                                             onBlur={() => {
-                                                dispatch(setInteractedContact(interactedContact.id,'relationship',methods.getValues('relationship'),methods.formState));
+                                                dispatch(setInteractedContact(interactedContact.id, 'relationship', methods.getValues('relationship'), methods.formState));
                                                 props.onBlur();
                                             }}
                                             placeholder='קשר'
@@ -242,13 +231,13 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid container item xs={5}>
                         <AddressForm
                             unsized={true}
-                            disabled={isFieldDisabled ||isViewMode}
+                            disabled={isFieldDisabled || isViewMode}
                             control={methods.control}
                             watch={watch}
                             errors={isolationAddressErrors}
-                            onBlur= {dispatch(setInteractedContact(interactedContact.id,'isolationAddress', methods.getValues().isolationAddress ,methods.formState))}
+                            onBlur={dispatch(setInteractedContact(interactedContact.id, 'isolationAddress', methods.getValues().isolationAddress, methods.formState))}
                             {...addressFormFields}
-                            
+
                         />
                     </Grid>
                 </Grid>
@@ -264,12 +253,12 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                 return (
                                     <Toggle
                                         {...props}
-                                        disabled={isFieldDisabled||isViewMode}
+                                        disabled={isFieldDisabled || isViewMode}
                                         test-id='doesNeedHelpInIsolation'
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(interactedContact.id,'doesNeedHelpInIsolation',booleanValue,methods.formState));
+                                                dispatch(setInteractedContact(interactedContact.id, 'doesNeedHelpInIsolation', booleanValue, methods.formState));
                                             }
                                         }
                                         } />
@@ -293,7 +282,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                 return (
                                     <Toggle
                                         {...props}
-                                        disabled={isFieldDisabled || (shouldDisableIdByReopen && interactedContact.doesNeedIsolation === true)||isViewMode}
+                                        disabled={isFieldDisabled || (shouldDisableIdByReopen && interactedContact.doesNeedIsolation === true) || isViewMode}
                                         test-id='doesNeedIsolation'
                                         onChange={(event, booleanValue) => handelOnChangeDoesNeedIsolation(event, booleanValue, props.onChange)}
                                     />
@@ -315,10 +304,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                 testId='isolationEndDate'
                                 name='isolationEndDate'
                                 value={formattedIsolationEndDate}
-                                onChange={()=>{}}
-                                onBlur={() => {
-                                    /*dispatch(setInteractedContact(interactedContact.id,'isolationEndDate', methods.getValues('isolationEndDate'),methods.formState))*/
-                                }}
+                                onChange={() => { }}
+                                onBlur={() => { }}
                             />
                         </FormControl>
                     </Grid>
@@ -332,15 +319,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 export default ContactQuestioningClinical;
 
 interface Props {
-    //index: number;
     familyRelationships: FamilyRelationship[];
     interactedContact: InteractedContact;
     isFamilyContact: boolean;
-    // control: any;
-    // watch: any
-    // formValues: InteractedContact;
-    // formErrors?: DeepMap<InteractedContact, FieldError> | any;
-    // trigger: () => {};
-    //contactStatus: number;
     isViewMode?: boolean;
 };

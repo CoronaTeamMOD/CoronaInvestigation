@@ -27,22 +27,13 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     const [familyRelationships, setFamilyRelationships] = useState<FamilyRelationship[]>([]);
     const [contactStatuses, setContactStatuses] = useState<ContactStatus[]>([]);
     const [contactsToShow, setContactsToShow] = useState<GroupedInteractedContact[]>([]);
-    
+
     const classes = useStyles();
 
     const { shouldDisable } = useContactFields();
     const { isInvolvedThroughFamily } = useInvolvedContact();
 
-   const interactedContacts = useSelector<StoreStateType,GroupedInteractedContact[]>(state=>state.interactedContacts.interactedContacts);
-    
-
-
-    // const methods = useForm<FormInputs>({
-    //     mode: 'all',
-    //     resolver: yupResolver(ContactQuestioningSchema),
-    // });
-
-    //const { getValues, trigger } = methods;
+    const interactedContacts = useSelector<StoreStateType, GroupedInteractedContact[]>(state => state.interactedContacts.interactedContacts);
 
     const {
         onSubmit,
@@ -51,18 +42,16 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
         loadInteractedContacts,
         loadFamilyRelationships,
         loadContactStatuses,
-        getRulerApiDataFromServer
     } = useContactQuestioning({
         id,
         setAllContactedInteractions,
         allContactedInteractions,
         setFamilyRelationships,
-        setContactStatuses//,
-        // getValues
+        setContactStatuses
     });
 
     const loopWithSlice = (start: number, end: number) => {
-        if(contactsToShow.length < interactedContacts.length){
+        if (contactsToShow.length < interactedContacts.length) {
             const slicedContacts = interactedContacts.slice(start, end);
             setContactsToShow([...contactsToShow, ...slicedContacts]);
         }
@@ -73,10 +62,9 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
         loaded = loaded + 2;
     };
 
-    const listenScrollEvent = (event:React.UIEvent<HTMLDivElement>): void=> {
-        const element  = event.target as HTMLElement; 
-        if (element.scrollHeight - element.scrollTop >= element.clientHeight &&  element.scrollHeight - element.scrollTop < element.clientHeight + 50)
-        {
+    const listenScrollEvent = (event: React.UIEvent<HTMLDivElement>): void => {
+        const element = event.target as HTMLElement;
+        if (element.scrollHeight - element.scrollTop >= element.clientHeight && element.scrollHeight - element.scrollTop < element.clientHeight + 50) {
             handleShowMoreContacts();
         }
     }
@@ -89,60 +77,57 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     }, []);
 
     useEffect(() => {
-       
-        if (interactedContacts && interactedContacts.length>0){
+
+        if (interactedContacts && interactedContacts.length > 0) {
             setAllContactedInteractions(interactedContacts);
-            //setIsLoading(false);
         }
-        
+
         if (interactedContacts) {
             loaded = SIZE_OF_CONTACTS;
             loopWithSlice(0, SIZE_OF_CONTACTS);
         }
-        
+
     }, [interactedContacts]);
 
 
     return (
-        <div className={classes.scrolledTab}  onScroll={listenScrollEvent}>
+        <div className={classes.scrolledTab} onScroll={listenScrollEvent}>
 
-            {/* <FormProvider {...methods}> */}
-                  <form
-                    id={`form-${id}`}
-                    onSubmit={(e: React.FormEvent) => { onSubmit(e) }} > </form> 
-                    <FormTitle
-                        title={`טופס תשאול מגעים (${interactedContacts.length})`}
-                    />
-                    <span className={classes.numOfContacts}>מוצגים {Math.min(loaded,interactedContacts.length)} מתוך {interactedContacts.length}
-                        <a className={classes.loadMore} hidden={loaded > interactedContacts.length} onClick={() => handleShowMoreContacts()}> טען עוד</a>
-                    </span> 
+            <form
+                id={`form-${id}`}
+                onSubmit={(e: React.FormEvent) => { onSubmit(e) }} > </form>
+            <FormTitle
+                title={`טופס תשאול מגעים (${interactedContacts.length})`}
+            />
+            <span className={classes.numOfContacts}>מוצגים {Math.min(loaded, interactedContacts.length)} מתוך {interactedContacts.length}
+                <a className={classes.loadMore} hidden={loaded > interactedContacts.length} onClick={() => handleShowMoreContacts()}> טען עוד</a>
+            </span>
 
-                    <Grid container className={classes.accordionContainer}>
-                        {contactsToShow.map(
-                            (interactedContact, index) => {
-                                const isFamilyContact: boolean = isInvolvedThroughFamily(
-                                    interactedContact.involvementReason
-                                );
-                                return (
-                                    <Grid item xs={12}   key={interactedContact.id}>
-                                        <InteractedContactAccordion
-                                            interactedContact={interactedContact}
-                                            index={index}
-                                            contactStatuses={contactStatuses}
-                                            saveContact={saveContact}
-                                            parsePerson={parsePerson}
-                                            isFamilyContact={isFamilyContact}
-                                            familyRelationships={familyRelationships}
-                                            shouldDisable={shouldDisable}
-                                            isViewMode={isViewMode}
-                                        />
-                                    </Grid>
-                                );
-                            } 
-                        )}
-                    </Grid>
-               
-            {/* </FormProvider> */}
+            <Grid container className={classes.accordionContainer}>
+                {contactsToShow.map(
+                    (interactedContact, index) => {
+                        const isFamilyContact: boolean = isInvolvedThroughFamily(
+                            interactedContact.involvementReason
+                        );
+                        return (
+                            <Grid item xs={12} key={interactedContact.id}>
+                                <InteractedContactAccordion
+                                    interactedContact={interactedContact}
+                                    index={index}
+                                    contactStatuses={contactStatuses}
+                                    saveContact={saveContact}
+                                    parsePerson={parsePerson}
+                                    isFamilyContact={isFamilyContact}
+                                    familyRelationships={familyRelationships}
+                                    shouldDisable={shouldDisable}
+                                    isViewMode={isViewMode}
+                                />
+                            </Grid>
+                        );
+                    }
+                )}
+            </Grid>
+
         </div>
     );
 };

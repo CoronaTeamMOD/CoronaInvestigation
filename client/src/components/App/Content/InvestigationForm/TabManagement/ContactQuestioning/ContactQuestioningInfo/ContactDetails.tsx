@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
@@ -40,24 +40,13 @@ const ContactDetails = (props: Props) => {
     };
 
     const { errors } = useFormContext();
-    const { index , interactedContact } = props;
+    const { index, interactedContact } = props;
     const classes = useStyles({});
 
     const [showRulerStatusInfo, setShowRulerStatusInfo] = useState<boolean>(false);
 
-    // const formErrors = errors || {};
-    // const formHasErrors = Object.entries(formErrors)
-    //     .some(([key, value]) => value !== undefined);
+    const formStates = useSelector<StoreStateType, Map<number, FormStateObject>>(state => state.interactedContacts.formState);
 
-    // const [formHasErrors, setFormHasErrors] = useState<boolean>(false);
-
-    // ContactQuestioningSchema.isValid({...interactedContact,identificationType : interactedContact?.identificationType?.id}).then(valid => {
-    //     setFormHasErrors(!valid);
-    // });
-
-    const formStates = useSelector<StoreStateType, Map<number, FormStateObject>>(state=>state.interactedContacts.formState);
-    //const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
-    
     const isFormInvalid = formStates?.get ? !formStates.get(interactedContact.id)?.isValid : false;
 
     const { isInvolvedThroughFamily } = useInvolvedContact();
@@ -68,8 +57,8 @@ const ContactDetails = (props: Props) => {
     const { isGroupedContact } = GetGroupedInvestigationsIds();
 
     const highestContactType = interactedContact.contactEvents.reduce((prev, current) => {
-        if(current.contactType === TIGHT_CONTACT_STATUS)  {
-            if(prev.contactType === TIGHT_CONTACT_STATUS) {
+        if (current.contactType === TIGHT_CONTACT_STATUS) {
+            if (prev.contactType === TIGHT_CONTACT_STATUS) {
                 return (new Date(prev.date).getTime() > new Date(current.date).getTime()) ? prev : current
             }
             return current
@@ -79,7 +68,7 @@ const ContactDetails = (props: Props) => {
 
     const finalEpidemiologicalStatusDesc = interactedContact.finalEpidemiologicalStatusDesc;
 
-    const tooltipText = highestContactType.contactType === TIGHT_CONTACT_STATUS 
+    const tooltipText = highestContactType.contactType === TIGHT_CONTACT_STATUS
         ? formatDate(highestContactType.date)
         : '';
 
@@ -89,12 +78,12 @@ const ContactDetails = (props: Props) => {
                 <Button
                     aria-controls='simple-menu' aria-haspopup='true'
                     className={classes.statusInfoBtn}
-                    onClick={ handleClick }
+                    onClick={handleClick}
                 >
-                    {!anchorEl &&<ExpandLess/>}
-                    {!!anchorEl &&<ExpandMore/>}
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    <b>מרכיבי הסטטוס:</b>{' '}
+                    {!anchorEl && <ExpandLess />}
+                    {!!anchorEl && <ExpandMore />}
+                    <Typography variant='body2' className={classes.contactDetail}>
+                        <b>מרכיבי הסטטוס:</b>{' '}
                     </Typography>
                 </Button>
 
@@ -106,49 +95,49 @@ const ContactDetails = (props: Props) => {
                     open={!!anchorEl}
                     onClose={handleClose}
                     onClick={handleClickStopPropagation}
-                    >
+                >
                     <MenuItem >
                         <Grid container>
-                            <Typography variant='body2' className={classes.rulerFieldInfo }>תחלואה: </Typography>
-                            <Typography variant='body2' className={classes.contactDetail }>
-                            <b>{interactedContact.certificateEligibilityTypeDesc}</b>
+                            <Typography variant='body2' className={classes.rulerFieldInfo}>תחלואה: </Typography>
+                            <Typography variant='body2' className={classes.contactDetail}>
+                                <b>{interactedContact.certificateEligibilityTypeDesc}</b>
                             </Typography>
                         </Grid>
                     </MenuItem>
                     <MenuItem>
                         <Grid container>
-                            <Typography variant='body2' className={classes.rulerFieldInfo }> חסינות סרולוגית: </Typography>
-                            <Typography variant='body2' className={classes.contactDetail }>
-                            <b>{interactedContact.immuneDefinitionBasedOnSerologyStatusDesc}</b> 
+                            <Typography variant='body2' className={classes.rulerFieldInfo}> חסינות סרולוגית: </Typography>
+                            <Typography variant='body2' className={classes.contactDetail}>
+                                <b>{interactedContact.immuneDefinitionBasedOnSerologyStatusDesc}</b>
                             </Typography>
                         </Grid>
                     </MenuItem>
                     <MenuItem>
                         <Grid container>
-                            <Typography variant='body2' className={classes.rulerFieldInfo }>התחסנות: </Typography>
-                            <Typography variant='body2' className={classes.contactDetail }>
-                            <b>{interactedContact.vaccinationStatusDesc}</b>
+                            <Typography variant='body2' className={classes.rulerFieldInfo}>התחסנות: </Typography>
+                            <Typography variant='body2' className={classes.contactDetail}>
+                                <b>{interactedContact.vaccinationStatusDesc}</b>
                             </Typography>
                         </Grid>
                     </MenuItem>
                     <MenuItem>
                         <Grid container>
-                            <Typography variant='body2' className={classes.rulerFieldInfo }>דיווח בידוד:</Typography>
-                            <Typography variant='body2' className={classes.contactDetail }>
-                            <b>{interactedContact.isolationReportStatusDesc}</b>
+                            <Typography variant='body2' className={classes.rulerFieldInfo}>דיווח בידוד:</Typography>
+                            <Typography variant='body2' className={classes.contactDetail}>
+                                <b>{interactedContact.isolationReportStatusDesc}</b>
                             </Typography>
                         </Grid>
                     </MenuItem>
                     <MenuItem>
                         <Grid container item>
-                            <Typography variant='body2' className={classes.rulerFieldInfo }>חובת בידוד:</Typography>
-                            <Typography variant='body2' className={classes.contactDetail }>
-                            <b>{interactedContact.isolationObligationStatusDesc}</b>
+                            <Typography variant='body2' className={classes.rulerFieldInfo}>חובת בידוד:</Typography>
+                            <Typography variant='body2' className={classes.contactDetail}>
+                                <b>{interactedContact.isolationObligationStatusDesc}</b>
                             </Typography>
                         </Grid>
                     </MenuItem>
-                </Menu>     
-          </>
+                </Menu>
+            </>
         )
     }
 
@@ -161,9 +150,9 @@ const ContactDetails = (props: Props) => {
                 <GroupedContactIcon />
             )}
             {
-               /* formHasErrors*/ isFormInvalid && <InvalidFormIcon />
+                isFormInvalid && <InvalidFormIcon />
             }
-             <Grid
+            <Grid
                 container
                 item
                 xs={10}
@@ -176,24 +165,24 @@ const ContactDetails = (props: Props) => {
                     {interactedContact.firstName}
                 </Typography>
                 <Typography variant='body2' className={classes.contactDetail}>
-                <b>שם משפחה:</b>{' '}
-                {interactedContact.lastName}
+                    <b>שם משפחה:</b>{' '}
+                    {interactedContact.lastName}
                 </Typography>
                 {interactedContact.contactEvents && (
                     <Tooltip title={tooltipText} placement='top' arrow>
                         <Typography variant='body2'>
                             <b>סוג מגע:</b>{' '}
-                                {
-                                    contactTypes.get(highestContactType.contactType)
-                                        ?.displayName
-                                }
+                            {
+                                contactTypes.get(highestContactType.contactType)
+                                    ?.displayName
+                            }
                         </Typography>
                     </Tooltip>
                 )}
                 <Typography variant='body2' className={classes.contactDetail}>
-                <b>סטטוס אפידמיולוגי מסכם:</b>{' '}
-                {finalEpidemiologicalStatusDesc}
-                
+                    <b>סטטוס אפידמיולוגי מסכם:</b>{' '}
+                    {finalEpidemiologicalStatusDesc}
+
                 </Typography>
                 <>{renderRulerButtonAndStatusInfo()}</>
             </Grid>
@@ -205,5 +194,5 @@ export default ContactDetails;
 
 interface Props {
     interactedContact: GroupedInteractedContact;
-    index : number;
+    index: number;
 };

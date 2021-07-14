@@ -1,4 +1,4 @@
-import { useSelector , useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { differenceInYears } from 'date-fns';
 import React, { useState, useEffect } from 'react';
 import { Controller, DeepMap, FieldError, useFormContext } from 'react-hook-form';
@@ -29,12 +29,11 @@ import { ErrorSharp } from '@material-ui/icons';
 import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
-    const interactedContacts = useSelector<StoreStateType,GroupedInteractedContact[]>(state=>state.interactedContacts.interactedContacts);
-    
-   
-    const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();//FormInputs
-    const { /*index,*/ interactedContact , isViewMode } = props;
-    // const interactedContact= interactedContacts[index];
+    const interactedContacts = useSelector<StoreStateType, GroupedInteractedContact[]>(state => state.interactedContacts.interactedContacts);
+
+
+    const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();
+    const { interactedContact, isViewMode } = props;
 
     const dispatch = useDispatch();
     const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
@@ -49,7 +48,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     };
 
     const [shouldIdDisable, setShouldIdDisable] = useState<boolean>(false);
-  
+
     const [age, setAge] = useState<string>(calcAge(interactedContact.birthDate));
     const [isId, setIsId] = useState<boolean>(false);
 
@@ -60,7 +59,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     const shouldDisableIdByReopen = interactedContact.creationTime
         ? shouldDisableContact(interactedContact.creationTime)
         : false;
-    
+
     const identificationTypeFieldName = `${InteractedContactFields.IDENTIFICATION_TYPE}`;
     const identificationNumberFieldName = `${InteractedContactFields.IDENTIFICATION_NUMBER}`;
 
@@ -68,11 +67,11 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     const watchIdentificationNumber = watch(identificationNumberFieldName);
 
     useEffect(() => {
-        methods.trigger();   
+        methods.trigger();
         const shouldDisable =
-        (shouldDisableIdByReopen &&
-             !!interactedContact.identificationNumber);
-     setShouldIdDisable(shouldDisable);  
+            (shouldDisableIdByReopen &&
+                !!interactedContact.identificationNumber);
+        setShouldIdDisable(shouldDisable);
     }, []);
 
     useEffect(() => {
@@ -80,30 +79,23 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
             methods.trigger(identificationTypeFieldName);
             methods.trigger(identificationNumberFieldName);
             setIsId(watchIdentificationType === IdentificationTypesCodes.PALESTINE_ID || watchIdentificationType === IdentificationTypesCodes.ID);
-           
-        }       
+
+        }
     }, [watchIdentificationType, watchIdentificationNumber]);
 
-    // useEffect(() => {
-    //     const shouldDisable =
-    //        isFieldDisabled ||
-    //         (shouldDisableIdByReopen &&
-    //             !!interactedContact.identificationNumber);
-    //     setShouldIdDisable(shouldDisable);
-    // }, [methods.getValues().contactStatus, isFieldDisabled]);
 
-    const validateIdentityData = (id:number,identityType:number,identityNumber:string)=>{
+    const validateIdentityData = (id: number, identityType: number, identityNumber: string) => {
         let duplicate = [];
-        if(id && identityType && identityNumber){
-            duplicate = interactedContacts.filter (contact=>{
-                return id!==contact.id && identityType===contact.identificationType?.id && identityNumber===contact.identificationNumber;
+        if (id && identityType && identityNumber) {
+            duplicate = interactedContacts.filter(contact => {
+                return id !== contact.id && identityType === contact.identificationType?.id && identityNumber === contact.identificationNumber;
             })
         }
-        
-        return duplicate.length == 0;
-    } 
 
- return (
+        return duplicate.length == 0;
+    }
+
+    return (
         <Grid item xs={4}>
             <Grid container direction='column' spacing={2}>
                 <Grid container item direction='row' alignItems='center'>
@@ -122,7 +114,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                             defaultValue={interactedContact.identificationType?.id}
                             render={(props) => (
                                 <FormControl
-                                    error={errors? !!((errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_TYPE]) : false}
+                                    error={errors ? !!((errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_TYPE]) : false}
                                     variant='outlined'
                                     fullWidth
                                 >
@@ -130,15 +122,13 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                         {...props}
                                         disabled={isFieldDisabled || shouldIdDisable || isViewMode}
                                         onChange={(event) => {
-                                            if(validateIdentityData(interactedContact.id, event.target.value as number, methods.getValues("identificationNumber")))
-                                            {
+                                            if (validateIdentityData(interactedContact.id, event.target.value as number, methods.getValues("identificationNumber"))) {
                                                 props.onChange(event.target.value);
-                                                let identityObject = identificationTypes.find(obj=>obj.id==event.target.value);
+                                                let identityObject = identificationTypes.find(obj => obj.id == event.target.value);
                                                 dispatch(setInteractedContact(interactedContact.id, 'identificationType', identityObject as IdentificationType, methods.formState));
-                                                console.log(interactedContact)
                                             }
                                             else {
-                                                methods.setError(InteractedContactFields.IDENTIFICATION_TYPE, { message:"מזהה זה כבר קיים" });
+                                                methods.setError(InteractedContactFields.IDENTIFICATION_TYPE, { message: "מזהה זה כבר קיים" });
                                             }
                                         }}
                                         MenuProps={{
@@ -184,20 +174,19 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                     <FormControl variant='outlined' fullWidth>
                                         <IdentificationTextField
                                             {...props}
-                                            error={(errors &&  (errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_NUMBER]?.message) || ''}
+                                            error={(errors && (errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_NUMBER]?.message) || ''}
                                             disabled={isFieldDisabled || shouldIdDisable || isViewMode}
                                             testId='identificationNumber'
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue);
-                                                
+
                                             }}
-                                            onBlur ={()=>{
-                                                if(validateIdentityData(interactedContact.id, methods.getValues("identificationType") as any, methods.getValues("identificationNumber")))
-                                                {
-                                                    dispatch(setInteractedContact(interactedContact.id,'identificationNumber', methods.getValues("identificationNumber"),methods.formState))
+                                            onBlur={() => {
+                                                if (validateIdentityData(interactedContact.id, methods.getValues("identificationType") as any, methods.getValues("identificationNumber"))) {
+                                                    dispatch(setInteractedContact(interactedContact.id, 'identificationNumber', methods.getValues("identificationNumber"), methods.formState))
                                                 }
                                                 else {
-                                                    methods.setError(InteractedContactFields.IDENTIFICATION_NUMBER, { message:"מזהה זה כבר קיים" });
+                                                    methods.setError(InteractedContactFields.IDENTIFICATION_NUMBER, { message: "מזהה זה כבר קיים" });
                                                 }
                                             }}
                                             placeholder='מספר תעודה'
@@ -232,9 +221,9 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             error={Boolean(dateError)}
                                             onChange={(newDate: Date) => {
                                                 props.onChange(newDate);
-                                                setAge(calcAge(newDate));  
-                                                dispatch(setInteractedContact(interactedContact.id,'birthDate',newDate,methods.formState));
-                                               
+                                                setAge(calcAge(newDate));
+                                                dispatch(setInteractedContact(interactedContact.id, 'birthDate', newDate, methods.formState));
+
                                             }}
                                         />
                                     </FormControl>
@@ -253,7 +242,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                 name='age'
                                 testId='contactAge'
                                 value={age}
-                                onChange={() => {/*dispatch(setInteractedContact(interactedContact.id, 'age',methods.getValues('age'),methods.formState)) */}}
+                                onChange={() => { }}
                                 placeholder='בחר תאריך לידה'
                             />
                         </FormControl>
@@ -276,7 +265,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             disabled={isFieldDisabled || isViewMode}
                                             testId='phoneNumber'
                                             placeholder='הכנס טלפון:'
-                                            onBlur={()=> dispatch(setInteractedContact(interactedContact.id,'phoneNumber',methods.getValues('phoneNumber'),methods.formState))}
+                                            onBlur={() => dispatch(setInteractedContact(interactedContact.id, 'phoneNumber', methods.getValues('phoneNumber'), methods.formState))}
                                         />
                                     </FormControl>
                                 )
@@ -327,9 +316,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue)
                                             }}
-                                            onBlur={()=> {
-                                                dispatch(setInteractedContact(interactedContact.id,'extraInfo',methods.getValues('extraInfo'),methods.formState));
-                                                console.log('interactedContact',interactedContact)
+                                            onBlur={() => {
+                                                dispatch(setInteractedContact(interactedContact.id, 'extraInfo', methods.getValues('extraInfo'), methods.formState));
                                             }
                                             }
                                             placeholder='הערות נוספות'
@@ -349,12 +337,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
 export default ContactQuestioningPersonal;
 
 interface Props {
-    //index: number;
-   interactedContact: GroupedInteractedContact;
-    //control: any;
-    //formValues: InteractedContact;
-   // trigger: (fieldname: string) => {};
-   // currentFormErrors?: DeepMap<InteractedContact, FieldError>;
-   // watch: any;
+    interactedContact: GroupedInteractedContact;
     isViewMode?: boolean;
 };

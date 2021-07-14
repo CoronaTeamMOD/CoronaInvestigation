@@ -21,19 +21,18 @@ import StoreStateType from 'redux/storeStateType';
 
 const ReachContact = (props: Props) => {
     const methods = useFormContext<GroupedInteractedContact>();
-    const { interactedContact, index, contactStatuses, saveContact,parsePerson,isViewMode } = props;
-    //const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
-    
+    const { interactedContact, index, contactStatuses, saveContact, parsePerson, isViewMode } = props;
+
     const classes = useStyles({});
-   
+
     const foundValue = (status: number) => {
         return contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === status);
     }
     const getCurrentValue = (status: number) => { return foundValue(status) || { id: -1, displayName: '...' } }
-    const { isFieldDisabled, validateContact } = useContactFields(methods.getValues("contactStatus")/*interactedContact.contactStatus*/);
+    const { isFieldDisabled, validateContact } = useContactFields(methods.getValues("contactStatus"));
 
     const { changeContactStatus } = useReachContact({
-        saveContact, parsePerson, formValues: methods.getValues() /*interactedContact*/, index
+        saveContact, parsePerson, formValues: methods.getValues(), index
     });
 
     const removeUnusePartOfError = (errorMsg: string) => {
@@ -73,7 +72,7 @@ const ReachContact = (props: Props) => {
                                         )
                                     }
                                     }
-                                   
+
                                     inputValue={currentValue.displayName}
                                     closeIcon={false}
                                     renderInput={(params) => (

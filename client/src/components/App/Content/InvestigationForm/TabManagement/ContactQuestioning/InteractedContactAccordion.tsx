@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { ExpandMore } from '@material-ui/icons';
-import { FormProvider,useForm, useFormContext } from 'react-hook-form';
+import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import {
     Accordion, AccordionDetails, AccordionSummary,
     AccordionActions, Divider, Grid, Collapse
@@ -27,25 +27,20 @@ import { useSelector } from 'react-redux';
 
 const InteractedContactAccordion = (props: Props) => {
 
-  //  const { errors, watch, ...methods } = useFormContext<FormInputs>();
-  
-    const methods = useForm<GroupedInteractedContact>({ //FormInputs
+    const methods = useForm<GroupedInteractedContact>({
         mode: 'all',
         resolver: yupResolver(ContactQuestioningSchema),
     });
 
-   
+
     const classes = useStyles();
 
     const {
-  interactedContact,index, contactStatuses, saveContact, parsePerson,
+        interactedContact, index, contactStatuses, saveContact, parsePerson,
         isFamilyContact, familyRelationships, shouldDisable, isViewMode
     } = props;
-    //const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
-    
-   const watchCurrentStatus: number = methods.watch(InteractedContactFields.CONTACT_STATUS);
 
-    //const formErrors = errors?.form; //&& errors?.form[index];
+    const watchCurrentStatus: number = methods.watch(InteractedContactFields.CONTACT_STATUS);
 
     const generateBackgroundColorClass = (colorCode: Number | any) => {
         switch (colorCode) {
@@ -80,103 +75,85 @@ const InteractedContactAccordion = (props: Props) => {
 
     const formValues = interactedContact;
 
-    const getAccordion =// React.useMemo(() => {
-     ()=> { return (
-            <FormProvider {...methods}>
-            <form
-            id={`form-${interactedContact.id}`} >
-            {/* <div key={interactedContact.id}> */}
-                <Accordion
-                    className={getAccordionClasses()}
-                    style={{ borderRadius: '3vw' }}
-                    TransitionProps={{ unmountOnExit: true }}
-                >
-                    <AccordionSummary
-                        test-id='contactLocation'
-                        expandIcon={<ExpandMore />}
-                        aria-controls='panel1a-content'
-                        id='panel1a-header'
-                        dir='ltr'
-                    >
-                        <ContactQuestioningInfo
-                            index={index}
-                            interactedContact={interactedContact}
-                            contactStatuses={contactStatuses}
-                            saveContact={saveContact}
-                            parsePerson={parsePerson}
-                            isViewMode={isViewMode}
-                        />
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <Grid container wrap='nowrap'>
-                            <ContactQuestioningPersonal
-                                //index={index}
-                                interactedContact={interactedContact}
-                                //  control={methods.control}
-                                // // formValues={formValues}
-                                // trigger={methods.trigger}
-                                // currentFormErrors={methods.errors?.form}
-                                // watch={methods.watch}
-                                //contactStatus={watchCurrentStatus}
-                                isViewMode={isViewMode}
-                            />
-                            <Divider
-                                orientation='vertical'
-                                variant='middle'
-                                light={true}
-                            />
-                            <ContactQuestioningClinical
-                               // watch={watch}
-                                //index={index}
-                                familyRelationships={
-                                    familyRelationships as FamilyRelationship[]
-                                }
-                               interactedContact={interactedContact}
-                                isFamilyContact={isFamilyContact}
-                              //  control={methods.control}
-                              //  formValues={formValues}
-                               // formErrors={formErrors}
-                              //  trigger={methods.trigger}
-                               // contactStatus={watchCurrentStatus}
-                                isViewMode={isViewMode}
-                            />
-                            <Divider
-                                orientation='vertical'
-                                variant='middle'
-                                light={true}
-                            />
-                            <ContactQuestioningCheck
-                                //index={index}
-                                interactedContact={interactedContact}
-                                // formErrors={formErrors}
-                                // control={methods.control}
-                                //contactStatus={watchCurrentStatus}
-                                isViewMode={isViewMode}
-                            />
-                        </Grid>
-                    </AccordionDetails>
-                    <AccordionActions className={classes.accordionActions}>
-                        {!isViewMode && (
-                            <PrimaryButton
-                                disabled={shouldDisable(watchCurrentStatus)}
-                                test-id='saveContact'
-                                onClick={() => {
-                                    const currentParsedPerson = parsePerson(
-                                       interactedContact
-                                    );
-                                    saveContact(currentParsedPerson);
-                                }}
+    const getAccordion =
+        () => {
+            return (
+                <FormProvider {...methods}>
+                    <form
+                        id={`form-${interactedContact.id}`} >
+
+                        <Accordion
+                            className={getAccordionClasses()}
+                            style={{ borderRadius: '3vw' }}
+                            TransitionProps={{ unmountOnExit: true }}
+                        >
+                            <AccordionSummary
+                                test-id='contactLocation'
+                                expandIcon={<ExpandMore />}
+                                aria-controls='panel1a-content'
+                                id='panel1a-header'
+                                dir='ltr'
                             >
-                                שמור מגע
-                            </PrimaryButton>
-                        )}
-                    </AccordionActions>
-                </Accordion>
-            {/* </div> */}
-            </form>
-            </FormProvider>
-        )
-    }//, [interactedContact/*JSON.stringify(formValues), formErrors, contactStatuses*/]);
+                                <ContactQuestioningInfo
+                                    index={index}
+                                    interactedContact={interactedContact}
+                                    contactStatuses={contactStatuses}
+                                    saveContact={saveContact}
+                                    parsePerson={parsePerson}
+                                    isViewMode={isViewMode}
+                                />
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Grid container wrap='nowrap'>
+                                    <ContactQuestioningPersonal
+                                        interactedContact={interactedContact}
+                                        isViewMode={isViewMode}
+                                    />
+                                    <Divider
+                                        orientation='vertical'
+                                        variant='middle'
+                                        light={true}
+                                    />
+                                    <ContactQuestioningClinical
+                                        familyRelationships={
+                                            familyRelationships as FamilyRelationship[]
+                                        }
+                                        interactedContact={interactedContact}
+                                        isFamilyContact={isFamilyContact}
+                                        isViewMode={isViewMode}
+                                    />
+                                    <Divider
+                                        orientation='vertical'
+                                        variant='middle'
+                                        light={true}
+                                    />
+                                    <ContactQuestioningCheck
+                                        interactedContact={interactedContact}
+                                        isViewMode={isViewMode}
+                                    />
+                                </Grid>
+                            </AccordionDetails>
+                            <AccordionActions className={classes.accordionActions}>
+                                {!isViewMode && (
+                                    <PrimaryButton
+                                        disabled={shouldDisable(watchCurrentStatus)}
+                                        test-id='saveContact'
+                                        onClick={() => {
+                                            const currentParsedPerson = parsePerson(
+                                                interactedContact
+                                            );
+                                            saveContact(currentParsedPerson);
+                                        }}
+                                    >
+                                        שמור מגע
+                                    </PrimaryButton>
+                                )}
+                            </AccordionActions>
+                        </Accordion>
+                    </form>
+                </FormProvider>
+            )
+        }
 
     return (
         getAccordion()

@@ -19,11 +19,9 @@ import { setInteractedContact } from 'redux/InteractedContacts/interactedContact
 
 const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();//FormInputs
+    const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();
 
-    const {/* index,*/ interactedContact, isViewMode } = props;
-    //const interactedContact = useSelector<StoreStateType,GroupedInteractedContact>(state=>state.interactedContacts.interactedContacts[index]);
-    
+    const { interactedContact, isViewMode } = props;
     const classes = useStyles();
 
     const dispatch = useDispatch();
@@ -33,7 +31,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
     const { isFieldDisabled } = useContactFields(methods.getValues("contactStatus"));
 
     useEffect(() => {
-        methods.trigger();     
+        methods.trigger();
     }, []);
 
     return (
@@ -60,7 +58,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(interactedContact.id,'doesFeelGood',booleanValue,methods.formState));
+                                                dispatch(setInteractedContact(interactedContact.id, 'doesFeelGood', booleanValue, methods.formState));
                                             }
                                         }}
                                     />
@@ -89,7 +87,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(interactedContact.id,'doesHaveBackgroundDiseases',booleanValue,methods.formState));
+                                                dispatch(setInteractedContact(interactedContact.id, 'doesHaveBackgroundDiseases', booleanValue, methods.formState));
                                             }
                                         }}
                                     />
@@ -118,7 +116,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(interactedContact.id,'doesLiveWithConfirmed',booleanValue,methods.formState));
+                                                dispatch(setInteractedContact(interactedContact.id, 'doesLiveWithConfirmed', booleanValue, methods.formState));
                                             }
                                         }}
                                     />)
@@ -146,7 +144,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(interactedContact.id,'repeatingOccuranceWithConfirmed',booleanValue,methods.formState));
+                                                dispatch(setInteractedContact(interactedContact.id, 'repeatingOccuranceWithConfirmed', booleanValue, methods.formState));
                                             }
                                         }}
                                     />)
@@ -174,7 +172,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(interactedContact.id,'doesWorkWithCrowd',booleanValue,methods.formState));
+                                                dispatch(setInteractedContact(interactedContact.id, 'doesWorkWithCrowd', booleanValue, methods.formState));
                                             }
                                         }}
                                     />
@@ -203,7 +201,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                             disabled={isFieldDisabled || isViewMode}
                                             onChange={(event) => {
                                                 props.onChange(event.target.value);
-                                                dispatch(setInteractedContact(interactedContact.id,'occupation',event.target.value as number,methods.formState));
+                                                dispatch(setInteractedContact(interactedContact.id, 'occupation', event.target.value as number, methods.formState));
                                             }}>
                                             {
                                                 occupations?.length > 0 && occupations.map((occupation) => (
@@ -230,10 +228,6 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
 export default ContactQuestioningCheck;
 
 interface Props {
-    //index: number,
     interactedContact: InteractedContact;
-    // formErrors: any;
-    // control: any;
-    // contactStatus: number;
     isViewMode?: boolean;
 };
