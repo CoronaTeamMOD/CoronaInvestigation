@@ -18,7 +18,7 @@ export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, Int
         const contacts = await getAllInteractedContacts(minimalDate);
         let map = new Map();
         for (let i = 0; i < contacts.length; i++) {
-            const valid = await ContactQuestioningSchema.isValid(contacts[i]);
+            const valid = await ContactQuestioningSchema.isValid({...contacts[i],identificationType : contacts[i]?.identificationType?.id});
             map.set(contacts[i].id, new FormStateObject(valid));
         }
         dispatch({
