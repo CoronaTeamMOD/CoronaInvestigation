@@ -83,7 +83,8 @@ export const getAllInteractedContacts = async (minimalDate?: Date): Promise<Grou
                         involvedContactId: contact.involvedContactId,
                         finalEpidemiologicalStatusDesc: 'אין נתונים',
                         colorCode: 'אין נתונים',
-                        certificateEligibilityTypeDesc: 'אין נתונים',
+                        //certificateEligibilityTypeDesc: 'אין נתונים',
+                        caseStatusDesc: 'אין נתונים',
                         immuneDefinitionBasedOnSerologyStatusDesc: 'אין נתונים',
                         vaccinationStatusDesc: 'אין נתונים',
                         isolationReportStatusDesc: 'אין נתונים',
@@ -122,8 +123,9 @@ export const getAllInteractedContacts = async (minimalDate?: Date): Promise<Grou
                                 if (interactedContact.identificationNumber === eachResult.IDnum) {
                                     interactedContact.finalEpidemiologicalStatusDesc = eachResult?.Indicators?.jsonstring?.finalEpidemiologicalStatusDesc;
                                     interactedContact.colorCode = eachResult?.ColorCode;
-                                    interactedContact.certificateEligibilityTypeDesc = eachResult?.Indicators?.jsonstring?.certificateEligibilityTypeDesc;
-                                    interactedContact.immuneDefinitionBasedOnSerologyStatusDesc = eachResult?.Indicators?.jsonstring?.immuneDefinitionBasedOnSerologyStatusDesc;
+                                   // interactedContact.certificateEligibilityTypeDesc = eachResult?.Indicators?.jsonstring?.certificateEligibilityTypeDesc;
+                                   interactedContact.caseStatusDesc = eachResult?.Indicators?.jsonstring?.caseStatusDesc;
+                                   interactedContact.immuneDefinitionBasedOnSerologyStatusDesc = eachResult?.Indicators?.jsonstring?.immuneDefinitionBasedOnSerologyStatusDesc;
                                     interactedContact.vaccinationStatusDesc = eachResult?.Indicators?.jsonstring?.vaccinationStatusDesc;
                                     interactedContact.isolationReportStatusDesc = eachResult?.Indicators?.jsonstring?.isolationReportStatusDesc;
                                     interactedContact.isolationObligationStatusDesc = eachResult?.Indicators?.jsonstring?.isolationObligationStatusDesc;
