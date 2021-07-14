@@ -173,6 +173,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         );
         setIsLoading(true);
         const minimalDate = datesToInvestigate.slice(-1)[0];
+
         dispatch(getInteractedContacts(minimalDate));
       };
 
