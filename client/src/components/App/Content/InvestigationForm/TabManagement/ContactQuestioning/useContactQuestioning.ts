@@ -13,7 +13,7 @@ import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import GroupedInteractedContact, { GroupedInteractedContactEvent } from 'models/ContactQuestioning/GroupedInteractedContact';
 import {updateInteractedContacts} from 'httpClient/InteractedContacts/interactedContacts' ;
 
-import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
+import ContactQuestioningArraySchema from './ContactSection/Schemas/ContactQuestioningArraySchema';
 import {
     FormInputs,
     useContactQuestioningOutcome,
@@ -96,18 +96,11 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         return true;
     };
 
-    const mapContacts = (data:InteractedContact[]) => new Promise<number>((resolve, reject) => {
-        let count = 0;
-        data.map((contact: InteractedContact) => {
-            ContactQuestioningSchema.isValid(data).then(valid => {
-                if(!valid){
-                    count++;
-                }
-            })
-        })
-        resolve(count);
-    });
 
+
+
+
+   
     const saveContactQuestioning = (data:InteractedContact[]/*parsedFormData: InteractedContact[], originalFormData: FormInputs*/) => {
         const contactsSavingVariable = {
             unSavedContacts: { contacts: data }
@@ -115,9 +108,11 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
         createSaveContactRequest(contactsSavingVariable, 'Saving all contacts')
             .finally(() => {
-                mapContacts(data).then((count: number) =>{
-                    setFormState(epidemiologyNumber, id, count === 0);
+                ContactQuestioningArraySchema.isValid(data).then(valid => {
+                    setFormState(epidemiologyNumber, id,valid);
                 })
+                
+               
             });
     };
 
