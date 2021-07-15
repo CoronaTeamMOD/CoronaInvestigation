@@ -52,6 +52,6 @@ interface Props {
     interactedContact: GroupedInteractedContact;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;
-    parsePerson: (person: GroupedInteractedContact, index: number) => InteractedContact;
+    parsePerson: (person: GroupedInteractedContact) => InteractedContact;
     isViewMode?: boolean;
 }

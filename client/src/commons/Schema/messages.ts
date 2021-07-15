@@ -14,7 +14,7 @@ export const max10LengthNumErrorMessage = 'השדה יכול להכיל 10 מס�
 export const max15LengthErrorMessage = 'השדה יכול להכיל עד 15 תווים בלבד';
 export const max50LengthErrorMessage = 'השדה יכול להכיל 50 תווים בלבד';
 export const max100LengthErrorMessage = 'השדה יכול להכיל 100 תווים בלבד';
-export const max500LengthErrorMessage = 'השדה יכול להכיל 500 תווים בלבד';
+export const max750LengthErrorMessage = 'השדה יכול להכיל 750 תווים בלבד';
 
 export const invalidIdText = 'ת.ז אינה תקינה';
 export const invalidDateText = 'תאריך אינו תקין';

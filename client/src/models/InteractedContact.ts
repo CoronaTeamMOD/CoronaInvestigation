@@ -29,7 +29,7 @@ interface InteractedContact extends Person {
     placeName?: string;
     finalEpidemiologicalStatusDesc?: string;
     colorCode?: string;
-    certificateEligibilityTypeDesc?: string;
+    caseStatusDesc?: string;
     immuneDefinitionBasedOnSerologyStatusDesc?: string;
     vaccinationStatusDesc?: string;
     isolationReportStatusDesc?: string;
