@@ -44,9 +44,13 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
     
     const onButtonClick = () => buttonRef?.current?.click();
 
+    const checkDuplicatesContactsFromExcel = (contacts: ParsedExcelRow[]) => {
+        return contacts.map(contact => contact.identificationNumber).filter((e, i, a) => a.indexOf(e) !== i);
+    }
+
     const saveDataInFile = (contacts?: ParsedExcelRow[]) => {
         if(contacts && contacts.length > 0) {
-            const dataInFileLogger = logger.setup('Saving Contacted People Excel')
+            const dataInFileLogger = logger.setup('Saving Contacted People Excel');
             dataInFileLogger.info('launching saving contacted people excel request', Severity.LOW);
             const validationErrors = contacts.reduce<string[]>((aggregatedArr, contact) => {
                 const parsedContact = contact.cityId 
@@ -69,6 +73,15 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
                 }
                 return aggregatedArr;
             }, []);
+
+            const duplicatesContactsFRomExcel = checkDuplicatesContactsFromExcel(contacts);
+            if (duplicatesContactsFRomExcel.length > 0 ) {
+                const error =`חלה שגיאה בטעינת הקובץ,
+                קיימים מספרים מזהים כפולים: 
+                ${duplicatesContactsFRomExcel .join(', ')}`;
+                validationErrors.push(error);
+            }
+
             const existingBankIds = contactsExistsInBank(contacts);
             if(existingBankIds && existingBankIds?.length > 0) {
                 alertError(`ת.ז. ${existingBankIds  .join(', ')} כבר קיים בבנק המגעים`);
