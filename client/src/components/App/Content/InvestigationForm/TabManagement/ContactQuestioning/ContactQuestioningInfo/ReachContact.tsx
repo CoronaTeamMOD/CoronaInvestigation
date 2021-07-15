@@ -3,6 +3,8 @@ import { Autocomplete } from '@material-ui/lab';
 import { TextField, Grid } from '@material-ui/core';
 import { Controller, useFormContext } from 'react-hook-form';
 
+
+
 import ContactStatus from 'models/ContactStatus';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InteractedContact from 'models/InteractedContact';
@@ -12,24 +14,25 @@ import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteracte
 
 import useReachContact from './useReachContact';
 import useStyles from '../ContactQuestioningStyles';
+import interactedContactsReducer from 'redux/InteractedContacts/interactedContactsReducer';
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
+
 
 const ReachContact = (props: Props) => {
-    const { control, getValues, watch } = useFormContext();
-    const { interactedContact, index, contactStatuses, saveContact, parsePerson,isViewMode } = props;
+    const methods = useFormContext<GroupedInteractedContact>();
+    const { interactedContact, index, contactStatuses, saveContact, parsePerson, isViewMode } = props;
+
     const classes = useStyles({});
-    
-    const formValues = getValues().form && getValues().form[index]
-    ? getValues().form[index]
-    : interactedContact;
 
     const foundValue = (status: number) => {
         return contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === status);
     }
     const getCurrentValue = (status: number) => { return foundValue(status) || { id: -1, displayName: '...' } }
-    const { isFieldDisabled, validateContact } = useContactFields(formValues.contactStatus);
+    const { isFieldDisabled, validateContact } = useContactFields(methods.getValues("contactStatus"));
 
     const { changeContactStatus } = useReachContact({
-        saveContact, parsePerson, formValues, index
+        saveContact, parsePerson, formValues: methods.getValues(), index
     });
 
     const removeUnusePartOfError = (errorMsg: string) => {
@@ -43,8 +46,8 @@ const ReachContact = (props: Props) => {
             <Grid container spacing={2}>
                 <Grid item xs={8}>
                     <Controller
-                        control={control}
-                        name={`form[${index}].${InteractedContactFields.CONTACT_STATUS}`}
+                        control={methods.control}
+                        name={`${InteractedContactFields.CONTACT_STATUS}`}
                         defaultValue={interactedContact.contactStatus}
                         render={(props) => {
                             const currentValue = getCurrentValue(props.value);
@@ -58,9 +61,10 @@ const ReachContact = (props: Props) => {
                                     }
                                     value={currentValue}
                                     onChange={(e, data) => {
-                                        let contactValidation = validateContact(parsePerson(formValues, index), ValidationReason.SAVE_CONTACT)
+                                        let contactValidation = validateContact(interactedContact, ValidationReason.SAVE_CONTACT)
                                         const missingFieldsText = contactValidation?.valid ? '' : removeUnusePartOfError(contactValidation.error);
                                         changeContactStatus(
+                                            interactedContact,
                                             e,
                                             data,
                                             props.onChange,
@@ -68,6 +72,7 @@ const ReachContact = (props: Props) => {
                                         )
                                     }
                                     }
+
                                     inputValue={currentValue.displayName}
                                     closeIcon={false}
                                     renderInput={(params) => (
@@ -103,10 +108,10 @@ const ReachContact = (props: Props) => {
 export default ReachContact;
 
 interface Props {
-    interactedContact: InteractedContact;
+    interactedContact: GroupedInteractedContact;
     index: number;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;
-    parsePerson: (person: GroupedInteractedContact, index: number) => InteractedContact;
+    parsePerson: (person: GroupedInteractedContact) => InteractedContact;
     isViewMode?: boolean;
 }
