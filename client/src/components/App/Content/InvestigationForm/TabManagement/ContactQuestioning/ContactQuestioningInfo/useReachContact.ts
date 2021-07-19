@@ -10,6 +10,8 @@ import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
 import interactedContactsReducer from 'redux/InteractedContacts/interactedContactsReducer';
+import InteractedContactFields from 'models/enums/InteractedContact';
+import ContactQuestioningFieldsNames from '../ContactQuestioningFieldsNames';
 
 const useReachContact = (props: Props) => {
     const { errors, getValues, formState } = useFormContext<GroupedInteractedContact>();
@@ -56,7 +58,14 @@ const useReachContact = (props: Props) => {
                         }
                     });
                 }
-                if (formHaveMissingFields && missingFieldsText !== '') {
+                if ((formHaveMissingFields && missingFieldsText !== '') || formHasErrors) {
+                    // Case of duplicate identity data in different contacts
+                   if(formHasErrors && missingFieldsText===''){
+                    if((errors as any)[InteractedContactFields.IDENTIFICATION_TYPE]?.message )
+                        missingFieldsText = ContactQuestioningFieldsNames.IDENTIFICATION_TYPE.slice(0, -1);
+                    else if((errors as any)[InteractedContactFields.IDENTIFICATION_NUMBER]?.message )
+                        missingFieldsText= ContactQuestioningFieldsNames.IDENTIFICATION_NUMBER.slice(0, -1);;
+                   }
                     alertError('לא ניתן לשנות סטטוס להושלם', {
                         text: formHaveMissingFieldsText.concat(missingFieldsText),
                         confirmButtonColor: theme.palette.primary.main,
