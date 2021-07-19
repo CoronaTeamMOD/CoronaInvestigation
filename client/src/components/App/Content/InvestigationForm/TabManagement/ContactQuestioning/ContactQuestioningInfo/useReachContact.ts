@@ -39,7 +39,7 @@ const useReachContact = (props: Props) => {
         event.stopPropagation();
         const formHaveMissingFields = missingFieldsText !== '';
         if (selectedStatus?.id === ContactStatusCodes.COMPLETED) {
-            if (!formHasErrors || Object.keys(formHasErrors).length === 0 || formHasErrors.constructor === Object) {
+            if (!formHasErrors || Object.keys(errors).length === 0 ) {
                 if (!formHaveMissingFields) {
                     alertWarning('האם אתה בטוח שתרצה להעביר את המגע לסטטוס הושלם?', {
                         text: 'לאחר העברת המגע, לא תהיה אפשרות לערוך שינויים',
@@ -58,14 +58,7 @@ const useReachContact = (props: Props) => {
                         }
                     });
                 }
-                if ((formHaveMissingFields && missingFieldsText !== '') || formHasErrors) {
-                    // Case of duplicate identity data in different contacts
-                   if(formHasErrors && missingFieldsText===''){
-                    if((errors as any)[InteractedContactFields.IDENTIFICATION_TYPE]?.message )
-                        missingFieldsText = ContactQuestioningFieldsNames.IDENTIFICATION_TYPE.slice(0, -1);
-                    else if((errors as any)[InteractedContactFields.IDENTIFICATION_NUMBER]?.message )
-                        missingFieldsText= ContactQuestioningFieldsNames.IDENTIFICATION_NUMBER.slice(0, -1);;
-                   }
+                if ((formHaveMissingFields && missingFieldsText !== '') ) {
                     alertError('לא ניתן לשנות סטטוס להושלם', {
                         text: formHaveMissingFieldsText.concat(missingFieldsText),
                         confirmButtonColor: theme.palette.primary.main,
