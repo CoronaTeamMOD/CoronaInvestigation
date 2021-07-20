@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { format } from 'date-fns'
 
@@ -7,11 +7,13 @@ import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import { setFormState } from 'redux/Form/formActionCreators';
+import {getInteractedContacts} from 'redux/InteractedContacts/interactedContactsActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import GroupedInteractedContact, { GroupedInteractedContactEvent } from 'models/ContactQuestioning/GroupedInteractedContact';
+import {updateInteractedContacts} from 'httpClient/InteractedContacts/interactedContacts' ;
 
-import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
+import ContactQuestioningArraySchema from './ContactSection/Schemas/ContactQuestioningArraySchema';
 import {
     FormInputs,
     useContactQuestioningOutcome,
@@ -28,32 +30,26 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         setAllContactedInteractions,
         allContactedInteractions,
         setFamilyRelationships,
-        setContactStatuses,
-        getValues
+        setContactStatuses
     } = parameters;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
+    const isViewMode = useSelector<StoreStateType, boolean>(state => state.investigation.isViewMode);
+    const interactedContacts = useSelector<StoreStateType,GroupedInteractedContact[]>(state=>state.interactedContacts.interactedContacts);
+    const dispatch = useDispatch()
+
 
     const { alertError } = useCustomSwal();
 
-    const createSaveContactRequest = (contactsSavingVariable: { unSavedContacts: { contacts: InteractedContact[] } },
+    const createSaveContactRequest = async (contactsSavingVariable: { unSavedContacts: { contacts: InteractedContact[] } },
         workflowName: string) => {
         const contactLogger = logger.setup(workflowName);
 
         contactLogger.info(`launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`, Severity.LOW);
         setIsLoading(true);
-        return axios.post('/contactedPeople/interactedContacts', contactsSavingVariable)
-            .then((response) => {
-                if (response.data?.data?.updateContactPersons) {
-                    contactLogger.info('got response from the server', Severity.LOW);
-                }
-            })
-            .catch((err) => {
-                contactLogger.error(`got the following error from the server: ${err}`, Severity.HIGH);
-                alertError('חלה שגיאה בשמירת הנתונים');
-            })
-            .finally(() => setIsLoading(false));
+        await updateInteractedContacts(contactsSavingVariable.unSavedContacts.contacts);
+        setIsLoading(false);   
     };
 
     const getRulerApiDataFromServer = async (ids : any []) => {
@@ -100,16 +96,23 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         return true;
     };
 
-    const saveContactQuestioning = (parsedFormData: InteractedContact[], originalFormData: FormInputs) => {
+
+
+
+
+   
+    const saveContactQuestioning = (data:InteractedContact[]/*parsedFormData: InteractedContact[], originalFormData: FormInputs*/) => {
         const contactsSavingVariable = {
-            unSavedContacts: { contacts: parsedFormData }
+            unSavedContacts: { contacts: data }
         };
 
         createSaveContactRequest(contactsSavingVariable, 'Saving all contacts')
             .finally(() => {
-                ContactQuestioningSchema.isValid(originalFormData).then(valid => {
-                    setFormState(epidemiologyNumber, id, valid);
+                ContactQuestioningArraySchema.isValid(data).then(valid => {
+                    setFormState(epidemiologyNumber, id,valid);
                 })
+                
+               
             });
     };
 
@@ -166,136 +169,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         setIsLoading(true);
         const minimalDate = datesToInvestigate.slice(-1)[0];
 
-        axios.get(`/contactedPeople/allContacts/${minimalDate?.toISOString()}`)            
-            .then((result: any) => {
-                if (result?.data && result.headers['content-type'].includes('application/json')) {
-                    interactedContactsLogger.info(
-                        'got respond from the server that has data',
-                        Severity.LOW
-                    );
-
-                    let contactsToApi: any[] = [];
-
-                    const interactedContacts: InteractedContact[] = [];
-                    let contactsMap = new Map<number, GroupedInteractedContact>();
-
-                    for (let contact of result.data) {
-                        let IdType = !contact.personByPersonInfo.identificationType?.id ? 3 : 
-                                       contact.personByPersonInfo.identificationType?.id === 4 ? 3 :
-                                       contact.personByPersonInfo.identificationType?.id === 5 ? 4 :
-                                       contact.personByPersonInfo.identificationType?.id;
-                        contactsToApi.push({
-                            IdType,
-                            IDnum: contact.personByPersonInfo.identificationNumber,
-                            DOB: format(new Date(contact.personByPersonInfo.birthDate), 'ddMMyyyy'),
-                            Tel: contact.personByPersonInfo.phoneNumber  
-                        });
-
-                        if (contact.personInfo) {
-                            const existingContactType = (contactsMap.get(contact.personInfo)?.contactType);
-                            const newEvent: GroupedInteractedContactEvent = {
-                                date: contact.contactDate,
-                                name: contact.placeName || '',
-                                contactType: +contact.contactType
-                            }
-                            const newEventArr = (contactsMap.get(contact.personInfo)?.contactEvents || []).concat(newEvent);
-
-                            contactsMap.set(contact.personInfo, {
-                                personInfo: contact.personInfo,
-                                placeName: contact.contactEventByContactEvent.placeName,
-                                id: contact.id,
-                                firstName: contact.personByPersonInfo.firstName,
-                                lastName: contact.personByPersonInfo.lastName,
-                                phoneNumber: contact.personByPersonInfo.phoneNumber,
-                                identificationType: contact.personByPersonInfo.identificationType,
-                                identificationNumber: contact.personByPersonInfo.identificationNumber,
-                                birthDate: contact.personByPersonInfo.birthDate,
-                                additionalPhoneNumber:
-                                    contact.personByPersonInfo
-                                        .additionalPhoneNumber,
-                                gender: contact.personByPersonInfo.gender,
-                                contactDate:
-                                    contact.contactEventByContactEvent.startTime,
-                                contactEvent: contact.contactEventByContactEvent.id,
-                                contactStatus: contact.contactStatus ?? NEW_CONTACT_STATUS_CODE,
-                                extraInfo: contact.extraInfo,
-                                relationship: contact.relationship,
-                                familyRelationship: contact.familyRelationship,
-                                isolationAddress: contact.isolationAddress,
-                                occupation: contact.occupation,
-                                doesFeelGood: contact.doesFeelGood !== null
-                                    ? contact.doesFeelGood
-                                    : null,
-                                doesHaveBackgroundDiseases: contact.doesHaveBackgroundDiseases !== null
-                                    ? contact.doesHaveBackgroundDiseases
-                                    : null,
-                                doesLiveWithConfirmed: contact.doesLiveWithConfirmed !== null
-                                    ? contact.doesLiveWithConfirmed
-                                    : null,
-                                doesNeedHelpInIsolation: contact.doesNeedHelpInIsolation !== null
-                                    ? contact.doesNeedHelpInIsolation
-                                    : null,
-                                repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed !== null
-                                    ? contact.repeatingOccuranceWithConfirmed
-                                    : null,
-                                doesWorkWithCrowd: contact.doesWorkWithCrowd !== null
-                                    ? contact.doesWorkWithCrowd
-                                    : null,
-                                doesNeedIsolation: contact.doesNeedIsolation !== null
-                                    ? contact.doesNeedIsolation
-                                    : null,
-                                creationTime: contact.creationTime,
-                                involvementReason: contact.involvementReason,
-                                involvedContactId: contact.involvedContactId,
-                                finalEpidemiologicalStatusDesc: 'אין נתונים',
-                                colorCode: 'אין נתונים',
-                                caseStatusDesc: 'אין נתונים',
-                                immuneDefinitionBasedOnSerologyStatusDesc: 'אין נתונים',
-                                vaccinationStatusDesc: 'אין נתונים',
-                                isolationReportStatusDesc: 'אין נתונים',
-                                isolationObligationStatusDesc: 'אין נתונים',
-                                contactType: (existingContactType && +existingContactType === 1) ? existingContactType : contact.contactType,
-                                contactEvents: newEventArr,
-                            });
-                        }
-                    }
-
-                    getRulerApiDataFromServer(contactsToApi).then((resultFromAPI) => {
-                        let contacts = Array.from(contactsMap).map(contact => contact[1]);
-
-                        if(resultFromAPI?.ColorData) {
-                            for (let eachResult of resultFromAPI?.ColorData) {
-                                for (let interactedContact of contacts) {
-                                    if(interactedContact.identificationNumber === eachResult.IDnum) {
-                                        interactedContact.finalEpidemiologicalStatusDesc = eachResult?.Indicators?.jsonstring?.finalEpidemiologicalStatusDesc;
-                                        interactedContact.colorCode = eachResult?.ColorCode;
-                                        interactedContact.caseStatusDesc = eachResult?.Indicators?.jsonstring?.caseStatusDesc;
-                                        interactedContact.immuneDefinitionBasedOnSerologyStatusDesc = eachResult?.Indicators?.jsonstring?.immuneDefinitionBasedOnSerologyStatusDesc;
-                                        interactedContact.vaccinationStatusDesc = eachResult?.Indicators?.jsonstring?.vaccinationStatusDesc;
-                                        interactedContact.isolationReportStatusDesc = eachResult?.Indicators?.jsonstring?.isolationReportStatusDesc; 
-                                        interactedContact.isolationObligationStatusDesc = eachResult?.Indicators?.jsonstring?.isolationObligationStatusDesc;
-                                    }
-                                }
-                            }
-                        }
-
-                        setAllContactedInteractions(contacts);
-                        setIsLoading(false);     
-                    });
-                } else {
-                    interactedContactsLogger.warn(
-                        'got respond from the server without data',
-                        Severity.MEDIUM
-                    );
-                }
-            })
-            .catch((err) => {
-                interactedContactsLogger.error(
-                    `got the following error from the server: ${err}`,
-                    Severity.LOW
-                );
-            })
-        };
+        dispatch(getInteractedContacts(minimalDate));
+      };
 
     const checkForSpecificDuplicateIds = (
         identificationNumberToCheck: string,
@@ -324,20 +199,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             allIdentificationNumbersToCheck.length
         );
     };
-
-    const onSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        const data = getValues();
-        const parsedFormData = parseFormBeforeSending(data as FormInputs);
-        if (!areThereDuplicateIds(data)) {
-            parsedFormData && saveContactQuestioning(parsedFormData, data);
-        } else {
-            alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
-        }
-    };
-
-    const areThereDuplicateIds = (data: FormInputs) => {
-        const ids = data.form
+    const areThereDuplicateIds = (data:GroupedInteractedContact[]) => {
+        const ids = data
             .filter(person => {
                 const { identificationNumber, identificationType } = person;
                 return identificationNumber && identificationType;
@@ -345,14 +208,27 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 return `${person.identificationNumber}-${person.identificationType}`
             });
 
-        return ids.length !== new Set(ids).size;
+         return ids.length !== new Set(ids).size;
+
     };
 
-    const parseFormBeforeSending = (data: FormInputs) => {
-        const { form } = data;
-        const mappedForm = form?.map(
-            (person: InteractedContact, index: number) => {
-                return parsePerson(person, index);
+
+    const onSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        //setFormState(epidemiologyNumber, id, true);
+        const parsedFormData = parseFormBeforeSending(interactedContacts);
+        if (!areThereDuplicateIds(interactedContacts) || isViewMode) {
+            saveContactQuestioning(parsedFormData);
+        } else {
+            alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
+        }
+    };
+
+  
+    const parseFormBeforeSending = (data: GroupedInteractedContact[]) => {
+        const mappedForm = data.map(
+            (person: InteractedContact) => {
+                return parsePerson(person);
             }
         ) || [];
 
@@ -364,20 +240,13 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
      * however, the server expects fields that cannot be edited to be sent (i.e first name)
      * so im parsing the data and adding all of those fields before sending them
      */
-    const parsePerson = (person: InteractedContact, index: number) => {
-        let updatedPerson = person;
-        updatedPerson.contactDate = allContactedInteractions[index].contactDate;
-        updatedPerson.contactEvent = allContactedInteractions[index].contactEvent;
-        updatedPerson.contactType = allContactedInteractions[index].contactType;
-        updatedPerson.creationTime = allContactedInteractions[index].creationTime;
-        updatedPerson.firstName = allContactedInteractions[index].firstName;
-        updatedPerson.gender = allContactedInteractions[index].gender;
-        updatedPerson.id = allContactedInteractions[index].id;
-        updatedPerson.personInfo = allContactedInteractions[index].personInfo;
-        updatedPerson.involvedContactId = allContactedInteractions[index].involvedContactId;
-        updatedPerson.involvementReason = allContactedInteractions[index].involvementReason;
-        updatedPerson.lastName = allContactedInteractions[index].lastName;
-
+    const parsePerson = (person: InteractedContact) => {
+        let updatedPerson = person || {};
+        updatedPerson.identificationType =(person.identificationType?.id || person.identificationType) as any;
+        if(updatedPerson.isolationAddress) {
+            updatedPerson.isolationAddress.city = (person.isolationAddress.city?.id || person.isolationAddress.city) as any;
+            updatedPerson.isolationAddress.street = (person.isolationAddress.street?.id || person.isolationAddress.street) as any;
+        }
         return updatedPerson;
     };
 
