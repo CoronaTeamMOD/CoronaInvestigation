@@ -1,6 +1,5 @@
 import { FormState, useFormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import StoreStateType from 'redux/storeStateType';
 
 import theme from 'styles/theme';
 import ContactStatus from 'models/ContactStatus';
@@ -9,9 +8,6 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
-import interactedContactsReducer from 'redux/InteractedContacts/interactedContactsReducer';
-import InteractedContactFields from 'models/enums/InteractedContact';
-import ContactQuestioningFieldsNames from '../ContactQuestioningFieldsNames';
 
 const useReachContact = (props: Props) => {
     const { errors, getValues, formState } = useFormContext<GroupedInteractedContact>();
@@ -58,7 +54,7 @@ const useReachContact = (props: Props) => {
                         }
                     });
                 }
-                if ((formHaveMissingFields && missingFieldsText !== '') ) {
+                if (formHaveMissingFields && missingFieldsText !== '') {
                     alertError('לא ניתן לשנות סטטוס להושלם', {
                         text: formHaveMissingFieldsText.concat(missingFieldsText),
                         confirmButtonColor: theme.palette.primary.main,
