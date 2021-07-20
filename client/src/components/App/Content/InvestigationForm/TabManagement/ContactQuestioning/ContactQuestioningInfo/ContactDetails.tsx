@@ -45,12 +45,6 @@ const ContactDetails = (props: Props) => {
 
     const [showRulerStatusInfo, setShowRulerStatusInfo] = useState<boolean>(false);
 
-    // const [isFormInvalid, setIsFormInvalid] = useState<boolean>(false);
-
-    // ContactQuestioningSchema.isValid({...interactedContact,identificationType : interactedContact?.identificationType?.id}).then((isValid) => {
-    //     setIsFormInvalid(!isValid);
-    // });
-
     const formStates = useSelector<StoreStateType, Map<number, FormStateObject>>(state => state.interactedContacts.formState);
 
     const isFormInvalid = JSON.stringify(errors) !== '{}' ? true : (formStates?.get ? !formStates.get(interactedContact.id)?.isValid : false);
