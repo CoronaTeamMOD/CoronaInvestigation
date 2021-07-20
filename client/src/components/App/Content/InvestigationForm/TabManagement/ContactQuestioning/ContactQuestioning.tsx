@@ -51,8 +51,8 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     });
 
     const loopWithSlice = (start: number, end: number) => {
-            const slicedContacts = interactedContacts.slice(start, end);
-            setContactsToShow([...contactsToShow, ...slicedContacts]);
+        const slicedContacts = interactedContacts.slice(start, end);
+        setContactsToShow([...contactsToShow, ...slicedContacts]);
     };
 
     const handleShowMoreContacts = () => {
@@ -63,11 +63,9 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     const listenScrollEvent = (event: React.UIEvent<HTMLDivElement>): void => {
         const element = event.target as HTMLElement;
         if (element.scrollHeight - element.scrollTop >= element.clientHeight && element.scrollHeight - element.scrollTop < element.clientHeight + 50) {
-                handleShowMoreContacts();
-            }
+            handleShowMoreContacts();
+        }
     }
-
-
 
     useEffect(() => {
         loadInteractedContacts();
@@ -76,18 +74,17 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     }, []);
 
     useEffect(() => {
-        if (interactedContacts && interactedContacts.length > 0 ){
+        if (interactedContacts && interactedContacts.length > 0) {
             setAllContactedInteractions(interactedContacts);
-            if (interactedContacts.length>SIZE_OF_CONTACTS) {
+            if (interactedContacts.length > SIZE_OF_CONTACTS) {
                 loaded = SIZE_OF_CONTACTS;
                 setContactsToShow(interactedContacts.slice(0, SIZE_OF_CONTACTS));
             }
-            else  {
-                
+            else {
                 loaded = interactedContacts.length;
                 setContactsToShow(interactedContacts);
             }
-       } 
+        }
     }, [interactedContacts]);
 
 
