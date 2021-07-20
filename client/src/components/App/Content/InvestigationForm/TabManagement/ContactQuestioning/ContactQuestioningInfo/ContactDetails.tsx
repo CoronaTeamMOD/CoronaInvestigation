@@ -47,7 +47,7 @@ const ContactDetails = (props: Props) => {
 
     const formStates = useSelector<StoreStateType, Map<number, FormStateObject>>(state => state.interactedContacts.formState);
 
-    const isFormInvalid = formStates?.get ? !formStates.get(interactedContact.id)?.isValid : false;
+    const isFormInvalid = JSON.stringify(errors) !== '{}' ? true : (formStates?.get ? !formStates.get(interactedContact.id)?.isValid : false);
 
     const { isInvolvedThroughFamily } = useInvolvedContact();
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(
