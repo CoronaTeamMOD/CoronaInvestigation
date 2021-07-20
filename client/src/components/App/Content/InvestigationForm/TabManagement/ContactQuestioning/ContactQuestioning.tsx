@@ -51,10 +51,8 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     });
 
     const loopWithSlice = (start: number, end: number) => {
-      // if (loaded < interactedContacts.length ) {
             const slicedContacts = interactedContacts.slice(start, end);
             setContactsToShow([...contactsToShow, ...slicedContacts]);
-     //  }
     };
 
     const handleShowMoreContacts = () => {
