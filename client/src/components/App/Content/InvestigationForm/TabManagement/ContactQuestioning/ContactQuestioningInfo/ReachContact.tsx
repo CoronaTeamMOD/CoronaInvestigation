@@ -61,7 +61,7 @@ const ReachContact = (props: Props) => {
                                     }
                                     value={currentValue}
                                     onChange={(e, data) => {
-                                        let contactValidation = validateContact(methods.getValues(), ValidationReason.SAVE_CONTACT)
+                                        let contactValidation = validateContact(interactedContact, ValidationReason.SAVE_CONTACT)
                                         const missingFieldsText = contactValidation?.valid ? '' : removeUnusePartOfError(contactValidation.error);
                                         changeContactStatus(
                                             interactedContact,
