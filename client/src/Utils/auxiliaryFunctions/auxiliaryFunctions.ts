@@ -40,8 +40,9 @@ const isIdValid = (id: string | null | undefined) => {
 
 const isPalestineIdValid = (id: string | null | undefined): boolean => {
     if (id) {
-        if (id.length === idLength) {
-            return PALESTINE_ID_REGEX.test(String(id));
+        const idNumber = typeof(id) == 'number' ? `${id}` : id;
+        if (idNumber.length === idLength) {
+            return PALESTINE_ID_REGEX.test(String(idNumber));
         } else {
             return false;
         }
@@ -51,8 +52,10 @@ const isPalestineIdValid = (id: string | null | undefined): boolean => {
 
 const isOtherIdValid = (id: string | null | undefined): boolean => {
     if (id) {
-        if (id.length <= otherIdLength) {
-            return PASSPORT_DASH_REGEX.test(String(id));
+        const idNumber = typeof(id) == 'number' ? `${id}` : id;
+        if (idNumber.length <= otherIdLength) {
+            return PASSPORT_DASH_REGEX.test(String(idNumber
+                ));
         } else {
             return false;
         }
