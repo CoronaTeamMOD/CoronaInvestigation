@@ -19,7 +19,7 @@ import InteractedContactAccordion from './InteractedContactAccordion';
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
-const SIZE_OF_CONTACTS = 4;//10;
+const SIZE_OF_CONTACTS = 4;
 let loaded = SIZE_OF_CONTACTS;
 
 const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Element => {
@@ -51,10 +51,8 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     });
 
     const loopWithSlice = (start: number, end: number) => {
-        if (contactsToShow.length < interactedContacts.length) {
             const slicedContacts = interactedContacts.slice(start, end);
             setContactsToShow([...contactsToShow, ...slicedContacts]);
-        }
     };
 
     const handleShowMoreContacts = () => {
@@ -65,9 +63,10 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     const listenScrollEvent = (event: React.UIEvent<HTMLDivElement>): void => {
         const element = event.target as HTMLElement;
         if (element.scrollHeight - element.scrollTop >= element.clientHeight && element.scrollHeight - element.scrollTop < element.clientHeight + 50) {
-            handleShowMoreContacts();
-        }
+                handleShowMoreContacts();
+            }
     }
+
 
 
     useEffect(() => {
@@ -77,16 +76,18 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     }, []);
 
     useEffect(() => {
-
-        if (interactedContacts && interactedContacts.length > 0) {
+        if (interactedContacts && interactedContacts.length > 0 ){
             setAllContactedInteractions(interactedContacts);
-        }
-
-        if (interactedContacts) {
-            loaded = SIZE_OF_CONTACTS;
-            loopWithSlice(0, SIZE_OF_CONTACTS);
-        }
-
+            if (interactedContacts.length>SIZE_OF_CONTACTS) {
+                loaded = SIZE_OF_CONTACTS;
+                setContactsToShow(interactedContacts.slice(0, SIZE_OF_CONTACTS));
+            }
+            else  {
+                
+                loaded = interactedContacts.length;
+                setContactsToShow(interactedContacts);
+            }
+       } 
     }, [interactedContacts]);
 
 

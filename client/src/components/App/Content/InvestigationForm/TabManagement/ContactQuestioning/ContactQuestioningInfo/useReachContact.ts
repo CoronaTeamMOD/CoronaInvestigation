@@ -10,6 +10,8 @@ import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
 import interactedContactsReducer from 'redux/InteractedContacts/interactedContactsReducer';
+import InteractedContactFields from 'models/enums/InteractedContact';
+import ContactQuestioningFieldsNames from '../ContactQuestioningFieldsNames';
 
 const useReachContact = (props: Props) => {
     const { errors, getValues, formState } = useFormContext<GroupedInteractedContact>();
@@ -37,7 +39,7 @@ const useReachContact = (props: Props) => {
         event.stopPropagation();
         const formHaveMissingFields = missingFieldsText !== '';
         if (selectedStatus?.id === ContactStatusCodes.COMPLETED) {
-            if (!formHasErrors || Object.keys(formHasErrors).length === 0 || formHasErrors.constructor === Object) {
+            if (!formHasErrors || Object.keys(errors).length === 0 ) {
                 if (!formHaveMissingFields) {
                     alertWarning('האם אתה בטוח שתרצה להעביר את המגע לסטטוס הושלם?', {
                         text: 'לאחר העברת המגע, לא תהיה אפשרות לערוך שינויים',
@@ -56,7 +58,7 @@ const useReachContact = (props: Props) => {
                         }
                     });
                 }
-                if (formHaveMissingFields && missingFieldsText !== '') {
+                if ((formHaveMissingFields && missingFieldsText !== '') ) {
                     alertError('לא ניתן לשנות סטטוס להושלם', {
                         text: formHaveMissingFieldsText.concat(missingFieldsText),
                         confirmButtonColor: theme.palette.primary.main,
