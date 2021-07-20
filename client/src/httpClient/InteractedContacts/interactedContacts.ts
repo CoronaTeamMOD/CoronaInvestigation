@@ -31,8 +31,8 @@ export const getAllInteractedContacts = async (minimalDate?: Date): Promise<Grou
                 if (contact.personInfo) {
                     const existingContactType = (contactsMap.get(contact.personInfo)?.contactType);
                     const newEvent: GroupedInteractedContactEvent = {
-                        date: contact.contactDate,
-                        name: contact.placeName || '',
+                        date: contact?.contactEventByContactEvent?.startTime,
+                        name: contact?.contactEventByContactEvent?.placeName || '',
                         contactType: +contact.contactType
                     };
                     const newEventArr = (contactsMap.get(contact.personInfo)?.contactEvents || []).concat(newEvent);
