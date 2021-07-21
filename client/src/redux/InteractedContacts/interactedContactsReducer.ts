@@ -43,6 +43,12 @@ const interactedContactsReducer = (state = initialState, action: Actions.Interac
                 pending: false,
                 error: action.error
             }
+        case Actions.SET_INTERACTED_CONTACTS_FORM_STATE:
+            return {
+                ...state,
+                //interactedContacts: action.payload.interactedContacts,
+                formState: action.payload.formState
+            }
         case Actions.SET_INTERACTED_CONTACT_PENDING:
             return {
                 ...state,
