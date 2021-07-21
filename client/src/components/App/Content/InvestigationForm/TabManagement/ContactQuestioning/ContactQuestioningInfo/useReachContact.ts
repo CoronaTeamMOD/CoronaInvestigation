@@ -8,12 +8,22 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
+import { useState } from 'react';
+import { store } from 'redux/store';
 
 const useReachContact = (props: Props) => {
     const { errors, getValues, formState } = useFormContext<GroupedInteractedContact>();
     const { saveContact, parsePerson, formValues, index } = props;
     const { alertWarning, alertError } = useCustomSwal();
     const dispatch = useDispatch();
+    const [contactValid, setContactValid] = useState<boolean>(true);
+
+    store.subscribe(() => {
+        const formState = store.getState().interactedContacts.formState
+        if (formState.size > 0 && contactValid != formState.get(formValues.id)?.isValid) {
+            setContactValid(!!formState.get(formValues.id)?.isValid);
+        }
+    })
 
     const formHaveMissingFieldsText = `למגע זה ישנם שדות לא תקינים:`
 
@@ -35,7 +45,7 @@ const useReachContact = (props: Props) => {
         event.stopPropagation();
         const formHaveMissingFields = missingFieldsText !== '';
         if (selectedStatus?.id === ContactStatusCodes.COMPLETED) {
-            if (!formHasErrors || Object.keys(errors).length === 0 ) {
+            if (contactValid ) {
                 if (!formHaveMissingFields) {
                     alertWarning('האם אתה בטוח שתרצה להעביר את המגע לסטטוס הושלם?', {
                         text: 'לאחר העברת המגע, לא תהיה אפשרות לערוך שינויים',
