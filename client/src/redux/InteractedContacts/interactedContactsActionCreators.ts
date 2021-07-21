@@ -18,7 +18,7 @@ export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, Int
         const contacts = await getAllInteractedContacts(minimalDate);
         let map = new Map();
         for (let i = 0; i < contacts.length; i++) {
-            const valid = await ContactQuestioningSchema.isValid({...contacts[i],identificationType : contacts[i]?.identificationType?.id});
+            const valid = await ContactQuestioningSchema.isValid({ ...contacts[i], identificationType: contacts[i]?.identificationType?.id });
             map.set(contacts[i].id, new FormStateObject(valid));
         }
         dispatch({
@@ -39,20 +39,20 @@ export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, Int
 
 type ValueOf<T> = T[keyof T];
 
-export const setInteractedContact = 
-(id: number, propertyName: keyof GroupedInteractedContact, value: ValueOf<GroupedInteractedContact>, formState: FormState<GroupedInteractedContact>):
-    ThunkAction<void, StoreStateType, unknown, actionTypes.InteractedContactAction> => async (dispatch, getState) => {
-        dispatch({
-            type: actionTypes.SET_INTERACTED_CONTACT_FORM_STATE,
-            payload: {
-                interactedContacts: getState().interactedContacts.interactedContacts.filter(x => x.id == id).map(contact => {
-                    (contact[propertyName] as ValueOf<GroupedInteractedContact>) = value;
-                    return contact;
-                }),
-                formState: getState().interactedContacts.formState.set(id, new FormStateObject(formState.isValid)),
-            }
-        });
-    }
+export const setInteractedContact =
+    (id: number, propertyName: keyof GroupedInteractedContact, value: ValueOf<GroupedInteractedContact>, formState: FormState<GroupedInteractedContact>):
+        ThunkAction<void, StoreStateType, unknown, actionTypes.InteractedContactAction> =>  (dispatch, getState) => {
+            dispatch({
+                type: actionTypes.SET_INTERACTED_CONTACTS_FORM_STATE,
+                payload: {
+                    interactedContacts: getState().interactedContacts.interactedContacts.filter(x => x.id == id).map(contact => {
+                        (contact[propertyName] as ValueOf<GroupedInteractedContact>) = value;
+                        return contact;
+                    }),
+                    formState: getState().interactedContacts.formState.set(id, new FormStateObject(Object.keys(formState.errors).length == 0))
+                }
+            });
+        }
 
 export const updateInteractedContacts = (contacts: InteractedContact[]):
     ThunkAction<void, InteractedContactsState, unknown, actionTypes.InteractedContactAction> => async dispatch => {

@@ -32,7 +32,7 @@ const ReachContact = (props: Props) => {
     const { isFieldDisabled, validateContact } = useContactFields(methods.getValues("contactStatus"));
 
     const { changeContactStatus } = useReachContact({
-        saveContact, parsePerson, formValues: methods.getValues(), index
+        saveContact, parsePerson, formValues: interactedContact, index
     });
 
     const removeUnusePartOfError = (errorMsg: string) => {

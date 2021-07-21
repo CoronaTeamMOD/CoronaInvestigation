@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { ExpandMore } from '@material-ui/icons';
-import { FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { DeepMap, FieldError, FormProvider, useForm, useFormContext } from 'react-hook-form';
 import {
     Accordion, AccordionDetails, AccordionSummary,
     AccordionActions, Divider, Grid, Collapse
@@ -24,6 +24,7 @@ import ContactQuestioningClinical from './ContactQuestioningClinical';
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 import StoreStateType from 'redux/storeStateType';
 import { useSelector } from 'react-redux';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 const InteractedContactAccordion = (props: Props) => {
 
@@ -42,6 +43,8 @@ const InteractedContactAccordion = (props: Props) => {
 
     const watchCurrentStatus: number = methods.watch(InteractedContactFields.CONTACT_STATUS);
 
+    const { alertWarning } = useCustomSwal();
+    
     const generateBackgroundColorClass = (colorCode: Number | any) => {
         switch (colorCode) {
             case '1':
@@ -75,6 +78,20 @@ const InteractedContactAccordion = (props: Props) => {
 
     const formValues = interactedContact;
 
+    const saveContactClicked = () => {
+        const currentParsedPerson = parsePerson(
+            interactedContact
+        );
+        saveContact(currentParsedPerson);
+        if (methods.errors) {
+            if ((methods.errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_TYPE]) {
+                alertWarning('שים לב במקרה של נתוני זיהוי כפולים, סוג הזיהוי לא יישמר לבסיס הנתונים. ');
+            }
+            else if ((methods.errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_NUMBER]) {
+                alertWarning('שים לב במקרה של נתוני זיהוי כפולים, מספר תעודה לא יישמר לבסיס הנתונים. ');
+            }
+        }
+    };
     const getAccordion =
         () => {
             return (
@@ -138,12 +155,7 @@ const InteractedContactAccordion = (props: Props) => {
                                     <PrimaryButton
                                         disabled={shouldDisable(watchCurrentStatus)}
                                         test-id='saveContact'
-                                        onClick={() => {
-                                            const currentParsedPerson = parsePerson(
-                                                interactedContact
-                                            );
-                                            saveContact(currentParsedPerson);
-                                        }}
+                                        onClick={() => saveContactClicked()}
                                     >
                                         שמור מגע
                                     </PrimaryButton>
