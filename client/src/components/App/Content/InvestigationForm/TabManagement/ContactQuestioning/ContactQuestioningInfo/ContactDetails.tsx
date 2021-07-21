@@ -16,6 +16,7 @@ import GetGroupedInvestigationsIds from 'Utils/GroupedInvestigationsContacts/get
 
 import useStyles from '../ContactQuestioningStyles';
 import { store } from 'redux/store';
+import { useEffect } from 'react';
 
 const TIGHT_CONTACT_STATUS = 1;
 
@@ -61,13 +62,20 @@ const ContactDetails = (props: Props) => {
         return prev;
     });
 
-    store.subscribe(() => {
+    useEffect(()=>{
+        setContactValidation();
+    },[])
+
+     store.subscribe(() => {
+        setContactValidation();
+     })
+
+    const setContactValidation =()=>{
         const formState = store.getState().interactedContacts.formState
         if (formState.size > 0 && contactValid != formState.get(interactedContact.id)?.isValid) {
             setContactValid(!!formState.get(interactedContact.id)?.isValid);
         }
-    })
-
+    }
 
     const finalEpidemiologicalStatusDesc = interactedContact.finalEpidemiologicalStatusDesc;
 
