@@ -15,9 +15,7 @@ import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteracte
 import GetGroupedInvestigationsIds from 'Utils/GroupedInvestigationsContacts/getGroupedInvestigationIds';
 
 import useStyles from '../ContactQuestioningStyles';
-import ContactQuestioningSchema from '../ContactSection/Schemas/ContactQuestioningSchema';
-import { FormStateObject } from 'redux/InteractedContacts/interactedContactsReducer';
-import { invalidDateText } from 'commons/Schema/messages';
+import { store } from 'redux/store';
 
 const TIGHT_CONTACT_STATUS = 1;
 
@@ -44,10 +42,7 @@ const ContactDetails = (props: Props) => {
     const classes = useStyles({});
 
     const [showRulerStatusInfo, setShowRulerStatusInfo] = useState<boolean>(false);
-
-    const formStates = useSelector<StoreStateType, Map<number, FormStateObject>>(state => state.interactedContacts.formState);
-
-    const isFormInvalid = JSON.stringify(errors) !== '{}' ? true : (formStates?.get ? !formStates.get(interactedContact.id)?.isValid : false);
+    const [contactValid, setContactValid] = useState<boolean>(true);
 
     const { isInvolvedThroughFamily } = useInvolvedContact();
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(
@@ -65,6 +60,14 @@ const ContactDetails = (props: Props) => {
         }
         return prev;
     });
+
+    store.subscribe(() => {
+        const formState = store.getState().interactedContacts.formState
+        if (formState.size > 0 && contactValid != formState.get(interactedContact.id)?.isValid) {
+            setContactValid(!!formState.get(interactedContact.id)?.isValid);
+        }
+    })
+
 
     const finalEpidemiologicalStatusDesc = interactedContact.finalEpidemiologicalStatusDesc;
 
@@ -98,9 +101,9 @@ const ContactDetails = (props: Props) => {
                 >
                     <MenuItem >
                         <Grid container>
-                            <Typography variant='body2' className={classes.rulerFieldInfo }>תחלואה: </Typography>
-                            <Typography variant='body2' className={classes.contactDetail }>
-                            <b>{interactedContact.caseStatusDesc}</b>
+                            <Typography variant='body2' className={classes.rulerFieldInfo}>תחלואה: </Typography>
+                            <Typography variant='body2' className={classes.contactDetail}>
+                                <b>{interactedContact.caseStatusDesc}</b>
                             </Typography>
                         </Grid>
                     </MenuItem>
@@ -150,7 +153,7 @@ const ContactDetails = (props: Props) => {
                 <GroupedContactIcon />
             )}
             {
-                isFormInvalid && <InvalidFormIcon />
+                !contactValid && <InvalidFormIcon />
             }
             <Grid
                 container
