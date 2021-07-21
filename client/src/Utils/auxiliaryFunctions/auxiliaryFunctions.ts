@@ -22,8 +22,9 @@ const get = (obj: any, path: string, defaultValue = undefined) => {
 const isIdValid = (id: string | null | undefined) => {
     let sum = 0;
     if (Boolean(id)) {
-        if (id?.length === 9) {
-            Array.from(id)?.forEach((digit: string, index: number) => {
+        const idNumber = typeof(id) == 'number' ? `${id}` : id;
+        if (idNumber?.length === 9) {
+            Array.from(idNumber)?.forEach((digit: string, index: number) => {
                 let digitMul = parseInt(digit) * ((index % 2) + 1);
                 if (digitMul > 9) {
                     digitMul -= 9;
@@ -39,8 +40,9 @@ const isIdValid = (id: string | null | undefined) => {
 
 const isPalestineIdValid = (id: string | null | undefined): boolean => {
     if (id) {
-        if (id.length === idLength) {
-            return PALESTINE_ID_REGEX.test(String(id));
+        const idNumber = typeof(id) == 'number' ? `${id}` : id;
+        if (idNumber.length === idLength) {
+            return PALESTINE_ID_REGEX.test(String(idNumber));
         } else {
             return false;
         }
@@ -50,8 +52,10 @@ const isPalestineIdValid = (id: string | null | undefined): boolean => {
 
 const isOtherIdValid = (id: string | null | undefined): boolean => {
     if (id) {
-        if (id.length <= otherIdLength) {
-            return PASSPORT_DASH_REGEX.test(String(id));
+        const idNumber = typeof(id) == 'number' ? `${id}` : id;
+        if (idNumber.length <= otherIdLength) {
+            return PASSPORT_DASH_REGEX.test(String(idNumber
+                ));
         } else {
             return false;
         }

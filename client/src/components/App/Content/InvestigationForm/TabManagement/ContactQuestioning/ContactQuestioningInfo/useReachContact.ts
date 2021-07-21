@@ -1,4 +1,5 @@
-import { useFormContext } from 'react-hook-form';
+import { FormState, useFormContext } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import theme from 'styles/theme';
 import ContactStatus from 'models/ContactStatus';
@@ -6,24 +7,45 @@ import InteractedContact from 'models/InteractedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
+import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
+import { useState } from 'react';
+import { store } from 'redux/store';
 
 const useReachContact = (props: Props) => {
-    const { errors, getValues } = useFormContext();
+    const { errors, getValues, formState } = useFormContext<GroupedInteractedContact>();
     const { saveContact, parsePerson, formValues, index } = props;
-    const { alertWarning , alertError } = useCustomSwal();
+    const { alertWarning, alertError } = useCustomSwal();
+    const dispatch = useDispatch();
+    const [contactValid, setContactValid] = useState<boolean>(true);
+
+    store.subscribe(() => {
+        const formState = store.getState().interactedContacts.formState
+        if (formState.size > 0 && contactValid != formState.get(formValues.id)?.isValid) {
+            setContactValid(!!formState.get(formValues.id)?.isValid);
+        }
+    })
+
     const formHaveMissingFieldsText = `למגע זה ישנם שדות לא תקינים:`
 
-    const formHasErrors = errors.form ? Boolean(errors.form[index]) : false;
+    const formHasErrors = errors ? Boolean(errors) : false;
     const changeContactStatus = (
+        contact: GroupedInteractedContact,
         event: React.ChangeEvent<{}>,
         selectedStatus: ContactStatus | null,
         onChange: (...event: any[]) => void,
         missingFieldsText: string
     ) => {
+
+        const dispachUpdateStatus = (id: number, statusId: number, formState: FormState<GroupedInteractedContact>) => new Promise<void>((resolve, reject) => {
+            dispatch(setInteractedContact(id, 'contactStatus', statusId, formState));
+            resolve();
+        });
+
+
         event.stopPropagation();
-        const formHaveMissingFields = missingFieldsText!=='';
+        const formHaveMissingFields = missingFieldsText !== '';
         if (selectedStatus?.id === ContactStatusCodes.COMPLETED) {
-            if (!formHasErrors) {
+            if (contactValid ) {
                 if (!formHaveMissingFields) {
                     alertWarning('האם אתה בטוח שתרצה להעביר את המגע לסטטוס הושלם?', {
                         text: 'לאחר העברת המגע, לא תהיה אפשרות לערוך שינויים',
@@ -35,8 +57,10 @@ const useReachContact = (props: Props) => {
                     }).then((result) => {
                         if (result.value) {
                             onChange(selectedStatus?.id);
-                            let contactedPerson = getValues().form[index];
-                            saveContact(parsePerson(contactedPerson, index));
+                            dispachUpdateStatus(contact.id, getValues("contactStatus") as number, formState).then(() => {
+                                saveContact(parsePerson(contact as GroupedInteractedContact));
+                            })
+
                         }
                     });
                 }
@@ -45,7 +69,7 @@ const useReachContact = (props: Props) => {
                         text: formHaveMissingFieldsText.concat(missingFieldsText),
                         confirmButtonColor: theme.palette.primary.main,
                         confirmButtonText: 'אוקיי',
-                    }).then((result) => {}); 
+                    }).then((result) => { });
                 }
             } else {
                 alertError('לא ניתן לשנות סטטוס להושלם', {
@@ -57,8 +81,12 @@ const useReachContact = (props: Props) => {
             }
         } else if (selectedStatus?.id) {
             onChange(selectedStatus?.id);
-            saveContact(parsePerson(formValues, index));
+            dispachUpdateStatus(contact.id, getValues("contactStatus") as number, formState).then(() => {
+                saveContact(parsePerson(contact as GroupedInteractedContact));
+            });
+
         }
+
     };
 
     return {
@@ -66,11 +94,13 @@ const useReachContact = (props: Props) => {
     };
 };
 
+
+
 export default useReachContact;
 
 interface Props {
     saveContact: (interactedContact: InteractedContact) => boolean;
-    parsePerson: (person: GroupedInteractedContact, index: number) => InteractedContact;
+    parsePerson: (person: GroupedInteractedContact) => InteractedContact;
     formValues: GroupedInteractedContact;
     index: number;
 }

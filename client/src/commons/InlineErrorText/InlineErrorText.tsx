@@ -17,7 +17,7 @@ const InlineErrorText = (props: Props) => {
 interface Props {
     error? : {
         type: string,
-        message: string,
+        message?: string | undefined,
     };    
 }
 

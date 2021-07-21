@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { ExpandMore, ExpandLess } from '@material-ui/icons';
 import { useFormContext } from 'react-hook-form';
-import { Tooltip, Typography, Grid } from '@material-ui/core';
+import { ExpandMore, ExpandLess } from '@material-ui/icons';
+import { Tooltip, Typography, Grid, Button, MenuItem, Menu } from '@material-ui/core';
 
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
@@ -15,20 +15,35 @@ import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteracte
 import GetGroupedInvestigationsIds from 'Utils/GroupedInvestigationsContacts/getGroupedInvestigationIds';
 
 import useStyles from '../ContactQuestioningStyles';
+import { store } from 'redux/store';
+import { useEffect } from 'react';
 
 const TIGHT_CONTACT_STATUS = 1;
 
 const ContactDetails = (props: Props) => {
 
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClick = (event: any) => {
+        event.stopPropagation();
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = (event: any) => {
+        event.stopPropagation();
+        setAnchorEl(null);
+    };
+
+    const handleClickStopPropagation = (event: any) => {
+        event.stopPropagation();
+    };
+
     const { errors } = useFormContext();
-    const { index , interactedContact } = props;
+    const { index, interactedContact } = props;
     const classes = useStyles({});
 
     const [showRulerStatusInfo, setShowRulerStatusInfo] = useState<boolean>(false);
-
-    const formErrors = errors.form ? (errors.form[index] ? errors.form[index] : {}) : {};
-    const formHasErrors = Object.entries(formErrors)
-        .some(([key, value]) => value !== undefined);
+    const [contactValid, setContactValid] = useState<boolean>(true);
 
     const { isInvolvedThroughFamily } = useInvolvedContact();
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(
@@ -38,8 +53,8 @@ const ContactDetails = (props: Props) => {
     const { isGroupedContact } = GetGroupedInvestigationsIds();
 
     const highestContactType = interactedContact.contactEvents.reduce((prev, current) => {
-        if(current.contactType === TIGHT_CONTACT_STATUS)  {
-            if(prev.contactType === TIGHT_CONTACT_STATUS) {
+        if (current.contactType === TIGHT_CONTACT_STATUS) {
+            if (prev.contactType === TIGHT_CONTACT_STATUS) {
                 return (new Date(prev.date).getTime() > new Date(current.date).getTime()) ? prev : current
             }
             return current
@@ -47,85 +62,96 @@ const ContactDetails = (props: Props) => {
         return prev;
     });
 
-    const handleStatusInfoClick = (event: React.ChangeEvent<{}>) => {
-        event.stopPropagation();
-        setShowRulerStatusInfo(!showRulerStatusInfo);
-    };
-    const colorCode = interactedContact.colorCode;
-    
-    const generateBackgroundColorClass = (colorCode: Number | any) => {
-        switch (colorCode) {
-            case '1':
-                return classes.red;
-            case '2':
-                return classes.orange;
-            case '3':
-                return classes.green;
-            case '4':
-                return classes.yellow;
-            default:
-                return classes.white;
+    useEffect(()=>{
+        setContactValidation();
+    },[])
+
+     store.subscribe(() => {
+        setContactValidation();
+     })
+
+    const setContactValidation =()=>{
+        const formState = store.getState().interactedContacts.formState
+        if (formState.size > 0 && contactValid != formState.get(interactedContact.id)?.isValid) {
+            setContactValid(!!formState.get(interactedContact.id)?.isValid);
         }
     }
-    const backgroundColorClass: any  = generateBackgroundColorClass(colorCode)
+
     const finalEpidemiologicalStatusDesc = interactedContact.finalEpidemiologicalStatusDesc;
 
-    const tooltipText = highestContactType.contactType === TIGHT_CONTACT_STATUS 
+    const tooltipText = highestContactType.contactType === TIGHT_CONTACT_STATUS
         ? formatDate(highestContactType.date)
         : '';
 
-    const renderRulerStatusInfo = () => {
+    const renderRulerButtonAndStatusInfo = () => {
         return (
-            <Grid 
-                container
-                xs={12}
-                direction='row-reverse'
-                justify='flex-start'
-                className={classes.statusInfo}
-            >
-                <Grid container item xs={2} direction='column'>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    תחלואה:
+            <>
+                <Button
+                    aria-controls='simple-menu' aria-haspopup='true'
+                    className={classes.statusInfoBtn}
+                    onClick={handleClick}
+                >
+                    {!anchorEl && <ExpandLess />}
+                    {!!anchorEl && <ExpandMore />}
+                    <Typography variant='body2' className={classes.contactDetail}>
+                        <b>מרכיבי הסטטוס:</b>{' '}
                     </Typography>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    <b>{interactedContact.certificateEligibilityTypeDesc}</b>
-                    </Typography>
-                </Grid>
-                <Grid container item xs={3} direction='column'>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    חסינות סרולוגית:
-                    </Typography>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    <b>{interactedContact.immuneDefinitionBasedOnSerologyStatusDesc}</b> 
-                    </Typography>
-                </Grid>
-                <Grid container item xs={2} direction='column'>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    התחסנות:
-                    </Typography>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    <b>{interactedContact.vaccinationStatusDesc}</b>
-                    </Typography>
-                </Grid>
-                <Grid container item xs={2} direction='column'>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    דיווח בידוד:
-                    </Typography>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    <b>{interactedContact.isolationReportStatusDesc}</b>
-                    </Typography>
-                </Grid>
-                <Grid container item xs={2} direction='column'>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    חובת בידוד:
-                    </Typography>
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    <b>{interactedContact.isolationObligationStatusDesc}</b>
-                    </Typography>
-                </Grid>
-            </Grid>
+                </Button>
+
+                <Menu
+                    id="simple-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    className={classes.statusInfoMenu}
+                    open={!!anchorEl}
+                    onClose={handleClose}
+                    onClick={handleClickStopPropagation}
+                >
+                    <MenuItem >
+                        <Grid container>
+                            <Typography variant='body2' className={classes.rulerFieldInfo}>תחלואה: </Typography>
+                            <Typography variant='body2' className={classes.contactDetail}>
+                                <b>{interactedContact.caseStatusDesc}</b>
+                            </Typography>
+                        </Grid>
+                    </MenuItem>
+                    <MenuItem>
+                        <Grid container>
+                            <Typography variant='body2' className={classes.rulerFieldInfo}> חסינות סרולוגית: </Typography>
+                            <Typography variant='body2' className={classes.contactDetail}>
+                                <b>{interactedContact.immuneDefinitionBasedOnSerologyStatusDesc}</b>
+                            </Typography>
+                        </Grid>
+                    </MenuItem>
+                    <MenuItem>
+                        <Grid container>
+                            <Typography variant='body2' className={classes.rulerFieldInfo}>התחסנות: </Typography>
+                            <Typography variant='body2' className={classes.contactDetail}>
+                                <b>{interactedContact.vaccinationStatusDesc}</b>
+                            </Typography>
+                        </Grid>
+                    </MenuItem>
+                    <MenuItem>
+                        <Grid container>
+                            <Typography variant='body2' className={classes.rulerFieldInfo}>דיווח בידוד:</Typography>
+                            <Typography variant='body2' className={classes.contactDetail}>
+                                <b>{interactedContact.isolationReportStatusDesc}</b>
+                            </Typography>
+                        </Grid>
+                    </MenuItem>
+                    <MenuItem>
+                        <Grid container item>
+                            <Typography variant='body2' className={classes.rulerFieldInfo}>חובת בידוד:</Typography>
+                            <Typography variant='body2' className={classes.contactDetail}>
+                                <b>{interactedContact.isolationObligationStatusDesc}</b>
+                            </Typography>
+                        </Grid>
+                    </MenuItem>
+                </Menu>
+            </>
         )
     }
+
     return (
         <>
             {isInvolvedThroughFamily(interactedContact.involvementReason) && (
@@ -135,64 +161,41 @@ const ContactDetails = (props: Props) => {
                 <GroupedContactIcon />
             )}
             {
-                formHasErrors && <InvalidFormIcon />
+                !contactValid && <InvalidFormIcon />
             }
-             <Grid
+            <Grid
                 container
                 item
                 xs={10}
                 direction='row-reverse'
                 alignItems='center'
                 justify='space-evenly'
-                className={backgroundColorClass}
             >
                 <Typography variant='body2' className={classes.contactDetail}>
                     <b>שם פרטי:</b>{' '}
                     {interactedContact.firstName}
                 </Typography>
                 <Typography variant='body2' className={classes.contactDetail}>
-                <b>שם משפחה:</b>{' '}
-                {interactedContact.lastName}
+                    <b>שם משפחה:</b>{' '}
+                    {interactedContact.lastName}
                 </Typography>
                 {interactedContact.contactEvents && (
                     <Tooltip title={tooltipText} placement='top' arrow>
                         <Typography variant='body2'>
                             <b>סוג מגע:</b>{' '}
-                                {
-                                    contactTypes.get(highestContactType.contactType)
-                                        ?.displayName
-                                }
+                            {
+                                contactTypes.get(highestContactType.contactType)
+                                    ?.displayName
+                            }
                         </Typography>
                     </Tooltip>
                 )}
                 <Typography variant='body2' className={classes.contactDetail}>
-                <b>סטטוס אפידמיולוגי מסכם:</b>{' '}
-                {finalEpidemiologicalStatusDesc}
-                
+                    <b>סטטוס אפידמיולוגי מסכם:</b>{' '}
+                    {finalEpidemiologicalStatusDesc}
+
                 </Typography>
-                <Grid 
-                    className={classes.statusInfoBtn}
-                    container
-                    direction='row-reverse'
-                    xs={3}
-                    justify='flex-end'
-                    onClick={handleStatusInfoClick}
-                >
-                    <Typography variant='body2' className={classes.contactDetail }>
-                    <b>מרכיבי הסטטוס:</b>{' '}
-                    </Typography>
-                    {!showRulerStatusInfo &&<ExpandLess/>}
-                    {showRulerStatusInfo &&<ExpandMore/>}
-                </Grid>
-                {showRulerStatusInfo && 
-                    <Grid 
-                        className={classes.statusInfoBtn}
-                        container
-                        direction='row-reverse'
-                    >
-                        {renderRulerStatusInfo()}
-                    </Grid>
-                }
+                <>{renderRulerButtonAndStatusInfo()}</>
             </Grid>
         </>
     );
@@ -202,5 +205,5 @@ export default ContactDetails;
 
 interface Props {
     interactedContact: GroupedInteractedContact;
-    index : number;
+    index: number;
 };
