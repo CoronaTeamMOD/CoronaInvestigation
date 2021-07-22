@@ -35,5 +35,5 @@ INSERT INTO public.place_sub_types (id,display_name,parent_place_type,main_class
     ON CONFLICT (id) DO UPDATE SET display_name = 'בר / פאב' , parent_place_type = 'מקום בילוי', main_classification = 1;
 	
 INSERT INTO public.place_sub_types (id,display_name,parent_place_type,main_classification)
-    VALUES (114, 'משרד','מקומות ציבוריים נוספים',1)
-    ON CONFLICT (id) DO UPDATE SET display_name = 'משרד' , parent_place_type = 'מקומות ציבוריים נוספים', main_classification = 1;
+    VALUES (114, 'משרד','משרד',1)
+    ON CONFLICT (id) DO UPDATE SET display_name = 'משרד' , parent_place_type = 'משרד', main_classification = 1;
