@@ -16,6 +16,7 @@ import useStyles from './ContactQuestioningStyles';
 import { FormInputs } from './ContactQuestioningInterfaces';
 import useContactQuestioning from './useContactQuestioning';
 import InteractedContactAccordion from './InteractedContactAccordion';
+import {contactQuestioningService} from 'services/contactQuestioning.service';
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
@@ -71,6 +72,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
         loadInteractedContacts();
         loadFamilyRelationships();
         loadContactStatuses();
+        contactQuestioningService.resetIdentityValidation();
     }, []);
 
     useEffect(() => {

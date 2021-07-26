@@ -3,7 +3,7 @@ import { differenceInYears } from 'date-fns';
 import React, { useState, useEffect } from 'react';
 import { Controller, DeepMap, FieldError, useFormContext } from 'react-hook-form';
 import { Avatar, Grid, Typography, Select, MenuItem, FormHelperText, FormControl } from '@material-ui/core';
-
+import {take} from 'rxjs/operators'
 
 import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
@@ -27,6 +27,7 @@ import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
 import { FormInputs } from './ContactQuestioningInterfaces';
 import { ErrorSharp } from '@material-ui/icons';
 import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
+import {contactQuestioningService} from 'services/contactQuestioning.service';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
     const interactedContacts = useSelector<StoreStateType, GroupedInteractedContact[]>(state => state.interactedContacts.interactedContacts);
@@ -51,6 +52,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
 
     const [age, setAge] = useState<string>(calcAge(interactedContact.birthDate));
     const [isId, setIsId] = useState<boolean>(false);
+   
 
     const { isFieldDisabled } = useContactFields(methods.getValues("contactStatus"));
     const classes = useStyles();
@@ -66,12 +68,26 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     const watchIdentificationType = watch(identificationTypeFieldName);
     const watchIdentificationNumber = watch(identificationNumberFieldName);
 
+    var isDuplicateId=false;
+
+    const setDuplicateIdentityValidation=(isDuplicateIdentity:boolean)=>{
+        if (isDuplicateIdentity){
+            methods.setError(InteractedContactFields.IDENTIFICATION_NUMBER, { message: "מזהה זה כבר קיים" , type:"duplicateIdentity"});
+        }    
+        else if (errors && (errors as any)[InteractedContactFields.IDENTIFICATION_NUMBER]?.type === "duplicateIdentity"){
+            methods.clearErrors(InteractedContactFields.IDENTIFICATION_NUMBER);
+        }
+    }
+
     useEffect(() => {
+        const isValid =contactQuestioningService.initContactDuplicateIdentityValidation(interactedContact);
+        setDuplicateIdentityValidation(!isValid);
         methods.trigger();
         const shouldDisable =
             (shouldDisableIdByReopen &&
                 !!interactedContact.identificationNumber);
         setShouldIdDisable(shouldDisable);
+
     }, []);
 
     useEffect(() => {
@@ -84,16 +100,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     }, [watchIdentificationType, watchIdentificationNumber]);
 
 
-    const validateIdentityData = (id: number, identityType: number, identityNumber: string) => {
-        let duplicate = [];
-        if (id && identityType && identityNumber) {
-            duplicate = interactedContacts.filter(contact => {
-                return id !== contact.id && identityType === contact.identificationType?.id && identityNumber === contact.identificationNumber;
-            })
-        }
-
-        return duplicate.length == 0;
-    }
+ 
 
     return (
         <Grid item xs={4}>
@@ -122,14 +129,13 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                         {...props}
                                         disabled={isFieldDisabled || shouldIdDisable || isViewMode}
                                         onChange={(event) => {
-                                            if (validateIdentityData(interactedContact.id, event.target.value as number, methods.getValues("identificationNumber"))) {
-                                                props.onChange(event.target.value);
-                                                let identityObject = identificationTypes.find(obj => obj.id == event.target.value);
-                                                dispatch(setInteractedContact(interactedContact.id, 'identificationType', identityObject as IdentificationType, methods.formState));
+                                            props.onChange(event.target.value);
+                                            const duplicatevalidation = contactQuestioningService.validateIdentity(interactedContact.id, event.target.value as number, methods.getValues("identificationNumber"));
+                                            if (!duplicatevalidation) {
+                                                methods.setError(InteractedContactFields.IDENTIFICATION_NUMBER, { message: "מזהה זה כבר קיים" , type:"duplicateIdentity"});  
                                             }
-                                            else {
-                                                methods.setError(InteractedContactFields.IDENTIFICATION_TYPE, { message: "מזהה זה כבר קיים" });
-                                            }
+                                            let identityObject = identificationTypes.find(obj => obj.id == event.target.value);
+                                            dispatch(setInteractedContact(interactedContact.id, 'identificationType', identityObject as IdentificationType, methods.formState));
                                         }}
                                         MenuProps={{
                                             anchorOrigin: {
@@ -179,15 +185,14 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             testId='identificationNumber'
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue);
-
                                             }}
                                             onBlur={() => {
-                                                if (validateIdentityData(interactedContact.id, methods.getValues("identificationType") as any, methods.getValues("identificationNumber"))) {
-                                                    dispatch(setInteractedContact(interactedContact.id, 'identificationNumber', methods.getValues("identificationNumber"), methods.formState))
+                                                const duplicateValidation = contactQuestioningService.validateIdentity(interactedContact.id, methods.getValues("identificationType") as any, methods.getValues("identificationNumber"));
+                                                if (!duplicateValidation) {
+                                                    methods.setError(InteractedContactFields.IDENTIFICATION_NUMBER, { message: "מזהה זה כבר קיים" , type:"duplicateIdentity"});  
                                                 }
-                                                else {
-                                                    methods.setError(InteractedContactFields.IDENTIFICATION_NUMBER, { message: "מזהה זה כבר קיים" });
-                                                }
+                                                dispatch(setInteractedContact(interactedContact.id, 'identificationNumber', methods.getValues("identificationNumber"), methods.formState));
+                                               
                                             }}
                                             placeholder='מספר תעודה'
                                             isId={isId}
