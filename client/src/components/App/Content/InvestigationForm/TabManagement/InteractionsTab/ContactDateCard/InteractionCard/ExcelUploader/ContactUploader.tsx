@@ -45,7 +45,7 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
     const onButtonClick = () => buttonRef?.current?.click();
 
     const checkDuplicatesContactsFromExcel = (contacts: ParsedExcelRow[]) => {
-        return contacts.map(contact => contact.identificationNumber).filter((e, i, a) => a.indexOf(e) !== i);
+        return contacts.map(contact => contact.identificationNumber).filter((e, i, a) => e !== undefined && a.indexOf(e) !== i);
     }
 
     const saveDataInFile = (contacts?: ParsedExcelRow[]) => {
