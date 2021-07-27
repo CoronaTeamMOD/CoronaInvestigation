@@ -26,7 +26,7 @@ const validateIdentityData = (id: number, identityType: number, identityNumber: 
 
         }
 
-        if (identityNumber !== "") {
+        if (identityNumber && identityNumber !== "") {
         var duplicate = interactedContacts.filter(contact => {
             return id !== contact.id && (identityType === contact.identificationType?.id ||identityType === (contact.identificationType as any)) && identityNumber === contact.identificationNumber;
         });
@@ -47,6 +47,7 @@ const validateIdentityData = (id: number, identityType: number, identityNumber: 
             
             return false;
         }
+        
     }
     else return true;
 }

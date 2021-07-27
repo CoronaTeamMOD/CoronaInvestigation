@@ -39,7 +39,7 @@ const InteractedContactAccordion = (props: Props) => {
 
     const {
         interactedContact, index, contactStatuses, saveContact, parsePerson,
-        isFamilyContact, familyRelationships, shouldDisable, isViewMode
+        isFamilyContact, familyRelationships, shouldDisable, isViewMode,formState
     } = props;
 
     const watchCurrentStatus: number = methods.watch(InteractedContactFields.CONTACT_STATUS);
@@ -75,7 +75,7 @@ const InteractedContactAccordion = (props: Props) => {
     //     const isValid =contactQuestioningService.initContactDuplicateIdentityValidation(interactedContact);
     //     setDuplicateIdentityValidation(!isValid);
     // },[])
-
+   
     useEffect(() => {
         if (watchCurrentStatus) {
             methods.trigger();
@@ -136,6 +136,7 @@ const InteractedContactAccordion = (props: Props) => {
                                 <ContactQuestioningInfo
                                     index={index}
                                     interactedContact={interactedContact}
+                                    formState={formState}
                                     contactStatuses={contactStatuses}
                                     saveContact={saveContact}
                                     parsePerson={parsePerson}
@@ -198,6 +199,7 @@ export default InteractedContactAccordion;
 
 interface Props {
     interactedContact: GroupedInteractedContact;
+    formState:any;
     index: number;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;

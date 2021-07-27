@@ -50,8 +50,9 @@ export const setInteractedContact =
                         return contact;
                     }),
                     formState: getState().interactedContacts.formState.filter(x => x.id == id).map(state => {
-                        return new FormStateObject(id, Object.keys(formState.errors).length === 0);
-                    }),
+                        state.isValid = Object.keys(formState.errors).length === 0;
+                        return state;
+                      }),
                 }
             });
         }

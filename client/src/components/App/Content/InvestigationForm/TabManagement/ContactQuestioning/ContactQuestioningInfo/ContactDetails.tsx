@@ -39,7 +39,7 @@ const ContactDetails = (props: Props) => {
     };
 
     const { errors } = useFormContext();
-    const { index, interactedContact } = props;
+    const { index, interactedContact,formState } = props;
     const classes = useStyles({});
 
     const [showRulerStatusInfo, setShowRulerStatusInfo] = useState<boolean>(false);
@@ -48,8 +48,7 @@ const ContactDetails = (props: Props) => {
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(
         (state) => state.contactTypes
     );
-    const formValidationState = useSelector<StoreStateType, any[]>(state => state.interactedContacts.formState).find(state => state.id === interactedContact.id)?.isValid;
-
+    
     const { isGroupedContact } = GetGroupedInvestigationsIds();
 
     const highestContactType = interactedContact.contactEvents.reduce((prev, current) => {
@@ -147,7 +146,7 @@ const ContactDetails = (props: Props) => {
                 <GroupedContactIcon />
             )}
             {
-                (formValidationState === false) && <InvalidFormIcon />
+                (formState?.isValid===false) && <InvalidFormIcon />
             }
             <Grid
                 container
@@ -191,5 +190,6 @@ export default ContactDetails;
 
 interface Props {
     interactedContact: GroupedInteractedContact;
+    formState:any;
     index: number;
 };

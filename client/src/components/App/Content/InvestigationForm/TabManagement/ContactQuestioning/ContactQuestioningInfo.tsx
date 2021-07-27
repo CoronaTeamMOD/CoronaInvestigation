@@ -12,6 +12,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
     const {
         index,
         interactedContact,
+        formState,
         contactStatuses,
         saveContact,
         parsePerson,
@@ -39,7 +40,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                 alignItems='center'
                 justify='space-evenly'
             >
-                <ContactDetails index={index} interactedContact={interactedContact} />
+                <ContactDetails index={index} interactedContact={interactedContact} formState={formState}/>
             </Grid>
         </>
     );
@@ -50,6 +51,7 @@ export default ContactQuestioningInfo;
 interface Props {
     index: number;
     interactedContact: GroupedInteractedContact;
+    formState:any;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;
     parsePerson: (person: GroupedInteractedContact) => InteractedContact;

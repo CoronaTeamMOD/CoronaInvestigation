@@ -19,6 +19,7 @@ import InteractedContactAccordion from './InteractedContactAccordion';
 import {contactQuestioningService} from 'services/contactQuestioning.service';
 
 
+
 const SIZE_OF_CONTACTS = 4;
 let loaded = SIZE_OF_CONTACTS;
 
@@ -34,7 +35,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     const { isInvolvedThroughFamily } = useInvolvedContact();
 
     const interactedContacts = useSelector<StoreStateType, GroupedInteractedContact[]>(state => state.interactedContacts.interactedContacts);
-
+    const formStates = useSelector<StoreStateType, any[]>(state => state.interactedContacts.formState);
     const {
         onSubmit,
         parsePerson,
@@ -107,10 +108,12 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                         const isFamilyContact: boolean = isInvolvedThroughFamily(
                             interactedContact.involvementReason
                         );
+                        const formState = formStates.find(obj=>obj.id === interactedContact.id);
                         return (
                             <Grid item xs={12} key={interactedContact.id}>
                                 <InteractedContactAccordion
                                     interactedContact={interactedContact}
+                                    formState={formState}
                                     index={index}
                                     contactStatuses={contactStatuses}
                                     saveContact={saveContact}
