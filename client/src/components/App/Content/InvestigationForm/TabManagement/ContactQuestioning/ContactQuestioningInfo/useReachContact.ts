@@ -1,5 +1,5 @@
 import { FormState, useFormContext } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import theme from 'styles/theme';
 import ContactStatus from 'models/ContactStatus';
@@ -8,22 +8,14 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
-import { useState } from 'react';
-import { store } from 'redux/store';
+import StoreStateType from 'redux/storeStateType';
 
 const useReachContact = (props: Props) => {
     const { errors, getValues, formState } = useFormContext<GroupedInteractedContact>();
     const { saveContact, parsePerson, formValues, index } = props;
     const { alertWarning, alertError } = useCustomSwal();
     const dispatch = useDispatch();
-    const [contactValid, setContactValid] = useState<boolean>(true);
-
-    store.subscribe(() => {
-        const formState = store.getState().interactedContacts.formState
-        if (formState.size > 0 && contactValid != formState.get(formValues.id)?.isValid) {
-            setContactValid(!!formState.get(formValues.id)?.isValid);
-        }
-    })
+    const contactValid = useSelector<StoreStateType, any[]>(state => state.interactedContacts.formState).find(state => state.id === formValues.id)?.isValid;
 
     const formHaveMissingFieldsText = `למגע זה ישנם שדות לא תקינים:`
 
@@ -45,7 +37,7 @@ const useReachContact = (props: Props) => {
         event.stopPropagation();
         const formHaveMissingFields = missingFieldsText !== '';
         if (selectedStatus?.id === ContactStatusCodes.COMPLETED) {
-            if (contactValid ) {
+            if (contactValid === true) {
                 if (!formHaveMissingFields) {
                     alertWarning('האם אתה בטוח שתרצה להעביר את המגע לסטטוס הושלם?', {
                         text: 'לאחר העברת המגע, לא תהיה אפשרות לערוך שינויים',

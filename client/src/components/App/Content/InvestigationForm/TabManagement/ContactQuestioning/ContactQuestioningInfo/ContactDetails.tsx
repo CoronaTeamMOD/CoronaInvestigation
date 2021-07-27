@@ -43,12 +43,12 @@ const ContactDetails = (props: Props) => {
     const classes = useStyles({});
 
     const [showRulerStatusInfo, setShowRulerStatusInfo] = useState<boolean>(false);
-    const [contactValid, setContactValid] = useState<boolean>(true);
 
     const { isInvolvedThroughFamily } = useInvolvedContact();
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(
         (state) => state.contactTypes
     );
+    const formValidationState = useSelector<StoreStateType, any[]>(state => state.interactedContacts.formState).find(state => state.id === interactedContact.id)?.isValid;
 
     const { isGroupedContact } = GetGroupedInvestigationsIds();
 
@@ -62,20 +62,6 @@ const ContactDetails = (props: Props) => {
         return prev;
     });
 
-    useEffect(()=>{
-        setContactValidation();
-    },[])
-
-     store.subscribe(() => {
-        setContactValidation();
-     })
-
-    const setContactValidation =()=>{
-        const formState = store.getState().interactedContacts.formState
-        if (formState.size > 0 && contactValid != formState.get(interactedContact.id)?.isValid) {
-            setContactValid(!!formState.get(interactedContact.id)?.isValid);
-        }
-    }
 
     const finalEpidemiologicalStatusDesc = interactedContact.finalEpidemiologicalStatusDesc;
 
@@ -161,7 +147,7 @@ const ContactDetails = (props: Props) => {
                 <GroupedContactIcon />
             )}
             {
-                !contactValid && <InvalidFormIcon />
+                (formValidationState === false) && <InvalidFormIcon />
             }
             <Grid
                 container

@@ -2,9 +2,11 @@ import GroupedInteractedContact from '../../models/ContactQuestioning/GroupedInt
 import * as Actions from './interactedContactsActionTypes';
 
 export class FormStateObject {
+    id: number;
     isValid: boolean;
 
-    constructor(isValid: boolean) {
+    constructor(id: number, isValid: boolean) {
+        this.id = id;
         this.isValid = isValid;
     }
 }
@@ -12,14 +14,14 @@ export class FormStateObject {
 export interface InteractedContactsState {
     pending: boolean;
     interactedContacts: GroupedInteractedContact[];
-    formState: Map<number, FormStateObject>;
+    formState: FormStateObject[];
     error: any;
 }
 
 const initialState: InteractedContactsState = {
     pending: false,
     interactedContacts: [],
-    formState: new Map(),
+    formState: [],
     error: null
 };
 

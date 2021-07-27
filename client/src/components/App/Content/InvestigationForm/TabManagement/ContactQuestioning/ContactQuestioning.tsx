@@ -17,8 +17,7 @@ import { FormInputs } from './ContactQuestioningInterfaces';
 import useContactQuestioning from './useContactQuestioning';
 import InteractedContactAccordion from './InteractedContactAccordion';
 import {contactQuestioningService} from 'services/contactQuestioning.service';
-import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
-import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+
 
 const SIZE_OF_CONTACTS = 4;
 let loaded = SIZE_OF_CONTACTS;
