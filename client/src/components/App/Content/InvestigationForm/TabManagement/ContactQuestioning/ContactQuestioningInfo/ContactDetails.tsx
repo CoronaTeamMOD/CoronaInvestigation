@@ -17,6 +17,7 @@ import GetGroupedInvestigationsIds from 'Utils/GroupedInvestigationsContacts/get
 import useStyles from '../ContactQuestioningStyles';
 import { store } from 'redux/store';
 import { useEffect } from 'react';
+import { contactQuestioningService } from 'services/contactQuestioning.service';
 
 const TIGHT_CONTACT_STATUS = 1;
 
@@ -43,6 +44,7 @@ const ContactDetails = (props: Props) => {
     const classes = useStyles({});
 
     const [showRulerStatusInfo, setShowRulerStatusInfo] = useState<boolean>(false);
+    const [duplicateIdentities, setDuplicateIdentities] = useState<boolean>(false);
 
     const { isInvolvedThroughFamily } = useInvolvedContact();
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(
@@ -67,6 +69,17 @@ const ContactDetails = (props: Props) => {
     const tooltipText = highestContactType.contactType === TIGHT_CONTACT_STATUS
         ? formatDate(highestContactType.date)
         : '';
+        
+    useEffect(()=>{
+            contactQuestioningService.checkForDuplicates();
+     },[])
+
+     contactQuestioningService.getDuplicateIdentities().subscribe(duplicates=>{
+         if (duplicates.length>0)
+          setDuplicateIdentities(true);
+        else setDuplicateIdentities(false);
+     })
+
 
     const renderRulerButtonAndStatusInfo = () => {
         return (
@@ -146,7 +159,7 @@ const ContactDetails = (props: Props) => {
                 <GroupedContactIcon />
             )}
             {
-                (formState?.isValid===false) && <InvalidFormIcon />
+                ((formState?.isValid===false) || duplicateIdentities) && <InvalidFormIcon />
             }
             <Grid
                 container

@@ -1,11 +1,31 @@
 
-import { Subject , BehaviorSubject , ReplaySubject} from 'rxjs';
+import { Subject } from 'rxjs';
 import { store } from 'redux/store';
 
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 var duplicateIdentityArray: IdentityData[] = [];
 const duplicateIdentitySubject = new Subject<IdentityData[]>();
+
+const checkForDuplicates = ()=>{
+    const interactedContacts = store.getState().interactedContacts.interactedContacts;
+    let result =[];
+
+        for (var i=0; i<interactedContacts.length;i++){
+            let contact =interactedContacts[i];
+            if (contact.identificationType && contact.identificationNumber && contact.identificationNumber!==""){
+                let identificationType = contact.identificationType.id || contact.identificationType;
+                let index =interactedContacts.findIndex(obj =>(obj.identificationType===identificationType|| obj.identificationType.id===identificationType)&&obj.identificationNumber===contact.identificationNumber)
+                if (index !== i)
+                    result.push(new IdentityData(identificationType as number,contact.identificationNumber));
+            }
+        }
+
+
+       duplicateIdentitySubject.next(result);
+      
+   
+}
 
 
 const validateIdentityData = (id: number, identityType: number, identityNumber: string) => {
@@ -68,13 +88,14 @@ const initContactDuplicateIdentityValidation = (contact : GroupedInteractedConta
 
 
 export const contactQuestioningService = {
-    validateIdentity: (id: number, identityType: number, identitynumber: string) => validateIdentityData(id, identityType, identitynumber),
+   // validateIdentity: (id: number, identityType: number, identitynumber: string) => validateIdentityData(id, identityType, identitynumber),
     resetIdentityValidation: () => {
         duplicateIdentityArray = [];
         duplicateIdentitySubject.next([]);
     },
     getDuplicateIdentities: () => duplicateIdentitySubject.asObservable(),
-    initContactDuplicateIdentityValidation:(contact:GroupedInteractedContact)=>{return initContactDuplicateIdentityValidation(contact)}
+    //initContactDuplicateIdentityValidation:(contact:GroupedInteractedContact)=>{return initContactDuplicateIdentityValidation(contact)}
+    checkForDuplicates:checkForDuplicates
 };
 
 

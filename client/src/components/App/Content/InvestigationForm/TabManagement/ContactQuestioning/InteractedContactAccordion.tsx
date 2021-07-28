@@ -23,7 +23,7 @@ import ContactQuestioningClinical from './ContactQuestioningClinical';
 
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 import StoreStateType from 'redux/storeStateType';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { contactQuestioningService } from 'services/contactQuestioning.service';
 
@@ -42,6 +42,8 @@ const InteractedContactAccordion = (props: Props) => {
         isFamilyContact, familyRelationships, shouldDisable, isViewMode,formState
     } = props;
 
+    const dispatch = useDispatch();
+    
     const watchCurrentStatus: number = methods.watch(InteractedContactFields.CONTACT_STATUS);
 
     const { alertWarning } = useCustomSwal();
@@ -71,10 +73,7 @@ const InteractedContactAccordion = (props: Props) => {
         return classesList.join(' ');
     };
 
-    // useEffect(()=>{
-    //     const isValid =contactQuestioningService.initContactDuplicateIdentityValidation(interactedContact);
-    //     setDuplicateIdentityValidation(!isValid);
-    // },[])
+   
    
     useEffect(() => {
         if (watchCurrentStatus) {
@@ -82,22 +81,8 @@ const InteractedContactAccordion = (props: Props) => {
         }
     }, [watchCurrentStatus]);
  
-    contactQuestioningService.getDuplicateIdentities().subscribe((duplicates)=>{
-    
-        const isDuplicateIdentity = duplicates.filter(obj=>obj.identityType===interactedContact.identificationType?.id  && obj.identityNumber=== interactedContact.identificationNumber ).length!==0;    
-        setDuplicateIdentityValidation(isDuplicateIdentity);
-            
-        
-    })
+ 
 
-    const setDuplicateIdentityValidation=(isDuplicateIdentity:boolean)=>{
-        if (isDuplicateIdentity){
-            methods.setError(InteractedContactFields.IDENTIFICATION_NUMBER, { message: "מזהה זה כבר קיים" , type:"duplicateIdentity"});
-        }    
-        else if (methods.errors && (methods.errors as any)[InteractedContactFields.IDENTIFICATION_NUMBER]?.type === "duplicateIdentity"){
-            methods.clearErrors(InteractedContactFields.IDENTIFICATION_NUMBER);
-        }
-    }
     const formValues = interactedContact;
 
     const saveContactClicked = () => {
@@ -105,14 +90,14 @@ const InteractedContactAccordion = (props: Props) => {
             interactedContact
         );
         saveContact(currentParsedPerson);
-        if (methods.errors) {
-            if ((methods.errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_TYPE]) {
-                alertWarning('שים לב במקרה של נתוני זיהוי כפולים, סוג הזיהוי לא יישמר לבסיס הנתונים. ');
-            }
-            else if ((methods.errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_NUMBER]) {
-                alertWarning('שים לב במקרה של נתוני זיהוי כפולים, מספר תעודה לא יישמר לבסיס הנתונים. ');
-            }
-        }
+        // if (methods.errors) {
+        //     if ((methods.errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_TYPE]) {
+        //         alertWarning('שים לב במקרה של נתוני זיהוי כפולים, סוג הזיהוי לא יישמר לבסיס הנתונים. ');
+        //     }
+        //     else if ((methods.errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_NUMBER]) {
+        //         alertWarning('שים לב במקרה של נתוני זיהוי כפולים, מספר תעודה לא יישמר לבסיס הנתונים. ');
+        //     }
+        // }
     };
     const getAccordion =
         () => {

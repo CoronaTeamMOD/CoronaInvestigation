@@ -9,6 +9,7 @@ import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
 import StoreStateType from 'redux/storeStateType';
+import { contactQuestioningService } from 'services/contactQuestioning.service';
 
 const useReachContact = (props: Props) => {
     const { errors, getValues, formState } = useFormContext<GroupedInteractedContact>();
@@ -16,7 +17,7 @@ const useReachContact = (props: Props) => {
     const { alertWarning, alertError } = useCustomSwal();
     const dispatch = useDispatch();
     const contactValid = useSelector<StoreStateType, any[]>(state => state.interactedContacts.formState).find(state => state.id === formValues.id)?.isValid;
-
+   
     const formHaveMissingFieldsText = `למגע זה ישנם שדות לא תקינים:`
 
     const formHasErrors = errors ? Boolean(errors) : false;
@@ -25,7 +26,8 @@ const useReachContact = (props: Props) => {
         event: React.ChangeEvent<{}>,
         selectedStatus: ContactStatus | null,
         onChange: (...event: any[]) => void,
-        missingFieldsText: string
+        missingFieldsText: string,
+        duplicateIdentities:boolean
     ) => {
 
         const dispachUpdateStatus = (id: number, statusId: number, formState: FormState<GroupedInteractedContact>) => new Promise<void>((resolve, reject) => {
@@ -37,7 +39,7 @@ const useReachContact = (props: Props) => {
         event.stopPropagation();
         const formHaveMissingFields = missingFieldsText !== '';
         if (selectedStatus?.id === ContactStatusCodes.COMPLETED) {
-            if (contactValid === true) {
+            if (contactValid === true && !duplicateIdentities) {
                 if (!formHaveMissingFields) {
                     alertWarning('האם אתה בטוח שתרצה להעביר את המגע לסטטוס הושלם?', {
                         text: 'לאחר העברת המגע, לא תהיה אפשרות לערוך שינויים',
