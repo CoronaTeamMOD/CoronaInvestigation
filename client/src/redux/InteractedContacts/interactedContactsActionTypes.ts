@@ -23,7 +23,7 @@ interface SetInteractedContactsFormState {
     type: typeof SET_INTERACTED_CONTACTS_FORM_STATE,
     payload: {
         interactedContacts: GroupedInteractedContact[],
-        formState: Map<number, FormStateObject>
+        formState: FormStateObject[]
     }
 }
 
@@ -31,7 +31,7 @@ interface GetInteractedContactsSuccess {
     type: typeof GET_INTERACTED_CONTACTS_SUCCESS,
     payload: {
         interactedContacts: GroupedInteractedContact[],
-        formState: Map<number, FormStateObject>
+        formState: FormStateObject[]
     }
 }
 
@@ -48,7 +48,7 @@ interface SetInteractedContactSuccess {
     type: typeof SET_INTERACTED_CONTACT_SUCCESS,
     payload: {
         interactedContact: GroupedInteractedContact,
-        formState: Map<number, FormStateObject>
+        formState: FormStateObject[]
     }
 }
 
