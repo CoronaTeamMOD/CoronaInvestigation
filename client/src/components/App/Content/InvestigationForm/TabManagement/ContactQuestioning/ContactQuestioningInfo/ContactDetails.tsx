@@ -40,7 +40,7 @@ const ContactDetails = (props: Props) => {
     };
 
     const { errors } = useFormContext();
-    const { index, interactedContact,formState } = props;
+    const { index, interactedContact, formState } = props;
     const classes = useStyles({});
 
     const [showRulerStatusInfo, setShowRulerStatusInfo] = useState<boolean>(false);
@@ -50,7 +50,7 @@ const ContactDetails = (props: Props) => {
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(
         (state) => state.contactTypes
     );
-    
+
     const { isGroupedContact } = GetGroupedInvestigationsIds();
 
     const highestContactType = interactedContact.contactEvents.reduce((prev, current) => {
@@ -69,16 +69,16 @@ const ContactDetails = (props: Props) => {
     const tooltipText = highestContactType.contactType === TIGHT_CONTACT_STATUS
         ? formatDate(highestContactType.date)
         : '';
-        
-    useEffect(()=>{
-            contactQuestioningService.checkForDuplicates();
-     },[])
 
-     contactQuestioningService.getDuplicateIdentities().subscribe(duplicates=>{
-         if (duplicates.length>0)
-          setDuplicateIdentities(true);
+    useEffect(() => {
+        contactQuestioningService.checkForDuplicates();
+    }, [])
+
+    contactQuestioningService.getDuplicateIdentities().subscribe(duplicates => {
+        if (duplicates.length > 0)
+            setDuplicateIdentities(true);
         else setDuplicateIdentities(false);
-     })
+    })
 
 
     const renderRulerButtonAndStatusInfo = () => {
@@ -159,7 +159,7 @@ const ContactDetails = (props: Props) => {
                 <GroupedContactIcon />
             )}
             {
-                ((formState?.isValid===false) || duplicateIdentities) && <InvalidFormIcon />
+                ((formState?.isValid === false) || duplicateIdentities) && <InvalidFormIcon />
             }
             <Grid
                 container
@@ -203,6 +203,6 @@ export default ContactDetails;
 
 interface Props {
     interactedContact: GroupedInteractedContact;
-    formState:any;
+    formState: any;
     index: number;
 };

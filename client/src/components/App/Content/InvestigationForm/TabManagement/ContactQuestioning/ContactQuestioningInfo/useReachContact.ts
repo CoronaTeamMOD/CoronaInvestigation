@@ -17,7 +17,7 @@ const useReachContact = (props: Props) => {
     const { alertWarning, alertError } = useCustomSwal();
     const dispatch = useDispatch();
     const contactValid = useSelector<StoreStateType, any[]>(state => state.interactedContacts.formState).find(state => state.id === formValues.id)?.isValid;
-   
+
     const formHaveMissingFieldsText = `למגע זה ישנם שדות לא תקינים:`
 
     const formHasErrors = errors ? Boolean(errors) : false;
@@ -27,7 +27,7 @@ const useReachContact = (props: Props) => {
         selectedStatus: ContactStatus | null,
         onChange: (...event: any[]) => void,
         missingFieldsText: string,
-        duplicateIdentities:boolean
+        duplicateIdentities: boolean
     ) => {
 
         const dispachUpdateStatus = (id: number, statusId: number, formState: FormState<GroupedInteractedContact>) => new Promise<void>((resolve, reject) => {

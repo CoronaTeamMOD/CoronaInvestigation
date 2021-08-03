@@ -43,10 +43,10 @@ const ReachContact = (props: Props) => {
     }
     const [duplicateIdentities, setDuplicateIdentities] = useState<boolean>(false);
 
-    contactQuestioningService.getDuplicateIdentities().subscribe(duplicates=>{
-        if (duplicates.length>0)
-        setDuplicateIdentities(true);
-      else setDuplicateIdentities(false);
+    contactQuestioningService.getDuplicateIdentities().subscribe(duplicates => {
+        if (duplicates.length > 0)
+            setDuplicateIdentities(true);
+        else setDuplicateIdentities(false);
     })
 
     return (
