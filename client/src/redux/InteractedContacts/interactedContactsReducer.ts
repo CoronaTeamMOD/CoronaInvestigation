@@ -25,6 +25,8 @@ const initialState: InteractedContactsState = {
     error: null
 };
 
+type ValueOf<T> = T[keyof T];
+
 const interactedContactsReducer = (state = initialState, action: Actions.InteractedContactAction): InteractedContactsState => {
     switch (action.type) {
         case Actions.GET_INTERACTED_CONTACTS_PENDING:
@@ -48,8 +50,16 @@ const interactedContactsReducer = (state = initialState, action: Actions.Interac
         case Actions.SET_INTERACTED_CONTACTS_FORM_STATE:
             return {
                 ...state,
-                //interactedContacts: action.payload.interactedContacts,
-               // formState: action.payload.formState
+                interactedContacts: state.interactedContacts.map(contact => {
+                    if (contact.id == action.payload.id)
+                        (contact[action.payload.propertyName] as ValueOf<GroupedInteractedContact>) = action.payload.value;
+                    return contact;
+                }),
+                formState: state.formState.map(obj => {
+                    if (obj.id == action.payload.id)
+                        obj.isValid = Object.keys(action.payload.formState.errors).length === 0;
+                    return obj;
+                }),
             }
         case Actions.SET_INTERACTED_CONTACT_PENDING:
             return {

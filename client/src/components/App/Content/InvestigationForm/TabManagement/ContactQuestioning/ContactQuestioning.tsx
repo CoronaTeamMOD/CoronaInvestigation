@@ -16,7 +16,7 @@ import useStyles from './ContactQuestioningStyles';
 import { FormInputs } from './ContactQuestioningInterfaces';
 import useContactQuestioning from './useContactQuestioning';
 import InteractedContactAccordion from './InteractedContactAccordion';
-import {contactQuestioningService} from 'services/contactQuestioning.service';
+import { contactQuestioningService } from 'services/contactQuestioning.service';
 
 
 
@@ -73,11 +73,11 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
         loadFamilyRelationships();
         loadContactStatuses();
         contactQuestioningService.resetIdentityValidation();
+        setContactsToShow([]);
     }, []);
 
     useEffect(() => {
-        if (interactedContacts && interactedContacts.length > 0) {
-            setAllContactedInteractions(interactedContacts);
+        if (interactedContacts && interactedContacts.length > 0 && contactsToShow.length == 0) {
             if (interactedContacts.length > SIZE_OF_CONTACTS) {
                 loaded = SIZE_OF_CONTACTS;
                 setContactsToShow(interactedContacts.slice(0, SIZE_OF_CONTACTS));
@@ -108,7 +108,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                         const isFamilyContact: boolean = isInvolvedThroughFamily(
                             interactedContact.involvementReason
                         );
-                        const formState = formStates.find(obj=>obj.id === interactedContact.id);
+                        const formState = formStates.find(obj => obj.id === interactedContact.id);
                         return (
                             <Grid item xs={12} key={interactedContact.id}>
                                 <InteractedContactAccordion

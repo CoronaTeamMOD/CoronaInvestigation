@@ -39,8 +39,7 @@ const ContactDetails = (props: Props) => {
         event.stopPropagation();
     };
 
-    const { errors } = useFormContext();
-    const { index, interactedContact, formState } = props;
+    const { interactedContact, formState } = props;
     const classes = useStyles({});
 
     const [showRulerStatusInfo, setShowRulerStatusInfo] = useState<boolean>(false);
@@ -72,6 +71,9 @@ const ContactDetails = (props: Props) => {
 
     useEffect(() => {
         contactQuestioningService.checkForDuplicates();
+        return (() => {
+            contactQuestioningService.getDuplicateIdentities().subscribe().unsubscribe();
+        })
     }, [])
 
     contactQuestioningService.getDuplicateIdentities().subscribe(duplicates => {
@@ -159,7 +161,7 @@ const ContactDetails = (props: Props) => {
                 <GroupedContactIcon />
             )}
             {
-                ((formState?.isValid === false) || duplicateIdentities) && <InvalidFormIcon />
+                (formState?.isValid === false || duplicateIdentities) && <InvalidFormIcon />
             }
             <Grid
                 container

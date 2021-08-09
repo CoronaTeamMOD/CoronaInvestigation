@@ -8,6 +8,7 @@ import { FormState } from 'react-hook-form';
 import ContactQuestioningSchema from 'components/App/Content/InvestigationForm/TabManagement/ContactQuestioning/ContactSection/Schemas/ContactQuestioningSchema';
 import { getAllInteractedContacts } from '../../httpClient/InteractedContacts/interactedContacts';
 import StoreStateType from 'redux/storeStateType';
+import { store } from 'redux/store';
 
 export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, InteractedContactsState, unknown, actionTypes.InteractedContactAction> => async dispatch => {
     dispatch({
@@ -44,17 +45,8 @@ export const setInteractedContact =
         ThunkAction<void, StoreStateType, unknown, actionTypes.InteractedContactAction> => (dispatch, getState) => {
             dispatch({
                 type: actionTypes.SET_INTERACTED_CONTACTS_FORM_STATE,
-                payload: {
-                    interactedContacts: getState().interactedContacts.interactedContacts.filter(x => x.id == id).map(contact => {
-                        (contact[propertyName] as ValueOf<GroupedInteractedContact>) = value;
-                        return contact;
-                    }),
-                    formState: getState().interactedContacts.formState.filter(x => x.id == id).map(state => {
-                        state.isValid = Object.keys(formState.errors).length === 0;
-                        return state;
-                      }),
-                }
-            });
+                payload: { id, propertyName, value, formState }
+            })
         }
 
 export const updateInteractedContacts = (contacts: InteractedContact[]):

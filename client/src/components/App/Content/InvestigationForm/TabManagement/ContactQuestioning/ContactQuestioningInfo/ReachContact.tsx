@@ -18,6 +18,7 @@ import interactedContactsReducer from 'redux/InteractedContacts/interactedContac
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { contactQuestioningService } from 'services/contactQuestioning.service';
+import { useEffect } from 'react';
 
 
 const ReachContact = (props: Props) => {
@@ -48,6 +49,13 @@ const ReachContact = (props: Props) => {
             setDuplicateIdentities(true);
         else setDuplicateIdentities(false);
     })
+
+
+    useEffect(() => {
+        return (() => {
+            contactQuestioningService.getDuplicateIdentities().subscribe().unsubscribe();
+        })
+    }, [])
 
     return (
         <div className={classes.reachContact}>

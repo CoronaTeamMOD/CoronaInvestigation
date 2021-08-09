@@ -91,7 +91,9 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
             (shouldDisableIdByReopen &&
                 !!interactedContact.identificationNumber);
         setShouldIdDisable(shouldDisable);
-
+        return (() => {
+            contactQuestioningService.getDuplicateIdentities().subscribe().unsubscribe();
+         })
     }, []);
 
     useEffect(() => {
@@ -190,7 +192,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             onBlur={() => {
                                                 dispatch(setInteractedContact(interactedContact.id, 'identificationNumber', methods.getValues("identificationNumber"), methods.formState));
                                                 contactQuestioningService.checkForDuplicates();
-
                                             }}
                                             placeholder='מספר תעודה'
                                             isId={isId}
