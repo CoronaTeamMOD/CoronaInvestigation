@@ -30,9 +30,7 @@ import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
     const interactedContacts = useSelector<StoreStateType, GroupedInteractedContact[]>(state => state.interactedContacts.interactedContacts);
 
-
     const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();
-
     const { interactedContact, isViewMode } = props;
 
     const dispatch = useDispatch();
@@ -84,7 +82,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
 
 
     useEffect(() => {
-
         contactQuestioningService.checkForDuplicates();
         methods.trigger();
         const shouldDisable =
@@ -93,7 +90,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
         setShouldIdDisable(shouldDisable);
         return (() => {
             contactQuestioningService.getDuplicateIdentities().subscribe().unsubscribe();
-         })
+        })
     }, []);
 
     useEffect(() => {
@@ -139,7 +136,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             let identityObject = identificationTypes.find(obj => obj.id == event.target.value);
                                             dispatch(setInteractedContact(interactedContact.id, 'identificationType', identityObject as IdentificationType, methods.formState));
                                             contactQuestioningService.checkForDuplicates();
-
                                         }}
                                         MenuProps={{
                                             anchorOrigin: {

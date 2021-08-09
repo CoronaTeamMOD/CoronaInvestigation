@@ -69,7 +69,6 @@ const InteractedContactAccordion = (props: Props) => {
         return classesList.join(' ');
     };
 
-
     useEffect(() => {
         if (watchCurrentStatus) {
             methods.trigger();
@@ -81,8 +80,8 @@ const InteractedContactAccordion = (props: Props) => {
             interactedContact
         );
         saveContact(currentParsedPerson);
-
     };
+
     const getAccordion =
         () => {
             return (

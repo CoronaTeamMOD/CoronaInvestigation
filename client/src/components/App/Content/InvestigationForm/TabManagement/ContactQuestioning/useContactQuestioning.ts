@@ -96,11 +96,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         return true;
     };
 
-
-
-
-
-
     const saveContactQuestioning = (data: InteractedContact[]/*parsedFormData: InteractedContact[], originalFormData: FormInputs*/) => {
         const contactsSavingVariable = {
             unSavedContacts: { contacts: data }
@@ -224,7 +219,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
         }
     };
-
 
     const parseFormBeforeSending = (data: GroupedInteractedContact[]) => {
         const mappedForm = data.map(
