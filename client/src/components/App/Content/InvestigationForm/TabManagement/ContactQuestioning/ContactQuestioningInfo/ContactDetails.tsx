@@ -15,7 +15,6 @@ import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteracte
 import GetGroupedInvestigationsIds from 'Utils/GroupedInvestigationsContacts/getGroupedInvestigationIds';
 
 import useStyles from '../ContactQuestioningStyles';
-import { store } from 'redux/store';
 import { useEffect } from 'react';
 import { contactQuestioningService } from 'services/contactQuestioning.service';
 
@@ -77,11 +76,9 @@ const ContactDetails = (props: Props) => {
     }, [])
 
     contactQuestioningService.getDuplicateIdentities().subscribe(duplicates => {
-        if (duplicates.length > 0)
-            setDuplicateIdentities(true);
-        else setDuplicateIdentities(false);
+        const isDuplicateIdentity = duplicates.filter(obj => obj.identityType ===interactedContact.identificationType.id && obj.identityNumber ===interactedContact.identificationNumber).length > 0;
+        setDuplicateIdentities(isDuplicateIdentity);
     })
-
 
     const renderRulerButtonAndStatusInfo = () => {
         return (

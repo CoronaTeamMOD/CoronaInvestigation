@@ -51,7 +51,7 @@ export default ContactQuestioningInfo;
 interface Props {
     index: number;
     interactedContact: GroupedInteractedContact;
-    formState:any;
+    formState: any;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;
     parsePerson: (person: GroupedInteractedContact) => InteractedContact;

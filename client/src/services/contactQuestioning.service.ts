@@ -1,4 +1,3 @@
-
 import { Subject } from 'rxjs';
 import { store } from 'redux/store';
 
@@ -17,8 +16,6 @@ const checkForDuplicates = () => {
         }
     }
     duplicateIdentitySubject.next(result);
-
-
 }
 
 export const contactQuestioningService = {
@@ -28,7 +25,6 @@ export const contactQuestioningService = {
     getDuplicateIdentities: () => duplicateIdentitySubject.asObservable(),
    checkForDuplicates: checkForDuplicates
 };
-
 
 class IdentityData {
     identityType: number;

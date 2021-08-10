@@ -67,18 +67,9 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     const watchIdentificationNumber = watch(identificationNumberFieldName);
 
     contactQuestioningService.getDuplicateIdentities().subscribe((duplicates) => {
-        const isDuplicateIdentity = duplicates.filter(obj => obj.identityType === methods.getValues(identificationTypeFieldName) && obj.identityNumber === methods.getValues(identificationNumberFieldName)).length !== 0;
-        setDuplicateIdentityValidation(isDuplicateIdentity);
+        const isDuplicateIdentity = duplicates.filter(obj => obj.identityType === methods.getValues(identificationTypeFieldName) && obj.identityNumber === methods.getValues(identificationNumberFieldName)).length > 0;
+        setIsDuplicateId(isDuplicateIdentity);
     })
-
-    const setDuplicateIdentityValidation = (isDuplicateIdentity: boolean) => {
-        if (isDuplicateIdentity) {
-            setIsDuplicateId(true);
-        }
-        else {
-            setIsDuplicateId(false);
-        }
-    }
 
     useEffect(() => {
         contactQuestioningService.checkForDuplicates();
