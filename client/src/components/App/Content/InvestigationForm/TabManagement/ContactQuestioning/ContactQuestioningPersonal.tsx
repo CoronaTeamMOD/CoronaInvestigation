@@ -80,7 +80,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
         }
     }
 
-
     useEffect(() => {
         contactQuestioningService.checkForDuplicates();
         methods.trigger();
@@ -101,9 +100,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
 
         }
     }, [watchIdentificationType, watchIdentificationNumber]);
-
-
-
 
     return (
         <Grid item xs={4}>

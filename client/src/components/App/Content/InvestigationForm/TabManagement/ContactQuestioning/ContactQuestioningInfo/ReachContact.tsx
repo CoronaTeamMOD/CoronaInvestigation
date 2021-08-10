@@ -50,7 +50,6 @@ const ReachContact = (props: Props) => {
         else setDuplicateIdentities(false);
     })
 
-
     useEffect(() => {
         return (() => {
             contactQuestioningService.getDuplicateIdentities().subscribe().unsubscribe();

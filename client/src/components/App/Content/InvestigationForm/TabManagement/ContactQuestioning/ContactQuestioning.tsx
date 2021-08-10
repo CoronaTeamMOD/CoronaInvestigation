@@ -18,8 +18,6 @@ import useContactQuestioning from './useContactQuestioning';
 import InteractedContactAccordion from './InteractedContactAccordion';
 import { contactQuestioningService } from 'services/contactQuestioning.service';
 
-
-
 const SIZE_OF_CONTACTS = 4;
 let loaded = SIZE_OF_CONTACTS;
 

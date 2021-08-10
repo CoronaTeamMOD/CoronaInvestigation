@@ -25,7 +25,7 @@ interface GetInteractedContactsPending {
 interface SetInteractedContactsFormState {
     type: typeof SET_INTERACTED_CONTACTS_FORM_STATE,
     payload: {
-        id:number,
+        id: number,
         propertyName: keyof GroupedInteractedContact, 
         value: ValueOf<GroupedInteractedContact>, 
         formState: FormState<GroupedInteractedContact>

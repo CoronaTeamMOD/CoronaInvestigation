@@ -96,7 +96,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         return true;
     };
 
-    const saveContactQuestioning = (data: InteractedContact[]/*parsedFormData: InteractedContact[], originalFormData: FormInputs*/) => {
+    const saveContactQuestioning = (data: InteractedContact[]) => {
         const contactsSavingVariable = {
             unSavedContacts: { contacts: data }
         };
