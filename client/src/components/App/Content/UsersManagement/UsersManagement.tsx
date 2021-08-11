@@ -275,7 +275,7 @@ const UsersManagement: React.FC = () => {
 
                 <Grid item>
                     {
-                        (userType === UserTypeCodes.ADMIN) &&
+                        (userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN) &&
                         <Button
                             id='deactivate-all-users-button'
                             variant='contained'
