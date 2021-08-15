@@ -23,8 +23,9 @@ import ContactQuestioningClinical from './ContactQuestioningClinical';
 
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 import StoreStateType from 'redux/storeStateType';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import { contactQuestioningService } from 'services/contactQuestioning.service';
 
 const InteractedContactAccordion = (props: Props) => {
 
@@ -38,13 +39,11 @@ const InteractedContactAccordion = (props: Props) => {
 
     const {
         interactedContact, index, contactStatuses, saveContact, parsePerson,
-        isFamilyContact, familyRelationships, shouldDisable, isViewMode
+        isFamilyContact, familyRelationships, shouldDisable, isViewMode, formState
     } = props;
 
     const watchCurrentStatus: number = methods.watch(InteractedContactFields.CONTACT_STATUS);
 
-    const { alertWarning } = useCustomSwal();
-    
     const generateBackgroundColorClass = (colorCode: Number | any) => {
         switch (colorCode) {
             case '1':
@@ -76,22 +75,13 @@ const InteractedContactAccordion = (props: Props) => {
         }
     }, [watchCurrentStatus]);
 
-    const formValues = interactedContact;
-
     const saveContactClicked = () => {
         const currentParsedPerson = parsePerson(
             interactedContact
         );
         saveContact(currentParsedPerson);
-        if (methods.errors) {
-            if ((methods.errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_TYPE]) {
-                alertWarning('שים לב במקרה של נתוני זיהוי כפולים, סוג הזיהוי לא יישמר לבסיס הנתונים. ');
-            }
-            else if ((methods.errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_NUMBER]) {
-                alertWarning('שים לב במקרה של נתוני זיהוי כפולים, מספר תעודה לא יישמר לבסיס הנתונים. ');
-            }
-        }
     };
+
     const getAccordion =
         () => {
             return (
@@ -114,6 +104,7 @@ const InteractedContactAccordion = (props: Props) => {
                                 <ContactQuestioningInfo
                                     index={index}
                                     interactedContact={interactedContact}
+                                    formState={formState}
                                     contactStatuses={contactStatuses}
                                     saveContact={saveContact}
                                     parsePerson={parsePerson}
@@ -176,6 +167,7 @@ export default InteractedContactAccordion;
 
 interface Props {
     interactedContact: GroupedInteractedContact;
+    formState: any;
     index: number;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;

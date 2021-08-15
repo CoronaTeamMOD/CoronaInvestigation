@@ -1,3 +1,4 @@
+import { FormState } from 'react-hook-form';
 import GroupedInteractedContact from '../../models/ContactQuestioning/GroupedInteractedContact';
 import { FormStateObject } from './interactedContactsReducer';
 
@@ -15,6 +16,8 @@ export const SET_INTERACTED_CONTACTS_PENDING = 'SETE_INTERACTED_CONTACTS_PENDING
 export const SET_INTERACTED_CONTACTS_SUCCESS = 'SET_INTERACTED_CONTACTS_SUCCESS';
 export const SET_INTERACTED_CONTACTS_ERROR = 'SET_INTERACTED_CONTACTS_ERROR';
 
+ type ValueOf<T> = T[keyof T];
+
 interface GetInteractedContactsPending {
     type: typeof GET_INTERACTED_CONTACTS_PENDING
 }
@@ -22,8 +25,10 @@ interface GetInteractedContactsPending {
 interface SetInteractedContactsFormState {
     type: typeof SET_INTERACTED_CONTACTS_FORM_STATE,
     payload: {
-        interactedContacts: GroupedInteractedContact[],
-        formState: Map<number, FormStateObject>
+        id: number,
+        propertyName: keyof GroupedInteractedContact, 
+        value: ValueOf<GroupedInteractedContact>, 
+        formState: FormState<GroupedInteractedContact>
     }
 }
 
@@ -31,7 +36,7 @@ interface GetInteractedContactsSuccess {
     type: typeof GET_INTERACTED_CONTACTS_SUCCESS,
     payload: {
         interactedContacts: GroupedInteractedContact[],
-        formState: Map<number, FormStateObject>
+        formState: FormStateObject[]
     }
 }
 
@@ -48,7 +53,7 @@ interface SetInteractedContactSuccess {
     type: typeof SET_INTERACTED_CONTACT_SUCCESS,
     payload: {
         interactedContact: GroupedInteractedContact,
-        formState: Map<number, FormStateObject>
+        formState: FormStateObject[]
     }
 }
 

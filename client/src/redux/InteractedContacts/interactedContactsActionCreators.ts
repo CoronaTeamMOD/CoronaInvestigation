@@ -8,6 +8,7 @@ import { FormState } from 'react-hook-form';
 import ContactQuestioningSchema from 'components/App/Content/InvestigationForm/TabManagement/ContactQuestioning/ContactSection/Schemas/ContactQuestioningSchema';
 import { getAllInteractedContacts } from '../../httpClient/InteractedContacts/interactedContacts';
 import StoreStateType from 'redux/storeStateType';
+import { store } from 'redux/store';
 
 export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, InteractedContactsState, unknown, actionTypes.InteractedContactAction> => async dispatch => {
     dispatch({
@@ -16,10 +17,10 @@ export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, Int
 
     try {
         const contacts = await getAllInteractedContacts(minimalDate);
-        let map = new Map();
+        let map = [];
         for (let i = 0; i < contacts.length; i++) {
             const valid = await ContactQuestioningSchema.isValid({ ...contacts[i], identificationType: contacts[i]?.identificationType?.id });
-            map.set(contacts[i].id, new FormStateObject(valid));
+            map.push(new FormStateObject(contacts[i].id, valid));
         }
         dispatch({
             type: actionTypes.GET_INTERACTED_CONTACTS_SUCCESS,
@@ -41,17 +42,11 @@ type ValueOf<T> = T[keyof T];
 
 export const setInteractedContact =
     (id: number, propertyName: keyof GroupedInteractedContact, value: ValueOf<GroupedInteractedContact>, formState: FormState<GroupedInteractedContact>):
-        ThunkAction<void, StoreStateType, unknown, actionTypes.InteractedContactAction> =>  (dispatch, getState) => {
+        ThunkAction<void, StoreStateType, unknown, actionTypes.InteractedContactAction> => (dispatch, getState) => {
             dispatch({
                 type: actionTypes.SET_INTERACTED_CONTACTS_FORM_STATE,
-                payload: {
-                    interactedContacts: getState().interactedContacts.interactedContacts.filter(x => x.id == id).map(contact => {
-                        (contact[propertyName] as ValueOf<GroupedInteractedContact>) = value;
-                        return contact;
-                    }),
-                    formState: getState().interactedContacts.formState.set(id, new FormStateObject(Object.keys(formState.errors).length == 0))
-                }
-            });
+                payload: { id, propertyName, value, formState }
+            })
         }
 
 export const updateInteractedContacts = (contacts: InteractedContact[]):

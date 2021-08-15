@@ -15,8 +15,8 @@ import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteracte
 import GetGroupedInvestigationsIds from 'Utils/GroupedInvestigationsContacts/getGroupedInvestigationIds';
 
 import useStyles from '../ContactQuestioningStyles';
-import { store } from 'redux/store';
 import { useEffect } from 'react';
+import { contactQuestioningService } from 'services/contactQuestioning.service';
 
 const TIGHT_CONTACT_STATUS = 1;
 
@@ -38,12 +38,11 @@ const ContactDetails = (props: Props) => {
         event.stopPropagation();
     };
 
-    const { errors } = useFormContext();
-    const { index, interactedContact } = props;
+    const { interactedContact, formState } = props;
     const classes = useStyles({});
 
     const [showRulerStatusInfo, setShowRulerStatusInfo] = useState<boolean>(false);
-    const [contactValid, setContactValid] = useState<boolean>(true);
+    const [duplicateIdentities, setDuplicateIdentities] = useState<boolean>(false);
 
     const { isInvolvedThroughFamily } = useInvolvedContact();
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(
@@ -62,26 +61,24 @@ const ContactDetails = (props: Props) => {
         return prev;
     });
 
-    useEffect(()=>{
-        setContactValidation();
-    },[])
-
-     store.subscribe(() => {
-        setContactValidation();
-     })
-
-    const setContactValidation =()=>{
-        const formState = store.getState().interactedContacts.formState
-        if (formState.size > 0 && contactValid != formState.get(interactedContact.id)?.isValid) {
-            setContactValid(!!formState.get(interactedContact.id)?.isValid);
-        }
-    }
 
     const finalEpidemiologicalStatusDesc = interactedContact.finalEpidemiologicalStatusDesc;
 
     const tooltipText = highestContactType.contactType === TIGHT_CONTACT_STATUS
         ? formatDate(highestContactType.date)
         : '';
+
+    useEffect(() => {
+        contactQuestioningService.checkForDuplicates();
+        return (() => {
+            contactQuestioningService.getDuplicateIdentities().subscribe().unsubscribe();
+        })
+    }, [])
+
+    contactQuestioningService.getDuplicateIdentities().subscribe(duplicates => {
+        const isDuplicateIdentity = duplicates.filter(obj => obj.identityType ===interactedContact.identificationType.id && obj.identityNumber ===interactedContact.identificationNumber).length > 0;
+        setDuplicateIdentities(isDuplicateIdentity);
+    })
 
     const renderRulerButtonAndStatusInfo = () => {
         return (
@@ -161,7 +158,7 @@ const ContactDetails = (props: Props) => {
                 <GroupedContactIcon />
             )}
             {
-                !contactValid && <InvalidFormIcon />
+                (formState?.isValid === false || duplicateIdentities) && <InvalidFormIcon />
             }
             <Grid
                 container
@@ -205,5 +202,6 @@ export default ContactDetails;
 
 interface Props {
     interactedContact: GroupedInteractedContact;
+    formState: any;
     index: number;
 };

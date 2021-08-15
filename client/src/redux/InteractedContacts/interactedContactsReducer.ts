@@ -2,9 +2,11 @@ import GroupedInteractedContact from '../../models/ContactQuestioning/GroupedInt
 import * as Actions from './interactedContactsActionTypes';
 
 export class FormStateObject {
+    id: number;
     isValid: boolean;
 
-    constructor(isValid: boolean) {
+    constructor(id: number, isValid: boolean) {
+        this.id = id;
         this.isValid = isValid;
     }
 }
@@ -12,16 +14,18 @@ export class FormStateObject {
 export interface InteractedContactsState {
     pending: boolean;
     interactedContacts: GroupedInteractedContact[];
-    formState: Map<number, FormStateObject>;
+    formState: FormStateObject[];
     error: any;
 }
 
 const initialState: InteractedContactsState = {
     pending: false,
     interactedContacts: [],
-    formState: new Map(),
+    formState: [],
     error: null
 };
+
+type ValueOf<T> = T[keyof T];
 
 const interactedContactsReducer = (state = initialState, action: Actions.InteractedContactAction): InteractedContactsState => {
     switch (action.type) {
@@ -46,8 +50,16 @@ const interactedContactsReducer = (state = initialState, action: Actions.Interac
         case Actions.SET_INTERACTED_CONTACTS_FORM_STATE:
             return {
                 ...state,
-                //interactedContacts: action.payload.interactedContacts,
-                formState: action.payload.formState
+                interactedContacts: state.interactedContacts.map(contact => {
+                    if (contact.id == action.payload.id)
+                        (contact[action.payload.propertyName] as ValueOf<GroupedInteractedContact>) = action.payload.value;
+                    return contact;
+                }),
+                formState: state.formState.map(obj => {
+                    if (obj.id == action.payload.id)
+                        obj.isValid = Object.keys(action.payload.formState.errors).length === 0;
+                    return obj;
+                }),
             }
         case Actions.SET_INTERACTED_CONTACT_PENDING:
             return {
