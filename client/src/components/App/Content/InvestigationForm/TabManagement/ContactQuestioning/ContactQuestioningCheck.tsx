@@ -13,15 +13,14 @@ import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
-import { FormInputs } from './ContactQuestioningInterfaces';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
 
 const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => {
 
+    const { interactedContact, isViewMode } = props;
     const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();
 
-    const { interactedContact, isViewMode } = props;
     const classes = useStyles();
 
     const dispatch = useDispatch();
@@ -58,9 +57,9 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(interactedContact.id, 'doesFeelGood', booleanValue, methods.formState));
                                             }
                                         }}
+                                        onBlur={()=>dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.DOES_FEEL_GOOD, methods.getValues(InteractedContactFields.DOES_FEEL_GOOD), methods.formState))}
                                     />
                                 )
                             }}
@@ -87,9 +86,9 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(interactedContact.id, 'doesHaveBackgroundDiseases', booleanValue, methods.formState));
                                             }
                                         }}
+                                        onBlur={()=>{dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES, methods.getValues(InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES), methods.formState));}}
                                     />
                                 )
                             }}
@@ -116,9 +115,9 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(interactedContact.id, 'doesLiveWithConfirmed', booleanValue, methods.formState));
                                             }
                                         }}
+                                        onBlur={()=>dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.DOES_LIVE_WITH_CONFIRMED, methods.getValues(InteractedContactFields.DOES_LIVE_WITH_CONFIRMED), methods.formState))}
                                     />)
                             }}
                         />
@@ -144,9 +143,9 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(interactedContact.id, 'repeatingOccuranceWithConfirmed', booleanValue, methods.formState));
                                             }
                                         }}
+                                        onBlur={()=> dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED, methods.getValues(InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED), methods.formState))}
                                     />)
                             }}
                         />
@@ -172,9 +171,9 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                         onChange={(event, booleanValue) => {
                                             if (booleanValue !== null) {
                                                 props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(interactedContact.id, 'doesWorkWithCrowd', booleanValue, methods.formState));
                                             }
                                         }}
+                                        onBlur={() => dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.DOES_WORK_WITH_CROWD, methods.getValues(InteractedContactFields.DOES_WORK_WITH_CROWD), methods.formState))}
                                     />
                                 )
                             }}
@@ -201,8 +200,8 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                                             disabled={isFieldDisabled || isViewMode}
                                             onChange={(event) => {
                                                 props.onChange(event.target.value);
-                                                dispatch(setInteractedContact(interactedContact.id, 'occupation', event.target.value as number, methods.formState));
-                                            }}>
+                                            }}
+                                            onBlur={()=>{dispatch(setInteractedContact(interactedContact.id,InteractedContactFields.OCCUPATION,methods.getValues(InteractedContactFields.OCCUPATION), methods.formState))}}>
                                             {
                                                 occupations?.length > 0 && occupations.map((occupation) => (
                                                     <MenuItem className={classes.menuItem}

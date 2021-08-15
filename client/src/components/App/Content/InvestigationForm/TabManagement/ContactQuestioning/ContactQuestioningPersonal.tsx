@@ -3,7 +3,6 @@ import { differenceInYears } from 'date-fns';
 import React, { useState, useEffect } from 'react';
 import { Controller, DeepMap, FieldError, useFormContext } from 'react-hook-form';
 import { Avatar, Grid, Typography, Select, MenuItem, FormHelperText, FormControl } from '@material-ui/core';
-import { take } from 'rxjs/operators'
 
 import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
@@ -28,8 +27,8 @@ import { contactQuestioningService } from 'services/contactQuestioning.service';
 import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
+   
     const interactedContacts = useSelector<StoreStateType, GroupedInteractedContact[]>(state => state.interactedContacts.interactedContacts);
-
     const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();
     const { interactedContact, isViewMode } = props;
 
@@ -120,8 +119,10 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                         disabled={isFieldDisabled || shouldIdDisable || isViewMode}
                                         onChange={(event) => {
                                             props.onChange(event.target.value);
-                                            let identityObject = identificationTypes.find(obj => obj.id == event.target.value);
-                                            dispatch(setInteractedContact(interactedContact.id, 'identificationType', identityObject as IdentificationType, methods.formState));
+                                        }}
+                                        onBlur={()=>{
+                                            let identityObject = identificationTypes.find(obj => obj.id == (methods.getValues(InteractedContactFields.IDENTIFICATION_TYPE)as number) );
+                                            dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.IDENTIFICATION_TYPE, identityObject as IdentificationType, methods.formState));
                                             contactQuestioningService.checkForDuplicates();
                                         }}
                                         MenuProps={{
@@ -135,7 +136,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             },
                                             getContentAnchorEl: null
                                         }}
-                                    >
+                                         >
                                         {Object.values(identificationTypes).map((identificationType: IdentificationType) => (
                                             <MenuItem
                                                 className={classes.smallSizeText}
@@ -211,9 +212,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             onChange={(newDate: Date) => {
                                                 props.onChange(newDate);
                                                 setAge(calcAge(newDate));
-                                                dispatch(setInteractedContact(interactedContact.id, 'birthDate', newDate, methods.formState));
-
                                             }}
+                                            onBlur={() => dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.BIRTH_DATE, methods.getValues(InteractedContactFields.BIRTH_DATE), methods.formState))}
                                         />
                                     </FormControl>
                                 );
