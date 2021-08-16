@@ -30,8 +30,8 @@ const useReachContact = (props: Props) => {
         duplicateIdentities: boolean
     ) => {
 
-        const dispachUpdateStatus = (id: number, statusId: number, formState: FormState<GroupedInteractedContact>) => new Promise<void>((resolve, reject) => {
-            dispatch(setInteractedContact(id, 'contactStatus', statusId, formState));
+        const dispachUpdateStatus = (id: number, statusId: number) => new Promise<void>((resolve, reject) => {
+            dispatch(setInteractedContact(id, 'contactStatus', statusId));
             resolve();
         });
 
@@ -51,7 +51,7 @@ const useReachContact = (props: Props) => {
                     }).then((result) => {
                         if (result.value) {
                             onChange(selectedStatus?.id);
-                            dispachUpdateStatus(contact.id, getValues("contactStatus") as number, formState).then(() => {
+                            dispachUpdateStatus(contact.id, getValues("contactStatus") as number).then(() => {
                                 saveContact(parsePerson(contact as GroupedInteractedContact));
                             })
 
@@ -75,7 +75,7 @@ const useReachContact = (props: Props) => {
             }
         } else if (selectedStatus?.id) {
             onChange(selectedStatus?.id);
-            dispachUpdateStatus(contact.id, getValues("contactStatus") as number, formState).then(() => {
+            dispachUpdateStatus(contact.id, getValues("contactStatus") as number).then(() => {
                 saveContact(parsePerson(contact as GroupedInteractedContact));
             });
 

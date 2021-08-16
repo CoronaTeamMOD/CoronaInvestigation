@@ -76,7 +76,7 @@ const ContactDetails = (props: Props) => {
     }, [])
 
     contactQuestioningService.getDuplicateIdentities().subscribe(duplicates => {
-        const isDuplicateIdentity = duplicates.filter(obj => obj.identityType ===interactedContact.identificationType.id && obj.identityNumber ===interactedContact.identificationNumber).length > 0;
+        const isDuplicateIdentity = duplicates.filter(obj => obj.identityType ===interactedContact.identificationType?.id && obj.identityNumber ===interactedContact.identificationNumber).length > 0;
         setDuplicateIdentities(isDuplicateIdentity);
     })
 

@@ -28,7 +28,7 @@ interface SetInteractedContactsFormState {
         id: number,
         propertyName: keyof GroupedInteractedContact, 
         value: ValueOf<GroupedInteractedContact>, 
-        formState: FormState<GroupedInteractedContact>
+        formState: FormState<GroupedInteractedContact> | null
     }
 }
 
