@@ -21,6 +21,9 @@ const useStyles = makeStyles(() => ({
     },
     button: {
         borderRadius: '1vh'
+    },
+    bold: {
+        fontWeight: 'bold'
     }
 }));
 

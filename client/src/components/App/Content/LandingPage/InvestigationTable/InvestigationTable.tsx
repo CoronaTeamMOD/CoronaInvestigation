@@ -448,6 +448,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 groupIds={[selectedRow.groupId]}
                 epidemiologyNumbers={[selectedRow.epidemiologyNumber]}
                 onSuccess={onAllocationSuccess}
+                isGroupedContact={false}
             />
             <Slide direction='up' in={checkedIndexedRows.length > 0} mountOnEnter unmountOnExit>
                 <InvestigationTableFooter

@@ -21,7 +21,7 @@ const tranferDeskFormName = 'transferDesk';
 
 const TransferInvestigationDesk = (props: Props) => {
 
-    const { allDesks, onClose, onConfirm, onSuccess } = props;
+    const { allDesks, onClose, onConfirm, onSuccess, isGroupedContact } = props;
 
     const classes = useStyles();
 
@@ -89,7 +89,7 @@ const TransferInvestigationDesk = (props: Props) => {
                         }
                     />
                 </div>
-                <TransferInvestigationDialogNote />
+                <TransferInvestigationDialogNote  isGroupedContact={isGroupedContact}/>
                 <DialogActions className={classes.dialogActions}>
                     <Button className={classes.button} variant='contained' onClick={onClose} color='default'>
                         ביטול
@@ -113,7 +113,8 @@ interface Props {
     allDesks: Desk[];
     onClose: () => void;
     onConfirm: (updatedDesk: Desk, transferReason: string) => void;
-    onSuccess: () => Promise<SweetAlertResult<any>>
+    onSuccess: () => Promise<SweetAlertResult<any>>;
+    isGroupedContact: boolean;
 };
 
 export default TransferInvestigationDesk;

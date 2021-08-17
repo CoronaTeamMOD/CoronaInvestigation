@@ -23,7 +23,7 @@ const tranferCountyFormName = 'transferCounty';
 
 const TransferInvestigationCounty = (props: Props) => {
 
-    const { onClose, onConfirm, onSuccess } = props;
+    const { onClose, onConfirm, onSuccess, isGroupedContact } = props;
 
     const classes = useStyles();
 
@@ -93,7 +93,7 @@ const TransferInvestigationCounty = (props: Props) => {
                         }
                     />
                 </div>
-               <TransferInvestigationDialogNote />
+               <TransferInvestigationDialogNote isGroupedContact={isGroupedContact}/>
                 <DialogActions className={classes.dialogActions}>
                     <Button className={classes.button} variant='contained' onClick={onClose} color='default'>
                         ביטול
@@ -116,7 +116,8 @@ const TransferInvestigationCounty = (props: Props) => {
 interface Props {
     onClose: () => void;
     onConfirm: (updatedCounty: County, transferReason: string) => void;
-    onSuccess: () => Promise<SweetAlertResult<any>>
+    onSuccess: () => Promise<SweetAlertResult<any>>;
+    isGroupedContact: boolean;
 }
 
 export default TransferInvestigationCounty;
