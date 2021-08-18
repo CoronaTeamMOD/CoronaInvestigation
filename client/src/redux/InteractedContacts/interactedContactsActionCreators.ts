@@ -41,7 +41,7 @@ export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, Int
 type ValueOf<T> = T[keyof T];
 
 export const setInteractedContact =
-    (id: number, propertyName: keyof GroupedInteractedContact, value: ValueOf<GroupedInteractedContact>, formState: FormState<GroupedInteractedContact>):
+    (id: number, propertyName: keyof GroupedInteractedContact, value: ValueOf<GroupedInteractedContact>, formState: FormState<GroupedInteractedContact>|null =null):
         ThunkAction<void, StoreStateType, unknown, actionTypes.InteractedContactAction> => (dispatch, getState) => {
             dispatch({
                 type: actionTypes.SET_INTERACTED_CONTACTS_FORM_STATE,
