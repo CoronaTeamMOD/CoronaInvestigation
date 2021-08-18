@@ -147,6 +147,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         updateDateFilter: historyUpdateDateFilter = '',
         nonContactFilter: historyNonContactFilter = false,
         isAdminLandingRedirect: historyisAdminLandingRedirect = false,
+        unallocatedDeskFilter: historyUnallocatedDeskFilter = false,
         filterTitle } = useMemo(() => {
             const { location: { state } } = history;
             return state || {};
@@ -166,6 +167,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [unassignedUserFilter, setUnassignedUserFilter] = useState<boolean>(historyUnassignedUserFilter);
     const [inactiveUserFilter, setInactiveUserFilter] = useState<boolean>(historyInactiveUserFilter);
     const [isAdminLandingRedirect, setIsAdminLandingRedirect] = useState<boolean>(historyisAdminLandingRedirect);
+    const [unallocatedDeskFilter, setUnallocatedDeskFilter] = useState<boolean>(historyUnallocatedDeskFilter);
 
     const getFilterRules = () => {
         const statusFilterToSet = historyStatusFilter.length > 0 ? filterCreators.STATUS(historyStatusFilter) : null;
@@ -176,7 +178,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const inActiveToSet = (historyInactiveUserFilter && !historyUnassignedUserFilter) ? filterCreators.INACTIVE_USER(historyInactiveUserFilter) : null;
         const unAllocatedToSet = (historyInactiveUserFilter && historyUnassignedUserFilter) ? filterCreators.UNALLOCATED_USER(historyUnassignedUserFilter) : null;
         const updateDateFilterToSet = historyUpdateDateFilter ? filterCreators.UNUSUAL_IN_PROGRESS(historyUpdateDateFilter) : null;
-        const nonContactFilterToSet = historyNonContactFilter ? filterCreators.UNUSUAL_COMPLETED_NO_CONTACT(historyNonContactFilter) : null;
+        const nonContactFilterToSet = historyNonContactFilter ? filterCreators.UNUSUAL_COMPLETED_NO_CONTACT(historyNonContactFilter) : null; 
+        const unAllocatedDeskToSet = historyUnallocatedDeskFilter ? filterCreators.UNALLOCATED_DESK(historyUnallocatedDeskFilter):null;
+
         return {
             [InvestigationsFilterByFields.STATUS]: statusFilterToSet && Object.values(statusFilterToSet)[0],
             [InvestigationsFilterByFields.SUB_STATUS]: subStatusFilterToSet && Object.values(subStatusFilterToSet)[0],
@@ -187,6 +191,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [InvestigationsFilterByFields.UNALLOCATED_USER]: unAllocatedToSet && Object.values(unAllocatedToSet)[0],
             [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: updateDateFilterToSet && Object.values(updateDateFilterToSet)[0],
             [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: nonContactFilterToSet && Object.values(nonContactFilterToSet)[0],
+            [InvestigationsFilterByFields.UNALLOCATED_DESK]: unAllocatedDeskToSet && Object.values(unAllocatedDeskToSet)[0],
         }
     };
 
@@ -282,6 +287,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         } else {
             handleFilterChange(filterCreators.INACTIVE_USER(value));
         }
+        setCurrentPage(defaultPage);
+    };
+
+    const changeUnallocatedDeskFilter = (value: boolean) => {
+        updateFilterHistory('unallocatedDeskFilter', value);
+        setUnallocatedDeskFilter(value);
+        handleFilterChange(filterCreators.UNALLOCATED_DESK(value));
         setCurrentPage(defaultPage);
     };
 
@@ -1057,6 +1069,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeSearchFilter,
         changeUnassginedUserFilter,
         changeTimeRangeFilter,
+        changeUnallocatedDeskFilter,
         unassignedUserFilter,
         changeInactiveUserFilter,
         inactiveUserFilter,
@@ -1068,7 +1081,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeNonContactFilter,
         updateDateFilter,
         changeUpdateDateFilter,
-        fetchAllGroupedInvestigations
+        unallocatedDeskFilter,
+        fetchAllGroupedInvestigations 
     };
 };
 

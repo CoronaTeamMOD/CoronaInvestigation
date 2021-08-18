@@ -29,6 +29,10 @@ const statusToFilterConvertor = {
         statusFilter: [InvestigationMainStatusCodes.DONE],
         nonContactFilter: true
     },
+    [FilterRulesDescription.UNALLOCATED_DESK]: {
+        statusFilter: [InvestigationMainStatusCodes.NEW,InvestigationMainStatusCodes.IN_PROCESS],
+        unallocatedDeskFilter:true
+    },
 }
 
 export default statusToFilterConvertor;
