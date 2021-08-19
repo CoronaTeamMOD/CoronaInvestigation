@@ -21,6 +21,14 @@ const useStyles = makeStyles(() => ({
     },
     button: {
         borderRadius: '1vh'
+    },
+    alertMsg: {
+        fontWeight: 'bold',
+        color: 'red',
+    },
+    alertCheckboxMsg: {
+        display: 'flex',
+        alignItems: 'center'
     }
 }));
 

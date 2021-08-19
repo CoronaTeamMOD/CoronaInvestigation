@@ -14,7 +14,8 @@ export const investigatorAllocationTitle = 'הקצאת חקירה';
 
 const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
 
-    const { isOpen, handleCloseDialog, fetchInvestigators, allocateInvestigationToInvestigator, groupIds, epidemiologyNumbers, onSuccess } = props;
+    const { isOpen, handleCloseDialog, fetchInvestigators, allocateInvestigationToInvestigator, groupIds, epidemiologyNumbers, onSuccess, isGroupedContact } = props;
+    const [allowGroupedContactAlert, setAllowGroupedContactAlert] = useState<boolean>(false);
 
     const [investigatorToAllocateId, setInvestigatorToAllocateId] = useState<string>('');
     const [allInvestigators, setAllInvestigators] = useState<InvestigatorOption[] | undefined>(undefined);
@@ -23,8 +24,8 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
     const classes = useStyles();
 
     const shouldButtonDisabled: boolean = useMemo(() => {
-        return investigatorToAllocateId === unSelectedRow;
-    }, [investigatorToAllocateId]);
+        return isGroupedContact ? investigatorToAllocateId === unSelectedRow || !(isGroupedContact && allowGroupedContactAlert) : investigatorToAllocateId === unSelectedRow;
+    }, [investigatorToAllocateId, isGroupedContact, allowGroupedContactAlert]);
 
     useEffect(() => {
         if (investigatorToAllocateId !== unSelectedRow && allInvestigators){
@@ -71,7 +72,11 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
                     />
                 </Collapse>
             </DialogContent>
-            <TransferInvestigationDialogNote />
+            <TransferInvestigationDialogNote 
+                isGroupedContact={isGroupedContact} 
+                allowGroupedContactAlert={allowGroupedContactAlert} 
+                setAllowGroupedContactAlert={setAllowGroupedContactAlert}
+            />            
             <DialogActions>
                 <Button
                     id='cancel-button'
@@ -111,6 +116,7 @@ interface Props {
     groupIds: string[];
     epidemiologyNumbers: number[];
     onSuccess: () => Promise<SweetAlertResult<any>>;
+    isGroupedContact: boolean;
 };
 
 export default InvestigatorAllocationDialog;

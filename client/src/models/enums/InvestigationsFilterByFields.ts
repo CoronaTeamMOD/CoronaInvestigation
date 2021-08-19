@@ -9,6 +9,7 @@ enum InvestigationsFilterByFields {
     SUB_STATUS = 'SUB_STATUS',
     UNUSUAL_IN_PROGRESS = 'UNUSUAL_IN_PROGRESS',
     UNUSUAL_COMPLETED_NO_CONTACT = 'UNUSUAL_COMPLETED_NO_CONTACT',
+    UNALLOCATED_DESK = 'UNALLOCATED_DESK',
 };
 
 export default InvestigationsFilterByFields;
