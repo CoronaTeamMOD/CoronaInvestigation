@@ -12,7 +12,7 @@ const TITLE = 'העברת חקירות';
 
 const TransferInvestigationDialog = (props: Props) => {
 
-    const { allDesks, open, onClose, onDeskTransfer, onCountyTransfer, onSuccess } = props;
+    const { allDesks, open, onClose, onDeskTransfer, onCountyTransfer, onSuccess, isGroupedContact } = props;
 
     const classes = useStyles();
 
@@ -31,6 +31,7 @@ const TransferInvestigationDialog = (props: Props) => {
                     onCountyTransfer={onCountyTransfer}
                     onClose={onClose}
                     onSuccess={onSuccess}
+                    isGroupedContact={isGroupedContact}
                 />
             </DialogContent>
         </Dialog>
@@ -43,7 +44,8 @@ interface Props {
     onDeskTransfer: (updatedDesk: Desk, transferReason: string) => void;
     onCountyTransfer: (updatedCounty: County, transferReason: string) => void;
     allDesks: Desk[];
-    onSuccess: () => Promise<SweetAlertResult<any>>
+    onSuccess: () => Promise<SweetAlertResult<any>>;
+    isGroupedContact: boolean;
 };
 
 export default TransferInvestigationDialog;

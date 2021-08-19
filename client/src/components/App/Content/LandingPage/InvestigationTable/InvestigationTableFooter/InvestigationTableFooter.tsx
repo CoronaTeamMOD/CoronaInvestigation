@@ -166,6 +166,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                 onClose={handleCloseDesksDialog}
                 allDesks={allDesks}
                 onSuccess={onTransferSuccess}
+                isGroupedContact={!isSingleInvestigation}
             />
             <InvestigatorAllocationDialog
                 isOpen={isInvestigatorAllocationFooterDialogOpen}
@@ -175,6 +176,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                 groupIds={trimmedGroup.uniqueGroupIds}
                 epidemiologyNumbers={trimmedGroup.epidemiologyNumbers}
                 onSuccess={onAllocationSuccess}
+                isGroupedContact={!isSingleInvestigation}
             />
             <GroupedInvestigations
                 open={openGroupedInvestigations}
