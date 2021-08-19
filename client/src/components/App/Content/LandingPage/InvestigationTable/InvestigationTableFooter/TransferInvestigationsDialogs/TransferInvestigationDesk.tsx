@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { SweetAlertResult } from 'sweetalert2';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
@@ -22,6 +22,7 @@ const tranferDeskFormName = 'transferDesk';
 const TransferInvestigationDesk = (props: Props) => {
 
     const { allDesks, onClose, onConfirm, onSuccess, isGroupedContact } = props;
+    const [allowGroupedContactAlert, setAllowGroupedContactAlert] = useState<boolean>(false);
 
     const classes = useStyles();
 
@@ -89,14 +90,18 @@ const TransferInvestigationDesk = (props: Props) => {
                         }
                     />
                 </div>
-                <TransferInvestigationDialogNote  isGroupedContact={isGroupedContact}/>
-                <DialogActions className={classes.dialogActions}>
+                    <TransferInvestigationDialogNote 
+                        isGroupedContact={isGroupedContact} 
+                        allowGroupedContactAlert={allowGroupedContactAlert} 
+                        setAllowGroupedContactAlert={setAllowGroupedContactAlert}
+                    />
+                    <DialogActions className={classes.dialogActions}>
                     <Button className={classes.button} variant='contained' onClick={onClose} color='default'>
                         ביטול
                     </Button>
                     <Button type='submit'
                         form={tranferDeskFormName}
-                        disabled={!methods.formState.isValid}
+                        disabled={isGroupedContact ? !methods.formState.isValid || !(isGroupedContact && allowGroupedContactAlert) : !methods.formState.isValid}
                         className={classes.button}
                         variant='contained'
                         color='primary'

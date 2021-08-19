@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useSelector } from 'react-redux';
 import { SweetAlertResult } from 'sweetalert2';
 import { Autocomplete } from '@material-ui/lab';
@@ -22,8 +22,8 @@ const defaultValues = {
 const tranferCountyFormName = 'transferCounty';
 
 const TransferInvestigationCounty = (props: Props) => {
-
     const { onClose, onConfirm, onSuccess, isGroupedContact } = props;
+    const [allowGroupedContactAlert, setAllowGroupedContactAlert] = useState<boolean>(false);
 
     const classes = useStyles();
 
@@ -93,14 +93,18 @@ const TransferInvestigationCounty = (props: Props) => {
                         }
                     />
                 </div>
-               <TransferInvestigationDialogNote isGroupedContact={isGroupedContact}/>
+               <TransferInvestigationDialogNote 
+                    isGroupedContact={isGroupedContact} 
+                    allowGroupedContactAlert={allowGroupedContactAlert} 
+                    setAllowGroupedContactAlert={setAllowGroupedContactAlert}
+                />
                 <DialogActions className={classes.dialogActions}>
                     <Button className={classes.button} variant='contained' onClick={onClose} color='default'>
                         ביטול
                     </Button>
                     <Button type='submit'
                         form={tranferCountyFormName}
-                        disabled={!methods.formState.isValid}
+                        disabled={isGroupedContact ? !methods.formState.isValid || !(isGroupedContact && allowGroupedContactAlert) : !methods.formState.isValid}
                         className={classes.button}
                         variant='contained'
                         color='primary'
