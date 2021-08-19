@@ -24,18 +24,19 @@ const TableFilter = (props: Props) => {
 
     const classes = useStyles();
 
-    const { 
+    const {
         statuses, subStatuses, filteredStatuses, filteredSubStatuses,
-        onFilterChange, 
-        changeInactiveUserFilter, onSubStatusChange, inactiveUserFilter, 
-        changeUnassginedUserFilter, unassignedUserFilter, 
-        timeRangeFilter, onTimeRangeFilterChange, 
+        onFilterChange,
+        changeInactiveUserFilter, onSubStatusChange, inactiveUserFilter,
+        changeUnassginedUserFilter, unassignedUserFilter,
+        timeRangeFilter, onTimeRangeFilterChange,
         updateDateFilter, nonContactFilter,
-        desksToTransfer, deskFilter, changeDeskFilter, changeSearchFilter
+        desksToTransfer, deskFilter, changeDeskFilter, changeSearchFilter,
+        unallocatedDeskFilter, changeUnallocatedDeskFilter
     } = props;
 
-    const { displayTimeRange, onSelectTimeRangeChange, onStartDateSelect, onEndDateSelect, errorMes} = useTableFilter({
-        timeRangeFilter, 
+    const { displayTimeRange, onSelectTimeRangeChange, onStartDateSelect, onEndDateSelect, errorMes } = useTableFilter({
+        timeRangeFilter,
         onTimeRangeFilterChange
     });
 
@@ -46,24 +47,24 @@ const TableFilter = (props: Props) => {
     const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id;
 
     useEffect(() => {
-        selectedStatuses.length > 0 
+        selectedStatuses.length > 0
             ? setSubStatusFiltered(subStatuses.filter(subStatus => selectedStatuses.includes(subStatus.parentStatus)))
             : setSubStatusFiltered(subStatuses)
     }, [subStatuses, selectedSubStatuses, filteredStatuses, selectedStatuses]);
-        
+
     useEffect(() => {
-        filteredSubStatuses.length > 0 
+        filteredSubStatuses.length > 0
             ? setSelectedStatuses([...selectedStatuses, ...subStatuses.filter(subStatus => filteredSubStatuses.includes(subStatus.displayName)).map(subStatus => subStatus.parentStatus)])
             : setSelectedStatuses(filteredStatuses)
     }, [filteredSubStatuses, subStatuses]);
-        
+
     return (
         <Card className={classes.card}>
             <Grid className={classes.startCard}>
                 <DeskFilter
                     desks={desksToTransfer}
                     filteredDesks={deskFilter}
-                    onFilterChange={(event, value) => changeDeskFilter(value)} 
+                    onFilterChange={(event, value) => changeDeskFilter(value)}
                 />
             </Grid>
             <div className={classes.column}>
@@ -82,17 +83,17 @@ const TableFilter = (props: Props) => {
                         onEndDateChange={onEndDateSelect}
                         minDate={timeRangeMinDate}
                         maxDate={new Date()}
-                    />   
+                    />
                 </Collapse>
             </div>
-            {errorMes !== '' && 
+            {errorMes !== '' &&
                 <Typography className={classes.timeRangeError}>{errorMes}</Typography>
             }
             <Autocomplete
                 disabled={nonContactFilter}
-                ChipProps={{className:classes.chip}}
+                ChipProps={{ className: classes.chip }}
                 className={classes.autocomplete}
-                classes={{inputFocused: classes.autocompleteInputText}}
+                classes={{ inputFocused: classes.autocompleteInputText }}
                 size='small'
                 disableCloseOnSelect
                 multiple
@@ -108,7 +109,7 @@ const TableFilter = (props: Props) => {
                         label={'סטטוס'}
                         size='small'
                         {...params}
-                        InputProps={{...params.InputProps, className: classes.autocompleteInput}}
+                        InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
                     />
                 }
                 renderOption={(option, { selected }) => (
@@ -125,9 +126,9 @@ const TableFilter = (props: Props) => {
                 limitTags={1}
             />
             <Autocomplete
-                ChipProps={{className:classes.chip}}
+                ChipProps={{ className: classes.chip }}
                 className={classes.autocomplete}
-                classes={{inputFocused: classes.autocompleteInputText}}
+                classes={{ inputFocused: classes.autocompleteInputText }}
                 size='small'
                 disableCloseOnSelect
                 multiple
@@ -137,17 +138,17 @@ const TableFilter = (props: Props) => {
                 onChange={(event, values) => {
                     onSubStatusChange(values);
                     setSelectedSubStatuses(values.map(value => value.displayName));
-                    values.length > 0 
+                    values.length > 0
                         ? setSelectedStatuses([...selectedStatuses, ...statuses.filter(status => values.map(subStatus => subStatus.parentStatus).includes(status.id)).map(status => status.id)])
                         : setSelectedStatuses(filteredStatuses)
-                        
+
                 }}
                 renderInput={(params) =>
                     <TextField
                         label={'תת סטטוס'}
                         size='small'
                         {...params}
-                        InputProps={{...params.InputProps, className: classes.autocompleteInput}}
+                        InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
                     />
                 }
                 renderOption={(option, { selected }) => (
@@ -171,7 +172,7 @@ const TableFilter = (props: Props) => {
                         checked={unassignedUserFilter}
                         className={classes.checkbox}
                     />
-                    <Typography className={classes.title}>לא משויכות</Typography>
+                    <Typography className={classes.title}>לא משויכות לחוקר</Typography>
                 </div>
                 <div className={classes.row}>
                     <Checkbox
@@ -182,17 +183,26 @@ const TableFilter = (props: Props) => {
                     />
                     <Typography className={classes.title}>משויכות לחוקרים לא פעילים</Typography>
                 </div>
+                <div className={classes.row}>
+                    <Checkbox
+                        onChange={(event) => changeUnallocatedDeskFilter(event.target.checked)}
+                        color='primary'
+                        checked={unallocatedDeskFilter}
+                        className={classes.checkbox}
+                    />
+                    <Typography className={classes.title}>לא משויכות לדסק</Typography>
+                </div>
             </Grid>
             <div className={classes.tableHeaderRow}>
                 <Box justifyContent='flex-end' display='flex'>
-                    <SearchBar 
+                    <SearchBar
                         validationSchema={stringAlphanum}
                         searchBarLabel={searchBarLabel}
                         onClick={(value: string) => changeSearchFilter(value)}
                     />
-                    
+
                 </Box>
-            </div> 
+            </div>
         </Card>
     )
 }
@@ -213,10 +223,12 @@ interface Props {
     updateDateFilter: string;
     nonContactFilter: boolean;
     desksToTransfer: Desk[];
-    deskFilter: (number|null)[];
+    deskFilter: (number | null)[];
     changeDeskFilter: (desks: Desk[]) => void;
     handleRequestSort: (event: any, property: React.SetStateAction<string>) => void;
     changeSearchFilter: (searchQuery: string) => void;
+    unallocatedDeskFilter: boolean;
+    changeUnallocatedDeskFilter: (isFilterOn: boolean) => void;
 };
 
 export default TableFilter

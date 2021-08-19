@@ -132,6 +132,16 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
                 }
               }
         } } :  { [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: null };
+    },
+    [InvestigationsFilterByFields.UNALLOCATED_DESK]: (isFilterOn: boolean) => {
+        return isFilterOn ?
+            {
+                [InvestigationsFilterByFields.UNALLOCATED_DESK]: {
+                   deskId: { isNull: true } 
+                }
+            }
+            :
+            { [InvestigationsFilterByFields.UNALLOCATED_DESK]: null };
     }, 
 };
 
