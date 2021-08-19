@@ -1,4 +1,4 @@
-import { FormState, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 import theme from 'styles/theme';
@@ -7,9 +7,9 @@ import InteractedContact from 'models/InteractedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
-import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
+import { setInteractedContact, setContactFormState } from 'redux/InteractedContacts/interactedContactsActionCreators';
 import StoreStateType from 'redux/storeStateType';
-import { contactQuestioningService } from 'services/contactQuestioning.service';
+import ContactQuestioningSchema from 'components/App/Content/InvestigationForm/TabManagement/ContactQuestioning/ContactSection/Schemas/ContactQuestioningSchema';
 
 const useReachContact = (props: Props) => {
     const { errors, getValues, formState } = useFormContext<GroupedInteractedContact>();
@@ -35,6 +35,11 @@ const useReachContact = (props: Props) => {
             resolve();
         });
 
+        const dispatchUpdateFormState=(contact: GroupedInteractedContact) => {
+            ContactQuestioningSchema.isValid({ ...contact, identificationType: contact?.identificationType?.id }).then(isValid =>{
+                dispatch(setContactFormState(contact.id, isValid));
+            })
+        }
 
         event.stopPropagation();
         const formHaveMissingFields = missingFieldsText !== '';
@@ -54,7 +59,6 @@ const useReachContact = (props: Props) => {
                             dispachUpdateStatus(contact.id, getValues("contactStatus") as number).then(() => {
                                 saveContact(parsePerson(contact as GroupedInteractedContact));
                             })
-
                         }
                     });
                 }
@@ -78,7 +82,7 @@ const useReachContact = (props: Props) => {
             dispachUpdateStatus(contact.id, getValues("contactStatus") as number).then(() => {
                 saveContact(parsePerson(contact as GroupedInteractedContact));
             });
-
+            dispatchUpdateFormState(contact);
         }
 
     };

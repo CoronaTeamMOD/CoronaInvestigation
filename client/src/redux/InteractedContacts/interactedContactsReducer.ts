@@ -3,9 +3,9 @@ import * as Actions from './interactedContactsActionTypes';
 
 export class FormStateObject {
     id: number;
-    isValid: boolean;
+    isValid: boolean | null;
 
-    constructor(id: number, isValid: boolean) {
+    constructor(id: number, isValid: boolean | null) {
         this.id = id;
         this.isValid = isValid;
     }
