@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ExpandMore } from '@material-ui/icons';
-import { DeepMap, FieldError, FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import {
     Accordion, AccordionDetails, AccordionSummary,
     AccordionActions, Divider, Grid, Collapse
@@ -14,7 +14,6 @@ import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 import useStyles from './ContactQuestioningStyles';
-import { FormInputs } from './ContactQuestioningInterfaces';
 import ContactQuestioningInfo from './ContactQuestioningInfo';
 import ContactQuestioningCheck from './ContactQuestioningCheck';
 import InteractedContactFields from 'models/enums/InteractedContact';
@@ -23,9 +22,8 @@ import ContactQuestioningClinical from './ContactQuestioningClinical';
 
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 import StoreStateType from 'redux/storeStateType';
-import { useDispatch, useSelector } from 'react-redux';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import { contactQuestioningService } from 'services/contactQuestioning.service';
+import { useSelector, useDispatch } from 'react-redux';
+import { setContactFormState } from 'redux/InteractedContacts/interactedContactsActionCreators';
 
 const InteractedContactAccordion = (props: Props) => {
 
@@ -39,8 +37,11 @@ const InteractedContactAccordion = (props: Props) => {
 
     const {
         interactedContact, index, contactStatuses, saveContact, parsePerson,
-        isFamilyContact, familyRelationships, shouldDisable, isViewMode, formState
+        isFamilyContact, familyRelationships, shouldDisable, isViewMode
     } = props;
+
+    const dispatch = useDispatch();
+    const formState = useSelector<StoreStateType, any[]>(state => state.interactedContacts.formState).find(formState => formState.id == interactedContact.id);
 
     const watchCurrentStatus: number = methods.watch(InteractedContactFields.CONTACT_STATUS);
 
@@ -68,6 +69,22 @@ const InteractedContactAccordion = (props: Props) => {
 
         return classesList.join(' ');
     };
+
+    const initFormState = ()=>{
+        if (formState.isValid === null) {
+            ContactQuestioningSchema.isValid({ ...interactedContact, identificationType: interactedContact.identificationType?.id }).then(isValid => {
+                dispatch(setContactFormState(interactedContact.id, isValid));
+            })
+        }
+    }
+
+    useEffect(() => {
+        initFormState(); 
+    }, [])
+
+    useEffect(() => {
+        initFormState();
+    }, [formState===null])
 
     useEffect(() => {
         if (watchCurrentStatus) {
@@ -167,7 +184,6 @@ export default InteractedContactAccordion;
 
 interface Props {
     interactedContact: GroupedInteractedContact;
-    formState: any;
     index: number;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;

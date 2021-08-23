@@ -3,9 +3,9 @@ import * as Actions from './interactedContactsActionTypes';
 
 export class FormStateObject {
     id: number;
-    isValid: boolean;
+    isValid: boolean | null;
 
-    constructor(id: number, isValid: boolean) {
+    constructor(id: number, isValid: boolean | null) {
         this.id = id;
         this.isValid = isValid;
     }
@@ -47,20 +47,30 @@ const interactedContactsReducer = (state = initialState, action: Actions.Interac
                 pending: false,
                 error: action.error
             }
-        case Actions.SET_INTERACTED_CONTACTS_FORM_STATE:
+        case Actions.SET_INTERACTED_CONTACT:
             return {
                 ...state,
                 interactedContacts: state.interactedContacts.map(contact => {
                     if (contact.id == action.payload.id)
                         (contact[action.payload.propertyName] as ValueOf<GroupedInteractedContact>) = action.payload.value;
                     return contact;
-                }),
-                formState: state.formState.map(obj => {
-                    if (action.payload.formState && obj.id == action.payload.id)
-                        obj.isValid = Object.keys(action.payload.formState.errors).length === 0;
-                    return obj;
-                }),
+                })
             }
+            
+        case Actions.SET_CONTACT_FORM_STATE:{
+            const formState = [...state.formState]
+            const index = formState.findIndex(obj=>obj.id==action.payload.id)
+            if (index>-1){
+                formState[index].isValid=action.payload.isValid;
+            }
+            else formState.push(new FormStateObject(action.payload.id,action.payload.isValid))
+
+            return {
+                ...state,
+                formState: formState
+            }
+        }
+
         case Actions.SET_INTERACTED_CONTACT_PENDING:
             return {
                 ...state,
