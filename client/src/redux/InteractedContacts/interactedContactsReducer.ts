@@ -56,7 +56,7 @@ const interactedContactsReducer = (state = initialState, action: Actions.Interac
                     return contact;
                 }),
                 formState: state.formState.map(obj => {
-                    if (obj.id == action.payload.id)
+                    if (action.payload.formState && obj.id == action.payload.id)
                         obj.isValid = Object.keys(action.payload.formState.errors).length === 0;
                     return obj;
                 }),

@@ -40,7 +40,7 @@ const TabPanel = (props: TabPanelProps) => {
 
 const TransferInvestigationTabs = (props: Props) => {
 
-    const { allDesks, onClose, onDeskTransfer, onCountyTransfer, onSuccess } = props;
+    const { allDesks, onClose, onDeskTransfer, onCountyTransfer, onSuccess, isGroupedContact } = props;
 
     const [value, setValue] = React.useState(0);
 
@@ -67,6 +67,7 @@ const TransferInvestigationTabs = (props: Props) => {
                     onConfirm={onCountyTransfer}
                     onClose={onClose}
                     onSuccess={onSuccess}
+                    isGroupedContact={isGroupedContact}
                 />
             </TabPanel>
             <TabPanel value={value} index={1}>
@@ -75,6 +76,7 @@ const TransferInvestigationTabs = (props: Props) => {
                     onClose={onClose}
                     allDesks={allDesks}
                     onSuccess={onSuccess}
+                    isGroupedContact={isGroupedContact}
                 />
             </TabPanel>
         </div>
@@ -94,6 +96,7 @@ interface Props {
     onDeskTransfer: (updatedDesk: Desk, transferReason: string) => void;
     onCountyTransfer: (updatedCounty: County, transferReason: string) => void;
     onSuccess: () => Promise<SweetAlertResult<any>>;
+    isGroupedContact: boolean;
 };
 
 export default TransferInvestigationTabs;

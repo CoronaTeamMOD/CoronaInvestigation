@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import StoreStateType from 'redux/storeStateType';
 import React, { MutableRefObject, useMemo } from 'react';
-import { Call, Comment, KeyboardArrowDown, KeyboardArrowLeft, Visibility } from '@material-ui/icons';
 import { Checkbox, IconButton, TableCell, TableRow, TextField, Tooltip } from '@material-ui/core';
+import { Call, KeyboardArrowDown, KeyboardArrowLeft, Visibility } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
