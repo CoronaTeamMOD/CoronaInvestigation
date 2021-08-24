@@ -182,7 +182,6 @@ export const convertGroupInvestigationsData = (dbData: GroupIvestigations) => {
 }
 
 const orderByAge = 'ageASC';
-
 const defaultOrder = 'defaultOrder';
 
 export const calculateInvestigationOrder = (orderBy: string) => {
