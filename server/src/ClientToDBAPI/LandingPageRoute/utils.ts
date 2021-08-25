@@ -180,3 +180,10 @@ export const convertUserInvestigationsData = (dbData: UserInvestigations) => {
 export const convertGroupInvestigationsData = (dbData: GroupIvestigations) => {
     return dbData.orderedInvestigations.nodes.map(mappingGroupInvestigations);
 }
+
+const orderByAge = 'ageASC';
+const defaultOrder = 'defaultOrder';
+
+export const calculateInvestigationOrder = (orderBy: string) => {
+    return orderBy === defaultOrder ? orderByAge : orderBy;
+}
