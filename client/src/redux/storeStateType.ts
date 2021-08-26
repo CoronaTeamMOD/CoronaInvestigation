@@ -17,6 +17,7 @@ import { UserState } from './User/userReducer';
 import { GreenPassReducerType } from './GreenPass/greenPassReducer';
 import GroupedInvestigationReducerType from './GroupedInvestigations/GroupedInvestigationsType';
 import { InteractedContactsState } from './InteractedContacts/interactedContactsReducer';
+import { ClinicalDetailsState } from './ClinicalDetails/ClinicalDetailsReducer';
 
 export default interface StoreStateType {
     user: UserState;
@@ -43,5 +44,6 @@ export default interface StoreStateType {
     greenPass: GreenPassReducerType;
     identificationTypes: IdentificationType[];
     airlines: Map<number, string>;
-    interactedContacts:InteractedContactsState;
+    interactedContacts: InteractedContactsState;
+    clinicalDetails: ClinicalDetailsState;
 };
