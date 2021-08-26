@@ -1,14 +1,9 @@
 import * as actionTypes from './interactedContactsActionTypes';
-import axios from 'axios';
 import { ThunkAction } from 'redux-thunk';
 import { FormStateObject, InteractedContactsState } from './interactedContactsReducer';
-import InteractedContact from '../../models/InteractedContact';
 import GroupedInteractedContact from '../../models/ContactQuestioning/GroupedInteractedContact';
-import { FormState } from 'react-hook-form';
-import ContactQuestioningSchema from 'components/App/Content/InvestigationForm/TabManagement/ContactQuestioning/ContactSection/Schemas/ContactQuestioningSchema';
 import { getAllInteractedContacts } from '../../httpClient/InteractedContacts/interactedContacts';
 import StoreStateType from 'redux/storeStateType';
-import { store } from 'redux/store';
 
 export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, InteractedContactsState, unknown, actionTypes.InteractedContactAction> => async dispatch => {
     dispatch({
@@ -17,10 +12,9 @@ export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, Int
 
     try {
         const contacts = await getAllInteractedContacts(minimalDate);
-        let map = [];
+        let map: FormStateObject[] = [];
         for (let i = 0; i < contacts.length; i++) {
-            const valid = await ContactQuestioningSchema.isValid({ ...contacts[i], identificationType: contacts[i]?.identificationType?.id });
-            map.push(new FormStateObject(contacts[i].id, valid));
+            map.push(new FormStateObject(contacts[i].id, null));
         }
         dispatch({
             type: actionTypes.GET_INTERACTED_CONTACTS_SUCCESS,
@@ -41,37 +35,19 @@ export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, Int
 type ValueOf<T> = T[keyof T];
 
 export const setInteractedContact =
-    (id: number, propertyName: keyof GroupedInteractedContact, value: ValueOf<GroupedInteractedContact>, formState: FormState<GroupedInteractedContact>|null =null):
+    (id: number, propertyName: keyof GroupedInteractedContact, value: ValueOf<GroupedInteractedContact>):
         ThunkAction<void, StoreStateType, unknown, actionTypes.InteractedContactAction> => (dispatch, getState) => {
             dispatch({
-                type: actionTypes.SET_INTERACTED_CONTACTS_FORM_STATE,
-                payload: { id, propertyName, value, formState }
+                type: actionTypes.SET_INTERACTED_CONTACT,
+                payload: { id, propertyName, value }
             })
         }
 
-export const updateInteractedContacts = (contacts: InteractedContact[]):
-    ThunkAction<void, InteractedContactsState, unknown, actionTypes.InteractedContactAction> => async dispatch => {
-        dispatch({
-            type: actionTypes.SET_INTERACTED_CONTACTS_PENDING
-        });
-
-        const data = {
-            unSavedContacts: {
-                contacts
-            },
-        };
-
-        axios.post('/contactedPeople/interactedContacts', data)
-            .then(res => {
-                dispatch({
-                    type: actionTypes.SET_INTERACTED_CONTACTS_SUCCESS,
-                    payload: { interactedContacts: res.data }
-                });
+export const setContactFormState =
+    (id: number, isValid: boolean):
+        ThunkAction<void, StoreStateType, unknown, actionTypes.InteractedContactAction> => (dispatch, getState) => {
+            dispatch({
+                type: actionTypes.SET_CONTACT_FORM_STATE,
+                payload: { id, isValid }
             })
-            .catch(err => {
-                dispatch({
-                    type: actionTypes.SET_INTERACTED_CONTACTS_ERROR,
-                    error: err
-                });
-            });
-    }
+        }

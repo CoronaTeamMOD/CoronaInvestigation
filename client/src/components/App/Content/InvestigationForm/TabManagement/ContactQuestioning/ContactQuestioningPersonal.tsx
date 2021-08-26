@@ -22,13 +22,12 @@ import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteracte
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
-import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
+import { setInteractedContact, setContactFormState } from 'redux/InteractedContacts/interactedContactsActionCreators';
 import { contactQuestioningService } from 'services/contactQuestioning.service';
 import InlineErrorText from 'commons/InlineErrorText/InlineErrorText';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
    
-    const interactedContacts = useSelector<StoreStateType, GroupedInteractedContact[]>(state => state.interactedContacts.interactedContacts);
     const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();
     const { interactedContact, isViewMode } = props;
 
@@ -58,6 +57,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     const shouldDisableIdByReopen = interactedContact.creationTime
         ? shouldDisableContact(interactedContact.creationTime)
         : false;
+
+    const formHasErrors: boolean = Object.keys(methods.formState.errors).length === 0;
 
     const identificationTypeFieldName = `${InteractedContactFields.IDENTIFICATION_TYPE}`;
     const identificationNumberFieldName = `${InteractedContactFields.IDENTIFICATION_NUMBER}`;
@@ -91,6 +92,10 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
         }
     }, [watchIdentificationType, watchIdentificationNumber]);
 
+    useEffect(()=>{
+        dispatch(setContactFormState(interactedContact.id,formHasErrors))
+    },[formHasErrors])
+
     return (
         <Grid item xs={4}>
             <Grid container direction='column' spacing={2}>
@@ -119,12 +124,10 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                         disabled={isFieldDisabled || shouldIdDisable || isViewMode}
                                         onChange={(event) => {
                                             props.onChange(event.target.value);
-                                        }}
-                                        onBlur={()=>{
-                                            let identityObject = identificationTypes.find(obj => obj.id == (methods.getValues(InteractedContactFields.IDENTIFICATION_TYPE)as number) );
-                                            dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.IDENTIFICATION_TYPE, identityObject as IdentificationType, methods.formState));
+                                            let identityObject = identificationTypes.find(obj => obj.id == event.target.value as number);
+                                            dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.IDENTIFICATION_TYPE, identityObject as IdentificationType));
                                             contactQuestioningService.checkForDuplicates();
-                                        }}
+                                        }}                                       
                                         MenuProps={{
                                             anchorOrigin: {
                                                 vertical: 'bottom',
@@ -174,7 +177,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                                 props.onChange(newValue);
                                             }}
                                             onBlur={() => {
-                                                dispatch(setInteractedContact(interactedContact.id, 'identificationNumber', methods.getValues("identificationNumber"), methods.formState));
+                                                dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.IDENTIFICATION_NUMBER, methods.getValues(InteractedContactFields.IDENTIFICATION_NUMBER)));
                                                 contactQuestioningService.checkForDuplicates();
                                             }}
                                             placeholder='מספר תעודה'
@@ -213,7 +216,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                                 props.onChange(newDate);
                                                 setAge(calcAge(newDate));
                                             }}
-                                            onBlur={() => dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.BIRTH_DATE, methods.getValues(InteractedContactFields.BIRTH_DATE), methods.formState))}
+                                            onBlur={() => dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.BIRTH_DATE, methods.getValues(InteractedContactFields.BIRTH_DATE)))}
                                         />
                                     </FormControl>
                                 );
@@ -254,7 +257,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                             disabled={isFieldDisabled || isViewMode}
                                             testId='phoneNumber'
                                             placeholder='הכנס טלפון:'
-                                            onBlur={() => dispatch(setInteractedContact(interactedContact.id, 'phoneNumber', methods.getValues('phoneNumber'), methods.formState))}
+                                            onBlur={() => dispatch(setInteractedContact(interactedContact.id, 'phoneNumber', methods.getValues('phoneNumber')))}
                                         />
                                     </FormControl>
                                 )
@@ -306,7 +309,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                                 props.onChange(newValue)
                                             }}
                                             onBlur={() => {
-                                                dispatch(setInteractedContact(interactedContact.id, 'extraInfo', methods.getValues('extraInfo'), methods.formState));
+                                                dispatch(setInteractedContact(interactedContact.id, 'extraInfo', methods.getValues('extraInfo')));
                                             }
                                             }
                                             placeholder='הערות נוספות'

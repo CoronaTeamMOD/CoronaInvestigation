@@ -1,7 +1,5 @@
 import { Button, Grid } from '@material-ui/core';
-import { yupResolver } from '@hookform/resolvers';
 import React, { useEffect, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 
@@ -13,7 +11,6 @@ import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 import useStyles from './ContactQuestioningStyles';
-import { FormInputs } from './ContactQuestioningInterfaces';
 import useContactQuestioning from './useContactQuestioning';
 import InteractedContactAccordion from './InteractedContactAccordion';
 import { contactQuestioningService } from 'services/contactQuestioning.service';
@@ -33,7 +30,6 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     const { isInvolvedThroughFamily } = useInvolvedContact();
 
     const interactedContacts = useSelector<StoreStateType, GroupedInteractedContact[]>(state => state.interactedContacts.interactedContacts);
-    const formStates = useSelector<StoreStateType, any[]>(state => state.interactedContacts.formState);
     const {
         onSubmit,
         parsePerson,
@@ -106,12 +102,10 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                         const isFamilyContact: boolean = isInvolvedThroughFamily(
                             interactedContact.involvementReason
                         );
-                        const formState = formStates.find(obj => obj.id === interactedContact.id);
                         return (
                             <Grid item xs={12} key={interactedContact.id}>
                                 <InteractedContactAccordion
                                     interactedContact={interactedContact}
-                                    formState={formState}
                                     index={index}
                                     contactStatuses={contactStatuses}
                                     saveContact={saveContact}
