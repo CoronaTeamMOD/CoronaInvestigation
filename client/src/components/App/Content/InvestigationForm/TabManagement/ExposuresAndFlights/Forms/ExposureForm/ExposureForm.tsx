@@ -111,7 +111,6 @@ const ExposureForm = (props: Props) => {
 				/>
 				</Grid>
 			</FormRowWithInput>
-
 			<Collapse in={isExposurePersonKnown}>
 				<Grid item container alignItems='center' xs={12} justify='flex-start'>
 					<Grid xs={9}>
