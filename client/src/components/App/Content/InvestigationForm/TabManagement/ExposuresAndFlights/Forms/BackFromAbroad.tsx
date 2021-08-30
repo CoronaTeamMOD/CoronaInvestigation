@@ -1,7 +1,7 @@
 import React from 'react';
 import { AddCircle } from '@material-ui/icons';
 import { Controller, useFormContext } from 'react-hook-form';
-import { Collapse, Divider, IconButton, Typography } from '@material-ui/core';
+import { Collapse, Divider, IconButton, Typography, Grid } from '@material-ui/core';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 
 import Toggle from 'commons/Toggle/Toggle';
@@ -30,25 +30,27 @@ export const BackFromAbroad = (props: Props) => {
         <div className={classes.subForm}>
             <FormTitle title='חזרה מחו״ל' />
             <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?' appendantLabelIcon={wereFlights ? <ComplexityIcon tooltipText='חקירה מורכבת' /> : undefined}>
-                <Controller
-                    control={control}
-                    name={fieldsNames.wereFlights}
-                    defaultValue={wereFlights}
-                    render={(props) => {
-                        return (
-                            <Toggle
-                                {...props}
-                                onChange={(event, value) => {
-                                    if (value !== null) {
-                                        props.onChange(value);
-                                        onExposuresStatusChange(fieldsNames.wereFlights, value);
-                                    }
-                                }}
-                                disabled={isViewMode}
-                            />
-                        );
-                    }}
-                />
+                <Grid item xs={4}>
+                    <Controller
+                        control={control}
+                        name={fieldsNames.wereFlights}
+                        defaultValue={wereFlights}
+                        render={(props) => {
+                            return (
+                                <Toggle
+                                    {...props}
+                                    onChange={(event, value) => {
+                                        if (value !== null) {
+                                            props.onChange(value);
+                                            onExposuresStatusChange(fieldsNames.wereFlights, value);
+                                        }
+                                    }}
+                                    disabled={isViewMode}
+                                />
+                            );
+                        }}
+                    />
+                </Grid>
             </FormRowWithInput>
 
             <Collapse in={watchWereFlights} className={classes.additionalInformationForm}>

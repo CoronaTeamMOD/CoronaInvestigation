@@ -3,7 +3,7 @@ import { Router, Request, Response } from 'express';
 import { Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import handleCountyRequest from '../../middlewares/HandleCountyRequest';
-import { convertUserInvestigationsData, convertGroupInvestigationsData } from './utils';
+import { convertUserInvestigationsData, convertGroupInvestigationsData, calculateInvestigationOrder } from './utils';
 import { graphqlRequest, errorStatusCode, validStatusCode } from '../../GraphqlHTTPRequest';
 import { CHANGE_DESK_ID, UPDATE_DESK_BY_GROUP_ID, CREATE_ADMIN_MESSAGE, DELETE_ADMIN_MESSAGE } from '../../DBService/LandingPage/Mutation';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
@@ -75,7 +75,7 @@ landingPageRoute.post('/groupInvestigations', handleCountyRequest, (request: Req
     };
     const getInvestigationsParameters = {
         filter: filterBy,
-        orderBy,
+        orderBy: calculateInvestigationOrder(orderBy),
         offset: calculateOffset(currentPage, size),
         size,
         unassignedFilter: filterBy

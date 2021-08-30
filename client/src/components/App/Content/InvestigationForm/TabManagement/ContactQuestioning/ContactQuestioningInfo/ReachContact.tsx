@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Autocomplete } from '@material-ui/lab';
 import { TextField, Grid } from '@material-ui/core';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -17,6 +17,8 @@ import useStyles from '../ContactQuestioningStyles';
 import interactedContactsReducer from 'redux/InteractedContacts/interactedContactsReducer';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
+import { contactQuestioningService } from 'services/contactQuestioning.service';
+import { useEffect } from 'react';
 
 
 const ReachContact = (props: Props) => {
@@ -40,6 +42,18 @@ const ReachContact = (props: Props) => {
         errorMsg = errorMsg.replace('לא מילאת את שדה', '');
         return errorMsg;
     }
+    const [duplicateIdentities, setDuplicateIdentities] = useState<boolean>(false);
+
+    contactQuestioningService.getDuplicateIdentities().subscribe(duplicates => {
+        const isDuplicateIdentity = duplicates.filter(obj => obj.identityType ===interactedContact.identificationType?.id && obj.identityNumber ===interactedContact.identificationNumber).length > 0;
+        setDuplicateIdentities(isDuplicateIdentity);
+    })
+
+    useEffect(() => {
+        return (() => {
+            contactQuestioningService.getDuplicateIdentities().subscribe().unsubscribe();
+        })
+    }, [])
 
     return (
         <div className={classes.reachContact}>
@@ -68,7 +82,8 @@ const ReachContact = (props: Props) => {
                                             e,
                                             data,
                                             props.onChange,
-                                            missingFieldsText
+                                            missingFieldsText,
+                                            duplicateIdentities
                                         )
                                     }
                                     }

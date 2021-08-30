@@ -105,7 +105,8 @@ const InvestigationStatusInfo = (props: any) => {
                                 </FormControl>
                             </Grid>
                             <Collapse in={investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE ||
-                                investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS}>
+                                investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ||
+                                investigationStatus.mainStatus === InvestigationMainStatusCodes.NOT_INVESTIGATED}>
                                 <Grid item className={classes.statusSelectGrid}>
                                     <FormControl variant='outlined' className={classes.subStatusSelect}>
                                         <InputLabel id='sub-status-label'>{subStatusLabel}</InputLabel>
