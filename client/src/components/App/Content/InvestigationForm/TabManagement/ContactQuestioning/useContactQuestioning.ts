@@ -1,17 +1,17 @@
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
-import { format } from 'date-fns'
+import { store } from 'redux/store';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import { setFormState } from 'redux/Form/formActionCreators';
-import {getInteractedContacts} from 'redux/InteractedContacts/interactedContactsActionCreators';
+import { getInteractedContacts } from 'redux/InteractedContacts/interactedContactsActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import GroupedInteractedContact, { GroupedInteractedContactEvent } from 'models/ContactQuestioning/GroupedInteractedContact';
-import {updateInteractedContacts} from 'httpClient/InteractedContacts/interactedContacts' ;
+import { updateInteractedContacts } from 'httpClient/InteractedContacts/interactedContacts';
 
 import ContactQuestioningArraySchema from './ContactSection/Schemas/ContactQuestioningArraySchema';
 import {
@@ -36,7 +36,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
     const isViewMode = useSelector<StoreStateType, boolean>(state => state.investigation.isViewMode);
-    const interactedContacts = useSelector<StoreStateType,GroupedInteractedContact[]>(state=>state.interactedContacts.interactedContacts);
+    const interactedContacts = useSelector<StoreStateType, GroupedInteractedContact[]>(state => state.interactedContacts.interactedContacts);
     const dispatch = useDispatch()
 
 
@@ -49,41 +49,41 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         contactLogger.info(`launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`, Severity.LOW);
         setIsLoading(true);
         await updateInteractedContacts(contactsSavingVariable.unSavedContacts.contacts);
-        setIsLoading(false);   
+        setIsLoading(false);
     };
 
-    const getRulerApiDataFromServer = async (ids : any []) => {
+    const getRulerApiDataFromServer = async (ids: any[]) => {
         const RulerCheckColorRequestParameters = {
-            "RulerCheckColorRequest":{     
-                "MOHHeader":{       
-                    "ActivationID":"1",     
-                    "CustID":"23",
-                    "AppID":"123",
-                    "SiteID":"2",       
-                    "InterfaceID":"Ruler"
+            "RulerCheckColorRequest": {
+                "MOHHeader": {
+                    "ActivationID": "1",
+                    "CustID": "23",
+                    "AppID": "123",
+                    "SiteID": "2",
+                    "InterfaceID": "Ruler"
                 },
-                "Ids":ids
+                "Ids": ids
             }
         }
-            
+
         const rulerLogger = logger.setup('client ruler logger setup');
         rulerLogger.info(`launching server request with parameter: ${JSON.stringify(RulerCheckColorRequestParameters)}`, Severity.LOW);
         setIsLoading(true);
-        return await axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters,{timeout: 5000})        
+        return await axios.post('/ruler/rulerapi', RulerCheckColorRequestParameters, { timeout: 5000 })
             .then((response: any) => {
-            if (response.data?.ColorData) {
-                rulerLogger.info('got response from the ruler server', Severity.LOW);
-                return response.data;
-            } else {
+                if (response.data?.ColorData) {
+                    rulerLogger.info('got response from the ruler server', Severity.LOW);
+                    return response.data;
+                } else {
+                    alertError('חלה שגיאה בקבלת נתונים משירות הרמזור');
+                }
+            })
+            .catch((err) => {
+                rulerLogger.error(`got the following error from the ruler server: ${err}`, Severity.HIGH);
                 alertError('חלה שגיאה בקבלת נתונים משירות הרמזור');
-            }
-        })
-        .catch((err) => {
-            rulerLogger.error(`got the following error from the ruler server: ${err}`, Severity.HIGH);
-            alertError('חלה שגיאה בקבלת נתונים משירות הרמזור');
-            return err;
-        })
-        .finally(() => setIsLoading(false));
+                return err;
+            })
+            .finally(() => setIsLoading(false));
     };
 
     const saveContact = (interactedContact: InteractedContact): boolean => {
@@ -96,23 +96,19 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         return true;
     };
 
-
-
-
-
-   
-    const saveContactQuestioning = (data:InteractedContact[]/*parsedFormData: InteractedContact[], originalFormData: FormInputs*/) => {
+    const saveContactQuestioning = (data: InteractedContact[]) => {
         const contactsSavingVariable = {
             unSavedContacts: { contacts: data }
         };
 
         createSaveContactRequest(contactsSavingVariable, 'Saving all contacts')
             .finally(() => {
-                ContactQuestioningArraySchema.isValid(data).then(valid => {
-                    setFormState(epidemiologyNumber, id,valid);
-                })
-                
-               
+                const formStates = store.getState().interactedContacts.formState;
+                const invalidContacts = formStates.filter(obj => obj.isValid === false);
+                if (invalidContacts.length > 0)
+                    setFormState(epidemiologyNumber, id, false);
+                else
+                    setFormState(epidemiologyNumber, id, true);
             });
     };
 
@@ -170,7 +166,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         const minimalDate = datesToInvestigate.slice(-1)[0];
 
         dispatch(getInteractedContacts(minimalDate));
-      };
+    };
 
     const checkForSpecificDuplicateIds = (
         identificationNumberToCheck: string,
@@ -199,7 +195,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             allIdentificationNumbersToCheck.length
         );
     };
-    const areThereDuplicateIds = (data:GroupedInteractedContact[]) => {
+    const areThereDuplicateIds = (data: GroupedInteractedContact[]) => {
         const ids = data
             .filter(person => {
                 const { identificationNumber, identificationType } = person;
@@ -208,7 +204,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 return `${person.identificationNumber}-${person.identificationType}`
             });
 
-         return ids.length !== new Set(ids).size;
+        return ids.length !== new Set(ids).size;
 
     };
 
@@ -224,7 +220,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         }
     };
 
-  
     const parseFormBeforeSending = (data: GroupedInteractedContact[]) => {
         const mappedForm = data.map(
             (person: InteractedContact) => {
@@ -242,8 +237,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
      */
     const parsePerson = (person: InteractedContact) => {
         let updatedPerson = person || {};
-        updatedPerson.identificationType =(person.identificationType?.id || person.identificationType) as any;
-        if(updatedPerson.isolationAddress) {
+        updatedPerson.identificationType = (person.identificationType?.id || person.identificationType) as any;
+        if (updatedPerson.isolationAddress) {
             updatedPerson.isolationAddress.city = (person.isolationAddress.city?.id || person.isolationAddress.city) as any;
             updatedPerson.isolationAddress.street = (person.isolationAddress.street?.id || person.isolationAddress.street) as any;
         }

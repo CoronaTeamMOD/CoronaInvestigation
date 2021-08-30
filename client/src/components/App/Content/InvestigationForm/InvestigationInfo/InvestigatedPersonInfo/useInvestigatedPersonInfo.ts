@@ -20,7 +20,7 @@ import { InvestigatedPersonInfoIncome, InvestigatedPersonInfoOutcome, StaticFiel
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): InvestigatedPersonInfoOutcome => {
-    const { setStaticFieldsChange } = parameters;
+    const { setStaticFieldsChange, moveToTheInvestigationForm } = parameters;
 
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
     const { alertSuccess, alertWarning, alertError } = useCustomSwal();
@@ -114,9 +114,27 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
             })
     };
 
+    const reopenInvestigation = (epidemiologyNumber: number) => {
+        const reopenLogger = logger.setup('Reopen Investigation');
+        axios.post('/investigationInfo/updateInvestigationStatus', {
+            investigationMainStatus: InvestigationMainStatusCodes.IN_PROCESS,
+            investigationSubStatus: null,
+            statusReason: null,
+            epidemiologyNumber
+        }).then(() => {
+            reopenLogger.info('reopen investigation and update status request was successful', Severity.LOW);
+            moveToTheInvestigationForm(epidemiologyNumber);
+        })
+            .catch((error) => {
+                reopenLogger.error(`got errors in server result while reopening investigation: ${error}`, Severity.HIGH);
+                alertError('לא ניתן לפתוח את החקירה מחדש');
+            })
+    }
+
     return {
         confirmExitUnfinishedInvestigation,
-        staticFieldsSubmit
+        staticFieldsSubmit,
+        reopenInvestigation
     };
 };
 

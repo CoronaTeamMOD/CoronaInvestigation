@@ -2,9 +2,11 @@ import GroupedInteractedContact from '../../models/ContactQuestioning/GroupedInt
 import * as Actions from './interactedContactsActionTypes';
 
 export class FormStateObject {
-    isValid: boolean;
+    id: number;
+    isValid: boolean | null;
 
-    constructor(isValid: boolean) {
+    constructor(id: number, isValid: boolean | null) {
+        this.id = id;
         this.isValid = isValid;
     }
 }
@@ -12,16 +14,18 @@ export class FormStateObject {
 export interface InteractedContactsState {
     pending: boolean;
     interactedContacts: GroupedInteractedContact[];
-    formState: Map<number, FormStateObject>;
+    formState: FormStateObject[];
     error: any;
 }
 
 const initialState: InteractedContactsState = {
     pending: false,
     interactedContacts: [],
-    formState: new Map(),
+    formState: [],
     error: null
 };
+
+type ValueOf<T> = T[keyof T];
 
 const interactedContactsReducer = (state = initialState, action: Actions.InteractedContactAction): InteractedContactsState => {
     switch (action.type) {
@@ -43,12 +47,30 @@ const interactedContactsReducer = (state = initialState, action: Actions.Interac
                 pending: false,
                 error: action.error
             }
-        case Actions.SET_INTERACTED_CONTACTS_FORM_STATE:
+        case Actions.SET_INTERACTED_CONTACT:
             return {
                 ...state,
-                //interactedContacts: action.payload.interactedContacts,
-                formState: action.payload.formState
+                interactedContacts: state.interactedContacts.map(contact => {
+                    if (contact.id == action.payload.id)
+                        (contact[action.payload.propertyName] as ValueOf<GroupedInteractedContact>) = action.payload.value;
+                    return contact;
+                })
             }
+            
+        case Actions.SET_CONTACT_FORM_STATE:{
+            const formState = [...state.formState]
+            const index = formState.findIndex(obj=>obj.id==action.payload.id)
+            if (index>-1){
+                formState[index].isValid=action.payload.isValid;
+            }
+            else formState.push(new FormStateObject(action.payload.id,action.payload.isValid))
+
+            return {
+                ...state,
+                formState: formState
+            }
+        }
+
         case Actions.SET_INTERACTED_CONTACT_PENDING:
             return {
                 ...state,

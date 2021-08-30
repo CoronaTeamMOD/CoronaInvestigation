@@ -82,9 +82,9 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
 
     return (
         <Grid className={isTabForm ? '' : formClasses.formRow} container justify='flex-start'>
-            <Grid item xs={5}>
+            <Grid item xs={12}>
                 <InputWrapperComp fieldName={placeTypeDisplayName}>
-                    <Grid item xs={7}>
+                    <Grid xs={7}>
                         <FormControl
                             disabled={!subtypesFetched}
                             fullWidth
@@ -128,7 +128,7 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                 </InputWrapperComp>
             </Grid>
             {
-                    <Grid item xs={6}>
+            <Grid item xs={6}>
                 <Collapse in={placesSubTypesByTypes[placeType] && placesSubTypesByTypes[placeType].length > 1}>
                       <InputWrapperComp fieldName={placeSubTypeDisplayName} labelLength={2}>
                             <Grid item xs={8}>
@@ -173,9 +173,8 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                                 </FormControl>
                             </Grid>
                         </InputWrapperComp>
-                        </Collapse>
-                    </Grid>
-                
+                    </Collapse>
+                </Grid>
             }
         </Grid>
     );

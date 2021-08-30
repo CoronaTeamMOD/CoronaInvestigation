@@ -9,21 +9,29 @@ export const SET_INTERACTED_CONTACT_PENDING = 'SET_INTERACTED_CONTACT_PENDING';
 export const SET_INTERACTED_CONTACT_SUCCESS = 'SET_INTERACTED_CONTACT_SUCCESS';
 export const SET_INTERACTED_CONTACT_ERROR = 'SET_INTERACTED_CONTACT_ERROR';
 
-export const SET_INTERACTED_CONTACTS_FORM_STATE = 'SET_INTERACTED_CONTACTS_FORM_STATE';
+export const SET_INTERACTED_CONTACT = 'SET_INTERACTED_CONTACT';
+export const SET_CONTACT_FORM_STATE = 'SET_CONTACT_FORM_STATE';
 
-export const SET_INTERACTED_CONTACTS_PENDING = 'SETE_INTERACTED_CONTACTS_PENDING';
-export const SET_INTERACTED_CONTACTS_SUCCESS = 'SET_INTERACTED_CONTACTS_SUCCESS';
-export const SET_INTERACTED_CONTACTS_ERROR = 'SET_INTERACTED_CONTACTS_ERROR';
+ type ValueOf<T> = T[keyof T];
 
 interface GetInteractedContactsPending {
     type: typeof GET_INTERACTED_CONTACTS_PENDING
 }
 
-interface SetInteractedContactsFormState {
-    type: typeof SET_INTERACTED_CONTACTS_FORM_STATE,
+interface SetInteractedContact {
+    type: typeof SET_INTERACTED_CONTACT,
     payload: {
-        interactedContacts: GroupedInteractedContact[],
-        formState: Map<number, FormStateObject>
+        id: number,
+        propertyName: keyof GroupedInteractedContact, 
+        value: ValueOf<GroupedInteractedContact>
+    }
+}
+
+interface SetContactFormState {
+    type: typeof SET_CONTACT_FORM_STATE,
+    payload: {
+        id: number, 
+        isValid: boolean
     }
 }
 
@@ -31,7 +39,7 @@ interface GetInteractedContactsSuccess {
     type: typeof GET_INTERACTED_CONTACTS_SUCCESS,
     payload: {
         interactedContacts: GroupedInteractedContact[],
-        formState: Map<number, FormStateObject>
+        formState: FormStateObject[]
     }
 }
 
@@ -48,7 +56,7 @@ interface SetInteractedContactSuccess {
     type: typeof SET_INTERACTED_CONTACT_SUCCESS,
     payload: {
         interactedContact: GroupedInteractedContact,
-        formState: Map<number, FormStateObject>
+        formState: FormStateObject[]
     }
 }
 
@@ -57,19 +65,5 @@ interface SetInteractedContactError {
     error: any
 }
 
-interface SetInteractedContactsPending {
-    type: typeof SET_INTERACTED_CONTACTS_PENDING
-}
-
-interface SetInteractedContactsSuccess {
-    type: typeof SET_INTERACTED_CONTACTS_SUCCESS,
-    payload: { interactedContacts: GroupedInteractedContact[] }
-}
-
-interface SetInteractedContactsError {
-    type: typeof SET_INTERACTED_CONTACTS_ERROR,
-    error: any
-}
-
-export type InteractedContactAction = GetInteractedContactsPending | SetInteractedContactsFormState | GetInteractedContactsSuccess | GetInteractedContactsError
-    | SetInteractedContactPending | SetInteractedContactSuccess | SetInteractedContactError | SetInteractedContactsPending | SetInteractedContactsSuccess | SetInteractedContactsError;
+export type InteractedContactAction = GetInteractedContactsPending | SetInteractedContact | SetContactFormState | GetInteractedContactsSuccess | GetInteractedContactsError
+    | SetInteractedContactPending | SetInteractedContactSuccess | SetInteractedContactError;

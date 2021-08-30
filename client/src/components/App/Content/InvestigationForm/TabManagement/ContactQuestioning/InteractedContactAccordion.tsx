@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ExpandMore } from '@material-ui/icons';
-import { DeepMap, FieldError, FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import {
     Accordion, AccordionDetails, AccordionSummary,
     AccordionActions, Divider, Grid, Collapse
@@ -14,7 +14,6 @@ import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 
 import useStyles from './ContactQuestioningStyles';
-import { FormInputs } from './ContactQuestioningInterfaces';
 import ContactQuestioningInfo from './ContactQuestioningInfo';
 import ContactQuestioningCheck from './ContactQuestioningCheck';
 import InteractedContactFields from 'models/enums/InteractedContact';
@@ -23,8 +22,8 @@ import ContactQuestioningClinical from './ContactQuestioningClinical';
 
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 import StoreStateType from 'redux/storeStateType';
-import { useSelector } from 'react-redux';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import { useSelector, useDispatch } from 'react-redux';
+import { setContactFormState } from 'redux/InteractedContacts/interactedContactsActionCreators';
 
 const InteractedContactAccordion = (props: Props) => {
 
@@ -41,10 +40,11 @@ const InteractedContactAccordion = (props: Props) => {
         isFamilyContact, familyRelationships, shouldDisable, isViewMode
     } = props;
 
+    const dispatch = useDispatch();
+    const formState = useSelector<StoreStateType, any[]>(state => state.interactedContacts.formState).find(formState => formState.id == interactedContact.id);
+
     const watchCurrentStatus: number = methods.watch(InteractedContactFields.CONTACT_STATUS);
 
-    const { alertWarning } = useCustomSwal();
-    
     const generateBackgroundColorClass = (colorCode: Number | any) => {
         switch (colorCode) {
             case '1':
@@ -70,28 +70,35 @@ const InteractedContactAccordion = (props: Props) => {
         return classesList.join(' ');
     };
 
+    const initFormState = ()=>{
+        if (formState.isValid === null) {
+            ContactQuestioningSchema.isValid({ ...interactedContact, identificationType: interactedContact.identificationType?.id }).then(isValid => {
+                dispatch(setContactFormState(interactedContact.id, isValid));
+            })
+        }
+    }
+
+    useEffect(() => {
+        initFormState(); 
+    }, [])
+
+    useEffect(() => {
+        initFormState();
+    }, [formState===null])
+
     useEffect(() => {
         if (watchCurrentStatus) {
             methods.trigger();
         }
     }, [watchCurrentStatus]);
 
-    const formValues = interactedContact;
-
     const saveContactClicked = () => {
         const currentParsedPerson = parsePerson(
             interactedContact
         );
         saveContact(currentParsedPerson);
-        if (methods.errors) {
-            if ((methods.errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_TYPE]) {
-                alertWarning('שים לב במקרה של נתוני זיהוי כפולים, סוג הזיהוי לא יישמר לבסיס הנתונים. ');
-            }
-            else if ((methods.errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.IDENTIFICATION_NUMBER]) {
-                alertWarning('שים לב במקרה של נתוני זיהוי כפולים, מספר תעודה לא יישמר לבסיס הנתונים. ');
-            }
-        }
     };
+
     const getAccordion =
         () => {
             return (
@@ -114,6 +121,7 @@ const InteractedContactAccordion = (props: Props) => {
                                 <ContactQuestioningInfo
                                     index={index}
                                     interactedContact={interactedContact}
+                                    formState={formState}
                                     contactStatuses={contactStatuses}
                                     saveContact={saveContact}
                                     parsePerson={parsePerson}
