@@ -7,7 +7,7 @@ interface InvestigationTableRow {
     epidemiologyNumber: number;
     validationDate: string;
     isComplex: boolean;
-    complexityReasonsId: (number|null)[];
+    complexityReasonsId: (number | null)[];
     priority: number;
     mainStatus: InvestigationMainStatus;
     subStatus: string;
@@ -28,13 +28,14 @@ interface InvestigationTableRow {
     otherReason: string;
     reasonId: number;
     subOccupation: string;
-    parentOccupation:string;
+    parentOccupation: string;
     isInInstitute: boolean;
     creationDate: Date;
     startTime: Date;
     isSelfInvestigated: boolean;
     selfInvestigationStatus: number;
     selfInvestigationUpdateTime: string;
+    wasAbroad: boolean;
 };
 
 export default InvestigationTableRow;
