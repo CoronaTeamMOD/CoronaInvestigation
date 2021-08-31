@@ -111,7 +111,7 @@ export const createRowData = (
     isSelfInvestigated,
     selfInvestigationStatus,
     selfInvestigationUpdateTime,
-    wasAbroad: boolean
+    wasAbroad
 });
 
 export interface SelectedRow {
