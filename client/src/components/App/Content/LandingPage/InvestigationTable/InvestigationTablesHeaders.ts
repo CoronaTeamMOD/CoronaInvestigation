@@ -32,7 +32,8 @@ export enum TableHeadersNames {
     subOccupation = 'subOccupation',
     isSelfInvestigated = 'isSelfInvestigated',
     selfInvestigationStatus = 'selfInvestigationStatus',
-    selfInvestigationUpdateTime = 'selfInvestigationUpdateTime'
+    selfInvestigationUpdateTime = 'selfInvestigationUpdateTime',
+    wasAbroad = 'wasAbroad'
 }
 
 export enum HiddenTableKeys {
@@ -76,7 +77,8 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.settings]: '',
     [TableHeadersNames.isSelfInvestigated]: '',
     [TableHeadersNames.selfInvestigationStatus]: '',
-    [TableHeadersNames.selfInvestigationUpdateTime]: ''
+    [TableHeadersNames.selfInvestigationUpdateTime]: '',
+    [TableHeadersNames.wasAbroad]: ''
 }
 
 export const adminCols: string[] = [
@@ -145,4 +147,5 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.isSelfInvestigated]: false,
     [TableHeadersNames.selfInvestigationStatus]: false,
     [TableHeadersNames.selfInvestigationUpdateTime]: false,
+    [TableHeadersNames.wasAbroad]: false
 }

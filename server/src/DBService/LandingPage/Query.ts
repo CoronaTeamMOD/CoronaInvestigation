@@ -258,3 +258,13 @@ query allAdminMessages($desksIdInput: [Int!], $adminIdInput: String! ) {
   }
 }
 `;
+
+export const GET_WAS_ABROAD_EXPOSURES= gql`
+query MyQuery($epidemiologyNumber: Int) {
+  allExposures(
+    filter: {investigationId: {equalTo: $epidemiologyNumber}, and: {wasAbroad: {equalTo: true}}}
+  ) {
+    totalCount
+  }
+}
+`;

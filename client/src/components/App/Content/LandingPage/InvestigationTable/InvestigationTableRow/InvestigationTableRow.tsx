@@ -3,7 +3,7 @@ import { Autocomplete } from '@material-ui/lab';
 import StoreStateType from 'redux/storeStateType';
 import React, { MutableRefObject, useMemo } from 'react';
 import { Checkbox, IconButton, TableCell, TableRow, TextField, Tooltip } from '@material-ui/core';
-import { Call, KeyboardArrowDown, KeyboardArrowLeft, Visibility } from '@material-ui/icons';
+import { Call, KeyboardArrowDown, KeyboardArrowLeft, Language, Visibility } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
@@ -220,6 +220,13 @@ const InvestigationTableRow = ({
                                 <Visibility />
                             </IconButton>
                         </Tooltip>
+                        {indexedRow.wasAbroad &&
+                            <Tooltip title='חקירה מחול' placement='top' arrow>
+                                <IconButton color='primary' onClick={()=>{return false}}>
+                                    <Language />
+                                </IconButton>
+                            </Tooltip>
+                        }
                     </>
                 )
             case TableHeadersNames.settings:

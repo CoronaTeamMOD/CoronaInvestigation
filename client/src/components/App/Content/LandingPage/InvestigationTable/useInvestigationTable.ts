@@ -76,7 +76,8 @@ export const createRowData = (
     startTime: Date,
     isSelfInvestigated: boolean,
     selfInvestigationStatus: number,
-    selfInvestigationUpdateTime: string
+    selfInvestigationUpdateTime: string,
+    wasAbroad: boolean
 ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
@@ -109,7 +110,8 @@ export const createRowData = (
     startTime,
     isSelfInvestigated,
     selfInvestigationStatus,
-    selfInvestigationUpdateTime
+    selfInvestigationUpdateTime,
+    wasAbroad: boolean
 });
 
 export interface SelectedRow {
@@ -544,7 +546,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     investigation.startTime,
                                     investigation.isSelfInvestigated,
                                     investigation.selfInvestigationStatus,
-                                    investigation.selfInvestigationUpdateTime
+                                    investigation.selfInvestigationUpdateTime,
+                                    investigation.wasAbroad
                                 )
                             });
                         investigationRows
@@ -704,6 +707,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.isSelfInvestigated]: row.isSelfInvestigated,
             [TableHeadersNames.selfInvestigationStatus]: row.selfInvestigationStatus,
             [TableHeadersNames.selfInvestigationUpdateTime]: row.selfInvestigationUpdateTime,
+            [TableHeadersNames.wasAbroad]: row.wasAbroad
         }
     };
 
@@ -992,7 +996,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             investigation.startTime,
                             investigation.isSelfInvestigated,
                             investigation.selfInvestigationStatus,
-                            investigation.selfInvestigationUpdateTime
+                            investigation.selfInvestigationUpdateTime,
+                            investigation.wasAbroad
                         )
                     });
                 setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))
