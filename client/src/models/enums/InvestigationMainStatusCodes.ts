@@ -3,6 +3,7 @@ enum InvestigationMainStatusCodes {
     IN_PROCESS = 100000002,
     DONE = 100000001,
     CANT_COMPLETE = 100000000,
+    NOT_INVESTIGATED = 100000008
 }
 
 export default InvestigationMainStatusCodes;

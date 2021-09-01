@@ -30,6 +30,7 @@ export interface HistoryState {
     inactiveUserFilter?: boolean;
     isAdminLandingRedirect?: boolean;
     filterTitle?: string;
+    unallocatedDeskFilter?: boolean;
 };
 
 export interface useInvestigationTableParameters {
@@ -87,4 +88,6 @@ export interface useInvestigationTableOutcome {
     isBadgeInVisible: boolean;
     changeTimeRangeFilter: (timeRange: TimeRange) => void;
     fetchAllGroupedInvestigations: () => void;
+    unallocatedDeskFilter: boolean;
+    changeUnallocatedDeskFilter:(isFilterOn: boolean) => void;
 };

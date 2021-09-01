@@ -20,6 +20,7 @@ import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
+import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import { commentContext } from '../Context/CommentContext';
@@ -30,6 +31,8 @@ import ValidationStatusSchema from './Schema/ValidationStatusSchema';
 import CommentInput from './InvestigationMenu/CommentDialog/CommentInput';
 import InvestigationStatusInfo from './InvestigationStatusInfo/InvestigationStatusInfo';
 
+const investigationstableURL = '/landing';
+const openInvestigationForEditText = 'פתיחה מחודשת';
 const leaveInvestigationMessage = 'צא מחקירה';
 const saveStaticDetailsMessage = 'שמירת שינויים';
 const displayDateFormat = 'dd/MM/yyyy';
@@ -61,7 +64,13 @@ const InvestigatedPersonInfo = (props: Props) => {
     const { comment, setComment } = useContext(commentContext);
     const [commentInput, setCommentInput] = React.useState<string | null>('');
 
-    const { confirmExitUnfinishedInvestigation, staticFieldsSubmit } = useInvestigatedPersonInfo({ setStaticFieldsChange });
+    const moveToTheInvestigationForm = (epidemiologyNumber : number) => {
+        setLastOpenedEpidemiologyNum(epidemiologyNumber);
+        window.location.pathname = investigationstableURL;
+    }
+
+    const { confirmExitUnfinishedInvestigation, staticFieldsSubmit, reopenInvestigation } = useInvestigatedPersonInfo({ setStaticFieldsChange, moveToTheInvestigationForm });
+    const shouldReopenInvestigation = investigationStatus.mainStatus === InvestigationMainStatusCodes.DONE;
 
     useEffect(() => {
         setCommentInput(comment);
@@ -163,21 +172,33 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 {`מספר אפדימיולוגי: ${epedemioligyNumber}`}
                             </Typography>
                         </div>
-                        <PrimaryButton
-                            onClick={(event) => {
-                                if (isViewMode) {
-                                    window.close();
-                                }
-                                else {
-                                    handleLeaveInvestigationClick(event);
-                                    validateStatusReason(investigationStatus.statusReason)
-                                }
-                            }}
-                            type='submit'
-                            form={`form-${currentTab}`}
-                        >
-                            {leaveInvestigationMessage}
-                        </PrimaryButton>
+                        <div>
+                            {shouldReopenInvestigation && <span className={classes.openButton}>
+                                <PrimaryButton
+                                    onClick={()=> reopenInvestigation(epidemiologyNumber)}
+                                    type='submit'
+                                    form={`form-${currentTab}`}
+                                    id='openButton'
+                                >
+                                    {openInvestigationForEditText}
+                                </PrimaryButton>
+                            </span>}
+                            <PrimaryButton
+                                onClick={(event) => {
+                                    if (isViewMode) {
+                                        window.close();
+                                    }
+                                    else {
+                                        handleLeaveInvestigationClick(event);
+                                        validateStatusReason(investigationStatus.statusReason)
+                                    }
+                                }}
+                                type='submit'
+                                form={`form-${currentTab}`}
+                            >
+                                {leaveInvestigationMessage}
+                            </PrimaryButton>
+                        </div>
                     </div>
 
                     <InvestigationStatusInfo

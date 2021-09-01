@@ -93,7 +93,10 @@ const useStyles = makeStyles({
         marginRight: '20px',
         height: '5vh',
         marginTop: '7px',
-    }
+    },
+    openButton: {
+        marginRight: '10px',
+    },
 });
 
 export default useStyles;

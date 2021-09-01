@@ -128,7 +128,7 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                 </InputWrapperComp>
             </Grid>
             {
-                    <Grid item xs={6}>
+            <Grid item xs={6}>
                 <Collapse in={placesSubTypesByTypes[placeType] && placesSubTypesByTypes[placeType].length > 1}>
                       <InputWrapperComp fieldName={placeSubTypeDisplayName} labelLength={2}>
                             <Grid item xs={8}>
@@ -173,9 +173,8 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                                 </FormControl>
                             </Grid>
                         </InputWrapperComp>
-                        </Collapse>
-                    </Grid>
-                
+                    </Collapse>
+                </Grid>
             }
         </Grid>
     );

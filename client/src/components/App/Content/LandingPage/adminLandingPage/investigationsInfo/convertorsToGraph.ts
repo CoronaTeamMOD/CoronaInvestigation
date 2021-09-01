@@ -17,6 +17,10 @@ export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit
         color: SECONDARY,
         space: 2 // The space was added as a temporary solution for Bug 1831
     },
+    unallocatedDeskInvestigations: {
+        id: FilterRulesDescription.UNALLOCATED_DESK,
+        color: SECONDARY,
+    },
     unusualCompletedNoContactInvestigations: {
         id: FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT,
         color: SUCCESS,

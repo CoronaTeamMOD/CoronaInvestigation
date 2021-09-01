@@ -9,7 +9,7 @@ const twoWeeksBeforeValidationDateText = 'תאריך לא יכול להיות י
 
 const exposureValidation = (validationDate : Date) : yup.Schema<any, object>  => {
     return (yup.object().shape({
-        [fieldsNames.exposureSource] : yup.object().nullable().required(requiredText),
+        [fieldsNames.exposureSource]: yup.object().nullable().required(requiredText),
         [fieldsNames.date]: yup.date().nullable().required(requiredText)
                                                  .max(validationDate , endDateBeforeValidationDateText)
                                                  .min(subDays(new Date(validationDate) , 14), twoWeeksBeforeValidationDateText),

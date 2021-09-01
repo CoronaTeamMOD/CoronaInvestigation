@@ -87,7 +87,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
         statusFilter, subStatusFilter, changeStatusFilter, changeSubStatusFilter, deskFilter, changeDeskFilter, changeSearchFilter,
         changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers,
-        tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter, updateDateFilter, nonContactFilter, fetchAllGroupedInvestigations
+        tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter, updateDateFilter, nonContactFilter, fetchAllGroupedInvestigations, 
+        unallocatedDeskFilter, changeUnallocatedDeskFilter
     } = useInvestigationTable({
         setSelectedRow, allGroupedInvestigations, setAllStatuses, currentPage, setCurrentPage, setAllGroupedInvestigations,
         investigationColor, setAllSubStatuses, setAllComplexReasons
@@ -280,6 +281,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             changeDeskFilter={changeDeskFilter}
                             handleRequestSort={handleRequestSort}
                             changeSearchFilter={changeSearchFilter}
+                            unallocatedDeskFilter={unallocatedDeskFilter}
+                            changeUnallocatedDeskFilter={changeUnallocatedDeskFilter}
                         />
                     </Grid>
                 </Grid>
@@ -448,6 +451,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 groupIds={[selectedRow.groupId]}
                 epidemiologyNumbers={[selectedRow.epidemiologyNumber]}
                 onSuccess={onAllocationSuccess}
+                isGroupedContact={false}
             />
             <Slide direction='up' in={checkedIndexedRows.length > 0} mountOnEnter unmountOnExit>
                 <InvestigationTableFooter
