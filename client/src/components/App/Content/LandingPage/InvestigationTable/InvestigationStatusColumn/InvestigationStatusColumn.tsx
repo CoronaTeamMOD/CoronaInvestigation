@@ -33,6 +33,12 @@ const InvestigationStatusColumn = (props: Props) => {
                 </Tooltip>
             }
             {
+                (investigationStatus.id === InvestigationMainStatusCodes.NOT_INVESTIGATED && investigationSubStatus) &&
+                <Tooltip title={investigationSubStatus} placement='top' arrow>
+                    <Info className={classes.investigatonIcon} fontSize='small' color='primary' />
+                </Tooltip>
+            }
+            {
                 (investigationStatus.id === InvestigationMainStatusCodes.IN_PROCESS && investigationSubStatus) &&
                 `${investigationSubStatus}/`
             }
