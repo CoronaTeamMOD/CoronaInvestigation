@@ -82,9 +82,9 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
 
     return (
         <Grid className={isTabForm ? '' : formClasses.formRow} container justify='flex-start'>
-            <Grid item xs={12}>
+            <Grid item xs={5}>
                 <InputWrapperComp fieldName={placeTypeDisplayName}>
-                    <Grid xs={7}>
+                    <Grid item xs={7}>
                         <FormControl
                             disabled={!subtypesFetched}
                             fullWidth
