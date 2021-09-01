@@ -8,7 +8,7 @@ import { graphqlRequest, errorStatusCode, validStatusCode } from '../../GraphqlH
 import { CHANGE_DESK_ID, UPDATE_DESK_BY_GROUP_ID, CREATE_ADMIN_MESSAGE, DELETE_ADMIN_MESSAGE } from '../../DBService/LandingPage/Mutation';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
-import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS, GET_INVESTIGATION_STATISTICS, GET_ALL_INVESTIGATION_SUB_STATUS, GET_ALL_ADMIN_INVESTIGATIONS, GET_ALL_ADMIN_MESSAGES_BY_DESK, GET_ALL_ADMIN_MESSAGES_BY_DESK_AND_ADMIN, GET_WAS_ABROAD_EXPOSURES } from '../../DBService/LandingPage/Query';
+import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS, GET_INVESTIGATION_STATISTICS, GET_ALL_INVESTIGATION_SUB_STATUS, GET_ALL_ADMIN_INVESTIGATIONS, GET_ALL_ADMIN_MESSAGES_BY_DESK, GET_ALL_ADMIN_MESSAGES_BY_DESK_AND_ADMIN } from '../../DBService/LandingPage/Query';
 
 const landingPageRoute = Router();
 
@@ -83,17 +83,7 @@ landingPageRoute.post('/groupInvestigations', handleCountyRequest, (request: Req
     groupInvestigationsLogger.info(launchingDBRequestLog(getInvestigationsParameters), Severity.LOW);
 
     graphqlRequest(GROUP_INVESTIGATIONS(+county), response.locals, getInvestigationsParameters)
-        .then(async result => {
-
-            result.data.orderedInvestigations.nodes = await Promise.all(
-                result.data.orderedInvestigations.nodes.map(async (investigation: any) => {
-                    const epidemiologyNumber = investigation.epidemiologyNumber;
-                    const wasAbroadExposures = await graphqlRequest(GET_WAS_ABROAD_EXPOSURES, response.locals, { epidemiologyNumber });
-                    let wasAbroad = wasAbroadExposures.data.allExposures.totalCount > 0
-                    return { ...investigation, wasAbroad: wasAbroad };
-                })
-            );
-
+        .then(result => {
             groupInvestigationsLogger.info(validDBResponseLog, Severity.LOW);
             response.send({
                 allInvestigations: convertGroupInvestigationsData(result.data),
@@ -133,9 +123,9 @@ landingPageRoute.post('/adminInvestigations', (request: Request, response: Respo
     });
 
     const desks = request.body.desks;
-    const orderBy = request.body.orderBy;
+    const orderBy = request.body.orderBy; 
     const county = request.body.county;
-    const timeRange = request.body.timeRangeFilter;
+    const timeRange = request.body.timeRangeFilter;  
 
     const parameters = {
         county,
@@ -182,9 +172,9 @@ landingPageRoute.post('/changeDesk', adminMiddleWare, (request: Request, respons
         investigation: response.locals.epidemiologynumber,
     });
 
-    const parameters = {
-        epidemiologyNumbers: request.body.epidemiologyNumbers,
-        updatedDesk: request.body.updatedDesk,
+    const parameters = { 
+        epidemiologyNumbers: request.body.epidemiologyNumbers, 
+        updatedDesk: request.body.updatedDesk, 
         transferReason: request.body.transferReason
     };
     changeDeskLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
@@ -205,14 +195,14 @@ landingPageRoute.post('/changeGroupDesk', handleCountyRequest, (request: Request
         user: response.locals.user.id,
     });
 
-    const parameters = {
+    const parameters = { 
         desk: request.body.desk,
         selectedGroups: request.body.groupIds,
-        userCounty: request.body.county,
-        reason: request.body.reason || ''
+        userCounty: request.body.county, 
+        reason:  request.body.reason || ''
     }
     changeGroupDeskLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-
+    
     graphqlRequest(UPDATE_DESK_BY_GROUP_ID, response.locals, parameters)
         .then(result => {
             changeGroupDeskLogger.info(validDBResponseLog, Severity.LOW);
@@ -231,8 +221,8 @@ landingPageRoute.post('/investigationStatistics', handleCountyRequest, (request:
     });
 
     const desks = request.body.deskFilter;
-    const timeRange = request.body.timeRangeFilter;
-    const county = request.body.county;
+    const timeRange = request.body.timeRangeFilter; 
+    const county = request.body.county; 
 
     const parameters = {
         county,
@@ -243,13 +233,13 @@ landingPageRoute.post('/investigationStatistics', handleCountyRequest, (request:
     investigationsStatisticsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_INVESTIGATION_STATISTICS, response.locals, parameters)
-        .then((results) => {
-            response.send(results.data.functionGetInvestigationStatistics.json);
-        })
-        .catch(error => {
-            investigationsStatisticsLogger.error(invalidDBResponseLog(error), Severity.HIGH)
-            response.status(errorStatusCode).send(error);
-        })
+    .then((results) => {
+        response.send(results.data.functionGetInvestigationStatistics.json); 
+    })
+    .catch(error => {
+        investigationsStatisticsLogger.error(invalidDBResponseLog(error), Severity.HIGH)
+        response.status(errorStatusCode).send(error);
+    })
 })
 
 landingPageRoute.get('/adminMessages/:desksId', (request: Request, response: Response) => {
