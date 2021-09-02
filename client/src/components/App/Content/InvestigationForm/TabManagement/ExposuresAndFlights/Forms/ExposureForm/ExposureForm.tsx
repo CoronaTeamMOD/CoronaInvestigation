@@ -237,7 +237,7 @@ const ExposureForm = (props: Props) => {
 										invalidDateMessage={''}
 										maxDate={new Date()}
 										testId='exposureDate'
-										labelText={getDateLabel(dateError)}
+										labelText={'*'+getDateLabel(dateError)}
 										error={Boolean(dateError)}
 										onChange={(newDate: Date) => {
 											props.onChange(newDate);

@@ -3,10 +3,10 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Grid, FormControl, TextField, Collapse } from '@material-ui/core';
 
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import useFormStyles from 'styles/formStyles';
 import PlaceSubType from 'models/PlaceSubType';
 import FormInput from 'commons/FormInput/FormInput';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 
 import usePlacesTypesAndSubTypes from './usePlacesTypesAndSubTypes';
 
@@ -17,7 +17,7 @@ const defaultSubType = { displayName: '', id: -1 };
 
 const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: PlacesTypesAndSubTypesProps): JSX.Element => {
 
-    const { placeTypeName, placeSubTypeName, onPlaceTypeChange, onPlaceSubTypeChange,isViewMode } = props;
+    const { placeTypeName, placeSubTypeName, onPlaceTypeChange, onPlaceSubTypeChange, isViewMode } = props;
     const { control, errors, watch } = useFormContext();
 
     const formClasses = useFormStyles();
@@ -115,7 +115,7 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                                             <TextField
                                                 {...params}
                                                 error={errors && errors[placeTypeName]}
-                                                label={(errors && errors[placeTypeName]?.message) || placeTypeDisplayName}
+                                                label={(errors && errors[placeTypeName]?.message) || placeTypeDisplayName+'*'}
                                                 test-id='placeType'
                                             />
                                         }
@@ -159,7 +159,7 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                                                     <TextField
                                                         {...params}
                                                         error={errors && errors[placeSubTypeName]}
-                                                        label={(errors && errors[placeSubTypeName]?.message) || placeSubTypeDisplayName}
+                                                        label={(errors && errors[placeSubTypeName]?.message) || placeSubTypeDisplayName+'*'}
                                                         test-id='placeSubType'
                                                     />
                                                 }
