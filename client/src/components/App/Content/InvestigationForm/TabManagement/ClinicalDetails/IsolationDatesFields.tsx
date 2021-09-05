@@ -11,10 +11,22 @@ import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import { useDispatch } from 'react-redux';
+import { setClinicalDetails } from 'redux/ClinicalDetails/ClinicalDetailsActionCreators';
 
 const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, watchIsInIsolation, watchIsolationStartDate, watchIsolationEndDate, isolationSources, isViewMode } = props;
-    const { control, errors, trigger } = useFormContext();
+    const { 
+        classes, 
+        watchIsInIsolation, 
+        watchIsolationStartDate, 
+        watchIsolationEndDate, 
+        isolationSources, 
+        isViewMode,
+     } = props;
+    const { control, errors, trigger , getValues} = useFormContext();
+
+    const dispatch = useDispatch();
 
     React.useEffect(() => {
         trigger(ClinicalDetailsFields.ISOLATION_START_DATE);
@@ -34,7 +46,8 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 value={props.value}
                                 onChange={(e, value) => {
                                     if (value !== null) {
-                                        props.onChange(value)
+                                        props.onChange(value);
+                                        dispatch(setClinicalDetails(ClinicalDetailsFields.IS_IN_ISOLATION,value));
                                     }
                                 }}
                                 disabled={isViewMode}
@@ -64,6 +77,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                         value={props.value}
                                         onChange={(newDate: Date) => {
                                             props.onChange(newDate);
+                                            dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_START_DATE,newDate));
                                         }}
                                         disabled={isViewMode}
                                         error={errors[ClinicalDetailsFields.ISOLATION_START_DATE] ? true : false}
@@ -85,6 +99,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     value={props.value}
                                     onChange={(newDate: Date) => {
                                         props.onChange(newDate);
+                                        dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_END_DATE,newDate));
                                     }}
                                     disabled={isViewMode}
                                     error={errors[ClinicalDetailsFields.ISOLATION_END_DATE] ? true : false}
@@ -109,7 +124,10 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                             name={ClinicalDetailsFields.ISOLATION_SOURCE}
                                             disabled={isViewMode}
                                             value={props.value === null ? '' : props.value}
-                                            onChange={(event) => props.onChange(event.target.value === '' ? null : event.target.value)}
+                                            onChange={(event) => {
+                                                props.onChange(event.target.value === '' ? null : event.target.value);
+                                                dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_SOURCE,event.target.value as number));
+                                            }}
                                         >
                                             {
                                                 isolationSources.map((isolationSource: IsolationSource) => (
@@ -135,6 +153,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                             {...props}
                                             placeholder='פירוט נוסף'
                                             disabled={isViewMode}
+                                            onBlur={()=>dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_SOURCE_DESC,getValues(ClinicalDetailsFields.ISOLATION_SOURCE_DESC)))}
                                         />
                                     )
                                 }}

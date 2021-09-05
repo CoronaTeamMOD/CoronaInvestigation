@@ -10,16 +10,20 @@ import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
+import { useDispatch } from 'react-redux';
+import { setClinicalDetails } from 'redux/ClinicalDetails/ClinicalDetailsActionCreators';
 
 export const otherBackgroundDiseaseFieldName = 'אחר';
 
 const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element => {
     const { classes, watchBackgroundDiseases, watchDoesHaveBackgroundDiseases, backgroundDiseases, handleBackgroundIllnessCheck, isViewMode } = props;
-    const { control, setValue, errors } = useFormContext();
+    const { control, setValue, errors,getValues } = useFormContext();
+    const dispatch =useDispatch();
 
     React.useEffect(() => {
         if (!watchBackgroundDiseases.includes(otherBackgroundDiseaseFieldName)) {
             setValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, '');
+            dispatch(setClinicalDetails(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO,''));
         }
     }, [watchBackgroundDiseases])
 
@@ -37,6 +41,7 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
                                 onChange={(e, value) => {
                                     if (value !== null) {
                                         props.onChange(value)
+                                        dispatch(setClinicalDetails(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES,getValues(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES)))
                                     }
                                 }}
                                 disabled={isViewMode}
@@ -92,7 +97,10 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
                                                 name={ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO}
                                                 value={props.value}
                                                 onChange={(newValue: string) => props.onChange(newValue)}
-                                                onBlur={props.onBlur}
+                                                onBlur={()=>{
+                                                    props.onBlur()
+                                                    dispatch(setClinicalDetails(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO,getValues(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO)));
+                                                }}
                                                 label='* מחלת רקע'
                                                 placeholder='הזן מחלת רקע...'
                                                 className={classes.otherTextField}

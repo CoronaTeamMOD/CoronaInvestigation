@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector , useDispatch} from 'react-redux';
 
 import logger from 'logger/logger';
 import {Severity} from 'models/Logger';
@@ -18,6 +18,7 @@ import { setDatesToInvestigateParams } from 'redux/Investigation/investigationAc
 
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
 import {useClinicalDetailsIncome, useClinicalDetailsOutcome} from './useClinicalDetailsInterfaces';
+import { getClinicalDetails } from 'redux/ClinicalDetails/ClinicalDetailsActionCreators';
 
 const otherOptionDescription = 'אחר';
 
@@ -53,12 +54,14 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
 
     const { convertDate } = useDateUtils();
     const { alertError } = useCustomSwal();
+    const dispatch = useDispatch();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
     const tabsValidations  = useSelector<StoreStateType, (boolean | null)[]>(store => store.formsValidations[epidemiologyNumber]);
     const address = useSelector<StoreStateType, FlattenedDBAddress>(state => state.address);
     const validationDate = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
+    const clinicalDetails = useSelector<StoreStateType,ClinicalDetailsData | null>(state=>state.clinicalDetails.clinicalDetails);
     
     const [isolationSources, setIsolationSources] = React.useState<IsolationSource[]>([]);
     const [didDeletingContactEventsSucceed, setDidDeletingContactEventsSucceed] = React.useState<boolean>(true);
@@ -117,66 +120,12 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         );
     }
 
-    const fetchClinicalDetails = (
-        reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
-        trigger: (payload?: string | string[]) => Promise<boolean>
-    ) => {
+    const fetchClinicalDetails = () => {
         const fetchClinicalDetailsLogger = logger.setup('Fetching Clinical Details');
         fetchClinicalDetailsLogger.info('launching clinical data request', Severity.LOW);
         setIsLoading(true);
-        axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields`).then(
-            result => {
-                if (result?.data) {
-                    fetchClinicalDetailsLogger.info('got results back from the server', Severity.LOW);
-                    const patientClinicalDetails = result.data;
-                    let patientAddress = patientClinicalDetails.isolationAddress;
-                    if (!patientAddress?.cityByCity && !patientAddress?.streetByStreet && !patientAddress?.houseNum&& !patientAddress?.apartment) {
-                        patientAddress = address;
-                    }
-                    else {
-                        patientAddress = {
-                            city: patientAddress.cityByCity?.id,
-                            street: patientAddress.streetByStreet?.id,
-                            apartment: patientAddress.apartment,
-                            houseNum: patientAddress.houseNum,
-                        }
-                    }
-                    const initialDBClinicalDetailsToSet = {
-                        ...initialClinicalDetails,
-                        isPregnant: patientClinicalDetails.isPregnant !== null ? Boolean(patientClinicalDetails.isPregnant) : null,
-                        backgroundDeseases: patientClinicalDetails.backgroundDiseases,
-                        doesHaveBackgroundDiseases: patientClinicalDetails.doesHaveBackgroundDiseases,
-                        hospital: patientClinicalDetails.hospital !== null ? patientClinicalDetails.hospital : '',
-                        hospitalizationStartDate: convertDate(patientClinicalDetails.hospitalizationStartTime),
-                        hospitalizationEndDate: convertDate(patientClinicalDetails.hospitalizationEndTime),
-                        isInIsolation: patientClinicalDetails.isInIsolation,
-                        isIsolationProblem: patientClinicalDetails.isIsolationProblem,
-                        isIsolationProblemMoreInfo: patientClinicalDetails.isIsolationProblemMoreInfo !== null ?
-                            patientClinicalDetails.isIsolationProblemMoreInfo : '',
-                        isolationStartDate: convertDate(patientClinicalDetails.isolationStartTime),
-                        isolationEndDate: convertDate(patientClinicalDetails.isolationEndTime),
-                        isolationSource: patientClinicalDetails.isolationSource,
-                        isolationSourceDesc : patientClinicalDetails.isolationSourceDesc,
-                        symptoms: patientClinicalDetails.symptoms,
-                        symptomsStartDate: convertDate(patientClinicalDetails.symptomsStartDate),
-                        isSymptomsStartDateUnknown: patientClinicalDetails.symptomsStartTime === null,
-                        doesHaveSymptoms: patientClinicalDetails.doesHaveSymptoms,
-                        wasHospitalized: Boolean(patientClinicalDetails.wasHospitalized),
-                        isolationAddress: patientAddress,
-                        otherSymptomsMoreInfo: patientClinicalDetails.otherSymptomsMoreInfo !== null ?
-                            patientClinicalDetails.otherSymptomsMoreInfo : '',
-                        otherBackgroundDiseasesMoreInfo: patientClinicalDetails.otherBackgroundDiseasesMoreInfo !== null ?
-                            patientClinicalDetails.otherBackgroundDiseasesMoreInfo : '',
-                    }
-                    reset(initialDBClinicalDetailsToSet);
-                    trigger();
-                    setIsLoading(false);
-                } else {
-                    fetchClinicalDetailsLogger.warn('got status 200 but got invalid outcome', Severity.HIGH);
-                    setIsLoading(false);
-                }
-            }
-        );
+        dispatch(getClinicalDetails(address));  
+       setIsLoading(false);
     };
 
     const deleteIrrelevantContactEvents = (symptomsStartDate: Date | null, doesHaveSymptoms: boolean) => {

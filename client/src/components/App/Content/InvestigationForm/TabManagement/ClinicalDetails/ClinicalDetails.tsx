@@ -1,5 +1,5 @@
 import { Grid } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers';
 import React, { useEffect, useState } from 'react';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
@@ -20,12 +20,19 @@ import IsolationProblemFields from './IsolationProblemFields';
 import useClinicalDetails, { initialClinicalDetails } from './useClinicalDetails';
 import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields/SymptomsFields';
 import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
+import { resetClinicalDetails, setClinicalDetails } from 'redux/ClinicalDetails/ClinicalDetailsActionCreators';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element => {
+
     const classes = useStyles();
+    const dispatch = useDispatch();
 
     const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
-    const patientGender = useSelector<StoreStateType, string>(state => state.gender);
+    const patientGender = useSelector<StoreStateType, string>(state => state.gender); 
+    const clinicalDetails = useSelector<StoreStateType,ClinicalDetailsData | null>(state=>state.clinicalDetails.clinicalDetails);
+
+    const clinicalDetailsIsNull = clinicalDetails===null;
 
     const methods = useForm({
         mode: 'all',
@@ -37,19 +44,20 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
     const [backgroundDiseases, setBackgroundDiseases] = useState<string[]>([]);
     const [didSymptomsDateChangeOccur, setDidSymptomsDateChangeOccur] = useState<boolean>(false);
 
-
     const { fetchClinicalDetails, saveClinicalDetailsAndDeleteContactEvents, isolationSources } =
-        useClinicalDetails({ id, setSymptoms, setBackgroundDiseases, didSymptomsDateChangeOccur });
-
-    const handleSymptomCheck = (
+        useClinicalDetails({ id, setSymptoms, setBackgroundDiseases, didSymptomsDateChangeOccur });               
+        const handleSymptomCheck = (
         checkedSymptom: string,
         onChange: (newSymptoms: string[]) => void,
         selectedSymptoms: string[]
     ) => {
         if (selectedSymptoms.includes(checkedSymptom)) {
             onChange(selectedSymptoms.filter((symptom) => symptom !== checkedSymptom));
+            dispatch(setClinicalDetails(ClinicalDetailsFields.SYMPTOMS,selectedSymptoms.filter((symptom) => symptom !== checkedSymptom)))
         } else {
             onChange([...selectedSymptoms, checkedSymptom]);
+            dispatch(setClinicalDetails(ClinicalDetailsFields.SYMPTOMS,[...selectedSymptoms, checkedSymptom]))
+
         }
     };
 
@@ -60,8 +68,10 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
     ) => {
         if (selectedBackgroundDiseases.includes(checkedBackgroundIllness)) {
             onChange(selectedBackgroundDiseases.filter((symptom) => symptom !== checkedBackgroundIllness));
+            dispatch(setClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES,selectedBackgroundDiseases.filter((symptom) => symptom !== checkedBackgroundIllness)))
         } else {
             onChange([...selectedBackgroundDiseases, checkedBackgroundIllness]);
+            dispatch(setClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES,[...selectedBackgroundDiseases, checkedBackgroundIllness]))
         };
     };
 
@@ -102,60 +112,85 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
     }
 
     useEffect(() => {
-        fetchClinicalDetails(methods.reset, methods.trigger);
+        fetchClinicalDetails();
+        return ()=> {dispatch(resetClinicalDetails())};
     }, []);
+
+    useEffect(()=>{
+        if (clinicalDetails){
+        setIsLoading(true);
+            methods.reset(clinicalDetails as ClinicalDetailsData);
+            methods.trigger();
+        setIsLoading(false);
+        } 
+    },[clinicalDetailsIsNull]);
 
     useEffect(() => {
         if (watchIsInIsolation === false) {
             methods.setValue(ClinicalDetailsFields.ISOLATION_START_DATE, null);
+            dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_START_DATE,null));
             methods.setValue(ClinicalDetailsFields.ISOLATION_END_DATE, null);
-        }
+            dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_END_DATE,null));
+       }
     }, [watchIsInIsolation]);
 
     useEffect(() => {
         if (watchIsIsolationProblem === false) {
             methods.setValue(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO, '');
+            dispatch(setClinicalDetails(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO,''));
         }
     }, [watchIsIsolationProblem]);
 
     useEffect(() => {
         if (watchDoesHaveSymptoms === false) {
             methods.setValue(ClinicalDetailsFields.SYMPTOMS, []);
+            dispatch(setClinicalDetails(ClinicalDetailsFields.SYMPTOMS,[]));
             methods.setValue(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
+            dispatch(setClinicalDetails(ClinicalDetailsFields.SYMPTOMS_START_DATE,null));
             methods.setValue(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, '');
+            dispatch(setClinicalDetails(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO,''));
+
         }
     }, [watchDoesHaveSymptoms]);
 
     useEffect(() => {
         if (!watchSymptoms.includes(otherSymptomFieldName)) {
             methods.setValue(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, '');
+            dispatch(setClinicalDetails(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO,''));
         }
     }, [watchSymptoms]);
 
     useEffect(() => {
         if (watchIsSymptomsDateUnknown) {
             methods.setValue(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
+            dispatch(setClinicalDetails(ClinicalDetailsFields.SYMPTOMS_START_DATE,null));
         }
     }, [watchIsSymptomsDateUnknown])
 
     useEffect(() => {
         if (watchDoesHaveBackgroundDiseases === false) {
             methods.setValue(ClinicalDetailsFields.BACKGROUND_DESEASSES, []);
+            dispatch(setClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES,[]));
             methods.setValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, '');
+            dispatch(setClinicalDetails(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO,''));
         }
     }, [watchDoesHaveBackgroundDiseases]);
 
     useEffect(() => {
         if (!watchBackgroundDiseases.includes(otherBackgroundDiseaseFieldName)) {
             methods.setValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, '');
+            dispatch(setClinicalDetails(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO,''));
         }
     }, [watchBackgroundDiseases]);
 
     useEffect(() => {
         if (watchWasHospitalized === false) {
             methods.setValue(ClinicalDetailsFields.HOSPITAL, '');
+            dispatch(setClinicalDetails(ClinicalDetailsFields.HOSPITAL,''));
             methods.setValue(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, null);
+            dispatch(setClinicalDetails(ClinicalDetailsFields.HOSPITALIZATION_START_DATE,null));
             methods.setValue(ClinicalDetailsFields.HOSPITALIZATION_END_DATE, null);
+            dispatch(setClinicalDetails(ClinicalDetailsFields.HOSPITALIZATION_END_DATE,null));
         }
     }, [watchWasHospitalized]);
 
@@ -179,6 +214,9 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
                                 <AddressForm
                                     {...addressFormFields}
                                     disabled={isViewMode}
+                                    onBlur={()=>{
+                                        dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_ADDRESS,methods.getValues().isolationAddress))
+                                   }}
                                 />
                             </FormRowWithInput>
                         </Grid>
@@ -224,7 +262,8 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
                                                 value={props.value}
                                                 onChange={(e, value) => {
                                                     if (value !== null) {
-                                                        props.onChange(value)
+                                                        props.onChange(value);
+                                                        dispatch(setClinicalDetails(ClinicalDetailsFields.IS_PREGNANT,value));
                                                     }
                                                 }}
                                                 disabled={isViewMode}

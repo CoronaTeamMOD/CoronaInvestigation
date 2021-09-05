@@ -10,10 +10,14 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
+import { setClinicalDetails } from 'redux/ClinicalDetails/ClinicalDetailsActionCreators';
+import { useDispatch } from 'react-redux';
+
 const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
     const { classes, watchIsIsolationProblem, isViewMode } = props;
-    const { control, errors } = useFormContext();
-
+    const { control, errors, getValues } = useFormContext();
+    const dispatch =useDispatch();
+    
     return (
         <>
         <FormRowWithInput fieldName='בעייתי לקיים בידוד:' labelLength={2}>
@@ -28,6 +32,7 @@ const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
                             onChange={(e, value) => {
                                 if (value !== null) {
                                     props.onChange(value)
+                                    dispatch(setClinicalDetails(ClinicalDetailsFields.IS_ISOLATION_PROBLEM,value))
                                 }
                             }}
                             disabled={isViewMode}
@@ -53,11 +58,14 @@ const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO}
                                 value={props.value}
                                 onChange={(newValue: string) => props.onChange(newValue)}
-                                onBlur={props.onBlur}
+                                onBlur={()=>{
+                                    props.onBlur();
+                                    dispatch(setClinicalDetails(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO,getValues(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO)));
+                                }}
                                 placeholder='הכנס סיבה:'
                                 label='סיבה *'
                                 className={classes.reasonInputField}
-                                disabled={isViewMode}
+                                disabled={isViewMode}                            
                             />
                         )}
                     />
