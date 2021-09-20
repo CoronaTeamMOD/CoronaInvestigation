@@ -16,6 +16,7 @@ const exposureValidation = (validationDate : Date) : yup.Schema<any, object>  =>
         [fieldsNames.address]: yup.object().nullable(),
         [fieldsNames.placeType]: yup.string().nullable().required(requiredText),
         [fieldsNames.placeSubType]: yup.number().nullable().required(requiredText),
+        [fieldsNames.address]: yup.string().nullable().required(requiredText),
     }))
 };
 

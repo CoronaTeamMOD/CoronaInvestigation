@@ -99,11 +99,13 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
 
     return (
         <Grid className={isVisible ? formClasses.form : formClasses.hidden} container justify='space-between'>
-            <PlacesTypesAndSubTypes size='Dialog'
-                                    placeTypeName={InteractionEventDialogFields.PLACE_TYPE}
-                                    placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
-                                    onPlaceTypeChange={onPlaceTypeChange}
-                                    onPlaceSubTypeChange={onPlaceSubTypeChange}
+            <PlacesTypesAndSubTypes 
+                size='Dialog'
+                placeTypeName={InteractionEventDialogFields.PLACE_TYPE}
+                placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
+                onPlaceTypeChange={onPlaceTypeChange}
+                onPlaceSubTypeChange={onPlaceSubTypeChange}
+                isExposureForm={false}
             />
 
             <Collapse in={hasAddress && !isSubTypePatientHouse}>
