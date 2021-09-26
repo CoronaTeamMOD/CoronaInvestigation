@@ -13,14 +13,10 @@ import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import GroupedInteractedContact, { GroupedInteractedContactEvent } from 'models/ContactQuestioning/GroupedInteractedContact';
 import { updateInteractedContacts } from 'httpClient/InteractedContacts/interactedContacts';
 
-import ContactQuestioningArraySchema from './ContactSection/Schemas/ContactQuestioningArraySchema';
 import {
-    FormInputs,
     useContactQuestioningOutcome,
     useContactQuestioningParameters,
 } from './ContactQuestioningInterfaces';
-
-const NEW_CONTACT_STATUS_CODE = 1;
 
 export const SIZE_OF_CONTACTS = 10;
 
@@ -211,7 +207,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        //setFormState(epidemiologyNumber, id, true);
         const parsedFormData = parseFormBeforeSending(interactedContacts);
         if (!areThereDuplicateIds(interactedContacts) || isViewMode) {
             saveContactQuestioning(parsedFormData);

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { Delete } from '@material-ui/icons';
 import React, { useState, useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { CircularProgress, Collapse, Grid, IconButton, MenuItem, Select, TextField } from '@material-ui/core';
+import { CircularProgress, Collapse, Grid, IconButton, MenuItem, Select } from '@material-ui/core';
 
 import Map from 'commons/Map/Map';
 import Toggle from 'commons/Toggle/Toggle';
@@ -77,8 +77,13 @@ const ExposureForm = (props: Props) => {
 		return 'תאריך'
 	};
 
+	const getAddressLabel = (addressError: { message?: string, type?: string }) => {
+		return addressError ? addressError.message : 'כתובת החשיפה*';
+	};
+
 	const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
 	const dateError = currentErrors ? currentErrors.exposureDate : undefined;
+	const addressError = currentErrors ? currentErrors.exposureAddress : undefined;
 
 	const handlePersonalDetailsSearchButton = async (params: PersonalDetailsQueryParams) => {
 		const optionalCovidPatients = await fetchCovidPatientsByPersonalDetails(params);
@@ -254,7 +259,7 @@ const ExposureForm = (props: Props) => {
 
 			{!isViewMode && (<Grid container justify='space-between' xs={12}>
 				<Grid item xs={11}>
-					<FormRowWithInput testId='exposureAddress' fieldName='כתובת החשיפה:'>
+					<FormRowWithInput testId='exposureAddress' fieldName='כתובת החשיפה*:'>
 						<Controller
 							control={control}
 							name={`exposures[${index}].${fieldsNames.address}`}
@@ -263,6 +268,8 @@ const ExposureForm = (props: Props) => {
 								return (
 									<Map
 										name={fieldsNames.address}
+										label={getAddressLabel(addressError)}
+										error={Boolean(addressError)}
 										setSelectedAddress={(newAddress) => {
 											props.onChange(newAddress);
 											handleChangeExposureDataAndFlightsField(index, fieldsNames.address, newAddress)
@@ -291,6 +298,8 @@ const ExposureForm = (props: Props) => {
 							setValue(`exposures[${index}].${fieldsNames.placeSubType}`, placeSubType?.id || null);
 						}}
 						isViewMode={isViewMode}
+						index={index}
+						isExposureForm={true}
 					/>
 				</Grid>
 			</Grid>
