@@ -74,7 +74,7 @@ const ExposureForm = (props: Props) => {
 			}
 			return dateError.message;
 		}
-		return 'תאריך'
+		return '*תאריך'
 	};
 
 	const getAddressLabel = (addressError: { message?: string, type?: string }) => {
@@ -229,7 +229,7 @@ const ExposureForm = (props: Props) => {
 
 			<Grid container justify='space-between' xs={12}>
 				<Grid item xs={11}>
-					<FormRowWithInput fieldName='תאריך החשיפה:'>
+					<FormRowWithInput fieldName='תאריך החשיפה*:'>
 						<Controller
 							control={control}
 							name={`exposures[${index}].${fieldsNames.date}`}
