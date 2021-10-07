@@ -123,9 +123,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const fetchClinicalDetails = () => {
         const fetchClinicalDetailsLogger = logger.setup('Fetching Clinical Details');
         fetchClinicalDetailsLogger.info('launching clinical data request', Severity.LOW);
-        setIsLoading(true);
-        dispatch(getClinicalDetails(address));  
-       setIsLoading(false);
+        dispatch(getClinicalDetails(address));      
     };
 
     const deleteIrrelevantContactEvents = (symptomsStartDate: Date | null, doesHaveSymptoms: boolean) => {

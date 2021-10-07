@@ -2,6 +2,7 @@ import { fetchClinicalDetails } from 'httpClient/InteractedContacts/clinicalDeta
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import FlattenedDBAddress from 'models/DBAddress';
 import { ThunkAction } from 'redux-thunk';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import * as actionTypes from './ClinicalDetailsActionTypes';
 import { ClinicalDetailsState } from './ClinicalDetailsReducer';
 
@@ -20,8 +21,8 @@ export const getClinicalDetails = (address: FlattenedDBAddress): ThunkAction<voi
   });
 
   try {
+    setIsLoading(true);
     const clinicalDetails = await fetchClinicalDetails(address);
-    console.log('in action creator',clinicalDetails);
     if (clinicalDetails !== null) {
       dispatch({
         type: actionTypes.GET_CLINICAL_DETAILS_SUCCESS,
@@ -30,13 +31,14 @@ export const getClinicalDetails = (address: FlattenedDBAddress): ThunkAction<voi
         }
       });
     }
-
+    else setIsLoading(false);
   }
   catch (err) {
     dispatch({
       type: actionTypes.GET_CLINICAL_DETAILS_ERROR,
       error: err
     });
+    setIsLoading(false);
   }
 }
 

@@ -77,8 +77,8 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
 
     const saveForm = (e: any) => {
         e.preventDefault();
-        const values = methods.getValues();
-        saveClinicalDetailsAndDeleteContactEvents(values as ClinicalDetailsData, id);
+        if (clinicalDetails)
+         saveClinicalDetailsAndDeleteContactEvents(clinicalDetails, id);
     }
 
     const watchIsInIsolation = methods.watch(ClinicalDetailsFields.IS_IN_ISOLATION);
@@ -112,16 +112,19 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
     }
 
     useEffect(() => {
-        fetchClinicalDetails();
+      
+        if (!clinicalDetails){
+            fetchClinicalDetails();
+        }
         return ()=> {dispatch(resetClinicalDetails())};
     }, []);
 
     useEffect(()=>{
         if (clinicalDetails){
-        setIsLoading(true);
+            setIsLoading(true);
             methods.reset(clinicalDetails as ClinicalDetailsData);
             methods.trigger();
-        setIsLoading(false);
+            setIsLoading(false);
         } 
     },[clinicalDetailsIsNull]);
 
