@@ -41,7 +41,7 @@ const InvestigationStatusInfo = (props: any) => {
         investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ? [{ displayName: inProcess, id: 0, parentStatus: 100000002 }, ...subStatuses] : subStatuses,
         [subStatuses, investigationStatus]);
 
-    const permittedStatuses = statuses.filter(status => status.id !== InvestigationMainStatusCodes.DONE);
+    const permittedStatuses = investigationStatus.mainStatus !== InvestigationMainStatusCodes.DONE? statuses.filter(status => status.id !== InvestigationMainStatusCodes.DONE):statuses;
 
     const isStatusDisable = (status: number) => {
         if (userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN) {

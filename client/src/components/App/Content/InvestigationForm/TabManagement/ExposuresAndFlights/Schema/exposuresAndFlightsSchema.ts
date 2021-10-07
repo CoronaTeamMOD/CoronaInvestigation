@@ -1,11 +1,11 @@
 import * as yup from 'yup';
 
+import { requiredText } from 'commons/Schema/messages';
 import { Exposure } from 'commons/Contexts/ExposuresAndFlights';
 import { fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 
 import flightValidation from './flightsValidation';
 import exposureValidation from './exposureValidation';
-import { requiredText } from 'commons/Schema/messages';
 
 const hasExposureSource = (exposure : Exposure) => {
     return exposure?.exposureSource !== undefined
@@ -38,7 +38,7 @@ const flights = (validationDate : Date) => {
 const exposures = (validationDate : Date) => {
     return yup.lazy(
         (exposure: Exposure): yup.Schema<any, object> => {
-            if(hasExposureSource(exposure)) {
+            if (hasExposureSource(exposure)) {
                 return exposureValidation(validationDate);
             } else {
                 return yup.object();
@@ -47,7 +47,7 @@ const exposures = (validationDate : Date) => {
     );
 };
 
-const ExposureSchema = (validationDate : Date) => {
+const ExposureSchema = (validationDate: Date) => {
     return yup.object().shape({
         [fieldsNames.wasInVacation]: yup.boolean().nullable().required(requiredText),
         [fieldsNames.wasInEvent]: yup.boolean().nullable().required(requiredText),

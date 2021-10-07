@@ -36,43 +36,47 @@ const PossibleExposure = (props: Props) => {
     return (
         <div className={classes.subForm}>
             <FormTitle title='חשיפה אפשרית' />
-            <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
-                <>
-                    <Controller
-                        control={control}
-                        name={fieldsNames.wereConfirmedExposures}
-                        defaultValue={wereConfirmedExposures}
-                        render={(props) => {
-                            return (
-                                <Toggle
-                                    {...props}
-                                    className={classes.wereConfirmedExposures}
-                                    onChange={(e, value) => {
-                                        if (value !== null) {
-                                            props.onChange(value);
-                                            onExposuresStatusChange(fieldsNames.wereConfirmedExposures, value);
-                                        }
-                                    }}
-                                    disabled={isViewMode}
-                                />
-                            );
-                        }}
-                    />
-                    <Controller
-                        control={control}
-                        name={fieldsNames.wereConfirmedExposuresDesc}
-                        render={(props) => {
-                            return (
-                                <AlphanumericTextField
-                                    {...props}
-                                    label='פירוט'
-                                    disabled={isViewMode}
-                                />
-                            );
-                        }}
-                    />
-                </>
-            </FormRowWithInput>
+            <Grid container justify='flex-start' item alignItems='center' xs={12}>
+                <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
+                    <>
+                        <Grid item xs={2}>
+                            <Controller
+                                control={control}
+                                name={fieldsNames.wereConfirmedExposures}
+                                defaultValue={wereConfirmedExposures}
+                                render={(props) => {
+                                    return (
+                                        <Toggle
+                                            {...props}
+                                            className={classes.wereConfirmedExposures}
+                                            onChange={(e, value) => {
+                                                if (value !== null) {
+                                                    props.onChange(value);
+                                                    onExposuresStatusChange(fieldsNames.wereConfirmedExposures, value);
+                                                }
+                                            }}
+                                            disabled={isViewMode}
+                                        />
+                                    );
+                                }}
+                            />
+                        </Grid>
+                        <Controller
+                            control={control}
+                            name={fieldsNames.wereConfirmedExposuresDesc}
+                            render={(props) => {
+                                return (
+                                    <AlphanumericTextField
+                                        {...props}
+                                        label='פירוט'
+                                        disabled={isViewMode}
+                                    />
+                                );
+                            }}
+                        />
+                    </>
+                </FormRowWithInput>
+            </Grid>
             <Collapse in={watchWasConfirmedExposure} className={classes.additionalInformationForm}>
                 <div className={classes.patientDetailSpace}>
                     {exposures.map(

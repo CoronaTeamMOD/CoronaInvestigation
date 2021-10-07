@@ -3,10 +3,10 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Grid, FormControl, TextField, Collapse } from '@material-ui/core';
 
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import useFormStyles from 'styles/formStyles';
 import PlaceSubType from 'models/PlaceSubType';
 import FormInput from 'commons/FormInput/FormInput';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 
 import usePlacesTypesAndSubTypes from './usePlacesTypesAndSubTypes';
 
@@ -17,7 +17,7 @@ const defaultSubType = { displayName: '', id: -1 };
 
 const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: PlacesTypesAndSubTypesProps): JSX.Element => {
 
-    const { placeTypeName, placeSubTypeName, onPlaceTypeChange, onPlaceSubTypeChange,isViewMode } = props;
+    const { placeTypeName, placeSubTypeName, onPlaceTypeChange, onPlaceSubTypeChange, isViewMode, index, isExposureForm } = props;
     const { control, errors, watch } = useFormContext();
 
     const formClasses = useFormStyles();
@@ -40,6 +40,16 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                 : defaultSubType)
         , [placeSubType, placesSubTypesByTypes]
     );
+
+    const currentErrors = index !== undefined && errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
+	const placeTypeError = currentErrors ? currentErrors.exposurePlaceType : undefined;
+    const getplaceTypeLabel = (placeTypeError: { message?: string, type?: string }) => {
+		return placeTypeError ? placeTypeError.message : placeTypeDisplayName+'*';
+	};
+    const placeSubTypeError = currentErrors ? currentErrors.exposurePlaceSubType : undefined;
+    const getplaceSubTypeLabel = (placeSubTypeError: { message?: string, type?: string }) => {
+		return placeSubTypeError ? placeSubTypeError.message : placeSubTypeDisplayName+'*';
+	};
 
     useEffect(() => {
         setPlaceTypeInput(placeType || '');
@@ -114,8 +124,8 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                                         renderInput={(params) =>
                                             <TextField
                                                 {...params}
-                                                error={errors && errors[placeTypeName]}
-                                                label={(errors && errors[placeTypeName]?.message) || placeTypeDisplayName}
+                                                error={isExposureForm ? Boolean(placeTypeError) : errors && errors[placeTypeName]}
+                                                label={isExposureForm ? getplaceTypeLabel(placeTypeError) : (errors && errors[placeTypeName]?.message) || placeTypeDisplayName+'*'}
                                                 test-id='placeType'
                                             />
                                         }
@@ -128,7 +138,7 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                 </InputWrapperComp>
             </Grid>
             {
-                    <Grid item xs={6}>
+            <Grid item xs={6}>
                 <Collapse in={placesSubTypesByTypes[placeType] && placesSubTypesByTypes[placeType].length > 1}>
                       <InputWrapperComp fieldName={placeSubTypeDisplayName} labelLength={2}>
                             <Grid item xs={8}>
@@ -158,8 +168,8 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                                                 renderInput={(params) =>
                                                     <TextField
                                                         {...params}
-                                                        error={errors && errors[placeSubTypeName]}
-                                                        label={(errors && errors[placeSubTypeName]?.message) || placeSubTypeDisplayName}
+										                error={isExposureForm ? Boolean(placeSubTypeError) : errors && errors[placeSubTypeName]}
+                                                        label={isExposureForm ? getplaceSubTypeLabel(placeSubTypeError): (errors && errors[placeSubTypeName]?.message) || placeSubTypeDisplayName+'*'}
                                                         test-id='placeSubType'
                                                     />
                                                 }
@@ -173,9 +183,8 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                                 </FormControl>
                             </Grid>
                         </InputWrapperComp>
-                        </Collapse>
-                    </Grid>
-                
+                    </Collapse>
+                </Grid>
             }
         </Grid>
     );
@@ -192,4 +201,6 @@ export interface PlacesTypesAndSubTypesProps {
     onPlaceSubTypeChange: (placeSubType: PlaceSubType | null) => void;
     size: FormSize;
     isViewMode?:boolean;
+	index?: number;
+    isExposureForm?: boolean;
 };

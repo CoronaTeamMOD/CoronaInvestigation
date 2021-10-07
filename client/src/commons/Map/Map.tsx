@@ -17,6 +17,8 @@ interface MapProps {
     selectedAddress: GeocodeResponse | null;
     setSelectedAddress: (newValue: GeocodeResponse | null) => void;
     name: string;
+    label?: string | undefined; 
+    error?: boolean | undefined; 
 }
 
 const defaultMapPosition = { lng: 35.217018, lat: 31.771959 };
@@ -24,7 +26,7 @@ const FOCUSED_ZOOM = 20;
 const DEFAULT_ZOOM = 8;
 const DEFAULT_MAP_HEIGHT = '20vh';
 const DEFAULT_MAP_WIDTH = '30vw';
-const Map = ({ selectedAddress, setSelectedAddress, name, ...props }: MapProps) => {
+const Map = ({ selectedAddress, setSelectedAddress, label, error, name, ...props }: MapProps) => {
     const { parseAddress } = useGoogleApiAutocomplete();
     const { requestDetailsFromLocation } = useGoogleGeocoder();
     const { parseLocation } = useDBParser();
@@ -35,7 +37,6 @@ const Map = ({ selectedAddress, setSelectedAddress, name, ...props }: MapProps) 
     const zoom = React.useMemo(() => selectedAddress ? FOCUSED_ZOOM : DEFAULT_ZOOM, [selectedAddress]);
     const _isMounted = React.useRef(true);
 
-    //cleanup
     React.useEffect(() => {
         return () => {_isMounted.current = false}
     }, []);
@@ -118,6 +119,8 @@ const Map = ({ selectedAddress, setSelectedAddress, name, ...props }: MapProps) 
         <LocationInput name={name}
                        selectedAddress={selectedAddress as GoogleApiPlace}
                        setSelectedAddress={handleAddressSelected}
+                       label={label}
+                       error={error}
         />
         <div style={{marginBottom: '20px'}}/>
         <div style={{height, width}}>
