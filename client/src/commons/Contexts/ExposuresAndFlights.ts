@@ -42,7 +42,8 @@ export const fieldsNames = {
     wereFlights: 'wereFlights',
     wasInVacation: 'wasInVacation',
     wasInEvent: 'wasInEvent',
-    exposures: 'exposures' 
+    exposures: 'exposures',
+    isExposurePersonKnown: 'isExposurePersonKnown'
 };
 
 export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
@@ -73,6 +74,7 @@ export const initialExposureOrFlight: Exposure = {
     flightEndDate: null,
     airline: null,
     flightNum: null,
+    isExposurePersonKnown: undefined,
 };
 
 export const isConfirmedExposureInvalid = (exposure: Exposure) =>
