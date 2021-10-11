@@ -19,7 +19,8 @@ interface Exposure {
     flightOriginCountry?: string,
     flightDestinationCountry?: string,
     wasAbroad?: boolean,
-    wasConfirmedExposure: boolean
+    wasConfirmedExposure: boolean,
+    isExposurePersonKnown: boolean | undefined
 };
 
 export default Exposure;

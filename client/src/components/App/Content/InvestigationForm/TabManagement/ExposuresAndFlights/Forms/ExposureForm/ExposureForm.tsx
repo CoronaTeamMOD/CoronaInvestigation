@@ -12,6 +12,7 @@ import CovidPatient from 'models/CovidPatient';
 import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
 import { invalidDateText } from 'commons/Schema/messages';
+import { Exposure } from 'commons/Contexts/ExposuresAndFlights';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ExposureSearchTextField from './SearchCovidPatients/ExposureSearchTextField';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
@@ -26,14 +27,13 @@ import SearchByEpidemiologyNumber from './SearchCovidPatients/SearchByEpidemiolo
 
 const ExposureForm = (props: Props) => {
 
-	const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted, isViewMode } = props;
+	const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted, isViewMode, exposures } = props;
 
 	const classes = useStyles();
 	const formClasses = useFormStyles();
 	const { control, setValue, errors, trigger } = useFormContext();
 
 	const [exposureSourceSearchString, setExposureSourceSearchString] = useState<string>('');
-	const [isExposurePersonKnown, setIsExposurePersonKnown] = useState<boolean>(false);
 	const [isOptionalPatientsLoading, setOptionalPatientsLoading] = useState<boolean>(false);
 	const [optionalCovidPatients, setOptionalCovidPatients] = useState<CovidPatient[]>([]);
 	const [queryBy, setQueryBy] = useState<number>(0);
@@ -100,14 +100,17 @@ const ExposureForm = (props: Props) => {
 			<FormRowWithInput fieldName='פרטי מאומת ידוע?'>
 			<Grid item xs={4}>
 				<Controller
-					name='isExposurePersonKnown'
+					name={`exposures[${index}].${fieldsNames.isExposurePersonKnown}`}
 					control={control}
-					render={() => (
+					defaultValue={exposureAndFlightsData.isExposurePersonKnown}
+					render={(props) => (
 						<Toggle
-							value={isExposurePersonKnown}
+							{...props}
+							value={exposureAndFlightsData.isExposurePersonKnown}
 							onChange={(event, value) => {
 								if (value !== null) {
-									setIsExposurePersonKnown(value);
+									props.onChange(value);
+									handleChangeExposureDataAndFlightsField(index, fieldsNames.isExposurePersonKnown, value)
 								}
 							}}
 							disabled={isViewMode}
@@ -116,7 +119,7 @@ const ExposureForm = (props: Props) => {
 				/>
 				</Grid>
 			</FormRowWithInput>
-			<Collapse in={isExposurePersonKnown}>
+			 <Collapse in={exposures[index].isExposurePersonKnown}>
 				<Grid item container alignItems='center' xs={12} justify='flex-start'>
 					<Grid xs={9}>
 						<Select
@@ -314,6 +317,7 @@ interface Props {
 	index: number;
 	onExposureDeleted: () => void;
 	isViewMode?: boolean;
+	exposures: Exposure[];
 };
 
 export default ExposureForm;
