@@ -91,6 +91,7 @@ const PossibleExposure = (props: Props) => {
                                         handleChangeExposureDataAndFlightsField={handleChangeExposureDataAndFlightsField}
                                         onExposureDeleted={() => onExposureDeleted(index)}
                                         isViewMode={isViewMode}
+                                        exposures={exposures}
                                     />
                                     <Divider />
                                 </>
