@@ -24,7 +24,6 @@ import { resetClinicalDetails, setClinicalDetails } from 'redux/ClinicalDetails/
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element => {
-
     const classes = useStyles();
     const dispatch = useDispatch();
 

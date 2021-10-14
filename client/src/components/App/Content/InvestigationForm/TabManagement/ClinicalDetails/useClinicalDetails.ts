@@ -61,8 +61,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const tabsValidations = useSelector<StoreStateType, (boolean | null)[]>(store => store.formsValidations[epidemiologyNumber]);
     const address = useSelector<StoreStateType, FlattenedDBAddress>(state => state.address);
     const validationDate = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
-    const clinicalDetails = useSelector<StoreStateType, ClinicalDetailsData | null>(state => state.clinicalDetails.clinicalDetails);
-
     const [isolationSources, setIsolationSources] = React.useState<IsolationSource[]>([]);
     const [didDeletingContactEventsSucceed, setDidDeletingContactEventsSucceed] = React.useState<boolean>(true);
 
