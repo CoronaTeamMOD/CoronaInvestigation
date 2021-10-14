@@ -16,14 +16,15 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 
 import { ClinicalDetailsClasses } from '../ClinicalDetailsStyles';
 import { setClinicalDetails } from 'redux/ClinicalDetails/ClinicalDetailsActionCreators';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 export const otherSymptomFieldName = 'אחר';
 
 const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, watchDoesHaveSymptoms, watchSymptoms, watchIsSymptomsDateUnknown, handleSymptomCheck, symptoms, didSymptomsDateChangeOccur, setDidSymptomsDateChangeOccur,
-        isViewMode } = props;
+    const { classes, symptoms, handleSymptomCheck, didSymptomsDateChangeOccur, setDidSymptomsDateChangeOccur,
+        isViewMode, clinicalDetails } = props;
     const dispatch = useDispatch();
-    const { control, errors, getValues } = useFormContext();
+    const { control, errors, getValues, setValue, clearErrors } = useFormContext();
     const { wasInvestigationReopend } = useStatusUtils();
 
     const roundDate = (date: Date) => {
@@ -37,6 +38,38 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
         !didSymptomsDateChangeOccur &&
             setDidSymptomsDateChangeOccur(true);
     }
+
+    const setFormValue = (key: keyof ClinicalDetailsData, value: any) => {
+        setValue(key, value);
+        clearErrors(key);
+        dispatch(setClinicalDetails(key, value));
+    }
+
+    React.useEffect(() => {
+        if (clinicalDetails?.doesHaveSymptoms === false) {
+            let resetSymptomsData = {
+                symptoms: [],
+                symptomsStartDate: null,
+                otherSymptomFieldName: ''
+            };
+
+            for (const [key, value] of Object.entries(resetSymptomsData)) {
+                setFormValue(key as keyof ClinicalDetailsData, value);
+            }
+        }
+    }, [clinicalDetails?.doesHaveSymptoms]);
+
+    React.useEffect(() => {
+        if (!clinicalDetails?.symptoms.includes(otherSymptomFieldName)) {
+            setFormValue(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, '');
+        }
+    }, [clinicalDetails?.symptoms]);
+
+    React.useEffect(() => {
+        if (clinicalDetails?.isSymptomsStartDateUnknown) {
+            setFormValue(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
+        }
+    }, [clinicalDetails?.isSymptomsStartDateUnknown])
 
     return (
         <>
@@ -52,7 +85,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 onChange={(e, value) => {
                                     if (value !== null) {
                                         props.onChange(value);
-                                        dispatch(setClinicalDetails(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS,value));
+                                        dispatch(setClinicalDetails(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, value));
                                     }
                                 }}
                                 disabled={isViewMode}
@@ -65,10 +98,10 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                 </Grid>
             </FormRowWithInput>
 
-            <Collapse in={watchDoesHaveSymptoms}>
+            <Collapse in={clinicalDetails?.doesHaveSymptoms}>
                 <FormRowWithInput fieldName='' labelLength={2}>
                     <Grid item xs={7}>
-                        <Collapse in={!watchIsSymptomsDateUnknown}>
+                        <Collapse in={!clinicalDetails?.isSymptomsStartDateUnknown}>
                             <div className={classes.dates}>
                                 {
                                     <Controller
@@ -90,7 +123,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                         let date = new Date(newDate.toDateString())
                                                         date = roundDate(date)
                                                         props.onChange(date);
-                                                        dispatch(setClinicalDetails(ClinicalDetailsFields.SYMPTOMS_START_DATE,date));
+                                                        dispatch(setClinicalDetails(ClinicalDetailsFields.SYMPTOMS_START_DATE, date));
 
                                                     }
                                                 }}
@@ -117,7 +150,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                 if (value !== null) {
                                                     handleDidSymptomsDateChangeOccur();
                                                     props.onChange(value);
-                                                    dispatch(setClinicalDetails(ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN,value));
+                                                    dispatch(setClinicalDetails(ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN, value));
                                                 }
                                             }
                                         }]}
@@ -127,9 +160,9 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                             />
                         </div>
                         {
-                            watchDoesHaveSymptoms &&
+                            clinicalDetails?.doesHaveSymptoms &&
                             <Typography color={errors[ClinicalDetailsFields.SYMPTOMS] ? 'error' : 'initial'}>תסמינים:
-                            (יש
+                                (יש
                                 לבחור לפחות תסמין אחד)</Typography>
                         }
                         <Grid item container className={classes.smallGrid}>
@@ -172,7 +205,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     </>
                                 )}
                             />
-                            <Collapse in={watchSymptoms.includes(otherSymptomFieldName)}>
+                            <Collapse in={clinicalDetails?.symptoms.includes(otherSymptomFieldName)}>
                                 <Grid item xs={2}>
                                     <Controller
                                         name={ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO}
@@ -183,9 +216,9 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                 name={ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO}
                                                 value={props.value}
                                                 onChange={(newValue: string) => props.onChange(newValue)}
-                                                onBlur={()=>{
+                                                onBlur={() => {
                                                     props.onBlur();
-                                                    dispatch(setClinicalDetails(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO,getValues(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO)));
+                                                    dispatch(setClinicalDetails(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, getValues(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO)));
                                                 }}
                                                 placeholder='הזן תסמין...'
                                                 label='* תסמין'
@@ -205,9 +238,6 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
 
 interface Props {
     classes: ClinicalDetailsClasses;
-    watchDoesHaveSymptoms: boolean;
-    watchSymptoms: string[];
-    watchIsSymptomsDateUnknown: boolean;
     handleSymptomCheck: (
         checkedSymptom: string,
         onChange: (newSymptoms: string[]) => void,
@@ -217,6 +247,7 @@ interface Props {
     didSymptomsDateChangeOccur: boolean;
     setDidSymptomsDateChangeOccur: React.Dispatch<React.SetStateAction<boolean>>;
     isViewMode?: boolean;
+    clinicalDetails: ClinicalDetailsData | null;
 };
 
 export default SymptomsFields;

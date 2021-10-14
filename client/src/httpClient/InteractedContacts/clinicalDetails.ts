@@ -56,7 +56,6 @@ export const fetchClinicalDetails = async (address: FlattenedDBAddress): Promise
                 otherBackgroundDiseasesMoreInfo: patientClinicalDetails.otherBackgroundDiseasesMoreInfo !== null ?
                     patientClinicalDetails.otherBackgroundDiseasesMoreInfo : '',
             }
-            console.log('in fetch',initialDBClinicalDetailsToSet)
             return initialDBClinicalDetailsToSet;
         } else {
             fetchClinicalDetailsLogger.warn('got status 200 but got invalid outcome', Severity.HIGH);

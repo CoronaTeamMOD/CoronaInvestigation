@@ -16,22 +16,48 @@ import { useDispatch } from 'react-redux';
 import { setClinicalDetails } from 'redux/ClinicalDetails/ClinicalDetailsActionCreators';
 
 const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { 
-        classes, 
-        watchIsInIsolation, 
-        watchIsolationStartDate, 
-        watchIsolationEndDate, 
-        isolationSources, 
+    const {
+        classes,
+        isolationSources,
         isViewMode,
-     } = props;
-    const { control, errors, trigger , getValues} = useFormContext();
+        clinicalDetails
+    } = props;
+    const { control, errors, trigger, getValues, setValue, clearErrors } = useFormContext();
 
     const dispatch = useDispatch();
+
+    const setFormValue = (key: keyof ClinicalDetailsData, value: any) => {
+        setValue(key, value);
+        clearErrors(key);
+        dispatch(setClinicalDetails(key, value));
+    }
+
+    React.useEffect(() => {
+        if (clinicalDetails?.isInIsolation === false) {
+
+            let resetIsolationData = {
+                isolationStartDate: null,
+                isolationEndDate: null,
+                isolationSource: null,
+                isolationSourceDesc: ''
+            };
+
+            for (const [key, value] of Object.entries(resetIsolationData)) {
+                setFormValue(key as keyof ClinicalDetailsData, value);
+            }
+        }
+    }, [clinicalDetails?.isInIsolation]);
+
+    React.useEffect(() => {
+        if (clinicalDetails?.isIsolationProblem === false) {
+            setFormValue(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO, '');
+        }
+    }, [clinicalDetails?.isIsolationProblem]);
 
     React.useEffect(() => {
         trigger(ClinicalDetailsFields.ISOLATION_START_DATE);
         trigger(ClinicalDetailsFields.ISOLATION_END_DATE);
-    }, [watchIsolationStartDate, watchIsolationEndDate]);
+    }, [clinicalDetails?.isolationStartDate, clinicalDetails?.isolationEndDate]);
 
     return (
         <>
@@ -47,7 +73,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 onChange={(e, value) => {
                                     if (value !== null) {
                                         props.onChange(value);
-                                        dispatch(setClinicalDetails(ClinicalDetailsFields.IS_IN_ISOLATION,value));
+                                        dispatch(setClinicalDetails(ClinicalDetailsFields.IS_IN_ISOLATION, value));
                                     }
                                 }}
                                 disabled={isViewMode}
@@ -59,7 +85,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                     />
                 </Grid>
             </FormRowWithInput>
-            <Collapse in={watchIsInIsolation}>
+            <Collapse in={clinicalDetails?.isInIsolation === true}>
                 <Grid container alignItems='center' spacing={3}>
                     <Grid item xs={2} className={classes.clinicalDetailsStub} />
                     <Grid item xs={3}>
@@ -77,7 +103,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                         value={props.value}
                                         onChange={(newDate: Date) => {
                                             props.onChange(newDate);
-                                            dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_START_DATE,newDate));
+                                            dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_START_DATE, newDate));
                                         }}
                                         disabled={isViewMode}
                                         error={errors[ClinicalDetailsFields.ISOLATION_START_DATE] ? true : false}
@@ -99,7 +125,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     value={props.value}
                                     onChange={(newDate: Date) => {
                                         props.onChange(newDate);
-                                        dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_END_DATE,newDate));
+                                        dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_END_DATE, newDate));
                                     }}
                                     disabled={isViewMode}
                                     error={errors[ClinicalDetailsFields.ISOLATION_END_DATE] ? true : false}
@@ -109,7 +135,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                     </Grid>
                 </Grid>
             </Collapse>
-            <Collapse in={watchIsInIsolation}>
+            <Collapse in={clinicalDetails?.isInIsolation === true}>
                 <FormRowWithInput fieldName='מקור עדכון על הצורך בבידוד:'>
                     <>
                         <Grid item xs={3}>
@@ -126,7 +152,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                             value={props.value === null ? '' : props.value}
                                             onChange={(event) => {
                                                 props.onChange(event.target.value === '' ? null : event.target.value);
-                                                dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_SOURCE,event.target.value as number));
+                                                dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_SOURCE, event.target.value as number));
                                             }}
                                         >
                                             {
@@ -153,7 +179,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                             {...props}
                                             placeholder='פירוט נוסף'
                                             disabled={isViewMode}
-                                            onBlur={()=>dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_SOURCE_DESC,getValues(ClinicalDetailsFields.ISOLATION_SOURCE_DESC)))}
+                                            onBlur={() => dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_SOURCE_DESC, getValues(ClinicalDetailsFields.ISOLATION_SOURCE_DESC)))}
                                         />
                                     )
                                 }}
@@ -168,11 +194,9 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
 
 interface Props {
     classes: ClinicalDetailsClasses;
-    watchIsInIsolation: boolean;
-    watchIsolationStartDate: Date;
-    watchIsolationEndDate: Date;
     isolationSources: IsolationSource[];
     isViewMode?: boolean;
+    clinicalDetails: ClinicalDetailsData | null;
 };
 
 export default IsolationDatesFields;
