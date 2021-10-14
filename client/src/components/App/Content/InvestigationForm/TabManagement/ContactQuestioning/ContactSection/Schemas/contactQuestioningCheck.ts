@@ -9,7 +9,7 @@ export const contactQuestioningCheck = {
         .when(
         [InteractedContactFields.CONTACT_STATUS],
         (contactStatus: number) => {
-            return (contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
+            return (contactStatus === ContactStatusCodes.COMPLETED || contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
                 ? yup.boolean().nullable()
                 : yup.boolean().nullable().required(requiredText);
         }
@@ -18,7 +18,7 @@ export const contactQuestioningCheck = {
         .when(
         [InteractedContactFields.CONTACT_STATUS],
         (contactStatus: number) => {
-            return (contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
+            return (contactStatus === ContactStatusCodes.COMPLETED || contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
                 ? yup.boolean().nullable()
                 : yup.boolean().nullable().required(requiredText);
         }
@@ -27,7 +27,7 @@ export const contactQuestioningCheck = {
         .when(
         [InteractedContactFields.CONTACT_STATUS],
         (contactStatus: number) => {
-            return (contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
+            return (contactStatus === ContactStatusCodes.COMPLETED || contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
                 ? yup.boolean().nullable()
                 : yup.boolean().nullable().required(requiredText);
         }
@@ -36,7 +36,7 @@ export const contactQuestioningCheck = {
         .when(
         [InteractedContactFields.CONTACT_STATUS],
         (contactStatus: number) => {
-            return (contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
+            return (contactStatus === ContactStatusCodes.COMPLETED || contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
                 ? yup.boolean().nullable()
                 : yup.boolean().nullable().required(requiredText);
         }
@@ -45,7 +45,7 @@ export const contactQuestioningCheck = {
         .when(
         [InteractedContactFields.CONTACT_STATUS],
         (contactStatus: number) => {
-            return (contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
+            return (contactStatus === ContactStatusCodes.COMPLETED || contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
                 ? yup.boolean().nullable()
                 : yup.boolean().nullable().required(requiredText);
         }

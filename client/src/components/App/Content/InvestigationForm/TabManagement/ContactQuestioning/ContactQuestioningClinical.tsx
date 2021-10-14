@@ -18,6 +18,7 @@ import HebrewTextField from 'commons/NoContextElements/HebrewTextField';
 import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextField';
 import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFields';
 import AddressForm, { AddressFormFields } from 'commons/NoContextElements/AddressForm';
+import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
@@ -49,7 +50,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const { alertError, alertWarning } = useCustomSwal();
 
-    const { isFieldDisabled, validateContact } = useContactFields(methods.getValues("contactStatus"));//interactedContact.contactStatus);
+    const { isFieldDisabled, validateContact } = useContactFields(methods.getValues("contactStatus"));
 
     const daysToIsolate = 14;
     const isolationEndDate = addDays(new Date(interactedContact.contactDate), daysToIsolate);
@@ -81,8 +82,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         }
     };
 
-    const isUnreachable = interactedContact.contactStatus === 6
-    const isUncooperative = interactedContact.contactStatus === 7
+    const isInvestigationComplited = interactedContact.contactStatus === ContactStatusCodes.COMPLETED
+    const isUnreachable = interactedContact.contactStatus === ContactStatusCodes.CANT_REACH
+    const isUncooperative = interactedContact.contactStatus === ContactStatusCodes.DONT_COOPERATE
 
     const formatContactToValidate = () => {
         return {
@@ -139,12 +141,12 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     };
 
     const handelOnChangeDoesNeedIsolation = (event: any, booleanValue: boolean, onChange: (...event: any[]) => void) => {
-        if (booleanValue === false || isUnreachable || isUncooperative) {
+        if (booleanValue === false || isInvestigationComplited || isUnreachable || isUncooperative) {
             onChange(booleanValue);
             dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.DOES_NEED_ISOLATION, booleanValue));
         }
 
-        if (booleanValue === true && !isUncooperative && !isUnreachable) {
+        if (booleanValue === true && !isInvestigationComplited && !isUncooperative && !isUnreachable) {
             handleIsolation(booleanValue, onChange);
         }
     }
