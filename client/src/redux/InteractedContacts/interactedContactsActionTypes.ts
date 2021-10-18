@@ -38,8 +38,7 @@ interface SetContactFormState {
 interface GetInteractedContactsSuccess {
     type: typeof GET_INTERACTED_CONTACTS_SUCCESS,
     payload: {
-        interactedContacts: GroupedInteractedContact[],
-        formState: FormStateObject[]
+        interactedContacts: GroupedInteractedContact[]
     }
 }
 
