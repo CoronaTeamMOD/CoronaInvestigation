@@ -150,7 +150,7 @@ export const useExposuresAndFlights = (props : Props) => {
                     axios.delete('/exposure/deleteExposure', { params: { exposureId }})
                         .then(() => {
                             deletingExposureLogger.info('exposure was deleted successfully', Severity.LOW)
-                            !isFlight && setIsExposureAdded(undefined);
+                            !isFlight && setIsExposureAdded(false);
                         }).catch((error) => {
                             deletingExposureLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                             alertError((isFlight ? flightDeleteFailedMsg : exposureDeleteFailedMsg));
@@ -161,7 +161,7 @@ export const useExposuresAndFlights = (props : Props) => {
                         ...exposureAndFlightsData,
                         exposures: updatedExpousres,
                     });
-                    !isFlight && setIsExposureAdded(undefined);
+                    !isFlight && setIsExposureAdded(false);
                 }
                 onSubmit();
             }            
@@ -224,7 +224,7 @@ interface Props {
     wereFlights: boolean,
     exposureAndFlightsData: ExposureAndFlightsDetails;
     setExposureDataAndFlights: React.Dispatch<React.SetStateAction<ExposureAndFlightsDetails>>;
-    setIsExposureAdded: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+    setIsExposureAdded: React.Dispatch<React.SetStateAction<boolean>>;
     id: number;
     reset: (values : FormData) => void;
     trigger: () => void;
