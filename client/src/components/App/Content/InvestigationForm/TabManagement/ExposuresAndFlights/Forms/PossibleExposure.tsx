@@ -93,7 +93,7 @@ const PossibleExposure = (props: Props) => {
                                         isViewMode={isViewMode}
                                         exposures={exposures}
                                     />
-                                    <Divider />
+                                    <Divider className={classes.divider}/>
                                 </>
                             )
                     )}
