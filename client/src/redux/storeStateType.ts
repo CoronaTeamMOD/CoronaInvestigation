@@ -17,6 +17,7 @@ import { UserState } from './User/userReducer';
 import { GreenPassReducerType } from './GreenPass/greenPassReducer';
 import GroupedInvestigationReducerType from './GroupedInvestigations/GroupedInvestigationsType';
 import { InteractedContactsState } from './InteractedContacts/interactedContactsReducer';
+import { PersonalInfoTabState } from 'components/App/Content/InvestigationForm/TabManagement/PersonalInfoTab/PersonalInfoTabInterfaces';
 
 export default interface StoreStateType {
     user: UserState;
@@ -44,4 +45,5 @@ export default interface StoreStateType {
     identificationTypes: IdentificationType[];
     airlines: Map<number, string>;
     interactedContacts:InteractedContactsState;
+    personalInfo:PersonalInfoTabState
 };
