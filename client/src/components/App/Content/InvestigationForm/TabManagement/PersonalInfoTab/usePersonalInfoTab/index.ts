@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { UseFormMethods } from 'react-hook-form';
 
 import logger from 'logger/logger';
@@ -23,6 +23,7 @@ import {checkUpdateInvestigationPersonalReasonId} from 'Utils/ComplexityReasons/
 import { PersonalInfoTabState } from '../PersonalInfoTabInterfaces';
 import { usePersonalInfoTabOutcome } from './usePersonalInfoTabInterfaces';
 import personalInfoTabValidationSchema from '../PersonalInfoTabValidationSchema';
+import { getPersonalInfo } from 'redux/PersonalInfo/personalInfoActionCreators';
 
 const usePersonalInfoTab = (): usePersonalInfoTabOutcome => {
     
@@ -32,6 +33,7 @@ const usePersonalInfoTab = (): usePersonalInfoTabOutcome => {
 
     const { alertError } = useCustomSwal();
     const { complexityErrorAlert } = useComplexitySwal();
+    const dispatch = useDispatch();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>((state) => state.investigation.investigationStatus);
@@ -99,61 +101,64 @@ const usePersonalInfoTab = (): usePersonalInfoTabOutcome => {
         const personalDetailsLogger = logger.setup('Fetching Personal Details');
         personalDetailsLogger.info('launching personal data request', Severity.LOW);
         setIsLoading(true);
-        axios.get('/personalDetails/investigatedPatientPersonalInfoFields?epidemioligyNumber=' + epidemiologyNumber).then((res: any) => {
-            if (res?.data) {
-                personalDetailsLogger.info('got results back from the server', Severity.LOW);
-                const investigatedPatient = res.data;
-                const patientAddress = investigatedPatient.addressByAddress;
-                let convertedPatientAddress = null;
-                if (patientAddress) {
-                    let city = null;
-                    let street = null;
-                    if (patientAddress.cityByCity !== null) {
-                        city = patientAddress.cityByCity.id;
-                    }
-                    if (patientAddress.streetByStreet !== null) {
-                        street = patientAddress.streetByStreet.id;
-                    }
-                    convertedPatientAddress = {
-                        city,
-                        street,
-                        apartment: patientAddress.apartment,
-                        houseNum: patientAddress.houseNum,
-                    }
-                } else {
-                    convertedPatientAddress = initDBAddress;
-                }
-                const personalInfo: PersonalInfoTabState = {
-                    phoneNumber: investigatedPatient.primaryPhone,
-                    additionalPhoneNumber: investigatedPatient.additionalPhoneNumber,
-                    contactPhoneNumber: investigatedPatient.patientContactPhoneNumber,
-                    insuranceCompany: investigatedPatient.hmo,
-                    address: convertedPatientAddress,
-                    relevantOccupation: investigatedPatient.occupation,
-                    educationOccupationCity: (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation) ?
-                        investigatedPatient.subOccupationBySubOccupation.city : '',
-                    institutionName: investigatedPatient.subOccupation !== null ? investigatedPatient.subOccupation : '',
-                    otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo !== null ? investigatedPatient.otherOccupationExtraInfo : '',
-                    contactInfo: investigatedPatient.patientContactInfo,
-                    role: investigatedPatient.role,
-                    educationGrade: investigatedPatient.educationGrade,
-                    educationClassNumber: investigatedPatient.educationClassNumber,
-                }
-                reset(personalInfo);
-                trigger();
-                setIsLoading(false);
-            } else {
-                personalDetailsLogger.error(`got errors in server result: ${JSON.stringify(res)}`, Severity.HIGH);
-                setIsLoading(false);
-            }
-        }).catch((error) => {
-            setIsLoading(false);
+        
+        dispatch(getPersonalInfo(epidemiologyNumber,reset,trigger));
 
-            if (epidemiologyNumber !== -1) {
-                personalDetailsLogger.error(`got errors in server request ${error}`, Severity.HIGH);
-                alertError('הייתה שגיאה בטעינת הפרטים האישיים');
-            }
-        })
+        // axios.get('/personalDetails/investigatedPatientPersonalInfoFields?epidemioligyNumber=' + epidemiologyNumber).then((res: any) => {
+        //     if (res?.data) {
+        //         personalDetailsLogger.info('got results back from the server', Severity.LOW);
+        //         const investigatedPatient = res.data;
+        //         const patientAddress = investigatedPatient.addressByAddress;
+        //         let convertedPatientAddress = null;
+        //         if (patientAddress) {
+        //             let city = null;
+        //             let street = null;
+        //             if (patientAddress.cityByCity !== null) {
+        //                 city = patientAddress.cityByCity.id;
+        //             }
+        //             if (patientAddress.streetByStreet !== null) {
+        //                 street = patientAddress.streetByStreet.id;
+        //             }
+        //             convertedPatientAddress = {
+        //                 city,
+        //                 street,
+        //                 apartment: patientAddress.apartment,
+        //                 houseNum: patientAddress.houseNum,
+        //             }
+        //         } else {
+        //             convertedPatientAddress = initDBAddress;
+        //         }
+        //         const personalInfo: PersonalInfoTabState = {
+        //             phoneNumber: investigatedPatient.primaryPhone,
+        //             additionalPhoneNumber: investigatedPatient.additionalPhoneNumber,
+        //             contactPhoneNumber: investigatedPatient.patientContactPhoneNumber,
+        //             insuranceCompany: investigatedPatient.hmo,
+        //             address: convertedPatientAddress,
+        //             relevantOccupation: investigatedPatient.occupation,
+        //             educationOccupationCity: (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation) ?
+        //                 investigatedPatient.subOccupationBySubOccupation.city : '',
+        //             institutionName: investigatedPatient.subOccupation !== null ? investigatedPatient.subOccupation : '',
+        //             otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo !== null ? investigatedPatient.otherOccupationExtraInfo : '',
+        //             contactInfo: investigatedPatient.patientContactInfo,
+        //             role: investigatedPatient.role,
+        //             educationGrade: investigatedPatient.educationGrade,
+        //             educationClassNumber: investigatedPatient.educationClassNumber,
+        //         }
+        //         reset(personalInfo);
+        //         trigger();
+        //         setIsLoading(false);
+        //     } else {
+        //         personalDetailsLogger.error(`got errors in server result: ${JSON.stringify(res)}`, Severity.HIGH);
+        //         setIsLoading(false);
+        //     }
+        // }).catch((error) => {
+        //     setIsLoading(false);
+
+        //     if (epidemiologyNumber !== -1) {
+        //         personalDetailsLogger.error(`got errors in server request ${error}`, Severity.HIGH);
+        //         alertError('הייתה שגיאה בטעינת הפרטים האישיים');
+        //     }
+        // })
     }
 
     const clearSubOccupations = () => setSubOccupations([]);

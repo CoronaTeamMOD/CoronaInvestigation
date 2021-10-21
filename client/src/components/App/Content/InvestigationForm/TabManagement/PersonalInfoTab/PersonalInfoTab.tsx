@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useMemo, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers';
@@ -28,6 +28,7 @@ import usePersonalTabInfo from './usePersonalInfoTab';
 import validationSchema from './PersonalInfoTabValidationSchema';
 import { PersonalInfoTabState } from './PersonalInfoTabInterfaces';
 import InstitutionComponent from './InstitutionComponent/InstitutionComponent';
+import { setPersonalInfo } from 'redux/PersonalInfo/personalInfoActionCreators';
 
 const under16AllowedOccupations = ['מערכת החינוך', 'אחר'];
 
@@ -56,6 +57,8 @@ const ADD_CONTACT = '+ איש קשר'
 const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
 
     const classes = useStyles();
+
+    const dispatch = useDispatch();
 
     const methods = useForm<PersonalInfoTabState>({
         mode: 'all',
@@ -212,7 +215,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                             testId='personalDetailsPhone'
                                             name={props.name}
                                             value={props.value}
-                                            onChange={(newValue: string) => props.onChange(newValue)}
+                                            onChange={(newValue: string) =>{ 
+                                                props.onChange(newValue);
+                                                dispatch(setPersonalInfo(PersonalInfoDataContextFields.PHONE_NUMBER, newValue))
+                                            }}
                                             onBlur={props.onBlur}
                                             placeholder={PHONE_LABEL}
                                             label='טלפון*'
@@ -243,7 +249,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                             fullWidth={true}
                                             name={PersonalInfoDataContextFields.CONTACT_INFO}
                                             value={props.value}
-                                            onChange={(newValue: string) => (props.onChange(newValue))}
+                                            onChange={(newValue: string) => {
+                                                props.onChange(newValue);
+                                                dispatch(setPersonalInfo(PersonalInfoDataContextFields.CONTACT_INFO, newValue))
+                                            }}
                                             onBlur={props.onBlur}
                                             placeholder={'פרטי איש קשר'}
                                             label='פרטי איש קשר'
@@ -261,7 +270,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                             testId='personalDetailsContactPhone'
                                             name={props.name}
                                             value={props.value}
-                                            onChange={(newValue: string) => props.onChange(newValue)}
+                                            onChange={(newValue: string) => {
+                                                props.onChange(newValue);
+                                                dispatch(setPersonalInfo(PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER, newValue))
+                                            }}
                                             onBlur={props.onBlur}
                                             placeholder={PHONE_LABEL}
                                             label='טלפון'
@@ -282,7 +294,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                         <Autocomplete
                                             options={insuranceCompanies}
                                             onChange={(event, selectedInsuranceCompany) => {
-                                                props.onChange(selectedInsuranceCompany ? selectedInsuranceCompany : '')
+                                                props.onChange(selectedInsuranceCompany ? selectedInsuranceCompany : '');
+                                                dispatch(setPersonalInfo(PersonalInfoDataContextFields.INSURANCE_COMPANY, selectedInsuranceCompany ? selectedInsuranceCompany : ''));
                                             }}
                                             disabled={isViewMode}
                                             value={props.value || ''}
@@ -314,6 +327,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                         <AddressForm
                             {...addressFormFields}
                             disabled={isViewMode}
+                            isPersonalInfoTab={true}
                         />
                     </FormRowWithInput>
                     <FormRowWithInput fieldName={OCCUPATION_LABEL} labelLength={1} appendantLabelIcon={occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? <ComplexityIcon tooltipText='עובד במשרד הבריאות/החינוך' /> : undefined}>
@@ -327,7 +341,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                             <Autocomplete
                                                 options={isOver16 ? occupations : occupations.filter(occupation => under16AllowedOccupations.indexOf(occupation) !== -1)}
                                                 onChange={(event, occupationOption) => {
-                                                    props.onChange(occupationOption ? occupationOption : '')
+                                                    props.onChange(occupationOption ? occupationOption : '');
+                                                    dispatch(setPersonalInfo(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, occupationOption ? occupationOption : ''));
                                                 }}
                                                 disabled={isViewMode}
                                                 value={props.value || ''}
@@ -373,7 +388,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                             onChange={(event, newValue) => {
                                                                 newValue && getEducationSubOccupations(newValue.value.displayName);
                                                                 methods.setValue(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, '');
-                                                                props.onChange(newValue ? newValue.value.displayName : '')
+                                                                props.onChange(newValue ? newValue.value.displayName : '');
+                                                                dispatch(setPersonalInfo(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, newValue ? newValue.value.displayName : ''))
                                                             }}
                                                             renderInput={(params) =>
                                                                 <TextField
@@ -410,7 +426,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                         getOptionSelected={(option) => option.id === props.value}
                                                         disabled={isViewMode}
                                                         value={props.value ? { id: props.value, displayName: (selectedRole?.displayName as string) } : null}
-                                                        onChange={(event, selectedRole) => props.onChange(selectedRole?.id)}
+                                                        onChange={(event, selectedRole) => {
+                                                            props.onChange(selectedRole?.id);
+                                                            dispatch(setPersonalInfo(PersonalInfoDataContextFields.ROLE, selectedRole?.id))
+                                                        }}
                                                         renderInput={(params) =>
                                                             <TextField
                                                                 {...params}
@@ -442,7 +461,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                                     options={educationGrades}
                                                                     getOptionLabel={(grade) => grade.displayName}
                                                                     disabled={isViewMode}
-                                                                    onChange={(event, grade) => props.onChange(grade ? grade : '')}
+                                                                    onChange={(event, grade) => {
+                                                                        props.onChange(grade ? grade : '');
+                                                                        dispatch(setPersonalInfo(PersonalInfoDataContextFields.EDUCATION_GRADE, grade ? grade : ''))
+                                                                    }}
                                                                     value={props.value?.id ? props.value || '' : educationGrades.find(grade => grade.id === props.value)}
                                                                     renderInput={(params) => (
                                                                         <TextField
@@ -473,7 +495,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                                 name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
                                                                 value={props.value}
                                                                 disabled={isViewMode}
-                                                                onChange={props.onChange}
+                                                                onChange={newValue => {
+                                                                    props.onChange(newValue ? newValue : '');
+                                                                    dispatch(setPersonalInfo(PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER, newValue ? newValue : ''))
+                                                                }}
                                                                 onBlur={props.onBlur}
                                                                 label={CLASS_NUMBER}
                                                                 variant='outlined'
@@ -512,7 +537,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                             disabled={isViewMode}
                                                             name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
                                                             value={props.value}
-                                                            onChange={props.onChange}
+                                                            onChange={newValue => {
+                                                                props.onChange(newValue ? newValue : '');
+                                                                dispatch(setPersonalInfo(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, newValue ? newValue : ''))
+                                                            }}
                                                             onBlur={props.onBlur}
                                                             placeholder={subOccupationsPlaceHolderByOccupation}
                                                             label={subOccupationsLabelByOccupation}

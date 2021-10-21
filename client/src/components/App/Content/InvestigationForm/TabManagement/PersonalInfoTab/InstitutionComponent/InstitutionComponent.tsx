@@ -6,6 +6,8 @@ import { Controller, FieldError, useFormContext } from 'react-hook-form';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 
 import { PersonalInfoTabState } from '../PersonalInfoTabInterfaces';
+import { useDispatch } from 'react-redux';
+import { setPersonalInfo } from 'redux/PersonalInfo/personalInfoActionCreators';
 
 const INSTITUTION_NAME = 'שם מוסד*';
 
@@ -17,6 +19,8 @@ const InstitutionComponent: React.FC<Props> = ({ fieldName, placeholder, options
 
     const selectedInstitution = options.find(option => option.id === selectedInstitutionId);
 
+    const dispatch = useDispatch();
+    
     return (
         <Controller
             name={fieldName}
@@ -37,7 +41,8 @@ const InstitutionComponent: React.FC<Props> = ({ fieldName, placeholder, options
                     }}
                     value={props.value ? { id: props.value, ...selectedInstitution } : { id: -1, subOccupation: '' }}
                     onChange={(event, newValue) => {
-                        props.onChange(newValue ? newValue.id : '')
+                        props.onChange(newValue ? newValue.id : '');
+                        dispatch(setPersonalInfo(fieldName, newValue ? newValue.id : ''))
                     }}
                     renderInput={(params) =>
                         <TextField

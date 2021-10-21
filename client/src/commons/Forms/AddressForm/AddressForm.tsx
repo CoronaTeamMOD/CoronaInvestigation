@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { Grid, TextField } from '@material-ui/core';
@@ -12,6 +12,9 @@ import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './AddressFormStyles';
+import { setPersonalInfo } from 'redux/PersonalInfo/personalInfoActionCreators';
+import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
+import PersonalInfoTab from 'components/App/Content/InvestigationForm/TabManagement/PersonalInfoTab/PersonalInfoTab';
 
 const CITY_LABEL = 'עיר';
 const STREET_LABEL = 'רחוב';
@@ -27,7 +30,8 @@ const AddressForm: React.FC<Props> = ({
     streetField,
     floorField, 
     apartmentField,
-    houseNumberField
+    houseNumberField,
+    isPersonalInfoTab
 }) => {
     const classes = useStyles();
 
@@ -36,7 +40,8 @@ const AddressForm: React.FC<Props> = ({
     const [streetsInCity, setStreetsInCity] = useState<Map<string, Street>>(new Map());
 
     const cityWatcher = methods.watch(cityField.name);
-
+    const dispatch = useDispatch();
+    
     useEffect(() => {
         if (cityWatcher) {
             getStreetByCity(cityWatcher, setStreetsInCity);
@@ -77,7 +82,12 @@ const AddressForm: React.FC<Props> = ({
                                 options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                 getOptionLabel={(option) => option ? option.value?.displayName : option}
                                 value={props.value ? {id: props.value as string, value: cities.get(props.value) as City} : {id: '', value: {id: '', displayName: ''}}}
-                                onChange={(event, selectedCity) => props.onChange(selectedCity ? selectedCity.id : null)}
+                                onChange={(event, selectedCity) => {
+                                    props.onChange(selectedCity ? selectedCity.id : null);
+                                    if(isPersonalInfoTab){
+                                        //dispatch(setPersonalInfo(`[${PersonalInfoDataContextFields.ADDRESS}][${PersonalInfoDataContextFields.CITY}]`, selectedCity ? selectedCity.id : null));
+                                    }
+                                }}
                                 renderInput={(params) => 
                                     <TextField
                                         error={Boolean(get(methods.errors, cityField.name))}
@@ -286,6 +296,7 @@ interface Props {
     houseNumberField: FormField;
     floorField?: FormField;
     apartmentField?: FormField;
+    isPersonalInfoTab?: boolean;
 };
 
 export type AddressFormFields = Pick<Props, 'cityField' | 'streetField' | 'houseNumberField'> & Partial<Pick<Props, 'floorField' | 'apartmentField'>>;
