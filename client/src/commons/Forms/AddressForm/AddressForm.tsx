@@ -1,4 +1,3 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { Grid, TextField } from '@material-ui/core';
@@ -12,9 +11,6 @@ import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './AddressFormStyles';
-import { setPersonalInfo } from 'redux/PersonalInfo/personalInfoActionCreators';
-import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
-import PersonalInfoTab from 'components/App/Content/InvestigationForm/TabManagement/PersonalInfoTab/PersonalInfoTab';
 
 const CITY_LABEL = 'עיר';
 const STREET_LABEL = 'רחוב';
@@ -40,7 +36,6 @@ const AddressForm: React.FC<Props> = ({
     const [streetsInCity, setStreetsInCity] = useState<Map<string, Street>>(new Map());
 
     const cityWatcher = methods.watch(cityField.name);
-    const dispatch = useDispatch();
     
     useEffect(() => {
         if (cityWatcher) {
