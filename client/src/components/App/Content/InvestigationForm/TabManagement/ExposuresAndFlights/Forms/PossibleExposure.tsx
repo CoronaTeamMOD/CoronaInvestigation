@@ -97,18 +97,21 @@ const PossibleExposure = (props: Props) => {
                                 </>
                             )
                     )}
-                    <Grid className={classes.anotherExposureContainer} direction='row'>
-                        <Typography variant='caption' className={classes.anotherExposureTitle}>{addConfirmedExposureButton}</Typography>
-                        <Toggle
-                            className={classes.anotherExposureToggle}
-                            value={isExposureAdded}
-                            disabled={disableConfirmedExposureAddition || isViewMode}
-                            onChange={(e, value) => {
-                                if (value !== null) {
-                                    setIsExposureAdded(value)
-                                }
-                            }}
-                        />
+                    <Grid container justify='space-between' xs={12} className={classes.anotherExposureContainer} direction='row'>
+                        <Grid item xs={11}>
+                            <FormRowWithInput  fieldName={addConfirmedExposureButton}>
+                                <Toggle
+                                    className={classes.anotherExposureToggle}
+                                    value={isExposureAdded}
+                                    disabled={disableConfirmedExposureAddition || isViewMode}
+                                    onChange={(e, value) => {
+                                        if (value !== null) {
+                                            setIsExposureAdded(value)
+                                        }
+                                    }}
+                                />
+                            </FormRowWithInput>
+                        </Grid>
                     </Grid>
                 </div>
             </Collapse>
