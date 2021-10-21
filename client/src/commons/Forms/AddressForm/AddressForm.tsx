@@ -37,7 +37,7 @@ const AddressForm: React.FC<Props> = ({
     const [streetsInCity, setStreetsInCity] = useState<Map<string, Street>>(new Map());
 
     const cityWatcher = methods.watch(cityField.name);
-
+    
     useEffect(() => {
         if (cityWatcher) {
             getStreetByCity(cityWatcher, setStreetsInCity);
@@ -79,7 +79,9 @@ const AddressForm: React.FC<Props> = ({
                                 options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                 getOptionLabel={(option) => option ? option.value?.displayName : option}
                                 value={props.value ? {id: props.value as string, value: cities.get(props.value) as City} : {id: '', value: {id: '', displayName: ''}}}
-                                onChange={(event, selectedCity) => props.onChange(selectedCity ? selectedCity.id : null)}
+                                onChange={(event, selectedCity) => {
+                                    props.onChange(selectedCity ? selectedCity.id : null);
+                                }}
                                 onBlur={onBlur}
                                 renderInput={(params) => 
                                     <TextField
@@ -130,7 +132,7 @@ const AddressForm: React.FC<Props> = ({
                                 }}
                                 value={props.value ? {id: props.value as string, value: streetsInCity.get(props.value) as Street} : {id: '', value: {id: '', displayName: ''}}}
                                 onChange={(event, selectedStreet) => {
-                                    props.onChange(selectedStreet ? selectedStreet.id : '')
+                                    props.onChange(selectedStreet ? selectedStreet.id : '');
                                 }}
                                 onBlur={onBlur}
                                 renderInput={(params) =>
@@ -179,7 +181,7 @@ const AddressForm: React.FC<Props> = ({
                                 testId={houseNumberField.testId || ''}
                                 value={props.value}
                                 label={HOUSE_NUM_LABEL} 
-                                onChange={props.onChange}
+                                onChange={ props.onChange}
                                 onBlur={()=>{
                                     props.onBlur();
                                     onBlur();
@@ -301,7 +303,7 @@ interface Props {
     houseNumberField: FormField;
     floorField?: FormField;
     apartmentField?: FormField;
-    onBlur?:any;
+    onBlur?: any;
 };
 
 export type AddressFormFields = Pick<Props, 'cityField' | 'streetField' | 'houseNumberField'> & Partial<Pick<Props, 'floorField' | 'apartmentField'>>;

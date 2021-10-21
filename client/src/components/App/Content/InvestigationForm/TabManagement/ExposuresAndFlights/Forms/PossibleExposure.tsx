@@ -28,8 +28,8 @@ const PossibleExposure = (props: Props) => {
 
     useEffect(() => {
         if (Boolean(isExposureAdded)) {
-            onExposureAdded(true, false)
-            setIsExposureAdded(undefined)
+            onExposureAdded(true, false);
+            setIsExposureAdded(false);
         }
     }, [isExposureAdded]);
 
@@ -124,8 +124,8 @@ interface Props {
     disableConfirmedExposureAddition: boolean;
     onExposureAdded: (wasConfirmedExposure: boolean, wasAbroad: boolean) => void;
     onExposureDeleted: (index: number) => void;
-    isExposureAdded: boolean | undefined;
-    setIsExposureAdded: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+    isExposureAdded: boolean;
+    setIsExposureAdded: React.Dispatch<React.SetStateAction<boolean>>;
     isViewMode?: boolean;
 };
 
