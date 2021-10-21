@@ -28,7 +28,7 @@ const AddressForm: React.FC<Props> = ({
     floorField, 
     apartmentField,
     houseNumberField,
-    isPersonalInfoTab
+    onChange
 }) => {
     const classes = useStyles();
 
@@ -80,9 +80,7 @@ const AddressForm: React.FC<Props> = ({
                                 value={props.value ? {id: props.value as string, value: cities.get(props.value) as City} : {id: '', value: {id: '', displayName: ''}}}
                                 onChange={(event, selectedCity) => {
                                     props.onChange(selectedCity ? selectedCity.id : null);
-                                    if(isPersonalInfoTab){
-                                        //dispatch(setPersonalInfo(`[${PersonalInfoDataContextFields.ADDRESS}][${PersonalInfoDataContextFields.CITY}]`, selectedCity ? selectedCity.id : null));
-                                    }
+                                    onChange();
                                 }}
                                 renderInput={(params) => 
                                     <TextField
@@ -112,6 +110,7 @@ const AddressForm: React.FC<Props> = ({
                                 value={streetsInCity.get(props.value)?.displayName} 
                                 label={STREET_LABEL} 
                                 InputLabelProps={{ shrink: true }}
+                                onChange={onChange}
                                 disabled 
                             />
                         )}
@@ -132,7 +131,8 @@ const AddressForm: React.FC<Props> = ({
                                 }}
                                 value={props.value ? {id: props.value as string, value: streetsInCity.get(props.value) as Street} : {id: '', value: {id: '', displayName: ''}}}
                                 onChange={(event, selectedStreet) => {
-                                    props.onChange(selectedStreet ? selectedStreet.id : '')
+                                    props.onChange(selectedStreet ? selectedStreet.id : '');
+                                    onChange();
                                 }}
                                 renderInput={(params) =>
                                     <TextField
@@ -180,7 +180,10 @@ const AddressForm: React.FC<Props> = ({
                                 testId={houseNumberField.testId || ''}
                                 value={props.value}
                                 label={HOUSE_NUM_LABEL} 
-                                onChange={props.onChange}
+                                onChange={(val)=>{
+                                    props.onChange(val);
+                                    onChange();
+                                }}
                                 onBlur={props.onBlur}
                                 placeholder={HOUSE_NUM_LABEL}
                             />
@@ -220,7 +223,10 @@ const AddressForm: React.FC<Props> = ({
                                     testId={floorField?.testId || ''}
                                     name={floorFieldNameSplitted ? floorFieldNameSplitted[floorFieldNameSplitted.length - 1] : ''}
                                     value={props.value}
-                                    onChange={props.onChange}
+                                    onChange={(val)=>{
+                                        props.onChange(val);
+                                        onChange();
+                                    }}
                                     onBlur={props.onBlur}
                                     placeholder={FLOOR_LABEL}
                                     label={FLOOR_LABEL}
@@ -263,7 +269,10 @@ const AddressForm: React.FC<Props> = ({
                                     testId={apartmentField?.testId || ''}
                                     name={apartmentFieldNameSplitted ? apartmentFieldNameSplitted[apartmentFieldNameSplitted.length - 1] : ''}
                                     value={props.value}
-                                    onChange={props.onChange}
+                                    onChange={(val)=>{
+                                        props.onChange(val);
+                                        onChange();
+                                    }}
                                     onBlur={props.onBlur}
                                     placeholder={APARTMENT_LABEL}
                                     label={APARTMENT_LABEL}
@@ -292,7 +301,7 @@ interface Props {
     houseNumberField: FormField;
     floorField?: FormField;
     apartmentField?: FormField;
-    isPersonalInfoTab?: boolean;
+    onChange?: any;
 };
 
 export type AddressFormFields = Pick<Props, 'cityField' | 'streetField' | 'houseNumberField'> & Partial<Pick<Props, 'floorField' | 'apartmentField'>>;

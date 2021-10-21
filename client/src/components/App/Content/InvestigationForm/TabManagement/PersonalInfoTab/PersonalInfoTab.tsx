@@ -327,7 +327,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                         <AddressForm
                             {...addressFormFields}
                             disabled={isViewMode}
-                            isPersonalInfoTab={true}
+                            onChange={() => dispatch(setPersonalInfo(PersonalInfoDataContextFields.ADDRESS,  methods.getValues().address))}
                         />
                     </FormRowWithInput>
                     <FormRowWithInput fieldName={OCCUPATION_LABEL} labelLength={1} appendantLabelIcon={occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? <ComplexityIcon tooltipText='עובד במשרד הבריאות/החינוך' /> : undefined}>
