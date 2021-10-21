@@ -65,7 +65,6 @@ const AddressForm: React.FC<Props> = ({
                                 label={CITY_LABEL}
                                 InputLabelProps={{ shrink: true }}
                                 disabled 
-                                onBlur={onBlur}
                             />
                         )}
                     />
@@ -112,7 +111,6 @@ const AddressForm: React.FC<Props> = ({
                                 label={STREET_LABEL} 
                                 InputLabelProps={{ shrink: true }}
                                 disabled 
-                                onBlur={onBlur}
                             />
                         )}
                     />
