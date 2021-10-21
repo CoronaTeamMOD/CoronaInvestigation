@@ -1,9 +1,7 @@
 import * as actionTypes from './personalInfoActionTypes';
 import { ThunkAction } from 'redux-thunk';
-import StoreStateType from '../storeStateType';
 import { PersonalInfoTabState } from 'components/App/Content/InvestigationForm/TabManagement/PersonalInfoTab/PersonalInfoTabInterfaces';
 import { getPersonalInfoData } from 'httpClient/PersonalInfo/personalInfo';
-import { UseFormMethods } from 'react-hook-form';
 
 type ValueOf<T> = T[keyof T];
 
@@ -21,12 +19,11 @@ export const getPersonalInfo = (epidemioligyNumber: number)
                 error: err
             });
         }
-    }
+    };
 
-export const setPersonalInfo = (propertyName: keyof PersonalInfoTabState, value: ValueOf<PersonalInfoTabState>):
-    ThunkAction<void, StoreStateType, unknown, actionTypes.PersonalInfoAction> => (dispatch, getState) => {
-        dispatch({
+export const setPersonalInfo = (propertyName: keyof PersonalInfoTabState, value: ValueOf<PersonalInfoTabState>) => {
+        return{
             type: actionTypes.SET_PERSONAL_INFO,
             payload: { propertyName, value }
-        })
-    }
+        }
+    };
