@@ -164,7 +164,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
             methods.reset(personalInfo);
             methods.trigger();
         }
-    }, [personalInfo]);
+    }, [personalInfo===null]);
 
     useEffect(() => {
         if (occupation === Occupations.DEFENSE_FORCES ||
