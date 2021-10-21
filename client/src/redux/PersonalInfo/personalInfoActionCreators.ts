@@ -7,10 +7,10 @@ import { UseFormMethods } from 'react-hook-form';
 
 type ValueOf<T> = T[keyof T];
 
-export const getPersonalInfo = (epidemioligyNumber: number, reset: UseFormMethods<PersonalInfoTabState>['reset'], trigger: UseFormMethods<PersonalInfoTabState>['trigger'])
+export const getPersonalInfo = (epidemioligyNumber: number)
     : ThunkAction<void, PersonalInfoTabState, unknown, actionTypes.PersonalInfoAction> => async dispatch => {
         try {
-            const personalInfo = await getPersonalInfoData(epidemioligyNumber, reset, trigger);
+            const personalInfo = await getPersonalInfoData(epidemioligyNumber);
             dispatch({
                 type: actionTypes.GET_PERSONAL_INFO,
                 payload: { personalInfo: personalInfo }

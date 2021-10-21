@@ -70,6 +70,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
     const educationGrades = useSelector<StoreStateType, EducationGrade[]>(state => state.educationGrades);
     const birthDate = useSelector<StoreStateType, Date>(state => state.investigation.investigatedPatient.birthDate);
     const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const personalInfo = useSelector<StoreStateType, PersonalInfoTabState>((state) => state.personalInfo);
 
     const [toAddContactField, setToAddContactField] = React.useState<boolean>(false);
 
@@ -159,6 +160,13 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
     }, [epidemiologyNumber]);
 
     useEffect(() => {
+        if (personalInfo) {
+            methods.reset(personalInfo);
+            methods.trigger();
+        }
+    }, [personalInfo]);
+
+    useEffect(() => {
         if (occupation === Occupations.DEFENSE_FORCES ||
             occupation === Occupations.HEALTH_SYSTEM) {
             getSubOccupations(occupation);
@@ -202,7 +210,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
             <FormProvider {...methods}>
                 <form id={`form-${id}`} onSubmit={(event) => {
                     event.preventDefault();
-                    savePersonalData(convertToDBData(), methods.getValues(), id);
+                    savePersonalData(convertToDBData(), personalInfo, id);
                 }}>
                     <FormRowWithInput fieldName={PHONE_LABEL} labelLength={1} className={classes.contactContiner}>
                         <Grid item container xs={3}>
@@ -217,9 +225,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                             value={props.value}
                                             onChange={(newValue: string) =>{ 
                                                 props.onChange(newValue);
-                                                dispatch(setPersonalInfo(PersonalInfoDataContextFields.PHONE_NUMBER, newValue))
                                             }}
-                                            onBlur={props.onBlur}
+                                            onBlur={()=>{
+                                                props.onBlur();
+                                                dispatch(setPersonalInfo(PersonalInfoDataContextFields.PHONE_NUMBER, methods.getValues().phoneNumber));
+                                            }}
                                             placeholder={PHONE_LABEL}
                                             label='טלפון*'
                                             disabled={isViewMode}
@@ -251,9 +261,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                             value={props.value}
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue);
-                                                dispatch(setPersonalInfo(PersonalInfoDataContextFields.CONTACT_INFO, newValue))
                                             }}
-                                            onBlur={props.onBlur}
+                                            onBlur={()=>{
+                                                props.onBlur();
+                                                dispatch(setPersonalInfo(PersonalInfoDataContextFields.CONTACT_INFO, methods.getValues().contactInfo))
+                                            }}
                                             placeholder={'פרטי איש קשר'}
                                             label='פרטי איש קשר'
                                             disabled={isViewMode}
@@ -272,9 +284,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                             value={props.value}
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue);
-                                                dispatch(setPersonalInfo(PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER, newValue))
                                             }}
-                                            onBlur={props.onBlur}
+                                            onBlur={()=>{
+                                                props.onBlur();
+                                                dispatch(setPersonalInfo(PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER, methods.getValues().contactPhoneNumber))
+                                            }}
                                             placeholder={PHONE_LABEL}
                                             label='טלפון'
                                             disabled={isViewMode}
@@ -327,7 +341,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                         <AddressForm
                             {...addressFormFields}
                             disabled={isViewMode}
-                            onChange={() => dispatch(setPersonalInfo(PersonalInfoDataContextFields.ADDRESS,  methods.getValues().address))}
+                            onBlur={() => dispatch(setPersonalInfo(PersonalInfoDataContextFields.ADDRESS,  methods.getValues().address))}
                         />
                     </FormRowWithInput>
                     <FormRowWithInput fieldName={OCCUPATION_LABEL} labelLength={1} appendantLabelIcon={occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? <ComplexityIcon tooltipText='עובד במשרד הבריאות/החינוך' /> : undefined}>
@@ -342,7 +356,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                 options={isOver16 ? occupations : occupations.filter(occupation => under16AllowedOccupations.indexOf(occupation) !== -1)}
                                                 onChange={(event, occupationOption) => {
                                                     props.onChange(occupationOption ? occupationOption : '');
-                                                    dispatch(setPersonalInfo(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, occupationOption ? occupationOption : ''));
+                                                }}
+                                                onBlur={()=>{
+                                                    dispatch(setPersonalInfo(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, methods.getValues().relevantOccupation));
                                                 }}
                                                 disabled={isViewMode}
                                                 value={props.value || ''}
@@ -497,9 +513,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                                 disabled={isViewMode}
                                                                 onChange={newValue => {
                                                                     props.onChange(newValue ? newValue : '');
-                                                                    dispatch(setPersonalInfo(PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER, newValue ? newValue : ''))
                                                                 }}
-                                                                onBlur={props.onBlur}
+                                                                onBlur={()=>{
+                                                                    props.onBlur();
+                                                                    dispatch(setPersonalInfo(PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER, methods.getValues().educationClassNumber))
+                                                                }}
                                                                 label={CLASS_NUMBER}
                                                                 variant='outlined'
                                                                 InputProps={{
@@ -539,9 +557,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                             value={props.value}
                                                             onChange={newValue => {
                                                                 props.onChange(newValue ? newValue : '');
-                                                                dispatch(setPersonalInfo(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, newValue ? newValue : ''))
                                                             }}
-                                                            onBlur={props.onBlur}
+                                                            onBlur={()=>{
+                                                                props.onBlur();
+                                                                dispatch(setPersonalInfo(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, methods.getValues().otherOccupationExtraInfo))
+                                                            }}
                                                             placeholder={subOccupationsPlaceHolderByOccupation}
                                                             label={subOccupationsLabelByOccupation}
                                                         />

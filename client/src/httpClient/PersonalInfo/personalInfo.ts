@@ -2,7 +2,6 @@ import axios from 'axios';
 import { PersonalInfoTabState } from 'components/App/Content/InvestigationForm/TabManagement/PersonalInfoTab/PersonalInfoTabInterfaces';
 import { initDBAddress } from 'models/DBAddress';
 import Occupations from 'models/enums/Occupations';
-import { UseFormMethods } from 'react-hook-form';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { throwError } from 'rxjs';
 import logger from '../../logger/logger';
@@ -10,7 +9,7 @@ import { Severity } from '../../models/Logger';
 
 const personalDetailsLogger = logger.setup('Fetching Personal Details');
 
-export const getPersonalInfoData = async (epidemiologyNumber: number,reset: UseFormMethods<PersonalInfoTabState>['reset'], trigger: UseFormMethods<PersonalInfoTabState>['trigger'])
+export const getPersonalInfoData = async (epidemiologyNumber: number)
 : Promise<any> => {
     try {
         const res = await axios.get('/personalDetails/investigatedPatientPersonalInfoFields?epidemioligyNumber=' + epidemiologyNumber);
@@ -55,9 +54,8 @@ export const getPersonalInfoData = async (epidemiologyNumber: number,reset: UseF
                 educationGrade: investigatedPatient.educationGrade,
                 educationClassNumber: investigatedPatient.educationClassNumber,
             }
-            reset(personalInfo);
-            trigger();
             setIsLoading(false);
+            return personalInfo;
         } else {
             personalDetailsLogger.error(`got errors in server result: ${JSON.stringify(res)}`, Severity.HIGH);
             setIsLoading(false);
