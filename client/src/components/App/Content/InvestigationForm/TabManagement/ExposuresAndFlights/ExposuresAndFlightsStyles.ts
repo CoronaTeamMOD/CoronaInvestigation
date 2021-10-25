@@ -4,6 +4,9 @@ const useStyles = makeStyles({
     subForm: {
         padding: '3vh 1.5vw 3vw 3vh'
     },
+    divider: {
+        margin: '30px 0'
+    },
     additionalInformationForm: {
         '@media screen and (min-width: 1220px)': {
             flip: false

@@ -70,22 +70,6 @@ const InteractedContactAccordion = (props: Props) => {
         return classesList.join(' ');
     };
 
-    const initFormState = ()=>{
-        if (formState.isValid === null) {
-            ContactQuestioningSchema.isValid({ ...interactedContact, identificationType: interactedContact.identificationType?.id }).then(isValid => {
-                dispatch(setContactFormState(interactedContact.id, isValid));
-            })
-        }
-    }
-
-    useEffect(() => {
-        initFormState(); 
-    }, [])
-
-    useEffect(() => {
-        initFormState();
-    }, [formState===null])
-
     useEffect(() => {
         if (watchCurrentStatus) {
             methods.trigger();

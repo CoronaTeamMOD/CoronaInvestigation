@@ -36,10 +36,10 @@ const PossibleExposure = (props: Props) => {
     return (
         <div className={classes.subForm}>
             <FormTitle title='חשיפה אפשרית' />
-            <Grid container justify='flex-start' item alignItems='center' xs={12}>
-                <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
-                    <>
-                        <Grid item xs={2}>
+            <Grid container justify='space-between' xs={12}>
+				<Grid item xs={11}>
+                    <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
+                        <>
                             <Controller
                                 control={control}
                                 name={fieldsNames.wereConfirmedExposures}
@@ -60,22 +60,22 @@ const PossibleExposure = (props: Props) => {
                                     );
                                 }}
                             />
-                        </Grid>
-                        <Controller
-                            control={control}
-                            name={fieldsNames.wereConfirmedExposuresDesc}
-                            render={(props) => {
-                                return (
-                                    <AlphanumericTextField
-                                        {...props}
-                                        label='פירוט'
-                                        disabled={isViewMode}
-                                    />
-                                );
-                            }}
-                        />
-                    </>
-                </FormRowWithInput>
+                            <Controller
+                                control={control}
+                                name={fieldsNames.wereConfirmedExposuresDesc}
+                                render={(props) => {
+                                    return (
+                                        <AlphanumericTextField
+                                            {...props}
+                                            label='פירוט'
+                                            disabled={isViewMode}
+                                        />
+                                    );
+                                }}
+                            />
+                        </>
+                    </FormRowWithInput>
+                </Grid>
             </Grid>
             <Collapse in={watchWasConfirmedExposure} className={classes.additionalInformationForm}>
                 <div className={classes.patientDetailSpace}>
@@ -93,22 +93,25 @@ const PossibleExposure = (props: Props) => {
                                         isViewMode={isViewMode}
                                         exposures={exposures}
                                     />
-                                    <Divider />
+                                    <Divider className={classes.divider}/>
                                 </>
                             )
                     )}
-                    <Grid className={classes.anotherExposureContainer} direction='row'>
-                        <Typography variant='caption' className={classes.anotherExposureTitle}>{addConfirmedExposureButton}</Typography>
-                        <Toggle
-                            className={classes.anotherExposureToggle}
-                            value={isExposureAdded}
-                            disabled={disableConfirmedExposureAddition || isViewMode}
-                            onChange={(e, value) => {
-                                if (value !== null) {
-                                    setIsExposureAdded(value)
-                                }
-                            }}
-                        />
+                    <Grid container justify='space-between' xs={12} className={classes.anotherExposureContainer} direction='row'>
+                        <Grid item xs={11}>
+                            <FormRowWithInput  fieldName={addConfirmedExposureButton}>
+                                <Toggle
+                                    className={classes.anotherExposureToggle}
+                                    value={isExposureAdded}
+                                    disabled={disableConfirmedExposureAddition || isViewMode}
+                                    onChange={(e, value) => {
+                                        if (value !== null) {
+                                            setIsExposureAdded(value)
+                                        }
+                                    }}
+                                />
+                            </FormRowWithInput>
+                        </Grid>
                     </Grid>
                 </div>
             </Collapse>

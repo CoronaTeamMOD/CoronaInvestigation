@@ -1,6 +1,4 @@
 import React from 'react';
-
-import Street from 'models/Street';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import IsolationSource from 'models/IsolationSource';
 
@@ -12,10 +10,7 @@ export interface useClinicalDetailsIncome {
 }
 
 export interface useClinicalDetailsOutcome {
-    fetchClinicalDetails: (
-        reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
-        trigger: (payload?: string | string[]) => Promise<boolean>
-    ) => void;
+    fetchClinicalDetails: () => void;
     saveClinicalDetailsAndDeleteContactEvents: (clinicalDetails: ClinicalDetailsData, id: number) => void;
     isolationSources: IsolationSource[];
 }

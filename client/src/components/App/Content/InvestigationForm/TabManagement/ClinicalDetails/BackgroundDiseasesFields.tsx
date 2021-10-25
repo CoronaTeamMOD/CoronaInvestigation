@@ -10,18 +10,36 @@ import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
+import { useDispatch } from 'react-redux';
+import { setClinicalDetails } from 'redux/ClinicalDetails/ClinicalDetailsActionCreators';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 export const otherBackgroundDiseaseFieldName = 'אחר';
 
 const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, watchBackgroundDiseases, watchDoesHaveBackgroundDiseases, backgroundDiseases, handleBackgroundIllnessCheck, isViewMode } = props;
-    const { control, setValue, errors } = useFormContext();
+    const { classes, backgroundDiseases, handleBackgroundIllnessCheck, clinicalDetails, isViewMode } = props;
+    const { control, setValue, errors, getValues, clearErrors } = useFormContext();
+    const dispatch = useDispatch();
+
+    const setFormValue = (key: keyof ClinicalDetailsData, value: any) => {
+        setValue(key, value);
+        clearErrors(key);
+        dispatch(setClinicalDetails(key, value));
+    }
 
     React.useEffect(() => {
-        if (!watchBackgroundDiseases.includes(otherBackgroundDiseaseFieldName)) {
-            setValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, '');
+        if (clinicalDetails?.doesHaveBackgroundDiseases === false) {
+            setFormValue(ClinicalDetailsFields.BACKGROUND_DESEASSES, []);
+            setFormValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, '');
         }
-    }, [watchBackgroundDiseases])
+    }, [clinicalDetails?.doesHaveBackgroundDiseases]);
+
+    React.useEffect(() => {
+        if (!clinicalDetails?.backgroundDeseases.includes(otherBackgroundDiseaseFieldName)) {
+            setFormValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, '');
+        }
+    }, [clinicalDetails?.backgroundDeseases]);
+
 
     return (
         <>
@@ -37,6 +55,7 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
                                 onChange={(e, value) => {
                                     if (value !== null) {
                                         props.onChange(value)
+                                        dispatch(setClinicalDetails(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES, getValues(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES)))
                                     }
                                 }}
                                 disabled={isViewMode}
@@ -48,7 +67,7 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
                     />
                 </Grid>
             </FormRowWithInput>
-            <Collapse in={watchDoesHaveBackgroundDiseases}>
+            <Collapse in={clinicalDetails?.doesHaveBackgroundDiseases === true}>
                 <FormRowWithInput fieldName='' labelLength={2}>
                     <Grid item xs={7}>
                         <Typography color={errors[ClinicalDetailsFields.BACKGROUND_DESEASSES] ? 'error' : 'initial'} >
@@ -81,7 +100,7 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
                                 )}
                             />
                             <Collapse
-                                in={watchBackgroundDiseases.includes(otherBackgroundDiseaseFieldName)}>
+                                in={clinicalDetails?.backgroundDeseases.includes(otherBackgroundDiseaseFieldName)}>
                                 <Grid item xs={2}>
                                     <Controller
                                         name={ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO}
@@ -92,7 +111,10 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
                                                 name={ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO}
                                                 value={props.value}
                                                 onChange={(newValue: string) => props.onChange(newValue)}
-                                                onBlur={props.onBlur}
+                                                onBlur={() => {
+                                                    props.onBlur()
+                                                    dispatch(setClinicalDetails(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, getValues(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO)));
+                                                }}
                                                 label='* מחלת רקע'
                                                 placeholder='הזן מחלת רקע...'
                                                 className={classes.otherTextField}
@@ -120,7 +142,6 @@ interface Props {
         onChange: (newBackgroundDiseases: string[]) => void,
         selectedBackgroundDiseases: string[]
     ) => void;
-    watchBackgroundDiseases: string[];
-    watchDoesHaveBackgroundDiseases: boolean;
+    clinicalDetails: ClinicalDetailsData | null;
     isViewMode?: boolean;
 };

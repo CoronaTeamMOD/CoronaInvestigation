@@ -41,27 +41,6 @@ const isInIsolationEndDateSchema = (validationDate: Date) => yup.date().when(
     }
 );
 
-const wasHospitilizedStartDateSchema = yup.date().when(
-    ClinicalDetailsFields.WAS_HOPITALIZED, {
-        is: true,
-        then: yup.date().when(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, (hospitalizationStartDate: Date) => {
-            const startOfTomorrowDate = startOfTomorrow();
-            return hospitalizationStartDate < startOfTomorrowDate ?
-                yup.date().max(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_END_DATE), StartDateAfterEndDateText).required(requiredText).typeError(invalidDateText) :
-                yup.date().max(startOfTomorrowDate, futureDateText).required(requiredText).typeError(invalidDateText)
-        }),
-        otherwise: yup.date().nullable()
-    }
-);
-
-const wasHospitilizedEndDateSchema = yup.date().when(
-    ClinicalDetailsFields.WAS_HOPITALIZED, {
-        is: true,
-        then: yup.date().min(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_START_DATE), EndDateBeforeStartDateText).required(requiredText).typeError(invalidDateText),
-        otherwise: yup.date().nullable()
-    }
-);
-
 const symptomsMoreInfoSchema = yup.string().when(
     ClinicalDetailsFields.SYMPTOMS,
     (symptoms: string[], schema: any) => {
@@ -130,10 +109,6 @@ const ClinicalDetailsSchema = (validationDate: Date, Gender: string) => {
                 then: yup.array().of(yup.string()).min(1).required(),
                 otherwise: yup.array().of(yup.string())
             }),
-        [ClinicalDetailsFields.WAS_HOPITALIZED]: yup.boolean().nullable(),
-        [ClinicalDetailsFields.HOSPITAL]: yup.string().nullable(),
-        [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: wasHospitilizedStartDateSchema,
-        [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: wasHospitilizedEndDateSchema,
         [ClinicalDetailsFields.IS_PREGNANT]: Gender === 'נקבה' ? yup.boolean().nullable().required(requiredText) :  yup.boolean().nullable(),
         [ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]: backgroundDiseasesMoreInfoSchema,
     })

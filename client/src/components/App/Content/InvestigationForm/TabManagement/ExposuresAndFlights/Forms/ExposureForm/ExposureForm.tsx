@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { Delete } from '@material-ui/icons';
 import React, { useState, useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { CircularProgress, Collapse, Grid, IconButton, MenuItem, Select } from '@material-ui/core';
+import { CircularProgress, Collapse, Grid, IconButton, MenuItem, Select, Button } from '@material-ui/core';
 
 import Map from 'commons/Map/Map';
 import Toggle from 'commons/Toggle/Toggle';
@@ -24,6 +24,8 @@ import queryByTypes from './SearchCovidPatients/queryByTypes';
 import SearchByPersonalDetails from './SearchCovidPatients/SearchByPersonalDetails';
 import PersonalDetailsQueryParams from 'models/ExposureForm/PersonalDetailsQueryParams';
 import SearchByEpidemiologyNumber from './SearchCovidPatients/SearchByEpidemiologyNumber';
+
+const DELETE_BUTTON_TEXT = 'מחוק חשיפה';
 
 const ExposureForm = (props: Props) => {
 
@@ -97,100 +99,108 @@ const ExposureForm = (props: Props) => {
 
 	return (
 		<Grid className={formClasses.form} container justify='flex-start' item alignItems='center' xs={12}>
-			<FormRowWithInput fieldName='פרטי מאומת ידוע?'>
-			<Grid item xs={4}>
-				<Controller
-					name={`exposures[${index}].${fieldsNames.isExposurePersonKnown}`}
-					control={control}
-					defaultValue={exposureAndFlightsData.isExposurePersonKnown}
-					render={(props) => (
-						<Toggle
-							{...props}
-							value={exposureAndFlightsData.isExposurePersonKnown}
-							onChange={(event, value) => {
-								if (value !== null) {
-									props.onChange(value);
-									handleChangeExposureDataAndFlightsField(index, fieldsNames.isExposurePersonKnown, value)
-								}
-							}}
-							disabled={isViewMode}
-						/>
-					)}
-				/>
-				</Grid>
-			</FormRowWithInput>
-			 <Collapse in={exposures[index].isExposurePersonKnown}>
-				<Grid item container alignItems='center' xs={12} justify='flex-start'>
-					<Grid xs={9}>
-						<Select
-							value={queryBy}
-							variant='outlined'
-							className={classes.filterSelect}
-							onChange={(e) => {
-								if (typeof e.target.value === 'number') {
-									setQueryBy(e.target.value as number);
-								}
-							}}
-							disabled={isViewMode}
-						>
-							<MenuItem value={queryByTypes.BY_PERSONAL_DETAILS}>חיפוש לפי פרטים אישיים</MenuItem>
-							<MenuItem value={queryByTypes.BY_EPIDEMIOLOGY_NUMBER}>חיפוש לפי מספר אפידמיולוגי</MenuItem>
-						</Select>
-					</Grid>
-					<Grid xs={3} />
-					<Grid item container alignItems='center' xs={9} className={classes.searchContainer} >
-						{
-							queryBy === queryByTypes.BY_PERSONAL_DETAILS
-								? <SearchByPersonalDetails
-									getQueryParams={handlePersonalDetailsSearchButton}
-									isViewMode={isViewMode}
-								/>
-								: <SearchByEpidemiologyNumber
-									getQueryParams={handleEpidemiologyNumberSearchButton}
-									isViewMode={isViewMode}
-								/>
-						}
-					</Grid>
-				</Grid>
-				<Grid container justify='space-between' xs={12}>
-					<Grid item xs={11}>
-						<FormRowWithInput fieldName='פרטי החולה:'>
-							<>
-								<Grid item xs={7} className={classes.searchContainer}>
-									<Controller
-										control={control}
-										name={`exposures[${index}].${fieldsNames.exposureSource}`}
-										defaultValue={exposureAndFlightsData.exposureSource}
-										render={(props) => {
-											return (
-												<ExposureSearchTextField
-													fullWidth
-													disabled={true}
-													name={`exposures[${index}].${fieldsNames.exposureSource}`}
-													onChange={(value) => {
-														setExposureSourceSearchString(value);
-														(!value || !value.includes(':')) &&
-															handleChangeExposureDataAndFlightsField(index, fieldsNames.exposureSource, null);
-														props.onChange(null)
-													}}
-													value={exposureSourceSearchString}
-													test-id='exposureSource'
-													isViewMode={isViewMode}
-												/>
-											);
+			<Grid container justify='space-between' xs={12}>
+				<Grid item xs={11}>
+					<FormRowWithInput fieldName='פרטי מאומת ידוע?'>
+						<>
+							<Controller
+								name={`exposures[${index}].${fieldsNames.isExposurePersonKnown}`}
+								control={control}
+								defaultValue={exposureAndFlightsData.isExposurePersonKnown}
+								render={(props) => (
+									<Toggle
+										{...props}
+										value={exposureAndFlightsData.isExposurePersonKnown}
+										onChange={(event, value) => {
+											if (value !== null) {
+												props.onChange(value);
+												handleChangeExposureDataAndFlightsField(index, fieldsNames.isExposurePersonKnown, value)
+											}
 										}}
+										disabled={isViewMode}
 									/>
-								</Grid>
-								<Grid item alignItems='center' justify='flex-start'>
-									<IconButton onClick={onExposureDeleted} disabled={isViewMode}>
-										<Delete />
-									</IconButton>
-								</Grid>
-							</>
-						</FormRowWithInput>
-					</Grid>
+								)}
+							/>
+						</>
+					</FormRowWithInput>
 				</Grid>
-			</Collapse>
+			</Grid>
+			
+			<Grid container justify='space-between' xs={12}>
+				<Grid item xs={11}>
+					<FormRowWithInput fieldName=''>
+					<>
+						<Collapse in={exposures[index].isExposurePersonKnown}>
+							<Grid container xs={12}>
+								<Grid xs={9}>
+									<Select
+										value={queryBy}
+										variant='outlined'
+										className={classes.filterSelect}
+										onChange={(e) => {
+											if (typeof e.target.value === 'number') {
+												setQueryBy(e.target.value as number);
+											}
+										}}
+										disabled={isViewMode}
+									>
+										<MenuItem value={queryByTypes.BY_PERSONAL_DETAILS}>חיפוש לפי פרטים אישיים</MenuItem>
+										<MenuItem value={queryByTypes.BY_EPIDEMIOLOGY_NUMBER}>חיפוש לפי מספר אפידמיולוגי</MenuItem>
+									</Select>
+								</Grid>
+								<Grid xs={3} />
+								<Grid item container alignItems='center' xs={9} className={classes.searchContainer} >
+									{
+										queryBy === queryByTypes.BY_PERSONAL_DETAILS
+											? <SearchByPersonalDetails
+												getQueryParams={handlePersonalDetailsSearchButton}
+												isViewMode={isViewMode}
+											/>
+											: <SearchByEpidemiologyNumber
+												getQueryParams={handleEpidemiologyNumberSearchButton}
+												isViewMode={isViewMode}
+											/>
+									}
+								</Grid>
+							</Grid>
+							<Grid container justify='space-between' xs={12}>
+								<Grid item xs={11}>
+									<FormRowWithInput fieldName='פרטי החולה:'>
+										<>
+											<Grid item xs={7} className={classes.searchContainer}>
+												<Controller
+													control={control}
+													name={`exposures[${index}].${fieldsNames.exposureSource}`}
+													defaultValue={exposureAndFlightsData.exposureSource}
+													render={(props) => {
+														return (
+															<ExposureSearchTextField
+																fullWidth
+																disabled={true}
+																name={`exposures[${index}].${fieldsNames.exposureSource}`}
+																onChange={(value) => {
+																	setExposureSourceSearchString(value);
+																	(!value || !value.includes(':')) &&
+																		handleChangeExposureDataAndFlightsField(index, fieldsNames.exposureSource, null);
+																	props.onChange(null)
+																}}
+																value={exposureSourceSearchString}
+																test-id='exposureSource'
+																isViewMode={isViewMode}
+															/>
+														);
+													}}
+												/>
+											</Grid>
+										</>
+									</FormRowWithInput>
+								</Grid>
+							</Grid>
+						</Collapse>
+					</>
+					</FormRowWithInput>
+				</Grid>
+			</Grid>
 			<Grid item xs={9} className={classes.patientDetailsWrapper}/>
 
 			{(isOptionalPatientsLoading || optionalCovidPatients?.length > 0) && (
@@ -287,7 +297,6 @@ const ExposureForm = (props: Props) => {
 				</Grid>
 			</Grid>)}
 
-
 			<Grid container justify='space-between' xs={12}>
 				<Grid item xs={11} className={classes.placeTypeSpace}>
 					<PlacesTypesAndSubTypes
@@ -304,6 +313,19 @@ const ExposureForm = (props: Props) => {
 						index={index}
 						isExposureForm={true}
 					/>
+				</Grid>
+			</Grid>
+
+			<Grid container justify='space-between' xs={12}>
+				<Grid item xs={11}>
+				<FormRowWithInput fieldName=''>
+				<Button
+					className={classes.button}
+					onClick={onExposureDeleted} 
+					disabled={isViewMode}>
+					{DELETE_BUTTON_TEXT}<Delete />
+				</Button>
+				</FormRowWithInput>
 				</Grid>
 			</Grid>
 		</Grid>
