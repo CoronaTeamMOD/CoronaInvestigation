@@ -27,5 +27,6 @@ interface DBExposure {
     flightOriginCountry?: string,
     flightDestinationCountry?: string,
     wasAbroad?: boolean,
-    wasConfirmedExposure: boolean
+    wasConfirmedExposure: boolean,
+    isExposurePersonKnown: boolean | undefined
 };

@@ -21,6 +21,7 @@ query ExposureByInvestigationId ($investigationId: Int!){
             flightDestinationCountry
             wasAbroad
             wasConfirmedExposure
+            isExposurePersonKnown
             covidPatientByExposureSource {
               birthDate
               addressByAddress {

@@ -18,6 +18,7 @@ enum ExposureFields {
     flightNumber= 'flightNum',
     wereConfirmedExposures= 'wereConfirmedExposures',
     wereFlights= 'wereFlights',
+    isExposurePersonKnown= 'isExposurePersonKnown',
 }
 
 export default ExposureFields;

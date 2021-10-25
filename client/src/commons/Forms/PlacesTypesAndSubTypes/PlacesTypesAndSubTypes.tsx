@@ -117,8 +117,8 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
                                         onBlur={props.onBlur}
                                         value={props.value}
                                         onChange={(event, chosenPlaceType) => {
-                                            onPlaceTypeChange(chosenPlaceType as string)
-                                            props.onChange(chosenPlaceType || '')
+                                            chosenPlaceType = chosenPlaceType === null ? '' : chosenPlaceType
+                                            onPlaceTypeChange(chosenPlaceType ? chosenPlaceType : null)
                                         }}
                                         placeholder={placeTypeDisplayName}
                                         renderInput={(params) =>

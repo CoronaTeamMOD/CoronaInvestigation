@@ -21,7 +21,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.El
 
     const { exposures, wereFlights, wereConfirmedExposures, wasInVacation, wasInEvent } = exposureAndFlightsData;
     const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
-    const [isExposureAdded, setIsExposureAdded] = useState<boolean | undefined>(undefined);
+    const [isExposureAdded, setIsExposureAdded] = useState<boolean>(false);
 
     const ids = exposures.map(exposure => exposure.id);
 

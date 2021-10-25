@@ -21,7 +21,7 @@ export const contactQuestioningPersonal = {
         ),
     [InteractedContactFields.IDENTIFICATION_TYPE]: yup.number().when(
         [InteractedContactFields.CONTACT_STATUS, InteractedContactFields.IDENTIFICATION_NUMBER], (contactStatus: number, identificationNumber: string | null) => {
-            return (contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
+            return (contactStatus === ContactStatusCodes.COMPLETED || contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
             ? yup.number().nullable()
             : identificationNumber == null
                 ? yup.number().nullable() 

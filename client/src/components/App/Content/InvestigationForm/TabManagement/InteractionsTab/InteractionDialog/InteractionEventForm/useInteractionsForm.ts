@@ -99,9 +99,6 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                         return;
                     })
             } else {
-                loadInteractions();
-                loadInvolvedContacts();
-                onDialogClose();
                 return;
             }
         } 
