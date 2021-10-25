@@ -1,6 +1,6 @@
 import { Button, Grid } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 
 import ContactStatus from 'models/ContactStatus';
@@ -14,6 +14,8 @@ import useStyles from './ContactQuestioningStyles';
 import useContactQuestioning from './useContactQuestioning';
 import InteractedContactAccordion from './InteractedContactAccordion';
 import { contactQuestioningService } from 'services/contactQuestioning.service';
+import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
+import { setContactFormState } from 'redux/InteractedContacts/interactedContactsActionCreators';
 
 const SIZE_OF_CONTACTS = 4;
 let loaded = SIZE_OF_CONTACTS;
@@ -29,6 +31,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     const { shouldDisable } = useContactFields();
     const { isInvolvedThroughFamily } = useInvolvedContact();
 
+    const dispatch = useDispatch();
     const interactedContacts = useSelector<StoreStateType, GroupedInteractedContact[]>(state => state.interactedContacts.interactedContacts);
     const {
         onSubmit,
@@ -61,6 +64,20 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
             handleShowMoreContacts();
         }
     }
+
+    const initFormState = () => {
+        interactedContacts.forEach((interactedContact: GroupedInteractedContact) => {
+            ContactQuestioningSchema.isValid({ ...interactedContact, identificationType: interactedContact.identificationType?.id || interactedContact.identificationType }).then(isValid => {
+                dispatch(setContactFormState(interactedContact.id, isValid));
+            })
+        });
+    }
+
+    useEffect(() => {
+        if (interactedContacts && interactedContacts.length > 0) {
+            initFormState();
+        }
+    }, [interactedContacts?.length]);
 
     useEffect(() => {
         loadInteractedContacts();
