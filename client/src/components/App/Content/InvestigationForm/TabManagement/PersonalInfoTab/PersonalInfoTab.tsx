@@ -28,7 +28,7 @@ import usePersonalTabInfo from './usePersonalInfoTab';
 import validationSchema from './PersonalInfoTabValidationSchema';
 import { PersonalInfoTabState } from './PersonalInfoTabInterfaces';
 import InstitutionComponent from './InstitutionComponent/InstitutionComponent';
-import { setPersonalInfo } from 'redux/PersonalInfo/personalInfoActionCreators';
+import { resetPersonalInfo, setPersonalInfo } from 'redux/PersonalInfo/personalInfoActionCreators';
 
 const under16AllowedOccupations = ['מערכת החינוך', 'אחר'];
 
@@ -160,11 +160,15 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
     }, [epidemiologyNumber]);
 
     useEffect(() => {
+        return () => { dispatch(resetPersonalInfo()) };
+    }, []);
+
+    useEffect(() => {
         if (personalInfo) {
             methods.reset(personalInfo);
             methods.trigger();
         }
-    }, [personalInfo===null]);
+    }, [personalInfo]);
 
     useEffect(() => {
         if (occupation === Occupations.DEFENSE_FORCES ||
@@ -223,10 +227,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                             testId='personalDetailsPhone'
                                             name={props.name}
                                             value={props.value}
-                                            onChange={(newValue: string) =>{ 
+                                            onChange={(newValue: string) => {
                                                 props.onChange(newValue);
                                             }}
-                                            onBlur={()=>{
+                                            onBlur={() => {
                                                 props.onBlur();
                                                 dispatch(setPersonalInfo(PersonalInfoDataContextFields.PHONE_NUMBER, methods.getValues().phoneNumber));
                                             }}
@@ -262,7 +266,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue);
                                             }}
-                                            onBlur={()=>{
+                                            onBlur={() => {
                                                 props.onBlur();
                                                 dispatch(setPersonalInfo(PersonalInfoDataContextFields.CONTACT_INFO, methods.getValues().contactInfo))
                                             }}
@@ -285,7 +289,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                             onChange={(newValue: string) => {
                                                 props.onChange(newValue);
                                             }}
-                                            onBlur={()=>{
+                                            onBlur={() => {
                                                 props.onBlur();
                                                 dispatch(setPersonalInfo(PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER, methods.getValues().contactPhoneNumber))
                                             }}
@@ -341,7 +345,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                         <AddressForm
                             {...addressFormFields}
                             disabled={isViewMode}
-                            onBlur={() => dispatch(setPersonalInfo(PersonalInfoDataContextFields.ADDRESS,  methods.getValues().address))}
+                            onBlur={() => dispatch(setPersonalInfo(PersonalInfoDataContextFields.ADDRESS, methods.getValues().address))}
                         />
                     </FormRowWithInput>
                     <FormRowWithInput fieldName={OCCUPATION_LABEL} labelLength={1} appendantLabelIcon={occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? <ComplexityIcon tooltipText='עובד במשרד הבריאות/החינוך' /> : undefined}>
@@ -357,7 +361,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                 onChange={(event, occupationOption) => {
                                                     props.onChange(occupationOption ? occupationOption : '');
                                                 }}
-                                                onBlur={()=>{
+                                                onBlur={() => {
                                                     dispatch(setPersonalInfo(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, methods.getValues().relevantOccupation));
                                                 }}
                                                 disabled={isViewMode}
@@ -514,7 +518,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                                 onChange={newValue => {
                                                                     props.onChange(newValue ? newValue : '');
                                                                 }}
-                                                                onBlur={()=>{
+                                                                onBlur={() => {
                                                                     props.onBlur();
                                                                     dispatch(setPersonalInfo(PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER, methods.getValues().educationClassNumber))
                                                                 }}
@@ -558,7 +562,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                             onChange={newValue => {
                                                                 props.onChange(newValue ? newValue : '');
                                                             }}
-                                                            onBlur={()=>{
+                                                            onBlur={() => {
                                                                 props.onBlur();
                                                                 dispatch(setPersonalInfo(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, methods.getValues().otherOccupationExtraInfo))
                                                             }}

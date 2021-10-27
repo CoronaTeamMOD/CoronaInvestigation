@@ -3,6 +3,7 @@ import { PersonalInfoTabState } from 'components/App/Content/InvestigationForm/T
 export const GET_PERSONAL_INFO = 'GET_PERSONAL_INFO';
 export const GET_PERSONAL_INFO_ERROR = 'GET_PERSONAL_INFO_ERROR';
 export const SET_PERSONAL_INFO = 'SET_PERSONAL_INFO';
+export const RESET_PERSONAL_INFO = 'RESET_PERSONAL_INFO';
 
 type ValueOf<T> = T[keyof T];
 
@@ -26,4 +27,8 @@ interface SetPersonalInfo {
     }
 }
 
-export type PersonalInfoAction = GetPersonalInfo | GetPersonalInfoError | SetPersonalInfo;
+interface ResetPersonalInfo {
+    type: typeof RESET_PERSONAL_INFO
+}
+
+export type PersonalInfoAction = GetPersonalInfo | GetPersonalInfoError | SetPersonalInfo | ResetPersonalInfo;

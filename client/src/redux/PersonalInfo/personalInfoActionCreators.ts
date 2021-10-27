@@ -27,3 +27,9 @@ export const setPersonalInfo = (propertyName: keyof PersonalInfoTabState, value:
             payload: { propertyName, value }
         }
     };
+
+    export const resetPersonalInfo = () => {
+        return{
+            type: actionTypes.RESET_PERSONAL_INFO
+        }
+    };

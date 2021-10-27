@@ -41,6 +41,8 @@ const personalInfoReducer = (state = initialState, action: Actions.PersonalInfoA
             let newState = state;
             (newState[action.payload.propertyName] as ValueOf<PersonalInfoTabState>) = action.payload.value;
             return newState;
+        case Actions.RESET_PERSONAL_INFO:
+            return initialState;
         default: return state;
     }
 }
