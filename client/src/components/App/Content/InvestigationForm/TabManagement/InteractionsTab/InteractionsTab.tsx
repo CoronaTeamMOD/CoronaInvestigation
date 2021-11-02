@@ -81,7 +81,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
         event.preventDefault();
         const uncontactedFamilyMembersArray : InvolvedContact[] = familyMembersStateContext.familyMembers.filter(member => !member.isContactedPerson);
         const areThereUncontactedMembers = uncontactedFamilyMembersArray.length > 0;
-        if (!interactionsTabSettings.allowUncontactedFamily && areThereUncontactedMembers) {
+        if (!interactionsTabSettings.allowUncontactedFamily && areThereUncontactedMembers && !isViewMode) {
             setUncontactedFamilyMembers(uncontactedFamilyMembersArray);
         } else {
             completeTabChange();

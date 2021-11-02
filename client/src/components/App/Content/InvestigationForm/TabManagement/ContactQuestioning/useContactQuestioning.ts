@@ -208,9 +208,13 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const parsedFormData = parseFormBeforeSending(interactedContacts);
-        if (!areThereDuplicateIds(interactedContacts) || isViewMode) {
+        if (!areThereDuplicateIds(interactedContacts) && !isViewMode) {
             saveContactQuestioning(parsedFormData);
-        } else {
+        } 
+        else if(isViewMode){
+            setFormState(epidemiologyNumber, id, true);
+        }
+        else {
             alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
         }
     };

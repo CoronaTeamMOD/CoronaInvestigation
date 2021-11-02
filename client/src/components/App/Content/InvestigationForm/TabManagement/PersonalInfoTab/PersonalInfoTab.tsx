@@ -29,6 +29,7 @@ import validationSchema from './PersonalInfoTabValidationSchema';
 import { PersonalInfoTabState } from './PersonalInfoTabInterfaces';
 import InstitutionComponent from './InstitutionComponent/InstitutionComponent';
 import { resetPersonalInfo, setPersonalInfo } from 'redux/PersonalInfo/personalInfoActionCreators';
+import { setFormState } from 'redux/Form/formActionCreators';
 
 const under16AllowedOccupations = ['מערכת החינוך', 'אחר'];
 
@@ -214,7 +215,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
             <FormProvider {...methods}>
                 <form id={`form-${id}`} onSubmit={(event) => {
                     event.preventDefault();
-                    savePersonalData(convertToDBData(), personalInfo, id);
+                    if(isViewMode){
+                        setFormState(epidemiologyNumber, id, true);
+                    }
+                    else{
+                        savePersonalData(convertToDBData(), personalInfo, id);
+                    }
                 }}>
                     <FormRowWithInput fieldName={PHONE_LABEL} labelLength={1} className={classes.contactContiner}>
                         <Grid item container xs={3}>
