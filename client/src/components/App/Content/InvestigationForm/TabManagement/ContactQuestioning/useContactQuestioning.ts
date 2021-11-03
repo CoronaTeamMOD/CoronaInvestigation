@@ -23,7 +23,6 @@ export const SIZE_OF_CONTACTS = 10;
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {
         id,
-        setAllContactedInteractions,
         allContactedInteractions,
         setFamilyRelationships,
         setContactStatuses
@@ -33,8 +32,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
     const isViewMode = useSelector<StoreStateType, boolean>(state => state.investigation.isViewMode);
     const interactedContacts = useSelector<StoreStateType, GroupedInteractedContact[]>(state => state.interactedContacts.interactedContacts);
-    const dispatch = useDispatch()
-
+    const dispatch = useDispatch();
 
     const { alertError } = useCustomSwal();
 
@@ -99,12 +97,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
         createSaveContactRequest(contactsSavingVariable, 'Saving all contacts')
             .finally(() => {
-                const formStates = store.getState().interactedContacts.formState;
-                const invalidContacts = formStates.filter(obj => obj.isValid === false);
-                if (invalidContacts.length > 0)
-                    setFormState(epidemiologyNumber, id, false);
-                else
-                    setFormState(epidemiologyNumber, id, true);
+                validateForm();
             });
     };
 
@@ -208,9 +201,13 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const parsedFormData = parseFormBeforeSending(interactedContacts);
-        if (!areThereDuplicateIds(interactedContacts) || isViewMode) {
+        if (!areThereDuplicateIds(interactedContacts) && !isViewMode) {
             saveContactQuestioning(parsedFormData);
-        } else {
+        } 
+        else if(isViewMode){
+            validateForm();
+        }
+        else {
             alertError('ישנם תזים כפולים בטופס- לא ניתן לשמור');
         }
     };
@@ -223,6 +220,15 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         ) || [];
 
         return mappedForm;
+    };
+
+    const validateForm = () => {
+        const formStates = store.getState().interactedContacts.formState;
+        const invalidContacts = formStates.filter(obj => obj.isValid === false);
+        if (invalidContacts.length > 0)
+            setFormState(epidemiologyNumber, id, false);
+        else
+            setFormState(epidemiologyNumber, id, true);
     };
 
     /*
