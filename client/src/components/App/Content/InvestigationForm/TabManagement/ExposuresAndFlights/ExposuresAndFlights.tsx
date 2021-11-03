@@ -36,12 +36,14 @@ const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.El
 
     const onSubmit = (e?: React.FormEvent) => {
         e && e.preventDefault();
+        const data = methods.getValues();
         if(isViewMode){
-            setFormState(epidemiologyNumber, id, true)
+            ExposureSchema(validationDate).isValid(data).then(valid => {
+                setFormState(epidemiologyNumber, id, valid)
+            });
         }
         else{
             methods.trigger();
-            const data = methods.getValues();
             saveExposure(data, ids);
         }
     };

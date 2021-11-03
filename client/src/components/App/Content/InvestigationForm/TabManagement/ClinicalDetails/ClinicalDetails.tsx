@@ -78,10 +78,14 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
 
     const saveForm = (e: any) => {
         e.preventDefault();
-        if (clinicalDetails && !isViewMode)
+        if (clinicalDetails && !isViewMode){
             saveClinicalDetailsAndDeleteContactEvents(clinicalDetails, id);
-        else
-            setFormState(epidemiologyNumber, id, true);
+        }
+        else{
+            ClinicalDetailsSchema(validationDate, 'gender').isValid(clinicalDetails).then(valid => {
+                setFormState(epidemiologyNumber, id, valid);
+            });
+        }
     }
 
 
