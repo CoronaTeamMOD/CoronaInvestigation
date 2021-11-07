@@ -30,6 +30,9 @@ const useStyles = makeStyles({
         fontSize: '1rem',
         marginLeft: '30px'
     },
+    abroad: {
+        color:'#2c97b9'
+    },
     informationBar: {
         display: 'flex',
         alignItems: 'center',

@@ -26,6 +26,8 @@ import isInInvestigationReducer from './IsInInvestigations/isInInvestigationRedu
 import identificationTypesReducer from './IdentificationTypes/identificationTypesReducer';
 import groupedInvestigationReducer from './GroupedInvestigations/GroupedInvestigationsReducer';
 import interactedContactsReducer from './InteractedContacts/interactedContactsReducer';
+import ClinicalDetailsReducer from './ClinicalDetails/ClinicalDetailsReducer';
+import personalInfoReducer from './PersonalInfo/personalInfoReducer';
 
 export default combineReducers<StoreStateType>({
      occupations: occupationsReducer,
@@ -52,5 +54,7 @@ export default combineReducers<StoreStateType>({
      greenPass: greenPassReducer,
      identificationTypes: identificationTypesReducer,
      airlines: airlineReducer,
-     interactedContacts: interactedContactsReducer
+     interactedContacts: interactedContactsReducer,
+     clinicalDetails: ClinicalDetailsReducer,
+     personalInfo: personalInfoReducer
 }) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;

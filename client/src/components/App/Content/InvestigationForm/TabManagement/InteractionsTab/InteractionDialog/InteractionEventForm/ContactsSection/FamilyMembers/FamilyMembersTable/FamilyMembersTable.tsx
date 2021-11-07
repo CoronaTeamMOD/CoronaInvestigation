@@ -45,7 +45,7 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
                             {
                                 FamilyTableHeadersWithCheckbox.map(cellName => {
                                     return (
-                                        <TableCell>{cellName}</TableCell>
+                                        <TableCell key={cellName}>{cellName}</TableCell>
                                     )
                                 })
                             }
@@ -55,7 +55,7 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
                         {
                             familyMembers.map((familyMember: InvolvedContact) => (
                                 <>
-                                    <TableRow className={getRowClass(familyMember)}>
+                                    <TableRow key={familyMember.id} className={getRowClass(familyMember)}>
                                         {
                                             <Checkbox
                                                 disabled={isRowDisabled(familyMember.identificationNumber)}
@@ -66,7 +66,7 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
                                         }
                                         {
                                             Object.keys(FamilyContactsTableHeaders).map(cellName => (
-                                                <TableCell className={classes.cell}>{getTableCell(convertToIndexedRow(familyMember), cellName)}
+                                                <TableCell key={cellName} className={classes.cell}>{getTableCell(convertToIndexedRow(familyMember), cellName)}
                                                     {
                                                         cellName === cityCellName && isHouseMember(familyMember.isolationAddress) &&
                                                         <Tooltip title={houseMember}>

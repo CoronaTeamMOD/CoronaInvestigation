@@ -114,3 +114,10 @@ export const setIsViewMode = (isViewMode: boolean) => {
         payload: { isViewMode }
     })
 };
+
+export const setIsContactInvestigationVerifiedAbroad = (isContactInvestigationVerifiedAbroad: boolean) => {
+    store.dispatch({
+        type: actionTypes.SET_IS_CONTACT_INVESTIGATION_VERIFIED_ABROAD,
+        payload: { isContactInvestigationVerifiedAbroad }
+    })
+};

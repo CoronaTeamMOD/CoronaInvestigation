@@ -13,6 +13,7 @@ interface InvestigatedPatientStaticInfo {
     vaccinationEffectiveFrom: string | null;
     isSuspicionOfMutation: boolean;
     mutationName: string | null;
+    contactInvestigationVerifiedAbroad: boolean;
 };
 
 export default InvestigatedPatientStaticInfo;

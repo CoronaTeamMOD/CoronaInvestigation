@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers';
 import React, { useEffect, useState, useContext } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { Grid, Typography, Paper, TextField, Select, MenuItem, Button } from '@material-ui/core';
+import { Grid, Typography, Paper, TextField, Select, MenuItem, Button, IconButton } from '@material-ui/core';
 
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
@@ -30,6 +30,7 @@ import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 import ValidationStatusSchema from './Schema/ValidationStatusSchema';
 import CommentInput from './InvestigationMenu/CommentDialog/CommentInput';
 import InvestigationStatusInfo from './InvestigationStatusInfo/InvestigationStatusInfo';
+import { FlightLand } from '@material-ui/icons';
 
 const investigationstableURL = '/landing';
 const openInvestigationForEditText = 'פתיחה מחודשת';
@@ -63,7 +64,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
     const { comment, setComment } = useContext(commentContext);
     const [commentInput, setCommentInput] = React.useState<string | null>('');
-
+    const isContactInvestigationVerifiedAbroad= useSelector<StoreStateType, boolean>(state => state.investigation.contactInvestigationVerifiedAbroad);
     const moveToTheInvestigationForm = (epidemiologyNumber : number) => {
         setLastOpenedEpidemiologyNum(epidemiologyNumber);
         window.location.pathname = investigationstableURL;
@@ -169,8 +170,17 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 phoneNumber={primaryPhone}
                             />
                             <Typography className={classes.investigationTitle}>
-                                {`מספר אפדימיולוגי: ${epedemioligyNumber}`}
+                                {`מספר אפידמיולוגי: ${epedemioligyNumber}`}
                             </Typography>
+                            {isContactInvestigationVerifiedAbroad && 
+                            <>
+                            <Typography className={`${classes.investigationTitle} ${classes.abroad}`}>מגע לחקירת מאומת מחו"ל</Typography> 
+                            <IconButton color='primary' disabled>
+                                <FlightLand/>
+                            </IconButton>
+                            </>
+                            }
+                            
                         </div>
                         <div>
                             {shouldReopenInvestigation && <span className={classes.openButton}>

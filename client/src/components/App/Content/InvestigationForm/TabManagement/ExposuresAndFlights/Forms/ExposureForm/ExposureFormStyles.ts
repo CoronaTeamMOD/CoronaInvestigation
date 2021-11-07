@@ -13,6 +13,14 @@ const useStyles = makeStyles({
         display: 'flex',
         justifyContent: 'flex-end'
     },
+    button: {
+        width: '8vw',
+        border: 'rgba(0, 0, 0, 0.26) 1px solid',
+        height: '100%',
+        fontWeight: 400,
+        borderRadius: '20px',
+        minWidth: '100px',
+    },
     loadingSpinner: {
         margin: '1vh 48%'
     },

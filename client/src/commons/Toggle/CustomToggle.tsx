@@ -21,6 +21,7 @@ const CustomToggle: React.FC<Props> = (props: Props): JSX.Element => {
             {options.map((option) => { 
                 return(
                 <ToggleButton 
+                    key={option?.id}
                     className={classes.trippleToggle} 
                     disabled={disabled}
                     style={value === option?.id ? activeButtonStyle : {}}

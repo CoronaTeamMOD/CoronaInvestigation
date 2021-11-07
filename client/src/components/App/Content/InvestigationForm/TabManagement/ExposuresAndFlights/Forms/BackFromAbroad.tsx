@@ -29,29 +29,29 @@ export const BackFromAbroad = (props: Props) => {
     return (
         <div className={classes.subForm}>
             <FormTitle title='חזרה מחו״ל' />
-            <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?' appendantLabelIcon={wereFlights ? <ComplexityIcon tooltipText='חקירה מורכבת' /> : undefined}>
-                <Grid item xs={4}>
-                    <Controller
-                        control={control}
-                        name={fieldsNames.wereFlights}
-                        defaultValue={wereFlights}
-                        render={(props) => {
-                            return (
-                                <Toggle
-                                    {...props}
-                                    onChange={(event, value) => {
-                                        if (value !== null) {
-                                            props.onChange(value);
-                                            onExposuresStatusChange(fieldsNames.wereFlights, value);
-                                        }
-                                    }}
-                                    disabled={isViewMode}
-                                />
-                            );
-                        }}
-                    />
-                </Grid>
-            </FormRowWithInput>
+            <Grid item xs={11}>
+                <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?' appendantLabelIcon={wereFlights ? <ComplexityIcon tooltipText='חקירה מורכבת' /> : undefined}>
+                        <Controller
+                            control={control}
+                            name={fieldsNames.wereFlights}
+                            defaultValue={wereFlights}
+                            render={(props) => {
+                                return (
+                                    <Toggle
+                                        {...props}
+                                        onChange={(event, value) => {
+                                            if (value !== null) {
+                                                props.onChange(value);
+                                                onExposuresStatusChange(fieldsNames.wereFlights, value);
+                                            }
+                                        }}
+                                        disabled={isViewMode}
+                                    />
+                                );
+                            }}
+                        />
+                </FormRowWithInput>
+            </Grid>
 
             <Collapse in={watchWereFlights} className={classes.additionalInformationForm}>
                 <div>

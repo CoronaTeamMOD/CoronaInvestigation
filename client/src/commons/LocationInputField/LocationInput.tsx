@@ -31,7 +31,7 @@ const noOptionsMessage = 'הקלידו מיקום תיקני לחיפוש...';
 
 
 const LocationInput = (props: LocationInputProps) => {
-    const { name, selectedAddress,  setSelectedAddress } = props;
+    const { name, selectedAddress,  setSelectedAddress, label, error } = props;
     const { control } = useFormContext();
     const {autoCompletePlacesFromApi, parseAddress} = useGoogleApiAutocomplete();
     const {parseLocation} = useDBParser();
@@ -85,6 +85,8 @@ const LocationInput = (props: LocationInputProps) => {
                     renderOption={LocationOptionItem}
                     className={classes.longAutoComplete}
                     noOptionsMessage={noOptionsMessage}
+                    label={label}
+                    error={error}
                 />
             )}
         />
@@ -94,6 +96,8 @@ const LocationInput = (props: LocationInputProps) => {
 interface LocationInputProps {
     name: string;
     selectedAddress: GoogleApiPlace | null;
+    label: string | undefined;
+    error: boolean | undefined;
     setSelectedAddress: (newValue: GoogleApiPlace | null ) => void;
 };
 

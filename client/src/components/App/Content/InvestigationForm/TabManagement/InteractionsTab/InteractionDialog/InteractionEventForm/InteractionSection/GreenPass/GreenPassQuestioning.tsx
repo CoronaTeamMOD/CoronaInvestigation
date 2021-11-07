@@ -26,7 +26,7 @@ const GreenPassQuestioning = (props :Props) => {
             <Grid container>
                 { greenPassQuestions.slice(0, -2).map((greenPassQuestion, index) => {
                     return (
-                        <FormInput fieldName={greenPassQuestion.displayName} className={classes.field} isQuestion={true}>
+                        <FormInput key ={greenPassQuestion.id} fieldName={greenPassQuestion.displayName} className={classes.field} isQuestion={true}>
                             <Controller
                                 name={`${InteractionEventDialogFields.IS_GREEN_PASS}-${greenPassQuestion.id}`}
                                 control={control}
@@ -51,7 +51,7 @@ const GreenPassQuestioning = (props :Props) => {
             <Grid container>
                 { greenPassQuestions.slice(-2).map((finalQuestion) => {
                     return (
-                        <FormInput fieldName={finalQuestion.displayName} className={classes.field} isQuestion={true}>
+                        <FormInput key={finalQuestion.id} fieldName={finalQuestion.displayName} className={classes.field} isQuestion={true}>
                             <Controller
                                 name={`${InteractionEventDialogFields.IS_GREEN_PASS}-${finalQuestion.id}`}
                                 control={control}

@@ -33,7 +33,8 @@ const initialState: InvestigationRedux = {
     trackingRecommendation: {
         reason: null,
     },
-    isViewMode: false
+    isViewMode: false,
+    contactInvestigationVerifiedAbroad: false
 }
 
 const investigationReducer = (state = initialState, action: Actions.InvestigationAction): InvestigationRedux => {
@@ -66,6 +67,7 @@ const investigationReducer = (state = initialState, action: Actions.Investigatio
         case Actions.SET_BIRTH_DATE: return { ...state, investigatedPatient: { ...state.investigatedPatient, birthDate: action.payload.birthDate } }
         case Actions.RESET_STATE: return initialState
         case Actions.SET_INVESTIGATION_VIEW_MODE: return { ...state, isViewMode: action.payload.isViewMode }
+        case Actions.SET_IS_CONTACT_INVESTIGATION_VERIFIED_ABROAD: return { ...state, contactInvestigationVerifiedAbroad: action.payload.isContactInvestigationVerifiedAbroad }
         default: return state;
     }
 }
