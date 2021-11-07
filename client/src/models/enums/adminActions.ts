@@ -12,6 +12,10 @@ const adminActions: AdminAction[] = [
         {
             id: 2, 
             displayName: 'הודעת אדמין'
+        },
+        {
+            id: 3, 
+            displayName: 'סנכרון ערים ורחובות'
         }
     ]
 
