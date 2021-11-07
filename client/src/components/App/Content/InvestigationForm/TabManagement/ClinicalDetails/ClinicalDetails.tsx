@@ -22,6 +22,7 @@ import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields/Symptoms
 import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
 import { resetClinicalDetails, setClinicalDetails } from 'redux/ClinicalDetails/ClinicalDetailsActionCreators';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { setFormState } from 'redux/Form/formActionCreators';
 
 const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element => {
     const classes = useStyles();
@@ -30,6 +31,7 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
     const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
     const patientGender = useSelector<StoreStateType, string>(state => state.gender); 
     const clinicalDetails = useSelector<StoreStateType,ClinicalDetailsData | null>(state=>state.clinicalDetails.clinicalDetails);
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const clinicalDetailsIsNull = clinicalDetails===null;
 
@@ -76,8 +78,14 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
 
     const saveForm = (e: any) => {
         e.preventDefault();
-        if (clinicalDetails)
-         saveClinicalDetailsAndDeleteContactEvents(clinicalDetails, id);
+        if (clinicalDetails && !isViewMode){
+            saveClinicalDetailsAndDeleteContactEvents(clinicalDetails, id);
+        }
+        else if(isViewMode){
+            ClinicalDetailsSchema(validationDate, 'gender').isValid(clinicalDetails).then(valid => {
+                setFormState(epidemiologyNumber, id, valid);
+            });
+        }
     }
 
 

@@ -19,6 +19,7 @@ export const SET_BIRTH_DATE = 'SET_BIRTH_DATE';
 export const RESET_STATE = 'RESET_STATE';
 export const SET_VIEW_MODE_CLICKED = 'SET_INVESTIGATION_VIEW_MODE_CLICKED';
 export const SET_INVESTIGATION_VIEW_MODE = 'SET_INVESTIGATION_VIEW_MODE';
+export const SET_IS_CONTACT_INVESTIGATION_VERIFIED_ABROAD = 'SET_IS_CONTACT_INVESTIGATION_VERIFIED_ABROAD';
 
 interface SetEpidemiologyNum {
     type: typeof SET_EPIDEMIOLOGY_NUM,
@@ -104,6 +105,11 @@ interface SetInvestigationViewMode {
     payload: { isViewMode: boolean }
 }
 
+interface SetIsContactInvestigationVerifiedAbroad {
+    type: typeof SET_IS_CONTACT_INVESTIGATION_VERIFIED_ABROAD,
+    payload: { isContactInvestigationVerifiedAbroad: boolean }
+}
+
 export type InvestigationAction = SetEpidemiologyNum | SetComplexReasonsId | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId
     | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetEndTime
-    | SetCreator | SetDatesToInvestigateParams | ResetStateParams | SetTrackingRecommendation | SetBirthDate  | SetInvestigationViewMode;
+    | SetCreator | SetDatesToInvestigateParams | ResetStateParams | SetTrackingRecommendation | SetBirthDate | SetInvestigationViewMode | SetIsContactInvestigationVerifiedAbroad;
