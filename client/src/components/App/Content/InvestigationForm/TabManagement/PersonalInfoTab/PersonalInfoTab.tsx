@@ -169,6 +169,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
         if (personalInfo) {
             methods.reset(personalInfo);
             methods.trigger();
+            setTimeout(()=>{
+                methods.trigger(PersonalInfoDataContextFields.PHONE_NUMBER);
+            },500);
         }
     }, [personalInfo]);
 
