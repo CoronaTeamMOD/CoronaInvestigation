@@ -8,6 +8,7 @@ import useStyles from './adminActionStyles';
 import useAdminAction from './useAdminAction';
 import AdminMessages from './adminMessages/adminMessages';
 import AdminDBAction from './adminDBAction/adminDBAction';
+import AdminSynchronizationCitiesStreets from './adminSynchronizationCitiesStreets/adminSynchronizationCitiesStreets';
 
 const adminActionTitle = 'פעולות אדמין';
 
@@ -42,6 +43,10 @@ const AdminActions: React.FC<Props> = (props: Props): JSX.Element => {
                     <AdminMessages 
                         investigationInfoFilter={props.investigationInfoFilter}
                     />
+                </Collapse>
+
+                <Collapse in={selectedAdminAction.id === adminActions[3].id} unmountOnExit>
+                    <AdminSynchronizationCitiesStreets />
                 </Collapse>
 
             </CardContent>
