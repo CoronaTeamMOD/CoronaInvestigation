@@ -2,15 +2,13 @@ import axios from 'axios';
 import { Router, Request, Response } from 'express';
 
 import { Severity } from '../../Models/Logger/types';
-import UseCache, { setToCache } from '../../middlewares/UseCache';
-import logger, { invalidAPIResponseLog, launchingAPIRequestLog, validAPIResponseLog, } from '../../Logger/Logger';
+import logger, { invalidAPIResponseLog, launchingAPIRequestLog } from '../../Logger/Logger';
 
 const rulerRoute = Router();
 const rulerApiUrl = process.env.RULER_URL;
 
 const errorStatusCode = 500;
 
-// rulerRoute.post('/rulerapi/', UseCache, (req: Request, res: Response) => {
 rulerRoute.post('/rulerapi/', (req: Request, res: Response) => {
     const parameters = req.body;
 
@@ -23,7 +21,6 @@ rulerRoute.post('/rulerapi/', (req: Request, res: Response) => {
     axios.post(rulerApiUrl, parameters)
         .then((result) => {
             rulerLogger.info(launchingAPIRequestLog(result.data), Severity.LOW);
-            // setToCache(req.originalUrl, result.result);
             res.send(result.data);
         }
         ).catch((err: any) => {
