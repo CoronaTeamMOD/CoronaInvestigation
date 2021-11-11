@@ -47,7 +47,7 @@ synchronizationRoute.post('/cities/', (req: Request, res: Response) => {
                     addCityLogger.error(invalidDBResponseLog(error), Severity.HIGH);
                 });
             });
-            res.send(result.data);
+            res.send(result);
         }).catch((err: any) => {
             const tempResult = [
                 {
@@ -140,7 +140,7 @@ synchronizationRoute.post('/streets/', (req: Request, res: Response) => {
             streetsSynchronizationLogger.info(launchingAPIRequestLog(result.data), Severity.LOW);
             const streets = parseStreets(result)
             console.log('%%%%           ',streets)
-            res.send(result.data.result);
+            res.send(result);
         }).catch((err: any) => {
             const tempResult = [
                 {
