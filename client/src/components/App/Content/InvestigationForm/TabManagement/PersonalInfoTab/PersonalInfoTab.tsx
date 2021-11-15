@@ -169,6 +169,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
         if (personalInfo) {
             methods.reset(personalInfo);
             methods.trigger();
+            setTimeout(()=>{
+                methods.trigger(PersonalInfoDataContextFields.PHONE_NUMBER);
+            },500);
         }
     }, [personalInfo]);
 
@@ -450,7 +453,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                 name={PersonalInfoDataContextFields.ROLE}
                                                 render={(props) => (
                                                     <Autocomplete
-                                                        options={investigatedPatientRoles}
+                                                        options={
+                                                            occupation === Occupations.EDUCATION_SYSTEM? investigatedPatientRoles.filter(x=>[1,2,3,4].includes(x.id)):
+                                                            investigatedPatientRoles.filter(x=>[5,6].includes(x.id))
+                                                        }
                                                         getOptionLabel={(option) => option.displayName}
                                                         getOptionSelected={(option) => option.id === props.value}
                                                         disabled={isViewMode}
