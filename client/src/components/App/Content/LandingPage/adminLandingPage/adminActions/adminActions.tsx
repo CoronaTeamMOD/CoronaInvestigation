@@ -45,9 +45,9 @@ const AdminActions: React.FC<Props> = (props: Props): JSX.Element => {
                     />
                 </Collapse>
 
-                {/* <Collapse in={selectedAdminAction.id === adminActions[3].id} unmountOnExit>
+                <Collapse in={selectedAdminAction.id === adminActions[3].id} unmountOnExit>
                     <AdminSynchronizationCitiesStreets />
-                </Collapse> */}
+                </Collapse>
 
             </CardContent>
         </Card>
