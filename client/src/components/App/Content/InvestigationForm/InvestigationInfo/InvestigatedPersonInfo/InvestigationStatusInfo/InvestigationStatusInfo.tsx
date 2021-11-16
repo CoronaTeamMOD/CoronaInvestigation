@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import React, { ChangeEvent, useEffect, useMemo } from 'react';
 import { Collapse, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 
@@ -14,10 +14,16 @@ import { transferredSubStatus } from 'components/App/Content/LandingPage/Investi
 
 import { inProcess } from '../InvestigatedPersonInfo';
 import useStyles from './InvestigationStatusInfoStyles';
+import KeyValuePair from 'models/KeyValuePair';
+import { BotInvestigationInfo } from 'models/InvestigationInfo';
+import ChatStatusCode from 'models/enums/ChatStatusCodes';
+import { setInvestigatorReferenceStatus } from 'redux/BotInvestigationInfo/botInvestigationInfoActionCreator';
+
 
 const statusLabel = 'סטטוס';
 const subStatusLabel = 'סיבה';
 const statusReasonLabel = 'פירוט';
+const investigatorReferenceStatusLabel ='סטטוס טיפול בחקירת בוט';
 
 const InvestigationStatusInfo = (props: any) => {
 
@@ -25,12 +31,15 @@ const InvestigationStatusInfo = (props: any) => {
     const classes = useStyles();
 
     const { wasInvestigationReopend } = useStatusUtils();
-
+    const dispatch = useDispatch();
+    
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     const statuses = useSelector<StoreStateType, InvestigationMainStatus[]>(state => state.statuses);
     const subStatuses = useSelector<StoreStateType, SubStatus[]>(state => state.subStatuses);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
-
+    const investigatorReferenceStatuses = useSelector<StoreStateType,KeyValuePair[]>(state=>state.investigatorReferenceStatuses);
+    const botInvestigationInfo = useSelector<StoreStateType, BotInvestigationInfo |null>(state=>state.botInvestigationInfo.botInvestigationInfo);
+   
     useEffect(() => {
         if (investigationStatus.subStatus !== transferredSubStatus) {
             validateStatusReason(investigationStatus.statusReason)
@@ -104,6 +113,48 @@ const InvestigationStatusInfo = (props: any) => {
                                     </Select>
                                 </FormControl>
                             </Grid>
+                            {
+                                investigationStatus.mainStatus === InvestigationMainStatusCodes.DONE &&
+                                botInvestigationInfo?.chatStatus.id== ChatStatusCode.HUMAN_INVESTIGATION_REQUEST &&
+                                <Grid item className={classes.statusSelectGrid}>
+                                <FormControl variant='outlined' className={classes.subStatusSelect}>
+                                    <InputLabel id='sub-status-label'>{investigatorReferenceStatusLabel}</InputLabel>
+                                    <Select
+                                        MenuProps={{
+                                            anchorOrigin: {
+                                                vertical: 'bottom',
+                                                horizontal: 'left'
+                                            },
+                                            transformOrigin: {
+                                                vertical: 'top',
+                                                horizontal: 'left'
+                                            },
+                                            getContentAnchorEl: null
+                                        }}
+                                        label={investigatorReferenceStatusLabel}
+                                        disabled={isViewMode}
+                                        value={botInvestigationInfo.investigatorReferenceStatus.id}
+                                        onChange={(event: any) => {
+                                            const id = event.target.value as number;
+                                            let investigatorReferenceStatus = investigatorReferenceStatuses.find(status=>status.id==id)
+                                            if (investigatorReferenceStatus){
+                                                dispatch(setInvestigatorReferenceStatus(investigatorReferenceStatus));
+                                            }
+                                        }}
+                                    >
+                                        {
+                                            investigatorReferenceStatuses.map((status: KeyValuePair) => (
+                                                <MenuItem
+                                                    key={status.id}
+                                                    value={status.id}>
+                                                    {status.displayName}
+                                                </MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            }
                             <Collapse in={investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE ||
                                 investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ||
                                 investigationStatus.mainStatus === InvestigationMainStatusCodes.NOT_INVESTIGATED}>

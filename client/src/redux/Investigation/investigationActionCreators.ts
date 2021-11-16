@@ -121,3 +121,10 @@ export const setIsContactInvestigationVerifiedAbroad = (isContactInvestigationVe
         payload: { isContactInvestigationVerifiedAbroad }
     })
 };
+
+export const setInvestigationStaticFieldChange = (investigationStaticFieldChange: boolean) => {
+    return {
+        type: actionTypes.SET_INVESTIGATION_STATIC_FIELD_CHANGE,
+        payload: { investigationStaticFieldChange }
+    };
+}
