@@ -116,20 +116,6 @@ stages:
       condition: eq(variables.isTest,true)
       displayName: 'npm build load testing client'
 
-    # pushing test client to azure client registry
-    - task: Docker@2
-      condition: eq(variables.isTest,true)
-      continueOnError: 'false'
-      displayName: Push test client image to container registry
-      inputs:
-        command: buildAndPush
-        dockerfile: '**/client/Dockerfile'
-        repository: '$(arcName)'
-        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
-        containerRegistry: '$(AzureContainerRegistry)'
-        tags: |
-          client-test
-
     # pushing test client to MOH client registry
     - task: Docker@2
       condition: eq(variables.isTest,true)
