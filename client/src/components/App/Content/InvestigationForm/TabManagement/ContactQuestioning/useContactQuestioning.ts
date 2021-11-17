@@ -11,7 +11,7 @@ import { getInteractedContacts } from 'redux/InteractedContacts/interactedContac
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import GroupedInteractedContact, { GroupedInteractedContactEvent } from 'models/ContactQuestioning/GroupedInteractedContact';
-import { updateInteractedContacts } from 'httpClient/InteractedContacts/interactedContacts';
+import { updateInteractedContacts } from 'httpClient/interactedContacts';
 
 import {
     useContactQuestioningOutcome,
