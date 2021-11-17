@@ -31,6 +31,7 @@ import InstitutionComponent from './InstitutionComponent/InstitutionComponent';
 import { resetPersonalInfo, setPersonalInfo } from 'redux/PersonalInfo/personalInfoActionCreators';
 import { setFormState } from 'redux/Form/formActionCreators';
 import personalInfoTabValidationSchema from './PersonalInfoTabValidationSchema';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 const under16AllowedOccupations = ['מערכת החינוך', 'אחר'];
 
@@ -167,8 +168,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
 
     useEffect(() => {
         if (personalInfo) {
-            methods.reset(personalInfo);
+            setIsLoading(true);
+            for (const [key, value] of Object.entries(personalInfo)) {
+                methods.setValue(key, value);
+            }
             methods.trigger();
+            setIsLoading(false);
         }
     }, [personalInfo]);
 
@@ -216,12 +221,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
             <FormProvider {...methods}>
                 <form id={`form-${id}`} onSubmit={(event) => {
                     event.preventDefault();
-                    if(isViewMode){
+                    if (isViewMode) {
                         personalInfoTabValidationSchema.isValid(personalInfo).then(valid => {
                             setFormState(epidemiologyNumber, id, valid);
                         })
                     }
-                    else{
+                    else {
                         savePersonalData(convertToDBData(), personalInfo, id);
                     }
                 }}>
