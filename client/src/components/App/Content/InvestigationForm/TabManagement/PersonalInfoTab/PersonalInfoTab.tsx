@@ -31,6 +31,7 @@ import InstitutionComponent from './InstitutionComponent/InstitutionComponent';
 import { resetPersonalInfo, setPersonalInfo } from 'redux/PersonalInfo/personalInfoActionCreators';
 import { setFormState } from 'redux/Form/formActionCreators';
 import personalInfoTabValidationSchema from './PersonalInfoTabValidationSchema';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 const under16AllowedOccupations = ['מערכת החינוך', 'אחר'];
 
@@ -167,11 +168,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
 
     useEffect(() => {
         if (personalInfo) {
-            methods.reset(personalInfo);
+            setIsLoading(true);
+            for (const [key, value] of Object.entries(personalInfo)) {
+                methods.setValue(key, value);
+            }
             methods.trigger();
-            setTimeout(()=>{
-                methods.trigger(PersonalInfoDataContextFields.PHONE_NUMBER);
-            },500);
+            setIsLoading(false);
         }
     }, [personalInfo]);
 
@@ -219,12 +221,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
             <FormProvider {...methods}>
                 <form id={`form-${id}`} onSubmit={(event) => {
                     event.preventDefault();
-                    if(isViewMode){
+                    if (isViewMode) {
                         personalInfoTabValidationSchema.isValid(personalInfo).then(valid => {
                             setFormState(epidemiologyNumber, id, valid);
                         })
                     }
-                    else{
+                    else {
                         savePersonalData(convertToDBData(), personalInfo, id);
                     }
                 }}>
@@ -453,10 +455,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                 name={PersonalInfoDataContextFields.ROLE}
                                                 render={(props) => (
                                                     <Autocomplete
-                                                        options={
-                                                            occupation === Occupations.EDUCATION_SYSTEM? investigatedPatientRoles.filter(x=>[1,2,3,4].includes(x.id)):
-                                                            investigatedPatientRoles.filter(x=>[5,6].includes(x.id))
-                                                        }
+                                                        options={investigatedPatientRoles}
                                                         getOptionLabel={(option) => option.displayName}
                                                         getOptionSelected={(option) => option.id === props.value}
                                                         disabled={isViewMode}
