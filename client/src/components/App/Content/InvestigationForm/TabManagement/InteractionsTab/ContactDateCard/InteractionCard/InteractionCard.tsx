@@ -161,7 +161,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                             </div>
                         </Grid>
                         {interaction.contacts.map(contact => (
-                            <Grid item xs={12} className={classes.interactionItem}>
+                            <Grid item xs={12} className={classes.interactionItem} key={contact.id}>
                                 <ContactGrid
                                     isContactComplete={isFieldDisabled(contact.id)}
                                     contact={contact}

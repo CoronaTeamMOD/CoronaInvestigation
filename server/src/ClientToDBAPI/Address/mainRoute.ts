@@ -1,8 +1,5 @@
 import { Router, Request, Response } from 'express';
 
-import City from '../../Models/Address/City';
-import Street from '../../Models/Address/Street';
-import Country from '../../Models/Address/Country';
 import { Severity } from '../../Models/Logger/types';
 import UseCache, { setToCache } from '../../middlewares/UseCache';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';

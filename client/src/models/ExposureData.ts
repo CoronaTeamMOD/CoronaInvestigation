@@ -9,6 +9,7 @@ interface ExposureData {
     exposurePlaceType: string | null;
     exposurePlaceSubType: number | null;
     exposureSource: CovidPatient | null;
+    isExposurePersonKnown: boolean | undefined;
 }
 
 export default ExposureData;

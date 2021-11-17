@@ -14,6 +14,7 @@ import { VacationOrEvent } from './Forms/VacationOrEvent';
 import { FormData } from './ExposuresAndFlightsInterfaces';
 import ExposureSchema from './Schema/exposuresAndFlightsSchema';
 import { useExposuresAndFlights } from './useExposuresAndFlights';
+import { setFormState } from 'redux/Form/formActionCreators';
 
 const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Element => {
 
@@ -21,7 +22,8 @@ const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.El
 
     const { exposures, wereFlights, wereConfirmedExposures, wasInVacation, wasInEvent } = exposureAndFlightsData;
     const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
-    const [isExposureAdded, setIsExposureAdded] = useState<boolean | undefined>(undefined);
+    const [isExposureAdded, setIsExposureAdded] = useState<boolean>(false);
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const ids = exposures.map(exposure => exposure.id);
 
@@ -34,9 +36,16 @@ const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.El
 
     const onSubmit = (e?: React.FormEvent) => {
         e && e.preventDefault();
-        methods.trigger();
         const data = methods.getValues();
-        saveExposure(data, ids);
+        if(isViewMode){
+            ExposureSchema(validationDate).isValid(data).then(valid => {
+                setFormState(epidemiologyNumber, id, valid)
+            });
+        }
+        else{
+            methods.trigger();
+            saveExposure(data, ids);
+        }
     };
 
     const {

@@ -14,10 +14,10 @@ import { FormData } from 'components/App/Content/InvestigationForm/TabManagement
 const exposureDeleteCondition = 
     (wereFlights: boolean, wereConfirmedExposures: boolean) : (exposure: Exposure) => boolean => {
     if (!wereConfirmedExposures) {
-        return (exposure: Exposure) => exposure.exposureSource !== undefined
+        return (exposure: Exposure) => exposure.exposureSource !== undefined //&& exposure.exposureSource !== null
     };
     if (!wereFlights) {
-        return (exposure: Exposure) => exposure.flightDestinationCountry !== undefined
+        return (exposure: Exposure) => exposure.flightDestinationCountry !== undefined //&& exposure.flightDestinationCountry !== null
     };
     return (exposure: Exposure) => false;
 }
@@ -81,7 +81,9 @@ const useExposuresSaving = () => {
 
     const extractExposureData =  (exposuresAndFlightsData : Exposure) => {
         let exposureAndDataToReturn: (Exposure | DBExposure) = exposuresAndFlightsData;
-        if (exposuresAndFlightsData.flightDestinationCountry !== undefined) {
+        if (exposuresAndFlightsData.flightDestinationCountry !== undefined 
+            //&& exposuresAndFlightsData.flightDestinationCountry !== null
+            ) {
             exposureAndDataToReturn = {
                 ...exposureAndDataToReturn,
                 [fieldsNames.wasConfirmedExposure] : false,
@@ -98,7 +100,9 @@ const useExposuresSaving = () => {
                 exposureAddress: exposuresAndFlightsData.exposureAddress ||  null
             }
         }
-        if (exposuresAndFlightsData.exposureSource !== undefined) {
+        if (exposuresAndFlightsData.exposureSource !== undefined   
+            // && exposuresAndFlightsData.exposureSource !== null
+            ) {
             exposureAndDataToReturn = {
                 ...exposureAndDataToReturn,
                 [fieldsNames.wasConfirmedExposure] : true,

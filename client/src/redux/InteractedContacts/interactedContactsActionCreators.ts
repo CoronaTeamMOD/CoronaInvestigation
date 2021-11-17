@@ -12,15 +12,10 @@ export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, Int
 
     try {
         const contacts = await getAllInteractedContacts(minimalDate);
-        let map: FormStateObject[] = [];
-        for (let i = 0; i < contacts.length; i++) {
-            map.push(new FormStateObject(contacts[i].id, null));
-        }
         dispatch({
             type: actionTypes.GET_INTERACTED_CONTACTS_SUCCESS,
             payload: {
-                interactedContacts: contacts,
-                formState: map
+                interactedContacts: contacts
             }
         });
     }

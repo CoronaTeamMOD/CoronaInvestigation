@@ -1,5 +1,5 @@
 import { Grid } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers';
 import React, { useEffect, useState } from 'react';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
@@ -20,12 +20,20 @@ import IsolationProblemFields from './IsolationProblemFields';
 import useClinicalDetails, { initialClinicalDetails } from './useClinicalDetails';
 import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields/SymptomsFields';
 import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
+import { resetClinicalDetails, setClinicalDetails } from 'redux/ClinicalDetails/ClinicalDetailsActionCreators';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { setFormState } from 'redux/Form/formActionCreators';
 
 const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element => {
     const classes = useStyles();
+    const dispatch = useDispatch();
 
     const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
-    const patientGender = useSelector<StoreStateType, string>(state => state.gender);
+    const patientGender = useSelector<StoreStateType, string>(state => state.gender); 
+    const clinicalDetails = useSelector<StoreStateType,ClinicalDetailsData | null>(state=>state.clinicalDetails.clinicalDetails);
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+
+    const clinicalDetailsIsNull = clinicalDetails===null;
 
     const methods = useForm({
         mode: 'all',
@@ -37,19 +45,20 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
     const [backgroundDiseases, setBackgroundDiseases] = useState<string[]>([]);
     const [didSymptomsDateChangeOccur, setDidSymptomsDateChangeOccur] = useState<boolean>(false);
 
-
     const { fetchClinicalDetails, saveClinicalDetailsAndDeleteContactEvents, isolationSources } =
-        useClinicalDetails({ id, setSymptoms, setBackgroundDiseases, didSymptomsDateChangeOccur });
-
-    const handleSymptomCheck = (
+        useClinicalDetails({ id, setSymptoms, setBackgroundDiseases, didSymptomsDateChangeOccur });               
+        const handleSymptomCheck = (
         checkedSymptom: string,
         onChange: (newSymptoms: string[]) => void,
         selectedSymptoms: string[]
     ) => {
         if (selectedSymptoms.includes(checkedSymptom)) {
             onChange(selectedSymptoms.filter((symptom) => symptom !== checkedSymptom));
+            dispatch(setClinicalDetails(ClinicalDetailsFields.SYMPTOMS,selectedSymptoms.filter((symptom) => symptom !== checkedSymptom)))
         } else {
             onChange([...selectedSymptoms, checkedSymptom]);
+            dispatch(setClinicalDetails(ClinicalDetailsFields.SYMPTOMS,[...selectedSymptoms, checkedSymptom]))
+
         }
     };
 
@@ -60,27 +69,25 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
     ) => {
         if (selectedBackgroundDiseases.includes(checkedBackgroundIllness)) {
             onChange(selectedBackgroundDiseases.filter((symptom) => symptom !== checkedBackgroundIllness));
+            dispatch(setClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES,selectedBackgroundDiseases.filter((symptom) => symptom !== checkedBackgroundIllness)))
         } else {
             onChange([...selectedBackgroundDiseases, checkedBackgroundIllness]);
+            dispatch(setClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES,[...selectedBackgroundDiseases, checkedBackgroundIllness]))
         };
     };
 
     const saveForm = (e: any) => {
         e.preventDefault();
-        const values = methods.getValues();
-        saveClinicalDetailsAndDeleteContactEvents(values as ClinicalDetailsData, id);
+        if (clinicalDetails && !isViewMode){
+            saveClinicalDetailsAndDeleteContactEvents(clinicalDetails, id);
+        }
+        else if(isViewMode){
+            ClinicalDetailsSchema(validationDate, 'gender').isValid(clinicalDetails).then(valid => {
+                setFormState(epidemiologyNumber, id, valid);
+            });
+        }
     }
 
-    const watchIsInIsolation = methods.watch(ClinicalDetailsFields.IS_IN_ISOLATION);
-    const watchIsolationStartDate = methods.watch(ClinicalDetailsFields.ISOLATION_START_DATE);
-    const watchIsolationEndDate = methods.watch(ClinicalDetailsFields.ISOLATION_END_DATE);
-    const watchIsIsolationProblem = methods.watch(ClinicalDetailsFields.IS_ISOLATION_PROBLEM);
-    const watchIsSymptomsDateUnknown = methods.watch(ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN);
-    const watchDoesHaveSymptoms = methods.watch(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS);
-    const watchSymptoms = methods.watch(ClinicalDetailsFields.SYMPTOMS);
-    const watchDoesHaveBackgroundDiseases = methods.watch(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES);
-    const watchBackgroundDiseases = methods.watch(ClinicalDetailsFields.BACKGROUND_DESEASSES);
-    const watchWasHospitalized = methods.watch(ClinicalDetailsFields.WAS_HOPITALIZED);
 
     const addressFormFields: AddressFormFields = {
         cityField: {
@@ -102,62 +109,23 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
     }
 
     useEffect(() => {
-        fetchClinicalDetails(methods.reset, methods.trigger);
+      
+        if (!clinicalDetails){
+            fetchClinicalDetails();
+        }
+        return ()=> {dispatch(resetClinicalDetails())};
     }, []);
 
-    useEffect(() => {
-        if (watchIsInIsolation === false) {
-            methods.setValue(ClinicalDetailsFields.ISOLATION_START_DATE, null);
-            methods.setValue(ClinicalDetailsFields.ISOLATION_END_DATE, null);
-        }
-    }, [watchIsInIsolation]);
-
-    useEffect(() => {
-        if (watchIsIsolationProblem === false) {
-            methods.setValue(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO, '');
-        }
-    }, [watchIsIsolationProblem]);
-
-    useEffect(() => {
-        if (watchDoesHaveSymptoms === false) {
-            methods.setValue(ClinicalDetailsFields.SYMPTOMS, []);
-            methods.setValue(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
-            methods.setValue(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, '');
-        }
-    }, [watchDoesHaveSymptoms]);
-
-    useEffect(() => {
-        if (!watchSymptoms.includes(otherSymptomFieldName)) {
-            methods.setValue(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, '');
-        }
-    }, [watchSymptoms]);
-
-    useEffect(() => {
-        if (watchIsSymptomsDateUnknown) {
-            methods.setValue(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
-        }
-    }, [watchIsSymptomsDateUnknown])
-
-    useEffect(() => {
-        if (watchDoesHaveBackgroundDiseases === false) {
-            methods.setValue(ClinicalDetailsFields.BACKGROUND_DESEASSES, []);
-            methods.setValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, '');
-        }
-    }, [watchDoesHaveBackgroundDiseases]);
-
-    useEffect(() => {
-        if (!watchBackgroundDiseases.includes(otherBackgroundDiseaseFieldName)) {
-            methods.setValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, '');
-        }
-    }, [watchBackgroundDiseases]);
-
-    useEffect(() => {
-        if (watchWasHospitalized === false) {
-            methods.setValue(ClinicalDetailsFields.HOSPITAL, '');
-            methods.setValue(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, null);
-            methods.setValue(ClinicalDetailsFields.HOSPITALIZATION_END_DATE, null);
-        }
-    }, [watchWasHospitalized]);
+    useEffect(()=>{
+        if (clinicalDetails){
+            setIsLoading(true);
+            for (const [key, value] of Object.entries(clinicalDetails)) {
+                methods.setValue(key, value);
+            }
+            methods.trigger();
+            setIsLoading(false);
+        } 
+    },[clinicalDetailsIsNull]);
 
     return (
         <div className={classes.form}>
@@ -167,9 +135,7 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
                         <Grid item xs={12}>
                             <IsolationDatesFields
                                 classes={classes}
-                                watchIsInIsolation={watchIsInIsolation}
-                                watchIsolationStartDate={watchIsolationStartDate}
-                                watchIsolationEndDate={watchIsolationEndDate}
+                                clinicalDetails={clinicalDetails}
                                 isolationSources={isolationSources}
                                 isViewMode={isViewMode}
                             />
@@ -179,27 +145,28 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
                                 <AddressForm
                                     {...addressFormFields}
                                     disabled={isViewMode}
+                                    onBlur={()=>{
+                                        dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_ADDRESS,methods.getValues().isolationAddress))
+                                   }}
                                 />
                             </FormRowWithInput>
                         </Grid>
                         <Grid item xs={12}>
                             <IsolationProblemFields
                                 classes={classes}
-                                watchIsIsolationProblem={watchIsIsolationProblem}
                                 isViewMode={isViewMode}
+                                clinicalDetails={clinicalDetails}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <SymptomsFields
                                 classes={classes}
-                                watchDoesHaveSymptoms={watchDoesHaveSymptoms}
-                                watchSymptoms={watchSymptoms}
-                                watchIsSymptomsDateUnknown={watchIsSymptomsDateUnknown}
                                 handleSymptomCheck={handleSymptomCheck}
                                 symptoms={symptoms}
                                 didSymptomsDateChangeOccur={didSymptomsDateChangeOccur}
                                 setDidSymptomsDateChangeOccur={setDidSymptomsDateChangeOccur}
                                 isViewMode={isViewMode}
+                                clinicalDetails={clinicalDetails}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -207,8 +174,7 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
                                 classes={classes}
                                 backgroundDiseases={backgroundDiseases}
                                 handleBackgroundIllnessCheck={handleBackgroundIllnessCheck}
-                                watchBackgroundDiseases={watchBackgroundDiseases}
-                                watchDoesHaveBackgroundDiseases={watchDoesHaveBackgroundDiseases}
+                                clinicalDetails={clinicalDetails}
                                 isViewMode={isViewMode}
                             />
                         </Grid>
@@ -224,7 +190,8 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
                                                 value={props.value}
                                                 onChange={(e, value) => {
                                                     if (value !== null) {
-                                                        props.onChange(value)
+                                                        props.onChange(value);
+                                                        dispatch(setClinicalDetails(ClinicalDetailsFields.IS_PREGNANT,value));
                                                     }
                                                 }}
                                                 disabled={isViewMode}

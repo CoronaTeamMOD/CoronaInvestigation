@@ -1,8 +1,10 @@
 import { Router } from 'express';
 
 import addressRoute from './Address/mainRoute';
+import rulerRoute from './RulerRoute/mainRoute';
 import usersRoute from './UsersRoute/mainRoute';
 import desksRoute from './DesksRoute/mainRoute';
+import emailRoute from './EmailRoute/mainRoute';
 import scriptsRoute from './ScriptsRoute/mainRoute';
 import exposureRoute from './ExposureRoute/mainRoute';
 import airlinesRoute from './AirlinesRoute/mainRoute';
@@ -17,14 +19,15 @@ import contactedPeopleRoute from './ContactedPeople/mainRoute';
 import intersectionsRoute from './IntersectionsRoute/mainRoute';
 import personalDetailsRoute from './PersonalDetailsRoute/mainRoute';
 import clinicalDetailsRoute from './ClinicalDetailsRoute/mainRoute';
+import synchronizationRoute from './SynchronizationDataRoute/mainRoute';
 import groupedInvestigationsRoute from './GroupedInvestigationsRoute/mainRoute';
-import rulerRoute from './RulerRoute/mainRoutes';
 
 const clientToDBRouter = Router();
-clientToDBRouter.use('/ruler', rulerRoute);
 clientToDBRouter.use(authMiddleware);
+clientToDBRouter.use('/ruler', rulerRoute);
 clientToDBRouter.use('/users', usersRoute);
 clientToDBRouter.use('/desks', desksRoute);
+clientToDBRouter.use('/email', emailRoute);
 clientToDBRouter.use('/counties', countiesRoute);
 clientToDBRouter.use('/exposure', exposureRoute);
 clientToDBRouter.use('/education', educationRoute);
@@ -34,6 +37,7 @@ clientToDBRouter.use('/addressDetails', addressRoute);
 clientToDBRouter.use('/landingPage', landingPageRoute);
 clientToDBRouter.use('/intersections', intersectionsRoute);
 clientToDBRouter.use('/investigationInfo', investigationInfo);
+clientToDBRouter.use('/synchronization', synchronizationRoute);
 clientToDBRouter.use('/personalDetails', personalDetailsRoute);
 clientToDBRouter.use('/clinicalDetails', clinicalDetailsRoute);
 clientToDBRouter.use('/contactedPeople', contactedPeopleRoute);

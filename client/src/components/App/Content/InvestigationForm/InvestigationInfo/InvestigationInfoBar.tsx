@@ -16,13 +16,12 @@ import { setGender } from 'redux/Gender/GenderActionCreators';
 import { CommentContextProvider } from './Context/CommentContext';
 import { landingPageRoute, adminLandingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationInfo, { InvestigationInfoData } from 'models/InvestigationInfo';
-import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setDatesToInvestigateParams } from 'redux/Investigation/investigationActionCreators';
+import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setDatesToInvestigateParams, setIsContactInvestigationVerifiedAbroad } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigatedPatientId, setIsCurrentlyHospitialized, setIsDeceased, setEndTime, setTrackingRecommendation, setBirthDate } from 'redux/Investigation/investigationActionCreators';
 
 import useGroupedInvestigationContacts from '../useGroupedInvestigationContacts';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
-import InvestigationInfoButton from '../../LandingPage/adminLandingPage/investigationsInfo/investigationInfoButton/investigationInfoButton';
 
 const defaultInvestigationStaticInfo: InvestigationInfo = {
     comment: '',
@@ -52,7 +51,8 @@ const defaultInvestigationStaticInfo: InvestigationInfo = {
     isVaccinated: false,
     vaccinationEffectiveFrom: null,
     isSuspicionOfMutation: false,
-    mutationName: null
+    mutationName: null,
+    contactInvestigationVerifiedAbroad: false
 };
 
 export const LandingPageTimer = 4000;
@@ -140,6 +140,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode }: Props
                             subReason: investigationInfo.trackingSubReasonByTrackingSubReason?.subReasonId,
                             extraInfo: investigationInfo.trackingExtraInfo
                         })
+                        setIsContactInvestigationVerifiedAbroad(investigationInfo.contactInvestigationVerifiedAbroad);
                     }
                     else {
                         investigationInfoLogger.warn('got status 200 but wrong data', Severity.HIGH);

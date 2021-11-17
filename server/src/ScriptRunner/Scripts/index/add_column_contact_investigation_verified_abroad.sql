@@ -1,0 +1,1 @@
+ALTER TABLE public.investigation add column contact_investigation_verified_abroad boolean

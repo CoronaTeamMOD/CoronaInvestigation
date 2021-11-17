@@ -38,8 +38,7 @@ const flights = (validationDate : Date) => {
 const exposures = (validationDate : Date) => {
     return yup.lazy(
         (exposure: Exposure): yup.Schema<any, object> => {
-            const isExposurePersonKnown = false;
-            if(hasExposureSource(exposure) && isExposurePersonKnown) {
+            if (hasExposureSource(exposure)) {
                 return exposureValidation(validationDate);
             } else {
                 return yup.object();

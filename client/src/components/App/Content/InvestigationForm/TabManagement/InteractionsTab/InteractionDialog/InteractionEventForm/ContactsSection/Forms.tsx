@@ -22,7 +22,7 @@ const Forms = (props: Props) => {
     return (
         <>
             {contactFormTabs.map(tab =>
-                <div className={currentTab !== tab.id ? formClasses.hidden : formClasses.formSize}>
+                <div key={tab.id} className={currentTab !== tab.id ? formClasses.hidden : formClasses.formSize}>
                     {tab.Component}
                 </div>
             )}

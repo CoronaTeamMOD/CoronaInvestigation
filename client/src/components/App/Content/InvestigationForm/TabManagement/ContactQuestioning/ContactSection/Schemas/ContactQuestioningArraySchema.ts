@@ -4,5 +4,4 @@ import interactionEventSchema from './ContactQuestioningSchema';
 const interactionEventArraySchema = 
      yup.array().of(interactionEventSchema);
       
- 
-     export default interactionEventArraySchema;
+export default interactionEventArraySchema;
