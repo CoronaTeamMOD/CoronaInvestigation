@@ -61,20 +61,6 @@ stages:
         tags: |
           server-mabar-dev
 
-    # building & pushing test server image
-    - task: Docker@2
-      condition: eq(variables.isTest,true)
-      continueOnError: 'false'
-      displayName: Build and push test server image to container registry
-      inputs:
-        command: buildAndPush
-        dockerfile: '**/server/Dockerfile'
-        repository: '$(arcName)'
-        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
-        containerRegistry: '$(AzureContainerRegistry)'
-        tags: |
-          server-test
-
     # building & pushing test server image to MOH server registry
     - task: Docker@2
       condition: eq(variables.isTest,true)
@@ -88,20 +74,6 @@ stages:
         containerRegistry: '$(MOHContainerRegistry)'
         tags: |
           server-test
-
-    # building & pushing prod server image
-    - task: Docker@2
-      condition: eq(variables.isMaster,true)
-      continueOnError: 'false'
-      displayName: Build and push master server image to container registry
-      inputs:
-        command: buildAndPush
-        dockerfile: '**/server/Dockerfile'
-        repository: '$(arcName)'
-        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
-        containerRegistry: '$(AzureContainerRegistry)'
-        tags: |
-          server-master
 
     # building & pushing prod server image to MOH server registry
     - task: Docker@2
