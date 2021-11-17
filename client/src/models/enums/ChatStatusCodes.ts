@@ -1,0 +1,14 @@
+enum ChatStatusCode {
+    WAITING_FOR_SENDING=0,
+    NO_WHATSAPP=1,
+    SENT=2,
+    NO_COOPERATION=3,
+    ABANDONED=5,
+    COMPLETED=6,
+    HUMAN_INVESTIGATION_REQUEST =7,
+    WRONG_CHAT_DETAILS = 8,
+    WAITING_FOR_BOT_RESPONSE =11,
+    IRRELEVANT =99
+}
+
+export default ChatStatusCode;

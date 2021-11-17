@@ -60,6 +60,37 @@ query InvestigationStaticDetails($investigationId: Int!) {
 }
 `;
 
+export const GET_BOT_INVESTIGATION_INFO = gql`
+query BotInvestigationStaticDetails($investigationId: Int!) {
+  botInvestigationByEpidemiologyNumber(epidemiologyNumber: $investigationId) {
+      epidemiologyNumber
+      chatStatusByChatStatusId {
+        id
+        displayName
+      }
+      investigatiorReferenceRequired
+      lastChatDate
+      investigationChatStatusByInvestigationChatStatusId {
+        displayName
+        id
+      }
+      investigatorReferenceStatusByInvestigatorReferenceStatusId {
+        id
+        displayName
+      }
+      botInvestigationReferenceReasonsByBotInvestigationId {
+        nodes {
+          investigatorReferenceReasonByInvestigatorReferenceReasonId {
+            displayName
+            id
+          }
+        }
+      }
+    }
+}
+
+`;
+
 export const GET_SUB_STATUSES_BY_STATUS = gql`
 query GetAllSubStatuses($parentStatus: Int!) {
   allInvestigationSubStatuses(orderBy: DISPLAY_NAME_ASC, filter: {parentStatus: {equalTo: $parentStatus}}) {
@@ -88,7 +119,7 @@ query investigationSettingsFamilyData($id: Int!) {
     allowUncontactedFamily
   }
 }
-`; 
+`;
 
 export const GET_INVESTIGATION_CREATOR = gql`
 query InvestigationCreator($epidemiologynumber: Int!) {

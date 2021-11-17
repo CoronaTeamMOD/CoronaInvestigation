@@ -6,6 +6,7 @@ import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
 import {
     GET_INVESTIGATION_INFO,
+    GET_BOT_INVESTIGATION_INFO,
     GET_SUB_STATUSES_BY_STATUS,
     GET_INVESTIGAION_SETTINGS_FAMILY_DATA,
     GROUP_ID_BY_EPIDEMIOLOGY_NUMBER,
@@ -27,6 +28,7 @@ import {
     DELETE_INVESTIGATION_COMPLEXITY_REASON_ID,
     UPDATE_INVESTIGATION_STATIC_INFO,
     UPDATE_INVESTIGATION_TRACKING,
+    UPDATE_BOT_INVESTIGATION_INVESTIGATOR_REFERENCE_STATUS
 } from '../../DBService/InvestigationInfo/Mutation';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
@@ -71,6 +73,45 @@ investigationInfo.get('/staticInfo', handleInvestigationRequest, (request: Reque
             response.send(convertInvestigationInfoFromDB(investigationInfo));
         }).catch((error) => {
             staticInfoLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
+});
+
+const convertBotInvestigationFromDB = (botInfo: any): any => {
+    if (botInfo) {
+        const botInvestigation = {
+            ...botInfo,
+            botInvestigationReferenceReasons: botInfo.botInvestigationReferenceReasonsByBotInvestigationId.nodes.map((obj: any) => obj.investigatorReferenceReasonByInvestigatorReferenceReasonId),
+            chatStatus: botInfo.chatStatusByChatStatusId,
+            investigationChatStatus: botInfo.investigationChatStatusByInvestigationChatStatusId,
+            investigatorReferenceStatus: botInfo.investigatorReferenceStatusByInvestigatorReferenceStatusId
+        }
+        delete botInvestigation.investigatorReferenceReasonByInvestigatorReferenceReasonId;
+        delete botInvestigation.chatStatusByChatStatusId;
+        delete botInvestigation.investigationChatStatusByInvestigationChatStatusId;
+        delete botInvestigation.botInvestigationReferenceReasonsByBotInvestigationId;
+        return botInvestigation;
+    }
+    return null;
+};
+
+investigationInfo.get('/botInvestigationInfo', handleInvestigationRequest, (request: Request, response: Response) => {
+    const botInfoLogger = logger.setup({
+        workflow: 'query bot investigation info',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    });
+
+    const parameters = { investigationId: parseInt(response.locals.epidemiologynumber) };
+    botInfoLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+
+    graphqlRequest(GET_BOT_INVESTIGATION_INFO, response.locals, parameters)
+        .then(result => {
+            botInfoLogger.info(validDBResponseLog, Severity.LOW);
+            const investigationInfo = result.data.botInvestigationByEpidemiologyNumber;
+            response.send(convertBotInvestigationFromDB(investigationInfo));
+        }).catch((error) => {
+            botInfoLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         });
 });
@@ -463,7 +504,6 @@ investigationInfo.post('/updateTrackingRecommendation', (request: Request, respo
         });
 });
 
-
 investigationInfo.post('/updateStaticInfo', handleInvestigationRequest, (request: Request, response: Response) => {
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const updateStaticInfoLogger = logger.setup({
@@ -508,6 +548,32 @@ investigationInfo.get('/identificationTypes', (request: Request, response: Respo
             identificationTypesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         })
+});
+
+investigationInfo.post('/updateInvestigatorReferenceStatus', handleInvestigationRequest, (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
+    const updateInvestigatorReferenceStatusLogger = logger.setup({
+        workflow: 'updating investigator reference status of bot investigation',
+        user: response.locals.user.id,
+        investigation: epidemiologyNumber,
+    });
+
+    const parameters = {
+        investigatorReferenceStatusId: request.body.investigatorReferenceStatusId === '' ? null : request.body.investigatorReferenceStatusId,
+        epidemiologyNumber: epidemiologyNumber
+    };
+
+    updateInvestigatorReferenceStatusLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+
+    return graphqlRequest(UPDATE_BOT_INVESTIGATION_INVESTIGATOR_REFERENCE_STATUS, response.locals, parameters)
+        .then(result => {
+            updateInvestigatorReferenceStatusLogger.info(validDBResponseLog, Severity.LOW);
+            return response.send(result);
+        })
+        .catch((error) => {
+            updateInvestigatorReferenceStatusLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
 });
 
 export default investigationInfo;
