@@ -168,12 +168,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
 
     useEffect(() => {
         if (personalInfo) {
-            setIsLoading(true);
-            for (const [key, value] of Object.entries(personalInfo)) {
-                methods.setValue(key, value);
-            }
-            methods.trigger();
-            setIsLoading(false);
+            methods.reset(personalInfo);
+            setTimeout(()=>{
+                methods.trigger();
+            },500);
         }
     }, [personalInfo]);
 
@@ -455,7 +453,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                 name={PersonalInfoDataContextFields.ROLE}
                                                 render={(props) => (
                                                     <Autocomplete
-                                                        options={investigatedPatientRoles}
+                                                        options={
+                                                            occupation === Occupations.EDUCATION_SYSTEM 
+                                                            ? investigatedPatientRoles.filter(x=>[1,2,3,4].includes(x.id))
+                                                            : investigatedPatientRoles.filter(x=>[5,6].includes(x.id)) 
+                                                        }
                                                         getOptionLabel={(option) => option.displayName}
                                                         getOptionSelected={(option) => option.id === props.value}
                                                         disabled={isViewMode}
