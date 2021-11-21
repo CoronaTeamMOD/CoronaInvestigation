@@ -168,12 +168,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
 
     useEffect(() => {
         if (personalInfo) {
-            setIsLoading(true);
-            for (const [key, value] of Object.entries(personalInfo)) {
-                methods.setValue(key, value);
-            }
-            methods.trigger();
-            setIsLoading(false);
+            methods.reset(personalInfo);
+            setTimeout(()=>{
+                methods.trigger();
+            },500);
         }
     }, [personalInfo]);
 
