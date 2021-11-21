@@ -704,6 +704,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.isSelfInvestigated]: row.isSelfInvestigated,
             [TableHeadersNames.selfInvestigationStatus]: row.selfInvestigationStatus,
             [TableHeadersNames.selfInvestigationUpdateTime]: row.selfInvestigationUpdateTime,
+            [TableHeadersNames.lastChatDate]:'11/18/2021',
+            [TableHeadersNames.chatStatus]:'לא רלוונטי',
+            [TableHeadersNames.investigatiorReferenceRequired]:true,
+            [TableHeadersNames.investigatorReferenceStatus]:'לא רלוונטי'
         }
     };
 
@@ -868,6 +872,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             classNames.push(classes.tableCell);
         }
         if (cellKey === TableHeadersNames.investigatorName) {
+            classNames.push(classes.columnBorder);
+        }
+        if (cellKey === TableHeadersNames.investigatiorReferenceRequired){
             classNames.push(classes.columnBorder);
         }
         else
