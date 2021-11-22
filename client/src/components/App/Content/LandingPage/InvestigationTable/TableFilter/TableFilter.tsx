@@ -164,6 +164,44 @@ const TableFilter = (props: Props) => {
                 )}
                 limitTags={1}
             />
+             <Autocomplete
+                ChipProps={{ className: classes.chip }}
+                className={classes.autocomplete}
+                classes={{ inputFocused: classes.autocompleteInputText }}
+                size='small'
+                disableCloseOnSelect
+                multiple
+                options={subStatusFiltered}
+                value={subStatusFiltered.filter(subStatus => selectedSubStatuses.includes(subStatus.displayName))}
+                getOptionLabel={(option) => option.displayName}
+                onChange={(event, values) => {
+                    onSubStatusChange(values);
+                    setSelectedSubStatuses(values.map(value => value.displayName));
+                    values.length > 0
+                        ? setSelectedStatuses([...selectedStatuses, ...statuses.filter(status => values.map(subStatus => subStatus.parentStatus).includes(status.id)).map(status => status.id)])
+                        : setSelectedStatuses(filteredStatuses)
+
+                }}
+                renderInput={(params) =>
+                    <TextField
+                        label={'סטטוס טיפול בחקירה בבוט'}
+                        {...params}
+                        InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
+                    />
+                }
+                renderOption={(option, { selected }) => (
+                    <>
+                        <Checkbox
+                            size='small'
+                            className={classes.optionCheckbox}
+                            checked={selected}
+                            color='primary'
+                        />
+                        <Typography className={classes.option} >{option.displayName}</Typography>
+                    </>
+                )}
+                limitTags={1}
+            />
             <Grid className={classes.endCard} xs={3} direction='column'>
                 <div className={classes.row}>
                     <Checkbox
