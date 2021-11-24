@@ -20,11 +20,9 @@ const flightValidation = (validationDate: Date): yup.Schema<any, object> => {
             .string()
             .nullable()
             .required(requiredText),
-        [fieldsNames.destinationCity]: yup.string().nullable(),
         [fieldsNames.destinationCountry]: yup.string().nullable().required(requiredText),
         [fieldsNames.flightNumber]: yup.string().nullable().required(requiredText),
         [fieldsNames.originAirport]: yup.string().nullable().required(requiredText),
-        [fieldsNames.originCity]: yup.string().nullable(),
         [fieldsNames.originCountry]: yup.string().nullable().required(requiredText),
         [fieldsNames.flightStartDate]: yup.date().nullable().required(requiredText)
             .typeError(invalidDateText)
