@@ -3,21 +3,21 @@ import { Router, Request, Response } from 'express';
 
 import City from '../../Models/Address/City';
 import { Severity } from '../../Models/Logger/types';
-import {ADD_CITY_TEMP, ADD_CITIES_TEMP} from '../../DBService/DataSynchronization/mutation';
+import {ADD_CITY_TEMP, ADD_CITIES_TEMP, ADD_STREETS_TEMP} from '../../DBService/DataSynchronization/mutation';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import logger, { invalidAPIResponseLog, launchingAPIRequestLog, invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog  } from '../../Logger/Logger';
 
 const synchronizationRoute = Router();
 
+let streetId : number = 100007; // need to save in db and update each time
 // const mohCitiesApiUrl = process.env.CITIES_URL;
 // const mohStreetsApiUrl = process.env.STREETS_URL;
 const mohCitiesApiUrl = 'https://mohservicesapitest.health.gov.il/api/Lists/edm/israelcities';
 const mohStreetsApiUrl = 'https://mohservicesapitest.health.gov.il/api/Lists/edm/israelstreets';
 
 const filterCities = (cities: any) => {
-    // to remove cities with to_date !== null
     // or Update_date < last_update_date
-    return cities.filter((city: any)=> city.to_date !== null);
+    return cities.filter((city: any)=> city.to_date === null || (city.to_date).includes('1/1/1900'));
 }
 
 const parseCities = (citis: any) => {
@@ -26,9 +26,8 @@ const parseCities = (citis: any) => {
 }
 
 const filterStreets = (streets: any) => {
-    // to remove streets with To_date !== null
     // or Update_date < last_update_date
-    return streets.filter((city: any)=> city.To_date !== null);
+    return streets.filter((city: any)=> city.To_date === null || (city.To_date).includes('1/1/1900') );
 }
 
 const parseStreets = (streets: any, id: number) => {
@@ -51,6 +50,15 @@ synchronizationRoute.post('/cities/', (req: Request, res: Response) => {
             const addCityLogger = logger.setup({
                 workflow: 'add new city to DB',
             });
+            const parameters = { syncCitiesInput: JSON.stringify(cities)};
+
+            graphqlRequest(ADD_CITIES_TEMP, res.locals, parameters)
+                .then((result: any) => {
+                    addCityLogger.info(validDBResponseLog, Severity.LOW);
+                })
+                .catch(error => {
+                    addCityLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                });
             // cities.forEach((city: { id: any; displayName: any; }) => {
             //     const cityParamaters = {
             //         id: city.id,
@@ -81,17 +89,27 @@ synchronizationRoute.post('/streets/', (req: Request, res: Response) => {
     streetsSynchronizationLogger.info(launchingAPIRequestLog(), Severity.LOW);
     axios.get(mohStreetsApiUrl)
         .then((result) => {
-            // streetsSynchronizationLogger.info(launchingAPIRequestLog(result.data), Severity.LOW);
-            // get id from server
+            streetsSynchronizationLogger.info(launchingAPIRequestLog(result.data[0]), Severity.LOW);
             // get last_update_date from server
-            const streets = parseStreets(result.data, 1)
-            // console.log('Typeof streets:     =====>  ',typeof(streets), streets[10], streets[30])
+            const streets = parseStreets(result.data, streetId)
+            const parameters = { syncStreetsInput: JSON.stringify(streets)};
+            const addStreetLogger = logger.setup({
+                workflow: 'add new city to DB',
+            });
+            graphqlRequest(ADD_STREETS_TEMP, res.locals, parameters)
+                .then((result: any) => {
+                    // console.log('!!!!!!!!!!!! streets added succesed')
+                    addStreetLogger.info(validDBResponseLog, Severity.LOW);
+                })
+                .catch(error => {
+                    // console.log('&&&&&&&&&&& streets added failed    -->  ', error)
+                    addStreetLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                });
 
-            // console.log('%%%%           ',streets)
-            // streetsSynchronizationLogger.info(launchingAPIRequestLog(result.data), Severity.LOW);
+            streetsSynchronizationLogger.info(launchingAPIRequestLog(result.data[0]), Severity.LOW);
             res.send('streets synchronization successed')
         }).catch((err: any) => {
-            console.log('######ERROR STREETS-- ' , err)
+            // console.log('######ERROR STREETS-- ' , err)
             streetsSynchronizationLogger.error(invalidAPIResponseLog(err), Severity.HIGH);
             res.status(errorStatusCode).send(err);
         });
