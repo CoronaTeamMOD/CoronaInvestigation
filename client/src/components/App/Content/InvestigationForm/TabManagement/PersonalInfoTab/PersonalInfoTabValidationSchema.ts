@@ -8,6 +8,7 @@ import { PHONE_NUMBER_REGEX, NOT_REQUIRED_PHONE_NUMBER_REGEX } from 'commons/Reg
 const occupationsWithInstitution = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון'];
 const occupationsWithoutExtraInfo = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון', 'לא עובד'];
 const maxClassNumberError = 'ניתן להזין עד המספר 50';
+const studetRole = 1;
 
 const schema = yup.object().shape({
     [PersonalInfoDataContextFields.PHONE_NUMBER]: yup.string().nullable().required(requiredText).matches(PHONE_NUMBER_REGEX, invalidPhoneText),
@@ -41,8 +42,11 @@ const schema = yup.object().shape({
             schema.nullable().required(requiredText) :
             schema.nullable()
     }),
-    [PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER]: yup.number().transform((value: any) => 
-        (Boolean(value)) ? value : null).nullable().max(50, maxClassNumberError)
+    [PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER]: yup.number().when(['role', 'relevantOccupation'],  (role: number, relevantOccupation :any, schema: any) => {
+        return (role === studetRole && relevantOccupation === Occupations.EDUCATION_SYSTEM ) ?
+            schema.nullable().max(50, maxClassNumberError) :
+            schema.nullable()
+    })
 });
 
 export default schema;
