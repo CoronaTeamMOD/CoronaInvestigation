@@ -26,3 +26,11 @@ ON CONFLICT DO NOTHING;;
 INSERT INTO public.sub_occupation(
 id, display_name, parent_occupation, city, street)
 VALUES ('651166', 'גן ניצוצות ב''', 'מערכת החינוך', 'חריש', 'רקפת 17');
+
+INSERT INTO public.streets (id, display_name, city, mho_code)
+VALUES ('100007', 'התמדה', '1247', '353')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO public.streets (id, display_name, city, mho_code)
+VALUES ('100008', 'שי עגנון', '8200', '187')
+ON CONFLICT DO NOTHING;
