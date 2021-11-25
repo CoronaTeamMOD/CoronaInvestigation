@@ -17,7 +17,8 @@ import {
     GET_ALL_ADMIN_INVESTIGATIONS,
     GET_ALL_ADMIN_MESSAGES_BY_DESK,
     GET_ALL_ADMIN_MESSAGES_BY_DESK_AND_ADMIN,
-    GET_ALL_INVESTIGATOR_REFERENCE_STATUSES
+    GET_ALL_INVESTIGATOR_REFERENCE_STATUSES,
+    GET_ALL_CHAT_STATUSES
 } from '../../DBService/LandingPage/Query';
 
 const landingPageRoute = Router();
@@ -348,6 +349,24 @@ landingPageRoute.get('/investigatorReferenceStatuses', (request: Request, respon
         })
         .catch(error => {
             investigatiorReferebceStatusesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
+})
+
+landingPageRoute.get('/chatStatuses', (request: Request, response: Response) => {
+    const chatStatusesLogger = logger.setup({
+        workflow: 'query all chat statuses',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber,
+    });
+    chatStatusesLogger.info(launchingDBRequestLog(), Severity.LOW);
+    graphqlRequest(GET_ALL_CHAT_STATUSES, response.locals)
+        .then((result: any) => {
+            chatStatusesLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data.allChatStatuses.nodes);
+        })
+        .catch(error => {
+            chatStatusesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         });
 })

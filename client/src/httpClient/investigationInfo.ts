@@ -48,7 +48,6 @@ export const updateInvestigatorReferenceStatus = async (investigatorReferenceSta
   setIsLoading(true);
   try {
     const result = await axios.post('investigationInfo/updateInvestigatorReferenceStatus', { investigatorReferenceStatusId });
-    console.log('res', result)
     if (result) {
       botInvestigationInfoLogger.info('the investigator reference status updated successfully', Severity.LOW);
       setIsLoading(false);
@@ -59,7 +58,25 @@ export const updateInvestigatorReferenceStatus = async (investigatorReferenceSta
   catch (error) {
     botInvestigationInfoLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
     setIsLoading(false);
-    console.log('err', error);
     return error;
+  }
+}
+
+export const fetchAllChatStatuses = async (): Promise<KeyValuePair[] | null> => {
+  const botInvestigationInfoLogger = logger.setup('Fetching all chatstatuses');
+  try {
+    const result = await axios.get('landingPage/chatStatuses')
+    if (result && result.data) {
+      botInvestigationInfoLogger.info('all chat statuses request was successful', Severity.LOW);
+      return result.data as KeyValuePair[];
+    }
+    else {
+      botInvestigationInfoLogger.info('no chat statuses data was return from db ', Severity.LOW);
+      return null;
+    }
+  }
+  catch (error) {
+    botInvestigationInfoLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+    return null;
   }
 }

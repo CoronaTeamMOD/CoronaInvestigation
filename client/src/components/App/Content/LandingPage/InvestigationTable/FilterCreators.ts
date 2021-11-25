@@ -3,6 +3,8 @@ import { NUMERIC_REGEX } from 'commons/Regex/Regex';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 
 import { allTimeRangeId } from '../adminLandingPage/useAdminLandingPage';
+import InvestigatorReferenceStatusCode from 'models/enums/InvestigatorReferenceStatusCode';
+import ChatStatusCode from 'models/enums/ChatStatusCodes';
 
 const unassignedUserName = 'לא משויך';
 
@@ -112,37 +114,110 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
         }
     },
     [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: (dateFilter: string) => {
-        return dateFilter ? { [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: { 
-            startTime: {
-                lessThan: dateFilter
+        return dateFilter ? {
+            [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: {
+                startTime: {
+                    lessThan: dateFilter
+                }
             }
-        } } :  { [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: null };
+        } : { [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: null };
     },
     [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: (isNonContact: boolean) => {
-        return isNonContact ? { [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: { 
-            contactEventsByInvestigationId: {
-                every: {
-                  contactedPeopleByContactEvent: {
+        return isNonContact ? {
+            [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: {
+                contactEventsByInvestigationId: {
                     every: {
-                      contactEvent:{
-                        isNull:true
-                      }
+                        contactedPeopleByContactEvent: {
+                            every: {
+                                contactEvent: {
+                                    isNull: true
+                                }
+                            }
+                        }
                     }
-                  }
                 }
-              }
-        } } :  { [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: null };
+            }
+        } : { [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: null };
     },
     [InvestigationsFilterByFields.UNALLOCATED_DESK]: (isFilterOn: boolean) => {
         return isFilterOn ?
             {
                 [InvestigationsFilterByFields.UNALLOCATED_DESK]: {
-                   deskId: { isNull: true } 
+                    deskId: { isNull: true }
                 }
             }
             :
             { [InvestigationsFilterByFields.UNALLOCATED_DESK]: null };
-    }, 
+    },
+    [InvestigationsFilterByFields.CHAT_STATUS]: (values: string[]) => {
+        if (values.length > 0) {
+            if (values.findIndex(val => val == ChatStatusCode.IRRELEVANT.toString()) > -1) {
+                return {
+                    [InvestigationsFilterByFields.CHAT_STATUS]: {
+                        or: [
+                            {
+                                botInvestigationByEpidemiologyNumber: {
+                                    chatStatusId: { in: values }
+                                }
+                            },
+                            { botInvestigationByEpidemiologyNumberExists: false }
+                        ]
+                    }
+                };
+            }
+            else {
+                return {
+                    [InvestigationsFilterByFields.CHAT_STATUS]: {
+                        botInvestigationByEpidemiologyNumber: {
+                            chatStatusId: { in: values }
+                        }
+                    }
+                }
+            };
+        }
+        else return { [InvestigationsFilterByFields.CHAT_STATUS]: null };
+    },
+    [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_STATUS]: (values: string[]) => {
+        if (values.length > 0) {
+            if (values.findIndex(val => val == InvestigatorReferenceStatusCode.IRRELEVANT.toString()) > -1) {
+                return {
+                    [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_STATUS]: {
+                        or: [
+                            {
+                                botInvestigationByEpidemiologyNumber: {
+                                    investigatorReferenceStatusId: { in: values }
+                                }
+                            },
+                            { botInvestigationByEpidemiologyNumberExists: false }
+                        ]
+                    }
+                };
+            }
+            else {
+                return {
+                    [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_STATUS]: {
+                        botInvestigationByEpidemiologyNumber: {
+                            investigatorReferenceStatusId: { in: values }
+                        }
+                    }
+                }
+            };
+        }
+        else return { [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_STATUS]: null };
+    },
+    [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_REQUIRED]: (isFilterOn: boolean) => {
+        return isFilterOn ?
+            {
+                [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_REQUIRED]: {
+                    botInvestigationByEpidemiologyNumber: {
+                        investigatiorReferenceRequired: { equalTo: true }
+                    }
+                }
+            }
+            :
+            { [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_REQUIRED]: null };
+    },
+
 };
 
 export default filterCreators;

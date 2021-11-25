@@ -17,6 +17,12 @@ import useStyles from './TableFilterStyles';
 import useTableFilter from './useTableFilter';
 import DeskFilter from '../DeskFilter/DeskFilter';
 import { StatusFilter as StatusFilterType, SubStatusFilter as SubStatusFilterType } from '../InvestigationTableInterfaces';
+import { useDispatch, useSelector } from 'react-redux';
+import KeyValuePair from 'models/KeyValuePair';
+import StoreStateType from 'redux/storeStateType';
+import { fetchAllInvestigatorReferenceStatuses, fetchAllChatStatuses } from 'httpClient/investigationInfo';
+import { setInvestigatorReferenceStatuses } from 'redux/investigatorReferenceStatuses/investigatorReferenceStatusesActionCreator';
+import { setChatStatuses } from 'redux/ChatStatuses/chatStatusesActionCreator';
 
 const searchBarLabel = 'מספר אפידמיולוגי, ת"ז, שם או טלפון';
 
@@ -32,7 +38,10 @@ const TableFilter = (props: Props) => {
         timeRangeFilter, onTimeRangeFilterChange,
         updateDateFilter, nonContactFilter,
         desksToTransfer, deskFilter, changeDeskFilter, changeSearchFilter,
-        unallocatedDeskFilter, changeUnallocatedDeskFilter
+        unallocatedDeskFilter, changeUnallocatedDeskFilter,
+        changeInvestigatorReferenceStatusFilter, changeInvestigatorReferenceRequiredFilter,
+        investigatorReferenceRequiredFilter, investigatorReferenceStatusFilter,
+        chatStatusFilter, changeChatStatusFilter
     } = props;
 
     const { displayTimeRange, onSelectTimeRangeChange, onStartDateSelect, onEndDateSelect, errorMes } = useTableFilter({
@@ -40,11 +49,31 @@ const TableFilter = (props: Props) => {
         onTimeRangeFilterChange
     });
 
+    const dispatch = useDispatch();
+    const investigatorReferenceStatuses = useSelector<StoreStateType, KeyValuePair[]>(state => state.investigatorReferenceStatuses);
+    const chatStatuses = useSelector<StoreStateType, KeyValuePair[]>(state => state.chatStatuses);
+
     const [subStatusFiltered, setSubStatusFiltered] = useState<SubStatus[]>([]);
     const [selectedStatuses, setSelectedStatuses] = useState<InvestigationMainStatusCodes[]>(filteredStatuses);
     const [selectedSubStatuses, setSelectedSubStatuses] = useState<string[]>(filteredSubStatuses);
+    const [selectedInvestigatorReferenceStatus, setSelectedInvestigatorReferenceStatus] = useState<number[]>([]);
+    const [selectedChatStatus, setSelectedChatStatus] = useState<number[]>([]);
 
     const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id;
+
+
+    useEffect(() => {
+        if (investigatorReferenceStatuses.length === 0) {
+            fetchAllInvestigatorReferenceStatuses().then(data => {
+                if (data) dispatch(setInvestigatorReferenceStatuses(data));
+            });
+        }
+        if (chatStatuses.length === 0) {
+            fetchAllChatStatuses().then(data => {
+                if (data) dispatch(setChatStatuses(data));
+            });
+        }
+    }, []);
 
     useEffect(() => {
         selectedStatuses.length > 0
@@ -164,22 +193,54 @@ const TableFilter = (props: Props) => {
                 )}
                 limitTags={1}
             />
-             <Autocomplete
+            <Autocomplete
                 ChipProps={{ className: classes.chip }}
                 className={classes.autocomplete}
                 classes={{ inputFocused: classes.autocompleteInputText }}
                 size='small'
                 disableCloseOnSelect
                 multiple
-                options={subStatusFiltered}
-                value={subStatusFiltered.filter(subStatus => selectedSubStatuses.includes(subStatus.displayName))}
+                options={chatStatuses}
+                value={chatStatuses.filter(status => selectedChatStatus.includes(status.id))}
                 getOptionLabel={(option) => option.displayName}
                 onChange={(event, values) => {
-                    onSubStatusChange(values);
-                    setSelectedSubStatuses(values.map(value => value.displayName));
-                    values.length > 0
-                        ? setSelectedStatuses([...selectedStatuses, ...statuses.filter(status => values.map(subStatus => subStatus.parentStatus).includes(status.id)).map(status => status.id)])
-                        : setSelectedStatuses(filteredStatuses)
+                    changeChatStatusFilter(values);
+                    setSelectedChatStatus(values.map(value => value.id));
+
+                }}
+                renderInput={(params) =>
+                    <TextField
+                        label={'סטטוס שיחת בוט'}
+                        {...params}
+                        InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
+                    />
+                }
+                renderOption={(option, { selected }) => (
+                    <>
+                        <Checkbox
+                            size='small'
+                            className={classes.optionCheckbox}
+                            checked={selected}
+                            color='primary'
+                        />
+                        <Typography className={classes.option} >{option.displayName}</Typography>
+                    </>
+                )}
+                limitTags={1}
+            />
+            <Autocomplete
+                ChipProps={{ className: classes.chip }}
+                className={classes.autocomplete}
+                classes={{ inputFocused: classes.autocompleteInputText }}
+                size='small'
+                disableCloseOnSelect
+                multiple
+                options={investigatorReferenceStatuses}
+                value={investigatorReferenceStatuses.filter(status => selectedInvestigatorReferenceStatus.includes(status.id))}
+                getOptionLabel={(option) => option.displayName}
+                onChange={(event, values) => {
+                    changeInvestigatorReferenceStatusFilter(values);
+                    setSelectedInvestigatorReferenceStatus(values.map(value => value.id));
 
                 }}
                 renderInput={(params) =>
@@ -230,6 +291,15 @@ const TableFilter = (props: Props) => {
                     />
                     <Typography className={classes.title}>לא משויכות לדסק</Typography>
                 </div>
+                <div className={classes.row}>
+                    <Checkbox
+                        onChange={(event) => changeInvestigatorReferenceRequiredFilter(event.target.checked)}
+                        color='primary'
+                        checked={investigatorReferenceRequiredFilter}
+                        className={classes.checkbox}
+                    />
+                    <Typography className={classes.title}>נדרשת התייחסות חוקר</Typography>
+                </div>
             </Grid>
             <div className={classes.tableHeaderRow}>
                 <Box justifyContent='flex-end' display='flex'>
@@ -252,6 +322,9 @@ interface Props {
     filteredSubStatuses: SubStatusFilterType;
     unassignedUserFilter: boolean;
     inactiveUserFilter: boolean;
+    investigatorReferenceRequiredFilter: boolean;
+    investigatorReferenceStatusFilter: number[];
+    chatStatusFilter: number[];
     changeUnassginedUserFilter: (isFilterOn: boolean) => void;
     changeInactiveUserFilter: (isFilterOn: boolean) => void;
     onFilterChange: (selectedStatuses: InvestigationMainStatus[]) => void;
@@ -267,6 +340,10 @@ interface Props {
     changeSearchFilter: (searchQuery: string) => void;
     unallocatedDeskFilter: boolean;
     changeUnallocatedDeskFilter: (isFilterOn: boolean) => void;
+    changeChatStatusFilter: (statuses: KeyValuePair[]) => void;
+    changeInvestigatorReferenceStatusFilter: (statuses: KeyValuePair[]) => void;
+    changeInvestigatorReferenceRequiredFilter: (isFilterOn: boolean) => void;
+
 };
 
 export default TableFilter
