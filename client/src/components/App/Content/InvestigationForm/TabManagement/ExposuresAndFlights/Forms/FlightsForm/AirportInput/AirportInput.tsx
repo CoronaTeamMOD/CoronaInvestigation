@@ -16,8 +16,6 @@ const AirportInput = (props: any) => {
     const {
         country,
         countryFieldName,
-        city,
-        cityFieldName,
         airport,
         airportFieldName,
         handleChangeExposureDataAndFlightsField,
@@ -81,28 +79,6 @@ const AirportInput = (props: any) => {
                                 label={getCountryLabel(countryFieldError)}
                                 placeholder='מדינה'
                                 isViewMode={isViewMode}
-                            />
-                        );
-                    }}
-                />
-            </Grid>
-            <Grid item>
-                <Controller
-                    control={control}
-                    name={`exposures[${index}].${cityFieldName}`}
-                    defaultValue={city}
-                    render={(props) => {
-                        return (
-                            <InternationalCityTextField
-                                fullwidth
-                                {...props}
-                                onChange={(value) => {
-                                    props.onChange(value);
-                                    handleChangeExposureDataAndFlightsField(cityFieldName, value);
-                                }}
-                                placeholder='עיר'
-                                label='עיר'
-                                disabled={isViewMode}
                             />
                         );
                     }}
