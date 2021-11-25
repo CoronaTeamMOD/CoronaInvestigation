@@ -149,6 +149,7 @@ CREATE TABLE IF NOT EXISTS public.bot_investigation
     investigatior_reference_required boolean,
     investigation_chat_id character varying COLLATE pg_catalog."default",
     investigation_chat_start_date timestamp without time zone,
+    bot_export_date timestamp without time zone,
     CONSTRAINT bot_investigation_pkey PRIMARY KEY (id),
     CONSTRAINT epidemiology_number_unique UNIQUE (epidemiology_number),
     CONSTRAINT bot_investigation_chat_status_fkey FOREIGN KEY (chat_status_id)
