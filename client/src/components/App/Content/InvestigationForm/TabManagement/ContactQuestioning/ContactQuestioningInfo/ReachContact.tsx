@@ -51,7 +51,7 @@ const ReachContact = (props: Props) => {
     })
     const contactStatusOptions = contactStatuses.filter(status=>status.id !== ContactStatusCodes.QUESTIONING_IS_NOT_NEEDED);
 
-        useEffect(() => {
+    useEffect(() => {
         return (() => {
             contactQuestioningService.getDuplicateIdentities().subscribe().unsubscribe();
         })
