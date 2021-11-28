@@ -54,7 +54,7 @@ const getIdValidation = (idType: number) => {
 
 const useContactFields = (contactStatus?: InteractedContact['contactStatus']) => {
 
-    const shouldDisable = (status?: InteractedContact['contactStatus']) => status === ContactStatusCodes.COMPLETED;
+    const shouldDisable = (status?: InteractedContact['contactStatus']) => status === ContactStatusCodes.COMPLETED || status === ContactStatusCodes.QUESTIONING_IS_NOT_NEEDED;
 
     const isFieldDisabled = React.useMemo(() => shouldDisable(contactStatus), [contactStatus]);
 
