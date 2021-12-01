@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginBottom: theme.spacing(1),
         borderRadius: 16,
         maxHeight: '80%',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between'      
     },
     mainLine: {
         display: 'flex',
@@ -35,6 +35,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: 'flex',
         justifyContent: 'flex-start',
         alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: theme.spacing(1)
     },
     endCard: {
         display: 'flex',
@@ -43,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         flexDirection: 'row',
     },
     autocomplete: {
-        width: '15%',
+        width: '25%',
         marginRight: '7px',
         '&.Mui-focused': {
             '& div[role="button"]': {

@@ -96,7 +96,6 @@ const TableFilter = (props: Props) => {
                         filteredDesks={deskFilter}
                         onFilterChange={(event, value) => changeDeskFilter(value)}
                     />
-                </Grid>
                 <div className={classes.column}>
                     <FormControl variant='outlined' className={isCustomTimeRange ? classes.formControlCustomTimeRange : classes.formControl}>
                         <SelectDropdown
@@ -194,57 +193,7 @@ const TableFilter = (props: Props) => {
                     )}
                     limitTags={1}
                 />
-                <Grid className={classes.endCard} xs={3} direction='column'>
-                    <div className={classes.row}>
-                        <Checkbox
-                            onChange={(event) => changeUnassginedUserFilter(event.target.checked)}
-                            color='primary'
-                            checked={unassignedUserFilter}
-                            className={classes.checkbox}
-                        />
-                        <Typography className={classes.title}>לא משויכות לחוקר</Typography>
-                    </div>
-                    <div className={classes.row}>
-                        <Checkbox
-                            onChange={(event) => changeInactiveUserFilter(event.target.checked)}
-                            color='primary'
-                            checked={inactiveUserFilter}
-                            className={classes.checkbox}
-                        />
-                        <Typography className={classes.title}>משויכות לחוקרים לא פעילים</Typography>
-                    </div>
-                    <div className={classes.row}>
-                        <Checkbox
-                            onChange={(event) => changeUnallocatedDeskFilter(event.target.checked)}
-                            color='primary'
-                            checked={unallocatedDeskFilter}
-                            className={classes.checkbox}
-                        />
-                        <Typography className={classes.title}>לא משויכות לדסק</Typography>
-                    </div>
-                    <div className={classes.row}>
-                        <Checkbox
-                            onChange={(event) => changeInvestigatorReferenceRequiredFilter(event.target.checked)}
-                            color='primary'
-                            checked={investigatorReferenceRequiredFilter}
-                            className={classes.checkbox}
-                        />
-                        <Typography className={classes.title}>נדרשת התייחסות חוקר</Typography>
-                    </div>
-                </Grid>
-                <div className={classes.tableHeaderRow}>
-                    <Box justifyContent='flex-end' display='flex'>
-                        <SearchBar
-                            validationSchema={stringAlphanum}
-                            searchBarLabel={searchBarLabel}
-                            onClick={(value: string) => changeSearchFilter(value)}
-                        />
-
-                    </Box>
-                </div>
-            </div>
-            <div className={classes.botLine}>
-                <Autocomplete
+                    <Autocomplete
                         ChipProps={{ className: classes.chip }}
                         className={classes.autocomplete}
                         classes={{ inputFocused: classes.autocompleteInputText }}
@@ -314,6 +263,55 @@ const TableFilter = (props: Props) => {
                         )}
                         limitTags={1}
                 />
+                </Grid>
+                <Grid className={classes.endCard} xs={3} direction='column'>
+                    <div className={classes.row}>
+                        <Checkbox
+                            onChange={(event) => changeUnassginedUserFilter(event.target.checked)}
+                            color='primary'
+                            checked={unassignedUserFilter}
+                            className={classes.checkbox}
+                        />
+                        <Typography className={classes.title}>לא משויכות לחוקר</Typography>
+                    </div>
+                    <div className={classes.row}>
+                        <Checkbox
+                            onChange={(event) => changeInactiveUserFilter(event.target.checked)}
+                            color='primary'
+                            checked={inactiveUserFilter}
+                            className={classes.checkbox}
+                        />
+                        <Typography className={classes.title}>משויכות לחוקרים לא פעילים</Typography>
+                    </div>
+                    <div className={classes.row}>
+                        <Checkbox
+                            onChange={(event) => changeUnallocatedDeskFilter(event.target.checked)}
+                            color='primary'
+                            checked={unallocatedDeskFilter}
+                            className={classes.checkbox}
+                        />
+                        <Typography className={classes.title}>לא משויכות לדסק</Typography>
+                    </div>
+                    <div className={classes.row}>
+                        <Checkbox
+                            onChange={(event) => changeInvestigatorReferenceRequiredFilter(event.target.checked)}
+                            color='primary'
+                            checked={investigatorReferenceRequiredFilter}
+                            className={classes.checkbox}
+                        />
+                        <Typography className={classes.title}>נדרשת התייחסות חוקר</Typography>
+                    </div>
+                </Grid>
+                <div className={classes.tableHeaderRow}>
+                    <Box justifyContent='flex-end' display='flex'>
+                        <SearchBar
+                            validationSchema={stringAlphanum}
+                            searchBarLabel={searchBarLabel}
+                            onClick={(value: string) => changeSearchFilter(value)}
+                        />
+
+                    </Box>
+                </div>
             </div>
         </Card>
         
