@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         flexDirection: 'row',
     },
     autocomplete: {
-        width: '13%',
+        width: '15%',
         marginRight: '7px',
         '&.Mui-focused': {
             '& div[role="button"]': {

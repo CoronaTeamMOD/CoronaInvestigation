@@ -296,7 +296,7 @@ const TableFilter = (props: Props) => {
                         }}
                         renderInput={(params) =>
                             <TextField
-                                label={'סטטוס טיפול בחקירה בבוט'}
+                                label={'סטטוס טיפול חקירת בוט'}
                                 {...params}
                                 InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
                             />
