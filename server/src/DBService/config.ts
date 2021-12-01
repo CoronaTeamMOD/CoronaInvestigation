@@ -23,8 +23,7 @@ const genericOptions: PostGraphileOptions = {
     disableQueryLog: process.env.ENVIRONMENT === 'prod',
     pgSettings: {
         statement_timeout: '30000'
-    },
-    allowExplain: process.env.ENVIRONMENT !== 'prod'
+    }
 };
 
 const pgPool = new Pool({
