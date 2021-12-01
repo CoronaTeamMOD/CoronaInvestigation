@@ -12,7 +12,7 @@ export const contactQuestioningPersonal = {
         .when(
             [InteractedContactFields.CONTACT_STATUS, InteractedContactFields.DOES_NEED_ISOLATION, InteractedContactFields.IDENTIFICATION_TYPE],
             (contactStatus: number, needIsolation: boolean, identificationType: number, schema: any, { originalValue }: { originalValue: string }) => {
-                return (contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
+                return (contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE || contactStatus === ContactStatusCodes.QUESTIONING_IS_NOT_NEEDED )
                 ? yup.string().nullable()
                 : (contactStatus === ContactStatusCodes.COMPLETED ||  !needIsolation) &&  (identificationType == null || identificationType === 6)
                     ? yup.string().nullable()
@@ -21,7 +21,7 @@ export const contactQuestioningPersonal = {
         ),
     [InteractedContactFields.IDENTIFICATION_TYPE]: yup.number().when(
         [InteractedContactFields.CONTACT_STATUS, InteractedContactFields.IDENTIFICATION_NUMBER], (contactStatus: number, identificationNumber: string | null) => {
-            return (contactStatus === ContactStatusCodes.COMPLETED || contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
+            return (contactStatus === ContactStatusCodes.COMPLETED || contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE || contactStatus === ContactStatusCodes.QUESTIONING_IS_NOT_NEEDED)
             ? yup.number().nullable()
             : identificationNumber == null
                 ? yup.number().nullable() 
@@ -34,7 +34,7 @@ export const contactQuestioningPersonal = {
         .when(
             [InteractedContactFields.CONTACT_STATUS, InteractedContactFields.DOES_NEED_ISOLATION],
             (contactStatus: number, needIsolation: boolean, schema: any, { originalValue }: { originalValue: string }) => {
-                return (contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE )
+                return (contactStatus === ContactStatusCodes.CANT_REACH || contactStatus === ContactStatusCodes.DONT_COOPERATE || contactStatus === ContactStatusCodes.QUESTIONING_IS_NOT_NEEDED)
                 ? yup.string().nullable()
                 : contactStatus === ContactStatusCodes.COMPLETED || (originalValue === '' && !needIsolation)
                     ? yup.string().nullable()
