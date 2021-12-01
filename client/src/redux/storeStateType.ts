@@ -19,6 +19,8 @@ import GroupedInvestigationReducerType from './GroupedInvestigations/GroupedInve
 import { InteractedContactsState } from './InteractedContacts/interactedContactsReducer';
 import { ClinicalDetailsState } from './ClinicalDetails/ClinicalDetailsReducer';
 import { PersonalInfoTabState } from 'components/App/Content/InvestigationForm/TabManagement/PersonalInfoTab/PersonalInfoTabInterfaces';
+import KeyValuePair from 'models/KeyValuePair';
+import { BotInvestigationInfoState } from './BotInvestigationInfo/botInvestigationInfoReducer';
 
 export default interface StoreStateType {
     user: UserState;
@@ -47,5 +49,7 @@ export default interface StoreStateType {
     airlines: Map<number, string>;
     interactedContacts: InteractedContactsState;
     clinicalDetails: ClinicalDetailsState;
-    personalInfo:PersonalInfoTabState
+    personalInfo:PersonalInfoTabState;
+    investigatorReferenceStatuses:KeyValuePair[];
+    botInvestigationInfo:BotInvestigationInfoState;
 };

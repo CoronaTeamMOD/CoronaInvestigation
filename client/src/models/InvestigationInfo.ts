@@ -2,6 +2,7 @@ import StaticUser from './StaticUser';
 import SymptomsExistenceInfo from './SymptomsExistenceInfo';
 import InvestigatedPatientStaticInfo from './InvestigatedPatientStaticInfo';
 import PersonStaticInfo from './PersonStaticInfo';
+import KeyValuePair from './KeyValuePair';
 
 interface InvestigationInfo extends SymptomsExistenceInfo, InvestigatedPatientStaticInfo, PersonStaticInfo  {
     comment: string | null;
@@ -23,5 +24,15 @@ export interface InvestigationInfoData extends Omit<InvestigationInfo, 'validati
     };
     trackingExtraInfo?: string;
 };
+
+export interface BotInvestigationInfo{
+    epidemiologyNumber:number;
+    lastChatDate: Date | null;
+    investigatiorReferenceRequired : boolean;
+    chatStatus: KeyValuePair;
+    investigationChatStatus: KeyValuePair;
+    investigatorReferenceStatus: KeyValuePair;
+    botInvestigationReferenceReasons: KeyValuePair[];
+}
 
 export default InvestigationInfo;
