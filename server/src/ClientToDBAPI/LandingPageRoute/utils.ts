@@ -6,7 +6,7 @@ import InvestigationMainStatus from '../../Models/InvestigationStatus/Investigat
 interface UserInvestigations {
     orderedInvestigations: {
         nodes: [{
-            complexityReasonsId: (number|null)[];
+            complexityReasonsId: (number | null)[];
             comment: string;
             epidemiologyNumber: number;
             complexityCode: number;
@@ -21,11 +21,11 @@ interface UserInvestigations {
                 investigatedPatientRoleByRole: {
                     id: number;
                     displayName: string;
-                  }
+                }
                 subOccupationBySubOccupation: {
                     displayName: string;
                     parentOccupation: string;
-                  }
+                }
                 covidPatientByCovidPatient: {
                     birthDate: Date;
                     fullName: string;
@@ -54,6 +54,18 @@ interface UserInvestigations {
                 }
                 otherReason: string;
             } | null;
+            botInvestigationByEpidemiologyNumber: {
+                lastChatDate: Date,
+                chatStatusByChatStatusId: {
+                    id: number,
+                    displayName: string,
+                },
+                investigatiorReferenceRequired: boolean,
+                investigatorReferenceStatusByInvestigatorReferenceStatusId: {
+                    id: number,
+                    displayName: string,
+                }
+            } | null;
         }]
     }
 }
@@ -61,7 +73,7 @@ interface UserInvestigations {
 interface GroupIvestigations {
     orderedInvestigations: {
         nodes: [{
-            complexityReasonsId: (number|null)[];
+            complexityReasonsId: (number | null)[];
             comment: string;
             epidemiologyNumber: number;
             complexityCode: number;
@@ -76,11 +88,11 @@ interface GroupIvestigations {
                 investigatedPatientRoleByRole: {
                     id: number;
                     displayName: string;
-                  }
+                }
                 subOccupationBySubOccupation: {
                     displayName: string;
                     parentOccupation: string;
-                  }
+                }
                 covidPatientByCovidPatient: {
                     birthDate: Date;
                     fullName: string;
@@ -115,6 +127,18 @@ interface GroupIvestigations {
                 }
                 otherReason: string | null;
             } | null;
+            botInvestigationByEpidemiologyNumber: {
+                lastChatDate: Date,
+                chatStatusByChatStatusId: {
+                    id: number,
+                    displayName: string,
+                },
+                investigatiorReferenceRequired: boolean,
+                investigatorReferenceStatusByInvestigatorReferenceStatusId: {
+                    id: number,
+                    displayName: string,
+                } | null
+            };
         }]
     }
 }
@@ -135,6 +159,11 @@ const mappingUserInvestigations = (investigation: UserInvestigations['orderedInv
             otherReason: investigation.investigationGroupByGroupId?.otherReason,
             reason: investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.displayName,
             reasonId: investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.id
+        },
+        botInvestigation: {
+            ...investigation.botInvestigationByEpidemiologyNumber,
+            chatStatus: investigation.botInvestigationByEpidemiologyNumber?.chatStatusByChatStatusId,
+            investigatorReferenceStatus: investigation.botInvestigationByEpidemiologyNumber?.investigatorReferenceStatusByInvestigatorReferenceStatusId
         }
     };
 
@@ -142,6 +171,10 @@ const mappingUserInvestigations = (investigation: UserInvestigations['orderedInv
     delete newObject.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient.birthDate;
     delete newObject.deskByDeskId;
     delete newObject.investigationGroupByGroupId;
+    delete newObject.botInvestigationByEpidemiologyNumber;
+    delete newObject.botInvestigation.chatStatusByChatStatusId;
+    delete newObject.botInvestigation.investigatorReferenceStatusByInvestigatorReferenceStatusId;
+
 
     return newObject;
 }
@@ -162,6 +195,11 @@ const mappingGroupInvestigations = (investigation: UserInvestigations['orderedIn
             otherReason: investigation.investigationGroupByGroupId?.otherReason,
             reason: investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.displayName,
             reasonId: investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.id
+        },
+        botInvestigation: {
+            ...investigation.botInvestigationByEpidemiologyNumber,
+            chatStatus: investigation.botInvestigationByEpidemiologyNumber?.chatStatusByChatStatusId,
+            investigatorReferenceStatus: investigation.botInvestigationByEpidemiologyNumber?.investigatorReferenceStatusByInvestigatorReferenceStatusId
         }
     };
 
@@ -169,6 +207,9 @@ const mappingGroupInvestigations = (investigation: UserInvestigations['orderedIn
     delete newObject.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient.birthDate;
     delete newObject.deskByDeskId;
     delete newObject.investigationGroupByGroupId;
+    delete newObject.botInvestigationByEpidemiologyNumber;
+    delete newObject.botInvestigation.chatStatusByChatStatusId;
+    delete newObject.botInvestigation.investigatorReferenceStatusByInvestigatorReferenceStatusId;
 
     return newObject;
 }

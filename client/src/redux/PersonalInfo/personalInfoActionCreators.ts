@@ -1,7 +1,7 @@
 import * as actionTypes from './personalInfoActionTypes';
 import { ThunkAction } from 'redux-thunk';
 import { PersonalInfoTabState } from 'components/App/Content/InvestigationForm/TabManagement/PersonalInfoTab/PersonalInfoTabInterfaces';
-import { getPersonalInfoData } from 'httpClient/PersonalInfo/personalInfo';
+import { getPersonalInfoData } from 'httpClient/personalInfo';
 
 type ValueOf<T> = T[keyof T];
 

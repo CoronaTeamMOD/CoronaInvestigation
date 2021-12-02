@@ -154,6 +154,18 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         }
         otherReason
       }
+      botInvestigationByEpidemiologyNumber {
+        lastChatDate
+        chatStatusByChatStatusId {
+          id
+          displayName
+        }
+        investigatiorReferenceRequired
+        investigatorReferenceStatusByInvestigatorReferenceStatusId {
+          id
+          displayName
+        }
+      }
     }
     totalCount
   }
@@ -254,6 +266,28 @@ query allAdminMessages($desksIdInput: [Int!], $adminIdInput: String! ) {
       desksId
       id
       message
+    }
+  }
+}
+`;
+
+export const GET_ALL_INVESTIGATOR_REFERENCE_STATUSES = gql`
+query allInvestigatorReferenceStatuses {
+  allInvestigatorReferenceStatuses(orderBy: DISPLAY_NAME_ASC) {
+    nodes {
+      id
+      displayName
+    }
+  }
+}
+`;
+
+export const GET_ALL_CHAT_STATUSES = gql`
+query allChatStatuses {
+  allChatStatuses(orderBy: DISPLAY_NAME_ASC) {
+    nodes {
+      id
+      displayName
     }
   }
 }

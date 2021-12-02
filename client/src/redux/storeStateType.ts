@@ -19,6 +19,8 @@ import GroupedInvestigationReducerType from './GroupedInvestigations/GroupedInve
 import { InteractedContactsState } from './InteractedContacts/interactedContactsReducer';
 import { ClinicalDetailsState } from './ClinicalDetails/ClinicalDetailsReducer';
 import { PersonalInfoTabState } from 'components/App/Content/InvestigationForm/TabManagement/PersonalInfoTab/PersonalInfoTabInterfaces';
+import KeyValuePair from 'models/KeyValuePair';
+import { BotInvestigationInfoState } from './BotInvestigationInfo/botInvestigationInfoReducer';
 
 export default interface StoreStateType {
     user: UserState;
@@ -26,7 +28,7 @@ export default interface StoreStateType {
     isInInvestigation: boolean;
     investigation: InvestigationRedux;
     gender: string;
-    placeSubTypesByTypes: PlacesSubTypesByTypes ;
+    placeSubTypesByTypes: PlacesSubTypesByTypes;
     cities: Map<string, City>;
     countries: Map<string, Country>;
     contactTypes: Map<number, ContactType>;
@@ -41,11 +43,14 @@ export default interface StoreStateType {
     desk: Desk[];
     groupedInvestigations: GroupedInvestigationReducerType;
     authorities: Map<string, Authority>;
-    complexReasons: (number|null)[];
+    complexReasons: (number | null)[];
     greenPass: GreenPassReducerType;
     identificationTypes: IdentificationType[];
     airlines: Map<number, string>;
     interactedContacts: InteractedContactsState;
     clinicalDetails: ClinicalDetailsState;
-    personalInfo:PersonalInfoTabState
+    personalInfo: PersonalInfoTabState;
+    investigatorReferenceStatuses: KeyValuePair[];
+    botInvestigationInfo: BotInvestigationInfoState;
+    chatStatuses: KeyValuePair[];
 };

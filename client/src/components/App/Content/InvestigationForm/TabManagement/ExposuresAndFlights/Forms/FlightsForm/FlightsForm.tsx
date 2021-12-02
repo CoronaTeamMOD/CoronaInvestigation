@@ -84,8 +84,6 @@ const FlightsForm = (props: Props) => {
 						<AirportInput
 							country={exposureAndFlightsData[fieldsNames.originCountry]}
 							countryFieldName={fieldsNames.originCountry}
-							city={exposureAndFlightsData[fieldsNames.originCity]}
-							cityFieldName={fieldsNames.originCity}
 							airport={exposureAndFlightsData[fieldsNames.originAirport]}
 							airportFieldName={fieldsNames.originAirport}
 							index={index}
@@ -107,8 +105,6 @@ const FlightsForm = (props: Props) => {
 						<AirportInput
 							country={exposureAndFlightsData[fieldsNames.destinationCountry]}
 							countryFieldName={fieldsNames.destinationCountry}
-							city={exposureAndFlightsData[fieldsNames.destinationCity]}
-							cityFieldName={fieldsNames.destinationCity}
 							airport={exposureAndFlightsData[fieldsNames.destinationAirport]}
 							airportFieldName={fieldsNames.destinationAirport}
 							index={index}

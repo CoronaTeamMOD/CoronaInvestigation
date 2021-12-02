@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import logger from 'logger/logger';
@@ -15,13 +15,14 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setGender } from 'redux/Gender/GenderActionCreators';
 import { CommentContextProvider } from './Context/CommentContext';
 import { landingPageRoute, adminLandingPageRoute } from 'Utils/Routes/Routes';
-import InvestigationInfo, { InvestigationInfoData } from 'models/InvestigationInfo';
+import InvestigationInfo, { BotInvestigationInfo, InvestigationInfoData } from 'models/InvestigationInfo';
 import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setDatesToInvestigateParams, setIsContactInvestigationVerifiedAbroad } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigatedPatientId, setIsCurrentlyHospitialized, setIsDeceased, setEndTime, setTrackingRecommendation, setBirthDate } from 'redux/Investigation/investigationActionCreators';
 
 import useGroupedInvestigationContacts from '../useGroupedInvestigationContacts';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
+import { getBotInvestigationInfo } from 'redux/BotInvestigationInfo/botInvestigationInfoActionCreator';
 
 const defaultInvestigationStaticInfo: InvestigationInfo = {
     comment: '',
@@ -68,6 +69,7 @@ const UNAUTHORIZED_ERROR_TEXT = 'אין לך הרשאות לבצע פעולות 
 const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode }: Props) => {
 
     let history = useHistory();
+    const dispatch = useDispatch();
     const { alertWarning, alertError } = useCustomSwal();
 
     const [investigationStaticInfo, setInvestigationStaticInfo] = React.useState<InvestigationInfo>(defaultInvestigationStaticInfo);
@@ -76,6 +78,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode }: Props
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const lastOpenedEpidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.lastOpenedEpidemiologyNumber);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
+    const botInvestigationInfo = useSelector<StoreStateType, BotInvestigationInfo | null>(state => state.botInvestigationInfo.botInvestigationInfo);
 
     const { setGroupedInvestigationsDetailsAsync } = useGroupedInvestigationContacts();
 
@@ -151,6 +154,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode }: Props
                     handleInvalidEntrance()
                 });
             setGroupedInvestigationsDetailsAsync();
+            dispatch(getBotInvestigationInfo());
         }
     }, [epidemiologyNumber]);
 
@@ -184,6 +188,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode }: Props
                 currentTab={currentTab}
                 isViewMode={isViewMode}
                 epedemioligyNumber={epidemiologyNumber}
+                botInvestigationInfo={botInvestigationInfo}
             />
             <InvestigationMetadata
                 investigationMetaData={investigationStaticInfo}

@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import StoreStateType from 'redux/storeStateType';
 import React, { MutableRefObject, useMemo } from 'react';
-import { Checkbox, IconButton, TableCell, TableRow, TextField, Tooltip } from '@material-ui/core';
-import { Call, KeyboardArrowDown, KeyboardArrowLeft, Visibility } from '@material-ui/icons';
+import { Box, Checkbox, IconButton, TableCell, TableRow, TextField, Tooltip } from '@material-ui/core';
+import { Call, KeyboardArrowDown, KeyboardArrowLeft, Person, Visibility } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
@@ -238,6 +238,17 @@ const InvestigationTableRow = ({
                 );
             case TableHeadersNames.age:
                 return indexedRow[cellName as keyof typeof TableHeadersNames] ?? '-';
+            case TableHeadersNames.investigatiorReferenceRequired:
+                return (
+                    <Box flex={1} marginX={0.5}>
+                    {
+                        indexedRow.investigatiorReferenceRequired &&
+                        <Tooltip title={'נדרשת התייחסות חוקר'} placement='top' arrow>
+                            <Person color='primary' />
+                        </Tooltip>
+                    }
+                </Box>
+                )
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames];
         }

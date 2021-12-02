@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import theme from 'styles/theme';
 import logger from 'logger/logger';
@@ -18,15 +18,24 @@ import { transferredSubStatus } from 'components/App/Content/LandingPage/Investi
 import { inProcess } from './InvestigatedPersonInfo';
 import { InvestigatedPersonInfoIncome, InvestigatedPersonInfoOutcome, StaticFieldsFormInputs } from './InvestigatedPersonInfoInterfaces';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import { setInvestigationStaticFieldChange } from 'redux/Investigation/investigationActionCreators';
+import investigatorReferenceStatusesReducer from 'redux/investigatorReferenceStatuses/investigatorReferenceStatusesReduces';
+import { updateInvestigatorReferenceStatus } from 'httpClient/investigationInfo';
+import { setInvestigatorReferenceStatusWasChanged } from 'redux/BotInvestigationInfo/botInvestigationInfoActionCreator';
 
 const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): InvestigatedPersonInfoOutcome => {
-    const { setStaticFieldsChange, moveToTheInvestigationForm } = parameters;
+    const { moveToTheInvestigationForm } = parameters;
 
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
     const { alertSuccess, alertWarning, alertError } = useCustomSwal();
     const { updateTrackingReccomentaion } = UdpateTrackingRecommendation();
 
+    const dispatch = useDispatch();
+
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
+    const investigatorReferenceStatusWasChanged = useSelector<StoreStateType, boolean>(state => state.botInvestigationInfo.investigatorReferenceStatusWasChanged);
+    const investigationStaticFieldChange = useSelector<StoreStateType, boolean>(state => state.investigation.investigationStaticFieldChange);
+    const investigatorReferenceStatusId = useSelector<StoreStateType,number|undefined>(state=>state.botInvestigationInfo.botInvestigationInfo?.investigatorReferenceStatus.id);
 
     const handleInvestigationFinish = () => {
         alertSuccess('בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה', {
@@ -48,9 +57,9 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
         const statusReason = investigationStatus.statusReason === '' ? null : investigationStatus.statusReason;
         const updateInvestigationStatusLogger = logger.setup('Update Investigation Status');
         updateInvestigationStatusLogger.info('launching investigation status request', Severity.LOW);
-        const startTime = investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS && investigationStatus.previousStatus === InvestigationMainStatusCodes.NEW 
-        ? new Date() 
-        : undefined;
+        const startTime = investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS && investigationStatus.previousStatus === InvestigationMainStatusCodes.NEW
+            ? new Date()
+            : undefined;
         investigationStatus.mainStatus !== DEFAULT_INVESTIGATION_STATUS && await axios.post('/investigationInfo/updateInvestigationStatus', {
             investigationMainStatus: investigationStatus.mainStatus,
             investigationSubStatus: subStatus !== inProcess ? subStatus : null,
@@ -95,23 +104,36 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
         }
     };
 
-    const staticFieldsSubmit = (data: StaticFieldsFormInputs) => {
-        const updateStaticFieldsLogger = logger.setup('Updating static info');
-        updateStaticFieldsLogger.info('launching the server request', Severity.LOW);
-        setIsLoading(true);
-        axios.post('/investigationInfo/updateStaticInfo', ({
-            data
-        }))
-            .then(() => {
-                updateStaticFieldsLogger.info('updated static info successfully', Severity.LOW);
-                setIsLoading(false);
-                setStaticFieldsChange(false);
+    const staticFieldsSubmit = (data: StaticFieldsFormInputs,) => {
+        if (investigationStaticFieldChange) {
+            const updateStaticFieldsLogger = logger.setup('Updating static info');
+            updateStaticFieldsLogger.info('launching the server request', Severity.LOW);
+            setIsLoading(true);
+            axios.post('/investigationInfo/updateStaticInfo', ({
+                data
+            }))
+                .then(() => {
+                    updateStaticFieldsLogger.info('updated static info successfully', Severity.LOW);
+                    setIsLoading(false);
+                    dispatch(setInvestigationStaticFieldChange(false));
+                })
+                .catch((error) => {
+                    updateStaticFieldsLogger.error(`got error from server: ${error}`, Severity.HIGH);
+                    alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
+                    setIsLoading(false);
+                })
+        }
+
+        if (investigatorReferenceStatusWasChanged && investigatorReferenceStatusId) {
+            updateInvestigatorReferenceStatus(investigatorReferenceStatusId as number).then(result=>{
+                if (!result) throw 'error';
+                dispatch(setInvestigatorReferenceStatusWasChanged(false));
             })
-            .catch((error) => {
-                updateStaticFieldsLogger.error(`got error from server: ${error}`, Severity.HIGH);
+            .catch((error)=>{
                 alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
-                setIsLoading(false);
-            })
+                setIsLoading(false); 
+            });
+        }
     };
 
     const reopenInvestigation = (epidemiologyNumber: number) => {

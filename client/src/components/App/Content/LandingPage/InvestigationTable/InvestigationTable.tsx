@@ -87,8 +87,10 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
         statusFilter, subStatusFilter, changeStatusFilter, changeSubStatusFilter, deskFilter, changeDeskFilter, changeSearchFilter,
         changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers,
-        tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter, updateDateFilter, nonContactFilter, fetchAllGroupedInvestigations, 
-        unallocatedDeskFilter, changeUnallocatedDeskFilter
+        tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter, updateDateFilter, nonContactFilter, fetchAllGroupedInvestigations,
+        unallocatedDeskFilter, changeUnallocatedDeskFilter, changeInvestigatorReferenceStatusFilter,
+        changeInvestigatorReferenceRequiredFilter, investigatorReferenceRequiredFilter, investigatorReferenceStatusFilter,
+        chatStatusFilter, changeChatStatusFilter
     } = useInvestigationTable({
         setSelectedRow, allGroupedInvestigations, setAllStatuses, currentPage, setCurrentPage, setAllGroupedInvestigations,
         investigationColor, setAllSubStatuses, setAllComplexReasons
@@ -283,6 +285,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             changeSearchFilter={changeSearchFilter}
                             unallocatedDeskFilter={unallocatedDeskFilter}
                             changeUnallocatedDeskFilter={changeUnallocatedDeskFilter}
+                            changeInvestigatorReferenceStatusFilter={changeInvestigatorReferenceStatusFilter}
+                            investigatorReferenceRequiredFilter={investigatorReferenceRequiredFilter}
+                            changeInvestigatorReferenceRequiredFilter={changeInvestigatorReferenceRequiredFilter}
+                            investigatorReferenceStatusFilter={investigatorReferenceStatusFilter}
+                            changeChatStatusFilter={changeChatStatusFilter}
+                            chatStatusFilter={chatStatusFilter}
                         />
                     </Grid>
                 </Grid>
@@ -294,7 +302,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     Object.values((user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) ? adminCols : userCols).map((key) => (
                                         <TableCell
                                             classes={{ stickyHeader: classes.horizontalSticky }}
-                                            className={classes.tableHeaderCell + ' ' + (key === TableHeadersNames.investigatorName ? classes.columnBorder : '')}
+                                            className={classes.tableHeaderCell + ' ' + (key === TableHeadersNames.investigatorName || key === TableHeadersNames.investigatiorReferenceRequired ? classes.columnBorder : '')}
                                             sortDirection={orderBy === key ? order : false}
                                         >
                                             {
@@ -361,7 +369,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             checkGroupedInvestigationOpen={checkGroupedInvestigationOpen}
                                             tableCellStyleFunction={getRegularCellStyle(index, isGroupShown)}
                                             onInvestigationDeskChange={alertInvestigationDeskChange(indexedRow)}
-                                            onInvestigationRowClick={()=>{  
+                                            onInvestigationRowClick={() => {
                                                 setIsViewMode(false);
                                                 onInvestigationRowClick(indexedRow)
                                             }}
