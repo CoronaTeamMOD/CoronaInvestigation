@@ -119,7 +119,8 @@ const InteractionDialog = (props: Props) => {
                     contactType: ContactTypeKeys.CONTACT_TYPE_TIGHT,
                     involvedContactId: familyMember.id,
                     familyRelationship: familyMember.familyRelationship?.id,
-                    identificationType: familyMember.identificationType?.id
+                    identificationType: familyMember.identificationType?.id,
+                    creationSource: CreationSourceCodes.EVEN_YESOD
                 };
 
                 contacts.push(familyContact as Contact);

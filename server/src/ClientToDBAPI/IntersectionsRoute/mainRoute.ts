@@ -25,6 +25,7 @@ import {
 } from '../../DBService/ContactEvent/Query';
 
 const NEW_CONTACT_STATUS = 1;
+const CREATION_SOURCE = 5;
 
 const intersectionsRoute = Router();
         
@@ -219,7 +220,8 @@ intersectionsRoute.post('/groupedInvestigationContacts' , async (request : Reque
         const contactedPerson = {
             personInfo: contact.personInfo,
             contactEvent: contact.contactEvent,
-            creationTime: contact.creationTime
+            creationTime: contact.creationTime,
+            creationSource : CREATION_SOURCE
         }
 
         const contactDetails = contact
