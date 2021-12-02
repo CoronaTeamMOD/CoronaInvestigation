@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { format } from 'date-fns';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useEffect, useState, useRef, useMemo } from 'react';
 
@@ -43,6 +43,9 @@ import {
 import { DeskFilter, HistoryState, StatusFilter, SubStatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
 import SubStatus from 'models/SubStatus';
 import KeyValuePair from 'models/KeyValuePair';
+import { fetchAllInvestigatorReferenceStatuses, fetchAllChatStatuses } from 'httpClient/investigationInfo'; 
+import { setInvestigatorReferenceStatuses } from 'redux/investigatorReferenceStatuses/investigatorReferenceStatusesActionCreator';
+import { setChatStatuses } from 'redux/ChatStatuses/chatStatusesActionCreator';
 
 const investigationURL = '/investigation';
 
@@ -146,6 +149,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const classes = useStyle(false);
     const { alertError } = useCustomSwal();
     const history = useHistory<HistoryState>();
+    const dispatch = useDispatch();
 
     const { statusFilter: historyStatusFilter = [],
         subStatusFilter: historySubStatusFilter = [],
@@ -409,12 +413,23 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 subStatusesLogger.error(err, Severity.HIGH);
             })
     };
+    
+    const fetchAllBotInvestigationStatuses = () =>{
+            fetchAllInvestigatorReferenceStatuses().then(data => {
+                if (data) dispatch(setInvestigatorReferenceStatuses(data));
+            });
+            fetchAllChatStatuses().then(data => {
+                if (data) dispatch(setChatStatuses(data));
+            });
+       
+    }
 
     useEffect(() => {
         resetInvestigationState();
         fetchAllInvestigationStatuses();
         fetchAllInvestigationSubStatuses();
         fetchAllInvestigationComplexityReasons();
+        fetchAllBotInvestigationStatuses();
         startWaiting();
     }, []);
 
@@ -1143,7 +1158,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         investigatorReferenceRequiredFilter,
         investigatorReferenceStatusFilter,
         chatStatusFilter,
-        changeChatStatusFilter
+        changeChatStatusFilter     
     };
 };
 
