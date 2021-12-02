@@ -3,13 +3,24 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
     card: {
-        display: 'flex',
         alignItems: 'center',
         padding: theme.spacing(1),
         marginBottom: theme.spacing(1),
         borderRadius: 16,
         maxHeight: '80%',
+        justifyContent: 'space-between'      
+    },
+    mainLine: {
+        display: 'flex',
+        alignItems: 'center',
+        maxHeight: '80%',
         justifyContent: 'space-between'
+    },
+    botLine: {
+        display: 'flex',
+        alignItems: 'center',
+        borderRadius: 16,
+        maxHeight: '80%'
     },
     counterLabel: {
         fontWeight: 600
@@ -24,6 +35,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: 'flex',
         justifyContent: 'flex-start',
         alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: theme.spacing(1)
     },
     endCard: {
         display: 'flex',
@@ -32,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         flexDirection: 'row',
     },
     autocomplete: {
-        width: '13%',
+        width: '25%',
         marginRight: '7px',
         '&.Mui-focused': {
             '& div[role="button"]': {

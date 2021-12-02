@@ -30,6 +30,7 @@ import ClinicalDetailsReducer from './ClinicalDetails/ClinicalDetailsReducer';
 import personalInfoReducer from './PersonalInfo/personalInfoReducer';
 import investigatorReferenceStatusesReducer from './investigatorReferenceStatuses/investigatorReferenceStatusesReduces';
 import botInvestigationInfoReducer from './BotInvestigationInfo/botInvestigationInfoReducer';
+import chatStatusesReducer from './ChatStatuses/chatStatusesReducer';
 
 export default combineReducers<StoreStateType>({
      occupations: occupationsReducer,
@@ -60,5 +61,6 @@ export default combineReducers<StoreStateType>({
      clinicalDetails: ClinicalDetailsReducer,
      personalInfo: personalInfoReducer,
      investigatorReferenceStatuses: investigatorReferenceStatusesReducer,
-     botInvestigationInfo: botInvestigationInfoReducer
+     botInvestigationInfo: botInvestigationInfoReducer,
+     chatStatuses: chatStatusesReducer
 }) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;

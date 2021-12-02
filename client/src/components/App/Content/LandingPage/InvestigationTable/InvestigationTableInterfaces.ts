@@ -13,6 +13,7 @@ import AllocatedInvestigator from 'models/InvestigationTable/AllocateInvestigato
 
 import { SelectedRow } from './useInvestigationTable';
 import { IndexedInvestigationData } from './InvestigationTablesHeaders';
+import KeyValuePair from 'models/KeyValuePair';
 
 export type StatusFilter = InvestigationMainStatusCodes[];
 export type SubStatusFilter = string[];
@@ -31,6 +32,9 @@ export interface HistoryState {
     isAdminLandingRedirect?: boolean;
     filterTitle?: string;
     unallocatedDeskFilter?: boolean;
+    chatStatusFilter?: number[];
+    investigatorReferenceStatusFilter?: number[];
+    investigatorReferenceRequiredFilter?: boolean;
 };
 
 export interface useInvestigationTableParameters {
@@ -38,7 +42,7 @@ export interface useInvestigationTableParameters {
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     setSelectedRow: React.Dispatch<React.SetStateAction<SelectedRow>>;
     setAllStatuses: React.Dispatch<React.SetStateAction<InvestigationMainStatus[]>>;
-    setAllComplexReasons: React.Dispatch<React.SetStateAction<(number|null)[]>>;
+    setAllComplexReasons: React.Dispatch<React.SetStateAction<(number | null)[]>>;
     setAllSubStatuses: React.Dispatch<React.SetStateAction<SubStatus[]>>;
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
     setAllGroupedInvestigations: React.Dispatch<React.SetStateAction<Map<string, InvestigationTableRow[]>>>;
@@ -83,11 +87,17 @@ export interface useInvestigationTableOutcome {
     timeRangeFilter: TimeRange;
     updateDateFilter: string;
     nonContactFilter: boolean;
+    chatStatusFilter: number[];
+    investigatorReferenceStatusFilter: number[];
+    investigatorReferenceRequiredFilter: boolean;
     changeUpdateDateFilter: (dateString: string) => void;
     changeNonContactFilter: (isNonContact: boolean) => void;
     isBadgeInVisible: boolean;
     changeTimeRangeFilter: (timeRange: TimeRange) => void;
     fetchAllGroupedInvestigations: () => void;
     unallocatedDeskFilter: boolean;
-    changeUnallocatedDeskFilter:(isFilterOn: boolean) => void;
+    changeUnallocatedDeskFilter: (isFilterOn: boolean) => void;
+    changeChatStatusFilter: (chatStatses: KeyValuePair[]) => void;
+    changeInvestigatorReferenceStatusFilter: (investigatorReferencestatuses: KeyValuePair[]) => void;
+    changeInvestigatorReferenceRequiredFilter: (isFilterOn: boolean) => void;
 };
