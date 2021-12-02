@@ -1,4 +1,4 @@
-import { fetchClinicalDetails } from 'httpClient/InteractedContacts/clinicalDetails';
+import { fetchClinicalDetails } from 'httpClient/clinicalDetails';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import FlattenedDBAddress from 'models/DBAddress';
 import { ThunkAction } from 'redux-thunk';

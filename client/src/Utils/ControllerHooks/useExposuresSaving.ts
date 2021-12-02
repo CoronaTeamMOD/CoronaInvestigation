@@ -14,7 +14,7 @@ import { FormData } from 'components/App/Content/InvestigationForm/TabManagement
 const exposureDeleteCondition = 
     (wereFlights: boolean, wereConfirmedExposures: boolean) : (exposure: Exposure) => boolean => {
     if (!wereConfirmedExposures) {
-        return (exposure: Exposure) => exposure.exposureSource !== undefined //&& exposure.exposureSource !== null
+        return (exposure: Exposure) => exposure.exposureSource !== undefined
     };
     if (!wereFlights) {
         return (exposure: Exposure) => exposure.flightDestinationCountry !== undefined && exposure.flightDestinationCountry !== null
@@ -99,9 +99,7 @@ const useExposuresSaving = () => {
                 exposureAddress: exposuresAndFlightsData.exposureAddress ||  null
             }
         }
-        if (exposuresAndFlightsData.exposureSource !== undefined   
-            // && exposuresAndFlightsData.exposureSource !== null
-            ) {
+        if (exposuresAndFlightsData.exposureSource !== undefined) {
             exposureAndDataToReturn = {
                 ...exposureAndDataToReturn,
                 [fieldsNames.wasConfirmedExposure] : true,
