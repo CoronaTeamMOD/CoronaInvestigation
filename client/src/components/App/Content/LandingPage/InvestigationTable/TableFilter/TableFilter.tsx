@@ -20,9 +20,6 @@ import { StatusFilter as StatusFilterType, SubStatusFilter as SubStatusFilterTyp
 import { useDispatch, useSelector } from 'react-redux';
 import KeyValuePair from 'models/KeyValuePair';
 import StoreStateType from 'redux/storeStateType';
-import { fetchAllInvestigatorReferenceStatuses, fetchAllChatStatuses } from 'httpClient/investigationInfo';
-import { setInvestigatorReferenceStatuses } from 'redux/investigatorReferenceStatuses/investigatorReferenceStatusesActionCreator';
-import { setChatStatuses } from 'redux/ChatStatuses/chatStatusesActionCreator';
 
 const searchBarLabel = 'מספר אפידמיולוגי, ת"ז, שם או טלפון';
 
@@ -49,7 +46,6 @@ const TableFilter = (props: Props) => {
         onTimeRangeFilterChange
     });
 
-    const dispatch = useDispatch();
     const investigatorReferenceStatuses = useSelector<StoreStateType, KeyValuePair[]>(state => state.investigatorReferenceStatuses);
     const chatStatuses = useSelector<StoreStateType, KeyValuePair[]>(state => state.chatStatuses);
 
@@ -61,19 +57,6 @@ const TableFilter = (props: Props) => {
 
     const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id;
 
-
-    useEffect(() => {
-        if (investigatorReferenceStatuses.length === 0) {
-            fetchAllInvestigatorReferenceStatuses().then(data => {
-                if (data) dispatch(setInvestigatorReferenceStatuses(data));
-            });
-        }
-        if (chatStatuses.length === 0) {
-            fetchAllChatStatuses().then(data => {
-                if (data) dispatch(setChatStatuses(data));
-            });
-        }
-    }, []);
 
     useEffect(() => {
         selectedStatuses.length > 0
