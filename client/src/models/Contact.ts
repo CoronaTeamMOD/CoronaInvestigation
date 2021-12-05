@@ -18,6 +18,7 @@ interface Contact {
     involvedContactId?: number;
     involvedContact?: InvolvedContact | null;
     familyRelationship?: number;
+    creationSource?: number;
 };
 
 export interface FormattedContact extends Omit<Contact, "identificationType">{
