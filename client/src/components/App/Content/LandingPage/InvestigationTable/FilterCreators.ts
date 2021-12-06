@@ -5,8 +5,17 @@ import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFie
 import { allTimeRangeId } from '../adminLandingPage/useAdminLandingPage';
 import InvestigatorReferenceStatusCode from 'models/enums/InvestigatorReferenceStatusCode';
 import ChatStatusCode from 'models/enums/ChatStatusCodes';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 const unassignedUserName = 'לא משויך';
+
+const TEN_HOURS_IN_MS = 10 * 60 * 60 * 1000;
+const TWO_HOURS_IN_MS = 2 * 60 * 60 * 1000;
+
+const OVERTIME_OF_NEW_BOT_INVESTIGATION = TEN_HOURS_IN_MS;
+const OVERTIME_OF_IN_PROGRESS_BOT_INVESTIGATION = TWO_HOURS_IN_MS;
+
+const BOT_USER = 'admin.group9995';
 
 export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => Exclude<any, void>) } = {
     [InvestigationsFilterByFields.STATUS]: (values: string[]) => {
@@ -210,14 +219,71 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
             {
                 [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_REQUIRED]: {
                     botInvestigationByEpidemiologyNumber: {
-                        investigatiorReferenceRequired: { equalTo: true }
+                        investigatiorReferenceRequired: { equalTo: true },
+                        investigatorReferenceStatusId: { notIn: [InvestigatorReferenceStatusCode.DONE] }
                     }
                 }
             }
             :
             { [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_REQUIRED]: null };
     },
-
+    [InvestigationsFilterByFields.INCOMPLETED_BOT_INVESTIGATION]: (isFilterOn: boolean) => {
+        return isFilterOn ?
+            {
+                [InvestigationsFilterByFields.INCOMPLETED_BOT_INVESTIGATION]: {
+                    or: [
+                        {
+                            botInvestigationByEpidemiologyNumber: {
+                                chatStatusId: {
+                                    in: [
+                                        ChatStatusCode.NO_WHATSAPP,
+                                        ChatStatusCode.NO_COOPERATION,
+                                        ChatStatusCode.HUMAN_INVESTIGATION_REQUEST,
+                                        ChatStatusCode.WRONG_CHAT_DETAILS
+                                    ]
+                                }
+                            },
+                            investigationStatus: {
+                                in:
+                                    [
+                                        InvestigationMainStatusCodes.NEW,
+                                        InvestigationMainStatusCodes.IN_PROCESS
+                                    ]
+                            }
+                        },
+                        {
+                            botInvestigationByEpidemiologyNumber: {
+                                lastChatDate: { lessThan: new Date(Date.now() - OVERTIME_OF_NEW_BOT_INVESTIGATION).toUTCString() }
+                            },
+                            botInvestigationByEpidemiologyNumberExists: true,
+                            investigationStatus: { in: [InvestigationMainStatusCodes.NEW] },
+                        },
+                        {
+                            botInvestigationByEpidemiologyNumber: {
+                                lastChatDate: { lessThan: new Date(Date.now() - OVERTIME_OF_IN_PROGRESS_BOT_INVESTIGATION).toUTCString() }
+                            },
+                            investigationStatus: { in: [InvestigationMainStatusCodes.IN_PROCESS] },
+                            lastUpdatorUser: { equalTo: BOT_USER }
+                        },
+                        {
+                            botInvestigationByEpidemiologyNumber: {
+                                investigatorReferenceStatusId: {
+                                    in: [
+                                        InvestigatorReferenceStatusCode.NEW,
+                                        InvestigatorReferenceStatusCode.IN_PROCESS
+                                    ]
+                                }
+                            },
+                            investigationStatus: { in: [InvestigationMainStatusCodes.DONE] }
+                        }
+                    ]
+                }
+            }
+            :
+            {
+                [InvestigationsFilterByFields.INCOMPLETED_BOT_INVESTIGATION]: null
+            }
+    },
 };
 
 export default filterCreators;
