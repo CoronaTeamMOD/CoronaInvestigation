@@ -38,7 +38,8 @@ const TableFilter = (props: Props) => {
         unallocatedDeskFilter, changeUnallocatedDeskFilter,
         changeInvestigatorReferenceStatusFilter, changeInvestigatorReferenceRequiredFilter,
         investigatorReferenceRequiredFilter, investigatorReferenceStatusFilter,
-        chatStatusFilter, changeChatStatusFilter
+        chatStatusFilter, changeChatStatusFilter,
+        incompletedBotInvestigationFilter,changeIncompletedBotInvestigationFilter
     } = props;
 
     const { displayTimeRange, onSelectTimeRangeChange, onStartDateSelect, onEndDateSelect, errorMes } = useTableFilter({
@@ -52,8 +53,8 @@ const TableFilter = (props: Props) => {
     const [subStatusFiltered, setSubStatusFiltered] = useState<SubStatus[]>([]);
     const [selectedStatuses, setSelectedStatuses] = useState<InvestigationMainStatusCodes[]>(filteredStatuses);
     const [selectedSubStatuses, setSelectedSubStatuses] = useState<string[]>(filteredSubStatuses);
-    const [selectedInvestigatorReferenceStatus, setSelectedInvestigatorReferenceStatus] = useState<number[]>([]);
-    const [selectedChatStatus, setSelectedChatStatus] = useState<number[]>([]);
+    const [selectedInvestigatorReferenceStatus, setSelectedInvestigatorReferenceStatus] = useState<number[]>(investigatorReferenceStatusFilter);
+    const [selectedChatStatus, setSelectedChatStatus] = useState<number[]>(chatStatusFilter);
 
     const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id;
 
@@ -284,6 +285,15 @@ const TableFilter = (props: Props) => {
                         />
                         <Typography className={classes.title}>נדרשת התייחסות חוקר</Typography>
                     </div>
+                    <div className={classes.row}>
+                        <Checkbox
+                            onChange={(event) => changeIncompletedBotInvestigationFilter(event.target.checked)}
+                            color='primary'
+                            checked={incompletedBotInvestigationFilter}
+                            className={classes.checkbox}
+                        />
+                        <Typography className={classes.title}>חקירות שלא הושלמו ע"י בוט</Typography>
+                    </div>
                 </Grid>
                 <div className={classes.tableHeaderRow}>
                     <Box justifyContent='flex-end' display='flex'>
@@ -311,6 +321,7 @@ interface Props {
     investigatorReferenceRequiredFilter: boolean;
     investigatorReferenceStatusFilter: number[];
     chatStatusFilter: number[];
+    incompletedBotInvestigationFilter:boolean;
     changeUnassginedUserFilter: (isFilterOn: boolean) => void;
     changeInactiveUserFilter: (isFilterOn: boolean) => void;
     onFilterChange: (selectedStatuses: InvestigationMainStatus[]) => void;
@@ -329,7 +340,7 @@ interface Props {
     changeChatStatusFilter: (statuses: KeyValuePair[]) => void;
     changeInvestigatorReferenceStatusFilter: (statuses: KeyValuePair[]) => void;
     changeInvestigatorReferenceRequiredFilter: (isFilterOn: boolean) => void;
-
+    changeIncompletedBotInvestigationFilter: (isFilterOn: boolean) => void;
 };
 
 export default TableFilter

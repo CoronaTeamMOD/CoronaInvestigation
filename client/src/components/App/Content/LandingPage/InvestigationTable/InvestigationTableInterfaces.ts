@@ -35,6 +35,7 @@ export interface HistoryState {
     chatStatusFilter?: number[];
     investigatorReferenceStatusFilter?: number[];
     investigatorReferenceRequiredFilter?: boolean;
+    incompletedBotInvestigationFilter?:boolean;
 };
 
 export interface useInvestigationTableParameters {
@@ -90,6 +91,7 @@ export interface useInvestigationTableOutcome {
     chatStatusFilter: number[];
     investigatorReferenceStatusFilter: number[];
     investigatorReferenceRequiredFilter: boolean;
+    incompletedBotInvestigationFilter:boolean;
     changeUpdateDateFilter: (dateString: string) => void;
     changeNonContactFilter: (isNonContact: boolean) => void;
     isBadgeInVisible: boolean;
@@ -100,4 +102,5 @@ export interface useInvestigationTableOutcome {
     changeChatStatusFilter: (chatStatses: KeyValuePair[]) => void;
     changeInvestigatorReferenceStatusFilter: (investigatorReferencestatuses: KeyValuePair[]) => void;
     changeInvestigatorReferenceRequiredFilter: (isFilterOn: boolean) => void;
+    changeIncompletedBotInvestigationFilter: (isFilterOn: boolean) => void;
 };
