@@ -33,15 +33,19 @@ INSERT INTO public.chat_status(id, display_name)
 	ON CONFLICT DO NOTHING;
 	
 INSERT INTO public.chat_status(id, display_name)
-	VALUES (6,'הושלמה')
+	VALUES (7,'הושלמה')
+	ON CONFLICT DO NOTHING;
+
+INSERT INTO public.chat_status(id, display_name)
+	VALUES (8,'שיחה כפולה')
 	ON CONFLICT DO NOTHING;
 	
 INSERT INTO public.chat_status(id, display_name)
-	VALUES (7,'בקשה לחקירה אנושית')
+	VALUES (10,'בקשה לחקירה אנושית')
 	ON CONFLICT DO NOTHING;
 	
 INSERT INTO public.chat_status(id, display_name)
-	VALUES (8,'פרטי שיחה שגויים')
+	VALUES (9,'פרטי שיחה שגויים')
 	ON CONFLICT DO NOTHING;
 
 INSERT INTO public.chat_status(id, display_name)
