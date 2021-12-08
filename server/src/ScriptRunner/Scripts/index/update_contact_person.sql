@@ -63,8 +63,7 @@ begin
 			/*update person and contacted person */
 	    update contacted_person 
 	    set extra_info = extraInfo,
-		contact_type = contactType,
-		creation_source = creationSource
+		contact_type = contactType
 	    where id = contacted_person_id ;
 		
 	    update person 
