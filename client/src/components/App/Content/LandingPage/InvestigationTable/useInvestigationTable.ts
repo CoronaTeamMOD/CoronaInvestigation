@@ -942,6 +942,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const getDefaultCellStyles = (cellKey: string) => {
         let classNames: string[] = [];
         classNames.push(classes.font);
+        if(cellKey === TableHeadersNames.multipleCheck){
+            classNames.push(classes.watchBtn);
+        }
+        if(cellKey === TableHeadersNames.rowIndicators){
+            classNames.push(classes.biggerWidth);
+        }
         if (cellKey !== TableHeadersNames.color) {
             classNames.push(classes.tableCell);
         }

@@ -11,7 +11,7 @@ const ComplexityIcon: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
 
     return (
-        <Tooltip title={tooltipText} placement='top' arrow>
+        <Tooltip classes={{popper:classes.tooltipSize}} title={tooltipText} placement='top' arrow>
             <Star className={[classes.icon, className].join(' ')} {...otherProps} />
         </Tooltip>
     )

@@ -82,10 +82,10 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.isSelfInvestigated]: '',
     [TableHeadersNames.selfInvestigationStatus]: '',
     [TableHeadersNames.selfInvestigationUpdateTime]: '',
-    [TableHeadersNames.lastChatDate]:'תאריך עדכון אחרון בבוט',
-    [TableHeadersNames.chatStatus]:'סטטוס שיחה בבוט',
+    [TableHeadersNames.lastChatDate]:'עדכון אחרון בבוט',
+    [TableHeadersNames.chatStatus]:'סטטוס שיחה',
     [TableHeadersNames.investigatiorReferenceRequired]:'',
-    [TableHeadersNames.investigatorReferenceStatus]:'סטטוס טיפול בחקירה בוט'
+    [TableHeadersNames.investigatorReferenceStatus]:'סטטוס טיפול'
 }
 
 export const adminCols: string[] = [
@@ -97,8 +97,6 @@ export const adminCols: string[] = [
     TableHeadersNames.fullName,
     TableHeadersNames.age,
     TableHeadersNames.city,
-    TableHeadersNames.subOccupation,
-    TableHeadersNames.phoneNumber,
     TableHeadersNames.investigatorName,
     TableHeadersNames.investigationStatus,
     TableHeadersNames.investigationDesk,
@@ -120,8 +118,6 @@ export const userCols: string[] = [
     TableHeadersNames.fullName,
     TableHeadersNames.age,
     TableHeadersNames.city,
-    TableHeadersNames.subOccupation,
-    TableHeadersNames.phoneNumber,
     TableHeadersNames.investigationDesk,
     TableHeadersNames.comment,
     TableHeadersNames.investigatiorReferenceRequired,

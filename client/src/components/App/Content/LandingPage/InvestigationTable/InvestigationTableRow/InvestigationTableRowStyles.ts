@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     tableCellRoot: {
         padding: '0',
-        maxWidth: '200px'
+        maxWidth: '50px'
     },
     investigationRow: {
         textDecoration: 'none'
