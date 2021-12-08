@@ -23,7 +23,7 @@ const InvestigationMetadata = (props: Props) => {
                 value={investigationMetaData.lastUpdateTime ? format(new Date(investigationMetaData.lastUpdateTime), 'dd/MM/yyyy') : noStartDate}
             />
             <InfoItem testId='updatingUser' name='משתמש מעדכן' value={
-                investigationMetaData.userByLastUpdator.userName
+                investigationMetaData.userByLastUpdatorUser? investigationMetaData.userByLastUpdatorUser.userName : ''
             }
             />
             <InfoItem testId='investigatorPhoneNumber' name='טלפון המבצע' value={investigationMetaData.userByLastUpdator.phoneNumber} />

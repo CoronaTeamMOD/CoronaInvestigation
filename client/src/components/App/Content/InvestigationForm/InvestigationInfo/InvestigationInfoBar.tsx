@@ -47,6 +47,7 @@ const defaultInvestigationStaticInfo: InvestigationInfo = {
     investigatedPatientId: 0,
     userByCreator: defaultUser,
     userByLastUpdator: defaultUser,
+    userByLastUpdatorUser: defaultUser,
     isReturnSick: false,
     previousDiseaseStartDate: null,
     isVaccinated: false,

@@ -251,8 +251,7 @@ begin
 					flight_destination_airport=trim(flightDestinationAirport,'"'),
 					place_sub_type=placeSubType,
 					hospital_department = trim(hospitalDepartment,'"'),
-					unknown_time=unknownTime,
-					creation_source = creationSource
+					unknown_time=unknownTime
 				WHERE id=curr_event;
 				events_array := array_append(events_array, curr_event); 
 				
