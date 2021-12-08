@@ -40,12 +40,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     endCard: {
         display: 'flex',
+        alignItems: 'center',
+        justifyItems:'center'
     },
     row: {
         flexDirection: 'row',
     },
     autocomplete: {
-        width: '25%',
+        width: '30%',
         marginRight: '7px',
         '&.Mui-focused': {
             '& div[role="button"]': {
