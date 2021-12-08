@@ -12,6 +12,7 @@ interface InvestigationInfo extends SymptomsExistenceInfo, InvestigatedPatientSt
     investigatedPatientId: number;
     userByCreator: StaticUser;
     userByLastUpdator: StaticUser;
+    userByLastUpdatorUser: StaticUser;
     endTime: Date | null;
 };
 
