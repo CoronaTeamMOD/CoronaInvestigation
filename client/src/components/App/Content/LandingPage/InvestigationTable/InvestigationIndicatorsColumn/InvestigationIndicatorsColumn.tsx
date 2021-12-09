@@ -14,7 +14,7 @@ const InvestigationIndicatorsColumn = (props: Props) => {
     const { isComplex, wasInvestigationTransferred, transferReason, isSelfInvestigated, selfInvestigationStatus, selfInvestigationUpdateTime, complexityReasonsId, isInInstitute, instituteName } = props;
     const allComplexReasons = useSelector<StoreStateType, (number|null)[]>(state => state.complexReasons);
     let investigationComplexityReasons = (complexityReasonsId) && complexityReasonsId.map((id) => (id) && allComplexReasons[id - 1]).filter((value, index, self) => self.indexOf(value) === index).toString()
-    if(isInInstitute){
+    if(isInInstitute && instituteName){
         investigationComplexityReasons += ', שם המוסד: ' + instituteName; 
     }
     const complexInvestigationText = investigationComplexityReasons ? `${complexInvestigationMessage}: ${investigationComplexityReasons}` : `${complexInvestigationMessage}: אחר`;
