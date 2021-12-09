@@ -7,6 +7,9 @@ const useStyles = makeStyles({
     root: {
         marginTop: '1vh',
     },
+    tooltipSize: {
+        maxWidth:'200px'
+    }
 });
 
 export default useStyles;

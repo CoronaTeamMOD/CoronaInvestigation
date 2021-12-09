@@ -3,7 +3,7 @@ import { Autocomplete } from '@material-ui/lab';
 import StoreStateType from 'redux/storeStateType';
 import React, { MutableRefObject, useMemo } from 'react';
 import { Box, Checkbox, IconButton, TableCell, TableRow, TextField, Tooltip } from '@material-ui/core';
-import { Call, KeyboardArrowDown, KeyboardArrowLeft, Person, Visibility } from '@material-ui/icons';
+import { Call, KeyboardArrowDown, KeyboardArrowLeft, Person, Visibility, Comment } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
@@ -133,15 +133,21 @@ const InvestigationTableRow = ({
                 )
             case TableHeadersNames.rowIndicators:
                 return (
-                    <InvestigationIndicatorsColumn
-                        isComplex={indexedRow.isComplex}
-                        complexityReasonsId={row.complexityReasonsId}
-                        wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
-                        transferReason={indexedRow.transferReason}
-                        isSelfInvestigated={indexedRow.isSelfInvestigated}
-                        selfInvestigationStatus={indexedRow.selfInvestigationStatus}
-                        selfInvestigationUpdateTime={new Date(indexedRow.selfInvestigationUpdateTime)}
-                    />
+                    <div style={{display:"flex"}}>
+                        <ClickableTooltip disabled={disabled} value={indexedRow.phoneNumber}
+                        defaultValue='' scrollableRef={tableContainerRef.current} InputIcon={Call} />
+                        <InvestigationIndicatorsColumn
+                            isComplex={indexedRow.isComplex}
+                            complexityReasonsId={row.complexityReasonsId}
+                            wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
+                            transferReason={indexedRow.transferReason}
+                            isSelfInvestigated={indexedRow.isSelfInvestigated}
+                            selfInvestigationStatus={indexedRow.selfInvestigationStatus}
+                            selfInvestigationUpdateTime={new Date(indexedRow.selfInvestigationUpdateTime)}
+                            isInInstitute = {row.isInInstitute}
+                            instituteName = {indexedRow.subOccupation}
+                        />
+                    </div>
                 );
             case TableHeadersNames.investigatorName:
                 return (
@@ -185,9 +191,8 @@ const InvestigationTableRow = ({
                 </Tooltip>
             case TableHeadersNames.comment:
                 return (
-                    <CommentCell
-                        comment={indexedRow[cellName as keyof typeof TableHeadersNames]}
-                    />
+                    <ClickableTooltip disabled={disabled} value={indexedRow.comment}
+                        defaultValue='' scrollableRef={tableContainerRef.current} InputIcon={Comment} />
                 )
 
             case TableHeadersNames.phoneNumber:
