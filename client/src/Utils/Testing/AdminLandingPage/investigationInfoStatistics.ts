@@ -8,7 +8,8 @@ const invesitgationInfoStatistics : InvesitgationInfoStatistics = {
     unusualInProgressInvestigations: 8,
     unusualCompletedNoContactInvestigations: 9,
     waitingForDetailsInvestigations: 10,
-    unallocatedDeskInvestigations:11
+    unallocatedDeskInvestigations:11,
+    incompletedBotInvestigations: 12
 };
 
 export default invesitgationInfoStatistics;
