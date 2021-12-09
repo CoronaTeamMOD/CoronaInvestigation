@@ -246,8 +246,7 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
                             investigationStatus: {
                                 in:
                                     [
-                                        InvestigationMainStatusCodes.NEW,
-                                        InvestigationMainStatusCodes.IN_PROCESS
+                                        InvestigationMainStatusCodes.NEW
                                     ]
                             }
                         },

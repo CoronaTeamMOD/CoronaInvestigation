@@ -46,4 +46,9 @@ export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit
         color: DANGER,
         secondary: SECONDARY
     },
+    incompletedBotInvestigations: {
+        id: FilterRulesDescription.INCOMPLETED_BOT_INVESTIGATIONS,
+        color:DANGER,
+        secondary: SECONDARY
+    }
 };
