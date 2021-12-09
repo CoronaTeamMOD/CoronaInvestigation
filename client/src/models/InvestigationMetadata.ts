@@ -6,6 +6,7 @@ interface InvestigationMetaData {
     investigatingUnit: string;
     userByCreator: StaticUser;
     userByLastUpdator: StaticUser;
+    userByLastUpdatorUser: StaticUser;
 };
 
 export default InvestigationMetaData;

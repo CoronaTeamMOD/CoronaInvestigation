@@ -14,6 +14,7 @@ import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFie
 
 import useStyles from './ExcelUploaderStyles';
 import useContactExcel from './useContactExcel';
+import CreationSourceCodes from 'models/enums/CreationSourceCodes';
 
 const fileEndings = [
     'xlsx', 'xlsb', 'xlsm', 'xls', 'xml', 'csv', 'txt', 'ods', 'fods', 'uos', 'sylk', 'dif', 'dbf', 'prn', 'qpw', '123', 'wb*', 'wq*', 'html', 'htm'
@@ -91,7 +92,7 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
             } else {
                 const contactsData = contacts.map(contact => {
                     const { rowNum, ...contactData } = contact;
-                    return {...contactData, contactStatus: contactData.contactStatus || ContactStatus.NEW};
+                    return {...contactData, contactStatus: contactData.contactStatus || ContactStatus.NEW , creationSource:CreationSourceCodes.EVEN_YESOD};
                 });
                 setIsLoading(true);
                 axios.post('/contactedPeople/excel', { contactEvent, contacts: contactsData })

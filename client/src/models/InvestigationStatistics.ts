@@ -7,6 +7,7 @@ export interface InvesitgationInfoStatistics {
     unusualCompletedNoContactInvestigations: number;
     waitingForDetailsInvestigations: number;
     unallocatedDeskInvestigations:number;
+    incompletedBotInvestigations:number;
 };
 interface InvesitgationStatistics extends InvesitgationInfoStatistics {
     allInvestigations: number;

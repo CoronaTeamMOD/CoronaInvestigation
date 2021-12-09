@@ -51,6 +51,13 @@ query InvestigationStaticDetails($investigationId: Int!) {
       serialNumber
       investigationGroup
     }
+    userByLastUpdatorUser {
+      id
+      userName
+      phoneNumber
+      serialNumber
+      investigationGroup
+    }
     trackingSubReasonByTrackingSubReason {
       reasonId
       subReasonId

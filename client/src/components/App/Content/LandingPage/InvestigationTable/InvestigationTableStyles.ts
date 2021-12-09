@@ -65,8 +65,14 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     font: {
         color: '#424242',
-        whiteSpace: 'nowrap',
         fontSize: '0.9rem'
+    },
+    watchBtn: {
+        whiteSpace: 'nowrap',
+        maxWidth: '200px'
+    },
+    biggerWidth:{
+        maxWidth: '80px'
     },
     tableHeaderRow: {
         width: tableWidth,

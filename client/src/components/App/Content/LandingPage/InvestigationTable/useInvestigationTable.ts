@@ -164,6 +164,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         investigatorReferenceStatusFilter: historyInvestigatorReferenceStatusFilter = [],
         chatStatusFilter: historyChatStatusFilter = [],
         investigatorReferenceRequiredFilter: historyInvestigatorReferenceRequiredFilter = false,
+        incompletedBotInvestigationFilter: historyIncompletedBotInvestigationFilter = false,
         filterTitle } = useMemo(() => {
             const { location: { state } } = history;
             return state || {};
@@ -187,6 +188,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [chatStatusFilter, setChatStatusFilter] = useState<number[]>(historyChatStatusFilter);
     const [investigatorReferenceStatusFilter, setInvestigatorReferenceStatusFilter] = useState<number[]>(historyInvestigatorReferenceStatusFilter);
     const [investigatorReferenceRequiredFilter, setInvestigatorReferenceRequiredFilter] = useState<boolean>(historyInvestigatorReferenceRequiredFilter);
+    const [incompletedBotInvestigationFilter, setIncompletedBotInvestigationFilter] = useState<boolean>(historyIncompletedBotInvestigationFilter);
 
     const getFilterRules = () => {
         const statusFilterToSet = historyStatusFilter.length > 0 ? filterCreators.STATUS(historyStatusFilter) : null;
@@ -200,7 +202,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const nonContactFilterToSet = historyNonContactFilter ? filterCreators.UNUSUAL_COMPLETED_NO_CONTACT(historyNonContactFilter) : null;
         const unAllocatedDeskToSet = historyUnallocatedDeskFilter ? filterCreators.UNALLOCATED_DESK(historyUnallocatedDeskFilter) : null;
         const investigatorRefernceStatusToSet = historyInvestigatorReferenceStatusFilter ? filterCreators.INVESTIGATOR_REFERENCE_STATUS(historyInvestigatorReferenceStatusFilter) : null;
-
+        const chatStatusFilterToSet = historyChatStatusFilter ? filterCreators.CHAT_STATUS(historyChatStatusFilter) : null;
+        const investigatorReferenceRequiredFilterToSet = historyInvestigatorReferenceRequiredFilter ? filterCreators.INVESTIGATOR_REFERENCE_REQUIRED(historyInvestigatorReferenceRequiredFilter) : null;
+        const incompletedBotInvestigationFilterToSet = historyIncompletedBotInvestigationFilter ? filterCreators.INCOMPLETED_BOT_INVESTIGATION(historyIncompletedBotInvestigationFilter) : null;
+        
         return {
             [InvestigationsFilterByFields.STATUS]: statusFilterToSet && Object.values(statusFilterToSet)[0],
             [InvestigationsFilterByFields.SUB_STATUS]: subStatusFilterToSet && Object.values(subStatusFilterToSet)[0],
@@ -212,7 +217,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: updateDateFilterToSet && Object.values(updateDateFilterToSet)[0],
             [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: nonContactFilterToSet && Object.values(nonContactFilterToSet)[0],
             [InvestigationsFilterByFields.UNALLOCATED_DESK]: unAllocatedDeskToSet && Object.values(unAllocatedDeskToSet)[0],
-            [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_STATUS]: investigatorRefernceStatusToSet && Object.values(investigatorRefernceStatusToSet)[0]
+            [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_STATUS]: investigatorRefernceStatusToSet && Object.values(investigatorRefernceStatusToSet)[0],
+            [InvestigationsFilterByFields.CHAT_STATUS]: chatStatusFilterToSet && Object.values(chatStatusFilterToSet)[0],
+            [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_REQUIRED]: investigatorReferenceRequiredFilterToSet && Object.values(investigatorReferenceRequiredFilterToSet)[0],
+            [InvestigationsFilterByFields.INCOMPLETED_BOT_INVESTIGATION]: incompletedBotInvestigationFilterToSet && Object.values(incompletedBotInvestigationFilterToSet)[0]
         }
     };
 
@@ -335,9 +343,16 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const changeInvestigatorReferenceRequiredFilter = (value: boolean) => {
-        updateFilterHistory('investigatorReferenceRequired', value);
+        updateFilterHistory('investigatorReferenceRequiredFilter', value);
         setInvestigatorReferenceRequiredFilter(value);
         handleFilterChange(filterCreators.INVESTIGATOR_REFERENCE_REQUIRED(value));
+        setCurrentPage(defaultPage);
+    };
+    
+    const changeIncompletedBotInvestigationFilter = (value: boolean) => {
+        updateFilterHistory('incompletedBotInvestigationFilter', value);
+        setIncompletedBotInvestigationFilter(value);
+        handleFilterChange(filterCreators.INCOMPLETED_BOT_INVESTIGATION(value));
         setCurrentPage(defaultPage);
     };
 
@@ -927,6 +942,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const getDefaultCellStyles = (cellKey: string) => {
         let classNames: string[] = [];
         classNames.push(classes.font);
+        if(cellKey === TableHeadersNames.multipleCheck){
+            classNames.push(classes.watchBtn);
+        }
+        if(cellKey === TableHeadersNames.rowIndicators){
+            classNames.push(classes.biggerWidth);
+        }
         if (cellKey !== TableHeadersNames.color) {
             classNames.push(classes.tableCell);
         }
@@ -1158,7 +1179,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         investigatorReferenceRequiredFilter,
         investigatorReferenceStatusFilter,
         chatStatusFilter,
-        changeChatStatusFilter     
+        changeChatStatusFilter,
+        incompletedBotInvestigationFilter,
+        changeIncompletedBotInvestigationFilter     
     };
 };
 
