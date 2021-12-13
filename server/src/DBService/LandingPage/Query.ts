@@ -76,6 +76,26 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         }
         otherReason
       }
+      botInvestigationByEpidemiologyNumber {
+        lastChatDate
+        chatStatusByChatStatusId {
+          id
+          displayName
+        }
+        investigatiorReferenceRequired
+        investigatorReferenceStatusByInvestigatorReferenceStatusId {
+          id
+          displayName
+        }
+        botInvestigationReferenceReasonsByBotInvestigationId {
+          nodes {
+            investigatorReferenceReasonByInvestigatorReferenceReasonId {
+              displayName
+              id
+            }
+          }
+        }
+      }
     }
     totalCount
   }
@@ -164,6 +184,14 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         investigatorReferenceStatusByInvestigatorReferenceStatusId {
           id
           displayName
+        }
+        botInvestigationReferenceReasonsByBotInvestigationId {
+          nodes {
+            investigatorReferenceReasonByInvestigatorReferenceReasonId {
+              displayName
+              id
+            }
+          }
         }
       }
     }

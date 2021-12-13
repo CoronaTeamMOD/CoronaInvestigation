@@ -84,7 +84,8 @@ export const createRowData = (
     lastChatDate: string,
     investigatiorReferenceRequired: boolean,
     chatStatus: KeyValuePair,
-    investigatorReferenceStatus: KeyValuePair
+    investigatorReferenceStatus: KeyValuePair,
+    investigatorReferenceReasons:KeyValuePair[]
 ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
@@ -121,7 +122,8 @@ export const createRowData = (
     lastChatDate,
     investigatiorReferenceRequired,
     chatStatus,
-    investigatorReferenceStatus
+    investigatorReferenceStatus,
+    investigatorReferenceReasons
 });
 
 export interface SelectedRow {
@@ -618,8 +620,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     lastChatDate,
                                     investigation.botInvestigation?.investigatiorReferenceRequired,
                                     investigation.botInvestigation?.chatStatus,
-                                    investigation.botInvestigation?.investigatorReferenceStatus
-                                )
+                                    investigation.botInvestigation?.investigatorReferenceStatus,
+                                    investigation.botInvestigation?.investigatorReferenceReasons
+                                    )
                             });
                         investigationRows
                             .filter((row) => row.groupId !== null && !investigationColor.current.has(row.groupId))
@@ -1083,7 +1086,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             investigation.botInvestigation?.lastChatDate,
                             investigation.botInvestigation?.investigatiorReferenceRequired,
                             investigation.botInvestigation?.chatStatus,
-                            investigation.botInvestigation?.investigatorReferenceStatus
+                            investigation.botInvestigation?.investigatorReferenceStatus,
+                            investigation.botInvestigation?.investigatorReferenceReasons
                         )
                     });
                 setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))
