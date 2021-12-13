@@ -1,0 +1,24 @@
+-- CREATE OR REPLACE FUNCTION public.get_investigation_contacts_count(
+-- 	epidemiology_number integer,
+--     min_date date)
+--     RETURNS integer
+--     LANGUAGE 'plpgsql'
+--     COST 100
+--     VOLATILE PARALLEL UNSAFE
+-- AS $BODY$
+-- declare
+-- res integer;
+-- begin
+
+-- select count(*) into res from (
+-- select contact.id
+-- from contact_event evnt
+-- inner join contacted_person contact
+-- on (evnt.id = contact.contact_event)	
+-- where investigation_id = epidemiology_number
+-- and evnt.start_time >= min_date
+-- ) as investigation_contacts;
+
+-- return res;
+-- end;
+-- $BODY$;
