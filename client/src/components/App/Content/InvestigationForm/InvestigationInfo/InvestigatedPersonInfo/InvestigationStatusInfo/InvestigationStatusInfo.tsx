@@ -115,7 +115,7 @@ const InvestigationStatusInfo = (props: any) => {
                             </Grid>
                             {
                                 investigationStatus.mainStatus === InvestigationMainStatusCodes.DONE &&
-                                botInvestigationInfo?.chatStatus.id== ChatStatusCode.HUMAN_INVESTIGATION_REQUEST &&
+                                botInvestigationInfo?.investigatiorReferenceRequired &&
                                 <Grid item className={classes.statusSelectGrid}>
                                 <FormControl variant='outlined' className={classes.subStatusSelect}>
                                     <InputLabel id='sub-status-label'>{investigatorReferenceStatusLabel}</InputLabel>
