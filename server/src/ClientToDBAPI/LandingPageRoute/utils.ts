@@ -64,7 +64,15 @@ interface UserInvestigations {
                 investigatorReferenceStatusByInvestigatorReferenceStatusId: {
                     id: number,
                     displayName: string,
-                }
+                },
+                botInvestigationReferenceReasonsByBotInvestigationId: {
+                    nodes: [
+                        investigatorReferenceReasonByInvestigatorReferenceReasonId: {
+                            displayName: string,
+                            id: number,
+                        }
+                    ]
+                } | null
             } | null;
         }]
     }
@@ -137,8 +145,16 @@ interface GroupIvestigations {
                 investigatorReferenceStatusByInvestigatorReferenceStatusId: {
                     id: number,
                     displayName: string,
-                } | null
-            };
+                } | null,
+                botInvestigationReferenceReasonsByBotInvestigationId: {
+                    nodes: [
+                        investigatorReferenceReasonByInvestigatorReferenceReasonId: {
+                            displayName: string,
+                            id: number,
+                        }
+                    ]
+                } | null,
+            } | null;
         }]
     }
 }
@@ -163,7 +179,8 @@ const mappingUserInvestigations = (investigation: UserInvestigations['orderedInv
         botInvestigation: {
             ...investigation.botInvestigationByEpidemiologyNumber,
             chatStatus: investigation.botInvestigationByEpidemiologyNumber?.chatStatusByChatStatusId,
-            investigatorReferenceStatus: investigation.botInvestigationByEpidemiologyNumber?.investigatorReferenceStatusByInvestigatorReferenceStatusId
+            investigatorReferenceStatus: investigation.botInvestigationByEpidemiologyNumber?.investigatorReferenceStatusByInvestigatorReferenceStatusId,
+            investigatorReferenceReasons: investigation.botInvestigationByEpidemiologyNumber?.botInvestigationReferenceReasonsByBotInvestigationId.nodes.map((obj: any) => obj.investigatorReferenceReasonByInvestigatorReferenceReasonId)
         }
     };
 
@@ -174,6 +191,7 @@ const mappingUserInvestigations = (investigation: UserInvestigations['orderedInv
     delete newObject.botInvestigationByEpidemiologyNumber;
     delete newObject.botInvestigation.chatStatusByChatStatusId;
     delete newObject.botInvestigation.investigatorReferenceStatusByInvestigatorReferenceStatusId;
+    delete newObject.botInvestigation.botInvestigationReferenceReasonsByBotInvestigationId;
 
 
     return newObject;
@@ -199,7 +217,8 @@ const mappingGroupInvestigations = (investigation: UserInvestigations['orderedIn
         botInvestigation: {
             ...investigation.botInvestigationByEpidemiologyNumber,
             chatStatus: investigation.botInvestigationByEpidemiologyNumber?.chatStatusByChatStatusId,
-            investigatorReferenceStatus: investigation.botInvestigationByEpidemiologyNumber?.investigatorReferenceStatusByInvestigatorReferenceStatusId
+            investigatorReferenceStatus: investigation.botInvestigationByEpidemiologyNumber?.investigatorReferenceStatusByInvestigatorReferenceStatusId,
+            investigatorReferenceReasons: investigation.botInvestigationByEpidemiologyNumber?.botInvestigationReferenceReasonsByBotInvestigationId.nodes.map((obj: any) => obj.investigatorReferenceReasonByInvestigatorReferenceReasonId),
         }
     };
 
@@ -210,6 +229,7 @@ const mappingGroupInvestigations = (investigation: UserInvestigations['orderedIn
     delete newObject.botInvestigationByEpidemiologyNumber;
     delete newObject.botInvestigation.chatStatusByChatStatusId;
     delete newObject.botInvestigation.investigatorReferenceStatusByInvestigatorReferenceStatusId;
+    delete newObject.botInvestigation.botInvestigationReferenceReasonsByBotInvestigationId;
 
     return newObject;
 }

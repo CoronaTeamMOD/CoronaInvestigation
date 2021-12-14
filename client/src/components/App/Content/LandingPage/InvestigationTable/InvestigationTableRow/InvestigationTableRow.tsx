@@ -118,7 +118,16 @@ const InvestigationTableRow = ({
 }: Props) => {
     const classes = useStyles();
     const user = useSelector<StoreStateType, User>(state => state.user.data);
-
+    const getInvestigatorReferenceRequiredTooltip = (row: InvestigationTableRowType) => {
+        let msg = 'נדרשת התייחסות חוקר בגין: '
+        if (row.investigatorReferenceReasons) {
+            row.investigatorReferenceReasons.forEach(reason => {
+                msg += reason.displayName + " ,";
+            });
+            msg = msg.slice(0, -1);
+        }
+        return msg;
+    }
     const getTableCell = (cellName: string) => {
         const wasInvestigationFetchedByGroup = indexedRow.groupId && !indexedRow.canFetchGroup;
         switch (cellName) {
@@ -133,9 +142,9 @@ const InvestigationTableRow = ({
                 )
             case TableHeadersNames.rowIndicators:
                 return (
-                    <div style={{display:"flex"}}>
+                    <div style={{ display: "flex" }}>
                         <ClickableTooltip disabled={disabled} value={indexedRow.phoneNumber}
-                        defaultValue='' scrollableRef={tableContainerRef.current} InputIcon={Call} />
+                            defaultValue='' scrollableRef={tableContainerRef.current} InputIcon={Call} />
                         <InvestigationIndicatorsColumn
                             isComplex={indexedRow.isComplex}
                             complexityReasonsId={row.complexityReasonsId}
@@ -144,8 +153,8 @@ const InvestigationTableRow = ({
                             isSelfInvestigated={indexedRow.isSelfInvestigated}
                             selfInvestigationStatus={indexedRow.selfInvestigationStatus}
                             selfInvestigationUpdateTime={new Date(indexedRow.selfInvestigationUpdateTime)}
-                            isInInstitute = {row.isInInstitute}
-                            instituteName = {indexedRow.subOccupation}
+                            isInInstitute={row.isInInstitute}
+                            instituteName={indexedRow.subOccupation}
                         />
                     </div>
                 );
@@ -246,13 +255,13 @@ const InvestigationTableRow = ({
             case TableHeadersNames.investigatiorReferenceRequired:
                 return (
                     <Box flex={1} marginX={0.5}>
-                    {
-                        indexedRow.investigatiorReferenceRequired &&
-                        <Tooltip title={'נדרשת התייחסות חוקר'} placement='top' arrow>
-                            <Person color='primary' />
-                        </Tooltip>
-                    }
-                </Box>
+                        {
+                            indexedRow.investigatiorReferenceRequired &&
+                            <Tooltip title={getInvestigatorReferenceRequiredTooltip(row)} placement='top' arrow>
+                                <Person color='primary' />
+                            </Tooltip>
+                        }
+                    </Box>
                 )
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames];

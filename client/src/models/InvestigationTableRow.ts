@@ -40,6 +40,7 @@ interface InvestigationTableRow {
     investigatiorReferenceRequired: boolean;
     chatStatus: KeyValuePair;
     investigatorReferenceStatus: KeyValuePair;
+    investigatorReferenceReasons:KeyValuePair[];
 };
 
 export default InvestigationTableRow;
