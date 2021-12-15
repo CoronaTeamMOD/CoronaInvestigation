@@ -132,7 +132,6 @@ const InvestigationStatusInfo = (props: any) => {
                                             getContentAnchorEl: null
                                         }}
                                         label={investigatorReferenceStatusLabel}
-                                        disabled={isViewMode}
                                         value={botInvestigationInfo.investigatorReferenceStatus.id}
                                         onChange={(event: any) => {
                                             const id = event.target.value as number;
