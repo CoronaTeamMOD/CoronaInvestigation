@@ -95,3 +95,11 @@ mutation updateTrackingRecommendation ($inputEpidemiologyNumber: Int!, $extraInf
   }
 }
 `;
+
+export const UPDATE_BOT_INVESTIGATION_INVESTIGATOR_REFERENCE_STATUS = gql`
+mutation updateInvestigatorReferenceStatus ($epidemiologyNumber: Int!, $investigatorReferenceStatusId: Int) {
+  updateBotInvestigationByEpidemiologyNumber(input: {epidemiologyNumber: $epidemiologyNumber, botInvestigationPatch: {investigatorReferenceStatusId: $investigatorReferenceStatusId}}) {
+    clientMutationId
+  }
+}
+`;

@@ -19,6 +19,7 @@ import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { contactQuestioningService } from 'services/contactQuestioning.service';
 import { useEffect } from 'react';
+import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 
 
 const ReachContact = (props: Props) => {
@@ -48,6 +49,7 @@ const ReachContact = (props: Props) => {
         const isDuplicateIdentity = duplicates.filter(obj => obj.identityType ===interactedContact.identificationType?.id && obj.identityNumber ===interactedContact.identificationNumber).length > 0;
         setDuplicateIdentities(isDuplicateIdentity);
     })
+    const contactStatusOptions = contactStatuses.filter(status=>status.id !== ContactStatusCodes.QUESTIONING_IS_NOT_NEEDED);
 
     useEffect(() => {
         return (() => {
@@ -69,7 +71,7 @@ const ReachContact = (props: Props) => {
                                 <Autocomplete
                                     disabled={isFieldDisabled || isViewMode}
                                     className={classes.statusAutoComplete}
-                                    options={contactStatuses}
+                                    options={contactStatusOptions}
                                     getOptionLabel={(option) =>
                                         option.displayName
                                     }

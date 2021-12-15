@@ -33,6 +33,9 @@ const statusToFilterConvertor = {
         statusFilter: [InvestigationMainStatusCodes.NEW,InvestigationMainStatusCodes.IN_PROCESS],
         unallocatedDeskFilter:true
     },
+    [FilterRulesDescription.INCOMPLETED_BOT_INVESTIGATIONS]: {
+        incompletedBotInvestigationFilter:true
+    },
 }
 
 export default statusToFilterConvertor;

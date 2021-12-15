@@ -20,6 +20,7 @@ export const RESET_STATE = 'RESET_STATE';
 export const SET_VIEW_MODE_CLICKED = 'SET_INVESTIGATION_VIEW_MODE_CLICKED';
 export const SET_INVESTIGATION_VIEW_MODE = 'SET_INVESTIGATION_VIEW_MODE';
 export const SET_IS_CONTACT_INVESTIGATION_VERIFIED_ABROAD = 'SET_IS_CONTACT_INVESTIGATION_VERIFIED_ABROAD';
+export const SET_INVESTIGATION_STATIC_FIELD_CHANGE = 'SET_INVESTIGATION_STATIC_FIELD_CHANGE';
 
 interface SetEpidemiologyNum {
     type: typeof SET_EPIDEMIOLOGY_NUM,
@@ -110,6 +111,12 @@ interface SetIsContactInvestigationVerifiedAbroad {
     payload: { isContactInvestigationVerifiedAbroad: boolean }
 }
 
+interface SetInvestigationStaticFieldChange {
+    type: typeof SET_INVESTIGATION_STATIC_FIELD_CHANGE,
+    payload: { investigationStaticFieldChange: boolean }
+}
+
 export type InvestigationAction = SetEpidemiologyNum | SetComplexReasonsId | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId
     | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetEndTime
-    | SetCreator | SetDatesToInvestigateParams | ResetStateParams | SetTrackingRecommendation | SetBirthDate | SetInvestigationViewMode | SetIsContactInvestigationVerifiedAbroad;
+    | SetCreator | SetDatesToInvestigateParams | ResetStateParams | SetTrackingRecommendation | SetBirthDate | SetInvestigationViewMode | SetIsContactInvestigationVerifiedAbroad
+    | SetInvestigationStaticFieldChange;

@@ -29,6 +29,7 @@ import InteractionEventSchema from './InteractionEventForm/InteractionSection/Sc
 import ContactTypeKeys from './InteractionEventForm/ContactsSection/ManualContactsForm/ContactForm/ContactTypeKeys';
 import repetitiveFieldTools from './InteractionEventForm/InteractionSection/RepetitiveEventForm/hooks/repetitiveFieldTools';
 import InteractionEventForm, {InteractionEventFormProps} from './InteractionEventForm/InteractionSection/InteractionEventForm';
+import CreationSourceCodes from 'models/enums/CreationSourceCodes';
 
 const filTimeValidationMessage = 'יש למלא שעה';
 const repetitiveWithoutDatesSelectedErrorMessage = 'שים לב שלא ניתן לשמור אירוע מחזורי עם תאריך אחד בלבד';
@@ -118,7 +119,8 @@ const InteractionDialog = (props: Props) => {
                     contactType: ContactTypeKeys.CONTACT_TYPE_TIGHT,
                     involvedContactId: familyMember.id,
                     familyRelationship: familyMember.familyRelationship?.id,
-                    identificationType: familyMember.identificationType?.id
+                    identificationType: familyMember.identificationType?.id,
+                    creationSource: CreationSourceCodes.EVEN_YESOD
                 };
 
                 contacts.push(familyContact as Contact);
@@ -179,13 +181,18 @@ const InteractionDialog = (props: Props) => {
                     if (serialId) {
                         return {
                             ...contact,
-                            [InteractionEventContactFields.ID]: serialId
+                            [InteractionEventContactFields.ID]: serialId,
+                            [InteractionEventContactFields.CREATION_SOURCE]: CreationSourceCodes.EVEN_YESOD
                         }
                     } else {
-                        return contact
+                        return {
+                            ...contact,
+                            [InteractionEventContactFields.CREATION_SOURCE]: CreationSourceCodes.EVEN_YESOD
+                        }
                     }
                 }) || [],
             [InteractionEventDialogFields.IS_GREEN_PASS]: convertGreenPassQuestions(data),
+            [InteractionEventDialogFields.CREATION_SOURCE]: CreationSourceCodes.EVEN_YESOD
         }
     };
 

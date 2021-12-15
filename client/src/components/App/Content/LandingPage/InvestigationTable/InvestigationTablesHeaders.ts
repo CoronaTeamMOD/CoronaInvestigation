@@ -32,7 +32,12 @@ export enum TableHeadersNames {
     subOccupation = 'subOccupation',
     isSelfInvestigated = 'isSelfInvestigated',
     selfInvestigationStatus = 'selfInvestigationStatus',
-    selfInvestigationUpdateTime = 'selfInvestigationUpdateTime'
+    selfInvestigationUpdateTime = 'selfInvestigationUpdateTime',
+    lastChatDate='lastChatDate',
+    chatStatus='chatStatus',
+    investigatiorReferenceRequired='investigatiorReferenceRequired',
+    investigatorReferenceStatus='investigatorReferenceStatus'
+    
 }
 
 export enum HiddenTableKeys {
@@ -76,7 +81,11 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.settings]: '',
     [TableHeadersNames.isSelfInvestigated]: '',
     [TableHeadersNames.selfInvestigationStatus]: '',
-    [TableHeadersNames.selfInvestigationUpdateTime]: ''
+    [TableHeadersNames.selfInvestigationUpdateTime]: '',
+    [TableHeadersNames.lastChatDate]:'עדכון אחרון בבוט',
+    [TableHeadersNames.chatStatus]:'סטטוס שיחה',
+    [TableHeadersNames.investigatiorReferenceRequired]:'',
+    [TableHeadersNames.investigatorReferenceStatus]:'סטטוס טיפול'
 }
 
 export const adminCols: string[] = [
@@ -88,12 +97,14 @@ export const adminCols: string[] = [
     TableHeadersNames.fullName,
     TableHeadersNames.age,
     TableHeadersNames.city,
-    TableHeadersNames.subOccupation,
-    TableHeadersNames.phoneNumber,
     TableHeadersNames.investigatorName,
     TableHeadersNames.investigationStatus,
     TableHeadersNames.investigationDesk,
     TableHeadersNames.comment,
+    TableHeadersNames.investigatiorReferenceRequired,
+    TableHeadersNames.chatStatus,
+    TableHeadersNames.lastChatDate,
+    TableHeadersNames.investigatorReferenceStatus,
     TableHeadersNames.settings
 ]
 
@@ -107,10 +118,12 @@ export const userCols: string[] = [
     TableHeadersNames.fullName,
     TableHeadersNames.age,
     TableHeadersNames.city,
-    TableHeadersNames.subOccupation,
-    TableHeadersNames.phoneNumber,
     TableHeadersNames.investigationDesk,
     TableHeadersNames.comment,
+    TableHeadersNames.investigatiorReferenceRequired,
+    TableHeadersNames.chatStatus,
+    TableHeadersNames.lastChatDate,
+    TableHeadersNames.investigatorReferenceStatus,
     TableHeadersNames.settings
 ]
 
@@ -145,4 +158,8 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.isSelfInvestigated]: false,
     [TableHeadersNames.selfInvestigationStatus]: false,
     [TableHeadersNames.selfInvestigationUpdateTime]: false,
+    [TableHeadersNames.lastChatDate]:true,
+    [TableHeadersNames.chatStatus]:true,
+    [TableHeadersNames.investigatiorReferenceRequired]:false,
+    [TableHeadersNames.investigatorReferenceStatus]:true
 }

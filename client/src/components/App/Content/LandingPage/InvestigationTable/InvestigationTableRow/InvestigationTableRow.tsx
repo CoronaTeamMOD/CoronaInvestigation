@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import StoreStateType from 'redux/storeStateType';
 import React, { MutableRefObject, useMemo } from 'react';
-import { Checkbox, IconButton, TableCell, TableRow, TextField, Tooltip } from '@material-ui/core';
-import { Call, KeyboardArrowDown, KeyboardArrowLeft, Visibility } from '@material-ui/icons';
+import { Box, Checkbox, IconButton, TableCell, TableRow, TextField, Tooltip } from '@material-ui/core';
+import { Call, KeyboardArrowDown, KeyboardArrowLeft, Person, Visibility, Comment } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
@@ -118,7 +118,16 @@ const InvestigationTableRow = ({
 }: Props) => {
     const classes = useStyles();
     const user = useSelector<StoreStateType, User>(state => state.user.data);
-
+    const getInvestigatorReferenceRequiredTooltip = (row: InvestigationTableRowType) => {
+        let msg = 'נדרשת התייחסות חוקר בגין: '
+        if (row.investigatorReferenceReasons) {
+            row.investigatorReferenceReasons.forEach(reason => {
+                msg += reason.displayName + " ,";
+            });
+            msg = msg.slice(0, -1);
+        }
+        return msg;
+    }
     const getTableCell = (cellName: string) => {
         const wasInvestigationFetchedByGroup = indexedRow.groupId && !indexedRow.canFetchGroup;
         switch (cellName) {
@@ -133,15 +142,21 @@ const InvestigationTableRow = ({
                 )
             case TableHeadersNames.rowIndicators:
                 return (
-                    <InvestigationIndicatorsColumn
-                        isComplex={indexedRow.isComplex}
-                        complexityReasonsId={row.complexityReasonsId}
-                        wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
-                        transferReason={indexedRow.transferReason}
-                        isSelfInvestigated={indexedRow.isSelfInvestigated}
-                        selfInvestigationStatus={indexedRow.selfInvestigationStatus}
-                        selfInvestigationUpdateTime={new Date(indexedRow.selfInvestigationUpdateTime)}
-                    />
+                    <div style={{ display: "flex" }}>
+                        <ClickableTooltip disabled={disabled} value={indexedRow.phoneNumber}
+                            defaultValue='' scrollableRef={tableContainerRef.current} InputIcon={Call} />
+                        <InvestigationIndicatorsColumn
+                            isComplex={indexedRow.isComplex}
+                            complexityReasonsId={row.complexityReasonsId}
+                            wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
+                            transferReason={indexedRow.transferReason}
+                            isSelfInvestigated={indexedRow.isSelfInvestigated}
+                            selfInvestigationStatus={indexedRow.selfInvestigationStatus}
+                            selfInvestigationUpdateTime={new Date(indexedRow.selfInvestigationUpdateTime)}
+                            isInInstitute={row.isInInstitute}
+                            instituteName={indexedRow.subOccupation}
+                        />
+                    </div>
                 );
             case TableHeadersNames.investigatorName:
                 return (
@@ -185,9 +200,8 @@ const InvestigationTableRow = ({
                 </Tooltip>
             case TableHeadersNames.comment:
                 return (
-                    <CommentCell
-                        comment={indexedRow[cellName as keyof typeof TableHeadersNames]}
-                    />
+                    <ClickableTooltip disabled={disabled} value={indexedRow.comment}
+                        defaultValue='' scrollableRef={tableContainerRef.current} InputIcon={Comment} />
                 )
 
             case TableHeadersNames.phoneNumber:
@@ -238,6 +252,17 @@ const InvestigationTableRow = ({
                 );
             case TableHeadersNames.age:
                 return indexedRow[cellName as keyof typeof TableHeadersNames] ?? '-';
+            case TableHeadersNames.investigatiorReferenceRequired:
+                return (
+                    <Box flex={1} marginX={0.5}>
+                        {
+                            indexedRow.investigatiorReferenceRequired &&
+                            <Tooltip title={getInvestigatorReferenceRequiredTooltip(row)} placement='top' arrow>
+                                <Person color='primary' />
+                            </Tooltip>
+                        }
+                    </Box>
+                )
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames];
         }
