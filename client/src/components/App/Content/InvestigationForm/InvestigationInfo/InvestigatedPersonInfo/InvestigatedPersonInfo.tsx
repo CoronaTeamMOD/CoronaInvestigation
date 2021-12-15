@@ -384,7 +384,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 <Typography className={classes.commentTitle}>
                                     {commentLabel}:
                                 </Typography>
-                                <CommentInput commentInput={commentInput} handleInput={setCommentInput} isViewMode={isViewMode} />
+                                <CommentInput commentInput={commentInput} handleInput={setCommentInput} isViewMode={false} />
                                 <Button
                                     className={classes.button}
                                     onClick={() => { sendComment(commentInput as string) }}

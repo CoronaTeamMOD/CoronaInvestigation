@@ -102,9 +102,9 @@ BEGIN
 		ON i.epidemiology_number = b.epidemiology_number
 		WHERE
 		(b.chat_status_id IN (1,3,9,10) AND i.investigation_status=1) OR
-		(i.investigation_status=1 AND i.last_update_time < current_date - interval '10 hours') OR
+		(i.investigation_status=1 AND b.last_chat_date < current_date - interval '10 hours') OR
 		(i.investigation_status =100000002 AND i.last_updator_user = 'admin.group9995'
-		 AND  i.last_update_time < current_date - interval '2 hours') OR
+		 AND  b.last_chat_date < current_date - interval '2 hours') OR
 		(i.investigation_status = 100000001 AND b.investigator_reference_status_id IN (1,2))
 	) AS incompletedBotInvs;
 	
