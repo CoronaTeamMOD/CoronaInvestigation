@@ -66,7 +66,7 @@ BEGIN
 	-- unusualInProgressInvestigations
 	SELECT COUNT(epidemiology_number) INTO unusualInProgressInvestigationsCount FROM filtered_investigations
 		WHERE investigation_status = 100000002
-		AND start_time <= now() - interval '4 hours';
+		AND start_time <= current_date - interval '4 hours';
 	
 	-- unusualCompletedNoContactInvestigations
 	SELECT COUNT(epidemiology_number) INTO unusualCompletedNoContactInvestigationsCount FROM (
@@ -102,9 +102,9 @@ BEGIN
 		ON i.epidemiology_number = b.epidemiology_number
 		WHERE
 		(b.chat_status_id IN (1,3,9,10) AND i.investigation_status=1) OR
-		(i.investigation_status=1 AND b.last_chat_date < now() - interval '10 hours') OR
+		(i.investigation_status=1 AND b.last_chat_date < current_date - interval '10 hours') OR
 		(i.investigation_status =100000002 AND i.last_updator_user = 'admin.group9995'
-		 AND  b.last_chat_date < now() - interval '2 hours') OR
+		 AND  b.last_chat_date < current_date - interval '2 hours') OR
 		(i.investigation_status = 100000001 AND b.investigator_reference_status_id IN (1,2))
 	) AS incompletedBotInvs;
 	
@@ -126,3 +126,4 @@ BEGIN
 	);
 END;
 $BODY$;
+
