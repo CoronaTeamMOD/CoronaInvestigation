@@ -5,8 +5,8 @@ import { requiredText, invalidPhoneText } from 'commons/Schema/messages';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import { PHONE_NUMBER_REGEX, NOT_REQUIRED_PHONE_NUMBER_REGEX } from 'commons/Regex/Regex';
 
-const occupationsWithInstitution = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון'];
-const occupationsWithoutExtraInfo = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון', 'לא עובד'];
+const occupationsWithInstitution = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון','גריאטריה'];
+const occupationsWithoutExtraInfo = ['גריאטריה','מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון', 'לא עובד'];
 const maxClassNumberError = 'ניתן להזין עד המספר 50';
 
 const schema = yup.object().shape({
@@ -19,7 +19,7 @@ const schema = yup.object().shape({
     [PersonalInfoDataContextFields.CONTACT_INFO]: yup.string().nullable(),
     [PersonalInfoDataContextFields.RELEVANT_OCCUPATION]: yup.string().nullable().required(requiredText),
     [PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]: yup.string().when(
-        PersonalInfoDataContextFields.RELEVANT_OCCUPATION, 
+        PersonalInfoDataContextFields.RELEVANT_OCCUPATION,
         {
             is: 'מערכת החינוך',
             then: yup.string().nullable().required(requiredText),
@@ -27,9 +27,9 @@ const schema = yup.object().shape({
         }
     ),
     [PersonalInfoDataContextFields.INSTITUTION_NAME]: yup.string().when('relevantOccupation', (relevantOccupation: any, schema: any) => {
-        return occupationsWithInstitution.find(element => element === relevantOccupation) ?
-            schema.nullable().required(requiredText) :
-            schema.nullable()
+            return occupationsWithInstitution.find(element => element === relevantOccupation) ?
+                schema.nullable().required(requiredText) :
+                schema.nullable()
     }),
     [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]: yup.string().when('relevantOccupation', (relevantOccupation: any, schema: any) => {
         return occupationsWithoutExtraInfo.find(element => element === relevantOccupation) ?
@@ -41,7 +41,7 @@ const schema = yup.object().shape({
             schema.nullable().required(requiredText) :
             schema.nullable()
     }),
-    [PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER]: yup.number().transform((value: any) => 
+    [PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER]: yup.number().transform((value: any) =>
         (Boolean(value)) ? value : null).nullable().max(50, maxClassNumberError)
 });
 
