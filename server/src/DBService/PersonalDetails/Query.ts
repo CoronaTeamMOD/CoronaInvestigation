@@ -88,6 +88,7 @@ query {
     nodes {
       id
       displayName
+      occupation
     }
   }
 }
