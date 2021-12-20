@@ -457,9 +457,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                 render={(props) => (
                                                     <Autocomplete
                                                         options={
-                                                            occupation === Occupations.EDUCATION_SYSTEM 
-                                                            ? investigatedPatientRoles.filter(x=>x.occupation ==  Occupations.EDUCATION_SYSTEM )
-                                                            : investigatedPatientRoles.filter(x=>x.occupation == Occupations.HEALTH_SYSTEM) 
+                                                            investigatedPatientRoles.filter(x=>x.occupation ==  occupation )
                                                         }
                                                         getOptionLabel={(option) => option.displayName}
                                                         getOptionSelected={(option) => option.id === props.value}
