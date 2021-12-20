@@ -9,7 +9,8 @@ import {
     GET_ALL_CONTACT_STATUSES,
     GET_ALL_FAMILY_RELATIONSHIPS,
     GET_CONTACTED_PEOPLE,
-    GET_FOREIGN_KEYS_BY_NAMES
+    GET_FOREIGN_KEYS_BY_NAMES,
+    GET_CONTACTS_COUNT
 } from '../../DBService/ContactedPeople/Query';
 import InteractedContact , {InteractedExcelContact} from '../../Models/ContactedPerson/ContactedPerson';
 import { sendSavedInvestigationToIntegration } from '../../Utils/InterfacesIntegration';
@@ -172,6 +173,29 @@ ContactedPeopleRoute.post('/excel',  handleInvestigationRequest, async (request:
         .catch(error => {
             excelLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.sendStatus(errorStatusCode).send(error);
+        })
+});
+
+ContactedPeopleRoute.get('/getContactsCount/:minimalDateToFilter', handleInvestigationRequest, (request: Request, response: Response) => {
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
+    const contactsCountLogger = logger.setup({
+        workflow: `function get contacts count`,
+        investigation: epidemiologyNumber,
+        user: response.locals.user.id
+    });
+
+    const parameters = { investigationId: epidemiologyNumber, minimalDateToFilter: request.params.minimalDateToFilter};
+
+    contactsCountLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+    graphqlRequest(GET_CONTACTS_COUNT, response.locals, parameters)
+        .then(result => {
+            contactsCountLogger.info(validDBResponseLog, Severity.LOW);
+            const contactsCount = result.data.allContactedPeople.totalCount;
+           response.send({contactsCount:contactsCount});
+        })
+        .catch(error => {
+            contactsCountLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
         })
 });
 
