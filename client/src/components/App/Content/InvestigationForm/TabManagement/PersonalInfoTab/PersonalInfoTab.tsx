@@ -169,9 +169,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
     useEffect(() => {
         if (personalInfo) {
             methods.reset(personalInfo);
-            setTimeout(()=>{
+            setTimeout(() => {
                 methods.trigger();
-            },500);
+            }, 500);
         }
     }, [personalInfo]);
 
@@ -179,6 +179,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
         if (occupation === Occupations.DEFENSE_FORCES ||
             occupation === Occupations.HEALTH_SYSTEM) {
             getSubOccupations(occupation);
+        }
+        if (occupation === Occupations.GERIATRICS) {
+            getSubOccupations(Occupations.HEALTH_SYSTEM);
         }
         clearSubOccupations();
     }, [occupation]);
@@ -400,7 +403,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                 </FormControl>
                             </Grid>
                             {
-                                occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ?
+                                occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM || occupation === Occupations.GERIATRICS ?
                                     <>
                                         {
                                             occupation === Occupations.EDUCATION_SYSTEM &&
@@ -454,9 +457,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                 render={(props) => (
                                                     <Autocomplete
                                                         options={
-                                                            occupation === Occupations.EDUCATION_SYSTEM 
-                                                            ? investigatedPatientRoles.filter(x=>x.occupation ==  Occupations.EDUCATION_SYSTEM )
-                                                            : investigatedPatientRoles.filter(x=>x.occupation == Occupations.HEALTH_SYSTEM) 
+                                                            investigatedPatientRoles.filter(x=>x.occupation ==  occupation )
                                                         }
                                                         getOptionLabel={(option) => option.displayName}
                                                         getOptionSelected={(option) => option.id === props.value}
