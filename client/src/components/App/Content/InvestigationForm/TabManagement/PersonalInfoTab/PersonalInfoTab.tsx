@@ -457,14 +457,14 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                 render={(props) => (
                                                     <Autocomplete
                                                         options={
-                                                            occupation === Occupations.EDUCATION_SYSTEM
-                                                                ? investigatedPatientRoles.filter(x => [1, 2, 3, 4].includes(x.id))
-                                                                : investigatedPatientRoles.filter(x => [5, 6].includes(x.id))
+                                                            occupation === Occupations.EDUCATION_SYSTEM 
+                                                            ? investigatedPatientRoles.filter(x=>x.occupation ==  Occupations.EDUCATION_SYSTEM )
+                                                            : investigatedPatientRoles.filter(x=>x.occupation == Occupations.HEALTH_SYSTEM) 
                                                         }
                                                         getOptionLabel={(option) => option.displayName}
                                                         getOptionSelected={(option) => option.id === props.value}
                                                         disabled={isViewMode}
-                                                        value={props.value ? { id: props.value, displayName: (selectedRole?.displayName as string) } : null}
+                                                        value={props.value ? { id: props.value, displayName: (selectedRole?.displayName as string) , occupation } : null}
                                                         onChange={(event, selectedRole) => {
                                                             props.onChange(selectedRole?.id);
                                                             dispatch(setPersonalInfo(PersonalInfoDataContextFields.ROLE, selectedRole?.id))
