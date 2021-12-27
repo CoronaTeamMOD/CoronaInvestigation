@@ -16,7 +16,7 @@ export const LAST_TAB_ID = 4;
 const useTabManagement = ({lastTabDisplayedId}: {lastTabDisplayedId: number}) => {
 
     const { alertError } = useCustomSwal();
-    const { confirmFinishInvestigation, areThereContacts } = useInvestigationForm();
+    const { confirmFinishInvestigation, areThereContacts, setAreThereContacts  } = useInvestigationForm();
 
     const [currentTab, setCurrentTab] = useState<number>(0);
     const nextTab: RefObject<number> = useRef<number>(0);
@@ -65,6 +65,8 @@ const useTabManagement = ({lastTabDisplayedId}: {lastTabDisplayedId: number}) =>
         currentTab,
         setCurrentTab,
         setNextTab,
+        areThereContacts,
+        setAreThereContacts 
     }
 }
 
