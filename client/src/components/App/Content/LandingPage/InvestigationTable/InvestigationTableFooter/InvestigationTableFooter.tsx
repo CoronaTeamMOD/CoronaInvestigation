@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Card, IconButton, Typography, useMediaQuery } from '@material-ui/core';
-import { SvgIconComponent, Close, Send, PersonPin, CollectionsBookmark, CallSplit } from '@material-ui/icons';
+import { SvgIconComponent, Close, Send, PersonPin, CollectionsBookmark, CallSplit, Edit } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import County from 'models/County';
@@ -34,13 +34,14 @@ const singleInvestigation = 'חקירה';
 const multipleInvestigations = 'חקירות';
 const singleAssignment = 'הקצאה';
 const multipleAssignments = 'הקצאות';
+const changeStatusToNotInvestigated = 'שינוי סטטוס ללא נחקר';
 
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
 
     const { checkedIndexedRows, allDesks, fetchInvestigators,
-            onDialogClose, tableRows, allGroupedInvestigations, onDeskChange,
-            onDeskGroupChange, onCountyChange, onCountyGroupChange, fetchTableData, 
-            fetchInvestigationsByGroupId, allocateInvestigationToInvestigator } = props;
+        onDialogClose, tableRows, allGroupedInvestigations, onDeskChange,
+        onDeskGroupChange, onCountyChange, onCountyGroupChange, fetchTableData,
+        fetchInvestigationsByGroupId, allocateInvestigationToInvestigator } = props;
 
     const { alertSuccess } = useCustomSwal();
     const onTransferSuccess = () => alertSuccess('החקירות הועברו בהצלחה');
@@ -60,7 +61,8 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         handleCloseInvesigatorAllocationFooterDialog,
         handleConfirmDesksDialog,
         handleConfirmCountiesDialog,
-        handleDisbandGroupedInvestigations
+        handleDisbandGroupedInvestigations,
+        updateNotInvestigatedStatus
     } = useInvestigationTableFooter({
         setOpenDesksDialog,
         setOpenGroupedInvestigations,
@@ -97,24 +99,30 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
 
     const trimmedGroup = useMemo(() => {
         return checkedInvestigations.reduce<{
-                uniqueGroupIds: string[],
-                epidemiologyNumbers: number[]
-            }>(toUniqueGroupsWithNonGroupedInvestigations, {
-                uniqueGroupIds: [],
-                epidemiologyNumbers: []
-            })
+            uniqueGroupIds: string[],
+            epidemiologyNumbers: number[]
+        }>(toUniqueGroupsWithNonGroupedInvestigations, {
+            uniqueGroupIds: [],
+            epidemiologyNumbers: []
+        })
     }, [checkedInvestigations])
 
     const shouldGroupActionDisabled: boolean = useMemo(() => {
         return trimmedGroup.uniqueGroupIds.length > 1 || trimmedGroup.epidemiologyNumbers.length === 0 || checkedInvestigations.length < 2
     }, [trimmedGroup, checkedInvestigations])
 
+    const updateNotInvestigatedStatuses = () => {
+        checkedInvestigations.forEach(investigation => {
+            updateNotInvestigatedStatus(investigation.epidemiologyNumber, investigation.mainStatus.id, checkedInvestigations.length)
+        });
+    }
+
     const cardActions: CardActionDescription[] = [
         {
             icon: CollectionsBookmark,
             displayTitle: 'קיבוץ חקירות',
             disabled: shouldGroupActionDisabled,
-            errorMessage: shouldGroupActionDisabled ? 
+            errorMessage: shouldGroupActionDisabled ?
                 checkedInvestigations.length > 1 ? 'שים לב לא ניתן לקבץ חקירה שכבר מקובצת' : 'חקירה לא מקובצת'
                 : '',
             onClick: handleOpenGroupedInvestigations
@@ -137,6 +145,12 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
             displayTitle: `${isSingleInvestigation ? singleAssignment : multipleAssignments} לחוקר`,
             errorMessage: '',
             onClick: handleOpenInvesigatorAllocationFooterDialog
+        },
+        {
+            icon: Edit,
+            displayTitle: changeStatusToNotInvestigated,
+            errorMessage: '',
+            onClick: updateNotInvestigatedStatuses
         }
     ]
 
