@@ -114,20 +114,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                     personalInfo?.otherOccupationExtraInfo));
     }
 
-    const resetOccupationDetails = () => {
-        methods.setValue(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, '');
-        dispatch(setPersonalInfo(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, ''));
-        methods.setValue(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, '');
-        dispatch(setPersonalInfo(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, ''));
-        methods.setValue(PersonalInfoDataContextFields.ROLE, null);
-        dispatch(setPersonalInfo(PersonalInfoDataContextFields.ROLE, ''));
-        methods.setValue(PersonalInfoDataContextFields.EDUCATION_GRADE, null);
-        dispatch(setPersonalInfo(PersonalInfoDataContextFields.EDUCATION_GRADE, ''));
-        methods.setValue(PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER, null);
-        dispatch(setPersonalInfo(PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER, ''));
-        methods.setValue(PersonalInfoDataContextFields.INSTITUTION_NAME, '');
-        dispatch(setPersonalInfo(PersonalInfoDataContextFields.INSTITUTION_NAME, ''));
-    }
 
     const selectedRole = useMemo<investigatedPatientRole | undefined>(() => (
         investigatedPatientRoles.find(role => role.id === selectedRoleId)
@@ -406,8 +392,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                 options={isOver16 ? occupations : occupations.filter(occupation => under16AllowedOccupations.indexOf(occupation) !== -1)}
                                                 onChange={(event, occupationOption) => {
                                                     props.onChange(occupationOption ? occupationOption : '');
-                                                    dispatch(setPersonalInfo(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, methods.getValues().relevantOccupation)); resetOccupationDetails();
-                                                }}
+                                                    dispatch(setPersonalInfo(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, methods.getValues().relevantOccupation));                         
+                                                 }}
                                                 disabled={isViewMode}
                                                 value={props.value || ''}
                                                 renderInput={(params) =>
@@ -424,7 +410,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                                 notchedOutline: occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? classes.notchedOutline : ''
                                                             }
                                                         }}
-                                                    />
+                                                     />
                                                 }
                                             />
                                         )}
@@ -605,7 +591,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                     className={classes.otherTextField}
                                                     InputProps={{ className: classes.otherTextField }}
                                                     testId='institutionName'
-                                                    disabled={isViewMode || ifOcuupationWithDetails()}
+                                                    disabled={isViewMode}
                                                     name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
                                                     value={props.value}
                                                     onChange={newValue => {
