@@ -17,7 +17,7 @@ const exposureDeleteCondition =
         return (exposure: Exposure) => exposure.exposureSource !== undefined
     };
     if (!wereFlights) {
-        return (exposure: Exposure) => exposure.flightDestinationCountry !== undefined //&& exposure.flightDestinationCountry !== null
+        return (exposure: Exposure) => exposure.flightDestinationCountry !== undefined && exposure.flightDestinationCountry !== null
     };
     return (exposure: Exposure) => false;
 }
@@ -81,9 +81,8 @@ const useExposuresSaving = () => {
 
     const extractExposureData =  (exposuresAndFlightsData : Exposure) => {
         let exposureAndDataToReturn: (Exposure | DBExposure) = exposuresAndFlightsData;
-        if (exposuresAndFlightsData.flightDestinationCountry !== undefined 
-            //&& exposuresAndFlightsData.flightDestinationCountry !== null
-            ) {
+        if (exposuresAndFlightsData.flightDestinationCountry !== undefined && 
+            exposuresAndFlightsData.flightDestinationCountry !== null) {
             exposureAndDataToReturn = {
                 ...exposureAndDataToReturn,
                 [fieldsNames.wasConfirmedExposure] : false,
