@@ -103,6 +103,7 @@ query InvestigationStaticDetails($investigationId: Int!) {
   investigationByEpidemiologyNumber(epidemiologyNumber: $investigationId) {
     isSuspicionOfMutation
     mutationName
+    wasMutationUpdated
   }
 }`;
 

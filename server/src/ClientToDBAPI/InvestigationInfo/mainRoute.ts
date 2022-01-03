@@ -29,7 +29,8 @@ import {
     DELETE_INVESTIGATION_COMPLEXITY_REASON_ID,
     UPDATE_INVESTIGATION_STATIC_INFO,
     UPDATE_INVESTIGATION_TRACKING,
-    UPDATE_BOT_INVESTIGATION_INVESTIGATOR_REFERENCE_STATUS
+    UPDATE_BOT_INVESTIGATION_INVESTIGATOR_REFERENCE_STATUS,
+    UPDATE_MUTATION_INFO
 } from '../../DBService/InvestigationInfo/Mutation';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
@@ -134,6 +135,29 @@ investigationInfo.get('/mutationInfo', handleInvestigationRequest, (request: Req
             response.send(mutationInfo);
         }).catch((error) => {
             mutationInfoLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
+});
+
+investigationInfo.post('/updateWasMutationUpdated', handleInvestigationRequest, (request: Request, response: Response) => {
+    const { epidemiologyNumber } = request.body;
+    const updateWasMutationUpdatedLogger = logger.setup({
+        workflow: 'update wasMutationUpdated',
+        user: response.locals.user.id,
+        investigation: epidemiologyNumber,
+    });
+    const parameters = {
+        epidemiologyNumber: parseInt(epidemiologyNumber),
+    };
+    updateWasMutationUpdatedLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+
+    graphqlRequest(UPDATE_MUTATION_INFO, response.locals, parameters)
+        .then(result => {
+            updateWasMutationUpdatedLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result);
+        })
+        .catch(error => {
+            updateWasMutationUpdatedLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         });
 });

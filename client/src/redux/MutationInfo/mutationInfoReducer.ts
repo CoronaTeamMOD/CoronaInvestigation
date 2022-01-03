@@ -5,12 +5,14 @@ export interface MutationInfoState {
     mutationInfo: MutationInfo;
     pending: boolean;
     error: any;
+    wasMutationUpdated: boolean;
 }
 
 const initialState: MutationInfoState = {
     mutationInfo: {isSuspicionOfMutation: false, mutationName: ''},
     pending: false,
-    error: null
+    error: null,
+    wasMutationUpdated: false
 };
 
 const mutationInfoReducer = (state = initialState, action: Actions.mutationInfoAction): MutationInfoState => {
@@ -24,7 +26,8 @@ const mutationInfoReducer = (state = initialState, action: Actions.mutationInfoA
             return {
                 ...state,
                 pending: false,
-                mutationInfo: action.payload.mutationInfo
+                mutationInfo: action.payload.mutationInfo,
+                wasMutationUpdated: action.payload.wasMutationUpdated
             }
         case Actions.GET_MUTATION_INFO_ERROR:
             return {

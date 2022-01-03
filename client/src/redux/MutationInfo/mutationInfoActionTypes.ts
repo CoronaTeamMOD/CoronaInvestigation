@@ -11,7 +11,8 @@ interface GetMutationInfoPending {
 interface GetMutationInfoSuccess {
     type: typeof GET_MUTATION_INFO_SUCCESS,
     payload: {
-        mutationInfo: MutationInfo
+        mutationInfo: MutationInfo,
+        wasMutationUpdated: boolean
     }
 }
 

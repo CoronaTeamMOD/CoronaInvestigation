@@ -21,6 +21,10 @@ export interface MutationInfo {
     mutationName: string | null;
 };
 
+export interface FullMutationInfo extends MutationInfo {
+    wasMutationUpdated: boolean;
+};
+
 export interface InvestigationInfoData extends Omit<InvestigationInfo, 'validationDate' | 'symptomsStartDate'> {
     validationDate: string;
     symptomsStartDate: string;

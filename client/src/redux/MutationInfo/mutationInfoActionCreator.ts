@@ -11,12 +11,14 @@ export const getMutationInfo = (): ThunkAction<void, MutationInfoState, unknown,
 
   try {
     setIsLoading(true);
-    const mutationInfo = await fetchMutationData();
-    if (mutationInfo !== null) {
+    const fullMutationInfo = await fetchMutationData();
+    if (fullMutationInfo !== null) {
       dispatch({
         type: actionTypes.GET_MUTATION_INFO_SUCCESS,
         payload: {
-            mutationInfo: mutationInfo
+            mutationInfo: {isSuspicionOfMutation: fullMutationInfo?.isSuspicionOfMutation,
+                          mutationName:  fullMutationInfo?.mutationName},
+            wasMutationUpdated: fullMutationInfo?.wasMutationUpdated
         }
       });
     }
