@@ -13,7 +13,8 @@ import {
     GET_INVESTIGATION_COMPLEXITY_REASONS,
     GET_INVESTIGATION_COMPLEXITY_REASON_ID,
     TRACKING_SUB_REASONS_BY_REASON_ID,
-    GET_IDENTIFICATION_TYPES
+    GET_IDENTIFICATION_TYPES,
+    GET_MUTATION_INFO
 } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
@@ -112,6 +113,27 @@ investigationInfo.get('/botInvestigationInfo', handleInvestigationRequest, (requ
             response.send(convertBotInvestigationFromDB(investigationInfo));
         }).catch((error) => {
             botInfoLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
+});
+
+investigationInfo.get('/mutationInfo', handleInvestigationRequest, (request: Request, response: Response) => {
+    const mutationInfoLogger = logger.setup({
+        workflow: 'query mutation info',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    });
+
+    const parameters = { investigationId: parseInt(response.locals.epidemiologynumber) };
+    mutationInfoLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+
+    graphqlRequest(GET_MUTATION_INFO, response.locals, parameters)
+        .then(result => {
+            mutationInfoLogger.info(validDBResponseLog, Severity.LOW);
+            const mutationInfo = result.data.investigationByEpidemiologyNumber;
+            response.send(mutationInfo);
+        }).catch((error) => {
+            mutationInfoLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         });
 });

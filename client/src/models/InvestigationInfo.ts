@@ -4,7 +4,7 @@ import InvestigatedPatientStaticInfo from './InvestigatedPatientStaticInfo';
 import PersonStaticInfo from './PersonStaticInfo';
 import KeyValuePair from './KeyValuePair';
 
-interface InvestigationInfo extends SymptomsExistenceInfo, InvestigatedPatientStaticInfo, PersonStaticInfo {
+interface InvestigationInfo extends SymptomsExistenceInfo, InvestigatedPatientStaticInfo, PersonStaticInfo, MutationInfo {
     comment: string | null;
     startTime: Date;
     lastUpdateTime: Date;
@@ -14,6 +14,11 @@ interface InvestigationInfo extends SymptomsExistenceInfo, InvestigatedPatientSt
     userByLastUpdator: StaticUser;
     userByLastUpdatorUser: StaticUser;
     endTime: Date | null;
+};
+
+export interface MutationInfo {
+    isSuspicionOfMutation: boolean;
+    mutationName: string | null;
 };
 
 export interface InvestigationInfoData extends Omit<InvestigationInfo, 'validationDate' | 'symptomsStartDate'> {

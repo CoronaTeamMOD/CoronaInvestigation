@@ -11,8 +11,6 @@ interface InvestigatedPatientStaticInfo {
     previousDiseaseStartDate: string | null;
     isVaccinated: boolean;
     vaccinationEffectiveFrom: string | null;
-    isSuspicionOfMutation: boolean;
-    mutationName: string | null;
     contactInvestigationVerifiedAbroad: boolean;
 };
 

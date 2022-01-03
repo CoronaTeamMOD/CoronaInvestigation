@@ -1,7 +1,7 @@
 import logger from 'logger/logger';
 import axios from 'axios';
 import { Severity } from 'models/Logger';
-import { BotInvestigationInfo } from 'models/InvestigationInfo';
+import { BotInvestigationInfo, MutationInfo } from 'models/InvestigationInfo';
 import KeyValuePair from 'models/KeyValuePair';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
@@ -20,6 +20,25 @@ export const fetchBotInvestigationData = async (): Promise<BotInvestigationInfo 
   }
   catch (error) {
     botInvestigationInfoLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+    return null;
+  }
+}
+
+export const fetchMutationData = async (): Promise<MutationInfo | null> => {
+  const mutationInfoLogger = logger.setup('Fetching Mutation Info');
+  try {
+    const result = await axios.get('/investigationInfo/mutationInfo')
+    if (result && result.data) {
+      mutationInfoLogger.info('Mutation info request was successful', Severity.LOW);
+      return result.data as MutationInfo;
+    }
+    else {
+      mutationInfoLogger.info('no Mutation info was return from db ', Severity.LOW);
+      return null;
+    }
+  }
+  catch (error) {
+    mutationInfoLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
     return null;
   }
 }

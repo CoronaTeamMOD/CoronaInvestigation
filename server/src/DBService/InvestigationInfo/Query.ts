@@ -98,6 +98,14 @@ query BotInvestigationStaticDetails($investigationId: Int!) {
 
 `;
 
+export const GET_MUTATION_INFO = gql`
+query InvestigationStaticDetails($investigationId: Int!) {
+  investigationByEpidemiologyNumber(epidemiologyNumber: $investigationId) {
+    isSuspicionOfMutation
+    mutationName
+  }
+}`;
+
 export const GET_SUB_STATUSES_BY_STATUS = gql`
 query GetAllSubStatuses($parentStatus: Int!) {
   allInvestigationSubStatuses(orderBy: DISPLAY_NAME_ASC, filter: {parentStatus: {equalTo: $parentStatus}}) {
