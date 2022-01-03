@@ -116,6 +116,20 @@ stages:
       condition: eq(variables.isTest,true)
       displayName: 'npm build load testing client'
 
+    # pushing test client to azure client registry
+    - task: Docker@2
+      condition: eq(variables.isTest,true)
+      continueOnError: 'false'
+      displayName: Push test client image to container registry
+      inputs:
+        command: buildAndPush
+        dockerfile: '**/client/Dockerfile'
+        repository: '$(arcName)'
+        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
+        containerRegistry: '$(AzureContainerRegistry)'
+        tags: |
+          client-test
+
     # pushing test client to MOH client registry
     - task: Docker@2
       condition: eq(variables.isTest,true)
@@ -147,6 +161,20 @@ stages:
         npm run build
       displayName: 'npm build client'
       condition: eq(variables.isMaster,true)
+
+    # pushing prod client to azure client registry
+    - task: Docker@2
+      condition: eq(variables.isMaster,true)
+      continueOnError: 'false'
+      displayName: Push master client image to container registry
+      inputs:
+        command: buildAndPush
+        dockerfile: '**/client/Dockerfile'
+        repository: '$(arcName)'
+        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
+        containerRegistry: '$(AzureContainerRegistry)'
+        tags: |
+          client-master
 
     # pushing prod client to MOH client registry
     - task: Docker@2
