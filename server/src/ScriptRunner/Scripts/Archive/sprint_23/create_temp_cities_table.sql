@@ -21,6 +21,3 @@
     )
 
     TABLESPACE pg_default;
-
-    ALTER TABLE public.cities_temp
-        OWNER to postgres;

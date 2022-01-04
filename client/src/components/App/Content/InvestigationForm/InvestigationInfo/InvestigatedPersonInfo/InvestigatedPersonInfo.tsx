@@ -13,13 +13,13 @@ import formatDate from 'Utils/DateUtils/formatDate';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import StaticFields from 'models/enums/StaticFields';
 import UserTypeCodes from 'models/enums/UserTypeCodes';
-import InvestigationInfo, { BotInvestigationInfo } from 'models/InvestigationInfo';
 import IdentificationType from 'models/IdentificationType';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
+import InvestigationInfo, { BotInvestigationInfo, MutationInfo } from 'models/InvestigationInfo';
 import { setInvestigationStaticFieldChange, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
@@ -31,6 +31,8 @@ import ValidationStatusSchema from './Schema/ValidationStatusSchema';
 import CommentInput from './InvestigationMenu/CommentDialog/CommentInput';
 import InvestigationStatusInfo from './InvestigationStatusInfo/InvestigationStatusInfo';
 import { FlightLand } from '@material-ui/icons';
+import { getMutationInfo } from 'redux/MutationInfo/mutationInfoActionCreator';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 const investigationstableURL = '/landing';
 const openInvestigationForEditText = 'פתיחה מחודשת';
@@ -56,7 +58,9 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const { identityType, gender, isDeceased, isCurrentlyHospitalized, isInClosedInstitution, age, identityNumber,
         fullName, primaryPhone, birthDate, validationDate, isReturnSick, previousDiseaseStartDate,
-        isVaccinated, vaccinationEffectiveFrom, isSuspicionOfMutation, mutationName } = investigationStaticInfo;
+        isVaccinated, vaccinationEffectiveFrom } = investigationStaticInfo;
+    const mutationInfo = useSelector<StoreStateType, MutationInfo>(state => state.mutationInfo.mutationInfo);
+    const wasMutationUpdated = useSelector<StoreStateType, boolean>(state => state.mutationInfo.wasMutationUpdated);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
@@ -140,7 +144,20 @@ const InvestigatedPersonInfo = (props: Props) => {
         });
         if (reasons != '') reasons=reasons.slice(0, -1);
         return reasons;
-    }
+    };
+
+    const varientUpdate = () => {
+        const varientAlertLogger = logger.setup(`POST request was varient update to investigation ${epidemiologyNumber}`);
+        axios.post('/investigationInfo/updateWasMutationUpdated', {
+            epidemiologyNumber: epidemiologyNumber
+        }).then(async () => {
+            dispatch(getMutationInfo());
+            setIsLoading(false);
+            varientAlertLogger.info('update WasMutationUpdated request was successful', Severity.LOW);
+        }).catch((error) => {
+            varientAlertLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+        })
+    };
 
     return (
         <FormProvider {...methods}>
@@ -344,13 +361,16 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 {
                                     isVaccinated && <ComplexityIcon tooltipText={formatDate(vaccinationEffectiveFrom)} />
                                 }
-                                <PatientInfoItem testId='isSuspicionOfMutation' name='חשד למוטציה' value={isSuspicionOfMutation ? yes : noInfo} />
+                                <PatientInfoItem testId='isSuspicionOfMutation' name='חשד למוטציה' value={mutationInfo.isSuspicionOfMutation ? yes : noInfo} />
                                 {
-                                    isSuspicionOfMutation && <ComplexityIcon tooltipText={mutationName ? mutationName : noInfo} />
+                                    mutationInfo.isSuspicionOfMutation && <ComplexityIcon isVarient={true} tooltipText={mutationInfo.mutationName ? mutationInfo.mutationName : noInfo} />
                                 }
                                 <PatientInfoItem testId='isReturnSick' name='חולה חוזר' value={isReturnSick ? yes : noInfo} />
                                 {
                                     isReturnSick && <ComplexityIcon tooltipText={formatDate(previousDiseaseStartDate)} />
+                                }
+                                {
+                                    wasMutationUpdated && <PrimaryButton onClick={varientUpdate}>שים לב, שדה הוריאנט עודכן (לחץ להסתרת ההודעה)</PrimaryButton>
                                 }
                             </Grid>
                             {
