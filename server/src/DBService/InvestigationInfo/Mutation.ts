@@ -8,6 +8,14 @@ mutation UpdateInvestigationStatus($epidemiologyNumber: Int!, $investigationStat
 }
 `;
 
+export const UPDATE_MUTATION_INFO = gql`
+mutation UpdateInvestigationWasVarientUpdate($epidemiologyNumber: Int!) {
+  updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {wasMutationUpdated: false}, epidemiologyNumber: $epidemiologyNumber}) {
+    clientMutationId
+  }
+}
+`;
+
 export const ADD_INVESTIGATION_START_TIME = gql`
 mutation addInvestigationStartTime($investigationIdInput: Int!, $timeInput: Datetime!) {
   createInvestigationTime(input: {investigationTime: {investigationStatus: 100000002, investigationId: $investigationIdInput, actionTime: $timeInput}}) {
