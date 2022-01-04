@@ -13,7 +13,7 @@ import {
     GET_CONTACTS_COUNT
 } from '../../DBService/ContactedPeople/Query';
 import InteractedContact , {InteractedExcelContact} from '../../Models/ContactedPerson/ContactedPerson';
-import { sendSavedInvestigationToIntegration } from '../../Utils/InterfacesIntegration';
+//import { sendSavedInvestigationToIntegration } from '../../Utils/InterfacesIntegration';
 
 const DONE_CONTACT = 5;
 
@@ -100,7 +100,7 @@ ContactedPeopleRoute.post('/interactedContacts',  handleInvestigationRequest,  (
                 return response.sendStatus
             }
             interactedContactsLogger.info(validDBResponseLog, Severity.LOW);
-            isThereDoneContact && sendSavedInvestigationToIntegration(epidemiologyNumber, workflow, response.locals.user.id);
+            //isThereDoneContact && sendSavedInvestigationToIntegration(epidemiologyNumber, workflow, response.locals.user.id);
             response.send(result);
         })
         .catch(error => {
