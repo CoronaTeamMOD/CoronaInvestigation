@@ -74,6 +74,7 @@ interface UserInvestigations {
                     ]
                 } | null
             } | null;
+            lastUpdatorUser:string;
         }]
     }
 }
@@ -155,6 +156,7 @@ interface GroupIvestigations {
                     ]
                 } | null,
             } | null;
+            lastUpdatorUser:string;
         }]
     }
 }

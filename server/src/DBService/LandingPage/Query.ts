@@ -96,6 +96,7 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
           }
         }
       }
+      lastUpdatorUser
     }
     totalCount
   }
@@ -194,6 +195,7 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
           }
         }
       }
+      lastUpdatorUser
     }
     totalCount
   }
