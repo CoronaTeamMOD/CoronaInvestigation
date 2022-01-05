@@ -377,7 +377,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 botInvestigationInfo &&
                                 <Grid container alignItems='center' className={classes.line}>
                                     <PatientInfoItem testId='chatStatus' name='סטטוס שיחה בבוט' value={botInvestigationInfo.chatStatus.displayName} />
-                                    <PatientInfoItem testId='lastChatDate' name='תאריך עדכון אחרון בבוט' value={botInvestigationInfo.lastChatDate ? format(new Date(botInvestigationInfo.lastChatDate), 'dd/MM/yyyy') : ""} />
+                                    <PatientInfoItem testId='lastChatDate' name='תאריך עדכון אחרון בבוט' value={botInvestigationInfo.lastChatDate ? format(new Date(botInvestigationInfo.lastChatDate), 'HH:mm:ss dd/MM/yyyy') : ""} />
                                     {
                                         botInvestigationInfo.investigatiorReferenceRequired &&
                                         <PatientInfoItem testId='investigatorReferenceStatus' name='נדרשת התייחסות חוקר בגין' value={getInvestigatiorReferenceReasons()} />

@@ -85,7 +85,8 @@ export const createRowData = (
     investigatiorReferenceRequired: boolean,
     chatStatus: KeyValuePair,
     investigatorReferenceStatus: KeyValuePair,
-    investigatorReferenceReasons:KeyValuePair[]
+    investigatorReferenceReasons:KeyValuePair[],
+    lastUpdatorUser: string
 ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
@@ -123,7 +124,8 @@ export const createRowData = (
     investigatiorReferenceRequired,
     chatStatus,
     investigatorReferenceStatus,
-    investigatorReferenceReasons
+    investigatorReferenceReasons,
+    lastUpdatorUser
 });
 
 export interface SelectedRow {
@@ -621,7 +623,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     investigation.botInvestigation?.investigatiorReferenceRequired,
                                     investigation.botInvestigation?.chatStatus,
                                     investigation.botInvestigation?.investigatorReferenceStatus,
-                                    investigation.botInvestigation?.investigatorReferenceReasons
+                                    investigation.botInvestigation?.investigatorReferenceReasons,
+                                    investigation.lastUpdatorUser
                                     )
                             });
                         investigationRows
@@ -1087,7 +1090,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             investigation.botInvestigation?.investigatiorReferenceRequired,
                             investigation.botInvestigation?.chatStatus,
                             investigation.botInvestigation?.investigatorReferenceStatus,
-                            investigation.botInvestigation?.investigatorReferenceReasons
+                            investigation.botInvestigation?.investigatorReferenceReasons,
+                            investigation.lastUpdatorUser
                         )
                     });
                 setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))

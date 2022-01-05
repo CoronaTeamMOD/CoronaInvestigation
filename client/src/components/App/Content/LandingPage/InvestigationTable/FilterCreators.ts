@@ -6,6 +6,7 @@ import { allTimeRangeId } from '../adminLandingPage/useAdminLandingPage';
 import InvestigatorReferenceStatusCode from 'models/enums/InvestigatorReferenceStatusCode';
 import ChatStatusCode from 'models/enums/ChatStatusCodes';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import BotProperties from 'models/enums/BotProperties';
 
 const unassignedUserName = 'לא משויך';
 
@@ -14,8 +15,6 @@ const TWO_HOURS_IN_MS = 2 * 60 * 60 * 1000;
 
 const OVERTIME_OF_NEW_BOT_INVESTIGATION = TEN_HOURS_IN_MS;
 const OVERTIME_OF_IN_PROGRESS_BOT_INVESTIGATION = TWO_HOURS_IN_MS;
-
-const BOT_USER = 'admin.group9995';
 
 export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => Exclude<any, void>) } = {
     [InvestigationsFilterByFields.STATUS]: (values: string[]) => {
@@ -262,7 +261,7 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
                                 lastChatDate: { lessThan: new Date(Date.now() - OVERTIME_OF_IN_PROGRESS_BOT_INVESTIGATION).toUTCString() }
                             },
                             investigationStatus: { in: [InvestigationMainStatusCodes.IN_PROCESS] },
-                            lastUpdatorUser: { equalTo: BOT_USER }
+                            lastUpdatorUser: { equalTo: BotProperties.BOT_USER }
                         },
                         {
                             botInvestigationByEpidemiologyNumber: {
