@@ -23,6 +23,7 @@ import useGroupedInvestigationContacts from '../useGroupedInvestigationContacts'
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
 import { getBotInvestigationInfo } from 'redux/BotInvestigationInfo/botInvestigationInfoActionCreator';
+import { getMutationInfo } from 'redux/MutationInfo/mutationInfoActionCreator';
 
 const defaultInvestigationStaticInfo: InvestigationInfo = {
     comment: '',
@@ -156,6 +157,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode }: Props
                 });
             setGroupedInvestigationsDetailsAsync();
             dispatch(getBotInvestigationInfo());
+            dispatch(getMutationInfo());
         }
     }, [epidemiologyNumber]);
 

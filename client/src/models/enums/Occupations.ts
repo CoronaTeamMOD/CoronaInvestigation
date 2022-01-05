@@ -7,6 +7,7 @@ enum Occupations {
     GOVERNMENT_OFFICE = 'משרד ממשלתי או רשות מקומית',
     TRANSPORTATION = 'תחבורה',
     INDUSTRY = 'תעשיה',
+    GERIATRICS = 'גריאטריה',
 }
 
 export default Occupations;

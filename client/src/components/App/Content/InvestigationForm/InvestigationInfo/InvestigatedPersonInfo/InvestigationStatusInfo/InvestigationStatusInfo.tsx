@@ -18,6 +18,8 @@ import KeyValuePair from 'models/KeyValuePair';
 import { BotInvestigationInfo } from 'models/InvestigationInfo';
 import ChatStatusCode from 'models/enums/ChatStatusCodes';
 import { setInvestigatorReferenceStatus } from 'redux/BotInvestigationInfo/botInvestigationInfoActionCreator';
+import { getMutationInfo } from 'redux/MutationInfo/mutationInfoActionCreator';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 
 const statusLabel = 'סטטוס';
@@ -90,6 +92,8 @@ const InvestigationStatusInfo = (props: any) => {
                                         label={statusLabel}
                                         value={investigationStatus.mainStatus}
                                         onChange={(event) => {
+                                            dispatch(getMutationInfo());
+                                            setIsLoading(false);
                                             const newStatus = event.target.value as string
                                             if (newStatus) {
                                                 setInvestigationStatus({

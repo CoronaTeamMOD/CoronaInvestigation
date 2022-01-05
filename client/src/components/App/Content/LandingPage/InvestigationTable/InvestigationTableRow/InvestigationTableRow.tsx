@@ -21,6 +21,7 @@ import { IndexedInvestigationData, TableHeadersNames } from '../InvestigationTab
 import InvestigatorAllocationCell from '../InvestigatorAllocation/InvestigatorAllocationCell';
 import InvestigationStatusColumn from '../InvestigationStatusColumn/InvestigationStatusColumn';
 import InvestigationIndicatorsColumn from '../InvestigationIndicatorsColumn/InvestigationIndicatorsColumn';
+import BotProperties from 'models/enums/BotProperties';
 
 interface RowTooltipProps {
     titleOverride?: string;
@@ -128,6 +129,15 @@ const InvestigationTableRow = ({
         }
         return msg;
     }
+
+    const getBotTableCell = (lastUpdatorUser: string, value: string) => {
+        return (
+            <span className={lastUpdatorUser == BotProperties.BOT_USER ? `${classes.botActive}` : `${classes.botInactive}`}>
+                {value}
+            </span>
+        );
+    }
+
     const getTableCell = (cellName: string) => {
         const wasInvestigationFetchedByGroup = indexedRow.groupId && !indexedRow.canFetchGroup;
         switch (cellName) {
@@ -258,11 +268,17 @@ const InvestigationTableRow = ({
                         {
                             indexedRow.investigatiorReferenceRequired &&
                             <Tooltip title={getInvestigatorReferenceRequiredTooltip(row)} placement='top' arrow>
-                                <Person color='primary' />
+                                <Person color={(row.lastUpdatorUser == BotProperties.BOT_USER) ? 'primary' : 'disabled'} />
                             </Tooltip>
                         }
                     </Box>
                 )
+            case TableHeadersNames.chatStatus:
+                return getBotTableCell(row.lastUpdatorUser, indexedRow[cellName as keyof typeof TableHeadersNames])
+            case TableHeadersNames.lastChatDate:
+                return getBotTableCell(row.lastUpdatorUser, indexedRow[cellName as keyof typeof TableHeadersNames])
+            case TableHeadersNames.investigatorReferenceStatus:
+                return getBotTableCell(row.lastUpdatorUser, indexedRow[cellName as keyof typeof TableHeadersNames])
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames];
         }

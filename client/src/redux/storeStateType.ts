@@ -21,6 +21,7 @@ import { ClinicalDetailsState } from './ClinicalDetails/ClinicalDetailsReducer';
 import { PersonalInfoTabState } from 'components/App/Content/InvestigationForm/TabManagement/PersonalInfoTab/PersonalInfoTabInterfaces';
 import KeyValuePair from 'models/KeyValuePair';
 import { BotInvestigationInfoState } from './BotInvestigationInfo/botInvestigationInfoReducer';
+import { MutationInfoState } from './MutationInfo/mutationInfoReducer';
 
 export default interface StoreStateType {
     user: UserState;
@@ -53,4 +54,5 @@ export default interface StoreStateType {
     investigatorReferenceStatuses: KeyValuePair[];
     botInvestigationInfo: BotInvestigationInfoState;
     chatStatuses: KeyValuePair[];
+    mutationInfo: MutationInfoState;
 };

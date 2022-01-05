@@ -28,16 +28,8 @@ transferRequestInvestigationsCount bigint;
 waitingForDetailsInvestigationsCount bigint;
 unallocatedDeskInvestigationsCount bigint;
 incompletedBotInvestigationsCount bigint;
-tenHoursAgo timestamp without time zone;
-fourHoursAgo timestamp without time zone;
-twoHoursAgo  timestamp without time zone;
 
 BEGIN
-
-select now() - interval '2 hours' into twoHoursAgo;
-select now() - interval '4 hours' into fourHoursAgo;
-select now() - interval '10 hours' into tenHoursAgo;
-
 	-- creating filtered investigations: all of the statistics will be pulled from here instead of just public.investigations
 	CREATE TEMP TABLE filtered_investigations AS SELECT * FROM public.investigation 
 	WHERE creator IN (
@@ -74,7 +66,7 @@ select now() - interval '10 hours' into tenHoursAgo;
 	-- unusualInProgressInvestigations
 	SELECT COUNT(epidemiology_number) INTO unusualInProgressInvestigationsCount FROM filtered_investigations
 		WHERE investigation_status = 100000002
-		AND start_time <= fourHoursAgo;
+		AND start_time <= current_date - interval '4 hours';
 	
 	-- unusualCompletedNoContactInvestigations
 	SELECT COUNT(epidemiology_number) INTO unusualCompletedNoContactInvestigationsCount FROM (
@@ -110,9 +102,9 @@ select now() - interval '10 hours' into tenHoursAgo;
 		ON i.epidemiology_number = b.epidemiology_number
 		WHERE
 		(b.chat_status_id IN (1,3,9,10) AND i.investigation_status=1) OR
-		(i.investigation_status=1 AND b.last_chat_date < tenHoursAgo) OR
+		(i.investigation_status=1 AND b.last_chat_date < current_date - interval '10 hours') OR
 		(i.investigation_status =100000002 AND i.last_updator_user = 'admin.group9995'
-		 AND  b.last_chat_date < twoHoursAgo) OR
+		 AND  b.last_chat_date < current_date - interval '2 hours') OR
 		(i.investigation_status = 100000001 AND b.investigator_reference_status_id IN (1,2))
 	) AS incompletedBotInvs;
 	
@@ -134,3 +126,4 @@ select now() - interval '10 hours' into tenHoursAgo;
 	);
 END;
 $BODY$;
+
