@@ -257,7 +257,7 @@ const InvestigationTableRow = ({
                         checkGroupedInvestigationOpen={checkGroupedInvestigationOpen}
                         fetchTableData={fetchTableData}
                         fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
-                        moveToTheInvestigationForm={moveToTheInvestigationForm}
+                        investigator ={row.investigator}
                     />
                 );
             case TableHeadersNames.age:

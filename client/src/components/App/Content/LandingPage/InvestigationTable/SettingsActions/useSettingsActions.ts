@@ -9,25 +9,34 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import Investigator from 'models/Investigator';
+import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
 const useSettingsActions = (props: useSettingsActionsIncome ): useSettingsActionsOutcome => {
 
-    const { allGroupedInvestigations, setAnchorEl, fetchTableData, fetchInvestigationsByGroupId, moveToTheInvestigationForm} = props;
+    const { allGroupedInvestigations, setAnchorEl, fetchTableData, fetchInvestigationsByGroupId, investigationStatus, investigator} = props;
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const { alertError, alertWarning } = useCustomSwal();
 
     const reopenInvestigation = (epidemiologyNumber: number) => {
+        setIsLoading(true);
         const reopenLogger = logger.setup('Reopen Investigation');
+        const status = (investigationStatus.id == InvestigationMainStatusCodes.CANT_COMPLETE ||
+            investigationStatus.id == InvestigationMainStatusCodes.NOT_INVESTIGATED) &&
+            investigator.id.startsWith('admin.group') ?
+            InvestigationMainStatusCodes.NEW :
+            InvestigationMainStatusCodes.IN_PROCESS;
         axios.post('/investigationInfo/updateInvestigationStatus', {
-            investigationMainStatus: InvestigationMainStatusCodes.IN_PROCESS,
+            investigationMainStatus: status,
             investigationSubStatus: null,
             statusReason: null,
             epidemiologyNumber
         }).then(() => {
             reopenLogger.info('reopen investigation and update status request was successful', Severity.LOW);
-            moveToTheInvestigationForm(epidemiologyNumber);
+            fetchTableData();
+            setIsLoading(false);
         })
             .catch((error) => {
                 reopenLogger.error(`got errors in server result while reopening investigation: ${error}`, Severity.HIGH);
@@ -112,7 +121,8 @@ interface useSettingsActionsIncome {
     setAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
     fetchTableData: () => void;
     fetchInvestigationsByGroupId: (groupId: string) => void;
-    moveToTheInvestigationForm: (epidemiologyNumber: number) => void;
+    investigationStatus: InvestigationMainStatus;
+    investigator:Investigator;
 }
 
 interface useSettingsActionsOutcome {
