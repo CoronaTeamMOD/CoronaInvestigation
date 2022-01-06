@@ -10,6 +10,7 @@ import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 import useSettingsActions from './useSettingsActions'
+import Investigator from 'models/Investigator';
 
 interface settingsAction {
     key: number;
@@ -26,19 +27,23 @@ const SettingsActions = (props: Props) => {
     const userType = useSelector<StoreStateType, UserTypeCodes>(state => state.user.data.userType);
 
     const { epidemiologyNumber, investigationStatus, groupId, allGroupedInvestigations, checkGroupedInvestigationOpen,
-            fetchTableData, fetchInvestigationsByGroupId, moveToTheInvestigationForm } = props;
+            fetchTableData, fetchInvestigationsByGroupId, investigator} = props;
 
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-    const { excludeInvestigationFromGroup, reopenInvestigation } = useSettingsActions({ allGroupedInvestigations, setAnchorEl, fetchTableData, 
-                                                                    fetchInvestigationsByGroupId, moveToTheInvestigationForm });
-    
+    const { excludeInvestigationFromGroup, reopenInvestigation } = useSettingsActions({
+        allGroupedInvestigations, setAnchorEl, fetchTableData,
+        fetchInvestigationsByGroupId, investigationStatus, investigator
+    });
+
     const shouldExcludeDisabled = () => {
         return !(checkGroupedInvestigationOpen.includes(epidemiologyNumber) || Boolean(allGroupedInvestigations.get(groupId)))
     }
 
     const shouldReopenInvestigation = () => {
-        return investigationStatus.id === InvestigationMainStatusCodes.DONE;
+        return investigationStatus.id === InvestigationMainStatusCodes.DONE ||
+            investigationStatus.id === InvestigationMainStatusCodes.NOT_INVESTIGATED ||
+            investigationStatus.id === InvestigationMainStatusCodes.CANT_COMPLETE;
     }
     
     const settingsAction: settingsAction[]  = [
@@ -114,7 +119,7 @@ interface Props {
     checkGroupedInvestigationOpen: number[];
     fetchTableData: () => void;
     fetchInvestigationsByGroupId: (groupId: string) => void;
-    moveToTheInvestigationForm: (epidemiologyNumber: number) => void;
+    investigator: Investigator;
 }
 
 export default SettingsActions;
