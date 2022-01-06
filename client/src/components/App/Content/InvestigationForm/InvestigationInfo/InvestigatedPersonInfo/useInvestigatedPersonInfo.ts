@@ -67,6 +67,7 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
             epidemiologyNumber: epidemiologyNumber,
             startTime
         }).then(() => {
+            console.log('tsts')
             updateInvestigationStatusLogger.info('update investigation status request was successful', Severity.LOW);
         }).catch((error) => {
             updateInvestigationStatusLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
