@@ -1,7 +1,3 @@
-export interface InvestigatedPersonInfoIncome {
-    moveToTheInvestigationForm: (epidemiologyNumber: number) => void;
-};
-
 export interface InvestigatedPersonInfoOutcome {
     confirmExitUnfinishedInvestigation: (epidemiologyNumber: number) => void;
     staticFieldsSubmit: (data: any) => void;

@@ -34,7 +34,6 @@ import { FlightLand } from '@material-ui/icons';
 import { getMutationInfo } from 'redux/MutationInfo/mutationInfoActionCreator';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
-const investigationstableURL = '/landing';
 const openInvestigationForEditText = 'פתיחה מחודשת';
 const leaveInvestigationMessage = 'צא מחקירה';
 const saveStaticDetailsMessage = 'שמירת שינויים';
@@ -72,13 +71,11 @@ const InvestigatedPersonInfo = (props: Props) => {
     const { comment, setComment } = useContext(commentContext);
     const [commentInput, setCommentInput] = React.useState<string | null>('');
     const isContactInvestigationVerifiedAbroad = useSelector<StoreStateType, boolean>(state => state.investigation.contactInvestigationVerifiedAbroad);
-    const moveToTheInvestigationForm = (epidemiologyNumber: number) => {
-        setLastOpenedEpidemiologyNum(epidemiologyNumber);
-        window.location.pathname = investigationstableURL;
-    }
 
-    const { confirmExitUnfinishedInvestigation, staticFieldsSubmit, reopenInvestigation } = useInvestigatedPersonInfo({ moveToTheInvestigationForm });
-    const shouldReopenInvestigation = investigationStatus.mainStatus === InvestigationMainStatusCodes.DONE;
+    const { confirmExitUnfinishedInvestigation, staticFieldsSubmit, reopenInvestigation } = useInvestigatedPersonInfo();
+    const shouldReopenInvestigation = investigationStatus.mainStatus === InvestigationMainStatusCodes.DONE ||
+        investigationStatus.mainStatus === InvestigationMainStatusCodes.NOT_INVESTIGATED ||
+        investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE;
 
     useEffect(() => {
         setCommentInput(comment);
