@@ -16,15 +16,14 @@ import UdpateTrackingRecommendation from 'Utils/TrackingRecommendation/updateTra
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
 import { inProcess } from './InvestigatedPersonInfo';
-import { InvestigatedPersonInfoIncome, InvestigatedPersonInfoOutcome, StaticFieldsFormInputs } from './InvestigatedPersonInfoInterfaces';
+import { InvestigatedPersonInfoOutcome, StaticFieldsFormInputs } from './InvestigatedPersonInfoInterfaces';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
-import { setInvestigationStaticFieldChange } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigationStaticFieldChange, setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
 import investigatorReferenceStatusesReducer from 'redux/investigatorReferenceStatuses/investigatorReferenceStatusesReduces';
 import { updateInvestigatorReferenceStatus } from 'httpClient/investigationInfo';
 import { setInvestigatorReferenceStatusWasChanged } from 'redux/BotInvestigationInfo/botInvestigationInfoActionCreator';
 
-const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): InvestigatedPersonInfoOutcome => {
-    const { moveToTheInvestigationForm } = parameters;
+const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
     const { alertSuccess, alertWarning, alertError } = useCustomSwal();
@@ -36,6 +35,7 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
     const investigatorReferenceStatusWasChanged = useSelector<StoreStateType, boolean>(state => state.botInvestigationInfo.investigatorReferenceStatusWasChanged);
     const investigationStaticFieldChange = useSelector<StoreStateType, boolean>(state => state.investigation.investigationStaticFieldChange);
     const investigatorReferenceStatusId = useSelector<StoreStateType,number|undefined>(state=>state.botInvestigationInfo.botInvestigationInfo?.investigatorReferenceStatus?.id);
+    const investigator = useSelector<StoreStateType,string>(state=>state.investigation.creator);
 
     const handleInvestigationFinish = () => {
         alertSuccess('בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה', {
@@ -138,18 +138,30 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
 
     const reopenInvestigation = (epidemiologyNumber: number) => {
         const reopenLogger = logger.setup('Reopen Investigation');
+        setIsLoading(true);
+        const status = (investigationStatus.mainStatus == InvestigationMainStatusCodes.CANT_COMPLETE ||
+            investigationStatus.mainStatus == InvestigationMainStatusCodes.NOT_INVESTIGATED) &&
+            investigator.startsWith('admin.group') ?
+            InvestigationMainStatusCodes.NEW :
+            InvestigationMainStatusCodes.IN_PROCESS;
         axios.post('/investigationInfo/updateInvestigationStatus', {
-            investigationMainStatus: InvestigationMainStatusCodes.IN_PROCESS,
+            investigationMainStatus: status,
             investigationSubStatus: null,
             statusReason: null,
             epidemiologyNumber
         }).then(() => {
             reopenLogger.info('reopen investigation and update status request was successful', Severity.LOW);
-            moveToTheInvestigationForm(epidemiologyNumber);
+            setInvestigationStatus({
+                mainStatus: +status,
+                subStatus: '',
+                statusReason: ''
+            });
+            setIsLoading(false);
         })
             .catch((error) => {
                 reopenLogger.error(`got errors in server result while reopening investigation: ${error}`, Severity.HIGH);
                 alertError('לא ניתן לפתוח את החקירה מחדש');
+                setIsLoading(false);
             })
     }
 
