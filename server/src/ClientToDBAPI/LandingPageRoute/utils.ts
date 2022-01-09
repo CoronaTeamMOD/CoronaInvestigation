@@ -74,6 +74,7 @@ interface UserInvestigations {
                     ]
                 } | null
             } | null;
+            lastUpdatorUser:string;
         }]
     }
 }
@@ -155,6 +156,7 @@ interface GroupIvestigations {
                     ]
                 } | null,
             } | null;
+            lastUpdatorUser:string;
         }]
     }
 }
@@ -240,11 +242,4 @@ export const convertUserInvestigationsData = (dbData: UserInvestigations) => {
 
 export const convertGroupInvestigationsData = (dbData: GroupIvestigations) => {
     return dbData.orderedInvestigations.nodes.map(mappingGroupInvestigations);
-}
-
-const orderByAge = 'ageDESC';
-const defaultOrder = 'defaultOrder';
-
-export const calculateInvestigationOrder = (orderBy: string) => {
-    return orderBy === defaultOrder ? orderByAge : orderBy;
 }

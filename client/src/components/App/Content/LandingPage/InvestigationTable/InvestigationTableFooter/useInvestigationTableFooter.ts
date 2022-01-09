@@ -13,6 +13,13 @@ import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import { IndexedInvestigation } from '../InvestigationTablesHeaders';
 import { InvestigationTableFooterOutcome, InvestigationTableFooterParameters } from './InvestigationTableFooterInterfaces';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+
+type UpdateCount = {
+    updatedCount: number,
+    cannotBeUpdatedCount: number,
+    errorCount: number
+}
 
 const toUniqueIdsAndEpidemiologyNumbers = (
     previous: {
@@ -36,14 +43,19 @@ const toUniqueIdsAndEpidemiologyNumbers = (
 
 const useInvestigationTableFooter = (parameters: InvestigationTableFooterParameters): InvestigationTableFooterOutcome => {
 
-    const { setOpenDesksDialog, setOpenGroupedInvestigations,checkedIndexedRows, 
-            onDialogClose, fetchTableData, onDeskChange, onDeskGroupChange,
-            onCountyChange, onCountyGroupChange } = parameters;
-            
+    const { setOpenDesksDialog, setOpenGroupedInvestigations, checkedIndexedRows,
+        onDialogClose, fetchTableData, onDeskChange, onDeskGroupChange,
+        onCountyChange, onCountyGroupChange } = parameters;
 
-    const { alertError, alertWarning } = useCustomSwal();
+
+    const { alertError, alertWarning, alertSuccess } = useCustomSwal();
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const [isInvestigatorAllocationFooterDialogOpen, setIsInvestigatorAllocationFooterDialogOpen] = useState<boolean>(false);
+
+    let cannotBeUpdatedCount = 0;
+    let updatedStatusCount = 0;
+    let updateStatusErrorCount = 0;
+
 
     const handleOpenDesksDialog = () => setOpenDesksDialog(true);
 
@@ -106,7 +118,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     const handleOpenGroupedInvestigations = () => {
         setOpenGroupedInvestigations(true);
     }
-    
+
     const handleCloseGroupedInvestigations = () => {
         setOpenGroupedInvestigations(false);
         onDialogClose();
@@ -146,6 +158,50 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             })
     }
 
+    const resetUpdateStatusCounts = () => {
+        cannotBeUpdatedCount = 0;
+        updatedStatusCount = 0;
+        updateStatusErrorCount = 0;
+    }
+
+    const updateNotInvestigatedStatus = (epidemiologyNumber: number, investigationStatusId: number, totalCount: number) => {
+        const reopenLogger = logger.setup('Update Investigation Status');
+        if (investigationStatusId != InvestigationMainStatusCodes.NEW) {
+            cannotBeUpdatedCount++;
+            if (cannotBeUpdatedCount == totalCount) {
+                alertWarning('לא ניתן לבצע עדכון מרובה לחקירות שאינן בסטטוס חדשה');
+                resetUpdateStatusCounts();
+                onDialogClose();
+            }
+            return;
+        }
+        setIsLoading(true);
+        axios.post('/investigationInfo/updateInvestigationStatus', {
+            investigationMainStatus: InvestigationMainStatusCodes.NOT_INVESTIGATED,
+            investigationSubStatus: null,
+            statusReason: null,
+            epidemiologyNumber
+        }).then(() => {
+            reopenLogger.info('update investigation status request was successful', Severity.LOW);
+            updatedStatusCount++;
+        })
+            .catch((error) => {
+                reopenLogger.error(`got errors in server result while updating investigation status: ${error}`, Severity.HIGH);
+                updateStatusErrorCount++;
+                alertError(`שגיאה בעדכון סטטוס עבור חקירה ${epidemiologyNumber}`);
+            })
+            .finally(() => {
+                const sumUpdatedCount = updatedStatusCount + cannotBeUpdatedCount + updateStatusErrorCount;
+                if (sumUpdatedCount == totalCount) {
+                    alertSuccess(`עודכן סטטוס של ${updatedStatusCount} מתוך ${totalCount} חקירות שנבחרו`);
+                    resetUpdateStatusCounts();
+                    fetchTableData();
+                }
+                setIsLoading(false);
+                onDialogClose();
+            })
+    }
+
     return {
         handleOpenDesksDialog,
         handleCloseDesksDialog,
@@ -156,7 +212,8 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         handleCloseGroupedInvestigations,
         handleConfirmDesksDialog,
         handleConfirmCountiesDialog,
-        handleDisbandGroupedInvestigations
+        handleDisbandGroupedInvestigations,
+        updateNotInvestigatedStatus
     }
 }
 

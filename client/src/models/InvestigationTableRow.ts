@@ -41,6 +41,7 @@ interface InvestigationTableRow {
     chatStatus: KeyValuePair;
     investigatorReferenceStatus: KeyValuePair;
     investigatorReferenceReasons:KeyValuePair[];
+    lastUpdatorUser: string;
 };
 
 export default InvestigationTableRow;

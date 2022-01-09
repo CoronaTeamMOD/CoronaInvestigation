@@ -56,10 +56,11 @@ const InvestigationForm: React.FC = (props): JSX.Element => {
         [exposureDate, symptomsStartDate, hasSymptoms, endInvestigationDate, setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
     );
 
-    const { areThereContacts, setAreThereContacts } = useInvestigationForm();
     const {
         currentTab,
         setNextTab,
+        areThereContacts,
+        setAreThereContacts
     } = useTabManagement({ lastTabDisplayedId });
 
     useEffect(() => {

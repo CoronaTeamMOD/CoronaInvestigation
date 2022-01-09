@@ -55,10 +55,10 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         tabShowLogger.info('launching amount of contacts request', Severity.LOW);
         const minimalDateToFilter = datesToInvestigate.slice(-1)[0];
         const formattedMinimalDate = typeof minimalDateToFilter !== 'string' ? minimalDateToFilter.toISOString() : minimalDateToFilter;
-        axios.get(`/contactedPeople/allContacts/${formattedMinimalDate}`)
+        axios.get(`/contactedPeople/getContactsCount/${formattedMinimalDate}`)
             .then((result: any) => {
                 tabShowLogger.info('amount of contacts request was successful', Severity.LOW);
-                setAreThereContacts(result?.data.length > 0);
+                setAreThereContacts(result?.data.contactsCount> 0);
             }).catch((error) => {
                 tabShowLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
             });
