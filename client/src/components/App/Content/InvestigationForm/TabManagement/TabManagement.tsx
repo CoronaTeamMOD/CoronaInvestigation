@@ -33,34 +33,36 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         isScriptOpened,
         setIsScriptOpened,
         isLastTabDisplayed,
-        isViewMode
+        isViewMode,
+        shouldDisableInvestigationStatus
     } = tabManagementProps;
 
     const tabs: TabObj[] = [
         {
             id: TabId.PERSONAL_INFO,
             name: orderedTabsNames[0],
-            displayComponent: <PersonalInfoTab id={0} isViewMode={isViewMode} />
+            displayComponent: <PersonalInfoTab id={0}
+                isViewMode={isViewMode || shouldDisableInvestigationStatus} />
         },
         {
             id: TabId.CLINICAL_DETAILS,
             name: orderedTabsNames[1],
-            displayComponent: <ClinicalDetails id={1} isViewMode={isViewMode} />
+            displayComponent: <ClinicalDetails id={1} isViewMode={isViewMode || shouldDisableInvestigationStatus} />
         },
         {
             id: TabId.EXPOSURES,
             name: orderedTabsNames[2],
-            displayComponent: <ExposuresAndFlights id={2} isViewMode={isViewMode} />
+            displayComponent: <ExposuresAndFlights id={2} isViewMode={isViewMode || shouldDisableInvestigationStatus} />
         },
         {
             id: TabId.INTERACTIONS,
             name: orderedTabsNames[3],
-            displayComponent: <InteractionsTab id={3} setAreThereContacts={setAreThereContacts} isViewMode={isViewMode} />
+            displayComponent: <InteractionsTab id={3} setAreThereContacts={setAreThereContacts} isViewMode={isViewMode || shouldDisableInvestigationStatus} />
         },
         {
             id: TabId.CONTACTS_QUESTIONING,
             name: orderedTabsNames[4],
-            displayComponent: <ContactQuestioning id={4} isViewMode={isViewMode} />
+            displayComponent: <ContactQuestioning id={4} isViewMode={isViewMode || shouldDisableInvestigationStatus} />
         },
     ];
 
@@ -136,7 +138,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                 </Grid>
                 <Grid container item spacing={2} alignItems='center' sm={4}>
                     <Grid item className={classes.nextButton}>
-                        {(!isViewMode || !isLastTabDisplayed) && (
+                        {((!isViewMode && !shouldDisableInvestigationStatus) || !isLastTabDisplayed) && (
                             <>
                                 <PrimaryButton
                                     type='submit'
@@ -181,4 +183,5 @@ interface Props {
     setIsScriptOpened: React.Dispatch<React.SetStateAction<boolean>>;
     isLastTabDisplayed: boolean;
     isViewMode?: boolean;
+    shouldDisableInvestigationStatus?:boolean;
 };

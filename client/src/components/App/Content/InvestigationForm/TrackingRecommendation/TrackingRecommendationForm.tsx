@@ -15,7 +15,7 @@ import UseTrackingRecommendationForm from './useTrackingRecommendationForm';
 const TrackingRecommendationForm = (props: Props) => {
     const trackingRecommendation = useSelector<StoreStateType, TrackingRecommendation>(state => state.investigation.trackingRecommendation);
     const classes = useStyles();
-    const { isViewMode } = props;
+    const { isViewMode, shouldDisableInvestigationStatus } = props;
     const { reason, subReason, extraInfo } = trackingRecommendation;
 
     const [trackingSubReasons, setTrackingSubReasons] = useState<Option[]>([]);
@@ -35,7 +35,7 @@ const TrackingRecommendationForm = (props: Props) => {
                 <FormControl variant='outlined'>
                     <Select
                         value={reason || 0}
-                        disabled={isViewMode}
+                        disabled={isViewMode || shouldDisableInvestigationStatus}
                         onChange={async (e) => {
                             const newReason: number = e.target.value as number;
                             reason !== null && setTrackingSubReasons(await fetchSubReasonsByReason(reason));
@@ -62,7 +62,7 @@ const TrackingRecommendationForm = (props: Props) => {
                             <InputLabel>סיבה</InputLabel>
                             <Select
                                 value={subReason || 0}
-                                disabled={isViewMode}
+                                disabled={isViewMode || shouldDisableInvestigationStatus}
                                 onChange={(e) => {
                                     setTrackingRecommendation({
                                         reason,
@@ -86,7 +86,7 @@ const TrackingRecommendationForm = (props: Props) => {
                         <AlphanumericTextField
                             name='trackingExtraInfo'
                             key={reason || ''}
-                            disabled={isViewMode}
+                            disabled={isViewMode || shouldDisableInvestigationStatus}
                             value={extraInfo || ''}
                             onChange={(value) => {
                                 setTrackingRecommendation({
@@ -105,6 +105,7 @@ const TrackingRecommendationForm = (props: Props) => {
 
 interface Props {
     isViewMode?: boolean;
+    shouldDisableInvestigationStatus?: boolean;
 }
 
 export default TrackingRecommendationForm;

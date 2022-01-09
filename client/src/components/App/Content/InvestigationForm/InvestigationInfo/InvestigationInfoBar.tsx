@@ -68,7 +68,7 @@ const unauthorizedErrorMessages: Record<number, string> = {
 
 const UNAUTHORIZED_ERROR_TEXT = 'אין לך הרשאות לבצע פעולות על החקירה';
 
-const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode }: Props) => {
+const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode, shouldDisableInvestigationStatus }: Props) => {
 
     let history = useHistory();
     const dispatch = useDispatch();
@@ -190,6 +190,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode }: Props
                 investigationStaticInfo={investigationStaticInfo}
                 currentTab={currentTab}
                 isViewMode={isViewMode}
+                shouldDisableInvestigationStatus={shouldDisableInvestigationStatus}
                 epedemioligyNumber={epidemiologyNumber}
                 botInvestigationInfo={botInvestigationInfo}
             />
@@ -203,6 +204,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode }: Props
 interface Props {
     currentTab: number;
     isViewMode?: boolean;
+    shouldDisableInvestigationStatus?:boolean;
 };
 
 export default InvestigationInfoBar;

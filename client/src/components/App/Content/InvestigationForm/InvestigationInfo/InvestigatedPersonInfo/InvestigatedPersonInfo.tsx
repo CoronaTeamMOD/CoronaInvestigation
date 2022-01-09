@@ -48,7 +48,7 @@ export const inProcess = 'בטיפול';
 
 const InvestigatedPersonInfo = (props: Props) => {
 
-    const { currentTab, investigationStaticInfo, epedemioligyNumber, isViewMode, botInvestigationInfo } = props;
+    const { currentTab, investigationStaticInfo, epedemioligyNumber, isViewMode, shouldDisableInvestigationStatus, botInvestigationInfo } = props;
 
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -179,7 +179,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                                     props.onChange(event.target.value)
                                                     dispatch(setInvestigationStaticFieldChange(true));
                                                 }}
-                                                disabled={isViewMode}
+                                                disabled={isViewMode || shouldDisableInvestigationStatus}
                                                 error={methods.errors && methods.errors[StaticFields.FULL_NAME]}
                                                 label={(methods.errors && methods.errors[StaticFields.FULL_NAME]?.message) || ''}
                                             />
@@ -242,6 +242,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                         validateStatusReason={validateStatusReason}
                         ValidationStatusSchema={ValidationStatusSchema}
                         isViewMode={isViewMode}
+                        shouldDisableInvestigationStatus={shouldDisableInvestigationStatus}
                     />
 
                     <div className={classes.informationBar}>
@@ -401,7 +402,10 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 <Typography className={classes.commentTitle}>
                                     {commentLabel}:
                                 </Typography>
-                                <CommentInput commentInput={commentInput} handleInput={setCommentInput} isViewMode={false} />
+                                <CommentInput
+                                    commentInput={commentInput}
+                                    handleInput={setCommentInput}
+                                    isViewMode={false} />
                                 <Button
                                     className={classes.button}
                                     onClick={() => { sendComment(commentInput as string) }}
@@ -422,6 +426,7 @@ interface Props {
     epedemioligyNumber: number;
     currentTab: number;
     isViewMode?: boolean;
+    shouldDisableInvestigationStatus?:boolean;
     botInvestigationInfo: BotInvestigationInfo | null;
 };
 

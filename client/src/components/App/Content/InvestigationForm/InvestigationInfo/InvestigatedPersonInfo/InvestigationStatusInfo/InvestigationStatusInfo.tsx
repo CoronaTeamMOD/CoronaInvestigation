@@ -29,7 +29,7 @@ const investigatorReferenceStatusLabel ='סטטוס טיפול בחקירת בו
 
 const InvestigationStatusInfo = (props: any) => {
 
-    const { statusReasonError, validateStatusReason, ValidationStatusSchema, isViewMode } = props;
+    const { statusReasonError, validateStatusReason, ValidationStatusSchema, isViewMode , shouldDisableInvestigationStatus} = props;
     const classes = useStyles();
 
     const { wasInvestigationReopend } = useStatusUtils();
@@ -85,7 +85,7 @@ const InvestigationStatusInfo = (props: any) => {
                                             },
                                             getContentAnchorEl: null
                                         }}
-                                        disabled={isViewMode}
+                                        disabled={isViewMode || shouldDisableInvestigationStatus}
                                         labelId='status-label'
                                         test-id='currentStatus'
                                         variant='outlined'

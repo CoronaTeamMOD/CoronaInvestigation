@@ -71,17 +71,17 @@ const InvestigationForm: React.FC = (props): JSX.Element => {
     }, [areThereContacts]);
 
     const isLastTabDisplayed = currentTab === lastTabDisplayedId;
-    const shouldDisableInvestigation = isViewMode ||
-        investigationStatusId === InvestigationMainStatusCodes.DONE ||
-        investigationStatusId === InvestigationMainStatusCodes.NOT_INVESTIGATED ||
-        investigationStatusId === InvestigationMainStatusCodes.CANT_COMPLETE;
+    const shouldDisableInvestigationStatus = investigationStatusId === InvestigationMainStatusCodes.DONE||
+         investigationStatusId === InvestigationMainStatusCodes.NOT_INVESTIGATED ||
+         investigationStatusId === InvestigationMainStatusCodes.CANT_COMPLETE;
     return (
         <div className={classes.content}>
             <ExposureAndFlightsContextProvider value={exposuresAndFlightsVariables}>
                 <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
                     <InvestigationInfoBar
                         currentTab={currentTab}
-                        isViewMode={shouldDisableInvestigation}
+                        isViewMode={isViewMode}
+                        shouldDisableInvestigationStatus = {shouldDisableInvestigationStatus}
                     />
                     <div className={classes.interactiveForm}>
                         <Grid container alignItems='flex-start'>
@@ -93,7 +93,8 @@ const InvestigationForm: React.FC = (props): JSX.Element => {
                                 isScriptOpened={isScriptOpened}
                                 setIsScriptOpened={setIsScriptOpened}
                                 isLastTabDisplayed={isLastTabDisplayed}
-                                isViewMode={shouldDisableInvestigation}
+                                shouldDisableInvestigationStatus = {shouldDisableInvestigationStatus}
+                                isViewMode={isViewMode}
                             />
                             <Grid item className={isScriptOpened ? classes.uncollapsed : classes.collapsed}>
                                 <Card className={isScriptOpened ? classes.scriptWrapperWithMaxHeight : classes.scriptWrapper}>
@@ -105,7 +106,9 @@ const InvestigationForm: React.FC = (props): JSX.Element => {
                             {isLastTabDisplayed &&
                                 <Grid item>
                                     <Paper className={classes.trackingForm}>
-                                        <TrackingRecommendationForm isViewMode={shouldDisableInvestigation} />
+                                        <TrackingRecommendationForm
+                                            isViewMode={isViewMode}
+                                            shouldDisableInvestigationStatus={shouldDisableInvestigationStatus} />
                                     </Paper>
                                 </Grid>
                             }
