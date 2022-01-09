@@ -67,6 +67,24 @@ jobs:
         run: npm test
         working-directory: server
 
+  comment-tfs-link:
+    name: sample comment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set output
+        id: vars
+        run: echo ::set-output name=short_ref::${{github.event.pull_request.head.ref}}| cut -d'/' -f1
+
+      - name: comment PR
+        uses: unsplash/comment-on-pr@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          msg: >
+            [link to TFS issue](https://dev.azure.com/spectrumFactory/CoronaI/_workitems/edit/${{ steps.vars.outputs.short_ref }}) <br />
+            <sub>:robot: I am a bot and this was preforemed automatically :robot: <i>[see more](https://github.com/CoronaTeamMOD/CoronaInvestigation/wiki/Naming-convention)</i></sub>
+          check_for_duplicate_msg: true
+
   pr-labeler:
     name: comment-on-pr example
     runs-on: ubuntu-latest
