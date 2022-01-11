@@ -93,6 +93,7 @@ query BotInvestigationStaticDetails($investigationId: Int!) {
           }
         }
       }
+      wasUpdatedAfterInvestigationStart
     }
 }
 
