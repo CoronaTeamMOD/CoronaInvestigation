@@ -384,6 +384,15 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     }
                                 </Grid>
                             }
+                             {
+                                botInvestigationInfo && botInvestigationInfo.wasUpdatedAfterInvestigationStart &&
+                                <Grid container alignItems='center' className={classes.line}>
+                                    <Typography className={classes.wasUpdatedNote}>
+                                        לתשומת ליבך, בוצע עדכון בבוט לאחר פעילות חוקר/ת בחקירה, פרטי החקירה מבוט לא ישוקפו בחקירה.
+                                    </Typography>
+                                </Grid>
+                            }
+
                         </div>
                     </div>
                     {(investigationStaticFieldChange || investigatorReferenceStatusWasChanged) &&
