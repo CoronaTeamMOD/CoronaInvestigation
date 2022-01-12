@@ -28,6 +28,10 @@ import groupedInvestigationReducer from './GroupedInvestigations/GroupedInvestig
 import interactedContactsReducer from './InteractedContacts/interactedContactsReducer';
 import ClinicalDetailsReducer from './ClinicalDetails/ClinicalDetailsReducer';
 import personalInfoReducer from './PersonalInfo/personalInfoReducer';
+import investigatorReferenceStatusesReducer from './investigatorReferenceStatuses/investigatorReferenceStatusesReduces';
+import botInvestigationInfoReducer from './BotInvestigationInfo/botInvestigationInfoReducer';
+import chatStatusesReducer from './ChatStatuses/chatStatusesReducer';
+import mutationInfoReducer  from './MutationInfo/mutationInfoReducer';
 
 export default combineReducers<StoreStateType>({
      occupations: occupationsReducer,
@@ -56,5 +60,9 @@ export default combineReducers<StoreStateType>({
      airlines: airlineReducer,
      interactedContacts: interactedContactsReducer,
      clinicalDetails: ClinicalDetailsReducer,
-     personalInfo: personalInfoReducer
+     personalInfo: personalInfoReducer,
+     investigatorReferenceStatuses: investigatorReferenceStatusesReducer,
+     botInvestigationInfo: botInvestigationInfoReducer,
+     chatStatuses: chatStatusesReducer,
+     mutationInfo: mutationInfoReducer
 }) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;

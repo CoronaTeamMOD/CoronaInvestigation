@@ -9,6 +9,7 @@ import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { ContactBankOption } from 'commons/Contexts/ContactBankContext';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import CreationSourceCodes from 'models/enums/CreationSourceCodes';
 
 const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFormOutcome => {
         const { loadInteractions, loadInvolvedContacts, onDialogClose, groupedInvestigationContacts, contactBank} = props;
@@ -111,7 +112,8 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                     return {
                         personInfo: contact[0],
                         extraInfo: contact[1].extraInfo,
-                        contactType: contact[1].contactType
+                        contactType: contact[1].contactType,
+                        creationSource: CreationSourceCodes.EVEN_YESOD
                     }
             });
 

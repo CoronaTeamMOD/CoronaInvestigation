@@ -34,7 +34,8 @@ const initialState: InvestigationRedux = {
         reason: null,
     },
     isViewMode: false,
-    contactInvestigationVerifiedAbroad: false
+    contactInvestigationVerifiedAbroad: false,
+    investigationStaticFieldChange: false
 }
 
 const investigationReducer = (state = initialState, action: Actions.InvestigationAction): InvestigationRedux => {
@@ -68,6 +69,7 @@ const investigationReducer = (state = initialState, action: Actions.Investigatio
         case Actions.RESET_STATE: return initialState
         case Actions.SET_INVESTIGATION_VIEW_MODE: return { ...state, isViewMode: action.payload.isViewMode }
         case Actions.SET_IS_CONTACT_INVESTIGATION_VERIFIED_ABROAD: return { ...state, contactInvestigationVerifiedAbroad: action.payload.isContactInvestigationVerifiedAbroad }
+        case Actions.SET_INVESTIGATION_STATIC_FIELD_CHANGE: return { ...state, investigationStaticFieldChange: action.payload.investigationStaticFieldChange }
         default: return state;
     }
 }

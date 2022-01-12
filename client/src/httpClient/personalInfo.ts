@@ -4,8 +4,8 @@ import { initDBAddress } from 'models/DBAddress';
 import Occupations from 'models/enums/Occupations';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { throwError } from 'rxjs';
-import logger from '../../logger/logger';
-import { Severity } from '../../models/Logger';
+import logger from '../logger/logger';
+import { Severity } from '../models/Logger';
 
 const personalDetailsLogger = logger.setup('Fetching Personal Details');
 

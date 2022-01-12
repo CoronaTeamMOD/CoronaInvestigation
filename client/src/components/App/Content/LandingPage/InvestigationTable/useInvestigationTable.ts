@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { format } from 'date-fns';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useEffect, useState, useRef, useMemo } from 'react';
 
@@ -42,6 +42,10 @@ import {
 } from './InvestigationTablesHeaders';
 import { DeskFilter, HistoryState, StatusFilter, SubStatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
 import SubStatus from 'models/SubStatus';
+import KeyValuePair from 'models/KeyValuePair';
+import { fetchAllInvestigatorReferenceStatuses, fetchAllChatStatuses } from 'httpClient/investigationInfo'; 
+import { setInvestigatorReferenceStatuses } from 'redux/investigatorReferenceStatuses/investigatorReferenceStatusesActionCreator';
+import { setChatStatuses } from 'redux/ChatStatuses/chatStatusesActionCreator';
 
 const investigationURL = '/investigation';
 
@@ -76,7 +80,13 @@ export const createRowData = (
     startTime: Date,
     isSelfInvestigated: boolean,
     selfInvestigationStatus: number,
-    selfInvestigationUpdateTime: string
+    selfInvestigationUpdateTime: string,
+    lastChatDate: string,
+    investigatiorReferenceRequired: boolean,
+    chatStatus: KeyValuePair,
+    investigatorReferenceStatus: KeyValuePair,
+    investigatorReferenceReasons:KeyValuePair[],
+    lastUpdatorUser: string
 ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
@@ -109,7 +119,13 @@ export const createRowData = (
     startTime,
     isSelfInvestigated,
     selfInvestigationStatus,
-    selfInvestigationUpdateTime
+    selfInvestigationUpdateTime,
+    lastChatDate,
+    investigatiorReferenceRequired,
+    chatStatus,
+    investigatorReferenceStatus,
+    investigatorReferenceReasons,
+    lastUpdatorUser
 });
 
 export interface SelectedRow {
@@ -137,6 +153,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const classes = useStyle(false);
     const { alertError } = useCustomSwal();
     const history = useHistory<HistoryState>();
+    const dispatch = useDispatch();
 
     const { statusFilter: historyStatusFilter = [],
         subStatusFilter: historySubStatusFilter = [],
@@ -148,6 +165,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         nonContactFilter: historyNonContactFilter = false,
         isAdminLandingRedirect: historyisAdminLandingRedirect = false,
         unallocatedDeskFilter: historyUnallocatedDeskFilter = false,
+        investigatorReferenceStatusFilter: historyInvestigatorReferenceStatusFilter = [],
+        chatStatusFilter: historyChatStatusFilter = [],
+        investigatorReferenceRequiredFilter: historyInvestigatorReferenceRequiredFilter = false,
+        incompletedBotInvestigationFilter: historyIncompletedBotInvestigationFilter = false,
         filterTitle } = useMemo(() => {
             const { location: { state } } = history;
             return state || {};
@@ -168,6 +189,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [inactiveUserFilter, setInactiveUserFilter] = useState<boolean>(historyInactiveUserFilter);
     const [isAdminLandingRedirect, setIsAdminLandingRedirect] = useState<boolean>(historyisAdminLandingRedirect);
     const [unallocatedDeskFilter, setUnallocatedDeskFilter] = useState<boolean>(historyUnallocatedDeskFilter);
+    const [chatStatusFilter, setChatStatusFilter] = useState<number[]>(historyChatStatusFilter);
+    const [investigatorReferenceStatusFilter, setInvestigatorReferenceStatusFilter] = useState<number[]>(historyInvestigatorReferenceStatusFilter);
+    const [investigatorReferenceRequiredFilter, setInvestigatorReferenceRequiredFilter] = useState<boolean>(historyInvestigatorReferenceRequiredFilter);
+    const [incompletedBotInvestigationFilter, setIncompletedBotInvestigationFilter] = useState<boolean>(historyIncompletedBotInvestigationFilter);
 
     const getFilterRules = () => {
         const statusFilterToSet = historyStatusFilter.length > 0 ? filterCreators.STATUS(historyStatusFilter) : null;
@@ -178,9 +203,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const inActiveToSet = (historyInactiveUserFilter && !historyUnassignedUserFilter) ? filterCreators.INACTIVE_USER(historyInactiveUserFilter) : null;
         const unAllocatedToSet = (historyInactiveUserFilter && historyUnassignedUserFilter) ? filterCreators.UNALLOCATED_USER(historyUnassignedUserFilter) : null;
         const updateDateFilterToSet = historyUpdateDateFilter ? filterCreators.UNUSUAL_IN_PROGRESS(historyUpdateDateFilter) : null;
-        const nonContactFilterToSet = historyNonContactFilter ? filterCreators.UNUSUAL_COMPLETED_NO_CONTACT(historyNonContactFilter) : null; 
-        const unAllocatedDeskToSet = historyUnallocatedDeskFilter ? filterCreators.UNALLOCATED_DESK(historyUnallocatedDeskFilter):null;
-
+        const nonContactFilterToSet = historyNonContactFilter ? filterCreators.UNUSUAL_COMPLETED_NO_CONTACT(historyNonContactFilter) : null;
+        const unAllocatedDeskToSet = historyUnallocatedDeskFilter ? filterCreators.UNALLOCATED_DESK(historyUnallocatedDeskFilter) : null;
+        const investigatorRefernceStatusToSet = historyInvestigatorReferenceStatusFilter ? filterCreators.INVESTIGATOR_REFERENCE_STATUS(historyInvestigatorReferenceStatusFilter) : null;
+        const chatStatusFilterToSet = historyChatStatusFilter ? filterCreators.CHAT_STATUS(historyChatStatusFilter) : null;
+        const investigatorReferenceRequiredFilterToSet = historyInvestigatorReferenceRequiredFilter ? filterCreators.INVESTIGATOR_REFERENCE_REQUIRED(historyInvestigatorReferenceRequiredFilter) : null;
+        const incompletedBotInvestigationFilterToSet = historyIncompletedBotInvestigationFilter ? filterCreators.INCOMPLETED_BOT_INVESTIGATION(historyIncompletedBotInvestigationFilter) : null;
+        
         return {
             [InvestigationsFilterByFields.STATUS]: statusFilterToSet && Object.values(statusFilterToSet)[0],
             [InvestigationsFilterByFields.SUB_STATUS]: subStatusFilterToSet && Object.values(subStatusFilterToSet)[0],
@@ -192,6 +221,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: updateDateFilterToSet && Object.values(updateDateFilterToSet)[0],
             [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: nonContactFilterToSet && Object.values(nonContactFilterToSet)[0],
             [InvestigationsFilterByFields.UNALLOCATED_DESK]: unAllocatedDeskToSet && Object.values(unAllocatedDeskToSet)[0],
+            [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_STATUS]: investigatorRefernceStatusToSet && Object.values(investigatorRefernceStatusToSet)[0],
+            [InvestigationsFilterByFields.CHAT_STATUS]: chatStatusFilterToSet && Object.values(chatStatusFilterToSet)[0],
+            [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_REQUIRED]: investigatorReferenceRequiredFilterToSet && Object.values(investigatorReferenceRequiredFilterToSet)[0],
+            [InvestigationsFilterByFields.INCOMPLETED_BOT_INVESTIGATION]: incompletedBotInvestigationFilterToSet && Object.values(incompletedBotInvestigationFilterToSet)[0]
         }
     };
 
@@ -256,6 +289,22 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setCurrentPage(defaultPage);
     };
 
+    const changeInvestigatorReferenceStatusFilter = (statuses: KeyValuePair[]) => {
+        const investigatorReferenceStatusesIds = statuses.map(status => status.id);
+        updateFilterHistory('investigatorReferenceStatusFilter', investigatorReferenceStatusesIds);
+        setInvestigatorReferenceStatusFilter(investigatorReferenceStatusesIds);
+        handleFilterChange(filterCreators.INVESTIGATOR_REFERENCE_STATUS(investigatorReferenceStatusesIds));
+        setCurrentPage(defaultPage);
+    };
+
+    const changeChatStatusFilter = (statuses: KeyValuePair[]) => {
+        const chatStatusesIds = statuses.map(status => status.id);
+        updateFilterHistory('chatStatusFilter', chatStatusesIds);
+        setChatStatusFilter(chatStatusesIds);
+        handleFilterChange(filterCreators.CHAT_STATUS(chatStatusesIds));
+        setCurrentPage(defaultPage);
+    };
+
     const changeUnassginedUserFilter = (value: boolean) => {
         updateFilterHistory('unassignedUserFilter', value);
         setUnassignedUserFilter(value);
@@ -294,6 +343,20 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         updateFilterHistory('unallocatedDeskFilter', value);
         setUnallocatedDeskFilter(value);
         handleFilterChange(filterCreators.UNALLOCATED_DESK(value));
+        setCurrentPage(defaultPage);
+    };
+
+    const changeInvestigatorReferenceRequiredFilter = (value: boolean) => {
+        updateFilterHistory('investigatorReferenceRequiredFilter', value);
+        setInvestigatorReferenceRequiredFilter(value);
+        handleFilterChange(filterCreators.INVESTIGATOR_REFERENCE_REQUIRED(value));
+        setCurrentPage(defaultPage);
+    };
+    
+    const changeIncompletedBotInvestigationFilter = (value: boolean) => {
+        updateFilterHistory('incompletedBotInvestigationFilter', value);
+        setIncompletedBotInvestigationFilter(value);
+        handleFilterChange(filterCreators.INCOMPLETED_BOT_INVESTIGATION(value));
         setCurrentPage(defaultPage);
     };
 
@@ -369,12 +432,23 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 subStatusesLogger.error(err, Severity.HIGH);
             })
     };
+    
+    const fetchAllBotInvestigationStatuses = () =>{
+            fetchAllInvestigatorReferenceStatuses().then(data => {
+                if (data) dispatch(setInvestigatorReferenceStatuses(data));
+            });
+            fetchAllChatStatuses().then(data => {
+                if (data) dispatch(setChatStatuses(data));
+            });
+       
+    }
 
     useEffect(() => {
         resetInvestigationState();
         fetchAllInvestigationStatuses();
         fetchAllInvestigationSubStatuses();
         fetchAllInvestigationComplexityReasons();
+        fetchAllBotInvestigationStatuses();
         startWaiting();
     }, []);
 
@@ -473,7 +547,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             fetchInvestigationsAxiosRequest()
                 .then((response: any) => {
                     fetchInvestigationsLogger.info('got response from the server', Severity.LOW);
-
                     const { data } = response;
                     let allInvestigationsRawData: any = [];
 
@@ -513,6 +586,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const subOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.displayName;
                                 const parentOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.parentOccupation;
                                 const isInInstitute = investigation.investigatedPatientByInvestigatedPatientId?.investigatedPatientRoleByRole?.displayName === 'שוהה במוסד'
+                                const lastChatDate = investigation.botInvestigation ? investigation.botInvestigation?.lastChatDate : '';
                                 return createRowData(
                                     investigation.epidemiologyNumber,
                                     covidPatient.validationDate,
@@ -544,8 +618,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     investigation.startTime,
                                     investigation.isSelfInvestigated,
                                     investigation.selfInvestigationStatus,
-                                    investigation.selfInvestigationUpdateTime
-                                )
+                                    investigation.selfInvestigationUpdateTime,
+                                    lastChatDate,
+                                    investigation.botInvestigation?.investigatiorReferenceRequired,
+                                    investigation.botInvestigation?.chatStatus,
+                                    investigation.botInvestigation?.investigatorReferenceStatus,
+                                    investigation.botInvestigation?.investigatorReferenceReasons,
+                                    investigation.lastUpdatorUser
+                                    )
                             });
                         investigationRows
                             .filter((row) => row.groupId !== null && !investigationColor.current.has(row.groupId))
@@ -704,6 +784,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.isSelfInvestigated]: row.isSelfInvestigated,
             [TableHeadersNames.selfInvestigationStatus]: row.selfInvestigationStatus,
             [TableHeadersNames.selfInvestigationUpdateTime]: row.selfInvestigationUpdateTime,
+            [TableHeadersNames.lastChatDate]: row.lastChatDate ? getFormattedDate(row.lastChatDate) : '',
+            [TableHeadersNames.chatStatus]: row.chatStatus?.displayName,
+            [TableHeadersNames.investigatiorReferenceRequired]: row.investigatiorReferenceRequired,
+            [TableHeadersNames.investigatorReferenceStatus]: row.investigatorReferenceStatus?.displayName
         }
     };
 
@@ -864,10 +948,19 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const getDefaultCellStyles = (cellKey: string) => {
         let classNames: string[] = [];
         classNames.push(classes.font);
+        if(cellKey === TableHeadersNames.multipleCheck){
+            classNames.push(classes.watchBtn);
+        }
+        if(cellKey === TableHeadersNames.rowIndicators){
+            classNames.push(classes.biggerWidth);
+        }
         if (cellKey !== TableHeadersNames.color) {
             classNames.push(classes.tableCell);
         }
         if (cellKey === TableHeadersNames.investigatorName) {
+            classNames.push(classes.columnBorder);
+        }
+        if (cellKey === TableHeadersNames.investigatiorReferenceRequired) {
             classNames.push(classes.columnBorder);
         }
         else
@@ -992,7 +1085,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             investigation.startTime,
                             investigation.isSelfInvestigated,
                             investigation.selfInvestigationStatus,
-                            investigation.selfInvestigationUpdateTime
+                            investigation.selfInvestigationUpdateTime,
+                            investigation.botInvestigation?.lastChatDate,
+                            investigation.botInvestigation?.investigatiorReferenceRequired,
+                            investigation.botInvestigation?.chatStatus,
+                            investigation.botInvestigation?.investigatorReferenceStatus,
+                            investigation.botInvestigation?.investigatorReferenceReasons,
+                            investigation.lastUpdatorUser
                         )
                     });
                 setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))
@@ -1082,7 +1181,15 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         updateDateFilter,
         changeUpdateDateFilter,
         unallocatedDeskFilter,
-        fetchAllGroupedInvestigations 
+        fetchAllGroupedInvestigations,
+        changeInvestigatorReferenceStatusFilter,
+        changeInvestigatorReferenceRequiredFilter,
+        investigatorReferenceRequiredFilter,
+        investigatorReferenceStatusFilter,
+        chatStatusFilter,
+        changeChatStatusFilter,
+        incompletedBotInvestigationFilter,
+        changeIncompletedBotInvestigationFilter     
     };
 };
 

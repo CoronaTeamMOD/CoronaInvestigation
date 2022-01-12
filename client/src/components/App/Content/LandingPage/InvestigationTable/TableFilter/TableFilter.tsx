@@ -17,6 +17,9 @@ import useStyles from './TableFilterStyles';
 import useTableFilter from './useTableFilter';
 import DeskFilter from '../DeskFilter/DeskFilter';
 import { StatusFilter as StatusFilterType, SubStatusFilter as SubStatusFilterType } from '../InvestigationTableInterfaces';
+import { useDispatch, useSelector } from 'react-redux';
+import KeyValuePair from 'models/KeyValuePair';
+import StoreStateType from 'redux/storeStateType';
 
 const searchBarLabel = 'מספר אפידמיולוגי, ת"ז, שם או טלפון';
 
@@ -32,7 +35,11 @@ const TableFilter = (props: Props) => {
         timeRangeFilter, onTimeRangeFilterChange,
         updateDateFilter, nonContactFilter,
         desksToTransfer, deskFilter, changeDeskFilter, changeSearchFilter,
-        unallocatedDeskFilter, changeUnallocatedDeskFilter
+        unallocatedDeskFilter, changeUnallocatedDeskFilter,
+        changeInvestigatorReferenceStatusFilter, changeInvestigatorReferenceRequiredFilter,
+        investigatorReferenceRequiredFilter, investigatorReferenceStatusFilter,
+        chatStatusFilter, changeChatStatusFilter,
+        incompletedBotInvestigationFilter, changeIncompletedBotInvestigationFilter
     } = props;
 
     const { displayTimeRange, onSelectTimeRangeChange, onStartDateSelect, onEndDateSelect, errorMes } = useTableFilter({
@@ -40,11 +47,17 @@ const TableFilter = (props: Props) => {
         onTimeRangeFilterChange
     });
 
+    const investigatorReferenceStatuses = useSelector<StoreStateType, KeyValuePair[]>(state => state.investigatorReferenceStatuses);
+    const chatStatuses = useSelector<StoreStateType, KeyValuePair[]>(state => state.chatStatuses);
+
     const [subStatusFiltered, setSubStatusFiltered] = useState<SubStatus[]>([]);
     const [selectedStatuses, setSelectedStatuses] = useState<InvestigationMainStatusCodes[]>(filteredStatuses);
     const [selectedSubStatuses, setSelectedSubStatuses] = useState<string[]>(filteredSubStatuses);
+    const [selectedInvestigatorReferenceStatus, setSelectedInvestigatorReferenceStatus] = useState<number[]>(investigatorReferenceStatusFilter);
+    const [selectedChatStatus, setSelectedChatStatus] = useState<number[]>(chatStatusFilter);
 
     const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id;
+
 
     useEffect(() => {
         selectedStatuses.length > 0
@@ -60,150 +73,245 @@ const TableFilter = (props: Props) => {
 
     return (
         <Card className={classes.card}>
-            <Grid className={classes.startCard}>
-                <DeskFilter
-                    desks={desksToTransfer}
-                    filteredDesks={deskFilter}
-                    onFilterChange={(event, value) => changeDeskFilter(value)}
-                />
-            </Grid>
-            <div className={classes.column}>
-                <FormControl variant='outlined' className={isCustomTimeRange ? classes.formControlCustomTimeRange : classes.formControl}>
-                    <SelectDropdown
-                        onChange={onSelectTimeRangeChange}
-                        items={timeRanges}
-                        value={displayTimeRange.id}
+            <div className={classes.mainLine}>
+                <Grid className={classes.startCard}>
+                    <DeskFilter
+                        desks={desksToTransfer}
+                        filteredDesks={deskFilter}
+                        onFilterChange={(event, value) => changeDeskFilter(value)}
                     />
-                </FormControl>
-                <Collapse in={isCustomTimeRange} unmountOnExit>
-                    <DateRangePick
-                        startDate={displayTimeRange.startDate}
-                        onStartDateChange={onStartDateSelect}
-                        endDate={displayTimeRange.endDate}
-                        onEndDateChange={onEndDateSelect}
-                        minDate={timeRangeMinDate}
-                        maxDate={new Date()}
-                    />
-                </Collapse>
-            </div>
-            {errorMes !== '' &&
-                <Typography className={classes.timeRangeError}>{errorMes}</Typography>
-            }
-            <Autocomplete
-                disabled={nonContactFilter}
-                ChipProps={{ className: classes.chip }}
-                className={classes.autocomplete}
-                classes={{ inputFocused: classes.autocompleteInputText }}
-                size='small'
-                disableCloseOnSelect
-                multiple
-                options={statuses}
-                value={statuses.filter(status => selectedStatuses.includes(status.id))}
-                getOptionLabel={(option) => option.displayName}
-                onChange={(event, values) => {
-                    onFilterChange(values);
-                    setSelectedStatuses(values.map(value => value.id));
-                }}
-                renderInput={(params) =>
-                    <TextField
-                        label={'סטטוס'}
+                    <div className={classes.column}>
+                        <FormControl variant='outlined' className={isCustomTimeRange ? classes.formControlCustomTimeRange : classes.formControl}>
+                            <SelectDropdown
+                                onChange={onSelectTimeRangeChange}
+                                items={timeRanges}
+                                value={displayTimeRange.id}
+                            />
+                        </FormControl>
+                        <Collapse in={isCustomTimeRange} unmountOnExit>
+                            <DateRangePick
+                                startDate={displayTimeRange.startDate}
+                                onStartDateChange={onStartDateSelect}
+                                endDate={displayTimeRange.endDate}
+                                onEndDateChange={onEndDateSelect}
+                                minDate={timeRangeMinDate}
+                                maxDate={new Date()}
+                            />
+                        </Collapse>
+                    </div>
+                    {errorMes !== '' &&
+                        <Typography className={classes.timeRangeError}>{errorMes}</Typography>
+                    }
+                    <Autocomplete
+                        disabled={nonContactFilter}
+                        ChipProps={{ className: classes.chip }}
+                        className={classes.autocomplete}
+                        classes={{ inputFocused: classes.autocompleteInputText }}
                         size='small'
-                        {...params}
-                        InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
+                        disableCloseOnSelect
+                        multiple
+                        options={statuses}
+                        value={statuses.filter(status => selectedStatuses.includes(status.id))}
+                        getOptionLabel={(option) => option.displayName}
+                        onChange={(event, values) => {
+                            onFilterChange(values);
+                            setSelectedStatuses(values.map(value => value.id));
+                        }}
+                        renderInput={(params) =>
+                            <TextField
+                                label={'סטטוס'}
+                                size='small'
+                                {...params}
+                                InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
+                            />
+                        }
+                        renderOption={(option, { selected }) => (
+                            <>
+                                <Checkbox
+                                    size='small'
+                                    className={classes.optionCheckbox}
+                                    checked={selected}
+                                    color='primary'
+                                />
+                                <Typography className={classes.option} >{option.displayName}</Typography>
+                            </>
+                        )}
+                        limitTags={1}
                     />
-                }
-                renderOption={(option, { selected }) => (
-                    <>
-                        <Checkbox
-                            size='small'
-                            className={classes.optionCheckbox}
-                            checked={selected}
-                            color='primary'
-                        />
-                        <Typography className={classes.option} >{option.displayName}</Typography>
-                    </>
-                )}
-                limitTags={1}
-            />
-            <Autocomplete
-                ChipProps={{ className: classes.chip }}
-                className={classes.autocomplete}
-                classes={{ inputFocused: classes.autocompleteInputText }}
-                size='small'
-                disableCloseOnSelect
-                multiple
-                options={subStatusFiltered}
-                value={subStatusFiltered.filter(subStatus => selectedSubStatuses.includes(subStatus.displayName))}
-                getOptionLabel={(option) => option.displayName}
-                onChange={(event, values) => {
-                    onSubStatusChange(values);
-                    setSelectedSubStatuses(values.map(value => value.displayName));
-                    values.length > 0
-                        ? setSelectedStatuses([...selectedStatuses, ...statuses.filter(status => values.map(subStatus => subStatus.parentStatus).includes(status.id)).map(status => status.id)])
-                        : setSelectedStatuses(filteredStatuses)
-
-                }}
-                renderInput={(params) =>
-                    <TextField
-                        label={'תת סטטוס'}
+                    <Autocomplete
+                        ChipProps={{ className: classes.chip }}
+                        className={classes.autocomplete}
+                        classes={{ inputFocused: classes.autocompleteInputText }}
                         size='small'
-                        {...params}
-                        InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
-                    />
-                }
-                renderOption={(option, { selected }) => (
-                    <>
-                        <Checkbox
-                            size='small'
-                            className={classes.optionCheckbox}
-                            checked={selected}
-                            color='primary'
-                        />
-                        <Typography className={classes.option} >{option.displayName}</Typography>
-                    </>
-                )}
-                limitTags={1}
-            />
-            <Grid className={classes.endCard} xs={3} direction='column'>
-                <div className={classes.row}>
-                    <Checkbox
-                        onChange={(event) => changeUnassginedUserFilter(event.target.checked)}
-                        color='primary'
-                        checked={unassignedUserFilter}
-                        className={classes.checkbox}
-                    />
-                    <Typography className={classes.title}>לא משויכות לחוקר</Typography>
-                </div>
-                <div className={classes.row}>
-                    <Checkbox
-                        onChange={(event) => changeInactiveUserFilter(event.target.checked)}
-                        color='primary'
-                        checked={inactiveUserFilter}
-                        className={classes.checkbox}
-                    />
-                    <Typography className={classes.title}>משויכות לחוקרים לא פעילים</Typography>
-                </div>
-                <div className={classes.row}>
-                    <Checkbox
-                        onChange={(event) => changeUnallocatedDeskFilter(event.target.checked)}
-                        color='primary'
-                        checked={unallocatedDeskFilter}
-                        className={classes.checkbox}
-                    />
-                    <Typography className={classes.title}>לא משויכות לדסק</Typography>
-                </div>
-            </Grid>
-            <div className={classes.tableHeaderRow}>
-                <Box justifyContent='flex-end' display='flex'>
-                    <SearchBar
-                        validationSchema={stringAlphanum}
-                        searchBarLabel={searchBarLabel}
-                        onClick={(value: string) => changeSearchFilter(value)}
-                    />
+                        disableCloseOnSelect
+                        multiple
+                        options={subStatusFiltered}
+                        value={subStatusFiltered.filter(subStatus => selectedSubStatuses.includes(subStatus.displayName))}
+                        getOptionLabel={(option) => option.displayName}
+                        onChange={(event, values) => {
+                            onSubStatusChange(values);
+                            setSelectedSubStatuses(values.map(value => value.displayName));
+                            values.length > 0
+                                ? setSelectedStatuses([...selectedStatuses, ...statuses.filter(status => values.map(subStatus => subStatus.parentStatus).includes(status.id)).map(status => status.id)])
+                                : setSelectedStatuses(filteredStatuses)
 
-                </Box>
+                        }}
+                        renderInput={(params) =>
+                            <TextField
+                                label={'תת סטטוס'}
+                                size='small'
+                                {...params}
+                                InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
+                            />
+                        }
+                        renderOption={(option, { selected }) => (
+                            <>
+                                <Checkbox
+                                    size='small'
+                                    className={classes.optionCheckbox}
+                                    checked={selected}
+                                    color='primary'
+                                />
+                                <Typography className={classes.option} >{option.displayName}</Typography>
+                            </>
+                        )}
+                        limitTags={1}
+                    />
+                    <Autocomplete
+                        ChipProps={{ className: classes.chip }}
+                        className={classes.autocomplete}
+                        classes={{ inputFocused: classes.autocompleteInputText }}
+                        size='small'
+                        disableCloseOnSelect
+                        multiple
+                        options={chatStatuses}
+                        value={chatStatuses.filter(status => selectedChatStatus.includes(status.id))}
+                        getOptionLabel={(option) => option.displayName}
+                        onChange={(event, values) => {
+                            changeChatStatusFilter(values);
+                            setSelectedChatStatus(values.map(value => value.id));
+
+                        }}
+                        renderInput={(params) =>
+                            <TextField
+                                label={'סטטוס שיחת בוט'}
+                                {...params}
+                                InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
+                            />
+                        }
+                        renderOption={(option, { selected }) => (
+                            <>
+                                <Checkbox
+                                    size='small'
+                                    className={classes.optionCheckbox}
+                                    checked={selected}
+                                    color='primary'
+                                />
+                                <Typography className={classes.option} >{option.displayName}</Typography>
+                            </>
+                        )}
+                        limitTags={1}
+                    />
+                    <Autocomplete
+                        ChipProps={{ className: classes.chip }}
+                        className={classes.autocomplete}
+                        classes={{ inputFocused: classes.autocompleteInputText }}
+                        size='small'
+                        disableCloseOnSelect
+                        multiple
+                        options={investigatorReferenceStatuses}
+                        value={investigatorReferenceStatuses.filter(status => selectedInvestigatorReferenceStatus.includes(status.id))}
+                        getOptionLabel={(option) => option.displayName}
+                        onChange={(event, values) => {
+                            changeInvestigatorReferenceStatusFilter(values);
+                            setSelectedInvestigatorReferenceStatus(values.map(value => value.id));
+
+                        }}
+                        renderInput={(params) =>
+                            <TextField
+                                label={'סטטוס טיפול חקירת בוט'}
+                                {...params}
+                                InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
+                            />
+                        }
+                        renderOption={(option, { selected }) => (
+                            <>
+                                <Checkbox
+                                    size='small'
+                                    className={classes.optionCheckbox}
+                                    checked={selected}
+                                    color='primary'
+                                />
+                                <Typography className={classes.option} >{option.displayName}</Typography>
+                            </>
+                        )}
+                        limitTags={1}
+                    />
+                </Grid>
+                <Grid className={classes.endCard} xs={7}>
+                    <div className={classes.row}>
+                        <div>
+                            <Checkbox
+                                onChange={(event) => changeUnassginedUserFilter(event.target.checked)}
+                                color='primary'
+                                checked={unassignedUserFilter}
+                                className={classes.checkbox}
+                            />
+                            <Typography className={classes.title}>לא משויכות לחוקר</Typography>
+                        </div>
+                        <div>
+                            <Checkbox
+                                onChange={(event) => changeInactiveUserFilter(event.target.checked)}
+                                color='primary'
+                                checked={inactiveUserFilter}
+                                className={classes.checkbox}
+                            />
+                            <Typography className={classes.title}>משויכות לחוקרים לא פעילים</Typography>
+                        </div>
+                        <div>
+                            <Checkbox
+                                onChange={(event) => changeUnallocatedDeskFilter(event.target.checked)}
+                                color='primary'
+                                checked={unallocatedDeskFilter}
+                                className={classes.checkbox}
+                            />
+                            <Typography className={classes.title}>לא משויכות לדסק</Typography>
+                        </div>
+                    </div>
+                    <div className={classes.row}>
+                        <div>
+                            <Checkbox
+                                onChange={(event) => changeInvestigatorReferenceRequiredFilter(event.target.checked)}
+                                color='primary'
+                                checked={investigatorReferenceRequiredFilter}
+                                className={classes.checkbox}
+                            />
+                            <Typography className={classes.title}>נדרשת התייחסות חוקר</Typography>
+                        </div>
+                        <div>
+                            <Checkbox
+                                onChange={(event) => changeIncompletedBotInvestigationFilter(event.target.checked)}
+                                color='primary'
+                                checked={incompletedBotInvestigationFilter}
+                                className={classes.checkbox}
+                            />
+                            <Typography className={classes.title}>חקירות שלא הושלמו ע"י בוט</Typography>
+                        </div>
+                    </div>
+                </Grid>
+                <div className={classes.tableHeaderRow}>
+                    <Box justifyContent='flex-end' display='flex'>
+                        <SearchBar
+                            validationSchema={stringAlphanum}
+                            searchBarLabel={searchBarLabel}
+                            onClick={(value: string) => changeSearchFilter(value)}
+                        />
+
+                    </Box>
+                </div>
             </div>
         </Card>
+
     )
 }
 
@@ -214,6 +322,10 @@ interface Props {
     filteredSubStatuses: SubStatusFilterType;
     unassignedUserFilter: boolean;
     inactiveUserFilter: boolean;
+    investigatorReferenceRequiredFilter: boolean;
+    investigatorReferenceStatusFilter: number[];
+    chatStatusFilter: number[];
+    incompletedBotInvestigationFilter: boolean;
     changeUnassginedUserFilter: (isFilterOn: boolean) => void;
     changeInactiveUserFilter: (isFilterOn: boolean) => void;
     onFilterChange: (selectedStatuses: InvestigationMainStatus[]) => void;
@@ -229,6 +341,10 @@ interface Props {
     changeSearchFilter: (searchQuery: string) => void;
     unallocatedDeskFilter: boolean;
     changeUnallocatedDeskFilter: (isFilterOn: boolean) => void;
+    changeChatStatusFilter: (statuses: KeyValuePair[]) => void;
+    changeInvestigatorReferenceStatusFilter: (statuses: KeyValuePair[]) => void;
+    changeInvestigatorReferenceRequiredFilter: (isFilterOn: boolean) => void;
+    changeIncompletedBotInvestigationFilter: (isFilterOn: boolean) => void;
 };
 
 export default TableFilter

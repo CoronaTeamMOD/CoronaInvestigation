@@ -104,3 +104,11 @@ query getContactedPersonForeignIds($contactType:String!, $familyRelationship:Str
   }
 }
 `;
+
+export const GET_CONTACTS_COUNT = gql`
+query ContactedPeopleByInvestigationId ($investigationId: Int!, $minimalDateToFilter: Datetime!) {
+  allContactedPeople(filter: {contactEventByContactEvent: {investigationId: {equalTo: $investigationId}, startTime: {greaterThanOrEqualTo: $minimalDateToFilter}}}) {
+    totalCount
+  }
+}
+`;

@@ -2,7 +2,7 @@ import * as actionTypes from './interactedContactsActionTypes';
 import { ThunkAction } from 'redux-thunk';
 import { FormStateObject, InteractedContactsState } from './interactedContactsReducer';
 import GroupedInteractedContact from '../../models/ContactQuestioning/GroupedInteractedContact';
-import { getAllInteractedContacts } from '../../httpClient/InteractedContacts/interactedContacts';
+import { getAllInteractedContacts } from '../../httpClient/interactedContacts';
 import StoreStateType from 'redux/storeStateType';
 
 export const getInteractedContacts = (minimalDate?: Date): ThunkAction<void, InteractedContactsState, unknown, actionTypes.InteractedContactAction> => async dispatch => {

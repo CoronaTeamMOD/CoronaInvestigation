@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -19,22 +19,26 @@ import { InvestigationStatus } from 'models/InvestigationStatus';
 import { setStatuses } from 'redux/Status/statusesActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
-import  BroadcastMessage, { BC_TABS_NAME }  from 'models/BroadcastMessage';
+import BroadcastMessage, { BC_TABS_NAME } from 'models/BroadcastMessage';
 import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setEducationGrade } from 'redux/EducationGrade/educationGradeActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import { setIdentificationTypes } from 'redux/IdentificationTypes/identificationTypesActionCreators';
-import UpdateTrackingRecommendation from 'Utils/TrackingRecommendation/updateTrackingRecommendation'; 
+import UpdateTrackingRecommendation from 'Utils/TrackingRecommendation/updateTrackingRecommendation';
 
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
+import { fetchAllInvestigatorReferenceStatuses } from 'httpClient/investigationInfo';
+import KeyValuePair from 'models/KeyValuePair';
+import { setInvestigatorReferenceStatuses } from 'redux/investigatorReferenceStatuses/investigatorReferenceStatusesActionCreator';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
     const { updateTrackingReccomentaion } = UpdateTrackingRecommendation();
     const { alertError, alertWarning, alertSuccess } = useCustomSwal();
+    const dispatch = useDispatch();
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
@@ -42,6 +46,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
     const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
+    const investigatorReferenceStatuses = useSelector<StoreStateType, KeyValuePair[]>(state => state.investigatorReferenceStatuses);
 
     const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
 
@@ -50,13 +55,13 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         tabShowLogger.info('launching amount of contacts request', Severity.LOW);
         const minimalDateToFilter = datesToInvestigate.slice(-1)[0];
         const formattedMinimalDate = typeof minimalDateToFilter !== 'string' ? minimalDateToFilter.toISOString() : minimalDateToFilter;
-        axios.get(`/contactedPeople/allContacts/${formattedMinimalDate}`)
-        .then((result: any) => {
-            tabShowLogger.info('amount of contacts request was successful', Severity.LOW);
-            setAreThereContacts(result?.data.length > 0);
-        }).catch((error) => {
-            tabShowLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-        });
+        axios.get(`/contactedPeople/getContactsCount/${formattedMinimalDate}`)
+            .then((result: any) => {
+                tabShowLogger.info('amount of contacts request was successful', Severity.LOW);
+                setAreThereContacts(result?.data.contactsCount> 0);
+            }).catch((error) => {
+                tabShowLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+            });
     };
 
     const fetchCities = () => {
@@ -135,7 +140,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                 setSubStatuses(resultNodes);
             }
         }).catch((err: any) => {
-            subStatusesByStatusLogger.error( `error DB response ${JSON.stringify(err)}`,  Severity.LOW);
+            subStatusesByStatusLogger.error(`error DB response ${JSON.stringify(err)}`, Severity.LOW);
         });
     };
 
@@ -161,18 +166,26 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         const educationGradesLogger = logger.setup('Fetching education grades');
         educationGradesLogger.info('launching education grades request', Severity.LOW);
         axios.get('/education/grades')
-        .then((result: any) => {
-            if (result?.data && result.headers['content-type'].includes('application/json')) {
-                educationGradesLogger.info('educationGrades request was successful', Severity.LOW);
-                setEducationGrade(result?.data);
-            } else {
-                educationGradesLogger.error('educationGrades request was successful but data isnt as expected', Severity.LOW);
-            }
-        })
-        .catch(error => {
-            educationGradesLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-        });
+            .then((result: any) => {
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    educationGradesLogger.info('educationGrades request was successful', Severity.LOW);
+                    setEducationGrade(result?.data);
+                } else {
+                    educationGradesLogger.error('educationGrades request was successful but data isnt as expected', Severity.LOW);
+                }
+            })
+            .catch(error => {
+                educationGradesLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+            });
     };
+
+    const GetAllInvestigatorReferenceStatuses = () => {
+        if (investigatorReferenceStatuses.length == 0) {
+            fetchAllInvestigatorReferenceStatuses().then(data => {
+                if (data) dispatch(setInvestigatorReferenceStatuses(data));
+            });
+        }
+    }
 
     useEffect(() => {
         if (identificationTypes.length === 0) {
@@ -188,6 +201,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             fetchStatuses();
             investigationStatus.mainStatus && fetchSubStatusesByStatus(investigationStatus.mainStatus);
             fetchEducationGrades();
+            GetAllInvestigatorReferenceStatuses();
         };
     }, [epidemiologyNumber, userId]);
 
@@ -204,8 +218,8 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     }, [investigationStatus.mainStatus]);
 
     const confirmFinishInvestigation = (epidemiologyNumber: number, onCancel: () => void) => {
-        const finishInvestigationLogger= logger.setup('Ending Investigation');
-        finishInvestigationLogger.info('the user has been offered the oppurtunity to finish the investigation',  Severity.LOW);
+        const finishInvestigationLogger = logger.setup('Ending Investigation');
+        finishInvestigationLogger.info('the user has been offered the oppurtunity to finish the investigation', Severity.LOW);
         alertWarning('האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?', {
             text: 'מגעים עבורם הוקם דיווח בידוד או בעלי שם, משפחה ומספר טלפון יועברו בסיום החקירה ל"הושלם התחקור" (למעט "לא ניתן להשגה" ו"לא משתף פעולה") ולא יהיו ניתנים לעריכה',
             showCancelButton: true,
@@ -235,7 +249,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                 }).catch((error) => {
                     finishInvestigationLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                     alertError('לא ניתן היה לסיים את החקירה');
-                    
+
                 })
             } else {
                 onCancel();
@@ -249,7 +263,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             showConfirmButton: false
         }).then(() => {
             const windowTabsBroadcatChannel = new BroadcastChannel(BC_TABS_NAME);
-            const finishingBroadcastMessage : BroadcastMessage = {
+            const finishingBroadcastMessage: BroadcastMessage = {
                 message: 'Investigaion finished',
                 isInInvestigation: false
             }

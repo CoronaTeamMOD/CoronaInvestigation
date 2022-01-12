@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     tableCellRoot: {
         padding: '0',
-        maxWidth: '200px'
+        maxWidth: '50px'
     },
     investigationRow: {
         textDecoration: 'none'
@@ -25,6 +25,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     disabled: {
         opacity: theme.palette.action.disabledOpacity,
         cursor: 'not-allowed'
+    },
+    botActive:{
+        color:'#2C97B9',
+        fontWeight:'bold'
+    },
+    botInactive:{
+        color:'#000000',
+        opacity: 0.2
     }
 }));
 

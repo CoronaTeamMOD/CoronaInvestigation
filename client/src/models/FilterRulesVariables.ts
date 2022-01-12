@@ -10,6 +10,7 @@ interface FilterRulesVariables {
     timeRangeFilter?: TimeRange,
     updateDateFilter?: string,
     nonContactFilter?: boolean,
+    incompletedBotInvestigationFilter?:boolean,
 }
 
 export default FilterRulesVariables;

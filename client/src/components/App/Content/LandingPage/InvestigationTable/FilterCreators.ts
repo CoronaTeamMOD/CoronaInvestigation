@@ -3,8 +3,18 @@ import { NUMERIC_REGEX } from 'commons/Regex/Regex';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 
 import { allTimeRangeId } from '../adminLandingPage/useAdminLandingPage';
+import InvestigatorReferenceStatusCode from 'models/enums/InvestigatorReferenceStatusCode';
+import ChatStatusCode from 'models/enums/ChatStatusCodes';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import BotProperties from 'models/enums/BotProperties';
 
 const unassignedUserName = 'לא משויך';
+
+const TEN_HOURS_IN_MS = 10 * 60 * 60 * 1000;
+const TWO_HOURS_IN_MS = 2 * 60 * 60 * 1000;
+
+const OVERTIME_OF_NEW_BOT_INVESTIGATION = TEN_HOURS_IN_MS;
+const OVERTIME_OF_IN_PROGRESS_BOT_INVESTIGATION = TWO_HOURS_IN_MS;
 
 export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => Exclude<any, void>) } = {
     [InvestigationsFilterByFields.STATUS]: (values: string[]) => {
@@ -112,37 +122,166 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
         }
     },
     [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: (dateFilter: string) => {
-        return dateFilter ? { [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: { 
-            startTime: {
-                lessThan: dateFilter
+        return dateFilter ? {
+            [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: {
+                startTime: {
+                    lessThan: dateFilter
+                }
             }
-        } } :  { [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: null };
+        } : { [InvestigationsFilterByFields.UNUSUAL_IN_PROGRESS]: null };
     },
     [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: (isNonContact: boolean) => {
-        return isNonContact ? { [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: { 
-            contactEventsByInvestigationId: {
-                every: {
-                  contactedPeopleByContactEvent: {
+        return isNonContact ? {
+            [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: {
+                contactEventsByInvestigationId: {
                     every: {
-                      contactEvent:{
-                        isNull:true
-                      }
+                        contactedPeopleByContactEvent: {
+                            every: {
+                                contactEvent: {
+                                    isNull: true
+                                }
+                            }
+                        }
                     }
-                  }
                 }
-              }
-        } } :  { [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: null };
+            }
+        } : { [InvestigationsFilterByFields.UNUSUAL_COMPLETED_NO_CONTACT]: null };
     },
     [InvestigationsFilterByFields.UNALLOCATED_DESK]: (isFilterOn: boolean) => {
         return isFilterOn ?
             {
                 [InvestigationsFilterByFields.UNALLOCATED_DESK]: {
-                   deskId: { isNull: true } 
+                    deskId: { isNull: true }
                 }
             }
             :
             { [InvestigationsFilterByFields.UNALLOCATED_DESK]: null };
-    }, 
+    },
+    [InvestigationsFilterByFields.CHAT_STATUS]: (values: string[]) => {
+        if (values.length > 0) {
+            if (values.findIndex(val => val == ChatStatusCode.IRRELEVANT.toString()) > -1) {
+                return {
+                    [InvestigationsFilterByFields.CHAT_STATUS]: {
+                        or: [
+                            {
+                                botInvestigationByEpidemiologyNumber: {
+                                    chatStatusId: { in: values }
+                                }
+                            },
+                            { botInvestigationByEpidemiologyNumberExists: false }
+                        ]
+                    }
+                };
+            }
+            else {
+                return {
+                    [InvestigationsFilterByFields.CHAT_STATUS]: {
+                        botInvestigationByEpidemiologyNumber: {
+                            chatStatusId: { in: values }
+                        }
+                    }
+                }
+            };
+        }
+        else return { [InvestigationsFilterByFields.CHAT_STATUS]: null };
+    },
+    [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_STATUS]: (values: string[]) => {
+        if (values.length > 0) {
+            if (values.findIndex(val => val == InvestigatorReferenceStatusCode.IRRELEVANT.toString()) > -1) {
+                return {
+                    [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_STATUS]: {
+                        or: [
+                            {
+                                botInvestigationByEpidemiologyNumber: {
+                                    investigatorReferenceStatusId: { in: values }
+                                }
+                            },
+                            { botInvestigationByEpidemiologyNumberExists: false }
+                        ]
+                    }
+                };
+            }
+            else {
+                return {
+                    [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_STATUS]: {
+                        botInvestigationByEpidemiologyNumber: {
+                            investigatorReferenceStatusId: { in: values }
+                        }
+                    }
+                }
+            };
+        }
+        else return { [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_STATUS]: null };
+    },
+    [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_REQUIRED]: (isFilterOn: boolean) => {
+        return isFilterOn ?
+            {
+                [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_REQUIRED]: {
+                    botInvestigationByEpidemiologyNumber: {
+                        investigatiorReferenceRequired: { equalTo: true },
+                        investigatorReferenceStatusId: { notIn: [InvestigatorReferenceStatusCode.DONE] }
+                    }
+                }
+            }
+            :
+            { [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_REQUIRED]: null };
+    },
+    [InvestigationsFilterByFields.INCOMPLETED_BOT_INVESTIGATION]: (isFilterOn: boolean) => {
+        return isFilterOn ?
+            {
+                [InvestigationsFilterByFields.INCOMPLETED_BOT_INVESTIGATION]: {
+                    or: [
+                        {
+                            botInvestigationByEpidemiologyNumber: {
+                                chatStatusId: {
+                                    in: [
+                                        ChatStatusCode.NO_WHATSAPP,
+                                        ChatStatusCode.NO_COOPERATION,
+                                        ChatStatusCode.HUMAN_INVESTIGATION_REQUEST,
+                                        ChatStatusCode.WRONG_CHAT_DETAILS
+                                    ]
+                                }
+                            },
+                            investigationStatus: {
+                                in:
+                                    [
+                                        InvestigationMainStatusCodes.NEW
+                                    ]
+                            }
+                        },
+                        {
+                            botInvestigationByEpidemiologyNumber: {
+                                lastChatDate: { lessThan: new Date(Date.now() - OVERTIME_OF_NEW_BOT_INVESTIGATION).toUTCString() }
+                            },
+                            botInvestigationByEpidemiologyNumberExists: true,
+                            investigationStatus: { in: [InvestigationMainStatusCodes.NEW] },
+                        },
+                        {
+                            botInvestigationByEpidemiologyNumber: {
+                                lastChatDate: { lessThan: new Date(Date.now() - OVERTIME_OF_IN_PROGRESS_BOT_INVESTIGATION).toUTCString() }
+                            },
+                            investigationStatus: { in: [InvestigationMainStatusCodes.IN_PROCESS] },
+                            lastUpdatorUser: { equalTo: BotProperties.BOT_USER }
+                        },
+                        {
+                            botInvestigationByEpidemiologyNumber: {
+                                investigatorReferenceStatusId: {
+                                    in: [
+                                        InvestigatorReferenceStatusCode.NEW,
+                                        InvestigatorReferenceStatusCode.IN_PROCESS
+                                    ]
+                                }
+                            },
+                            investigationStatus: { in: [InvestigationMainStatusCodes.DONE] }
+                        }
+                    ]
+                }
+            }
+            :
+            {
+                [InvestigationsFilterByFields.INCOMPLETED_BOT_INVESTIGATION]: null
+            }
+    },
 };
 
 export default filterCreators;

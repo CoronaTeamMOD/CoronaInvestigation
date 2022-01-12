@@ -6,7 +6,8 @@ enum InteractionEventContactFields {
     IDENTIFICATION_TYPE = 'identificationType',
     PHONE_NUMBER = 'phoneNumber',
     CONTACT_TYPE = 'contactType',
-    EXTRA_INFO = 'extraInfo'
+    EXTRA_INFO = 'extraInfo',
+    CREATION_SOURCE ='creationSource'
 }
 
 export default InteractionEventContactFields;

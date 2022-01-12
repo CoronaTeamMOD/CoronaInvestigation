@@ -31,6 +31,7 @@ import InstitutionComponent from './InstitutionComponent/InstitutionComponent';
 import { resetPersonalInfo, setPersonalInfo } from 'redux/PersonalInfo/personalInfoActionCreators';
 import { setFormState } from 'redux/Form/formActionCreators';
 import personalInfoTabValidationSchema from './PersonalInfoTabValidationSchema';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 const under16AllowedOccupations = ['מערכת החינוך', 'אחר'];
 
@@ -55,6 +56,7 @@ const INSTITUTION_CITY = 'עיר המצאות המוסד';
 const STUDENT = 'תלמיד/ה';
 const CLASS_NUMBER = 'מס כיתה';
 const ADD_CONTACT = '+ איש קשר'
+const INSTITUTE_DETALIS_LABEL = 'פרטי מוסד';
 
 const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
 
@@ -98,6 +100,21 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
     const houseNumber = methods.watch(`${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.HOUSE_NUMBER}`);
     const apartment = methods.watch(`${PersonalInfoDataContextFields.ADDRESS}.${PersonalInfoDataContextFields.APARTMENT}`);
 
+    const ifOcuupationWithDetails = () => {
+        return occupation === Occupations.EDUCATION_SYSTEM ||
+            occupation === Occupations.HEALTH_SYSTEM ||
+            occupation === Occupations.GERIATRICS ||
+            occupation === Occupations.DEFENSE_FORCES;
+    }
+
+    const ifOccupatioExtraInfo = () => {
+        return (occupation) &&
+            (!ifOcuupationWithDetails() ||
+                (ifOcuupationWithDetails() &&
+                    personalInfo?.otherOccupationExtraInfo));
+    }
+
+
     const selectedRole = useMemo<investigatedPatientRole | undefined>(() => (
         investigatedPatientRoles.find(role => role.id === selectedRoleId)
     ), [selectedRoleId]);
@@ -113,6 +130,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
         if (occupation === Occupations.GOVERNMENT_OFFICE) return OFFICE_NAME_LABEL;
         if (occupation === Occupations.TRANSPORTATION) return TRANSPORTATION_COMPANY_NAME_LABEL;
         if (occupation === Occupations.INDUSTRY) return INDUSTRY_NAME_LABEL;
+        if (occupation && ifOcuupationWithDetails()) return INSTITUTE_DETALIS_LABEL;
         return INSTITUTION_NAME_LABEL;
     }, [occupation]);
 
@@ -168,7 +186,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
     useEffect(() => {
         if (personalInfo) {
             methods.reset(personalInfo);
-            methods.trigger();
+            setTimeout(() => {
+                methods.trigger();
+            }, 500);
         }
     }, [personalInfo]);
 
@@ -176,6 +196,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
         if (occupation === Occupations.DEFENSE_FORCES ||
             occupation === Occupations.HEALTH_SYSTEM) {
             getSubOccupations(occupation);
+        }
+        if (occupation === Occupations.GERIATRICS) {
+            getSubOccupations(Occupations.HEALTH_SYSTEM);
         }
         clearSubOccupations();
     }, [occupation]);
@@ -216,12 +239,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
             <FormProvider {...methods}>
                 <form id={`form-${id}`} onSubmit={(event) => {
                     event.preventDefault();
-                    if(isViewMode){
+                    if (isViewMode) {
                         personalInfoTabValidationSchema.isValid(personalInfo).then(valid => {
                             setFormState(epidemiologyNumber, id, valid);
                         })
                     }
-                    else{
+                    else {
                         savePersonalData(convertToDBData(), personalInfo, id);
                     }
                 }}>
@@ -369,10 +392,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                 options={isOver16 ? occupations : occupations.filter(occupation => under16AllowedOccupations.indexOf(occupation) !== -1)}
                                                 onChange={(event, occupationOption) => {
                                                     props.onChange(occupationOption ? occupationOption : '');
-                                                }}
-                                                onBlur={() => {
-                                                    dispatch(setPersonalInfo(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, methods.getValues().relevantOccupation));
-                                                }}
+                                                    dispatch(setPersonalInfo(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, methods.getValues().relevantOccupation));                         
+                                                 }}
                                                 disabled={isViewMode}
                                                 value={props.value || ''}
                                                 renderInput={(params) =>
@@ -389,7 +410,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                                 notchedOutline: occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ? classes.notchedOutline : ''
                                                             }
                                                         }}
-                                                    />
+                                                     />
                                                 }
                                             />
                                         )}
@@ -397,7 +418,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                 </FormControl>
                             </Grid>
                             {
-                                occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ?
+                                (occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM || occupation === Occupations.GERIATRICS) ?
                                     <>
                                         {
                                             occupation === Occupations.EDUCATION_SYSTEM &&
@@ -450,11 +471,13 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                                 name={PersonalInfoDataContextFields.ROLE}
                                                 render={(props) => (
                                                     <Autocomplete
-                                                        options={investigatedPatientRoles}
+                                                        options={
+                                                            investigatedPatientRoles.filter(x => x.occupation == occupation)
+                                                        }
                                                         getOptionLabel={(option) => option.displayName}
                                                         getOptionSelected={(option) => option.id === props.value}
                                                         disabled={isViewMode}
-                                                        value={props.value ? { id: props.value, displayName: (selectedRole?.displayName as string) } : null}
+                                                        value={props.value ? { id: props.value, displayName: (selectedRole?.displayName as string), occupation } : null}
                                                         onChange={(event, selectedRole) => {
                                                             props.onChange(selectedRole?.id);
                                                             dispatch(setPersonalInfo(PersonalInfoDataContextFields.ROLE, selectedRole?.id))
@@ -545,43 +568,46 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                                             </>
                                         }
                                     </>
-                                    : occupation === Occupations.DEFENSE_FORCES ?
-                                        <Grid item xs={3}>
-                                            <InstitutionComponent
-                                                options={subOccupations}
-                                                placeholder={INSERT_INSTITUTION_NAME}
-                                                fieldName={PersonalInfoDataContextFields.INSTITUTION_NAME}
-                                                isViewMode={isViewMode}
-                                            />
-                                        </Grid>
-                                        :
-                                        <Grid item xs={2}>
-                                            <Collapse in={occupation !== Occupations.UNEMPLOYED}>
-                                                <Controller
+                                    : occupation === Occupations.DEFENSE_FORCES &&
+
+                                    <Grid item xs={3}>
+                                        <InstitutionComponent
+                                            options={subOccupations}
+                                            placeholder={INSERT_INSTITUTION_NAME}
+                                            fieldName={PersonalInfoDataContextFields.INSTITUTION_NAME}
+                                            isViewMode={isViewMode}
+                                        />
+                                    </Grid>
+                            }
+
+                            {ifOccupatioExtraInfo() &&
+                                <Grid item xs={2}>
+                                    <Collapse in={occupation !== Occupations.UNEMPLOYED}>
+                                        <Controller
+                                            name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
+                                            control={methods.control}
+                                            render={(props) => (
+                                                <AlphanumericTextField
+                                                    className={classes.otherTextField}
+                                                    InputProps={{ className: classes.otherTextField }}
+                                                    testId='institutionName'
+                                                    disabled={isViewMode}
                                                     name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
-                                                    control={methods.control}
-                                                    render={(props) => (
-                                                        <AlphanumericTextField
-                                                            className={classes.otherTextField}
-                                                            InputProps={{ className: classes.otherTextField }}
-                                                            testId='institutionName'
-                                                            disabled={isViewMode}
-                                                            name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
-                                                            value={props.value}
-                                                            onChange={newValue => {
-                                                                props.onChange(newValue ? newValue : '');
-                                                            }}
-                                                            onBlur={() => {
-                                                                props.onBlur();
-                                                                dispatch(setPersonalInfo(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, methods.getValues().otherOccupationExtraInfo))
-                                                            }}
-                                                            placeholder={subOccupationsPlaceHolderByOccupation}
-                                                            label={subOccupationsLabelByOccupation}
-                                                        />
-                                                    )}
+                                                    value={props.value}
+                                                    onChange={newValue => {
+                                                        props.onChange(newValue ? newValue : '');
+                                                    }}
+                                                    onBlur={() => {
+                                                        props.onBlur();
+                                                        dispatch(setPersonalInfo(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, methods.getValues().otherOccupationExtraInfo))
+                                                    }}
+                                                    placeholder={subOccupationsPlaceHolderByOccupation}
+                                                    label={subOccupationsLabelByOccupation}
                                                 />
-                                            </Collapse>
-                                        </Grid>
+                                            )}
+                                        />
+                                    </Collapse>
+                                </Grid>
                             }
                         </>
                     </FormRowWithInput>

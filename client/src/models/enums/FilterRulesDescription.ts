@@ -6,7 +6,8 @@ enum FilterRulesDescription {
     UNUSUAL_IN_PROCESS = 'בטיפול מעל 4 שעות',
     TRANSFER_REQUEST = 'ממתינות להעברה',
     WAITING_FOR_DETAILS = 'ממתינות להשלמת פרטים',
-    UNALLOCATED_DESK = 'ללא שיוך לדסק'
+    UNALLOCATED_DESK = 'ללא שיוך לדסק',
+    INCOMPLETED_BOT_INVESTIGATIONS = 'חקירות שלא הושלמו ע"י בוט'
 };
 
 export default FilterRulesDescription;

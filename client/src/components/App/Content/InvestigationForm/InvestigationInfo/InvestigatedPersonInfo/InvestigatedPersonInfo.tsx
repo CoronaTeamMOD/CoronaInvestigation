@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { format } from 'date-fns';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers';
 import React, { useEffect, useState, useContext } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
@@ -13,14 +13,14 @@ import formatDate from 'Utils/DateUtils/formatDate';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import StaticFields from 'models/enums/StaticFields';
 import UserTypeCodes from 'models/enums/UserTypeCodes';
-import InvestigationInfo from 'models/InvestigationInfo';
 import IdentificationType from 'models/IdentificationType';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
-import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
+import InvestigationInfo, { BotInvestigationInfo, MutationInfo } from 'models/InvestigationInfo';
+import { setInvestigationStaticFieldChange, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import { commentContext } from '../Context/CommentContext';
@@ -31,6 +31,8 @@ import ValidationStatusSchema from './Schema/ValidationStatusSchema';
 import CommentInput from './InvestigationMenu/CommentDialog/CommentInput';
 import InvestigationStatusInfo from './InvestigationStatusInfo/InvestigationStatusInfo';
 import { FlightLand } from '@material-ui/icons';
+import { getMutationInfo } from 'redux/MutationInfo/mutationInfoActionCreator';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 const investigationstableURL = '/landing';
 const openInvestigationForEditText = 'פתיחה מחודשת';
@@ -47,30 +49,35 @@ export const inProcess = 'בטיפול';
 
 const InvestigatedPersonInfo = (props: Props) => {
 
-    const { currentTab, investigationStaticInfo, epedemioligyNumber, isViewMode } = props;
+    const { currentTab, investigationStaticInfo, epedemioligyNumber, isViewMode, botInvestigationInfo } = props;
 
     const classes = useStyles();
+    const dispatch = useDispatch();
 
     const [statusReasonError, setStatusReasonError] = useState<string[] | null>(null);
-    const [staticFieldsChange, setStaticFieldsChange] = useState<boolean>(false);
 
     const { identityType, gender, isDeceased, isCurrentlyHospitalized, isInClosedInstitution, age, identityNumber,
         fullName, primaryPhone, birthDate, validationDate, isReturnSick, previousDiseaseStartDate,
-        isVaccinated, vaccinationEffectiveFrom, isSuspicionOfMutation, mutationName } = investigationStaticInfo;
+        isVaccinated, vaccinationEffectiveFrom } = investigationStaticInfo;
+    const mutationInfo = useSelector<StoreStateType, MutationInfo>(state => state.mutationInfo.mutationInfo);
+    const wasMutationUpdated = useSelector<StoreStateType, boolean>(state => state.mutationInfo.wasMutationUpdated);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
     const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
+    const investigatorReferenceStatusWasChanged = useSelector<StoreStateType,boolean>(state=>state.botInvestigationInfo.investigatorReferenceStatusWasChanged);
+    const investigationStaticFieldChange = useSelector<StoreStateType,boolean>(state=>state.investigation.investigationStaticFieldChange);
+
     const { comment, setComment } = useContext(commentContext);
     const [commentInput, setCommentInput] = React.useState<string | null>('');
-    const isContactInvestigationVerifiedAbroad= useSelector<StoreStateType, boolean>(state => state.investigation.contactInvestigationVerifiedAbroad);
-    const moveToTheInvestigationForm = (epidemiologyNumber : number) => {
+    const isContactInvestigationVerifiedAbroad = useSelector<StoreStateType, boolean>(state => state.investigation.contactInvestigationVerifiedAbroad);
+    const moveToTheInvestigationForm = (epidemiologyNumber: number) => {
         setLastOpenedEpidemiologyNum(epidemiologyNumber);
         window.location.pathname = investigationstableURL;
     }
 
-    const { confirmExitUnfinishedInvestigation, staticFieldsSubmit, reopenInvestigation } = useInvestigatedPersonInfo({ setStaticFieldsChange, moveToTheInvestigationForm });
+    const { confirmExitUnfinishedInvestigation, staticFieldsSubmit, reopenInvestigation } = useInvestigatedPersonInfo({ moveToTheInvestigationForm });
     const shouldReopenInvestigation = investigationStatus.mainStatus === InvestigationMainStatusCodes.DONE;
 
     useEffect(() => {
@@ -129,6 +136,28 @@ const InvestigatedPersonInfo = (props: Props) => {
             })
             .finally();
     };
+    
+    const getInvestigatiorReferenceReasons = () => {
+        let reasons = '';
+        botInvestigationInfo?.botInvestigationReferenceReasons.forEach (reason =>{
+            reasons+=reason.displayName+" ,";
+        });
+        if (reasons != '') reasons=reasons.slice(0, -1);
+        return reasons;
+    };
+
+    const varientUpdate = () => {
+        const varientAlertLogger = logger.setup(`POST request was varient update to investigation ${epidemiologyNumber}`);
+        axios.post('/investigationInfo/updateWasMutationUpdated', {
+            epidemiologyNumber: epidemiologyNumber
+        }).then(async () => {
+            dispatch(getMutationInfo());
+            setIsLoading(false);
+            varientAlertLogger.info('update WasMutationUpdated request was successful', Severity.LOW);
+        }).catch((error) => {
+            varientAlertLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+        })
+    };
 
     return (
         <FormProvider {...methods}>
@@ -151,7 +180,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                                 test-id={props.name}
                                                 onChange={(event) => {
                                                     props.onChange(event.target.value)
-                                                    setStaticFieldsChange(true)
+                                                    dispatch(setInvestigationStaticFieldChange(true));
                                                 }}
                                                 disabled={isViewMode}
                                                 error={methods.errors && methods.errors[StaticFields.FULL_NAME]}
@@ -172,20 +201,20 @@ const InvestigatedPersonInfo = (props: Props) => {
                             <Typography className={classes.investigationTitle}>
                                 {`מספר אפידמיולוגי: ${epedemioligyNumber}`}
                             </Typography>
-                            {isContactInvestigationVerifiedAbroad && 
-                            <>
-                            <Typography className={`${classes.investigationTitle} ${classes.abroad}`}>מגע לחקירת מאומת מחו"ל</Typography> 
-                            <IconButton color='primary' disabled>
-                                <FlightLand/>
-                            </IconButton>
-                            </>
+                            {isContactInvestigationVerifiedAbroad &&
+                                <>
+                                    <Typography className={`${classes.investigationTitle} ${classes.abroad}`}>מגע לחקירת מאומת מחו"ל</Typography>
+                                    <IconButton color='primary' disabled>
+                                        <FlightLand />
+                                    </IconButton>
+                                </>
                             }
-                            
+
                         </div>
                         <div>
                             {shouldReopenInvestigation && <span className={classes.openButton}>
                                 <PrimaryButton
-                                    onClick={()=> reopenInvestigation(epidemiologyNumber)}
+                                    onClick={() => reopenInvestigation(epidemiologyNumber)}
                                     type='submit'
                                     form={`form-${currentTab}`}
                                     id='openButton'
@@ -251,8 +280,8 @@ const InvestigatedPersonInfo = (props: Props) => {
                                                     disabled
                                                     className={classes.smallSizeText}
                                                     onChange={(event) => {
-                                                        props.onChange(event.target.value)
-                                                        setStaticFieldsChange(true)
+                                                        props.onChange(event.target.value);
+                                                        dispatch(setInvestigationStaticFieldChange(true));
                                                     }}
                                                     MenuProps={{
                                                         anchorOrigin: {
@@ -296,8 +325,8 @@ const InvestigatedPersonInfo = (props: Props) => {
                                                     InputProps={{ className: classes.smallSizeText }}
                                                     test-id={props.name}
                                                     onChange={(event) => {
-                                                        props.onChange(event.target.value as string)
-                                                        setStaticFieldsChange(true)
+                                                        props.onChange(event.target.value as string);
+                                                        dispatch(setInvestigationStaticFieldChange(true));
                                                     }}
                                                     error={methods.errors && methods.errors[StaticFields.ID]}
                                                     label={(methods.errors && methods.errors[StaticFields.ID]?.message) || ''}
@@ -332,18 +361,32 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 {
                                     isVaccinated && <ComplexityIcon tooltipText={formatDate(vaccinationEffectiveFrom)} />
                                 }
-                                <PatientInfoItem testId='isSuspicionOfMutation' name='חשד למוטציה' value={isSuspicionOfMutation ? yes : noInfo} />
+                                <PatientInfoItem testId='isSuspicionOfMutation' name='חשד למוטציה' value={mutationInfo.isSuspicionOfMutation ? yes : noInfo} />
                                 {
-                                    isSuspicionOfMutation && <ComplexityIcon tooltipText={mutationName ? mutationName : noInfo} />
+                                    mutationInfo.isSuspicionOfMutation && <ComplexityIcon isVarient={true} tooltipText={mutationInfo.mutationName ? mutationInfo.mutationName : noInfo} />
                                 }
                                 <PatientInfoItem testId='isReturnSick' name='חולה חוזר' value={isReturnSick ? yes : noInfo} />
                                 {
                                     isReturnSick && <ComplexityIcon tooltipText={formatDate(previousDiseaseStartDate)} />
                                 }
+                                {
+                                    wasMutationUpdated && <PrimaryButton onClick={varientUpdate}>שים לב, שדה הוריאנט עודכן (לחץ להסתרת ההודעה)</PrimaryButton>
+                                }
                             </Grid>
+                            {
+                                botInvestigationInfo &&
+                                <Grid container alignItems='center' className={classes.line}>
+                                    <PatientInfoItem testId='chatStatus' name='סטטוס שיחה בבוט' value={botInvestigationInfo.chatStatus.displayName} />
+                                    <PatientInfoItem testId='lastChatDate' name='תאריך עדכון אחרון בבוט' value={botInvestigationInfo.lastChatDate ? format(new Date(botInvestigationInfo.lastChatDate), 'HH:mm:ss dd/MM/yyyy') : ""} />
+                                    {
+                                        botInvestigationInfo.investigatiorReferenceRequired &&
+                                        <PatientInfoItem testId='investigatorReferenceStatus' name='נדרשת התייחסות חוקר בגין' value={getInvestigatiorReferenceReasons()} />
+                                    }
+                                </Grid>
+                            }
                         </div>
                     </div>
-                    {staticFieldsChange &&
+                    {(investigationStaticFieldChange || investigatorReferenceStatusWasChanged) &&
                         <div className={classes.saveButton}>
                             <PrimaryButton
                                 test-id='staticFields'
@@ -361,7 +404,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 <Typography className={classes.commentTitle}>
                                     {commentLabel}:
                                 </Typography>
-                                <CommentInput commentInput={commentInput} handleInput={setCommentInput} isViewMode={isViewMode} />
+                                <CommentInput commentInput={commentInput} handleInput={setCommentInput} isViewMode={false} />
                                 <Button
                                     className={classes.button}
                                     onClick={() => { sendComment(commentInput as string) }}
@@ -382,6 +425,7 @@ interface Props {
     epedemioligyNumber: number;
     currentTab: number;
     isViewMode?: boolean;
+    botInvestigationInfo: BotInvestigationInfo | null;
 };
 
 export default InvestigatedPersonInfo;

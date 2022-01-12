@@ -1,8 +1,16 @@
 import { gql } from 'postgraphile';
 
 export const UPDATE_INVESTIGATION_STATUS = gql`
-mutation UpdateInvestigationStatus($epidemiologyNumber: Int!, $investigationStatus: Int!, $investigationSubStatus: String, $statusReason: String, $startTime: Datetime) {
-  updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {investigationStatus: $investigationStatus, investigationSubStatus: $investigationSubStatus, statusReason: $statusReason, startTime: $startTime}, epidemiologyNumber: $epidemiologyNumber}) {
+mutation UpdateInvestigationStatus($epidemiologyNumber: Int!, $investigationStatus: Int!, $investigationSubStatus: String, $statusReason: String, $startTime: Datetime , $lastUpdateTime: Datetime) {
+  updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {investigationStatus: $investigationStatus, investigationSubStatus: $investigationSubStatus, statusReason: $statusReason, startTime: $startTime, lastUpdateTime:$lastUpdateTime}, epidemiologyNumber: $epidemiologyNumber}) {
+    clientMutationId
+  }
+}
+`;
+
+export const UPDATE_MUTATION_INFO = gql`
+mutation UpdateInvestigationWasVarientUpdate($epidemiologyNumber: Int!) {
+  updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {wasMutationUpdated: false}, epidemiologyNumber: $epidemiologyNumber}) {
     clientMutationId
   }
 }
@@ -91,6 +99,14 @@ mutation updateInvestigationStaticInfo ($fullNameInput: String, $identificationT
 export const UPDATE_INVESTIGATION_TRACKING = gql`
 mutation updateTrackingRecommendation ($inputEpidemiologyNumber: Int!, $extraInfo: String, $reason: Int, $subReason: Int) {
   updateTrackingRecommendation(input: {extraInfo: $extraInfo, inputEpidemiologyNumber: $inputEpidemiologyNumber, reason: $reason, subReason: $subReason}) {
+    clientMutationId
+  }
+}
+`;
+
+export const UPDATE_BOT_INVESTIGATION_INVESTIGATOR_REFERENCE_STATUS = gql`
+mutation updateInvestigatorReferenceStatus ($epidemiologyNumber: Int!, $investigatorReferenceStatusId: Int) {
+  updateBotInvestigationByEpidemiologyNumber(input: {epidemiologyNumber: $epidemiologyNumber, botInvestigationPatch: {investigatorReferenceStatusId: $investigatorReferenceStatusId}}) {
     clientMutationId
   }
 }

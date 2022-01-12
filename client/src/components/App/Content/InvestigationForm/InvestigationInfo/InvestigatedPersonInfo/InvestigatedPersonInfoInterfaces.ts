@@ -1,5 +1,4 @@
 export interface InvestigatedPersonInfoIncome {
-    setStaticFieldsChange: React.Dispatch<React.SetStateAction<boolean>>;
     moveToTheInvestigationForm: (epidemiologyNumber: number) => void;
 };
 
