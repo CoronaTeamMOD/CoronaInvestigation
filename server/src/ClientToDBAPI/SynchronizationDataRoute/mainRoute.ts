@@ -3,13 +3,14 @@ import { Router, Request, Response } from 'express';
 
 import City from '../../Models/Address/City';
 import { Severity } from '../../Models/Logger/types';
-import {ADD_CITY_TEMP, ADD_CITIES_TEMP, ADD_STREETS_TEMP} from '../../DBService/DataSynchronization/mutation';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
+import { GET_LAST_STREET_ID } from '../../DBService/DataSynchronization/Query';
+import {ADD_CITY_TEMP, ADD_CITIES_TEMP, ADD_STREETS_TEMP} from '../../DBService/DataSynchronization/Mutation';
 import logger, { invalidAPIResponseLog, launchingAPIRequestLog, invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog  } from '../../Logger/Logger';
+
 
 const synchronizationRoute = Router();
 
-let streetId : number = 100007; // need to save in db and update each time
 // const mohCitiesApiUrl = process.env.CITIES_URL;
 // const mohStreetsApiUrl = process.env.STREETS_URL;
 const mohCitiesApiUrl = 'https://mohservicesapitest.health.gov.il/api/Lists/edm/israelcities';
@@ -22,7 +23,8 @@ const filterCities = (cities: any) => {
 
 const parseCities = (citis: any) => {
     const filteredCities: any = filterCities(citis)
-    return filteredCities.map((city: { Code: string; Description: string; }) => ({'id': city.Code, 'displayName': city.Description}));
+    return filteredCities.map((city: { Code: string; Description: string; District_code: string; }) => 
+    ({'id': city.Code, 'display_name': city.Description, 'county_id': parseInt(city.District_code)}));
 }
 
 const filterStreets = (streets: any) => {
@@ -33,7 +35,7 @@ const filterStreets = (streets: any) => {
 const parseStreets = (streets: any, id: number) => {
     const filteredStreets: any = filterStreets(streets)
     return filteredStreets.map((street: { Code: string; Street_desc: string; City_code: string, Street_code: string }) => (
-        {'id': String(id++), 'display_name': street.Street_desc, 'city': street.City_code, mho_code: street.Street_code })
+        {'id': id++, 'display_name': street.Street_desc, 'city': parseInt(street.City_code), 'mho_code': parseInt(street.Street_code) })
     );
 }
 
@@ -50,7 +52,7 @@ synchronizationRoute.post('/cities/', (req: Request, res: Response) => {
             const addCityLogger = logger.setup({
                 workflow: 'add new city to DB',
             });
-            const parameters = { syncCitiesInput: JSON.stringify(cities)};
+            const parameters = { syncCitiesInput: JSON.stringify({cities:cities})};
 
             graphqlRequest(ADD_CITIES_TEMP, res.locals, parameters)
                 .then((result: any) => {
@@ -59,21 +61,6 @@ synchronizationRoute.post('/cities/', (req: Request, res: Response) => {
                 .catch(error => {
                     addCityLogger.error(invalidDBResponseLog(error), Severity.HIGH);
                 });
-            // cities.forEach((city: { id: any; displayName: any; }) => {
-            //     const cityParamaters = {
-            //         id: city.id,
-            //         displayName: city.displayName
-            //     };
-            //     addCityLogger.info(launchingDBRequestLog(cityParamaters), Severity.LOW);
-            //     graphqlRequest(ADD_CITY_TEMP, res.locals, cityParamaters)
-            //     .then((result: any) => {
-            //         addCityLogger.info(validDBResponseLog, Severity.LOW);
-            //     })
-            //     .catch(error => {
-            //         addCityLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-            //     });
-            // });
-            // citiesSynchronizationLogger.info(launchingAPIRequestLog(result.data), Severity.LOW);
             res.send(result.data);
         }).catch((err: any) => {
             console.log('######ERROR -- ' , err)
@@ -90,22 +77,28 @@ synchronizationRoute.post('/streets/', (req: Request, res: Response) => {
     axios.get(mohStreetsApiUrl)
         .then((result) => {
             streetsSynchronizationLogger.info(launchingAPIRequestLog(result.data[0]), Severity.LOW);
-            // get last_update_date from server
-            const streets = parseStreets(result.data, streetId)
-            const parameters = { syncStreetsInput: JSON.stringify(streets)};
             const addStreetLogger = logger.setup({
                 workflow: 'add new city to DB',
             });
-            graphqlRequest(ADD_STREETS_TEMP, res.locals, parameters)
-                .then((result: any) => {
-                    // console.log('!!!!!!!!!!!! streets added succesed')
-                    addStreetLogger.info(validDBResponseLog, Severity.LOW);
+
+            graphqlRequest(GET_LAST_STREET_ID, res.locals)
+                .then((street_id: any) => {
+                    let streetId = street_id.data.getLastStreetId?.string ? parseInt(street_id.data.getLastStreetId.string) + 1 : 1;
+                    const streets = parseStreets(result.data, streetId)
+                    
+                    const parameters = { syncStreetsInput: JSON.stringify({streets:streets})};
+
+                    graphqlRequest(ADD_STREETS_TEMP, res.locals, parameters)
+                        .then((result2: any) => {
+                            addStreetLogger.info(validDBResponseLog, Severity.LOW);
+                        })
+                        .catch(error => {
+                            addStreetLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                        });
                 })
                 .catch(error => {
-                    // console.log('&&&&&&&&&&& streets added failed    -->  ', error)
                     addStreetLogger.error(invalidDBResponseLog(error), Severity.HIGH);
                 });
-
             streetsSynchronizationLogger.info(launchingAPIRequestLog(result.data[0]), Severity.LOW);
             res.send('streets synchronization successed')
         }).catch((err: any) => {
