@@ -100,6 +100,9 @@ const useStyles = makeStyles({
     openButton: {
         marginRight: '10px',
     },
+    wasUpdatedNote: {
+       fontWeight:800,
+    }
 });
 
 export default useStyles;

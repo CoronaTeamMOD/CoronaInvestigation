@@ -43,6 +43,7 @@ export interface BotInvestigationInfo {
     investigationChatStatus: KeyValuePair;
     investigatorReferenceStatus: KeyValuePair;
     botInvestigationReferenceReasons: KeyValuePair[];
+    wasUpdatedAfterInvestigationStart :boolean;
 }
 
 export default InvestigationInfo;
