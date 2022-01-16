@@ -1,8 +1,8 @@
--- FUNCTION: public.add_cities_temp(json)
+-- FUNCTION: public.add_cities(json)
 
-DROP FUNCTION public.add_cities_temp(json);
+DROP FUNCTION public.add_cities(json);
 
-CREATE OR REPLACE FUNCTION public.add_cities_temp(
+CREATE OR REPLACE FUNCTION public.add_cities(
 	cities json)
     RETURNS void
     LANGUAGE 'plpgsql'
@@ -34,7 +34,7 @@ begin
 		from public.counties
 		where id = county_id;
 		
-		INSERT INTO public.cities_temp (id, display_name, county_id, desk_mapping_technique)
+		INSERT INTO public.cities (id, display_name, county_id, desk_mapping_technique)
 	    VALUES (id_input, display_name_input, county_id_input, 1)
 	    ON CONFLICT (id) DO NOTHING;
 			
@@ -42,5 +42,5 @@ begin
 end;
 $BODY$;
 
-ALTER FUNCTION public.add_cities_temp(json)
+ALTER FUNCTION public.add_cities(json)
     OWNER TO coronai;

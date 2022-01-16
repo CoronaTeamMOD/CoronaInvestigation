@@ -5,7 +5,7 @@ import City from '../../Models/Address/City';
 import { Severity } from '../../Models/Logger/types';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import { GET_LAST_STREET_ID } from '../../DBService/DataSynchronization/Query';
-import {ADD_CITY_TEMP, ADD_CITIES_TEMP, ADD_STREETS_TEMP} from '../../DBService/DataSynchronization/Mutation';
+import { ADD_CITIES, ADD_STREETS} from '../../DBService/DataSynchronization/Mutation';
 import logger, { invalidAPIResponseLog, launchingAPIRequestLog, invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog  } from '../../Logger/Logger';
 
 
@@ -54,7 +54,7 @@ synchronizationRoute.post('/cities/', (req: Request, res: Response) => {
             });
             const parameters = { syncCitiesInput: JSON.stringify({cities:cities})};
 
-            graphqlRequest(ADD_CITIES_TEMP, res.locals, parameters)
+            graphqlRequest(ADD_CITIES, res.locals, parameters)
                 .then((result: any) => {
                     addCityLogger.info(validDBResponseLog, Severity.LOW);
                 })
@@ -88,7 +88,7 @@ synchronizationRoute.post('/streets/', (req: Request, res: Response) => {
                     
                     const parameters = { syncStreetsInput: JSON.stringify({streets:streets})};
 
-                    graphqlRequest(ADD_STREETS_TEMP, res.locals, parameters)
+                    graphqlRequest(ADD_STREETS, res.locals, parameters)
                         .then((result2: any) => {
                             addStreetLogger.info(validDBResponseLog, Severity.LOW);
                         })

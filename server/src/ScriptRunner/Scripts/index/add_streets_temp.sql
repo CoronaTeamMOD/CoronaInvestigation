@@ -1,8 +1,8 @@
--- FUNCTION: public.add_streets_temp(json)
+-- FUNCTION: public.add_streets(json)
 
-DROP FUNCTION public.add_streets_temp(json);
+DROP FUNCTION public.add_streets(json);
 
-CREATE OR REPLACE FUNCTION public.add_streets_temp(
+CREATE OR REPLACE FUNCTION public.add_streets(
 	streets json)
     RETURNS void
     LANGUAGE 'plpgsql'
@@ -35,7 +35,7 @@ begin
 		from public.cities
 		where id = city_code;
 
-		INSERT INTO public.streets_temp(
+		INSERT INTO public.streets(
 		id, display_name, city, mho_code)
 		VALUES (id_input, display_name_input, city_input, mho_code_input)
 		ON CONFLICT (display_name,city,mho_code) DO NOTHING;
@@ -43,5 +43,5 @@ begin
 end;
 $BODY$;
 
-ALTER FUNCTION public.add_streets_temp(json)
+ALTER FUNCTION public.add_streets(json)
     OWNER TO coronai;
