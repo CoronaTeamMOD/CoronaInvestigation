@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { Router, Request, Response } from 'express';
 
-import City from '../../Models/Address/City';
 import { Severity } from '../../Models/Logger/types';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
 import { GET_LAST_STREET_ID } from '../../DBService/DataSynchronization/Query';
@@ -17,7 +16,6 @@ const mohCitiesApiUrl = 'https://mohservicesapitest.health.gov.il/api/Lists/edm/
 const mohStreetsApiUrl = 'https://mohservicesapitest.health.gov.il/api/Lists/edm/israelstreets';
 
 const filterCities = (cities: any) => {
-    // or Update_date < last_update_date
     return cities.filter((city: any)=> city.to_date === null || (city.to_date).includes('1/1/1900'));
 }
 
@@ -28,7 +26,6 @@ const parseCities = (citis: any) => {
 }
 
 const filterStreets = (streets: any) => {
-    // or Update_date < last_update_date
     return streets.filter((city: any)=> city.To_date === null || (city.To_date).includes('1/1/1900') );
 }
 
@@ -63,7 +60,6 @@ synchronizationRoute.post('/cities/', (req: Request, res: Response) => {
                 });
             res.send(result.data);
         }).catch((err: any) => {
-            console.log('######ERROR -- ' , err)
             citiesSynchronizationLogger.error(invalidAPIResponseLog(err), Severity.HIGH);
             res.status(errorStatusCode).send(err);
         });
@@ -102,7 +98,6 @@ synchronizationRoute.post('/streets/', (req: Request, res: Response) => {
             streetsSynchronizationLogger.info(launchingAPIRequestLog(result.data[0]), Severity.LOW);
             res.send('streets synchronization successed')
         }).catch((err: any) => {
-            // console.log('######ERROR STREETS-- ' , err)
             streetsSynchronizationLogger.error(invalidAPIResponseLog(err), Severity.HIGH);
             res.status(errorStatusCode).send(err);
         });
