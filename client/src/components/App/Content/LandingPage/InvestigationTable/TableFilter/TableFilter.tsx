@@ -20,6 +20,7 @@ import { StatusFilter as StatusFilterType, SubStatusFilter as SubStatusFilterTyp
 import { useDispatch, useSelector } from 'react-redux';
 import KeyValuePair from 'models/KeyValuePair';
 import StoreStateType from 'redux/storeStateType';
+import ComplexityReason from 'models/ComplexityReason';
 
 const searchBarLabel = 'מספר אפידמיולוגי, ת"ז, שם או טלפון';
 
@@ -39,7 +40,9 @@ const TableFilter = (props: Props) => {
         changeInvestigatorReferenceStatusFilter, changeInvestigatorReferenceRequiredFilter,
         investigatorReferenceRequiredFilter, investigatorReferenceStatusFilter,
         chatStatusFilter, changeChatStatusFilter,
-        incompletedBotInvestigationFilter, changeIncompletedBotInvestigationFilter
+        incompletedBotInvestigationFilter, changeIncompletedBotInvestigationFilter,
+        complexityFilter, changeComplexityFilter,
+        complexityReasonFilter, changeComplexityReasonFilter
     } = props;
 
     const { displayTimeRange, onSelectTimeRangeChange, onStartDateSelect, onEndDateSelect, errorMes } = useTableFilter({
@@ -49,15 +52,15 @@ const TableFilter = (props: Props) => {
 
     const investigatorReferenceStatuses = useSelector<StoreStateType, KeyValuePair[]>(state => state.investigatorReferenceStatuses);
     const chatStatuses = useSelector<StoreStateType, KeyValuePair[]>(state => state.chatStatuses);
+    const complexityReasons = useSelector<StoreStateType, ComplexityReason[]>(state=>state.complexityReasons);
 
     const [subStatusFiltered, setSubStatusFiltered] = useState<SubStatus[]>([]);
     const [selectedStatuses, setSelectedStatuses] = useState<InvestigationMainStatusCodes[]>(filteredStatuses);
     const [selectedSubStatuses, setSelectedSubStatuses] = useState<string[]>(filteredSubStatuses);
     const [selectedInvestigatorReferenceStatus, setSelectedInvestigatorReferenceStatus] = useState<number[]>(investigatorReferenceStatusFilter);
     const [selectedChatStatus, setSelectedChatStatus] = useState<number[]>(chatStatusFilter);
-
+    const [selectedComplexityReason,setSelectedComplexityReason] = useState<number[]>(complexityReasonFilter);
     const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id;
-
 
     useEffect(() => {
         selectedStatuses.length > 0
@@ -247,6 +250,44 @@ const TableFilter = (props: Props) => {
                         )}
                         limitTags={1}
                     />
+                    { 
+                    complexityFilter &&
+                        <Autocomplete
+                        ChipProps={{ className: classes.chip }}
+                        className={classes.autocomplete}
+                        classes={{ inputFocused: classes.autocompleteInputText }}
+                        size='small'
+                        disableCloseOnSelect
+                        multiple
+                        options={complexityReasons}
+                        value={complexityReasons.filter(reason => selectedComplexityReason.includes(reason.reasonId))}
+                        getOptionLabel={(option) => option.description}
+                        onChange={(event, values) => {
+                            changeComplexityReasonFilter(values);
+                            setSelectedComplexityReason(values.map(value => value.reasonId));
+
+                        }}
+                        renderInput={(params) =>
+                            <TextField
+                                label={'סיבה למורכבות חקירה'}
+                                {...params}
+                                InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
+                            />
+                        }
+                        renderOption={(option, { selected }) => (
+                            <>
+                                <Checkbox
+                                    size='small'
+                                    className={classes.optionCheckbox}
+                                    checked={selected}
+                                    color='primary'
+                                />
+                                <Typography className={classes.option} >{option.description}</Typography>
+                            </>
+                        )}
+                        limitTags={1}
+                    />
+                    }
                 </Grid>
                 <Grid className={classes.endCard} xs={7}>
                     <div className={classes.row}>
@@ -297,6 +338,15 @@ const TableFilter = (props: Props) => {
                             />
                             <Typography className={classes.title}>חקירות שלא הושלמו ע"י בוט</Typography>
                         </div>
+                        <div>
+                            <Checkbox
+                                onChange={(event) => changeComplexityFilter(event.target.checked)}
+                                color='primary'
+                                checked={complexityFilter}
+                                className={classes.checkbox}
+                            />
+                            <Typography className={classes.title}>חקירות מורכבות</Typography>
+                        </div>
                     </div>
                 </Grid>
                 <div className={classes.tableHeaderRow}>
@@ -326,6 +376,8 @@ interface Props {
     investigatorReferenceStatusFilter: number[];
     chatStatusFilter: number[];
     incompletedBotInvestigationFilter: boolean;
+    complexityFilter: boolean;
+    complexityReasonFilter: number[];
     changeUnassginedUserFilter: (isFilterOn: boolean) => void;
     changeInactiveUserFilter: (isFilterOn: boolean) => void;
     onFilterChange: (selectedStatuses: InvestigationMainStatus[]) => void;
@@ -345,6 +397,8 @@ interface Props {
     changeInvestigatorReferenceStatusFilter: (statuses: KeyValuePair[]) => void;
     changeInvestigatorReferenceRequiredFilter: (isFilterOn: boolean) => void;
     changeIncompletedBotInvestigationFilter: (isFilterOn: boolean) => void;
+    changeComplexityFilter: (isFilterOn: boolean) => void;
+    changeComplexityReasonFilter : (complexityReasons : ComplexityReason[]) =>void;
 };
 
 export default TableFilter
