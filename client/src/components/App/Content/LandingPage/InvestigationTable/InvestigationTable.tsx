@@ -90,7 +90,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter, updateDateFilter, nonContactFilter, fetchAllGroupedInvestigations,
         unallocatedDeskFilter, changeUnallocatedDeskFilter, changeInvestigatorReferenceStatusFilter,
         changeInvestigatorReferenceRequiredFilter, investigatorReferenceRequiredFilter, investigatorReferenceStatusFilter,
-        chatStatusFilter, changeChatStatusFilter, incompletedBotInvestigationFilter, changeIncompletedBotInvestigationFilter
+        chatStatusFilter, changeChatStatusFilter, incompletedBotInvestigationFilter, changeIncompletedBotInvestigationFilter,
+        complexityFilter, changeComplexityFilter, complexityReasonFilter,changeComplexityReasonFilter
     } = useInvestigationTable({
         setSelectedRow, allGroupedInvestigations, setAllStatuses, currentPage, setCurrentPage, setAllGroupedInvestigations,
         investigationColor, setAllSubStatuses, setAllComplexReasons
@@ -293,6 +294,10 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             chatStatusFilter={chatStatusFilter}
                             incompletedBotInvestigationFilter={incompletedBotInvestigationFilter}
                             changeIncompletedBotInvestigationFilter={changeIncompletedBotInvestigationFilter}
+                            complexityFilter= {complexityFilter}
+                            changeComplexityFilter= {changeComplexityFilter}
+                            complexityReasonFilter={complexityReasonFilter}
+                            changeComplexityReasonFilter={changeComplexityReasonFilter}
                         />
                     </Grid>
                 </Grid>

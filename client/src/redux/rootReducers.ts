@@ -32,6 +32,7 @@ import investigatorReferenceStatusesReducer from './investigatorReferenceStatuse
 import botInvestigationInfoReducer from './BotInvestigationInfo/botInvestigationInfoReducer';
 import chatStatusesReducer from './ChatStatuses/chatStatusesReducer';
 import mutationInfoReducer  from './MutationInfo/mutationInfoReducer';
+import complexityReasonsReducer from './ComplexityReasons/ComplexityReasonsReducer';
 
 export default combineReducers<StoreStateType>({
      occupations: occupationsReducer,
@@ -64,5 +65,6 @@ export default combineReducers<StoreStateType>({
      investigatorReferenceStatuses: investigatorReferenceStatusesReducer,
      botInvestigationInfo: botInvestigationInfoReducer,
      chatStatuses: chatStatusesReducer,
-     mutationInfo: mutationInfoReducer
+     mutationInfo: mutationInfoReducer,
+     complexityReasons: complexityReasonsReducer
 }) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;
