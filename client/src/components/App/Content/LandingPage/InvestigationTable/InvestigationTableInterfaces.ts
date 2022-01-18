@@ -14,6 +14,7 @@ import AllocatedInvestigator from 'models/InvestigationTable/AllocateInvestigato
 import { SelectedRow } from './useInvestigationTable';
 import { IndexedInvestigationData } from './InvestigationTablesHeaders';
 import KeyValuePair from 'models/KeyValuePair';
+import ComplexityReason from 'models/ComplexityReason';
 
 export type StatusFilter = InvestigationMainStatusCodes[];
 export type SubStatusFilter = string[];
@@ -36,6 +37,8 @@ export interface HistoryState {
     investigatorReferenceStatusFilter?: number[];
     investigatorReferenceRequiredFilter?: boolean;
     incompletedBotInvestigationFilter?:boolean;
+    complexityFilter?:boolean;
+    complexityReasonFilter?: number[];
 };
 
 export interface useInvestigationTableParameters {
@@ -92,6 +95,8 @@ export interface useInvestigationTableOutcome {
     investigatorReferenceStatusFilter: number[];
     investigatorReferenceRequiredFilter: boolean;
     incompletedBotInvestigationFilter:boolean;
+    complexityFilter: boolean;
+    complexityReasonFilter: number[];
     changeUpdateDateFilter: (dateString: string) => void;
     changeNonContactFilter: (isNonContact: boolean) => void;
     isBadgeInVisible: boolean;
@@ -103,4 +108,6 @@ export interface useInvestigationTableOutcome {
     changeInvestigatorReferenceStatusFilter: (investigatorReferencestatuses: KeyValuePair[]) => void;
     changeInvestigatorReferenceRequiredFilter: (isFilterOn: boolean) => void;
     changeIncompletedBotInvestigationFilter: (isFilterOn: boolean) => void;
+    changeComplexityFilter:  (isFilterOn: boolean) => void;
+    changeComplexityReasonFilter: (reasons: ComplexityReason[]) =>void;
 };

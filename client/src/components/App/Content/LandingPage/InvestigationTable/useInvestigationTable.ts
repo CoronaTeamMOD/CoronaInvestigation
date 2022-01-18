@@ -46,6 +46,8 @@ import KeyValuePair from 'models/KeyValuePair';
 import { fetchAllInvestigatorReferenceStatuses, fetchAllChatStatuses } from 'httpClient/investigationInfo'; 
 import { setInvestigatorReferenceStatuses } from 'redux/investigatorReferenceStatuses/investigatorReferenceStatusesActionCreator';
 import { setChatStatuses } from 'redux/ChatStatuses/chatStatusesActionCreator';
+import { setComplexityReasons } from 'redux/ComplexityReasons/ComplexityReasonsActionCreators';
+import ComplexityReason from 'models/ComplexityReason';
 
 const investigationURL = '/investigation';
 
@@ -169,6 +171,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         chatStatusFilter: historyChatStatusFilter = [],
         investigatorReferenceRequiredFilter: historyInvestigatorReferenceRequiredFilter = false,
         incompletedBotInvestigationFilter: historyIncompletedBotInvestigationFilter = false,
+        complexityFilter: historyComplexityFilter = false,
+        complexityReasonFilter: historyComplexityReasonFilter = [],
         filterTitle } = useMemo(() => {
             const { location: { state } } = history;
             return state || {};
@@ -193,6 +197,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [investigatorReferenceStatusFilter, setInvestigatorReferenceStatusFilter] = useState<number[]>(historyInvestigatorReferenceStatusFilter);
     const [investigatorReferenceRequiredFilter, setInvestigatorReferenceRequiredFilter] = useState<boolean>(historyInvestigatorReferenceRequiredFilter);
     const [incompletedBotInvestigationFilter, setIncompletedBotInvestigationFilter] = useState<boolean>(historyIncompletedBotInvestigationFilter);
+    const [complexityFilter, setComplexityFilter] = useState<boolean>(historyComplexityFilter);
+    const [complexityReasonFilter, setComplexityReasonFilter] = useState<number[]>(historyComplexityReasonFilter);
+    
 
     const getFilterRules = () => {
         const statusFilterToSet = historyStatusFilter.length > 0 ? filterCreators.STATUS(historyStatusFilter) : null;
@@ -209,7 +216,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const chatStatusFilterToSet = historyChatStatusFilter ? filterCreators.CHAT_STATUS(historyChatStatusFilter) : null;
         const investigatorReferenceRequiredFilterToSet = historyInvestigatorReferenceRequiredFilter ? filterCreators.INVESTIGATOR_REFERENCE_REQUIRED(historyInvestigatorReferenceRequiredFilter) : null;
         const incompletedBotInvestigationFilterToSet = historyIncompletedBotInvestigationFilter ? filterCreators.INCOMPLETED_BOT_INVESTIGATION(historyIncompletedBotInvestigationFilter) : null;
-        
+        const complexityFilterToSet = historyComplexityFilter ? filterCreators.COMPLEXITY(historyComplexityFilter) : null;
+        const complexityReasonFilterToSet = historyComplexityReasonFilter ? filterCreators.COMPLEXITY_REASON(historyComplexityReasonFilter) : null;
         return {
             [InvestigationsFilterByFields.STATUS]: statusFilterToSet && Object.values(statusFilterToSet)[0],
             [InvestigationsFilterByFields.SUB_STATUS]: subStatusFilterToSet && Object.values(subStatusFilterToSet)[0],
@@ -224,7 +232,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_STATUS]: investigatorRefernceStatusToSet && Object.values(investigatorRefernceStatusToSet)[0],
             [InvestigationsFilterByFields.CHAT_STATUS]: chatStatusFilterToSet && Object.values(chatStatusFilterToSet)[0],
             [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_REQUIRED]: investigatorReferenceRequiredFilterToSet && Object.values(investigatorReferenceRequiredFilterToSet)[0],
-            [InvestigationsFilterByFields.INCOMPLETED_BOT_INVESTIGATION]: incompletedBotInvestigationFilterToSet && Object.values(incompletedBotInvestigationFilterToSet)[0]
+            [InvestigationsFilterByFields.INCOMPLETED_BOT_INVESTIGATION]: incompletedBotInvestigationFilterToSet && Object.values(incompletedBotInvestigationFilterToSet)[0],
+            [InvestigationsFilterByFields.COMPLEXITY] : complexityFilterToSet && Object.values(complexityFilterToSet)[0],
+            [InvestigationsFilterByFields.COMPLEXITY_REASON] : complexityReasonFilterToSet && Object.values(complexityReasonFilterToSet)[0],
         }
     };
 
@@ -360,6 +370,21 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setCurrentPage(defaultPage);
     };
 
+    const changeComplexityFilter = (value: boolean) => {
+        updateFilterHistory('complexityFilter', value);
+        setComplexityFilter(value);
+        handleFilterChange(filterCreators.COMPLEXITY(value));
+        setCurrentPage(defaultPage);
+    }
+
+    const changeComplexityReasonFilter = (reasons: ComplexityReason[]) => {
+        const complexityReasonsIds = reasons.map(reason => reason.reasonId);
+        updateFilterHistory('complexityReasonFilter', complexityReasonsIds);
+        setComplexityReasonFilter(complexityReasonsIds);
+        handleFilterChange(filterCreators.COMPLEXITY_REASON(complexityReasonsIds));
+        setCurrentPage(defaultPage);
+    };
+
     const updateFilterHistory = (key: string, value: any) => {
         const { location: { state } } = history;
         history.replace({
@@ -404,7 +429,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     investigationStatusesLogger.info('The investigations complexity reasons were fetched successfully', Severity.LOW);
                     const allComplexReasons: (number | null)[] = (result.data).map((reason: { description: any; }) => reason.description)
-                    setComplexReasons(allComplexReasons)
+                    dispatch(setComplexityReasons(result?.data));
+                    setComplexReasons(allComplexReasons);
                 } else {
                     investigationStatusesLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
                 }
@@ -1189,7 +1215,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         chatStatusFilter,
         changeChatStatusFilter,
         incompletedBotInvestigationFilter,
-        changeIncompletedBotInvestigationFilter     
+        changeIncompletedBotInvestigationFilter ,
+        complexityFilter,
+        changeComplexityFilter,
+        complexityReasonFilter,
+        changeComplexityReasonFilter
     };
 };
 
