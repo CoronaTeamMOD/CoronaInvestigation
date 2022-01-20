@@ -260,6 +260,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         };
     }, []);
 
+    useEffect(() => {
+       setSelectAll(false);
+       setCheckedIndexedRows([]);
+    }, [displayedCounty]);
+
     const handleEscKey = (e: KeyboardEvent) => {
         e.key === 'Escape' && closeDropdowns()
     };
