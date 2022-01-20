@@ -41,7 +41,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
     const { checkedIndexedRows, allDesks, fetchInvestigators,
         onDialogClose, tableRows, allGroupedInvestigations, onDeskChange,
         onDeskGroupChange, onCountyChange, onCountyGroupChange, fetchTableData,
-        fetchInvestigationsByGroupId, allocateInvestigationToInvestigator } = props;
+        fetchInvestigationsByGroupId, allocateInvestigationToInvestigator, selectAllAction } = props;
 
     const { alertSuccess } = useCustomSwal();
     const onTransferSuccess = () => alertSuccess('החקירות הועברו בהצלחה');
@@ -121,7 +121,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         {
             icon: CollectionsBookmark,
             displayTitle: 'קיבוץ חקירות',
-            disabled: shouldGroupActionDisabled,
+            disabled: shouldGroupActionDisabled || selectAllAction,
             errorMessage: shouldGroupActionDisabled ?
                 checkedInvestigations.length > 1 ? 'שים לב לא ניתן לקבץ חקירה שכבר מקובצת' : 'חקירה לא מקובצת'
                 : '',
@@ -130,7 +130,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         {
             icon: CallSplit,
             displayTitle: 'ביטול קיבוץ',
-            disabled: disbandAction.disabled,
+            disabled: disbandAction.disabled || selectAllAction,
             errorMessage: disbandAction.disabled ? 'שים לב, לא ניתן לבטל חקירה שאינה מקובצת' : '',
             onClick: () => handleDisbandGroupedInvestigations(disbandAction.groupIds)
         },
@@ -144,7 +144,8 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
             icon: PersonPin,
             displayTitle: `${isSingleInvestigation ? singleAssignment : multipleAssignments} לחוקר`,
             errorMessage: '',
-            onClick: handleOpenInvesigatorAllocationFooterDialog
+            onClick: handleOpenInvesigatorAllocationFooterDialog,
+            disabled: selectAllAction
         },
         {
             icon: Edit,
@@ -220,4 +221,5 @@ interface Props {
     onCountyGroupChange: (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => Promise<void>;
     onCountyChange: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => void;
     allocateInvestigationToInvestigator: (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => void;
+    selectAllAction: boolean;
 }
