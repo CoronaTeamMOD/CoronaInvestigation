@@ -241,9 +241,7 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
                                         ChatStatusCode.HUMAN_INVESTIGATION_REQUEST,
                                         ChatStatusCode.WRONG_CHAT_DETAILS,
                                         ChatStatusCode.HUMAN_INVESTIGATION_PREFERNCE,
-                                        ChatStatusCode.HUMAN_INVESTIGATION_REQUIRED,
-                                        ChatStatusCode.KOSHER_PHONE_NUMBER,
-                                        ChatStatusCode.INVALID_PHONE_NUMBER
+                                        ChatStatusCode.HUMAN_INVESTIGATION_REQUIRED
                                     ]
                                 }
                             },
