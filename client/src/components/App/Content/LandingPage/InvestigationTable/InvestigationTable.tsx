@@ -512,7 +512,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
                     fetchInvestigators={getFilteredUsersOfCurrentCounty}
                     allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
-                />
+                    selectAllAction = {selectAll}
+               />
             </Slide>
             <RefreshSnackbar isOpen={snackbarOpen}
                 onClose={onCancel} onOk={onOk}
