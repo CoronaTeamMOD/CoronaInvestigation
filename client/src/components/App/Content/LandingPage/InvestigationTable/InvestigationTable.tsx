@@ -260,6 +260,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         };
     }, []);
 
+    useEffect(() => {
+       setSelectAll(false);
+       setCheckedIndexedRows([]);
+    }, [displayedCounty]);
+
     const handleEscKey = (e: KeyboardEvent) => {
         e.key === 'Escape' && closeDropdowns()
     };
@@ -507,7 +512,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
                     fetchInvestigators={getFilteredUsersOfCurrentCounty}
                     allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
-                />
+                    selectAllAction = {selectAll}
+               />
             </Slide>
             <RefreshSnackbar isOpen={snackbarOpen}
                 onClose={onCancel} onOk={onOk}

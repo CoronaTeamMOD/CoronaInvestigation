@@ -239,7 +239,9 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
                                         ChatStatusCode.NO_WHATSAPP,
                                         ChatStatusCode.NO_COOPERATION,
                                         ChatStatusCode.HUMAN_INVESTIGATION_REQUEST,
-                                        ChatStatusCode.WRONG_CHAT_DETAILS
+                                        ChatStatusCode.WRONG_CHAT_DETAILS,
+                                        ChatStatusCode.HUMAN_INVESTIGATION_PREFERNCE,
+                                        ChatStatusCode.HUMAN_INVESTIGATION_REQUIRED
                                     ]
                                 }
                             },
