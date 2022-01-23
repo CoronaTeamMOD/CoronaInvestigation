@@ -12,14 +12,14 @@ const useSynchronizationAction = (props: Props) => {
 
     const failedCityUpdateEmailParameters = { 
         from: 'moh.automatic.mail@gmail.com',
-        to: 'barna@matrixdna.ai, Rut.shpitzer@moh.gov.il', //ran
+        to: 'chenfr@matrixdna.ai, Rut.shpitzer@moh.gov.il',
         subject: 'יצירת קובץ ערים נכשלה',
         text: 'יצירת קובץ ערים נכשלה'
     }
 
     const failedStreetUpdateEmailParameters = { 
         from: 'moh.automatic.mail@gmail.com',
-        to: 'barna@matrixdna.ai, Rut.shpitzer@moh.gov.il', //ran
+        to: 'chenfr@matrixdna.ai, Rut.shpitzer@moh.gov.il',
         subject: 'יצירת קובץ רחובות נכשלה',
         text: 'יצירת קובץ רחובות נכשלה'
     }
