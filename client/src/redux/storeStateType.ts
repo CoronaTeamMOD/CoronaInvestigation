@@ -12,6 +12,7 @@ import InvestigationRedux from 'models/InvestigationRedux';
 import IdentificationType from 'models/IdentificationType';
 import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
+import ComplexityReason from 'models/ComplexityReason'
 
 import { UserState } from './User/userReducer';
 import { GreenPassReducerType } from './GreenPass/greenPassReducer';
@@ -55,4 +56,5 @@ export default interface StoreStateType {
     botInvestigationInfo: BotInvestigationInfoState;
     chatStatuses: KeyValuePair[];
     mutationInfo: MutationInfoState;
+    complexityReasons: ComplexityReason[];
 };

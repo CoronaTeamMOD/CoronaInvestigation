@@ -7,6 +7,7 @@ import InvestigatorReferenceStatusCode from 'models/enums/InvestigatorReferenceS
 import ChatStatusCode from 'models/enums/ChatStatusCodes';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import BotProperties from 'models/enums/BotProperties';
+import InvestigationComplexityCodes from 'models/enums/InvestigationComplexityCodes';
 
 const unassignedUserName = 'לא משויך';
 
@@ -238,7 +239,9 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
                                         ChatStatusCode.NO_WHATSAPP,
                                         ChatStatusCode.NO_COOPERATION,
                                         ChatStatusCode.HUMAN_INVESTIGATION_REQUEST,
-                                        ChatStatusCode.WRONG_CHAT_DETAILS
+                                        ChatStatusCode.WRONG_CHAT_DETAILS,
+                                        ChatStatusCode.HUMAN_INVESTIGATION_PREFERNCE,
+                                        ChatStatusCode.HUMAN_INVESTIGATION_REQUIRED
                                     ]
                                 }
                             },
@@ -281,6 +284,27 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
             {
                 [InvestigationsFilterByFields.INCOMPLETED_BOT_INVESTIGATION]: null
             }
+    },
+    [InvestigationsFilterByFields.COMPLEXITY]: (isFilterOn: boolean) => {
+        return isFilterOn ? 
+        {
+            [InvestigationsFilterByFields.COMPLEXITY]: {
+                complexityCode: {equalTo: InvestigationComplexityCodes.COMPLEX}
+            }
+        }
+        :
+        {
+            [InvestigationsFilterByFields.COMPLEXITY]: null
+        }
+    },
+    [InvestigationsFilterByFields.COMPLEXITY_REASON]: (values: string[]) => {
+        return (values.length > 0) ?
+            {
+                [InvestigationsFilterByFields.COMPLEXITY_REASON]: {
+                    complexityReasonsId: { overlaps: values }
+                }
+            }
+            : { [InvestigationsFilterByFields.COMPLEXITY_REASON]: null }
     },
 };
 

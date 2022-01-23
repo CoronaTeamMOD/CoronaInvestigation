@@ -4,7 +4,7 @@ import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TableSortLabel, Button,
     useMediaQuery, Collapse, IconButton, Grid,
-    Slide, Popover, Tooltip
+    Slide, Popover, Tooltip, Checkbox
 } from '@material-ui/core';
 import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { KeyboardArrowDown, KeyboardArrowLeft, Refresh } from '@material-ui/icons';
@@ -40,6 +40,7 @@ export const rowsPerPage = 100;
 const refreshPromptMessage = 'שים לב, ייתכן כי התווספו חקירות חדשות';
 const emptyGroupText = 'שים לב, בסבירות גבוהה לחקירה זו קובצו חקירות ישנות שכבר לא קיימות במערכת'
 const resetSortButtonText = 'סידור לפי תעדוף';
+const selectAllText = 'בחר הכל';
 
 const InvestigationTable: React.FC = (): JSX.Element => {
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
@@ -90,14 +91,15 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter, updateDateFilter, nonContactFilter, fetchAllGroupedInvestigations,
         unallocatedDeskFilter, changeUnallocatedDeskFilter, changeInvestigatorReferenceStatusFilter,
         changeInvestigatorReferenceRequiredFilter, investigatorReferenceRequiredFilter, investigatorReferenceStatusFilter,
-        chatStatusFilter, changeChatStatusFilter, incompletedBotInvestigationFilter, changeIncompletedBotInvestigationFilter
+        chatStatusFilter, changeChatStatusFilter, incompletedBotInvestigationFilter, changeIncompletedBotInvestigationFilter,
+        complexityFilter, changeComplexityFilter, complexityReasonFilter,changeComplexityReasonFilter
     } = useInvestigationTable({
         setSelectedRow, allGroupedInvestigations, setAllStatuses, currentPage, setCurrentPage, setAllGroupedInvestigations,
         investigationColor, setAllSubStatuses, setAllComplexReasons
     });
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
-
+    const [selectAll, setSelectAll] = useState<boolean>(false);
     const { countyDesks, displayedCounty } = useDesksUtils();
 
     const desksToTransfer: Desk[] = useMemo(() =>
@@ -234,13 +236,34 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 fetchTableData();
             }
         };
-
+    
+    const onSelectAllClick = () => {
+        if (!selectAll) {
+            const selectedRows = tableRows.map((row: InvestigationTableRowType) =>
+                convertToIndexedRow(row)
+            );
+            setCheckedIndexedRows(selectedRows);
+        }
+        else {
+            setCheckedIndexedRows([]);
+        }
+        setSelectAll(!selectAll);
+    }
+    const onSelectedInvsDialogClose = () => {
+        setSelectAll(false);
+        setCheckedIndexedRows([]);
+    }
     useEffect(() => {
         window.addEventListener('keydown', handleEscKey);
         return () => {
             window.removeEventListener('keydown', handleEscKey);
         };
     }, []);
+
+    useEffect(() => {
+       setSelectAll(false);
+       setCheckedIndexedRows([]);
+    }, [displayedCounty]);
 
     const handleEscKey = (e: KeyboardEvent) => {
         e.key === 'Escape' && closeDropdowns()
@@ -293,6 +316,10 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             chatStatusFilter={chatStatusFilter}
                             incompletedBotInvestigationFilter={incompletedBotInvestigationFilter}
                             changeIncompletedBotInvestigationFilter={changeIncompletedBotInvestigationFilter}
+                            complexityFilter= {complexityFilter}
+                            changeComplexityFilter= {changeComplexityFilter}
+                            complexityReasonFilter={complexityReasonFilter}
+                            changeComplexityReasonFilter={changeComplexityReasonFilter}
                         />
                     </Grid>
                 </Grid>
@@ -322,15 +349,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             {
                                                 key === TableHeadersNames.multipleCheck &&
                                                 <>
-                                                    <Tooltip title={resetSortButtonText} placement='top' arrow>
-                                                        <Button
-                                                            color='primary'
-                                                            className={classes.sortResetButton}
-                                                            startIcon={<Refresh />}
-                                                            onClick={(event: any) => handleRequestSort(event, defaultOrderBy)}
-                                                        >
-                                                        </Button>
-                                                    </Tooltip>
+                                                    {
+                                                       (user.userType !== UserTypeCodes.INVESTIGATOR) &&
+                                                        <Tooltip title={selectAllText} placement='top' arrow>
+                                                            <Checkbox onClick={onSelectAllClick} color='primary' checked={selectAll} size='small' />
+                                                        </Tooltip>
+                                                    }
                                                     <Tooltip title={(isGroupedExpanded ? 'הסתר' : 'הצג') + ' ' + 'את כל החקירות המקושרות'} placement='top' arrow>
                                                         <IconButton onClick={
                                                             isGroupedExpanded ? collapseAllGroupedInvestigations : expandAllGroupedInvestigations
@@ -340,6 +364,16 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                                 <KeyboardArrowLeft />}
                                                         </IconButton>
                                                     </Tooltip>
+                                                    <Tooltip title={resetSortButtonText} placement='top' arrow>
+                                                        <Button
+                                                            color='primary'
+                                                            className={classes.sortResetButton}
+                                                            startIcon={<Refresh />}
+                                                            onClick={(event: any) => handleRequestSort(event, defaultOrderBy)}
+                                                        >
+                                                        </Button>
+                                                    </Tooltip>
+                                                   
                                                 </>
                                             }
                                         </TableCell>
@@ -467,7 +501,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 <InvestigationTableFooter
                     checkedIndexedRows={checkedIndexedRows}
                     allDesks={desksToTransfer}
-                    onDialogClose={() => setCheckedIndexedRows([])}
+                    onDialogClose={onSelectedInvsDialogClose}
                     tableRows={tableRows}
                     fetchTableData={fetchTableData}
                     onDeskGroupChange={changeGroupsDesk}
@@ -478,7 +512,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
                     fetchInvestigators={getFilteredUsersOfCurrentCounty}
                     allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
-                />
+                    selectAllAction = {selectAll}
+               />
             </Slide>
             <RefreshSnackbar isOpen={snackbarOpen}
                 onClose={onCancel} onOk={onOk}
