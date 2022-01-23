@@ -167,9 +167,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         nonContactFilter: historyNonContactFilter = false,
         isAdminLandingRedirect: historyisAdminLandingRedirect = false,
         unallocatedDeskFilter: historyUnallocatedDeskFilter = false,
-        investigatorReferenceStatusFilter: historyInvestigatorReferenceStatusFilter = [],
+        investigatorReferenceStatusFilter: historyInvestigatorReferenceStatusFilter  = [],
         chatStatusFilter: historyChatStatusFilter = [],
-        investigatorReferenceRequiredFilter: historyInvestigatorReferenceRequiredFilter = false,
+        notSentToBotFilter: historyNotSentToBotFilter = false,
         incompletedBotInvestigationFilter: historyIncompletedBotInvestigationFilter = false,
         complexityFilter: historyComplexityFilter = false,
         complexityReasonFilter: historyComplexityReasonFilter = [],
@@ -195,7 +195,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [unallocatedDeskFilter, setUnallocatedDeskFilter] = useState<boolean>(historyUnallocatedDeskFilter);
     const [chatStatusFilter, setChatStatusFilter] = useState<number[]>(historyChatStatusFilter);
     const [investigatorReferenceStatusFilter, setInvestigatorReferenceStatusFilter] = useState<number[]>(historyInvestigatorReferenceStatusFilter);
-    const [investigatorReferenceRequiredFilter, setInvestigatorReferenceRequiredFilter] = useState<boolean>(historyInvestigatorReferenceRequiredFilter);
+    const [notSentToBotFilter, setNotSentToBotFilter] = useState<boolean>(historyNotSentToBotFilter);
     const [incompletedBotInvestigationFilter, setIncompletedBotInvestigationFilter] = useState<boolean>(historyIncompletedBotInvestigationFilter);
     const [complexityFilter, setComplexityFilter] = useState<boolean>(historyComplexityFilter);
     const [complexityReasonFilter, setComplexityReasonFilter] = useState<number[]>(historyComplexityReasonFilter);
@@ -214,7 +214,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const unAllocatedDeskToSet = historyUnallocatedDeskFilter ? filterCreators.UNALLOCATED_DESK(historyUnallocatedDeskFilter) : null;
         const investigatorRefernceStatusToSet = historyInvestigatorReferenceStatusFilter ? filterCreators.INVESTIGATOR_REFERENCE_STATUS(historyInvestigatorReferenceStatusFilter) : null;
         const chatStatusFilterToSet = historyChatStatusFilter ? filterCreators.CHAT_STATUS(historyChatStatusFilter) : null;
-        const investigatorReferenceRequiredFilterToSet = historyInvestigatorReferenceRequiredFilter ? filterCreators.INVESTIGATOR_REFERENCE_REQUIRED(historyInvestigatorReferenceRequiredFilter) : null;
+        const notSentToBotFilterToSet = historyNotSentToBotFilter ? filterCreators.INVESTIGATIONS_WERENT_SENT_TO_BOT(historyNotSentToBotFilter) : null;
         const incompletedBotInvestigationFilterToSet = historyIncompletedBotInvestigationFilter ? filterCreators.INCOMPLETED_BOT_INVESTIGATION(historyIncompletedBotInvestigationFilter) : null;
         const complexityFilterToSet = historyComplexityFilter ? filterCreators.COMPLEXITY(historyComplexityFilter) : null;
         const complexityReasonFilterToSet = historyComplexityReasonFilter ? filterCreators.COMPLEXITY_REASON(historyComplexityReasonFilter) : null;
@@ -231,7 +231,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [InvestigationsFilterByFields.UNALLOCATED_DESK]: unAllocatedDeskToSet && Object.values(unAllocatedDeskToSet)[0],
             [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_STATUS]: investigatorRefernceStatusToSet && Object.values(investigatorRefernceStatusToSet)[0],
             [InvestigationsFilterByFields.CHAT_STATUS]: chatStatusFilterToSet && Object.values(chatStatusFilterToSet)[0],
-            [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_REQUIRED]: investigatorReferenceRequiredFilterToSet && Object.values(investigatorReferenceRequiredFilterToSet)[0],
+            [InvestigationsFilterByFields.INVESTIGATIONS_WERENT_SENT_TO_BOT]: notSentToBotFilterToSet && Object.values(notSentToBotFilterToSet)[0],
             [InvestigationsFilterByFields.INCOMPLETED_BOT_INVESTIGATION]: incompletedBotInvestigationFilterToSet && Object.values(incompletedBotInvestigationFilterToSet)[0],
             [InvestigationsFilterByFields.COMPLEXITY] : complexityFilterToSet && Object.values(complexityFilterToSet)[0],
             [InvestigationsFilterByFields.COMPLEXITY_REASON] : complexityReasonFilterToSet && Object.values(complexityReasonFilterToSet)[0],
@@ -356,10 +356,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setCurrentPage(defaultPage);
     };
 
-    const changeInvestigatorReferenceRequiredFilter = (value: boolean) => {
-        updateFilterHistory('investigatorReferenceRequiredFilter', value);
-        setInvestigatorReferenceRequiredFilter(value);
-        handleFilterChange(filterCreators.INVESTIGATOR_REFERENCE_REQUIRED(value));
+    const changeNotSentToBotFilter = (value: boolean) => {
+        updateFilterHistory('notSentToBotFilter', value);
+        setNotSentToBotFilter(value);
+        handleFilterChange(filterCreators.INVESTIGATIONS_WERENT_SENT_TO_BOT(value));
         setCurrentPage(defaultPage);
     };
     
@@ -1209,8 +1209,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         unallocatedDeskFilter,
         fetchAllGroupedInvestigations,
         changeInvestigatorReferenceStatusFilter,
-        changeInvestigatorReferenceRequiredFilter,
-        investigatorReferenceRequiredFilter,
+        changeNotSentToBotFilter,
+        notSentToBotFilter,
         investigatorReferenceStatusFilter,
         chatStatusFilter,
         changeChatStatusFilter,

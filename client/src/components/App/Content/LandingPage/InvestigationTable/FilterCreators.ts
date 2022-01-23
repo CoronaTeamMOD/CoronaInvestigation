@@ -214,18 +214,28 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
         }
         else return { [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_STATUS]: null };
     },
-    [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_REQUIRED]: (isFilterOn: boolean) => {
+    [InvestigationsFilterByFields.INVESTIGATIONS_WERENT_SENT_TO_BOT]: (isFilterOn: boolean) => {
         return isFilterOn ?
             {
-                [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_REQUIRED]: {
-                    botInvestigationByEpidemiologyNumber: {
-                        investigatiorReferenceRequired: { equalTo: true },
-                        investigatorReferenceStatusId: { notIn: [InvestigatorReferenceStatusCode.DONE] }
-                    }
-                }
+                [InvestigationsFilterByFields.INVESTIGATIONS_WERENT_SENT_TO_BOT]: {
+                    or: [
+                        {
+                            botInvestigationByEpidemiologyNumber: {
+                                chatStatusId: {
+                                    in: [
+                                        ChatStatusCode.KOSHER_PHONE_NUMBER,
+                                        ChatStatusCode.INVALID_PHONE_NUMBER,
+                                        ChatStatusCode.IRRELEVANT
+                                    ]
+                                }
+                            }
+                        },
+                        { botInvestigationByEpidemiologyNumberExists: false }
+                    ]
+                },
             }
             :
-            { [InvestigationsFilterByFields.INVESTIGATOR_REFERENCE_REQUIRED]: null };
+            { [InvestigationsFilterByFields.INVESTIGATIONS_WERENT_SENT_TO_BOT]: null };
     },
     [InvestigationsFilterByFields.INCOMPLETED_BOT_INVESTIGATION]: (isFilterOn: boolean) => {
         return isFilterOn ?
