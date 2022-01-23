@@ -10,10 +10,8 @@ import logger, { invalidAPIResponseLog, launchingAPIRequestLog, invalidDBRespons
 
 const synchronizationRoute = Router();
 
-// const mohCitiesApiUrl = process.env.CITIES_URL;
-// const mohStreetsApiUrl = process.env.STREETS_URL;
-const mohCitiesApiUrl = 'https://mohservicesapitest.health.gov.il/api/Lists/edm/israelcities';
-const mohStreetsApiUrl = 'https://mohservicesapitest.health.gov.il/api/Lists/edm/israelstreets';
+const mohCitiesApiUrl = process.env.CITIES_URL;
+const mohStreetsApiUrl = process.env.STREETS_URL;
 
 const filterCities = (cities: any) => {
     return cities.filter((city: any)=> city.to_date === null || (city.to_date).includes('1/1/1900'));
