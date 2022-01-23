@@ -131,15 +131,6 @@ const InteractedContactAccordion = (props: Props) => {
                                         isFamilyContact={isFamilyContact}
                                         isViewMode={isViewMode}
                                     />
-                                    <Divider
-                                        orientation='vertical'
-                                        variant='middle'
-                                        light={true}
-                                    />
-                                    <ContactQuestioningCheck
-                                        interactedContact={interactedContact}
-                                        isViewMode={isViewMode}
-                                    />
                                 </Grid>
                             </AccordionDetails>
                             <AccordionActions className={classes.accordionActions}>

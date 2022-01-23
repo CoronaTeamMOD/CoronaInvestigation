@@ -12,7 +12,6 @@ const interactionEventSchema = yup.object().shape({
             ...contactQuestioningInfo,
             ...contactQuestioningPersonal,
             ...contactQuestioningClinical,
-            ...contactQuestioningCheck,
    }
     ,[[InteractedContactFields.IDENTIFICATION_TYPE, InteractedContactFields.IDENTIFICATION_NUMBER]])
 
