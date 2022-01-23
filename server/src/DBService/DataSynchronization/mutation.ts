@@ -1,17 +1,17 @@
 import { gql } from 'postgraphile';
 
-export const ADD_CITY_TEMP = gql`
-    mutation addCityTemp($id: String!, $displayName: String!) {
-      addCityTemp(input: {idInput: $id, displayNameInput: $displayName, deskMappingTechniqueInput: 1}){
+export const ADD_CITIES = gql`
+    mutation addCities($syncCitiesInput: JSON!) {
+      addCities(input: {cities: $syncCitiesInput}){
           clientMutationId
         } 
     }
 `;
 
-export const ADD_CITIES_TEMP = gql`
-    mutation addCitiesTemp($cities: JSON!) {
-      addCityTemp(input: {cities: $cities}){
-          clientMutationId
-        } 
+export const ADD_STREETS = gql`
+    mutation addStreets($syncStreetsInput: JSON!) {
+      addStreets(input: {streets: $syncStreetsInput}) {
+            clientMutationId
+        }
     }
 `;
