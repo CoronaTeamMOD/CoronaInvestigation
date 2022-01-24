@@ -90,7 +90,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter, fetchAllCountyUsers,
         tableTitle, timeRangeFilter, isBadgeInVisible, changeTimeRangeFilter, updateDateFilter, nonContactFilter, fetchAllGroupedInvestigations,
         unallocatedDeskFilter, changeUnallocatedDeskFilter, changeInvestigatorReferenceStatusFilter,
-        changeInvestigatorReferenceRequiredFilter, investigatorReferenceRequiredFilter, investigatorReferenceStatusFilter,
+        changeNotSentToBotFilter, notSentToBotFilter, investigatorReferenceStatusFilter,
         chatStatusFilter, changeChatStatusFilter, incompletedBotInvestigationFilter, changeIncompletedBotInvestigationFilter,
         complexityFilter, changeComplexityFilter, complexityReasonFilter,changeComplexityReasonFilter
     } = useInvestigationTable({
@@ -309,8 +309,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             unallocatedDeskFilter={unallocatedDeskFilter}
                             changeUnallocatedDeskFilter={changeUnallocatedDeskFilter}
                             changeInvestigatorReferenceStatusFilter={changeInvestigatorReferenceStatusFilter}
-                            investigatorReferenceRequiredFilter={investigatorReferenceRequiredFilter}
-                            changeInvestigatorReferenceRequiredFilter={changeInvestigatorReferenceRequiredFilter}
+                            notSentToBotFilter={notSentToBotFilter}
+                            changeNotSentToBotFilter={changeNotSentToBotFilter}
                             investigatorReferenceStatusFilter={investigatorReferenceStatusFilter}
                             changeChatStatusFilter={changeChatStatusFilter}
                             chatStatusFilter={chatStatusFilter}

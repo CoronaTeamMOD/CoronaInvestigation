@@ -35,7 +35,7 @@ export interface HistoryState {
     unallocatedDeskFilter?: boolean;
     chatStatusFilter?: number[];
     investigatorReferenceStatusFilter?: number[];
-    investigatorReferenceRequiredFilter?: boolean;
+    notSentToBotFilter?: boolean;
     incompletedBotInvestigationFilter?:boolean;
     complexityFilter?:boolean;
     complexityReasonFilter?: number[];
@@ -93,7 +93,7 @@ export interface useInvestigationTableOutcome {
     nonContactFilter: boolean;
     chatStatusFilter: number[];
     investigatorReferenceStatusFilter: number[];
-    investigatorReferenceRequiredFilter: boolean;
+    notSentToBotFilter: boolean;
     incompletedBotInvestigationFilter:boolean;
     complexityFilter: boolean;
     complexityReasonFilter: number[];
@@ -106,7 +106,7 @@ export interface useInvestigationTableOutcome {
     changeUnallocatedDeskFilter: (isFilterOn: boolean) => void;
     changeChatStatusFilter: (chatStatses: KeyValuePair[]) => void;
     changeInvestigatorReferenceStatusFilter: (investigatorReferencestatuses: KeyValuePair[]) => void;
-    changeInvestigatorReferenceRequiredFilter: (isFilterOn: boolean) => void;
+    changeNotSentToBotFilter: (isFilterOn: boolean) => void;
     changeIncompletedBotInvestigationFilter: (isFilterOn: boolean) => void;
     changeComplexityFilter:  (isFilterOn: boolean) => void;
     changeComplexityReasonFilter: (reasons: ComplexityReason[]) =>void;
