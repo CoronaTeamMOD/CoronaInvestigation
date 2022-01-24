@@ -478,6 +478,19 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         startWaiting();
     }, []);
 
+    const convertFilterObject = () => {
+        let filterArray: any[] = [];
+        let filterObject: object = {};
+        Object.values(filterRules).forEach(obj => {
+            if (obj != null)
+                filterArray.push(obj);
+        })
+        if (filterArray.length > 0) {
+            filterObject = { and: filterArray };
+        }
+        return filterObject;
+    }
+
     const moveToTheInvestigationForm = async (epidemiologyNumberVal: number) => {
         const investigationClickLogger = logger.setupVerbose({
             workflow: 'Investigation click',
@@ -506,12 +519,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const fetchInvestigationsAxiosRequest = (): any => {
         const investigationsLogger = logger.setup('Getting Investigations');
-
+        
         const requestData = {
             orderBy,
             size: rowsPerPage,
             currentPage,
-            filterRules: Object.values(filterRules).reduce((obj, item) => Object.assign(obj, item), {}),
+            filterRules: convertFilterObject(), 
         };
 
         if (userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN) {
