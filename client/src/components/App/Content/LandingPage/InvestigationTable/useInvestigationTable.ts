@@ -518,8 +518,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const fetchInvestigationsAxiosRequest = (): any => {
-        const investigationsLogger = logger.setup('Getting Investigations');
-        
+        const investigationsLogger = logger.setup('Getting Investigations');       
         const requestData = {
             orderBy,
             size: rowsPerPage,
