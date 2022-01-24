@@ -482,6 +482,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         setCurrentPage(value);
                         window.scrollTo(0, 0);
                         tableContainerRef.current?.scrollTo(0, 0);
+                        setSelectAll(false);
+                        setCheckedIndexedRows([]);
                     }}
                     size='large'
                     className={classes.pagination}
