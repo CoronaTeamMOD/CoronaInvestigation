@@ -37,8 +37,8 @@ const TableFilter = (props: Props) => {
         updateDateFilter, nonContactFilter,
         desksToTransfer, deskFilter, changeDeskFilter, changeSearchFilter,
         unallocatedDeskFilter, changeUnallocatedDeskFilter,
-        changeInvestigatorReferenceStatusFilter, changeInvestigatorReferenceRequiredFilter,
-        investigatorReferenceRequiredFilter, investigatorReferenceStatusFilter,
+        changeInvestigatorReferenceStatusFilter, changeNotSentToBotFilter,
+        notSentToBotFilter, investigatorReferenceStatusFilter,
         chatStatusFilter, changeChatStatusFilter,
         incompletedBotInvestigationFilter, changeIncompletedBotInvestigationFilter,
         complexityFilter, changeComplexityFilter,
@@ -322,12 +322,12 @@ const TableFilter = (props: Props) => {
                     <div className={classes.row}>
                         <div>
                             <Checkbox
-                                onChange={(event) => changeInvestigatorReferenceRequiredFilter(event.target.checked)}
+                                onChange={(event) => changeNotSentToBotFilter(event.target.checked)}
                                 color='primary'
-                                checked={investigatorReferenceRequiredFilter}
+                                checked={notSentToBotFilter}
                                 className={classes.checkbox}
                             />
-                            <Typography className={classes.title}>נדרשת התייחסות חוקר</Typography>
+                            <Typography className={classes.title}>חקירות שלא נשלחו לבוט</Typography>
                         </div>
                         <div>
                             <Checkbox
@@ -372,7 +372,7 @@ interface Props {
     filteredSubStatuses: SubStatusFilterType;
     unassignedUserFilter: boolean;
     inactiveUserFilter: boolean;
-    investigatorReferenceRequiredFilter: boolean;
+    notSentToBotFilter: boolean;
     investigatorReferenceStatusFilter: number[];
     chatStatusFilter: number[];
     incompletedBotInvestigationFilter: boolean;
@@ -395,7 +395,7 @@ interface Props {
     changeUnallocatedDeskFilter: (isFilterOn: boolean) => void;
     changeChatStatusFilter: (statuses: KeyValuePair[]) => void;
     changeInvestigatorReferenceStatusFilter: (statuses: KeyValuePair[]) => void;
-    changeInvestigatorReferenceRequiredFilter: (isFilterOn: boolean) => void;
+    changeNotSentToBotFilter: (isFilterOn: boolean) => void;
     changeIncompletedBotInvestigationFilter: (isFilterOn: boolean) => void;
     changeComplexityFilter: (isFilterOn: boolean) => void;
     changeComplexityReasonFilter : (complexityReasons : ComplexityReason[]) =>void;
