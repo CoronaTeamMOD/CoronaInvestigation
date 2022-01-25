@@ -31,8 +31,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontWeight:'bold'
     },
     botInactive:{
-        color:'#000000',
-        opacity: 0.2
+        color:'#424242',
     }
 }));
 

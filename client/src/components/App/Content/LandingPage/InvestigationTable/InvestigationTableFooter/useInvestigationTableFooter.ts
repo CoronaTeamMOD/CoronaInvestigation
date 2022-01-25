@@ -166,16 +166,17 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
     const updateNotInvestigatedStatus = (epidemiologyNumber: number, investigationStatusId: number, totalCount: number) => {
         const reopenLogger = logger.setup('Update Investigation Status');
+        setIsLoading(true);
         if (investigationStatusId != InvestigationMainStatusCodes.NEW) {
             cannotBeUpdatedCount++;
             if (cannotBeUpdatedCount == totalCount) {
                 alertWarning('לא ניתן לבצע עדכון מרובה לחקירות שאינן בסטטוס חדשה');
                 resetUpdateStatusCounts();
                 onDialogClose();
+                setIsLoading(false);
             }
             return;
-        }
-        setIsLoading(true);
+        }      
         axios.post('/investigationInfo/updateInvestigationStatus', {
             investigationMainStatus: InvestigationMainStatusCodes.NOT_INVESTIGATED,
             investigationSubStatus: null,
@@ -196,8 +197,8 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
                     alertSuccess(`עודכן סטטוס של ${updatedStatusCount} מתוך ${totalCount} חקירות שנבחרו`);
                     resetUpdateStatusCounts();
                     fetchTableData();
-                }
-                setIsLoading(false);
+                    setIsLoading(false);
+                }               
                 onDialogClose();
             })
     }

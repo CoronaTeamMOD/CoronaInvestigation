@@ -109,7 +109,7 @@ select now() - interval '10 hours' into tenHoursAgo;
 		INNER JOIN bot_investigation b
 		ON i.epidemiology_number = b.epidemiology_number
 		WHERE
-		(b.chat_status_id IN (1,3,9,10,14,15) AND i.investigation_status=1) OR
+		(b.chat_status_id IN (1,3,9,10) AND i.investigation_status=1) OR
 		(i.investigation_status=1 AND b.last_chat_date < tenHoursAgo) OR
 		(i.investigation_status =100000002 AND i.last_updator_user = 'admin.group9995'
 		 AND  b.last_chat_date < twoHoursAgo) OR
@@ -134,4 +134,3 @@ select now() - interval '10 hours' into tenHoursAgo;
 	);
 END;
 $BODY$;
-
