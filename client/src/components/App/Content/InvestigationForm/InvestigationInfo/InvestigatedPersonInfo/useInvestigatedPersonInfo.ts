@@ -156,7 +156,8 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
     return {
         confirmExitUnfinishedInvestigation,
         staticFieldsSubmit,
-        reopenInvestigation
+        reopenInvestigation,
+        handleInvestigationFinish
     };
 };
 

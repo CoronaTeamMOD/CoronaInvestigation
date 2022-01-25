@@ -77,7 +77,11 @@ const InvestigatedPersonInfo = (props: Props) => {
         window.location.pathname = investigationstableURL;
     }
 
-    const { confirmExitUnfinishedInvestigation, staticFieldsSubmit, reopenInvestigation } = useInvestigatedPersonInfo({ moveToTheInvestigationForm });
+    const { confirmExitUnfinishedInvestigation,
+        staticFieldsSubmit,
+        reopenInvestigation,
+        handleInvestigationFinish
+    } = useInvestigatedPersonInfo({ moveToTheInvestigationForm });
     const shouldReopenInvestigation = investigationStatus.mainStatus === InvestigationMainStatusCodes.DONE;
 
     useEffect(() => {
@@ -245,6 +249,8 @@ const InvestigatedPersonInfo = (props: Props) => {
                         validateStatusReason={validateStatusReason}
                         ValidationStatusSchema={ValidationStatusSchema}
                         isViewMode={isViewMode}
+                        handleInvestigationFinish={handleInvestigationFinish}
+                        submit={onSubmit}
                     />
 
                     <div className={classes.informationBar}>

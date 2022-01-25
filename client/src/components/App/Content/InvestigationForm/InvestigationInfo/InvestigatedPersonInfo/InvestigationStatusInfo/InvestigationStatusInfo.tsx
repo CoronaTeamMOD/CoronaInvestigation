@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
-import React, { ChangeEvent, useEffect, useMemo } from 'react';
-import { Collapse, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core';
+import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { Button, Collapse, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fade, FormControl, Grid, InputLabel, Menu, MenuItem, Select, TextField, Tooltip, Typography } from '@material-ui/core';
 
 import SubStatus from 'models/SubStatus';
 import StoreStateType from 'redux/storeStateType';
@@ -20,16 +20,26 @@ import ChatStatusCode from 'models/enums/ChatStatusCodes';
 import { setInvestigatorReferenceStatus } from 'redux/BotInvestigationInfo/botInvestigationInfoActionCreator';
 import { getMutationInfo } from 'redux/MutationInfo/mutationInfoActionCreator';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { Edit } from '@material-ui/icons';
 
 
 const statusLabel = 'סטטוס';
 const subStatusLabel = 'סיבה';
 const statusReasonLabel = 'פירוט';
 const investigatorReferenceStatusLabel ='סטטוס טיפול בחקירת בוט';
+const changeStatusText = 'לתשומת ליבך, לאחר עדכון סטטוס  החקירה תינעל לעריכה.';
+const changeStatusReasonText = 'אנא בחר סיבה : '
+const changeStatusNavigationText ='באישור דף החקירה ייסגר ותתבצע הפניה לדף החקירות.';
 
 const InvestigationStatusInfo = (props: any) => {
 
-    const { statusReasonError, validateStatusReason, ValidationStatusSchema, isViewMode } = props;
+    const { statusReasonError,
+        validateStatusReason,
+        ValidationStatusSchema,
+        isViewMode,
+        submit,
+        handleInvestigationFinish
+    } = props;
     const classes = useStyles();
 
     const { wasInvestigationReopend } = useStatusUtils();
@@ -42,6 +52,9 @@ const InvestigationStatusInfo = (props: any) => {
     const investigatorReferenceStatuses = useSelector<StoreStateType,KeyValuePair[]>(state=>state.investigatorReferenceStatuses);
     const botInvestigationInfo = useSelector<StoreStateType, BotInvestigationInfo |null>(state=>state.botInvestigationInfo.botInvestigationInfo);
    
+    const [openDialog, setOpenDialog] = useState<boolean>(false);
+    const [previousStatus, setPreviousStatus] = useState<InvestigationStatus|null>(null);
+
     useEffect(() => {
         if (investigationStatus.subStatus !== transferredSubStatus) {
             validateStatusReason(investigationStatus.statusReason)
@@ -51,7 +64,7 @@ const InvestigationStatusInfo = (props: any) => {
     const updatedSubStatuses = useMemo(() =>
         investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ? [{ displayName: inProcess, id: 0, parentStatus: 100000002 }, ...subStatuses] : subStatuses,
         [subStatuses, investigationStatus]);
-
+      
     const permittedStatuses = investigationStatus.mainStatus !== InvestigationMainStatusCodes.DONE? statuses.filter(status => status.id !== InvestigationMainStatusCodes.DONE):statuses;
 
     const isStatusDisable = (status: number) => {
@@ -60,6 +73,41 @@ const InvestigationStatusInfo = (props: any) => {
         }
         return status === InvestigationMainStatusCodes.NEW;
     };
+
+  const approveStatusChange = () => {
+      setPreviousStatus(null);
+      setOpenDialog(false);
+      submit();
+     // handleInvestigationFinish();
+  } 
+
+  const cancelStatusChange = () => {
+    if (previousStatus) {
+        setInvestigationStatus(previousStatus);
+      }
+      setPreviousStatus(null);
+      setOpenDialog(false);
+  }
+    const onStatusChange = (statusId: number) => {
+        if (statusId === InvestigationMainStatusCodes.NOT_INVESTIGATED ||
+            statusId === InvestigationMainStatusCodes.CANT_COMPLETE) {
+            setPreviousStatus(investigationStatus);
+            setOpenDialog(true);
+        }
+        changeStatus(statusId);
+    }
+
+    const changeStatus = (statusId: number) => {
+        dispatch(getMutationInfo());
+        setIsLoading(false);
+        if (statusId) {
+            setInvestigationStatus({
+                mainStatus: statusId,
+                subStatus: '',
+                statusReason: ''
+            });
+        }
+    }
 
     return (
         <>
@@ -96,11 +144,7 @@ const InvestigationStatusInfo = (props: any) => {
                                             setIsLoading(false);
                                             const newStatus = event.target.value as string
                                             if (newStatus) {
-                                                setInvestigationStatus({
-                                                    mainStatus: +newStatus,
-                                                    subStatus: '',
-                                                    statusReason: ''
-                                                });
+                                                onStatusChange(+newStatus);
                                             }
                                         }}
                                     >
@@ -231,6 +275,74 @@ const InvestigationStatusInfo = (props: any) => {
                     </Grid>
                 </Grid>
             </Grid>
+
+            <Dialog open={openDialog} onClose={cancelStatusChange}>
+                <DialogTitle> שינוי סטטוס : {statuses.find(s => s.id === investigationStatus.mainStatus)?.displayName} </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        <p>
+                            {changeStatusText}
+                        </p>
+                        <p>
+                            {changeStatusReasonText}
+                        </p>
+                    </DialogContentText>
+                    <Collapse in={investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE ||
+                        investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ||
+                        investigationStatus.mainStatus === InvestigationMainStatusCodes.NOT_INVESTIGATED}>
+                        <Grid item className={classes.statusSelectGrid}>
+                            <FormControl variant='outlined' className={classes.subStatusSelect}>
+                                <InputLabel id='sub-status-label'>{subStatusLabel}</InputLabel>
+                                <Select
+                                    MenuProps={{
+                                        anchorOrigin: {
+                                            vertical: 'bottom',
+                                            horizontal: 'left'
+                                        },
+                                        transformOrigin: {
+                                            vertical: 'top',
+                                            horizontal: 'left'
+                                        },
+                                        getContentAnchorEl: null
+                                    }}
+                                    labelId='sub-status-label'
+                                    test-id='currentSubStatus'
+                                    label={subStatusLabel}
+                                    disabled={isViewMode}
+                                    value={investigationStatus.subStatus as string | undefined}
+                                    onChange={(event: any) => {
+                                        const newSubStatus = event.target.value as string
+                                        setInvestigationStatus({
+                                            mainStatus: investigationStatus.mainStatus,
+                                            subStatus: newSubStatus ? String(newSubStatus) : null,
+                                            statusReason: ''
+                                        });
+                                    }}
+                                >
+                                    {
+                                        subStatuses.map((subStatus: SubStatus) => (
+                                            <MenuItem
+                                                key={subStatus.id}
+                                                value={subStatus.displayName}>
+                                                {subStatus.displayName}
+                                            </MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    </Collapse>
+                    <DialogContentText>
+                        <p>
+                            {changeStatusNavigationText}
+                        </p>
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button color='primary' onClick={approveStatusChange}>אישור</Button>
+                    <Button color='primary' onClick={cancelStatusChange}>ביטול</Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 };

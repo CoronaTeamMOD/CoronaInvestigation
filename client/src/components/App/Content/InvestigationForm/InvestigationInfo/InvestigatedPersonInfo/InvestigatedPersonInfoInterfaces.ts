@@ -6,6 +6,7 @@ export interface InvestigatedPersonInfoOutcome {
     confirmExitUnfinishedInvestigation: (epidemiologyNumber: number) => void;
     staticFieldsSubmit: (data: any) => void;
     reopenInvestigation: (epidemiologyNumber: number) => void;
+    handleInvestigationFinish: () => void;
 };
 
 export interface StaticFieldsFormInputs {
