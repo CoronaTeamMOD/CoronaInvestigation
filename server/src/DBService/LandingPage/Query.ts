@@ -8,8 +8,8 @@ const TRANSFER_REQUEST = 'נדרשת העברה';
 const WAITING_FOR_RESPONSE = 'מחכה למענה';
 
 export const USER_INVESTIGATIONS = gql`
-query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter) {
-  orderedInvestigations(orderBy: $orderBy, filter: $filter, offset: $offset, first: $size) {
+query AllInvestigations($userId: String!, $orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter) {
+  orderedUserInvestigations(userId:$userId,orderBy: $orderBy, filter: $filter, offset: $offset, first: $size) {
     nodes {
       complexityReasonsId
       comment
@@ -104,8 +104,8 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
 `;
 
 export const GROUP_INVESTIGATIONS = (investigationGroup: number) => gql`
-query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter, $unassignedFilter: [InvestigationFilter!]) {
-  orderedInvestigations(orderBy: $orderBy, filter: $filter, offset: $offset, first: $size) {
+query AllInvestigations($county:Int!, $orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter, $unassignedFilter: [InvestigationFilter!]) {
+  orderedInvestigations(county:$county,orderBy: $orderBy, filter: $filter, offset: $offset, first: $size) {
     nodes {
       complexityReasonsId
       comment
@@ -199,7 +199,7 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
     }
     totalCount
   }
-  unassignedInvestigations: orderedInvestigations(filter: {userByCreator: {id: {equalTo: "admin.group${investigationGroup.toString()}"}}, and: $unassignedFilter}) {
+  unassignedInvestigations: orderedInvestigations(county:${investigationGroup.toString()},filter: {userByCreator: {id: {equalTo: "admin.group${investigationGroup.toString()}"}}, and: $unassignedFilter}) {
     totalCount
   }
 }
