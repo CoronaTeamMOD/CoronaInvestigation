@@ -4,7 +4,7 @@ import InvestigationMainStatus from '../../Models/InvestigationStatus/Investigat
 // All the different interfaces and functions are there for decoupling the user and the group investigations
 
 interface UserInvestigations {
-    orderedInvestigations: {
+    orderedUserInvestigations: {
         nodes: [{
             complexityReasonsId: (number | null)[];
             comment: string;
@@ -79,7 +79,7 @@ interface UserInvestigations {
     }
 }
 
-interface GroupIvestigations {
+interface GroupInvestigations {
     orderedInvestigations: {
         nodes: [{
             complexityReasonsId: (number | null)[];
@@ -161,7 +161,7 @@ interface GroupIvestigations {
     }
 }
 
-const mappingUserInvestigations = (investigation: UserInvestigations['orderedInvestigations']['nodes'][number]) => {
+const mappingUserInvestigations = (investigation: UserInvestigations['orderedUserInvestigations']['nodes'][number]) => {
     const newObject = {
         ...investigation,
         isComplex: investigation.complexityCode !== 2,
@@ -199,7 +199,7 @@ const mappingUserInvestigations = (investigation: UserInvestigations['orderedInv
     return newObject;
 }
 
-const mappingGroupInvestigations = (investigation: UserInvestigations['orderedInvestigations']['nodes'][number]) => {
+const mappingGroupInvestigations = (investigation:GroupInvestigations['orderedInvestigations']['nodes'][number]) => {
     const newObject = {
         ...investigation,
         isComplex: investigation.complexityCode !== 2,
@@ -237,9 +237,9 @@ const mappingGroupInvestigations = (investigation: UserInvestigations['orderedIn
 }
 
 export const convertUserInvestigationsData = (dbData: UserInvestigations) => {
-    return dbData.orderedInvestigations.nodes.map(mappingUserInvestigations);
+    return dbData.orderedUserInvestigations.nodes.map(mappingUserInvestigations);
 }
 
-export const convertGroupInvestigationsData = (dbData: GroupIvestigations) => {
+export const convertGroupInvestigationsData = (dbData: GroupInvestigations) => {
     return dbData.orderedInvestigations.nodes.map(mappingGroupInvestigations);
 }

@@ -31,7 +31,7 @@ landingPageRoute.post('/investigations', (request: Request, response: Response) 
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     })
-
+    
     const { orderBy, size, currentPage, filterRules } = request.body;
     const filterBy = {
         ...filterRules,
@@ -44,6 +44,7 @@ landingPageRoute.post('/investigations', (request: Request, response: Response) 
     };
 
     const getInvestigationsParameters = {
+        userId:response.locals.user.id,
         filter: filterBy,
         orderBy,
         offset: calculateOffset(currentPage, size),
@@ -56,7 +57,7 @@ landingPageRoute.post('/investigations', (request: Request, response: Response) 
             investigationsLogger.info(validDBResponseLog, Severity.LOW);
             response.send({
                 allInvestigations: convertUserInvestigationsData(result.data),
-                totalCount: +result.data.orderedInvestigations.totalCount
+                totalCount: +result.data.orderedUserInvestigations.totalCount
             });
         })
         .catch(error => {
@@ -85,6 +86,7 @@ landingPageRoute.post('/groupInvestigations', handleCountyRequest, (request: Req
         },
     };
     const getInvestigationsParameters = {
+        county:+county,
         filter: filterBy,
         orderBy: orderBy,
         offset: calculateOffset(currentPage, size),
