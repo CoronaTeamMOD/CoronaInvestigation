@@ -30,7 +30,7 @@ const investigatorReferenceStatusLabel = 'סטטוס טיפול בחקירת ב�
 
 const InvestigationStatusInfo = (props: any) => {
 
-    const { statusReasonError, validateStatusReason, ValidationStatusSchema, isViewMode } = props;
+    const { statusReasonError, validateStatusReason, ValidationStatusSchema, isViewMode, setSaveChangesFlag} = props;
     const classes = useStyles();
 
     const { wasInvestigationReopend } = useStatusUtils();
@@ -102,6 +102,7 @@ const InvestigationStatusInfo = (props: any) => {
                                                     subStatus: '',
                                                     statusReason: ''
                                                 });
+                                                setSaveChangesFlag(true);   
                                             }
                                         }}
                                     >
@@ -149,6 +150,7 @@ const InvestigationStatusInfo = (props: any) => {
                                                     subStatus: newSubStatus ? String(newSubStatus) : null,
                                                     statusReason: ''
                                                 });
+                                                setSaveChangesFlag(true);  
                                             }}
                                         >
                                             {
@@ -187,6 +189,7 @@ const InvestigationStatusInfo = (props: any) => {
                                                     subStatus: investigationStatus.subStatus,
                                                     statusReason: newStatusReason
                                                 });
+                                                setSaveChangesFlag(true);  
                                             }
                                         }}
                                     />
@@ -218,6 +221,7 @@ const InvestigationStatusInfo = (props: any) => {
                                                 let investigatorReferenceStatus = investigatorReferenceStatuses.find(status => status.id == id)
                                                 if (investigatorReferenceStatus) {
                                                     dispatch(setInvestigatorReferenceStatus(investigatorReferenceStatus));
+                                                    setSaveChangesFlag(true);  
                                                 }
                                             }}
                                         >
