@@ -38,9 +38,10 @@ const InvestigationStatusInfo = (props: any) => {
         validateStatusReason,
         ValidationStatusSchema,
         isViewMode,
-        submit,
+        saveInvestigationInfo ,
         handleInvestigationFinish,
-        setSaveChangesFlag
+        setSaveChangesFlag,
+        currentTab
     } = props;
     const classes = useStyles();
 
@@ -76,12 +77,19 @@ const InvestigationStatusInfo = (props: any) => {
         return status === InvestigationMainStatusCodes.NEW;
     };
 
-  const approveStatusChange = () => {
-      setPreviousStatus(null);
-      setOpenDialog(false);
-      submit();
-     // handleInvestigationFinish();
-  } 
+    const approveStatusChange = () => {
+        setIsLoading(true);
+        saveInvestigationInfo().then(() => {
+            setSaveChangesFlag(false);
+            setPreviousStatus(null);
+            setOpenDialog(false);
+            handleInvestigationFinish();
+            setIsLoading(false);
+        })
+            .error(() => {
+                setOpenDialog(false);
+            });
+    } 
 
   const cancelStatusChange = () => {
     if (previousStatus) {
@@ -351,7 +359,11 @@ const InvestigationStatusInfo = (props: any) => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button color='primary' onClick={approveStatusChange}>אישור</Button>
+                    <Button
+                        color='primary'
+                        type='submit'
+                        form={`form-${currentTab}`}
+                        onClick={approveStatusChange}>אישור</Button>
                     <Button color='primary' onClick={cancelStatusChange}>ביטול</Button>
                 </DialogActions>
             </Dialog>

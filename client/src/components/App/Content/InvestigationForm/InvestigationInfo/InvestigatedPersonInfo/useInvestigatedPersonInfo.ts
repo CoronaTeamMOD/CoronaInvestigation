@@ -41,6 +41,7 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
     const trackingRecommendationChanged = useSelector<StoreStateType, boolean>(state => state.investigation.trackingRecommendationChanged);
 
     const handleInvestigationFinish = () => {
+        setIsLoading(true);
         alertSuccess('בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה', {
             timer: 1750,
             showConfirmButton: false
@@ -51,6 +52,7 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
                 isInInvestigation: false
             }
             windowTabsBroadcastChannel.postMessage(closingBroadcastMessage);
+            setIsLoading(false);
             window.close();
         });
     };

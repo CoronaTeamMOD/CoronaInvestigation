@@ -260,8 +260,9 @@ const InvestigatedPersonInfo = (props: Props) => {
                         ValidationStatusSchema={ValidationStatusSchema}
                         isViewMode={isViewMode}
                         handleInvestigationFinish={handleInvestigationFinish}
-                        submit={onSubmit}
+                        saveInvestigationInfo={saveInvestigationInfo}
                         setSaveChangesFlag={setSaveChangesFlag}
+                        currentTab ={currentTab}
                     />
 
                     <div className={classes.informationBar}>
