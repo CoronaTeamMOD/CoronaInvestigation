@@ -21,6 +21,9 @@ export const SET_VIEW_MODE_CLICKED = 'SET_INVESTIGATION_VIEW_MODE_CLICKED';
 export const SET_INVESTIGATION_VIEW_MODE = 'SET_INVESTIGATION_VIEW_MODE';
 export const SET_IS_CONTACT_INVESTIGATION_VERIFIED_ABROAD = 'SET_IS_CONTACT_INVESTIGATION_VERIFIED_ABROAD';
 export const SET_INVESTIGATION_STATIC_FIELD_CHANGE = 'SET_INVESTIGATION_STATIC_FIELD_CHANGE';
+export const SET_INVESTIGATED_PATIENT_FULLNAME = 'SET_INVESTIGATED_PATIENT_FULLNAME';
+export const SET_INVESTIGATION_COMMENT = 'SET_INVESTIGATION_COMMENT';
+export const SET_TRACKING_RECOMMENDATION_CHANGED = 'SET_TRACKING_RECOMMENDATION_CHANGED';
 
 interface SetEpidemiologyNum {
     type: typeof SET_EPIDEMIOLOGY_NUM,
@@ -116,7 +119,22 @@ interface SetInvestigationStaticFieldChange {
     payload: { investigationStaticFieldChange: boolean }
 }
 
+interface SetInvestigatedPersonFullName {
+    type: typeof SET_INVESTIGATED_PATIENT_FULLNAME,
+    payload: { fullName: string }
+}
+
+interface SetInvestigationComment {
+    type: typeof SET_INVESTIGATION_COMMENT,
+    payload: { comment: string }
+}
+
+interface SetTrackingRecommendationChanged {
+    type: typeof SET_TRACKING_RECOMMENDATION_CHANGED,
+    payload: { trackingRecommendationChanged: boolean }
+}
+
 export type InvestigationAction = SetEpidemiologyNum | SetComplexReasonsId | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId
     | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetEndTime
     | SetCreator | SetDatesToInvestigateParams | ResetStateParams | SetTrackingRecommendation | SetBirthDate | SetInvestigationViewMode | SetIsContactInvestigationVerifiedAbroad
-    | SetInvestigationStaticFieldChange;
+    | SetInvestigationStaticFieldChange | SetInvestigatedPersonFullName | SetInvestigationComment | SetTrackingRecommendationChanged;

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Grid, Collapse, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core';
 
 import StoreStateType from 'redux/storeStateType';
 import TrackingRecommendation from 'models/TrackingRecommendation/TrackingRecommendation';
 import AlphanumericTextField from 'commons/NoContextElements/AlphanumericTextField';
-import { setTrackingRecommendation } from 'redux/Investigation/investigationActionCreators';
+import { setTrackingRecommendation, setTrackingRecommendationChanged } from 'redux/Investigation/investigationActionCreators';
 import { trackingOptions, defaultTrackingReason, otherSubReason } from 'models/TrackingRecommendation/trackingOptions';
 
 import useStyles from './trackingRecommendationStyles';
@@ -21,6 +21,8 @@ const TrackingRecommendationForm = (props: Props) => {
     const [trackingSubReasons, setTrackingSubReasons] = useState<Option[]>([]);
 
     const { fetchSubReasonsByReason } = UseTrackingRecommendationForm({});
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const fetchSubReasonsByReasonAsync = async () => {
@@ -42,6 +44,7 @@ const TrackingRecommendationForm = (props: Props) => {
                             setTrackingRecommendation({
                                 reason: newReason,
                             });
+                            dispatch(setTrackingRecommendationChanged(true));
                         }}
                     >
                         {trackingOptions.map(
@@ -68,6 +71,7 @@ const TrackingRecommendationForm = (props: Props) => {
                                         reason,
                                         subReason: e.target.value as number
                                     });
+                                    dispatch(setTrackingRecommendationChanged(true));
                                 }}
                             >
                                 {trackingSubReasons.map(subReason => (
@@ -94,6 +98,7 @@ const TrackingRecommendationForm = (props: Props) => {
                                     subReason: otherSubReason,
                                     extraInfo: value
                                 });
+                                dispatch(setTrackingRecommendationChanged(true));
                             }}
                         />
                     </FormControl>

@@ -20,7 +20,7 @@ import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCo
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import InvestigationInfo, { BotInvestigationInfo, MutationInfo } from 'models/InvestigationInfo';
-import { setInvestigationStaticFieldChange, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigatedPersonFullname, SetInvestigationComment, setInvestigationStaticFieldChange, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import { commentContext } from '../Context/CommentContext';
@@ -66,18 +66,18 @@ const InvestigatedPersonInfo = (props: Props) => {
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
     const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
-    const investigatorReferenceStatusWasChanged = useSelector<StoreStateType,boolean>(state=>state.botInvestigationInfo.investigatorReferenceStatusWasChanged);
-    const investigationStaticFieldChange = useSelector<StoreStateType,boolean>(state=>state.investigation.investigationStaticFieldChange);
+   const trackingRecommendationChanged = useSelector<StoreStateType,boolean>(state=>state.investigation.trackingRecommendationChanged);
 
     const { comment, setComment } = useContext(commentContext);
     const [commentInput, setCommentInput] = React.useState<string | null>('');
+    const [saveChangesFlag, setSaveChangesFlag] = React.useState<boolean>(false);
     const isContactInvestigationVerifiedAbroad = useSelector<StoreStateType, boolean>(state => state.investigation.contactInvestigationVerifiedAbroad);
     const moveToTheInvestigationForm = (epidemiologyNumber: number) => {
         setLastOpenedEpidemiologyNum(epidemiologyNumber);
         window.location.pathname = investigationstableURL;
     }
 
-    const { confirmExitUnfinishedInvestigation, staticFieldsSubmit, reopenInvestigation } = useInvestigatedPersonInfo({ moveToTheInvestigationForm });
+    const { confirmExitUnfinishedInvestigation, staticFieldsSubmit, reopenInvestigation, saveInvestigationInfo } = useInvestigatedPersonInfo({ moveToTheInvestigationForm });
     const shouldReopenInvestigation = investigationStatus.mainStatus === InvestigationMainStatusCodes.DONE;
 
     useEffect(() => {
@@ -104,6 +104,11 @@ const InvestigatedPersonInfo = (props: Props) => {
         }
     };
 
+    const handleCommentInput = (input: string) => {
+        setCommentInput(input);
+        setSaveChangesFlag(true);
+    }
+
     const isEventTrigeredByMouseClicking = (event: React.ChangeEvent<{}>) => {
         //@ts-ignore
         return !(event.clientX === 0 && event.clientY === 0);
@@ -123,19 +128,6 @@ const InvestigatedPersonInfo = (props: Props) => {
     };
 
     const isMandatoryInfoMissing: boolean = !birthDate && !fullName && !isLoading;
-
-    const sendComment = (commentToSend: string | null) => {
-        const sendCommentLogger = logger.setup(`POST request add comment to investigation ${epidemiologyNumber}`);
-        axios.post('/investigationInfo/comment', { comment: commentToSend, epidemiologyNumber })
-            .then(() => {
-                setComment(commentToSend);
-                sendCommentLogger.info('Successfully added comment to investigation', Severity.LOW);
-            })
-            .catch(() => {
-                sendCommentLogger.error('Error occured in adding comment to investigation', Severity.HIGH);
-            })
-            .finally();
-    };
     
     const getInvestigatiorReferenceReasons = () => {
         let reasons = '';
@@ -180,8 +172,10 @@ const InvestigatedPersonInfo = (props: Props) => {
                                                 test-id={props.name}
                                                 onChange={(event) => {
                                                     props.onChange(event.target.value)
+                                                    setSaveChangesFlag(true);
                                                     dispatch(setInvestigationStaticFieldChange(true));
                                                 }}
+                                                onBlur={() => {dispatch(setInvestigatedPersonFullname(methods.getValues(StaticFields.FULL_NAME)))}}
                                                 disabled={isViewMode}
                                                 error={methods.errors && methods.errors[StaticFields.FULL_NAME]}
                                                 label={(methods.errors && methods.errors[StaticFields.FULL_NAME]?.message) || ''}
@@ -222,6 +216,21 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     {openInvestigationForEditText}
                                 </PrimaryButton>
                             </span>}
+                            {(saveChangesFlag || trackingRecommendationChanged) &&
+                                <span className={classes.openButton}>
+                                    <PrimaryButton
+                                        onClick={async () => {
+                                            await saveInvestigationInfo();
+                                            setSaveChangesFlag(false);
+                                            validateStatusReason(investigationStatus.statusReason)
+                                        }}
+                                        type='submit'
+                                        form={`form-${currentTab}`}
+                                    >
+                                        {saveStaticDetailsMessage}
+                                    </PrimaryButton>
+                                </span>
+                            }
                             <PrimaryButton
                                 onClick={(event) => {
                                     if (isViewMode) {
@@ -245,6 +254,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                         validateStatusReason={validateStatusReason}
                         ValidationStatusSchema={ValidationStatusSchema}
                         isViewMode={isViewMode}
+                        setSaveChangesFlag={setSaveChangesFlag}
                     />
 
                     <div className={classes.informationBar}>
@@ -395,31 +405,18 @@ const InvestigatedPersonInfo = (props: Props) => {
 
                         </div>
                     </div>
-                    {(investigationStaticFieldChange || investigatorReferenceStatusWasChanged) &&
-                        <div className={classes.saveButton}>
-                            <PrimaryButton
-                                test-id='staticFields'
-                                form='staticFields'
-                                type='submit'
-                            >
-                                {saveStaticDetailsMessage}
-                            </PrimaryButton>
-                        </div>
-
-                    }
+                 
                     <div className={classes.commentControllers}>
                         <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                             <div className={classes.commentLine}>
                                 <Typography className={classes.commentTitle}>
                                     {commentLabel}:
                                 </Typography>
-                                <CommentInput commentInput={commentInput} handleInput={setCommentInput} isViewMode={false} />
-                                <Button
-                                    className={classes.button}
-                                    onClick={() => { sendComment(commentInput as string) }}
-                                    disabled={!(commentInput && commentInput !== comment)}>
-                                    {SAVE_BUTTON_TEXT}
-                                </Button>
+                                <CommentInput 
+                                commentInput={commentInput} 
+                                handleInput={handleCommentInput} 
+                                blur={()=>{if (commentInput) dispatch(SetInvestigationComment(commentInput))}} 
+                                isViewMode={false} />           
                             </div>
                         </Grid>
                     </div>
