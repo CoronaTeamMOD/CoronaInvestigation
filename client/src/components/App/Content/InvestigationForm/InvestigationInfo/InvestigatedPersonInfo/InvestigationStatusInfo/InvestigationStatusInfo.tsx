@@ -39,7 +39,8 @@ const InvestigationStatusInfo = (props: any) => {
         ValidationStatusSchema,
         isViewMode,
         submit,
-        handleInvestigationFinish
+        handleInvestigationFinish,
+        setSaveChangesFlag
     } = props;
     const classes = useStyles();
 
@@ -146,6 +147,7 @@ const InvestigationStatusInfo = (props: any) => {
                                             const newStatus = event.target.value as string
                                             if (newStatus) {
                                                 onStatusChange(+newStatus);
+                                                setSaveChangesFlag(true); 
                                             }
                                         }}
                                     >
@@ -193,6 +195,7 @@ const InvestigationStatusInfo = (props: any) => {
                                                     subStatus: newSubStatus ? String(newSubStatus) : null,
                                                     statusReason: ''
                                                 });
+                                                setSaveChangesFlag(true);  
                                             }}
                                         >
                                             {
@@ -231,6 +234,7 @@ const InvestigationStatusInfo = (props: any) => {
                                                     subStatus: investigationStatus.subStatus,
                                                     statusReason: newStatusReason
                                                 });
+                                                setSaveChangesFlag(true);  
                                             }
                                         }}
                                     />
@@ -262,6 +266,7 @@ const InvestigationStatusInfo = (props: any) => {
                                                 let investigatorReferenceStatus = investigatorReferenceStatuses.find(status => status.id == id)
                                                 if (investigatorReferenceStatus) {
                                                     dispatch(setInvestigatorReferenceStatus(investigatorReferenceStatus));
+                                                    setSaveChangesFlag(true);  
                                                 }
                                             }}
                                         >

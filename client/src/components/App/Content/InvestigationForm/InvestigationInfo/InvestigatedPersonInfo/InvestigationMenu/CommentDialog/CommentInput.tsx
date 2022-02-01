@@ -20,7 +20,7 @@ const stringAlphabet = yup
 const commentFieldName = 'comment';
 const commentSchema = yup.object().shape({ [commentFieldName]: yup.string() });
 
-const CommentInput = ({ commentInput, handleInput, isViewMode }: Props) => {
+const CommentInput = ({ commentInput, handleInput, isViewMode, blur }: Props) => {
     const methods = useForm({
         mode: 'all',
         defaultValues: { [commentFieldName]: initialComment },
@@ -36,6 +36,7 @@ const CommentInput = ({ commentInput, handleInput, isViewMode }: Props) => {
                 placeholder={COMMENT_PLACEHOLDER}
                 disabled={isViewMode}
                 value={commentInput} onChange={handleInput}
+                onBlur={blur}
             />
         </FormProvider>
     );
@@ -45,6 +46,7 @@ interface Props {
     commentInput: string | null;
     handleInput: (input: string) => void;
     isViewMode?: boolean;
+    blur?: () => void;
 };
 
 export default CommentInput;

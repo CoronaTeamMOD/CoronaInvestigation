@@ -111,3 +111,19 @@ mutation updateInvestigatorReferenceStatus ($epidemiologyNumber: Int!, $investig
   }
 }
 `;
+
+export const UPDATE_COVID_PATIENT_FULLNAME = gql`
+mutation updateCovidPatientFullName ($epidemiologyNumber: Int!, $fullName: String) {
+  updateCovidPatientByEpidemiologyNumber(input: {epidemiologyNumber: $epidemiologyNumber, covidPatientPatch: {fullName: $fullName}}) {
+    clientMutationId
+  }
+}
+`;
+
+export const UPDATE_INVESTIGATION_STATUS_AND_COMMENT = gql`
+mutation UpdateInvestigationStatus($epidemiologyNumber: Int!, $investigationStatus: Int!, $investigationSubStatus: String, $statusReason: String, $startTime: Datetime , $comment: String) {
+  updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {investigationStatus: $investigationStatus, investigationSubStatus: $investigationSubStatus, statusReason: $statusReason, startTime: $startTime, comment:$comment}, epidemiologyNumber: $epidemiologyNumber}) {
+    clientMutationId
+  }
+}
+`;
