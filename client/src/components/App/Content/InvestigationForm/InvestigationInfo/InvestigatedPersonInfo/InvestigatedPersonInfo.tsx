@@ -88,9 +88,7 @@ const InvestigatedPersonInfo = (props: Props) => {
         handleInvestigationFinish,
         saveInvestigationInfo
     } = useInvestigatedPersonInfo({ moveToTheInvestigationForm });
-    const shouldReopenInvestigation = investigationStatus.mainStatus === InvestigationMainStatusCodes.DONE ||
-        investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE ||
-        investigationStatus.mainStatus === InvestigationMainStatusCodes.NOT_INVESTIGATED;
+    const shouldReopenInvestigation = investigationStatus.mainStatus === InvestigationMainStatusCodes.DONE;
 
     useEffect(() => {
         setCommentInput(comment);

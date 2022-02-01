@@ -19,6 +19,7 @@ import { BotInvestigationInfo } from 'models/InvestigationInfo';
 import { setInvestigatorReferenceStatus } from 'redux/BotInvestigationInfo/botInvestigationInfoActionCreator';
 import { getMutationInfo } from 'redux/MutationInfo/mutationInfoActionCreator';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { Edit } from '@material-ui/icons';
 import InvestigationChatStatusCode from 'models/enums/InvestigationChatStatusCodes';
 
 
