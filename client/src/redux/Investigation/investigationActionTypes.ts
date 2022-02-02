@@ -24,6 +24,7 @@ export const SET_INVESTIGATION_STATIC_FIELD_CHANGE = 'SET_INVESTIGATION_STATIC_F
 export const SET_INVESTIGATED_PATIENT_FULLNAME = 'SET_INVESTIGATED_PATIENT_FULLNAME';
 export const SET_INVESTIGATION_COMMENT = 'SET_INVESTIGATION_COMMENT';
 export const SET_TRACKING_RECOMMENDATION_CHANGED = 'SET_TRACKING_RECOMMENDATION_CHANGED';
+export const SET_INVESTIGATION_INFO_CHANGED = 'SET_INVESTIGATION_INFO_CHANGED';
 
 interface SetEpidemiologyNum {
     type: typeof SET_EPIDEMIOLOGY_NUM,
@@ -134,7 +135,12 @@ interface SetTrackingRecommendationChanged {
     payload: { trackingRecommendationChanged: boolean }
 }
 
+interface SetInvestigationInfoChanged {
+    type: typeof SET_INVESTIGATION_INFO_CHANGED,
+    payload: { investigationInfoChanged: boolean }
+}
+
 export type InvestigationAction = SetEpidemiologyNum | SetComplexReasonsId | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId
     | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetEndTime
     | SetCreator | SetDatesToInvestigateParams | ResetStateParams | SetTrackingRecommendation | SetBirthDate | SetInvestigationViewMode | SetIsContactInvestigationVerifiedAbroad
-    | SetInvestigationStaticFieldChange | SetInvestigatedPersonFullName | SetInvestigationComment | SetTrackingRecommendationChanged;
+    | SetInvestigationStaticFieldChange | SetInvestigatedPersonFullName | SetInvestigationComment | SetTrackingRecommendationChanged | SetInvestigationInfoChanged;

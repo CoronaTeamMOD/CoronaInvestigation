@@ -14,17 +14,13 @@ import { DEFAULT_INVESTIGATION_STATUS } from 'redux/Investigation/investigationR
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import UdpateTrackingRecommendation from 'Utils/TrackingRecommendation/updateTrackingRecommendation';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
-
-import { inProcess } from './InvestigatedPersonInfo';
-import { InvestigatedPersonInfoIncome, InvestigatedPersonInfoOutcome, StaticFieldsFormInputs } from './InvestigatedPersonInfoInterfaces';
+import { InvestigatedPersonInfoOutcome, StaticFieldsFormInputs } from './InvestigatedPersonInfoInterfaces';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
-import { setInvestigationStaticFieldChange, setInvestigationStatus, setTrackingRecommendationChanged } from 'redux/Investigation/investigationActionCreators';
-import investigatorReferenceStatusesReducer from 'redux/investigatorReferenceStatuses/investigatorReferenceStatusesReduces';
+import { setInvestigationInfoChanged, setInvestigationStaticFieldChange, setInvestigationStatus, setTrackingRecommendationChanged } from 'redux/Investigation/investigationActionCreators';
 import { updateCovidPatientFullName, updateInvestigationStatusAndComment, updateInvestigatorReferenceStatus } from 'httpClient/investigationInfo';
 import { setInvestigatorReferenceStatusWasChanged } from 'redux/BotInvestigationInfo/botInvestigationInfoActionCreator';
 
-const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): InvestigatedPersonInfoOutcome => {
-    const { moveToTheInvestigationForm } = parameters;
+const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
     const { alertSuccess, alertWarning, alertError } = useCustomSwal();
@@ -39,6 +35,7 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
     const comment  = useSelector<StoreStateType, string>(state => state.investigation.comment);
     const fullName = useSelector<StoreStateType, string>(state => state.investigation.investigatedPatient.fullName);
     const trackingRecommendationChanged = useSelector<StoreStateType, boolean>(state => state.investigation.trackingRecommendationChanged);
+    const investigationInfoChanged = useSelector<StoreStateType, boolean>(state => state.investigation.investigationInfoChanged);
 
     const handleInvestigationFinish = () => {
         setIsLoading(true);
@@ -144,8 +141,9 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
         : undefined;
         try {
             setIsLoading(true);
-            if ( investigationStatus.mainStatus !== DEFAULT_INVESTIGATION_STATUS ){
+            if ( investigationStatus.mainStatus !== DEFAULT_INVESTIGATION_STATUS && investigationInfoChanged){
                 await updateInvestigationStatusAndComment(investigationStatus.mainStatus, subStatus, statusReason, startTime, comment );
+                dispatch(setInvestigationInfoChanged(false));
                 if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
                     await updateIsDeceased(()=>{});
                 } else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
