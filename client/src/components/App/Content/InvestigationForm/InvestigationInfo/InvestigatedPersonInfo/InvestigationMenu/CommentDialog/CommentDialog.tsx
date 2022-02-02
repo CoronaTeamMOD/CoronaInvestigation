@@ -79,7 +79,7 @@ const CommentDialog = ({ open, handleDialogClose }: Props) => {
             </DialogTitle>
 
             <DialogContent className={classes.content}>
-                <CommentInput commentInput={commentInput} handleInput={setCommentInput} />
+                <CommentInput  />
             </DialogContent>
             <DialogActions>
                 <PrimaryButton

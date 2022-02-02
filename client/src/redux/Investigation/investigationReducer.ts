@@ -37,8 +37,8 @@ const initialState: InvestigationRedux = {
     isViewMode: false,
     contactInvestigationVerifiedAbroad: false,
     investigationStaticFieldChange: false,
-    comment:'',
-    trackingRecommendationChanged:false,
+    comment: null,
+    trackingRecommendationChanged: false,
     investigationInfoChanged: false,
 }
 

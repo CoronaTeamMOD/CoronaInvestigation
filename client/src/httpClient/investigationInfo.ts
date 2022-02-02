@@ -117,7 +117,7 @@ export const updateCovidPatientFullName = async (fullName: string): Promise<any>
   }
 }
 
-export const updateInvestigationStatusAndComment = async (mainStatus: number, subStatus: string | null, statusReason: string | null, startTime: Date | undefined, comment: string) => {
+export const updateInvestigationStatusAndComment = async (mainStatus: number, subStatus: string | null, statusReason: string | null, startTime: Date | undefined, comment: string | null) => {
   const updateInvestigationStatusLogger = logger.setup('Update Investigation Status and Comment');
   let requestObj = {
     investigationMainStatus: mainStatus,
