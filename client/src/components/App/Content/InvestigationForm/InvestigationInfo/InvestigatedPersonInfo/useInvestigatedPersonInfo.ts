@@ -32,7 +32,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const investigatorReferenceStatusWasChanged = useSelector<StoreStateType, boolean>(state => state.botInvestigationInfo.investigatorReferenceStatusWasChanged);
     const investigationStaticFieldChange = useSelector<StoreStateType, boolean>(state => state.investigation.investigationStaticFieldChange);
     const investigatorReferenceStatusId = useSelector<StoreStateType,number|undefined>(state=>state.botInvestigationInfo.botInvestigationInfo?.investigatorReferenceStatus?.id);
-    const comment  = useSelector<StoreStateType, string>(state => state.investigation.comment);
+    const comment  = useSelector<StoreStateType, string | null>(state => state.investigation.comment);
     const fullName = useSelector<StoreStateType, string>(state => state.investigation.investigatedPatient.fullName);
     const trackingRecommendationChanged = useSelector<StoreStateType, boolean>(state => state.investigation.trackingRecommendationChanged);
     const investigationInfoChanged = useSelector<StoreStateType, boolean>(state => state.investigation.investigationInfoChanged);

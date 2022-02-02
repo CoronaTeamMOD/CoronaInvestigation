@@ -20,10 +20,9 @@ import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCo
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import InvestigationInfo, { BotInvestigationInfo, MutationInfo } from 'models/InvestigationInfo';
-import { setInvestigatedPersonFullname, SetInvestigationComment, setInvestigationInfoChanged, setInvestigationStaticFieldChange, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigatedPersonFullname, setInvestigationStaticFieldChange } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
-import { commentContext } from '../Context/CommentContext';
 import StaticFieldsSchema from './Schema/StaticFieldsSchema';
 import PatientInfoItem from './PatientInfoItem/PatientInfoItem';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
@@ -42,8 +41,7 @@ const maxComplexityAge = 14;
 const yes = 'כן';
 const no = 'לא';
 const noInfo = 'אין מידע';
-const commentLabel = 'הערה'
-const SAVE_BUTTON_TEXT = 'שמור הערה';
+const commentLabel = 'הערה';
 export const inProcess = 'בטיפול';
 
 const InvestigatedPersonInfo = (props: Props) => {
@@ -74,8 +72,6 @@ const InvestigatedPersonInfo = (props: Props) => {
     const investigationInfoChanged = useSelector<StoreStateType,boolean>(state => state.investigation.investigationInfoChanged);
     const staticFieldChanged = useSelector<StoreStateType, boolean> (state => state.investigation.investigationStaticFieldChange);
     const investigatorReferenceStatusChanged = useSelector<StoreStateType,boolean>(state => state.botInvestigationInfo.investigatorReferenceStatusWasChanged);
-    const { comment, setComment } = useContext(commentContext);
-    const [commentInput, setCommentInput] = React.useState<string | null>('');
     const isContactInvestigationVerifiedAbroad = useSelector<StoreStateType, boolean>(state => state.investigation.contactInvestigationVerifiedAbroad);
    
     const { confirmExitUnfinishedInvestigation,
@@ -88,10 +84,6 @@ const InvestigatedPersonInfo = (props: Props) => {
     const shouldReopenInvestigation = investigationStatus.mainStatus === InvestigationMainStatusCodes.DONE
         || investigationStatus.mainStatus === InvestigationMainStatusCodes.NOT_INVESTIGATED
         || investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE;
-
-    useEffect(() => {
-        setCommentInput(comment);
-    }, [comment])
 
     const methods = useForm({
         mode: 'all',
@@ -113,10 +105,6 @@ const InvestigatedPersonInfo = (props: Props) => {
         }
     };
 
-    const handleCommentInput = (input: string) => {
-        setCommentInput(input);
-        dispatch(setInvestigationInfoChanged(true));
-    }
 
     const isEventTrigeredByMouseClicking = (event: React.ChangeEvent<{}>) => {
         //@ts-ignore
@@ -427,11 +415,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 <Typography className={classes.commentTitle}>
                                     {commentLabel}:
                                 </Typography>
-                                <CommentInput 
-                                commentInput={commentInput} 
-                                handleInput={handleCommentInput} 
-                                blur={()=>{if (commentInput) dispatch(SetInvestigationComment(commentInput))}} 
-                                isViewMode={isViewMode} />           
+                                <CommentInput isViewMode={isViewMode} />           
                             </div>
                         </Grid>
                     </div>
