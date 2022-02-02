@@ -38,7 +38,9 @@ const SettingsActions = (props: Props) => {
     }
 
     const shouldReopenInvestigation = () => {
-        return investigationStatus.id === InvestigationMainStatusCodes.DONE;
+        return investigationStatus.id === InvestigationMainStatusCodes.DONE ||
+            investigationStatus.id === InvestigationMainStatusCodes.CANT_COMPLETE ||
+            investigationStatus.id === InvestigationMainStatusCodes.NOT_INVESTIGATED;
     }
     
     const settingsAction: settingsAction[]  = [

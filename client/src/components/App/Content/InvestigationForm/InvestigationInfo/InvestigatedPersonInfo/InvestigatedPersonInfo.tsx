@@ -49,7 +49,12 @@ export const inProcess = 'בטיפול';
 
 const InvestigatedPersonInfo = (props: Props) => {
 
-    const { currentTab, investigationStaticInfo, epedemioligyNumber, isViewMode, botInvestigationInfo } = props;
+    const { currentTab,
+        investigationStaticInfo,
+        epedemioligyNumber,
+        isViewMode,
+        disabledByStatus,
+        botInvestigationInfo } = props;
 
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -184,7 +189,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                                     dispatch(setInvestigationStaticFieldChange(true));
                                                 }}
                                                 onBlur={() => {dispatch(setInvestigatedPersonFullname(methods.getValues(StaticFields.FULL_NAME)))}}
-                                                disabled={isViewMode}
+                                                disabled={isViewMode || disabledByStatus}
                                                 error={methods.errors && methods.errors[StaticFields.FULL_NAME]}
                                                 label={(methods.errors && methods.errors[StaticFields.FULL_NAME]?.message) || ''}
                                             />
@@ -261,6 +266,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                         validateStatusReason={validateStatusReason}
                         ValidationStatusSchema={ValidationStatusSchema}
                         isViewMode={isViewMode}
+                        disabledByStatus={disabledByStatus}
                         handleInvestigationFinish={handleInvestigationFinish}
                         saveInvestigationInfo={saveInvestigationInfo}
                         currentTab ={currentTab}
@@ -389,7 +395,9 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     isReturnSick && <ComplexityIcon tooltipText={formatDate(previousDiseaseStartDate)} />
                                 }
                                 {
-                                    wasMutationUpdated && <PrimaryButton onClick={varientUpdate}>שים לב, שדה הוריאנט עודכן (לחץ להסתרת ההודעה)</PrimaryButton>
+                                    wasMutationUpdated && <PrimaryButton onClick={varientUpdate} 
+                                    disabled={isViewMode || disabledByStatus}>
+                                        שים לב, שדה הוריאנט עודכן (לחץ להסתרת ההודעה)</PrimaryButton>
                                 }
                             </Grid>
                             {
@@ -425,7 +433,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 commentInput={commentInput} 
                                 handleInput={handleCommentInput} 
                                 blur={()=>{if (commentInput) dispatch(SetInvestigationComment(commentInput))}} 
-                                isViewMode={false} />           
+                                isViewMode={isViewMode} />           
                             </div>
                         </Grid>
                     </div>
@@ -441,6 +449,7 @@ interface Props {
     currentTab: number;
     isViewMode?: boolean;
     botInvestigationInfo: BotInvestigationInfo | null;
+    disabledByStatus?: boolean;
 };
 
 export default InvestigatedPersonInfo;

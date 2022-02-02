@@ -16,7 +16,6 @@ import { inProcess } from '../InvestigatedPersonInfo';
 import useStyles from './InvestigationStatusInfoStyles';
 import KeyValuePair from 'models/KeyValuePair';
 import { BotInvestigationInfo } from 'models/InvestigationInfo';
-import ChatStatusCode from 'models/enums/ChatStatusCodes';
 import { setInvestigatorReferenceStatus } from 'redux/BotInvestigationInfo/botInvestigationInfoActionCreator';
 import { getMutationInfo } from 'redux/MutationInfo/mutationInfoActionCreator';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
@@ -30,7 +29,7 @@ const statusReasonLabel = 'פירוט';
 const investigatorReferenceStatusLabel ='סטטוס טיפול בחקירת בוט';
 const changeStatusText = 'לתשומת ליבך, לאחר עדכון סטטוס  החקירה תינעל לעריכה.';
 const changeStatusReasonText = 'אנא בחר סיבה : '
-const changeStatusNavigationText ='באישור דף החקירה ייסגר ותתבצע הפניה לדף החקירות.';
+const changeStatusNavigationText ='באישור, דף החקירה ייסגר ותתבצע הפניה לדף החקירות.';
 
 const InvestigationStatusInfo = (props: any) => {
 
@@ -38,6 +37,7 @@ const InvestigationStatusInfo = (props: any) => {
         validateStatusReason,
         ValidationStatusSchema,
         isViewMode,
+        disabledByStatus,
         saveInvestigationInfo ,
         handleInvestigationFinish,
         setSaveChangesFlag,
@@ -142,7 +142,7 @@ const InvestigationStatusInfo = (props: any) => {
                                             },
                                             getContentAnchorEl: null
                                         }}
-                                        disabled={isViewMode}
+                                        disabled={isViewMode || disabledByStatus}  
                                         labelId='status-label'
                                         test-id='currentStatus'
                                         variant='outlined'
@@ -193,7 +193,7 @@ const InvestigationStatusInfo = (props: any) => {
                                             labelId='sub-status-label'
                                             test-id='currentSubStatus'
                                             label={subStatusLabel}
-                                            disabled={isViewMode}
+                                            disabled={isViewMode || disabledByStatus}
                                             value={investigationStatus.subStatus as string | undefined}
                                             onChange={(event: any) => {
                                                 const newSubStatus = event.target.value as string
@@ -231,6 +231,7 @@ const InvestigationStatusInfo = (props: any) => {
                                         placeholder={statusReasonLabel}
                                         error={Boolean(statusReasonError)}
                                         label={statusReasonError ? statusReasonError[0] : statusReasonLabel}
+                                        disabled={isViewMode || disabledByStatus}
                                         onChange={async (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
                                             const newStatusReason: string = event.target.value;
                                             const isValid = ValidationStatusSchema(investigationStatus.subStatus).isValidSync(newStatusReason);
@@ -268,6 +269,7 @@ const InvestigationStatusInfo = (props: any) => {
                                             }}
                                             label={investigatorReferenceStatusLabel}
                                             value={botInvestigationInfo.investigatorReferenceStatus.id}
+                                            disabled={isViewMode}
                                             onChange={(event: any) => {
                                                 const id = event.target.value as number;
                                                 let investigatorReferenceStatus = investigatorReferenceStatuses.find(status => status.id == id)
@@ -306,7 +308,6 @@ const InvestigationStatusInfo = (props: any) => {
                         </p>
                     </DialogContentText>
                     <Collapse in={investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE ||
-                        investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ||
                         investigationStatus.mainStatus === InvestigationMainStatusCodes.NOT_INVESTIGATED}>
                         <Grid item className={classes.statusSelectGrid}>
                             <FormControl variant='outlined' className={classes.subStatusSelect}>
@@ -326,7 +327,6 @@ const InvestigationStatusInfo = (props: any) => {
                                     labelId='sub-status-label'
                                     test-id='currentSubStatus'
                                     label={subStatusLabel}
-                                    disabled={isViewMode}
                                     value={investigationStatus.subStatus as string | undefined}
                                     onChange={(event: any) => {
                                         const newSubStatus = event.target.value as string
