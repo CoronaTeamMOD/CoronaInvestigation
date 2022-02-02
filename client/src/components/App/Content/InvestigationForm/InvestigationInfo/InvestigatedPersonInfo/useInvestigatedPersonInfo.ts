@@ -14,14 +14,14 @@ import { DEFAULT_INVESTIGATION_STATUS } from 'redux/Investigation/investigationR
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import UdpateTrackingRecommendation from 'Utils/TrackingRecommendation/updateTrackingRecommendation';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
-import { InvestigatedPersonInfoIncome, InvestigatedPersonInfoOutcome, StaticFieldsFormInputs } from './InvestigatedPersonInfoInterfaces';
+import { InvestigatedPersonInfoOutcome, StaticFieldsFormInputs } from './InvestigatedPersonInfoInterfaces';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setInvestigationInfoChanged, setInvestigationStaticFieldChange, setInvestigationStatus, setTrackingRecommendationChanged } from 'redux/Investigation/investigationActionCreators';
 import { updateCovidPatientFullName, updateInvestigationStatusAndComment, updateInvestigatorReferenceStatus } from 'httpClient/investigationInfo';
 import { setInvestigatorReferenceStatusWasChanged } from 'redux/BotInvestigationInfo/botInvestigationInfoActionCreator';
 
 const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
-    
+
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
     const { alertSuccess, alertWarning, alertError } = useCustomSwal();
     const { updateTrackingReccomentaion } = UdpateTrackingRecommendation();
