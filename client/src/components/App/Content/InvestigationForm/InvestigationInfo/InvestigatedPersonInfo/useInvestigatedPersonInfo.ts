@@ -20,9 +20,8 @@ import { setInvestigationInfoChanged, setInvestigationStaticFieldChange, setInve
 import { updateCovidPatientFullName, updateInvestigationStatusAndComment, updateInvestigatorReferenceStatus } from 'httpClient/investigationInfo';
 import { setInvestigatorReferenceStatusWasChanged } from 'redux/BotInvestigationInfo/botInvestigationInfoActionCreator';
 
-const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): InvestigatedPersonInfoOutcome => {
-    const { moveToTheInvestigationForm } = parameters;
-
+const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
+    
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
     const { alertSuccess, alertWarning, alertError } = useCustomSwal();
     const { updateTrackingReccomentaion } = UdpateTrackingRecommendation();

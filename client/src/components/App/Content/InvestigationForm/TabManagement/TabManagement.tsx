@@ -37,10 +37,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         isViewMode
     } = tabManagementProps;
 
-    const moveToTheInvestigationForm = (epidemiologyNumber: number) => {};
-    const { 
-        saveInvestigationInfo
-    } = useInvestigatedPersonInfo({ moveToTheInvestigationForm });
+    const { saveInvestigationInfo } = useInvestigatedPersonInfo();
    
     const tabs: TabObj[] = [
         {
