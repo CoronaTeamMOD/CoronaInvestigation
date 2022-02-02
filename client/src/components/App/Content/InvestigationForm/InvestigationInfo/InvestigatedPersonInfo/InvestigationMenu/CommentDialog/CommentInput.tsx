@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -6,8 +6,10 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX } from 'commons/Regex/Regex';
 import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
 import { alphaNumericSpecialCharsErrorMessage, max750LengthErrorMessage } from 'commons/Schema/messages';
+import { useSelector, useDispatch } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
+import { SetInvestigationComment, setInvestigationInfoChanged } from 'redux/Investigation/investigationActionCreators';
 
-import { initialComment } from '../../../Context/CommentContext';
 
 const COMMENT_PLACEHOLDER = 'ההערה שלך...';
 const MAX_CHARS_ALLOWED = 750;
@@ -20,12 +22,23 @@ const stringAlphabet = yup
 const commentFieldName = 'comment';
 const commentSchema = yup.object().shape({ [commentFieldName]: yup.string() });
 
-const CommentInput = ({ commentInput, handleInput, isViewMode }: Props) => {
+const CommentInput = ({ isViewMode }: Props) => {
     const methods = useForm({
         mode: 'all',
-        defaultValues: { [commentFieldName]: initialComment },
         resolver: yupResolver(commentSchema)
     });
+    const dispatch = useDispatch();
+    const [commentInput, setCommentInput] = React.useState<string | null>('');
+    const comment = useSelector<StoreStateType, string | null>(state=>state.investigation.comment);
+    const handleInput = (input: string) => {
+        setCommentInput(input);
+        dispatch(setInvestigationInfoChanged(true))
+    }
+    useEffect(() => {
+        if (comment) {
+            setCommentInput(comment);
+        }
+    }, [comment === null])
 
     return (
         <FormProvider {...methods}>
@@ -36,15 +49,14 @@ const CommentInput = ({ commentInput, handleInput, isViewMode }: Props) => {
                 placeholder={COMMENT_PLACEHOLDER}
                 disabled={isViewMode}
                 value={commentInput} onChange={handleInput}
+                onBlur={()=>{if (commentInput != null) dispatch(SetInvestigationComment(commentInput))}}
             />
         </FormProvider>
     );
 };
 
 interface Props {
-    commentInput: string | null;
-    handleInput: (input: string) => void;
-    isViewMode?: boolean;
+    isViewMode?: boolean;  
 };
 
 export default CommentInput;

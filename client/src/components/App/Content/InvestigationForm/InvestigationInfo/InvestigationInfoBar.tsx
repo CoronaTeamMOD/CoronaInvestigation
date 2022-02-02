@@ -16,7 +16,7 @@ import { setGender } from 'redux/Gender/GenderActionCreators';
 import { CommentContextProvider } from './Context/CommentContext';
 import { landingPageRoute, adminLandingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationInfo, { BotInvestigationInfo, InvestigationInfoData } from 'models/InvestigationInfo';
-import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setDatesToInvestigateParams, setIsContactInvestigationVerifiedAbroad } from 'redux/Investigation/investigationActionCreators';
+import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setDatesToInvestigateParams, setIsContactInvestigationVerifiedAbroad, setInvestigatedPersonFullname, SetInvestigationComment } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigatedPatientId, setIsCurrentlyHospitialized, setIsDeceased, setEndTime, setTrackingRecommendation, setBirthDate } from 'redux/Investigation/investigationActionCreators';
 
 import useGroupedInvestigationContacts from '../useGroupedInvestigationContacts';
@@ -68,7 +68,7 @@ const unauthorizedErrorMessages: Record<number, string> = {
 
 const UNAUTHORIZED_ERROR_TEXT = 'אין לך הרשאות לבצע פעולות על החקירה';
 
-const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode }: Props) => {
+const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode, disabledByStatus }: Props) => {
 
     let history = useHistory();
     const dispatch = useDispatch();
@@ -122,6 +122,10 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode }: Props
                         setIsDeceased(investigationInfo.isDeceased);
                         setIsCurrentlyHospitialized(investigationInfo.isCurrentlyHospitalized);
                         setBirthDate(investigationInfo.birthDate ? new Date(investigationInfo.birthDate) : new Date('01.01.1970'));
+                        dispatch(setInvestigatedPersonFullname(investigationInfo.fullName));
+                        if (investigationInfo.comment) {
+                            dispatch(SetInvestigationComment(investigationInfo.comment));
+                        }
                         const gender = investigationInfo.gender;
                         setGender(gender ? gender : '');
                         const formattedValidationDate = truncateDate(investigationInfo.validationDate);
@@ -190,6 +194,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode }: Props
                 investigationStaticInfo={investigationStaticInfo}
                 currentTab={currentTab}
                 isViewMode={isViewMode}
+                disabledByStatus={disabledByStatus}
                 epedemioligyNumber={epidemiologyNumber}
                 botInvestigationInfo={botInvestigationInfo}
             />
@@ -203,6 +208,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode }: Props
 interface Props {
     currentTab: number;
     isViewMode?: boolean;
+    disabledByStatus?: boolean;
 };
 
 export default InvestigationInfoBar;

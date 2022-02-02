@@ -14,17 +14,13 @@ import { DEFAULT_INVESTIGATION_STATUS } from 'redux/Investigation/investigationR
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import UdpateTrackingRecommendation from 'Utils/TrackingRecommendation/updateTrackingRecommendation';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
-
-import { inProcess } from './InvestigatedPersonInfo';
-import { InvestigatedPersonInfoIncome, InvestigatedPersonInfoOutcome, StaticFieldsFormInputs } from './InvestigatedPersonInfoInterfaces';
+import { InvestigatedPersonInfoOutcome, StaticFieldsFormInputs } from './InvestigatedPersonInfoInterfaces';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
-import { setInvestigationStaticFieldChange } from 'redux/Investigation/investigationActionCreators';
-import investigatorReferenceStatusesReducer from 'redux/investigatorReferenceStatuses/investigatorReferenceStatusesReduces';
-import { updateInvestigatorReferenceStatus } from 'httpClient/investigationInfo';
+import { setInvestigationInfoChanged, setInvestigationStaticFieldChange, setInvestigationStatus, setTrackingRecommendationChanged } from 'redux/Investigation/investigationActionCreators';
+import { updateCovidPatientFullName, updateInvestigationStatusAndComment, updateInvestigatorReferenceStatus } from 'httpClient/investigationInfo';
 import { setInvestigatorReferenceStatusWasChanged } from 'redux/BotInvestigationInfo/botInvestigationInfoActionCreator';
 
-const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): InvestigatedPersonInfoOutcome => {
-    const { moveToTheInvestigationForm } = parameters;
+const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
     const { alertSuccess, alertWarning, alertError } = useCustomSwal();
@@ -36,8 +32,13 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
     const investigatorReferenceStatusWasChanged = useSelector<StoreStateType, boolean>(state => state.botInvestigationInfo.investigatorReferenceStatusWasChanged);
     const investigationStaticFieldChange = useSelector<StoreStateType, boolean>(state => state.investigation.investigationStaticFieldChange);
     const investigatorReferenceStatusId = useSelector<StoreStateType,number|undefined>(state=>state.botInvestigationInfo.botInvestigationInfo?.investigatorReferenceStatus?.id);
+    const comment  = useSelector<StoreStateType, string | null>(state => state.investigation.comment);
+    const fullName = useSelector<StoreStateType, string>(state => state.investigation.investigatedPatient.fullName);
+    const trackingRecommendationChanged = useSelector<StoreStateType, boolean>(state => state.investigation.trackingRecommendationChanged);
+    const investigationInfoChanged = useSelector<StoreStateType, boolean>(state => state.investigation.investigationInfoChanged);
 
     const handleInvestigationFinish = () => {
+        setIsLoading(true);
         alertSuccess('בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה', {
             timer: 1750,
             showConfirmButton: false
@@ -48,31 +49,10 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
                 isInInvestigation: false
             }
             windowTabsBroadcastChannel.postMessage(closingBroadcastMessage);
+            setIsLoading(false);
             window.close();
         });
     };
-
-    const updateInvestigationStatus = async (epidemiologyNumber: number) => {
-        const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
-        const statusReason = investigationStatus.statusReason === '' ? null : investigationStatus.statusReason;
-        const updateInvestigationStatusLogger = logger.setup('Update Investigation Status');
-        updateInvestigationStatusLogger.info('launching investigation status request', Severity.LOW);
-        const startTime = investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS && investigationStatus.previousStatus === InvestigationMainStatusCodes.NEW
-            ? new Date()
-            : undefined;
-        investigationStatus.mainStatus !== DEFAULT_INVESTIGATION_STATUS && await axios.post('/investigationInfo/updateInvestigationStatus', {
-            investigationMainStatus: investigationStatus.mainStatus,
-            investigationSubStatus: subStatus !== inProcess ? subStatus : null,
-            statusReason: statusReason,
-            epidemiologyNumber: epidemiologyNumber,
-            startTime
-        }).then(() => {
-            updateInvestigationStatusLogger.info('update investigation status request was successful', Severity.LOW);
-        }).catch((error) => {
-            updateInvestigationStatusLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-            alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד כמה דקות');
-        })
-    }
 
     const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
         if (investigationStatus.subStatus === transferredSubStatus && !investigationStatus.statusReason) {
@@ -90,15 +70,11 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
                 confirmButtonText: 'כן, המשך'
             }).then(async (result) => {
                 if (result.value) {
-                    await updateTrackingReccomentaion();
-                    await updateInvestigationStatus(epidemiologyNumber);
-                    if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
-                        await updateIsDeceased(handleInvestigationFinish);
-                    } else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
-                        await updateIsCurrentlyHospitialized(handleInvestigationFinish);
-                    } else {
-                        handleInvestigationFinish();
-                    }
+                  await saveInvestigationInfo(); 
+                  setIsLoading(true);
+                  handleInvestigationFinish();
+                  setIsLoading(false);
+                    
                 }
             });
         }
@@ -145,7 +121,11 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
             epidemiologyNumber
         }).then(() => {
             reopenLogger.info('reopen investigation and update status request was successful', Severity.LOW);
-            moveToTheInvestigationForm(epidemiologyNumber);
+            setInvestigationStatus({
+                mainStatus: InvestigationMainStatusCodes.IN_PROCESS,
+                subStatus: '',
+                statusReason: ''
+            });
         })
             .catch((error) => {
                 reopenLogger.error(`got errors in server result while reopening investigation: ${error}`, Severity.HIGH);
@@ -153,10 +133,54 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
             })
     }
 
+    const saveInvestigationInfo = async () => {
+        const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
+        const statusReason = investigationStatus.statusReason === '' ? null : investigationStatus.statusReason;
+        const startTime = investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS && investigationStatus.previousStatus === InvestigationMainStatusCodes.NEW
+        ? new Date()
+        : undefined;
+        try {
+            setIsLoading(true);
+            if ( investigationStatus.mainStatus !== DEFAULT_INVESTIGATION_STATUS && investigationInfoChanged){
+                await updateInvestigationStatusAndComment(investigationStatus.mainStatus, subStatus, statusReason, startTime, comment );
+                dispatch(setInvestigationInfoChanged(false));
+                if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
+                    await updateIsDeceased(()=>{});
+                } else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
+                    await updateIsCurrentlyHospitialized(()=>{});
+                }
+            }
+            if (investigationStaticFieldChange){
+                const updateFullNameResult = await updateCovidPatientFullName(fullName);
+                if (updateFullNameResult){
+                    dispatch(setInvestigationStaticFieldChange(false));
+                }
+            }
+            if (investigatorReferenceStatusWasChanged){
+                const updateInvetsigatorReferenceStatusResult = await updateInvestigatorReferenceStatus(investigatorReferenceStatusId as number);
+                if (updateInvetsigatorReferenceStatusResult) {
+                    dispatch(setInvestigatorReferenceStatusWasChanged(false));
+                }
+            }
+            if (trackingRecommendationChanged){
+                await updateTrackingReccomentaion();
+                dispatch(setTrackingRecommendationChanged(false))
+            }
+
+            setIsLoading(false);
+            
+        }
+        catch (error) {
+            alertError('שגיאה ארעה בשמירת הנתונים, אנא נסה שוב בעוד כמה דקות');
+            setIsLoading(false);
+        }
+    }
     return {
         confirmExitUnfinishedInvestigation,
         staticFieldsSubmit,
-        reopenInvestigation
+        reopenInvestigation,
+        handleInvestigationFinish,
+        saveInvestigationInfo
     };
 };
 

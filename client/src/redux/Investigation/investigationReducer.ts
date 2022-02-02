@@ -18,7 +18,8 @@ const initialState: InvestigationRedux = {
         investigatedPatientId: -1,
         isDeceased: false,
         isCurrentlyHospitialized: false,
-        birthDate: new Date()
+        birthDate: new Date(),
+        fullName:''
     },
     doesHaveSymptoms: false,
     symptomsStartDate: null,
@@ -35,7 +36,10 @@ const initialState: InvestigationRedux = {
     },
     isViewMode: false,
     contactInvestigationVerifiedAbroad: false,
-    investigationStaticFieldChange: false
+    investigationStaticFieldChange: false,
+    comment: null,
+    trackingRecommendationChanged: false,
+    investigationInfoChanged: false,
 }
 
 const investigationReducer = (state = initialState, action: Actions.InvestigationAction): InvestigationRedux => {
@@ -70,6 +74,10 @@ const investigationReducer = (state = initialState, action: Actions.Investigatio
         case Actions.SET_INVESTIGATION_VIEW_MODE: return { ...state, isViewMode: action.payload.isViewMode }
         case Actions.SET_IS_CONTACT_INVESTIGATION_VERIFIED_ABROAD: return { ...state, contactInvestigationVerifiedAbroad: action.payload.isContactInvestigationVerifiedAbroad }
         case Actions.SET_INVESTIGATION_STATIC_FIELD_CHANGE: return { ...state, investigationStaticFieldChange: action.payload.investigationStaticFieldChange }
+        case Actions.SET_INVESTIGATED_PATIENT_FULLNAME: return {...state, investigatedPatient:{...state.investigatedPatient, fullName: action.payload.fullName}}
+        case Actions.SET_INVESTIGATION_COMMENT: return {...state, comment: action.payload.comment}
+        case Actions.SET_TRACKING_RECOMMENDATION_CHANGED: return {...state, trackingRecommendationChanged: action.payload.trackingRecommendationChanged}
+        case Actions.SET_INVESTIGATION_INFO_CHANGED : return {...state, investigationInfoChanged : action.payload.investigationInfoChanged} 
         default: return state;
     }
 }
