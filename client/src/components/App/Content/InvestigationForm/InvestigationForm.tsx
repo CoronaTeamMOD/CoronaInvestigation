@@ -19,6 +19,8 @@ import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import useTabManagement, { LAST_TAB_ID } from './TabManagement/useTabManagement';
 import TrackingRecommendationForm from './TrackingRecommendation/TrackingRecommendationForm';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
+import { InvestigationStatus } from 'models/InvestigationStatus';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 const InvestigationForm: React.FC = (props): JSX.Element => {
     const classes = useStyles({});
@@ -35,6 +37,7 @@ const InvestigationForm: React.FC = (props): JSX.Element => {
     const [isScriptOpened, setIsScriptOpened] = React.useState<boolean>(initialSctiptState);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     const isViewMode = useSelector<StoreStateType, boolean>(state => state.investigation.isViewMode);
+    const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 
     const exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet = React.useMemo(() => ({
         exposureAndFlightsData,
@@ -70,6 +73,15 @@ const InvestigationForm: React.FC = (props): JSX.Element => {
 
     const isLastTabDisplayed = currentTab === lastTabDisplayedId;
 
+    const disableInvestigationByStatus = () => {
+        if (investigationStatus.mainStatus === InvestigationMainStatusCodes.NOT_INVESTIGATED ||
+            investigationStatus.mainStatus === InvestigationMainStatusCodes.CANT_COMPLETE ||
+            investigationStatus.mainStatus === InvestigationMainStatusCodes.DONE) {
+            return true;
+        }
+        else return false;
+    }
+
     return (
         <div className={classes.content}>
             <ExposureAndFlightsContextProvider value={exposuresAndFlightsVariables}>
@@ -77,6 +89,7 @@ const InvestigationForm: React.FC = (props): JSX.Element => {
                     <InvestigationInfoBar
                         currentTab={currentTab}
                         isViewMode={isViewMode}
+                        disabledByStatus={disableInvestigationByStatus()}
                     />
                     <div className={classes.interactiveForm}>
                         <Grid container alignItems='flex-start'>
@@ -88,7 +101,7 @@ const InvestigationForm: React.FC = (props): JSX.Element => {
                                 isScriptOpened={isScriptOpened}
                                 setIsScriptOpened={setIsScriptOpened}
                                 isLastTabDisplayed={isLastTabDisplayed}
-                                isViewMode={isViewMode}
+                                isViewMode={disableInvestigationByStatus() || isViewMode}
                             />
                             <Grid item className={isScriptOpened ? classes.uncollapsed : classes.collapsed}>
                                 <Card className={isScriptOpened ? classes.scriptWrapperWithMaxHeight : classes.scriptWrapper}>
@@ -100,7 +113,7 @@ const InvestigationForm: React.FC = (props): JSX.Element => {
                             {isLastTabDisplayed &&
                                 <Grid item>
                                     <Paper className={classes.trackingForm}>
-                                        <TrackingRecommendationForm isViewMode={isViewMode} />
+                                        <TrackingRecommendationForm isViewMode={disableInvestigationByStatus() || isViewMode} />
                                     </Paper>
                                 </Grid>
                             }

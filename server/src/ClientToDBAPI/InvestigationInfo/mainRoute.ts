@@ -204,7 +204,8 @@ investigationInfo.post('/updateInvestigationStatus', handleInvestigationRequest,
         investigationSubStatus: investigationSubStatus,
         statusReason: statusReason,
         startTime: startTime,
-        lastUpdateTime: new Date()
+        lastUpdateTime: new Date(),
+        endTime: investigationMainStatus === InvestigationMainStatusCodes.DONE ? new Date() : null,
     };
     updateInvestigationStatusLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 

@@ -18,7 +18,7 @@ import { transferredSubStatus } from 'components/App/Content/LandingPage/Investi
 import { inProcess } from './InvestigatedPersonInfo';
 import { InvestigatedPersonInfoIncome, InvestigatedPersonInfoOutcome, StaticFieldsFormInputs } from './InvestigatedPersonInfoInterfaces';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
-import { setInvestigationStaticFieldChange, setTrackingRecommendationChanged } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigationStaticFieldChange, setInvestigationStatus, setTrackingRecommendationChanged } from 'redux/Investigation/investigationActionCreators';
 import investigatorReferenceStatusesReducer from 'redux/investigatorReferenceStatuses/investigatorReferenceStatusesReduces';
 import { updateCovidPatientFullName, updateInvestigationStatusAndComment, updateInvestigatorReferenceStatus } from 'httpClient/investigationInfo';
 import { setInvestigatorReferenceStatusWasChanged } from 'redux/BotInvestigationInfo/botInvestigationInfoActionCreator';
@@ -124,7 +124,11 @@ const useInvestigatedPersonInfo = (parameters: InvestigatedPersonInfoIncome): In
             epidemiologyNumber
         }).then(() => {
             reopenLogger.info('reopen investigation and update status request was successful', Severity.LOW);
-            moveToTheInvestigationForm(epidemiologyNumber);
+            setInvestigationStatus({
+                mainStatus: InvestigationMainStatusCodes.IN_PROCESS,
+                subStatus: '',
+                statusReason: ''
+            });
         })
             .catch((error) => {
                 reopenLogger.error(`got errors in server result while reopening investigation: ${error}`, Severity.HIGH);

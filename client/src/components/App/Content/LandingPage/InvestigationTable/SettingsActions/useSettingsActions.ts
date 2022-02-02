@@ -9,6 +9,7 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
 
 const useSettingsActions = (props: useSettingsActionsIncome ): useSettingsActionsOutcome => {
 
@@ -27,6 +28,11 @@ const useSettingsActions = (props: useSettingsActionsIncome ): useSettingsAction
             epidemiologyNumber
         }).then(() => {
             reopenLogger.info('reopen investigation and update status request was successful', Severity.LOW);
+            setInvestigationStatus({
+                mainStatus: InvestigationMainStatusCodes.IN_PROCESS,
+                subStatus: '',
+                statusReason: ''
+            });
             moveToTheInvestigationForm(epidemiologyNumber);
         })
             .catch((error) => {
