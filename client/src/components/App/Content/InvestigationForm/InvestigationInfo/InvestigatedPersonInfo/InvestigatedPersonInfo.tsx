@@ -20,10 +20,9 @@ import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCo
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import InvestigationInfo, { BotInvestigationInfo, MutationInfo } from 'models/InvestigationInfo';
-import { setInvestigatedPersonFullname, SetInvestigationComment, setInvestigationInfoChanged, setInvestigationStaticFieldChange, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigatedPersonFullname, setInvestigationStaticFieldChange, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
-import { commentContext } from '../Context/CommentContext';
 import StaticFieldsSchema from './Schema/StaticFieldsSchema';
 import PatientInfoItem from './PatientInfoItem/PatientInfoItem';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
