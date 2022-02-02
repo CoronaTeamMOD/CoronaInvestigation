@@ -20,7 +20,7 @@ import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCo
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import InvestigationInfo, { BotInvestigationInfo, MutationInfo } from 'models/InvestigationInfo';
-import { setInvestigatedPersonFullname, SetInvestigationComment, setInvestigationStaticFieldChange, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigatedPersonFullname, SetInvestigationComment, setInvestigationInfoChanged, setInvestigationStaticFieldChange, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import { commentContext } from '../Context/CommentContext';
@@ -66,11 +66,12 @@ const InvestigatedPersonInfo = (props: Props) => {
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
     const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
-   const trackingRecommendationChanged = useSelector<StoreStateType,boolean>(state=>state.investigation.trackingRecommendationChanged);
-
+    const trackingRecommendationChanged = useSelector<StoreStateType,boolean>(state=>state.investigation.trackingRecommendationChanged);
+    const investigationInfoChanged = useSelector<StoreStateType,boolean>(state => state.investigation.investigationInfoChanged);
+    const staticFieldChanged = useSelector<StoreStateType, boolean> (state => state.investigation.investigationStaticFieldChange);
+    const investigatorReferenceStatusChanged = useSelector<StoreStateType,boolean>(state => state.botInvestigationInfo.investigatorReferenceStatusWasChanged);
     const { comment, setComment } = useContext(commentContext);
     const [commentInput, setCommentInput] = React.useState<string | null>('');
-    const [saveChangesFlag, setSaveChangesFlag] = React.useState<boolean>(false);
     const isContactInvestigationVerifiedAbroad = useSelector<StoreStateType, boolean>(state => state.investigation.contactInvestigationVerifiedAbroad);
     const moveToTheInvestigationForm = (epidemiologyNumber: number) => {
         setLastOpenedEpidemiologyNum(epidemiologyNumber);
@@ -111,7 +112,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const handleCommentInput = (input: string) => {
         setCommentInput(input);
-        setSaveChangesFlag(true);
+        dispatch(setInvestigationInfoChanged(true));
     }
 
     const isEventTrigeredByMouseClicking = (event: React.ChangeEvent<{}>) => {
@@ -133,7 +134,10 @@ const InvestigatedPersonInfo = (props: Props) => {
     };
 
     const isMandatoryInfoMissing: boolean = !birthDate && !fullName && !isLoading;
-    
+
+    const saveChangesEnable: boolean = trackingRecommendationChanged || investigationInfoChanged
+        || staticFieldChanged || investigatorReferenceStatusChanged;
+
     const getInvestigatiorReferenceReasons = () => {
         let reasons = '';
         botInvestigationInfo?.botInvestigationReferenceReasons.forEach (reason =>{
@@ -177,7 +181,6 @@ const InvestigatedPersonInfo = (props: Props) => {
                                                 test-id={props.name}
                                                 onChange={(event) => {
                                                     props.onChange(event.target.value)
-                                                    setSaveChangesFlag(true);
                                                     dispatch(setInvestigationStaticFieldChange(true));
                                                 }}
                                                 onBlur={() => {dispatch(setInvestigatedPersonFullname(methods.getValues(StaticFields.FULL_NAME)))}}
@@ -221,12 +224,11 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     {openInvestigationForEditText}
                                 </PrimaryButton>
                             </span>}
-                            {(saveChangesFlag || trackingRecommendationChanged) &&
+                            { saveChangesEnable &&
                                 <span className={classes.openButton}>
                                     <PrimaryButton
                                         onClick={async () => {
                                             await saveInvestigationInfo();
-                                            setSaveChangesFlag(false);
                                             validateStatusReason(investigationStatus.statusReason)
                                         }}
                                         type='submit'
@@ -261,7 +263,6 @@ const InvestigatedPersonInfo = (props: Props) => {
                         isViewMode={isViewMode}
                         handleInvestigationFinish={handleInvestigationFinish}
                         saveInvestigationInfo={saveInvestigationInfo}
-                        setSaveChangesFlag={setSaveChangesFlag}
                         currentTab ={currentTab}
                     />
 

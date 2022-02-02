@@ -149,3 +149,10 @@ export const setTrackingRecommendationChanged = (trackingRecommendationChanged: 
         payload: { trackingRecommendationChanged } 
     };
 }
+
+export const setInvestigationInfoChanged = (investigationInfoChanged: boolean) => {
+    return {
+        type: actionTypes.SET_INVESTIGATION_INFO_CHANGED,
+        payload: { investigationInfoChanged }
+    }
+}

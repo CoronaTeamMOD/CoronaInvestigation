@@ -39,6 +39,7 @@ const initialState: InvestigationRedux = {
     investigationStaticFieldChange: false,
     comment:'',
     trackingRecommendationChanged:false,
+    investigationInfoChanged: false,
 }
 
 const investigationReducer = (state = initialState, action: Actions.InvestigationAction): InvestigationRedux => {
@@ -76,6 +77,7 @@ const investigationReducer = (state = initialState, action: Actions.Investigatio
         case Actions.SET_INVESTIGATED_PATIENT_FULLNAME: return {...state, investigatedPatient:{...state.investigatedPatient, fullName: action.payload.fullName}}
         case Actions.SET_INVESTIGATION_COMMENT: return {...state, comment: action.payload.comment}
         case Actions.SET_TRACKING_RECOMMENDATION_CHANGED: return {...state, trackingRecommendationChanged: action.payload.trackingRecommendationChanged}
+        case Actions.SET_INVESTIGATION_INFO_CHANGED : return {...state, investigationInfoChanged : action.payload.investigationInfoChanged} 
         default: return state;
     }
 }

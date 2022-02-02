@@ -9,7 +9,7 @@ import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
-import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigationInfoChanged, setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
 import { inProcess } from '../InvestigatedPersonInfo';
@@ -80,7 +80,6 @@ const InvestigationStatusInfo = (props: any) => {
     const approveStatusChange = () => {
         setIsLoading(true);
         saveInvestigationInfo().then(() => {
-            setSaveChangesFlag(false);
             setPreviousStatus(null);
             setOpenDialog(false);
             handleInvestigationFinish();
@@ -155,7 +154,7 @@ const InvestigationStatusInfo = (props: any) => {
                                             const newStatus = event.target.value as string
                                             if (newStatus) {
                                                 onStatusChange(+newStatus);
-                                                setSaveChangesFlag(true); 
+                                                dispatch(setInvestigationInfoChanged(true));
                                             }
                                         }}
                                     >
@@ -203,7 +202,7 @@ const InvestigationStatusInfo = (props: any) => {
                                                     subStatus: newSubStatus ? String(newSubStatus) : null,
                                                     statusReason: ''
                                                 });
-                                                setSaveChangesFlag(true);  
+                                                dispatch(setInvestigationInfoChanged(true));  
                                             }}
                                         >
                                             {
@@ -242,7 +241,7 @@ const InvestigationStatusInfo = (props: any) => {
                                                     subStatus: investigationStatus.subStatus,
                                                     statusReason: newStatusReason
                                                 });
-                                                setSaveChangesFlag(true);  
+                                                dispatch(setInvestigationInfoChanged(true));  
                                             }
                                         }}
                                     />
@@ -274,8 +273,7 @@ const InvestigationStatusInfo = (props: any) => {
                                                 let investigatorReferenceStatus = investigatorReferenceStatuses.find(status => status.id == id)
                                                 if (investigatorReferenceStatus) {
                                                     dispatch(setInvestigatorReferenceStatus(investigatorReferenceStatus));
-                                                    setSaveChangesFlag(true);  
-                                                }
+                                                 }
                                             }}
                                         >
                                             {
