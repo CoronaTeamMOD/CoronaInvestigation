@@ -123,7 +123,6 @@ export const updateInvestigationStatusAndComment = async (mainStatus: number, su
     investigationMainStatus: mainStatus,
     investigationSubStatus: subStatus,
     statusReason,
-    startTime,
     comment
   }
   try {
