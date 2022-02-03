@@ -258,7 +258,7 @@ investigationInfo.post('/updateInvestigationStatus', handleInvestigationRequest,
                 }
                 addInvestigationStartTimeLogger.info(launchingDBRequestLog(updateStartTimeParameters), Severity.LOW);
 
-                graphqlRequest(ADD_INVESTIGATION_START_TIME, response.locals, updateStartTimeParameters)
+                graphqlRequest(UPDATE_INVESTIGATION_START_TIME, response.locals, updateStartTimeParameters)
                     .then(result => {
                         addInvestigationStartTimeLogger.info(validDBResponseLog, Severity.LOW);
                         response.send(result);
@@ -721,7 +721,7 @@ investigationInfo.post('/updateInvestigationStatusAndComment', handleInvestigati
                 }
                 addInvestigationStartTimeLogger.info(launchingDBRequestLog(updateStartTimeParameters), Severity.LOW);
 
-                graphqlRequest(ADD_INVESTIGATION_START_TIME, response.locals, updateStartTimeParameters)
+                graphqlRequest(UPDATE_INVESTIGATION_START_TIME, response.locals, updateStartTimeParameters)
                     .then(result => {
                         addInvestigationStartTimeLogger.info(validDBResponseLog, Severity.LOW);
                         response.send(result);
