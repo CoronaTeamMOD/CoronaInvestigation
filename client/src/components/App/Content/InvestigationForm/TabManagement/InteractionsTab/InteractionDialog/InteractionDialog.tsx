@@ -197,8 +197,7 @@ const InteractionDialog = (props: Props) => {
     };
 
     const fireRepetitiveContactWarning = () =>
-        alertWarning('שים לב כי לא הוזנו עד כה מגעים לאירועים מחזוריים\n' +
-            'ותצטרך להוסיף אותם בנפרד לכל תאריך שיצרת בו אירוע ', {
+        alertWarning('לתשומת ליבך, '+'\n'+'מגעים באירוע מחזורי זה יופיעו באירוע האחרון בלבד', {
             showCancelButton: true,
             cancelButtonText: 'בטל',
             cancelButtonColor: theme.palette.error.main,
