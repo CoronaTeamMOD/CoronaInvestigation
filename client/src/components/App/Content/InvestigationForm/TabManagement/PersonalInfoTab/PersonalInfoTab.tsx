@@ -32,6 +32,7 @@ import { resetPersonalInfo, setPersonalInfo } from 'redux/PersonalInfo/personalI
 import { setFormState } from 'redux/Form/formActionCreators';
 import personalInfoTabValidationSchema from './PersonalInfoTabValidationSchema';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import useInvestigatedPersonInfo from '../../InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
 
 const under16AllowedOccupations = ['מערכת החינוך', 'אחר'];
 
@@ -88,6 +89,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
         insuranceCompanies,
         clearSubOccupations,
         savePersonalData } = usePersonalTabInfo();
+
+    const { saveInvestigationInfo } = useInvestigatedPersonInfo();
 
     const contactInfo = methods.watch(`${PersonalInfoDataContextFields.CONTACT_INFO}`);
     const contactPhoneNumber = methods.watch(`${PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER}`);
@@ -244,8 +247,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                             setFormState(epidemiologyNumber, id, valid);
                         })
                     }
-                    else {
+                    else { 
+                        setIsLoading(true);
+                        saveInvestigationInfo(); 
                         savePersonalData(convertToDBData(), personalInfo, id);
+                        setIsLoading(false)
                     }
                 }}>
                     <FormRowWithInput fieldName={PHONE_LABEL} labelLength={1} className={classes.contactContiner}>

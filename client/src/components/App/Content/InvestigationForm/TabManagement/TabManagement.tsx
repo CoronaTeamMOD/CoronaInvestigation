@@ -17,7 +17,6 @@ import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
 import { ArrowLeft, ChevronLeft, ChevronRight } from '@material-ui/icons';
 import TabNames from "../../../../../models/enums/TabNames";
-import useInvestigatedPersonInfo from '../InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
 
 const END_INVESTIGATION = 'סיום חקירה';
 const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
@@ -37,8 +36,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         isViewMode
     } = tabManagementProps;
 
-    const { saveInvestigationInfo } = useInvestigatedPersonInfo();
-   
+    
     const tabs: TabObj[] = [
         {
             id: TabId.PERSONAL_INFO,
@@ -93,9 +91,6 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     const currentCardsClass = `${classes.card} ${isScriptOpened ? classes.collapsed : ''}`;
     const onTabClicked = (tabId : number) => {
         setNextTab(tabId);
-        if ( !isViewMode ){
-             saveInvestigationInfo ();
-        }
     }
     useEffect(() => {
         localStorage.setItem('isScriptOpened', String(isScriptOpened));
