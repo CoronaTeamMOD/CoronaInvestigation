@@ -17,6 +17,7 @@ import {
     useContactQuestioningOutcome,
     useContactQuestioningParameters,
 } from './ContactQuestioningInterfaces';
+import useInvestigatedPersonInfo from '../../InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
 
 export const SIZE_OF_CONTACTS = 10;
 
@@ -27,7 +28,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         setFamilyRelationships,
         setContactStatuses
     } = parameters;
-
+    const { saveInvestigationInfo } = useInvestigatedPersonInfo();
+    
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
     const isViewMode = useSelector<StoreStateType, boolean>(state => state.investigation.isViewMode);
@@ -202,6 +204,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         e.preventDefault();
         const parsedFormData = parseFormBeforeSending(interactedContacts);
         if (!areThereDuplicateIds(interactedContacts) && !isViewMode) {
+            saveInvestigationInfo();
             saveContactQuestioning(parsedFormData);
         } 
         else if(isViewMode){
