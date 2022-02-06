@@ -15,6 +15,7 @@ import { FormData } from './ExposuresAndFlightsInterfaces';
 import ExposureSchema from './Schema/exposuresAndFlightsSchema';
 import { useExposuresAndFlights } from './useExposuresAndFlights';
 import { setFormState } from 'redux/Form/formActionCreators';
+import useInvestigatedPersonInfo from '../../InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
 
 const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Element => {
 
@@ -34,6 +35,8 @@ const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.El
 
     const { reset, trigger } = methods;
 
+    const { saveInvestigationInfo } = useInvestigatedPersonInfo();
+
     const onSubmit = (e?: React.FormEvent) => {
         e && e.preventDefault();
         const data = methods.getValues();
@@ -44,6 +47,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.El
         }
         else{
             methods.trigger();
+            saveInvestigationInfo();
             saveExposure(data, ids);
         }
     };

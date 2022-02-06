@@ -20,6 +20,7 @@ import FamilyContactsDialog from './FamilyContactsDialog/FamilyContactsDialog';
 import EducationContactsDialog from './EducationContactsDialog/EducationContactsDialog';
 import NewInteractionEventDialog from './NewInteractionEventDialog/NewInteractionEventDialog';
 import EditInteractionEventDialog from './EditInteractionEventDialog/EditInteractionEventDialog';
+import useInvestigatedPersonInfo from '../../InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
 
 const defaultInteractionsTabSettings: InteractionsTabSettings = {
     allowUncontactedFamily: false
@@ -30,6 +31,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     const { id, setAreThereContacts,isViewMode } = props;
 
     const familyMembersStateContext = useContext(familyMembersContext);
+    const { saveInvestigationInfo } = useInvestigatedPersonInfo();
 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>((state) => state.investigation.datesToInvestigate);
@@ -79,6 +81,9 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
     const submitTab = (event : React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if (!isViewMode) {
+            saveInvestigationInfo();
+        }
         const uncontactedFamilyMembersArray : InvolvedContact[] = familyMembersStateContext.familyMembers.filter(member => !member.isContactedPerson);
         const areThereUncontactedMembers = uncontactedFamilyMembersArray.length > 0;
         if (!interactionsTabSettings.allowUncontactedFamily && areThereUncontactedMembers && !isViewMode) {
