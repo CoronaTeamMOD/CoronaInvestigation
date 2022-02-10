@@ -1,3 +1,4 @@
+
 import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
@@ -14,7 +15,15 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: 'flex',
         alignItems: 'center',
         maxHeight: '80%',
-        justifyContent: 'space-between'
+        gap:'10px',
+        marginBottom:'10px',
+        flexWrap:'wrap'
+    },
+    ageRange:{
+        display:'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap:'nowrap',
     },
     botLine: {
         display: 'flex',
@@ -47,13 +56,13 @@ const useStyles = makeStyles((theme: Theme) => ({
         flexDirection: 'row',
     },
     autocomplete: {
-        width: '30%',
-        marginRight: '7px',
-        '&.Mui-focused': {
-            '& div[role="button"]': {
-                overflow: 'hidden'
-            }
-        }
+        // width: '30%',
+        // marginRight: '7px',
+        // '&.Mui-focused': {
+        //     '& div[role="button"]': {
+        //         overflow: 'hidden'
+        //     }
+        // }
     },
     autocompleteInput: {
         paddingRight: 'unset'
@@ -94,10 +103,43 @@ const useStyles = makeStyles((theme: Theme) => ({
         textOverflow: 'ellipsis'
     },
     timeRangeError: {
-        fontSize: '1vw',
+        fontSize: '15px',
+        color: 'red',
     },
     column: {
         flexDirection: 'column'
+    },
+    expandButton: {
+        borderRadius: '15px',
+        width:'30px',
+        height:'30px',
+        padding:'1px',
+        backgroundColor: theme.palette.primary.main,
+        color: 'white',
+        border: 'none',
+        cursor:'pointer'
+    },
+    filterTitle: {
+        color: theme.palette.primary.main,
+        fontWeight: 600,
+        paddingRight: '5vw',
+        fontSize: '20px'
+    },
+    selectDropdown: {
+        width:'100%',
+    },
+    collapse : {
+        width:'100%',
+    },
+    filterButton: {
+        backgroundColor: theme.palette.primary.main,
+        color: 'white',
+        borderRadius: '10vw',
+        '&:hover': {
+            backgroundColor: theme.palette.primary.main,
+            color: 'white',
+        },
+        marginRight:'15px',
     }
 }));
 
