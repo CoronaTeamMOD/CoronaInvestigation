@@ -114,7 +114,7 @@ BEGIN
 				occupation, does_have_background_diseases, does_feel_good, does_need_help_in_isolation, repeating_occurance_with_confirmed,
 				does_live_with_confirmed, contact_status, does_work_with_crowd, relationship, completion_time
 			) VALUES (
-				personInfo, true, doesNeedIsolation, extraInfo, addressId, familyRelationship,
+				personInfo, false, doesNeedIsolation, extraInfo, addressId, familyRelationship,
 				personOccupation, doesHaveBackgroundDiseases, doesFeelGood, doesNeedHelpInIsolation, repeatingOccuranceWithConfirmed,
 				doesLiveWithConfirmed, contactStatus, doesWorkWithCrowd, personRelationship, 
 				(
@@ -138,7 +138,7 @@ BEGIN
 				contact_status = contactStatus ,
 				does_work_with_crowd = doesWorkWithCrowd,
 				relationship = personRelationship,	
-				is_contact_send = true,
+				is_contact_send = false,
 				completion_time = (CASE WHEN completionTime IS NULL AND contactStatus = 5 THEN NOW() 
 										WHEN completionTime IS NOT NULL then completionTime
 										ELSE NULL END)
@@ -180,7 +180,7 @@ BEGIN
 	   	    	does_have_background_diseases, occupation, does_feel_good, does_need_help_in_isolation, 
 	   	   		repeating_occurance_with_confirmed, does_live_with_confirmed, contact_status, family_relationship, does_work_with_crowd, does_need_isolation, creation_time) 
 	    	VALUES(
-				addressId, true, personId, personRelationship, extraInfo,
+				addressId, false, personId, personRelationship, extraInfo,
 	   		 	doesHaveBackgroundDiseases, personOccupation , doesfeelGood, doesNeedHelpInIsolation,
 	   			repeatingOccuranceWithConfirmed, doesLiveWithConfirmed, contactStatus, familyRelationship, doesWorkWithCrowd, doesNeedIsolation, now());
 	   END IF;
