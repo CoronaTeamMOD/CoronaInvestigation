@@ -132,15 +132,28 @@ const useStyles = makeStyles((theme: Theme) => ({
         width:'100%',
     },
     filterButton: {
-        backgroundColor: theme.palette.primary.main,
-        color: 'white',
+        backgroundColor: '#5FB1CB',
+        color: 'black',
         borderRadius: '10vw',
         '&:hover': {
             backgroundColor: theme.palette.primary.main,
             color: 'white',
         },
         marginRight:'15px',
-    }
+        fontSize:'1vw',
+    },
+    filterIconButton: {
+        paddingRight:'7px',
+    },
+    resetLinkButton: {
+        marginRight:'15px',
+        color:'black',
+        fontSize:'1vw',
+        fontFamily:'Assistant',
+        textDecoration: 'underline',  
+        fontWeight: 500,
+    },
+
 }));
 
 export default useStyles;

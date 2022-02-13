@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Autocomplete } from '@material-ui/lab';
-import { Card, Checkbox, Collapse, FormControl, Grid, Box, TextField, Typography, Input, Button } from '@material-ui/core';
-import { ExpandMoreRounded, ExpandLessRounded } from '@material-ui/icons';
+import { Card, Checkbox, Collapse, FormControl, Grid, Box, TextField, Typography, Input, Button, Link } from '@material-ui/core';
+import { ExpandMoreRounded, ExpandLessRounded, Filter } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import SubStatus from 'models/SubStatus';
@@ -479,8 +479,8 @@ const TableFilter = (props: Props) => {
                     </Grid>
                     <Grid item md='auto'>
                         <Box justifyContent='flex-end' display='flex'>
-                            <Button className={classes.filterButton} variant='contained' onClick={resetFilter} > נקה </Button>
-                            <Button className={classes.filterButton} variant='contained' onClick={filter} > סנן </Button>
+                            <Link component='button' className={classes.resetLinkButton} onClick={resetFilter} >   נקה סינון </Link>
+                            <Button className={classes.filterButton} variant='contained' onClick={filter} > <Filter className={classes.filterIconButton}/> סנן </Button>
                         </Box>
                     </Grid>
                     <Box display='flex' justifyContent='center' alignSelf='flex-end' >
