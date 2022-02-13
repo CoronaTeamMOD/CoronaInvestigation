@@ -116,4 +116,5 @@ export interface useInvestigationTableOutcome {
     changeAgeFilter: (ageFilter: AgeRange) => void;
     filterInvestigations: () => void;
     resetFilter: () => void;
+    filtersTitle: string;
 };

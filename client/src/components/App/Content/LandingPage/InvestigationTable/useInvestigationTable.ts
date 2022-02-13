@@ -50,6 +50,7 @@ import { setComplexityReasons } from 'redux/ComplexityReasons/ComplexityReasonsA
 import ComplexityReason from 'models/ComplexityReason';
 import { defaultAgeRange } from 'models/enums/AgeRange';
 import { AgeRange } from 'models/AgeRange';
+import { tableFilterTitle} from './TableFilter/TableFilterTitles'
 
 const investigationURL = '/investigation';
 
@@ -203,6 +204,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [complexityFilter, setComplexityFilter] = useState<boolean>(historyComplexityFilter);
     const [complexityReasonFilter, setComplexityReasonFilter] = useState<number[]>(historyComplexityReasonFilter);
     const [ageFilter, setAgeFilter] = useState<AgeRange>(historyAgeFilter);
+    const [filtersTitle, setFiltersTitle] = useState<string>('');
 
     const getFilterRules = () => {
         const statusFilterToSet = historyStatusFilter.length > 0 ? filterCreators.STATUS(historyStatusFilter) : null;
@@ -261,6 +263,23 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
     const resetFilter = () => {
         setFitlerRules({});
+    }
+
+    const updateFilterTitle = () => {
+       let title = '';
+       for (const [key, value] of Object.entries(filterRules)) {
+        if (value != false && value != [] && value != null) {
+            let titleKey= key as keyof typeof tableFilterTitle;
+            if (tableFilterTitle[titleKey]!=''){
+                title += tableFilterTitle[key as keyof typeof tableFilterTitle]+', ';
+            }
+        }
+      }
+      if (title!=''){
+        title = title.slice(0, -2);
+      }
+      setFiltersTitle(title);
+      
     }
 
     const changeDeskFilter = (desks: Desk[]) => {
@@ -497,6 +516,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchAllBotInvestigationStatuses();
         startWaiting();
     }, []);
+
+    useEffect(()=>{
+        updateFilterTitle();
+    },[filterRules])
 
     const convertFilterObject = () => {
         let filterArray: any[] = [];
@@ -1255,7 +1278,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         ageFilter,
         changeAgeFilter,
         filterInvestigations,
-        resetFilter
+        resetFilter,
+        filtersTitle
     };
 };
 

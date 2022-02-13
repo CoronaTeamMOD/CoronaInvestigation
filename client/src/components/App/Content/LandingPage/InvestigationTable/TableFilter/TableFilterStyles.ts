@@ -125,6 +125,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         paddingRight: '5vw',
         fontSize: '20px'
     },
+    filterSubTitle: {
+        color:'black',
+        fontSize:'18px',
+        fontWeight:400
+    },
     selectDropdown: {
         width:'100%',
     },

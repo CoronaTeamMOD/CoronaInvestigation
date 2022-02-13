@@ -51,7 +51,7 @@ const TableFilter = (props: Props) => {
         complexityFilter, changeComplexityFilter,
         complexityReasonFilter, changeComplexityReasonFilter,
         ageFilter, changeAgeFilter,
-        onFilterButtonClicked, onResetButtonClicked
+        onFilterButtonClicked, onResetButtonClicked, filterTitle
     } = props;
 
     const {
@@ -149,10 +149,17 @@ const TableFilter = (props: Props) => {
     return (
         <Card className={classes.card}>
             <Grid container alignItems='center'>
-                <Grid item md={6}>
-                    <Typography className={classes.filterTitle}>סינון חקירות</Typography>
+                <Grid item md={9}>
+                    <Typography className={classes.filterTitle}>סינון חקירות
+                    { !expanded &&
+                        <span> | </span>
+                    }
+                    { !expanded &&
+                        <span className={classes.filterSubTitle}>{filterTitle}</span>
+                    }
+                    </Typography>
                 </Grid>
-                <Grid item md={6} >
+                <Grid item md={3} >
                     <Box justifyContent='flex-end' display='flex'>
                         <FilterTableSearchBar
                             validationSchema={stringAlphanum}
@@ -174,6 +181,102 @@ const TableFilter = (props: Props) => {
                     }
                 </Grid>
                 <Collapse className={classes.collapse} in={expanded} timeout="auto" unmountOnExit>
+                    <Grid item md={12} className={classes.mainLine} >
+                        <Grid item md='auto'>
+                            <Checkbox
+                                onChange={(event) => changeUnassginedUserFilter(event.target.checked)}
+                                color='primary'
+                                checked={unassignedUserFilter}
+                                className={classes.checkbox}
+                            />
+                            <Typography className={classes.title}>לא משויכות לחוקר</Typography>
+                        </Grid>
+                        <Grid item md='auto'>
+                            <Checkbox
+                                onChange={(event) => changeInactiveUserFilter(event.target.checked)}
+                                color='primary'
+                                checked={inactiveUserFilter}
+                                className={classes.checkbox}
+                            />
+                            <Typography className={classes.title}>משויכות לחוקרים לא פעילים</Typography>
+                        </Grid>
+                        <Grid item md='auto'>
+                            <Checkbox
+                                onChange={(event) => changeUnallocatedDeskFilter(event.target.checked)}
+                                color='primary'
+                                checked={unallocatedDeskFilter}
+                                className={classes.checkbox}
+                            />
+                            <Typography className={classes.title}>לא משויכות לדסק</Typography>
+                        </Grid>
+                        <Grid item md='auto'>
+                            <Checkbox
+                                onChange={(event) => changeNotSentToBotFilter(event.target.checked)}
+                                color='primary'
+                                checked={notSentToBotFilter}
+                                className={classes.checkbox}
+                            />
+                            <Typography className={classes.title}>חקירות שלא נשלחו לבוט</Typography>
+                        </Grid>
+                        <Grid item md='auto'>
+                            <Checkbox
+                                onChange={(event) => changeIncompletedBotInvestigationFilter(event.target.checked)}
+                                color='primary'
+                                checked={incompletedBotInvestigationFilter}
+                                className={classes.checkbox}
+                            />
+                            <Typography className={classes.title}>חקירות שלא הושלמו ע"י בוט</Typography>
+                        </Grid>
+                        <Grid item md='auto'>
+                            <Checkbox
+                                onChange={(event) => changeComplexityFilter(event.target.checked)}
+                                color='primary'
+                                checked={complexityFilter}
+                                className={classes.checkbox}
+                            />
+                            <Typography className={classes.title}>חקירות מורכבות</Typography>
+                        </Grid>
+                        {
+                            complexityFilter &&
+                            <Grid item md='auto'>
+                                <Autocomplete
+                                    ChipProps={{ className: classes.chip }}
+                                    className={classes.autocomplete}
+                                    classes={{ inputFocused: classes.autocompleteInputText }}
+                                    size='small'
+                                    disableCloseOnSelect
+                                    multiple
+                                    options={complexityReasons}
+                                    value={complexityReasons.filter(reason => selectedComplexityReason.includes(reason.reasonId))}
+                                    getOptionLabel={(option) => option.description}
+                                    onChange={(event, values) => {
+                                        changeComplexityReasonFilter(values);
+                                        setSelectedComplexityReason(values.map(value => value.reasonId));
+
+                                    }}
+                                    renderInput={(params) =>
+                                        <TextField
+                                            label={'סיבה למורכבות חקירה'}
+                                            {...params}
+                                            InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
+                                        />
+                                    }
+                                    renderOption={(option, { selected }) => (
+                                        <>
+                                            <Checkbox
+                                                size='small'
+                                                className={classes.optionCheckbox}
+                                                checked={selected}
+                                                color='primary'
+                                            />
+                                            <Typography className={classes.option} >{option.description}</Typography>
+                                        </>
+                                    )}
+                                    limitTags={1}
+                                />
+                            </Grid>
+                        }
+                    </Grid>
                     <Grid item md={12} className={classes.mainLine} >
                         <Grid item md={1} className={classes.column}>
                             <DeskFilter
@@ -381,102 +484,6 @@ const TableFilter = (props: Props) => {
 
 
                     </Grid>
-                    <Grid item md={12} className={classes.mainLine} >
-                        <Grid item md='auto'>
-                            <Checkbox
-                                onChange={(event) => changeUnassginedUserFilter(event.target.checked)}
-                                color='primary'
-                                checked={unassignedUserFilter}
-                                className={classes.checkbox}
-                            />
-                            <Typography className={classes.title}>לא משויכות לחוקר</Typography>
-                        </Grid>
-                        <Grid item md='auto'>
-                            <Checkbox
-                                onChange={(event) => changeInactiveUserFilter(event.target.checked)}
-                                color='primary'
-                                checked={inactiveUserFilter}
-                                className={classes.checkbox}
-                            />
-                            <Typography className={classes.title}>משויכות לחוקרים לא פעילים</Typography>
-                        </Grid>
-                        <Grid item md='auto'>
-                            <Checkbox
-                                onChange={(event) => changeUnallocatedDeskFilter(event.target.checked)}
-                                color='primary'
-                                checked={unallocatedDeskFilter}
-                                className={classes.checkbox}
-                            />
-                            <Typography className={classes.title}>לא משויכות לדסק</Typography>
-                        </Grid>
-                        <Grid item md='auto'>
-                            <Checkbox
-                                onChange={(event) => changeNotSentToBotFilter(event.target.checked)}
-                                color='primary'
-                                checked={notSentToBotFilter}
-                                className={classes.checkbox}
-                            />
-                            <Typography className={classes.title}>חקירות שלא נשלחו לבוט</Typography>
-                        </Grid>
-                        <Grid item md='auto'>
-                            <Checkbox
-                                onChange={(event) => changeIncompletedBotInvestigationFilter(event.target.checked)}
-                                color='primary'
-                                checked={incompletedBotInvestigationFilter}
-                                className={classes.checkbox}
-                            />
-                            <Typography className={classes.title}>חקירות שלא הושלמו ע"י בוט</Typography>
-                        </Grid>
-                        <Grid item md='auto'>
-                            <Checkbox
-                                onChange={(event) => changeComplexityFilter(event.target.checked)}
-                                color='primary'
-                                checked={complexityFilter}
-                                className={classes.checkbox}
-                            />
-                            <Typography className={classes.title}>חקירות מורכבות</Typography>
-                        </Grid>
-                        {
-                            complexityFilter &&
-                            <Grid item md='auto'>
-                                <Autocomplete
-                                    ChipProps={{ className: classes.chip }}
-                                    className={classes.autocomplete}
-                                    classes={{ inputFocused: classes.autocompleteInputText }}
-                                    size='small'
-                                    disableCloseOnSelect
-                                    multiple
-                                    options={complexityReasons}
-                                    value={complexityReasons.filter(reason => selectedComplexityReason.includes(reason.reasonId))}
-                                    getOptionLabel={(option) => option.description}
-                                    onChange={(event, values) => {
-                                        changeComplexityReasonFilter(values);
-                                        setSelectedComplexityReason(values.map(value => value.reasonId));
-
-                                    }}
-                                    renderInput={(params) =>
-                                        <TextField
-                                            label={'סיבה למורכבות חקירה'}
-                                            {...params}
-                                            InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
-                                        />
-                                    }
-                                    renderOption={(option, { selected }) => (
-                                        <>
-                                            <Checkbox
-                                                size='small'
-                                                className={classes.optionCheckbox}
-                                                checked={selected}
-                                                color='primary'
-                                            />
-                                            <Typography className={classes.option} >{option.description}</Typography>
-                                        </>
-                                    )}
-                                    limitTags={1}
-                                />
-                            </Grid>
-                        }
-                    </Grid>
                     <Grid item md='auto'>
                         <Box justifyContent='flex-end' display='flex'>
                             <Link component='button' className={classes.resetLinkButton} onClick={resetFilter} >   נקה סינון </Link>
@@ -533,6 +540,7 @@ interface Props {
     changeAgeFilter: (ageFilter: AgeRange) => void;
     onFilterButtonClicked: () => void;
     onResetButtonClicked: () => void;
+    filterTitle: string;
 };
 
 export default TableFilter
