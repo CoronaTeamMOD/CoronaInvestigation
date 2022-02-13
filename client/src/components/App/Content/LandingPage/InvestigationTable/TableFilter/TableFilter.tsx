@@ -26,12 +26,14 @@ import { AgeRange } from 'models/AgeRange';
 import AgeRangeFields from 'commons/AgeRange/AgeRangeFields';
 import FilterTableSearchBar from 'commons/SearchBar/FilterTableSearchBar';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 const searchBarLabel = 'מספר אפידמיולוגי, ת"ז, שם או טלפון';
 
 const TableFilter = (props: Props) => {
 
     const classes = useStyles();
+    const { alertError } = useCustomSwal();
 
     const {
         statuses, subStatuses, filteredStatuses, filteredSubStatuses,
@@ -115,11 +117,21 @@ const TableFilter = (props: Props) => {
         onResetButtonClicked();
     }
 
+    const filter = () => {
+        if (ageErrMsg != '' || errorMes != '') {
+            alertError( 'יש שגיאות בדף, לא ניתן לבצע סינון' );
+        }
+        else {
+            onFilterButtonClicked()
+        }
+        
+    }
+
     const onSearchIconClicked = async () => {
         setIsLoading(true);
         await changeSearchFilter(searchQuery);
         setIsLoading(false);
-        onFilterButtonClicked();
+        filter();
     }
 
     useEffect(() => {
@@ -468,7 +480,7 @@ const TableFilter = (props: Props) => {
                     <Grid item md='auto'>
                         <Box justifyContent='flex-end' display='flex'>
                             <Button className={classes.filterButton} variant='contained' onClick={resetFilter} > נקה </Button>
-                            <Button className={classes.filterButton} variant='contained' onClick={onFilterButtonClicked} > סנן </Button>
+                            <Button className={classes.filterButton} variant='contained' onClick={filter} > סנן </Button>
                         </Box>
                     </Grid>
                     <Box display='flex' justifyContent='center' alignSelf='flex-end' >
