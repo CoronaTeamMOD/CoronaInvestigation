@@ -232,7 +232,6 @@ const TableFilter = (props: Props) => {
                                 <Grid item md='auto'>
                                     <Autocomplete
                                         ChipProps={{ className: classes.chip }}
-                                        className={classes.autocomplete}
                                         classes={{ inputFocused: classes.autocompleteInputText }}
                                         size='small'
                                         disableCloseOnSelect
@@ -304,7 +303,6 @@ const TableFilter = (props: Props) => {
                                 <Autocomplete
                                     disabled={nonContactFilter}
                                     ChipProps={{ className: classes.chip }}
-                                    className={classes.autocomplete}
                                     classes={{ inputFocused: classes.autocompleteInputText }}
                                     disableCloseOnSelect
                                     multiple
@@ -339,7 +337,6 @@ const TableFilter = (props: Props) => {
                             <Grid item md={1}>
                                 <Autocomplete
                                     ChipProps={{ className: classes.chip }}
-                                    className={classes.autocomplete}
                                     classes={{ inputFocused: classes.autocompleteInputText }}
                                     size='small'
                                     disableCloseOnSelect
@@ -379,7 +376,6 @@ const TableFilter = (props: Props) => {
                             <Grid item md={1}>
                                 <Autocomplete
                                     ChipProps={{ className: classes.chip }}
-                                    className={classes.autocomplete}
                                     classes={{ inputFocused: classes.autocompleteInputText }}
                                     size='small'
                                     disableCloseOnSelect
@@ -416,7 +412,6 @@ const TableFilter = (props: Props) => {
                             <Grid item md='auto'>
                                 <Autocomplete
                                     ChipProps={{ className: classes.chip }}
-                                    className={classes.autocomplete}
                                     classes={{ inputFocused: classes.autocompleteInputText }}
                                     size='small'
                                     disableCloseOnSelect

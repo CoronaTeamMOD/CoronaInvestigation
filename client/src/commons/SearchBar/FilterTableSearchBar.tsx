@@ -8,13 +8,11 @@ import useStyles from './SearchBarStyles';
 const FilterTableSearchBar: React.FC<Props> = (props: Props) => {
 
     const { searchBarLabel, onClick, validationSchema, id, searchQuery, setSearchQuery, changeSearchFilter } = props;
-
     const [queryValidationError, setQueryValidationError] = useState<string>('');
     const classes = useStyles();
 
     const handleChange = (value: string) => {
         try {
-
             validationSchema.validateSync(value);
             setSearchQuery(value);
             setQueryValidationError('');
@@ -27,7 +25,6 @@ const FilterTableSearchBar: React.FC<Props> = (props: Props) => {
         setSearchQuery('');
         setQueryValidationError('');
     }
-
 
     return (
         <TextField

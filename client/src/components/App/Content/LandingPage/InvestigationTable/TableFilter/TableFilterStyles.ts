@@ -56,15 +56,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     row: {
         flexDirection: 'row',
     },
-    autocomplete: {
-        // width: '30%',
-        // marginRight: '7px',
-        // '&.Mui-focused': {
-        //     '& div[role="button"]': {
-        //         overflow: 'hidden'
-        //     }
-        // }
-    },
     autocompleteInput: {
         paddingRight: 'unset'
     },
