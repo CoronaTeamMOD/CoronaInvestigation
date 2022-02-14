@@ -9,7 +9,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginBottom: theme.spacing(1),
         borderRadius: 16,
         maxHeight: '80%',
-        justifyContent: 'space-between'      
+        justifyContent: 'space-between',
+        paddingBottom: 0 ,       
     },
     mainLine: {
         display: 'flex',
@@ -109,16 +110,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     column: {
         flexDirection: 'column'
     },
-    expandButton: {
-        borderRadius: '15px',
-        width:'30px',
-        height:'30px',
-        padding:'1px',
-        backgroundColor: theme.palette.primary.main,
-        color: 'white',
-        border: 'none',
-        cursor:'pointer'
-    },
     filterTitle: {
         color: theme.palette.primary.main,
         fontWeight: 600,
@@ -158,6 +149,16 @@ const useStyles = makeStyles((theme: Theme) => ({
         textDecoration: 'underline',  
         fontWeight: 500,
     },
+    expandIconButton: {
+        position:'relative',
+        fontSize:'20px',
+        cursor:'pointer',
+    },
+    expandIcon: {
+        position:'absolute',
+        left:'3px',
+        color:'white',
+    }
 
 }));
 
