@@ -1,3 +1,4 @@
+
 import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
@@ -8,13 +9,22 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginBottom: theme.spacing(1),
         borderRadius: 16,
         maxHeight: '80%',
-        justifyContent: 'space-between'      
+        justifyContent: 'space-between',
+        paddingBottom: 0 ,       
     },
     mainLine: {
         display: 'flex',
         alignItems: 'center',
         maxHeight: '80%',
-        justifyContent: 'space-between'
+        gap:'10px',
+        marginBottom:'10px',
+        flexWrap:'wrap'
+    },
+    ageRange:{
+        display:'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap:'nowrap',
     },
     botLine: {
         display: 'flex',
@@ -45,15 +55,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     row: {
         flexDirection: 'row',
-    },
-    autocomplete: {
-        width: '30%',
-        marginRight: '7px',
-        '&.Mui-focused': {
-            '& div[role="button"]': {
-                overflow: 'hidden'
-            }
-        }
     },
     autocompleteInput: {
         paddingRight: 'unset'
@@ -94,11 +95,62 @@ const useStyles = makeStyles((theme: Theme) => ({
         textOverflow: 'ellipsis'
     },
     timeRangeError: {
-        fontSize: '1vw',
+        fontSize: '15px',
+        color: 'red',
     },
     column: {
         flexDirection: 'column'
+    },
+    filterTitle: {
+        color: theme.palette.primary.main,
+        fontWeight: 600,
+        paddingRight: '5vw',
+        fontSize: '20px'
+    },
+    filterSubTitle: {
+        color:'black',
+        fontSize:'18px',
+        fontWeight:400
+    },
+    selectDropdown: {
+        width:'100%',
+    },
+    collapse : {
+        width:'100%',
+    },
+    filterButton: {
+        backgroundColor: '#5FB1CB',
+        color: 'black',
+        borderRadius: '10vw',
+        '&:hover': {
+            backgroundColor: theme.palette.primary.main,
+            color: 'white',
+        },
+        marginRight:'15px',
+        fontSize:'1vw',
+    },
+    filterIconButton: {
+        paddingRight:'7px',
+    },
+    resetLinkButton: {
+        marginRight:'15px',
+        color:'black',
+        fontSize:'1vw',
+        fontFamily:'Assistant',
+        textDecoration: 'underline',  
+        fontWeight: 500,
+    },
+    expandIconButton: {
+        position:'relative',
+        fontSize:'20px',
+        cursor:'pointer',
+    },
+    expandIcon: {
+        position:'absolute',
+        left:'3px',
+        color:'white',
     }
+
 }));
 
 export default useStyles;

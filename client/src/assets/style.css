@@ -1,0 +1,34 @@
+@font-face {
+  font-family: 'moh-icon';
+  src:  url('fonts/moh-icon.eot?phcvrf');
+  src:  url('fonts/moh-icon.eot?phcvrf#iefix') format('embedded-opentype'),
+    url('fonts/moh-icon.ttf?phcvrf') format('truetype'),
+    url('fonts/moh-icon.woff?phcvrf') format('woff'),
+    url('fonts/moh-icon.svg?phcvrf#moh-icon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+i.moh-icon {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'moh-icon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.moh-icon.Next:before {
+  content: "\e902";
+  color: #2c97b9;
+}
+.moh-icon.filter:before {
+  content: "\e900";
+}

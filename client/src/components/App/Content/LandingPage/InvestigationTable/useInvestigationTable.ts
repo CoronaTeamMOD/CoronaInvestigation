@@ -48,6 +48,9 @@ import { setInvestigatorReferenceStatuses } from 'redux/investigatorReferenceSta
 import { setChatStatuses } from 'redux/ChatStatuses/chatStatusesActionCreator';
 import { setComplexityReasons } from 'redux/ComplexityReasons/ComplexityReasonsActionCreators';
 import ComplexityReason from 'models/ComplexityReason';
+import { defaultAgeRange } from 'models/enums/AgeRange';
+import { AgeRange } from 'models/AgeRange';
+import { tableFilterTitle} from './TableFilter/TableFilterTitles'
 
 const investigationURL = '/investigation';
 
@@ -173,6 +176,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         incompletedBotInvestigationFilter: historyIncompletedBotInvestigationFilter = false,
         complexityFilter: historyComplexityFilter = false,
         complexityReasonFilter: historyComplexityReasonFilter = [],
+        ageFilter: historyAgeFilter = defaultAgeRange,
         filterTitle } = useMemo(() => {
             const { location: { state } } = history;
             return state || {};
@@ -199,7 +203,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [incompletedBotInvestigationFilter, setIncompletedBotInvestigationFilter] = useState<boolean>(historyIncompletedBotInvestigationFilter);
     const [complexityFilter, setComplexityFilter] = useState<boolean>(historyComplexityFilter);
     const [complexityReasonFilter, setComplexityReasonFilter] = useState<number[]>(historyComplexityReasonFilter);
-    
+    const [ageFilter, setAgeFilter] = useState<AgeRange>(historyAgeFilter);
+    const [filtersTitle, setFiltersTitle] = useState<string>('');
 
     const getFilterRules = () => {
         const statusFilterToSet = historyStatusFilter.length > 0 ? filterCreators.STATUS(historyStatusFilter) : null;
@@ -218,6 +223,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const incompletedBotInvestigationFilterToSet = historyIncompletedBotInvestigationFilter ? filterCreators.INCOMPLETED_BOT_INVESTIGATION(historyIncompletedBotInvestigationFilter) : null;
         const complexityFilterToSet = historyComplexityFilter ? filterCreators.COMPLEXITY(historyComplexityFilter) : null;
         const complexityReasonFilterToSet = historyComplexityReasonFilter ? filterCreators.COMPLEXITY_REASON(historyComplexityReasonFilter) : null;
+        const ageFilterToSet = historyAgeFilter ? filterCreators.AGE(historyAgeFilter) : null;
         return {
             [InvestigationsFilterByFields.STATUS]: statusFilterToSet && Object.values(statusFilterToSet)[0],
             [InvestigationsFilterByFields.SUB_STATUS]: subStatusFilterToSet && Object.values(subStatusFilterToSet)[0],
@@ -235,6 +241,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [InvestigationsFilterByFields.INCOMPLETED_BOT_INVESTIGATION]: incompletedBotInvestigationFilterToSet && Object.values(incompletedBotInvestigationFilterToSet)[0],
             [InvestigationsFilterByFields.COMPLEXITY] : complexityFilterToSet && Object.values(complexityFilterToSet)[0],
             [InvestigationsFilterByFields.COMPLEXITY_REASON] : complexityReasonFilterToSet && Object.values(complexityReasonFilterToSet)[0],
+            [InvestigationsFilterByFields.AGE] : ageFilterToSet && Object.values(ageFilterToSet)[0],
         }
     };
 
@@ -249,6 +256,31 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
     const windowTabsBroadcastChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
+
+    const filterInvestigations = () => {
+        fetchTableData();
+        setIsBadgeInVisible(!Boolean(Object.values(filterRules).find(item => item !== null)));
+    }
+    const resetFilter = () => {
+        setFitlerRules({});
+    }
+
+    const updateFilterTitle = () => {
+       let title = '';
+       for (const [key, value] of Object.entries(filterRules)) {
+        if (value != false && value != [] && value != null) {
+            let titleKey= key as keyof typeof tableFilterTitle;
+            if (tableFilterTitle[titleKey]!=''){
+                title += tableFilterTitle[key as keyof typeof tableFilterTitle]+', ';
+            }
+        }
+      }
+      if (title!=''){
+        title = title.slice(0, -2);
+      }
+      setFiltersTitle(title);
+      
+    }
 
     const changeDeskFilter = (desks: Desk[]) => {
         const desksIds = desks.map(desk => desk.id);
@@ -385,6 +417,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setCurrentPage(defaultPage);
     };
 
+    const changeAgeFilter = (val: AgeRange) => {
+        updateFilterHistory('ageFilter', val);
+        setAgeFilter(val);
+        handleFilterChange(filterCreators.AGE(val))
+        setCurrentPage(defaultPage);
+    };
+
     const updateFilterHistory = (key: string, value: any) => {
         const { location: { state } } = history;
         history.replace({
@@ -477,6 +516,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchAllBotInvestigationStatuses();
         startWaiting();
     }, []);
+
+    useEffect(()=>{
+        updateFilterTitle();
+    },[filterRules])
 
     const convertFilterObject = () => {
         let filterArray: any[] = [];
@@ -696,7 +739,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     useEffect(() => {
         fetchTableData();
         setIsBadgeInVisible(!Boolean(Object.values(filterRules).find(item => item !== null)))
-    }, [isLoggedIn, filterRules, orderBy, currentPage, displayedCounty, userType]);
+    }, [isLoggedIn, orderBy, currentPage, displayedCounty, userType]);
 
     useEffect(() => {
         setCurrentPage(defaultPage);
@@ -1231,7 +1274,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         complexityFilter,
         changeComplexityFilter,
         complexityReasonFilter,
-        changeComplexityReasonFilter
+        changeComplexityReasonFilter,
+        ageFilter,
+        changeAgeFilter,
+        filterInvestigations,
+        resetFilter,
+        filtersTitle
     };
 };
 
