@@ -16,6 +16,7 @@ enum InvestigationsFilterByFields {
     COMPLEXITY = 'COMPLEXITY',
     COMPLEXITY_REASON = 'COMPLEXITY_REASON',
     INVESTIGATIONS_WERENT_SENT_TO_BOT = 'INVESTIGATIONS_WERENT_SENT_TO_BOT',
+    AGE='AGE',
 };
 
 export default InvestigationsFilterByFields;

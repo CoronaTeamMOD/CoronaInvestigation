@@ -15,6 +15,7 @@ import { SelectedRow } from './useInvestigationTable';
 import { IndexedInvestigationData } from './InvestigationTablesHeaders';
 import KeyValuePair from 'models/KeyValuePair';
 import ComplexityReason from 'models/ComplexityReason';
+import { AgeRange } from 'models/AgeRange';
 
 export type StatusFilter = InvestigationMainStatusCodes[];
 export type SubStatusFilter = string[];
@@ -39,6 +40,7 @@ export interface HistoryState {
     incompletedBotInvestigationFilter?:boolean;
     complexityFilter?:boolean;
     complexityReasonFilter?: number[];
+    ageFilter?: AgeRange;
 };
 
 export interface useInvestigationTableParameters {
@@ -97,6 +99,7 @@ export interface useInvestigationTableOutcome {
     incompletedBotInvestigationFilter:boolean;
     complexityFilter: boolean;
     complexityReasonFilter: number[];
+    ageFilter: AgeRange;
     changeUpdateDateFilter: (dateString: string) => void;
     changeNonContactFilter: (isNonContact: boolean) => void;
     isBadgeInVisible: boolean;
@@ -110,4 +113,8 @@ export interface useInvestigationTableOutcome {
     changeIncompletedBotInvestigationFilter: (isFilterOn: boolean) => void;
     changeComplexityFilter:  (isFilterOn: boolean) => void;
     changeComplexityReasonFilter: (reasons: ComplexityReason[]) =>void;
+    changeAgeFilter: (ageFilter: AgeRange) => void;
+    filterInvestigations: () => void;
+    resetFilter: () => void;
+    filtersTitle: string;
 };
