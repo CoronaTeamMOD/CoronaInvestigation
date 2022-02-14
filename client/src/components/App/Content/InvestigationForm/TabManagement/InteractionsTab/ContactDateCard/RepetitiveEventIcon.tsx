@@ -6,7 +6,7 @@ import useStyles from './RepetitiveEventIconStyles';
 const RepetitiveEventIcon = () => {
     const classes = useStyles();
     return (
-        <Tooltip className={classes.repeatIcon} title='אירוע מחזורי, מגעים באירוע מחזורי מופיעים באירוע האחרון בלבד.'>
+        <Tooltip className={classes.repeatIcon} title='אירוע מחזורי'>
             <Cached/>
         </Tooltip>
     );
