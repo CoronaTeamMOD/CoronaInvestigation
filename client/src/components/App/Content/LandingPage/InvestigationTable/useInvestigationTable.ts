@@ -406,9 +406,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         updateFilterHistory('complexityFilter', value);
         setComplexityFilter(value);
         handleFilterChange(filterCreators.COMPLEXITY(value));
-        if (!value && complexityReasonFilter.length > 0) {
-            changeComplexityReasonFilter([]);
-        }
         setCurrentPage(defaultPage);
     }
 
@@ -552,14 +549,16 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const handleFilterChange = (filterBy: () => any) => {
         let filterRulesToSet = { ...filterRules };
-        if (Object.values(filterBy)[0] !== null) {
-            filterRulesToSet = {
-                ...filterRulesToSet,
-                ...filterBy
+        for (let i=0; i<Object.values(filterBy).length; i++){
+            if (Object.values(filterBy)[i] !== null) {
+                filterRulesToSet = {
+                    ...filterRulesToSet,
+                    ...filterBy
+                }
+            } else {
+                delete filterRulesToSet[Object.keys(filterBy)[i]]
             }
-        } else {
-            delete filterRulesToSet[Object.keys(filterBy)[0]]
-        }
+        }     
         setFitlerRules(filterRulesToSet);
     };
 
