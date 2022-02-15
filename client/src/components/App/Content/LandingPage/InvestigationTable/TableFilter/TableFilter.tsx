@@ -127,10 +127,7 @@ const TableFilter = (props: Props) => {
 
     }
 
-    const onSearchIconClicked = async () => {
-        setIsLoading(true);
-        await changeSearchFilter(searchQuery);
-        setIsLoading(false);
+    const onSearchIconClicked = () => {
         filter();
     }
 
@@ -164,7 +161,7 @@ const TableFilter = (props: Props) => {
                             <FilterTableSearchBar
                                 validationSchema={stringAlphanum}
                                 searchBarLabel={searchBarLabel}
-                                onClick={async () => onSearchIconClicked()}
+                                onClick={() => onSearchIconClicked()}
                                 searchQuery={searchQuery}
                                 setSearchQuery={setSearchQuery}
                                 changeSearchFilter={changeSearchFilter}
