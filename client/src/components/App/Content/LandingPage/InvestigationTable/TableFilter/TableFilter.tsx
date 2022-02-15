@@ -143,10 +143,6 @@ const TableFilter = (props: Props) => {
             : setSelectedStatuses(filteredStatuses)
     }, [filteredSubStatuses, subStatuses]);
 
-    useEffect(() => {
-
-    },[])
-
     return (
             <Card className={classes.card}>
                 <Grid container alignItems='center'>
