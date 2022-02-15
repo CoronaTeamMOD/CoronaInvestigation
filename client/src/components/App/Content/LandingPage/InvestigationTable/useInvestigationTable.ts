@@ -406,6 +406,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         updateFilterHistory('complexityFilter', value);
         setComplexityFilter(value);
         handleFilterChange(filterCreators.COMPLEXITY(value));
+        if (!value && complexityReasonFilter.length > 0) {
+            changeComplexityReasonFilter([]);
+        }
         setCurrentPage(defaultPage);
     }
 
