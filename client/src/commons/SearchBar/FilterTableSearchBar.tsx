@@ -15,6 +15,7 @@ const FilterTableSearchBar: React.FC<Props> = (props: Props) => {
         try {
             validationSchema.validateSync(value);
             setSearchQuery(value);
+            changeSearchFilter(value);
             setQueryValidationError('');
         } catch (error) {
             setQueryValidationError(error.errors[0]);
