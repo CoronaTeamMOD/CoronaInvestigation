@@ -97,14 +97,11 @@ export const adminCols: string[] = [
     TableHeadersNames.fullName,
     TableHeadersNames.age,
     TableHeadersNames.city,
-    TableHeadersNames.investigatorName,
-    TableHeadersNames.investigationStatus,
+    TableHeadersNames.investigatorName, 
     TableHeadersNames.investigationDesk,
-    TableHeadersNames.comment,
-    TableHeadersNames.investigatiorReferenceRequired,
+    TableHeadersNames.investigationStatus,
     TableHeadersNames.chatStatus,
-    TableHeadersNames.lastChatDate,
-    TableHeadersNames.investigatorReferenceStatus,
+    TableHeadersNames.comment,
     TableHeadersNames.settings
 ]
 
@@ -114,16 +111,13 @@ export const userCols: string[] = [
     TableHeadersNames.rowIndicators,
     TableHeadersNames.epidemiologyNumber,
     TableHeadersNames.validationDate,
-    TableHeadersNames.investigationStatus,
     TableHeadersNames.fullName,
     TableHeadersNames.age,
     TableHeadersNames.city,
     TableHeadersNames.investigationDesk,
-    TableHeadersNames.comment,
-    TableHeadersNames.investigatiorReferenceRequired,
+    TableHeadersNames.investigationStatus,                       
     TableHeadersNames.chatStatus,
-    TableHeadersNames.lastChatDate,
-    TableHeadersNames.investigatorReferenceStatus,
+    TableHeadersNames.comment,
     TableHeadersNames.settings
 ]
 
