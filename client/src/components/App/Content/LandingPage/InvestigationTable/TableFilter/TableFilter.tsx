@@ -217,7 +217,10 @@ const TableFilter = (props: Props) => {
                             </Grid>
                             <Grid item md='auto'>
                                 <Checkbox
-                                    onChange={(event) => changeComplexityFilter(event.target.checked)}
+                                    onChange={(event) => {
+                                        changeComplexityFilter(event.target.checked);
+                                        setSelectedComplexityReason([]);
+                                    }}
                                     color='primary'
                                     checked={complexityFilter}
                                     className={classes.checkbox}

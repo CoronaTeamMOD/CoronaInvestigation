@@ -337,7 +337,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     Object.values((user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) ? adminCols : userCols).map((key) => (
                                         <TableCell
                                             classes={{ stickyHeader: classes.horizontalSticky }}
-                                            className={classes.tableHeaderCell + ' ' + (key === TableHeadersNames.investigatorName || key === TableHeadersNames.investigatiorReferenceRequired ? classes.columnBorder : '')}
+                                            className={classes.tableHeaderCell + ' ' + (key === TableHeadersNames.city ? classes.columnBorder : '')}
                                             sortDirection={orderBy === key ? order : false}
                                         >
                                             {

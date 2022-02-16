@@ -21,7 +21,8 @@ import { IndexedInvestigationData, TableHeadersNames } from '../InvestigationTab
 import InvestigatorAllocationCell from '../InvestigatorAllocation/InvestigatorAllocationCell';
 import InvestigationStatusColumn from '../InvestigationStatusColumn/InvestigationStatusColumn';
 import InvestigationIndicatorsColumn from '../InvestigationIndicatorsColumn/InvestigationIndicatorsColumn';
-import BotProperties from 'models/enums/BotProperties';
+import InvestigatorReferenceStatusCode from 'models/enums/InvestigatorReferenceStatusCode';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 interface RowTooltipProps {
     titleOverride?: string;
@@ -130,12 +131,26 @@ const InvestigationTableRow = ({
         return msg;
     }
 
-    const getBotTableCell = (lastUpdatorUser: string, value: string) => {
-        return (
-            <span className={lastUpdatorUser == BotProperties.BOT_USER ? `${classes.botActive}` : `${classes.botInactive}`}>
-                {value}
-            </span>
-        );
+    const getInvestigatorReferenceRequiredColor = (row: InvestigationTableRowType) => {
+        if (row.investigatiorReferenceRequired &&
+            ((row.investigatorReferenceStatus?.id != InvestigatorReferenceStatusCode.NEW &&
+                row.investigatorReferenceStatus?.id != InvestigatorReferenceStatusCode.IN_PROCESS &&
+                row.mainStatus.id == InvestigationMainStatusCodes.DONE) ||
+                row.investigatorReferenceStatus?.id == InvestigatorReferenceStatusCode.DONE)) {
+            return 'disabled';
+        }
+        return 'primary';
+    }
+
+    const ifCompletedStatus = (row: InvestigationTableRowType) => {
+        if (row.mainStatus?.id == InvestigationMainStatusCodes.CANT_COMPLETE ||
+            row.mainStatus?.id == InvestigationMainStatusCodes.NOT_INVESTIGATED ||
+            (row.mainStatus?.id == InvestigationMainStatusCodes.DONE &&
+                !(row.investigatiorReferenceRequired == true &&
+                    row.investigatorReferenceStatus?.id != InvestigatorReferenceStatusCode.DONE))) {
+            return true;
+        }
+        return false;
     }
 
     const getTableCell = (cellName: string) => {
@@ -210,10 +225,10 @@ const InvestigationTableRow = ({
                 </Tooltip>
             case TableHeadersNames.comment:
                 return (
-                    <ClickableTooltip disabled={disabled} value={indexedRow.comment}
-                        defaultValue='' scrollableRef={tableContainerRef.current} InputIcon={Comment} />
+                    <CommentCell
+                        comment={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                    />
                 )
-
             case TableHeadersNames.phoneNumber:
                 return <ClickableTooltip disabled={disabled} value={indexedRow[cellName as keyof typeof TableHeadersNames]}
                     defaultValue='' scrollableRef={tableContainerRef.current} InputIcon={Call} />
@@ -226,25 +241,38 @@ const InvestigationTableRow = ({
                 />;
             case TableHeadersNames.multipleCheck:
                 return (
-                    <>
+                    <div className={classes.multipleCheckSection}>
                         {(!wasInvestigationFetchedByGroup) && user.userType !== UserTypeCodes.INVESTIGATOR &&
-                            <Checkbox onClick={onMultiCheckClick} color='primary' checked={checked} size='small'
-                                className={indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup} />}
-                        {indexedRow.canFetchGroup &&
-                            <Tooltip title={isGroupShown ? hideInvestigationGroupText : showInvestigationGroupText} placement='top' arrow>
-                                <IconButton onClick={onGroupExpandClick}>
-                                    {isGroupShown ?
-                                        <KeyboardArrowDown /> :
-                                        <KeyboardArrowLeft />}
+                            <Box flex={1} marginX={0.5}>
+                                <Checkbox onClick={onMultiCheckClick} color='primary' checked={checked} size='small'
+                                    className={indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup} />
+                            </Box>}
+                        <Box flex={1} marginX={0.5}>
+                            {indexedRow.canFetchGroup &&
+                                <Tooltip title={isGroupShown ? hideInvestigationGroupText : showInvestigationGroupText} placement='top' arrow>
+                                    <IconButton onClick={onGroupExpandClick}>
+                                        {isGroupShown ?
+                                            <KeyboardArrowDown /> :
+                                            <KeyboardArrowLeft />}
+                                    </IconButton>
+                                </Tooltip>
+                            }   </Box>
+                        {
+                            indexedRow.investigatiorReferenceRequired &&
+                            <Box flex={1} marginX={0.5} alignSelf='center'>
+                                <Tooltip title={getInvestigatorReferenceRequiredTooltip(row)} placement='top' arrow>
+                                    <Person color={getInvestigatorReferenceRequiredColor(row)} />
+                                </Tooltip>
+                            </Box>
+                        }
+                        <Box flex={1} marginX={0.5}>
+                            <Tooltip title='צפייה בלבד' placement='top' arrow>
+                                <IconButton color='primary' onClick={onSetViewMode}>
+                                    <Visibility />
                                 </IconButton>
                             </Tooltip>
-                        }
-                        <Tooltip title='צפייה בלבד' placement='top' arrow>
-                            <IconButton color='primary' onClick={onSetViewMode}>
-                                <Visibility />
-                            </IconButton>
-                        </Tooltip>
-                    </>
+                        </Box>
+                    </div>
                 )
             case TableHeadersNames.settings:
                 return (
@@ -262,23 +290,6 @@ const InvestigationTableRow = ({
                 );
             case TableHeadersNames.age:
                 return indexedRow[cellName as keyof typeof TableHeadersNames] ?? '-';
-            case TableHeadersNames.investigatiorReferenceRequired:
-                return (
-                    <Box flex={1} marginX={0.5}>
-                        {
-                            indexedRow.investigatiorReferenceRequired &&
-                            <Tooltip title={getInvestigatorReferenceRequiredTooltip(row)} placement='top' arrow>
-                                <Person color={(row.lastUpdatorUser == BotProperties.BOT_USER) ? 'primary' : 'disabled'} />
-                            </Tooltip>
-                        }
-                    </Box>
-                )
-            case TableHeadersNames.chatStatus:
-                return getBotTableCell(row.lastUpdatorUser, indexedRow[cellName as keyof typeof TableHeadersNames])
-            case TableHeadersNames.lastChatDate:
-                return getBotTableCell(row.lastUpdatorUser, indexedRow[cellName as keyof typeof TableHeadersNames])
-            case TableHeadersNames.investigatorReferenceStatus:
-                return getBotTableCell(row.lastUpdatorUser, indexedRow[cellName as keyof typeof TableHeadersNames])
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames];
         }
@@ -294,7 +305,7 @@ const InvestigationTableRow = ({
                 selected={checked}
                 key={indexedRow.epidemiologyNumber}
                 classes={{ selected: classes.checkedRow }}
-                className={`${classes.investigationRow} ${clickable && classes.clickableInvestigationRow} ${disabled && classes.disabled}`}
+                className={`${classes.investigationRow} ${clickable && classes.clickableInvestigationRow} ${disabled && classes.disabled} ${ifCompletedStatus(row) && classes.completedStatusRow}`}
                 onClick={() => clickable && !disabled && onInvestigationRowClick(indexedRow as { [T in keyof IndexedInvestigationData]: any })}
             >
                 {

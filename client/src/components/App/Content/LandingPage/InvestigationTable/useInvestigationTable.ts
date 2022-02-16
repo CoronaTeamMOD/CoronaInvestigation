@@ -405,10 +405,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const changeComplexityFilter = (value: boolean) => {
         updateFilterHistory('complexityFilter', value);
         setComplexityFilter(value);
-        handleFilterChange(filterCreators.COMPLEXITY(value));
-        if (!value && complexityReasonFilter.length > 0) {
-            changeComplexityReasonFilter([]);
+        if (!value && complexityReasonFilter.length>0) {
+            updateFilterHistory('complexityReasonFilter', []);
+            setComplexityReasonFilter([]);
         }
+        handleFilterChange(filterCreators.COMPLEXITY(value));
         setCurrentPage(defaultPage);
     }
 
@@ -552,14 +553,16 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const handleFilterChange = (filterBy: () => any) => {
         let filterRulesToSet = { ...filterRules };
-        if (Object.values(filterBy)[0] !== null) {
-            filterRulesToSet = {
-                ...filterRulesToSet,
-                ...filterBy
+        for (let i=0; i<Object.values(filterBy).length; i++){
+            if (Object.values(filterBy)[i] !== null) {
+                filterRulesToSet = {
+                    ...filterRulesToSet,
+                    ...filterBy
+                }
+            } else {
+                delete filterRulesToSet[Object.keys(filterBy)[i]]
             }
-        } else {
-            delete filterRulesToSet[Object.keys(filterBy)[0]]
-        }
+        }     
         setFitlerRules(filterRulesToSet);
     };
 
@@ -1041,10 +1044,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (cellKey !== TableHeadersNames.color) {
             classNames.push(classes.tableCell);
         }
-        if (cellKey === TableHeadersNames.investigatorName) {
-            classNames.push(classes.columnBorder);
+        if(cellKey === TableHeadersNames.comment){
+            classNames.push(classes.commentCell);
         }
-        if (cellKey === TableHeadersNames.investigatiorReferenceRequired) {
+        if (cellKey === TableHeadersNames.city) {
             classNames.push(classes.columnBorder);
         }
         else

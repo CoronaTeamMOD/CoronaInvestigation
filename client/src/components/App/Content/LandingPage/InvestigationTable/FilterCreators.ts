@@ -307,7 +307,8 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
             }
             :
             {
-                [InvestigationsFilterByFields.COMPLEXITY]: null
+                [InvestigationsFilterByFields.COMPLEXITY]: null,
+                [InvestigationsFilterByFields.COMPLEXITY_REASON]:null
             }
     },
     [InvestigationsFilterByFields.COMPLEXITY_REASON]: (values: string[]) => {
