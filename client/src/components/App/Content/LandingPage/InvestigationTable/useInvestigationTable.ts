@@ -1044,10 +1044,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (cellKey !== TableHeadersNames.color) {
             classNames.push(classes.tableCell);
         }
-        if (cellKey === TableHeadersNames.investigatorName) {
-            classNames.push(classes.columnBorder);
+        if(cellKey === TableHeadersNames.comment){
+            classNames.push(classes.commentCell);
         }
-        if (cellKey === TableHeadersNames.investigatiorReferenceRequired) {
+        if (cellKey === TableHeadersNames.city) {
             classNames.push(classes.columnBorder);
         }
         else
