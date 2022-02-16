@@ -405,6 +405,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const changeComplexityFilter = (value: boolean) => {
         updateFilterHistory('complexityFilter', value);
         setComplexityFilter(value);
+        if (!value && complexityReasonFilter.length>0) {
+            updateFilterHistory('complexityReasonFilter', []);
+            setComplexityReasonFilter([]);
+        }
         handleFilterChange(filterCreators.COMPLEXITY(value));
         setCurrentPage(defaultPage);
     }
