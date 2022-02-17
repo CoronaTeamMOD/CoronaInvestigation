@@ -22,7 +22,7 @@ const AdminMessages = (props: Props) => {
 
   const getDesksFromDeskFilter = (desks: Desk[], countyId: number) => {
     return (
-      desks
+      desks && desks
         .filter(desk => desk.county === countyId)
         .map(desk => desk.id)
     )
