@@ -15,6 +15,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import './index.css';
 import './styles/fonts.css';
 import './styles/scrollbar.css';
+import './assets/style.css';
 import theme from './styles/theme';
 import { store, persistor } from './redux/store';
 import App from './components/App/App';

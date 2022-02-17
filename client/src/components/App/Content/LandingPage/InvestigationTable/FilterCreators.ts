@@ -8,6 +8,9 @@ import ChatStatusCode from 'models/enums/ChatStatusCodes';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import BotProperties from 'models/enums/BotProperties';
 import InvestigationComplexityCodes from 'models/enums/InvestigationComplexityCodes';
+import { AgeRange } from 'models/AgeRange';
+import { AgeRangeCodes } from 'models/enums/AgeRange';
+import { addYears, format } from 'date-fns';
 
 const unassignedUserName = 'לא משויך';
 
@@ -296,16 +299,17 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
             }
     },
     [InvestigationsFilterByFields.COMPLEXITY]: (isFilterOn: boolean) => {
-        return isFilterOn ? 
-        {
-            [InvestigationsFilterByFields.COMPLEXITY]: {
-                complexityCode: {equalTo: InvestigationComplexityCodes.COMPLEX}
+        return isFilterOn ?
+            {
+                [InvestigationsFilterByFields.COMPLEXITY]: {
+                    complexityCode: { equalTo: InvestigationComplexityCodes.COMPLEX }
+                }
             }
-        }
-        :
-        {
-            [InvestigationsFilterByFields.COMPLEXITY]: null
-        }
+            :
+            {
+                [InvestigationsFilterByFields.COMPLEXITY]: null,
+                [InvestigationsFilterByFields.COMPLEXITY_REASON]:null
+            }
     },
     [InvestigationsFilterByFields.COMPLEXITY_REASON]: (values: string[]) => {
         return (values.length > 0) ?
@@ -316,6 +320,34 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
             }
             : { [InvestigationsFilterByFields.COMPLEXITY_REASON]: null }
     },
+    [InvestigationsFilterByFields.AGE]: (ageFilter: AgeRange) => {
+        if (ageFilter.id == AgeRangeCodes.NO_AGE) {
+            return {
+                [InvestigationsFilterByFields.AGE]: {
+                    investigatedPatientByInvestigatedPatientId:
+                        { covidPatientByCovidPatient: { birthDate: { isNull: true } } }
+                }
+            };
+        }
+        else if (ageFilter.id == AgeRangeCodes.RANGE) {
+            const maxDate = format(addYears(new Date(), (ageFilter.ageFrom != null) ? -ageFilter.ageFrom : 0), 'yyyy-MM-dd') + 'T00:00:00'
+            const minDate = format(addYears(new Date(), (ageFilter.ageTo != null) ? -ageFilter.ageTo - 1 : 0), 'yyyy-MM-dd') + 'T00:00:00';
+            return {
+                [InvestigationsFilterByFields.AGE]:
+                {
+                    investigatedPatientByInvestigatedPatientId:
+                    {
+                        covidPatientByCovidPatient:
+                            { birthDate: { greaterThan: minDate }, and: { birthDate: { lessThanOrEqualTo: maxDate } } }
+                    }
+                }
+            };
+        }
+        else return {
+            [InvestigationsFilterByFields.AGE]: null
+        };
+    },
+
 };
 
 export default filterCreators;

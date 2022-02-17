@@ -12,6 +12,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     checkedRow: {
         backgroundColor: 'rgb(202, 222, 234)!important'
     },
+    completedStatusRow: {
+        backgroundColor:'rgba(189, 189, 189, .1);',
+    },
     tableCellRoot: {
         padding: '0',
         maxWidth: '50px'
@@ -32,6 +35,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     botInactive:{
         color:'#424242',
+    },
+    multipleCheckSection :{
+        display:'flex'
     }
 }));
 
