@@ -54,7 +54,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         fontFamily: 'Assistant'
     },
     columnBorder: {
-        borderLeft: '3px solid rgb(222, 218, 218)',
+        borderRight: '3px solid rgb(222, 218, 218)',
     },
     rowBorder: {
         borderBottom: '3px solid rgb(222, 218, 218)'

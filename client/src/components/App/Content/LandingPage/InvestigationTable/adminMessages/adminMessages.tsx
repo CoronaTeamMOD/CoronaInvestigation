@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Typography, Collapse } from '@material-ui/core';
 
 import Desk from 'models/Desk';
@@ -13,13 +13,13 @@ import useAdminMessagesDBAction from '../../adminLandingPage/adminActions/adminM
 const AdminMessages = (props: Props) => {
   const classes = useStyles();
   const { getAdminsMessages, adminMessagesByDesks } = useAdminMessagesDBAction();
+  const { setAdminMessageCount } = props;
 
-  const messageTitle = 'הודעת אדמין';
   const [messages, setMessages] = useState<AdminMessage[]>([]);
   let desksId = props.deskFilter;
   const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
   const desks = useSelector<StoreStateType, Desk[]>(state => state.desk);
-  
+
   const getDesksFromDeskFilter = (desks: Desk[], countyId: number) => {
     return (
       desks
@@ -29,42 +29,37 @@ const AdminMessages = (props: Props) => {
   }
 
   useEffect(() => {
-    const formattedDesksId = desksId ?? []; 
-    const isDesksFilterEmpty = formattedDesksId.length === 0 
+    const formattedDesksId = desksId ?? [];
+    const isDesksFilterEmpty = formattedDesksId.length === 0
     const desksIds = isDesksFilterEmpty ? getDesksFromDeskFilter(desks, displayedCounty) : formattedDesksId;
     getAdminsMessages(desksIds);
   }, [desksId, displayedCounty])
 
   useEffect(() => {
     if (adminMessagesByDesks) {
-      setMessages(adminMessagesByDesks)
+      setMessages(adminMessagesByDesks);
     }
+    setAdminMessageCount(messages.length);
   }, [adminMessagesByDesks])
 
-    return (
-      <Card className={classes.card}>
-          <Typography className={classes.cardTitle}>
-            <b>{messageTitle}</b>
-          </Typography>
-          <Collapse in={messages.length > 0} unmountOnExit>
-            <div>
-              {messages?.map((message: any) => (
-                <Message 
-                  key={message.id}
-                  messageText={message.message}
-                  isNewMessage={false}
-                  toDisable={true}
-                  toEnableAction={false}
-                />
-              ))}
-            </div>
-          </Collapse>
-        </Card>
-    )
+  return (
+    <Card className={classes.adminMsgSection}>
+      <Collapse in={messages.length > 0} unmountOnExit>
+        <div>
+          {messages?.map((message: any) => (
+            <Typography className={classes.message}>
+              {message.message}
+            </Typography>
+          ))}
+        </div>
+      </Collapse>
+    </Card>
+  )
 }
 
 interface Props {
-  deskFilter: (number|null)[];
+  deskFilter: (number | null)[];
+  setAdminMessageCount: any;
 };
 
 export default AdminMessages;

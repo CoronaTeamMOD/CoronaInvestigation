@@ -1,9 +1,9 @@
-  
-import React from 'react';
+
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { ExitToApp, Home, SupervisorAccount } from '@material-ui/icons';
+import { ExitToApp, Home, SupervisorAccount, Notifications } from '@material-ui/icons';
 import { NavLink, NavLinkProps, useLocation, useHistory } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Tooltip, IconButton, Select, MenuItem } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Tooltip, IconButton, Select, MenuItem, Button, Collapse, Menu, Box } from '@material-ui/core';
 
 import County from 'models/County';
 import District from 'models/District';
@@ -16,6 +16,7 @@ import { adminLandingPageRoute, landingPageRoute, usersManagementRoute, indexRou
 
 import useStyles from './AppToolbarStyles';
 import useAppToolbar from './useAppToolbar';
+import AdminMessages from '../Content/LandingPage/InvestigationTable/adminMessages/adminMessages';
 
 export const toggleMessage = 'מה הסטטוס שלך?';
 const navButtonsWhitelist = {
@@ -53,8 +54,18 @@ const AppToolbar: React.FC = (): JSX.Element => {
     const countyDisplayName = useSelector<StoreStateType, string>(state => state.user.data.countyByInvestigationGroup.displayName);
     const classes = useStyles();
     const location = useLocation();
-    const userName = user.authorityByAuthorityId?.authorityName ? 
-                            user.userName +" (" + user.authorityByAuthorityId.authorityName + ")"  : user.userName;
+    const userName = user.authorityByAuthorityId?.authorityName ?
+        user.userName + " (" + user.authorityByAuthorityId.authorityName + ")" : user.userName;
+    const [adminMessageCount, setAdminMessageCount] = useState<number | null>(null);
+    const [anchorElAdminMsg, setAnchorElAdminMsg] = React.useState<null | HTMLElement>(null);
+    
+    const handleOpenAdminMsg = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorElAdminMsg(event.currentTarget);
+    };
+
+    const handleCloseAdminMsg = () => {
+        setAnchorElAdminMsg(null);
+    };
 
     return (
         <AppBar className={classes.appBar} position='static'>
@@ -65,8 +76,8 @@ const AppToolbar: React.FC = (): JSX.Element => {
                         <Typography variant='h4' className={classes.title} id='title'>אבן יסוד</Typography>
                     </StatePersistentNavLink>
                     {
-                    navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
-                    navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&
+                        navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
+                        navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&
                         <div className={classes.navButtons}>
                             <StatePersistentNavLink exact to={landingPageRoute} >
                                 <Typography className={classes.menuTypo}>  ניהול חקירות</Typography>
@@ -83,25 +94,25 @@ const AppToolbar: React.FC = (): JSX.Element => {
                             className={classes.select}
                             value={user.userType}
                             onChange={(event) => setDisplayedUserType(event.target.value as number)}
-                            classes={{icon: classes.select}}
+                            classes={{ icon: classes.select }}
                             disableUnderline
                             MenuProps={{
-                            anchorOrigin: {
-                                vertical: 'bottom',
-                                horizontal: 'left'
-                            },
-                            transformOrigin: {
-                                vertical: 'top',
-                                horizontal: 'left'
-                            },
-                            getContentAnchorEl: null
+                                anchorOrigin: {
+                                    vertical: 'bottom',
+                                    horizontal: 'left'
+                                },
+                                transformOrigin: {
+                                    vertical: 'top',
+                                    horizontal: 'left'
+                                },
+                                getContentAnchorEl: null
                             }}
-                            renderValue={(value) => 
+                            renderValue={(value) =>
                                 <Typography>משתמש <b>{userTypes.find(userType => userType.id === value)?.displayName}</b></Typography>
                             }
                         >
                             {
-                                userTypes.map(userType => 
+                                userTypes.map(userType =>
                                     <MenuItem key={userType.id} value={userType.id}>
                                         {userType.displayName}
                                     </MenuItem>
@@ -111,11 +122,11 @@ const AppToolbar: React.FC = (): JSX.Element => {
                     }
                     {isActive !== null &&
                         <Tooltip title={toggleMessage} arrow>
-                        <IsActiveToggle
-                            value={isActive}
-                            onToggle={setUserActivityStatus}
-                            exclusive
-                        />
+                            <IsActiveToggle
+                                value={isActive}
+                                onToggle={setUserActivityStatus}
+                                exclusive
+                            />
                         </Tooltip>
                     }
                     <Tooltip title='התנתקות מהמערכת' arrow >
@@ -133,67 +144,96 @@ const AppToolbar: React.FC = (): JSX.Element => {
                             className={classes.select}
                             value={displayedDistrict}
                             onChange={(event) => changeUserDistrict(event.target.value as number)}
-                            classes={{icon: classes.select}}
+                            classes={{ icon: classes.select }}
                             disableUnderline
                             MenuProps={{
-                            anchorOrigin: {
-                                vertical: 'bottom',
-                                horizontal: 'left'
-                            },
-                            transformOrigin: {
-                                vertical: 'top',
-                                horizontal: 'left'
-                            },
-                            getContentAnchorEl: null
+                                anchorOrigin: {
+                                    vertical: 'bottom',
+                                    horizontal: 'left'
+                                },
+                                transformOrigin: {
+                                    vertical: 'top',
+                                    horizontal: 'left'
+                                },
+                                getContentAnchorEl: null
                             }}
-                            renderValue={(value) => 
+                            renderValue={(value) =>
                                 <Typography>מחוז <b>{districts.find(district => district.id === value)?.displayName}</b></Typography>
                             }
                         >
-                        {
-                            districts.map(district => 
-                                <MenuItem key={district.id} value={district.id}>
-                                    {`מחוז  ${district.displayName}`}
-                                </MenuItem>
-                            )
-                        }
-                    </Select>
+                            {
+                                districts.map(district =>
+                                    <MenuItem key={district.id} value={district.id}>
+                                        {`מחוז  ${district.displayName}`}
+                                    </MenuItem>
+                                )
+                            }
+                        </Select>
                     }
                     {user.userType === UserTypeCodes.SUPER_ADMIN ?
                         <Select
                             className={classes.select}
                             value={displayedCounty}
                             onChange={(event) => changeUserCounty(event.target.value as number)}
-                            classes={{icon: classes.select}}
+                            classes={{ icon: classes.select }}
                             disableUnderline
                             MenuProps={{
-                            anchorOrigin: {
-                                vertical: 'bottom',
-                                horizontal: 'left'
-                            },
-                            transformOrigin: {
-                                vertical: 'top',
-                                horizontal: 'left'
-                            },
-                            getContentAnchorEl: null
+                                anchorOrigin: {
+                                    vertical: 'bottom',
+                                    horizontal: 'left'
+                                },
+                                transformOrigin: {
+                                    vertical: 'top',
+                                    horizontal: 'left'
+                                },
+                                getContentAnchorEl: null
                             }}
-                            renderValue={(value) => 
+                            renderValue={(value) =>
                                 <Typography>נפת <b>{districtCounties.find(county => county.id === value)?.displayName}</b></Typography>
                             }
                         >
-                        {
-                            districtCounties.map(county => 
-                                <MenuItem key={county.id} value={county.id}>
-                                    {`נפת  ${county.displayName}`}
-                                </MenuItem>
-                            )
-                        }
-                    </Select>
-                    : countyDisplayName &&
+                            {
+                                districtCounties.map(county =>
+                                    <MenuItem key={county.id} value={county.id}>
+                                        {`נפת  ${county.displayName}`}
+                                    </MenuItem>
+                                )
+                            }
+                        </Select>
+                        : countyDisplayName &&
                         <Typography>
                             הינך מחובר/ת לנפת <b>{countyDisplayName}</b>
                         </Typography>
                     }
+                    <Box>
+                        {adminMessageCount != 0 &&
+                            <Button className={classes.adminMessagesBtn} onClick={handleOpenAdminMsg}>
+                                {!anchorElAdminMsg && <Notifications className={classes.notificationIcon} />}
+                                הודעות אדמין
+                            </Button>
+                        }
+                        <Menu
+                            classes={{ paper: classes.menuPaper }}
+                            anchorEl={anchorElAdminMsg}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(anchorElAdminMsg)}
+                            onClose={handleCloseAdminMsg}
+                        >
+                            <Collapse in={anchorElAdminMsg != null}>
+                                <AdminMessages
+                                    deskFilter={[]}
+                                    setAdminMessageCount={setAdminMessageCount} />
+                            </Collapse>
+                        </Menu>
+                    </Box>
                 </div>
             </Toolbar>
         </AppBar>
