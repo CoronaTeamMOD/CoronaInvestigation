@@ -275,18 +275,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             <Grid className={classes.content}>
                 <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
                     <Grid item xs={12}>
-                        <AdminMessages
-                            deskFilter={deskFilter}
-                        />
-                    </Grid>
-                </Grid>
-                <div className={classes.tableHeaderRow}>
-                    <Typography color='primary' className={classes.counterLabel} >
-                        {counterDescription}
-                    </Typography>
-                </div>
-                <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
-                    <Grid item xs={12}>
                         <TableFilter
                             statuses={allStatuses}
                             subStatuses={allSubStatuses}
@@ -327,6 +315,15 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             onResetButtonClicked={resetFilter}
                             filterTitle={filtersTitle}
                         />
+                    </Grid>
+                </Grid>
+                <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
+                 <Grid item xs={12}>
+                    <div className={classes.tableHeaderRow}>
+                        <Typography color='primary' className={classes.counterLabel} >
+                            {counterDescription}
+                        </Typography>
+                    </div>
                     </Grid>
                 </Grid>
                 <TableContainer ref={tableContainerRef} component={Paper} className={classes.tableContainer}>
