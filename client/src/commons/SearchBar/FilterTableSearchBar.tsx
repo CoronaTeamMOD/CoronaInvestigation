@@ -25,6 +25,7 @@ const FilterTableSearchBar: React.FC<Props> = (props: Props) => {
     const onClearClick = () => {
         setSearchQuery('');
         setQueryValidationError('');
+        changeSearchFilter('');
     }
 
     return (

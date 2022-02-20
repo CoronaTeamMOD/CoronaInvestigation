@@ -17,7 +17,7 @@ import useStyles from './TableFilterStyles';
 import useTableFilter from './useTableFilter';
 import DeskFilter from '../DeskFilter/DeskFilter';
 import { StatusFilter as StatusFilterType, SubStatusFilter as SubStatusFilterType } from '../InvestigationTableInterfaces';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import KeyValuePair from 'models/KeyValuePair';
 import StoreStateType from 'redux/storeStateType';
 import ComplexityReason from 'models/ComplexityReason';
@@ -25,7 +25,6 @@ import ageRange, { AgeRangeCodes } from 'models/enums/AgeRange';
 import { AgeRange } from 'models/AgeRange';
 import AgeRangeFields from 'commons/AgeRange/AgeRangeFields';
 import FilterTableSearchBar from 'commons/SearchBar/FilterTableSearchBar';
-import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 const searchBarLabel = 'מספר אפידמיולוגי, ת"ז, שם או טלפון';
