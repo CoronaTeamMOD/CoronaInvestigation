@@ -51,6 +51,7 @@ street varchar;
 houseNum varchar;
 apartment varchar;
 creationSource int4;
+currentContactSend boolean;
 
 BEGIN 	
 	-- contacted_persons is a JSON that can be recieved in 2 different structures: */
@@ -106,7 +107,8 @@ BEGIN
 	IF personInfo IS NOT NULL THEN
 	    -- Updating person_info
 		SELECT completion_time FROM public.person_contact_details pcd WHERE pcd.person_info = personInfo INTO completionTime;
-	
+		SELECT is_contact_send FROM public.person_contact_details pcd WHERE pcd.person_info = personInfo INTO currentContactSend;
+
  		raise notice 'update contacted person %', personInfo;
 		-- Using upsert to the table person_contact_details
 			INSERT INTO public.person_contact_details (
@@ -138,7 +140,8 @@ BEGIN
 				contact_status = contactStatus ,
 				does_work_with_crowd = doesWorkWithCrowd,
 				relationship = personRelationship,	
-				is_contact_send = false,
+				is_contact_send = (CASE WHEN currentContactSend = true AND contactStatus in (5,8) THEN true 
+										ELSE false END),
 				completion_time = (CASE WHEN completionTime IS NULL AND contactStatus = 5 THEN NOW() 
 										WHEN completionTime IS NOT NULL then completionTime
 										ELSE NULL END)
