@@ -91,7 +91,7 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={12}>
                     <AdminActions
-                        investigationInfoFilter= {investigationInfoFilter}/>
+                        investigationInfoFilter={[]}/>
                 </Grid>
             </Grid>
         </div>
