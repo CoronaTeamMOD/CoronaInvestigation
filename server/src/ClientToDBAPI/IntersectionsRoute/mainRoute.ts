@@ -122,9 +122,10 @@ const extractInteractions = (interactionsData: ClientInteractionsData) => {
     const {additionalOccurrences, ...data} = interactionsData;
     const {startTime, endTime, unknownTime, placeDescription, externalizationApproval, ...commonData} = data;
     const baseData = [data];
-    return additionalOccurrences?.length > 0
+    const events = additionalOccurrences?.length > 0
         ? baseData.concat(additionalOccurrences.map(occurence => ({...commonData, ...occurence})))
         : baseData
+    return events.sort((a,b)=>new Date(b.endTime)>new Date (a.endTime) ? 1 : -1);
 };
 
 intersectionsRoute.post('/createContactEvent', handleInvestigationRequest, (request: Request, response: Response) => {

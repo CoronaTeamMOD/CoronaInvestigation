@@ -32,6 +32,7 @@ import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 import { fetchAllInvestigatorReferenceStatuses } from 'httpClient/investigationInfo';
 import KeyValuePair from 'models/KeyValuePair';
 import { setInvestigatorReferenceStatuses } from 'redux/investigatorReferenceStatuses/investigatorReferenceStatusesActionCreator';
+import { setTrackingRecommendationChanged } from 'redux/Investigation/investigationActionCreators';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
@@ -47,7 +48,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
     const identificationTypes = useSelector<StoreStateType, IdentificationType[]>(state => state.identificationTypes);
     const investigatorReferenceStatuses = useSelector<StoreStateType, KeyValuePair[]>(state => state.investigatorReferenceStatuses);
-
+    const trackingRecommendationChanged = useSelector<StoreStateType,boolean>(state => state.investigation.trackingRecommendationChanged);
     const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
 
     const checkAreThereContacts = () => {
@@ -238,7 +239,10 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                 }).then(async () => {
                     finishInvestigationLogger.info('update investigation status request was successful', Severity.LOW);
                     finishInvestigationLogger.info('launching investigation end time request', Severity.LOW);
-                    await updateTrackingReccomentaion();
+                    if (trackingRecommendationChanged){
+                        await updateTrackingReccomentaion();
+                        dispatch(setTrackingRecommendationChanged(false));
+                    }
                     if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
                         updateIsDeceased(handleInvestigationFinish);
                     } else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {

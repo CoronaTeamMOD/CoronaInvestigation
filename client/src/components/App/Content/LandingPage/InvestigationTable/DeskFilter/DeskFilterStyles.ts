@@ -10,23 +10,25 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontSize: '0.7vw'
     },
     chip: {
-        maxWidth: '100%',
+        maxWidth: '71%',
         whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-    },
+        textOverflow: 'ellipsis'
+    },   
     autocomplete: {
-        height: '60%',
-
-        '& .MuiInputBase-root': {
-            fontSize: '0.7vw'
-        }
+    },
+    autocompleteInput: {
+        paddingRight: 'unset'
+    },
+    autocompleteInputText: {
+        width: 'unset'
+    },
+    checkbox: {
+        padding: '2px'
     },
     optionCheckbox: {
         height: '0.5vh',
-        fontSize: '0.7vw',
         marginLeft: theme.spacing(1),
-        flip: false,
+        flip: false
     },
 }));
 

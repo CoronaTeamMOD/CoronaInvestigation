@@ -24,6 +24,7 @@ const DeskFilter = ({ desks, filteredDesks, onFilterChange }: Props) => {
                 <TextField
                     label={isNoSelectedDesks[0] == null ? 'כל הדסקים' : ''}
                     {...params}
+                    InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
                     size='small'
                 />
             }

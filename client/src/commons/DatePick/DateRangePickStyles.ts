@@ -7,6 +7,12 @@ export const useStyles = makeStyles({
             margin: '0 0.2vw',
         }
     },
+    mainRow: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'nowrap',
+    }
 });
 
 export default useStyles;

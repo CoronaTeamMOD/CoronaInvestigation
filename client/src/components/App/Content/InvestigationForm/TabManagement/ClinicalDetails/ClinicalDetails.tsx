@@ -23,6 +23,7 @@ import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './Bac
 import { resetClinicalDetails, setClinicalDetails } from 'redux/ClinicalDetails/ClinicalDetailsActionCreators';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { setFormState } from 'redux/Form/formActionCreators';
+import useInvestigatedPersonInfo from '../../InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
 
 const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element => {
     const classes = useStyles();
@@ -62,6 +63,8 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
         }
     };
 
+    const { saveInvestigationInfo } = useInvestigatedPersonInfo();
+    
     const handleBackgroundIllnessCheck = (
         checkedBackgroundIllness: string,
         onChange: (newBackgroundDiseases: string[]) => void,
@@ -79,6 +82,7 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
     const saveForm = (e: any) => {
         e.preventDefault();
         if (clinicalDetails && !isViewMode){
+            saveInvestigationInfo();
             saveClinicalDetailsAndDeleteContactEvents(clinicalDetails, id);
         }
         else if(isViewMode){

@@ -34,7 +34,9 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         alignItems: 'center',
     },
     tableCell: {
-        padding: '7px 0'
+        padding: '7px 0',
+        textAlign:'start',
+        paddingLeft: '2vh'
     },
     title: {
         margin: 'auto',
@@ -52,7 +54,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         fontFamily: 'Assistant'
     },
     columnBorder: {
-        borderLeft: '3px solid rgb(222, 218, 218)'
+        borderRight: '3px solid rgb(222, 218, 218)',
     },
     rowBorder: {
         borderBottom: '3px solid rgb(222, 218, 218)'
@@ -72,7 +74,8 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         maxWidth: '200px'
     },
     biggerWidth:{
-        maxWidth: '80px'
+        maxWidth: '120px',
+        paddingLeft: '0vw'
     },
     tableHeaderRow: {
         width: tableWidth,
@@ -83,7 +86,9 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     tableHeaderCell: {
         whiteSpace: 'nowrap',
-        fontSize: '0.97rem'
+        fontSize: '0.97rem',
+        textAlign: 'start',
+        paddingLeft: '2vh'
     },
     deskFilterCard: {
         marginRight : 'auto'
@@ -159,6 +164,10 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         minWidth: '6px',
         marginLeft: '8px',
         paddingRight: '0',
+    },
+    commentCell: {
+        whiteSpace: 'nowrap',
+        maxWidth: '17vw'
     },
 }))();
 

@@ -6,7 +6,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'left',
         margin: '0 10px'
     },
     inActiveInvestigator: {

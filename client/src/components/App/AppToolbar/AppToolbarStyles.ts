@@ -59,7 +59,30 @@ const useStyles = makeStyles((theme: Theme) => ({
         '&:focus': {
             opacity: 1
         }
-    }
+    },
+    adminMessagesBtn: {
+        color: 'white',
+        border: '2px solid #FFFFFF',
+        borderRadius: 20,
+        padding: '0.05vw 1.2vw',
+        position: 'relative',
+        marginLeft: '1.5vw'
+    },
+    notificationIcon: {
+        fontSize: '0.8vw',
+        backgroundColor: '#FF6958',
+        borderRadius: '50%',
+        padding: '3px',
+        textAlign: 'center',
+        position: 'absolute',
+        top: '-0.3vw',
+        left: '-0.5vw'
+    },
+    menuPaper: {
+        top: '4vw !important',
+        boxShadow: '0px 1px 2px #00000063',
+        borderRadius: '16px'
+    },
 }));
 
 export interface AppToolbarClasses {

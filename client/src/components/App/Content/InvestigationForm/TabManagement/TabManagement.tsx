@@ -36,6 +36,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         isViewMode
     } = tabManagementProps;
 
+    
     const tabs: TabObj[] = [
         {
             id: TabId.PERSONAL_INFO,
@@ -88,7 +89,9 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     }
 
     const currentCardsClass = `${classes.card} ${isScriptOpened ? classes.collapsed : ''}`;
-
+    const onTabClicked = (tabId : number) => {
+        setNextTab(tabId);
+    }
     useEffect(() => {
         localStorage.setItem('isScriptOpened', String(isScriptOpened));
     }, [isScriptOpened]);
@@ -124,7 +127,9 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                                     // @ts-ignore
                                     type='submit'
                                     form={`form-${currentTab}`}
-                                    onClick={() => { setNextTab(tab.id) }}
+                                    onClick={() => {
+                                        onTabClicked(tab.id);
+                                         }}
                                     key={index}
                                     label={tab.name}
                                     icon={isTabValid(tab.id) ? <ErrorOutlineIcon className={classes.icon} fontSize={'small'} /> : undefined}
@@ -142,7 +147,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                                     type='submit'
                                     form={`form-${currentTab}`}
                                     test-id={isLastTabDisplayed ? 'endInvestigation' : 'continueToNextStage'}
-                                    onClick={() => setNextTab(currentTab + 1)}
+                                    onClick={() => onTabClicked(currentTab + 1)}
                                 >
                                     {isLastTabDisplayed ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                 </PrimaryButton>

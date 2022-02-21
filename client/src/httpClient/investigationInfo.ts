@@ -62,25 +62,6 @@ export const fetchAllInvestigatorReferenceStatuses = async (): Promise<KeyValueP
   }
 }
 
-export const updateInvestigatorReferenceStatus = async (investigatorReferenceStatusId: number): Promise<any> => {
-  const botInvestigationInfoLogger = logger.setup('update investigator reference status of bot investigation');
-  setIsLoading(true);
-  try {
-    const result = await axios.post('investigationInfo/updateInvestigatorReferenceStatus', { investigatorReferenceStatusId });
-    if (result) {
-      botInvestigationInfoLogger.info('the investigator reference status updated successfully', Severity.LOW);
-      setIsLoading(false);
-      return result.data as KeyValuePair[];
-    }
-    else return null;
-  }
-  catch (error) {
-    botInvestigationInfoLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-    setIsLoading(false);
-    return error;
-  }
-}
-
 export const fetchAllChatStatuses = async (): Promise<KeyValuePair[] | null> => {
   const botInvestigationInfoLogger = logger.setup('Fetching all chatstatuses');
   try {
@@ -97,5 +78,63 @@ export const fetchAllChatStatuses = async (): Promise<KeyValuePair[] | null> => 
   catch (error) {
     botInvestigationInfoLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
     return null;
+  }
+}
+
+export const updateInvestigatorReferenceStatus = async (investigatorReferenceStatusId: number): Promise<any> => {
+  const botInvestigationInfoLogger = logger.setup('update investigator reference status of bot investigation');
+  setIsLoading(true);
+  try {
+    const result = await axios.post('investigationInfo/updateInvestigatorReferenceStatus', { investigatorReferenceStatusId });
+    if (result) {
+      botInvestigationInfoLogger.info('the investigator reference status updated successfully', Severity.LOW);
+      setIsLoading(false);
+      return result.data;
+    }
+    else return null;
+  }
+  catch (error) {
+    botInvestigationInfoLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+    setIsLoading(false);
+    return error;
+  }
+}
+
+export const updateCovidPatientFullName = async (fullName: string): Promise<any> => {
+  const investigationInfoLogger = logger.setup('update covid patient fullname');
+  setIsLoading(true);
+  try {
+    const result = await axios.post('investigationInfo/updateFullName', { fullName });
+    if (result) {
+      investigationInfoLogger.info('the covid patient fullname updated successfully', Severity.LOW);
+      return result.data;
+    }
+    else return null;
+  }
+  catch (error) {
+    investigationInfoLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+    return error;
+  }
+}
+
+export const updateInvestigationStatusAndComment = async (mainStatus: number, subStatus: string | null, statusReason: string | null, startTime: Date | undefined, comment: string | null) => {
+  const updateInvestigationStatusLogger = logger.setup('Update Investigation Status and Comment');
+  let requestObj = {
+    investigationMainStatus: mainStatus,
+    investigationSubStatus: subStatus,
+    statusReason,
+    comment
+  }
+  try {
+    const result = await axios.post('/investigationInfo/updateInvestigationStatusAndComment', requestObj);
+    if (result) {
+      updateInvestigationStatusLogger.info('the investigation status and comment updated successfully', Severity.LOW);
+      return result.data;
+    }
+    else return null;
+  }
+  catch (error) {
+    updateInvestigationStatusLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+    return error;
   }
 }

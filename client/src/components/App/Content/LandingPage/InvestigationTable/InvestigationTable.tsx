@@ -92,7 +92,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         unallocatedDeskFilter, changeUnallocatedDeskFilter, changeInvestigatorReferenceStatusFilter,
         changeNotSentToBotFilter, notSentToBotFilter, investigatorReferenceStatusFilter,
         chatStatusFilter, changeChatStatusFilter, incompletedBotInvestigationFilter, changeIncompletedBotInvestigationFilter,
-        complexityFilter, changeComplexityFilter, complexityReasonFilter,changeComplexityReasonFilter
+        complexityFilter, changeComplexityFilter, complexityReasonFilter,changeComplexityReasonFilter,
+        ageFilter, changeAgeFilter, filterInvestigations, resetFilter, filtersTitle
     } = useInvestigationTable({
         setSelectedRow, allGroupedInvestigations, setAllStatuses, currentPage, setCurrentPage, setAllGroupedInvestigations,
         investigationColor, setAllSubStatuses, setAllComplexReasons
@@ -274,18 +275,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             <Grid className={classes.content}>
                 <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
                     <Grid item xs={12}>
-                        <AdminMessages
-                            deskFilter={deskFilter}
-                        />
-                    </Grid>
-                </Grid>
-                <div className={classes.tableHeaderRow}>
-                    <Typography color='primary' className={classes.counterLabel} >
-                        {counterDescription}
-                    </Typography>
-                </div>
-                <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
-                    <Grid item xs={12}>
                         <TableFilter
                             statuses={allStatuses}
                             subStatuses={allSubStatuses}
@@ -320,7 +309,21 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             changeComplexityFilter= {changeComplexityFilter}
                             complexityReasonFilter={complexityReasonFilter}
                             changeComplexityReasonFilter={changeComplexityReasonFilter}
+                            ageFilter={ageFilter}
+                            changeAgeFilter={changeAgeFilter}
+                            onFilterButtonClicked={filterInvestigations}
+                            onResetButtonClicked={resetFilter}
+                            filterTitle={filtersTitle}
                         />
+                    </Grid>
+                </Grid>
+                <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
+                 <Grid item xs={12}>
+                    <div className={classes.tableHeaderRow}>
+                        <Typography color='primary' className={classes.counterLabel} >
+                            {counterDescription}
+                        </Typography>
+                    </div>
                     </Grid>
                 </Grid>
                 <TableContainer ref={tableContainerRef} component={Paper} className={classes.tableContainer}>
@@ -331,7 +334,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     Object.values((user.userType === UserTypeCodes.ADMIN || user.userType === UserTypeCodes.SUPER_ADMIN) ? adminCols : userCols).map((key) => (
                                         <TableCell
                                             classes={{ stickyHeader: classes.horizontalSticky }}
-                                            className={classes.tableHeaderCell + ' ' + (key === TableHeadersNames.investigatorName || key === TableHeadersNames.investigatiorReferenceRequired ? classes.columnBorder : '')}
+                                            className={classes.tableHeaderCell + ' ' + (key === TableHeadersNames.city ? classes.columnBorder : '')}
                                             sortDirection={orderBy === key ? order : false}
                                         >
                                             {

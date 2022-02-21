@@ -128,3 +128,31 @@ export const setInvestigationStaticFieldChange = (investigationStaticFieldChange
         payload: { investigationStaticFieldChange }
     };
 }
+
+export const setInvestigatedPersonFullname = (fullName: string) => {
+    return {
+        type: actionTypes.SET_INVESTIGATED_PATIENT_FULLNAME,
+        payload: { fullName }
+    };
+}
+
+export const SetInvestigationComment = (comment: string) => {
+    return {
+        type: actionTypes.SET_INVESTIGATION_COMMENT,
+        payload : { comment }
+    };
+}
+
+export const setTrackingRecommendationChanged = (trackingRecommendationChanged: boolean) => {
+    return {
+        type: actionTypes.SET_TRACKING_RECOMMENDATION_CHANGED,
+        payload: { trackingRecommendationChanged } 
+    };
+}
+
+export const setInvestigationInfoChanged = (investigationInfoChanged: boolean) => {
+    return {
+        type: actionTypes.SET_INVESTIGATION_INFO_CHANGED,
+        payload: { investigationInfoChanged }
+    }
+}
