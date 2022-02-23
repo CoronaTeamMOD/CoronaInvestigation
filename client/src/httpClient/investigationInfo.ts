@@ -86,17 +86,20 @@ export const updateInvestigatorReferenceStatus = async (investigatorReferenceSta
   setIsLoading(true);
   try {
     const result = await axios.post('investigationInfo/updateInvestigatorReferenceStatus', { investigatorReferenceStatusId });
-    if (result) {
+    if (result && result.data) {
       botInvestigationInfoLogger.info('the investigator reference status updated successfully', Severity.LOW);
       setIsLoading(false);
       return result.data;
     }
+    else if (result &&  ('isAxiosError' in result)) {
+      throw result;
+   }
     else return null;
   }
   catch (error) {
     botInvestigationInfoLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
     setIsLoading(false);
-    return error;
+    throw error;
   }
 }
 
@@ -105,15 +108,18 @@ export const updateCovidPatientFullName = async (fullName: string): Promise<any>
   setIsLoading(true);
   try {
     const result = await axios.post('investigationInfo/updateFullName', { fullName });
-    if (result) {
+    if (result && result.data) {
       investigationInfoLogger.info('the covid patient fullname updated successfully', Severity.LOW);
       return result.data;
     }
+    else if (result &&  ('isAxiosError' in result)) {
+      throw result;
+   }
     else return null;
   }
   catch (error) {
     investigationInfoLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-    return error;
+    throw error;
   }
 }
 
@@ -127,14 +133,17 @@ export const updateInvestigationStatusAndComment = async (mainStatus: number, su
   }
   try {
     const result = await axios.post('/investigationInfo/updateInvestigationStatusAndComment', requestObj);
-    if (result) {
+    if (result && result.data) {
       updateInvestigationStatusLogger.info('the investigation status and comment updated successfully', Severity.LOW);
       return result.data;
+    }
+    else if (result &&  ('isAxiosError' in result)) {
+       throw result;
     }
     else return null;
   }
   catch (error) {
     updateInvestigationStatusLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-    return error;
+    throw error;
   }
 }
