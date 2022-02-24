@@ -29,7 +29,14 @@ export const setPersonalInfo = (propertyName: keyof PersonalInfoTabState, value:
     };
 
     export const resetPersonalInfo = () => {
-        return{
+        return {
             type: actionTypes.RESET_PERSONAL_INFO
+        }
+    };
+
+    export const setPersonalInfoWasChanged = (value: boolean) => {
+        return {
+            type: actionTypes.SET_PERSONAL_INFO_WAS_CHANGED,
+            payload: { value }
         }
     };

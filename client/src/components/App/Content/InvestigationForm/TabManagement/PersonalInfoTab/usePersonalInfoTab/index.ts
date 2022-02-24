@@ -15,15 +15,15 @@ import { PersonalInfoDbData } from 'models/Contexts/PersonalInfoContextData';
 import { setOccupations } from 'redux/Occupations/occupationsActionCreators';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
-import {checkUpdateInvestigationPersonalReasonId} from 'Utils/ComplexityReasons/ComplexityReasonsFunctions';
+import { checkUpdateInvestigationPersonalReasonId } from 'Utils/ComplexityReasons/ComplexityReasonsFunctions';
 
 import { PersonalInfoTabState } from '../PersonalInfoTabInterfaces';
 import { usePersonalInfoTabOutcome } from './usePersonalInfoTabInterfaces';
 import personalInfoTabValidationSchema from '../PersonalInfoTabValidationSchema';
-import { getPersonalInfo } from 'redux/PersonalInfo/personalInfoActionCreators';
+import { getPersonalInfo, setPersonalInfoWasChanged } from 'redux/PersonalInfo/personalInfoActionCreators';
 
 const usePersonalInfoTab = (): usePersonalInfoTabOutcome => {
-    
+
     const [insuranceCompanies, setInsuranceCompanies] = useState<string[]>([]);
     const [subOccupations, setSubOccupations] = useState<SubOccupationAndStreet[]>([]);
     const [investigatedPatientRoles, setInvestigatedPatientRoles] = useState<investigatedPatientRole[]>([]);
@@ -34,7 +34,8 @@ const usePersonalInfoTab = (): usePersonalInfoTabOutcome => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>((state) => state.investigation.investigationStatus);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
-    const complexityReasonsId = useSelector<StoreStateType,(number|null)[]>((state) => state.investigation.complexReasonsId);
+    const complexityReasonsId = useSelector<StoreStateType, (number | null)[]>((state) => state.investigation.complexReasonsId);
+    const personalInfoWasChanged = useSelector<StoreStateType, boolean>(state => state.personalInfo.personalInfoWasChanged);
 
     const getSubOccupations = (parentOccupation: string) => {
         const subOccupationsLogger = logger.setup('Fetching Sub Occupation by Parent Occupation');
@@ -103,32 +104,42 @@ const usePersonalInfoTab = (): usePersonalInfoTabOutcome => {
     const clearSubOccupations = () => setSubOccupations([]);
 
     const savePersonalData = (personalInfoData: PersonalInfoDbData, data: { [x: string]: any }, id: number) => {
-        const savePersonalDataLogger = logger.setup('Saving personal details tab');
-        savePersonalDataLogger.info('launching the server request', Severity.LOW);
         setIsLoading(true);
-        axios.post('/personalDetails/updatePersonalDetails', {
-            id: investigatedPatientId,
-            personalInfoData,
-        }).then(() => {
-            const isInvestigationNew = investigationStatus.mainStatus === InvestigationMainStatusCodes.NEW;
-            savePersonalDataLogger.info(
-                `saved personal details successfully${isInvestigationNew ? ' and updating status to "in progress"' : ''}`,
-                Severity.LOW
-            );
-        }).catch((error) => {
-            savePersonalDataLogger.error(`got error from server: ${error}`, Severity.HIGH);
-            complexityErrorAlert(error);
-        }).finally(() => {
+        if (personalInfoWasChanged) {
+            const savePersonalDataLogger = logger.setup('Saving personal details tab');
+            savePersonalDataLogger.info('launching the server request', Severity.LOW);
+            axios.post('/personalDetails/updatePersonalDetails', {
+                id: investigatedPatientId,
+                personalInfoData,
+            }).then(() => {
+                const isInvestigationNew = investigationStatus.mainStatus === InvestigationMainStatusCodes.NEW;
+                savePersonalDataLogger.info(
+                    `saved personal details successfully${isInvestigationNew ? ' and updating status to "in progress"' : ''}`,
+                    Severity.LOW
+                );
+                dispatch(setPersonalInfoWasChanged(false));
+            }).catch((error) => {
+                savePersonalDataLogger.error(`got error from server: ${error}`, Severity.HIGH);
+                complexityErrorAlert(error);
+            }).finally(() => {
+                setIsLoading(false);
+                personalInfoTabValidationSchema.isValid(data).then(valid => {
+                    setFormState(epidemiologyNumber, id, valid);
+                })
+                checkUpdateInvestigationPersonalReasonId(personalInfoData, epidemiologyNumber, complexityReasonsId)
+            })
+        }
+        else {
             setIsLoading(false);
             personalInfoTabValidationSchema.isValid(data).then(valid => {
                 setFormState(epidemiologyNumber, id, valid);
             })
             checkUpdateInvestigationPersonalReasonId(personalInfoData, epidemiologyNumber, complexityReasonsId)
-        })
+        }
     }
 
     return {
-        subOccupations, 
+        subOccupations,
         getSubOccupations,
         getEducationSubOccupations,
         investigatedPatientRoles,
