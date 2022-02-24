@@ -25,3 +25,11 @@ mutation calcInvestigationComplexity($epidemiologyNumber: Int!) {
     }
   }
 `;
+
+export const UPDATE_PERSONAL_INFO = gql`
+mutation updatePersonalDetails($input: JSON!) {
+    updatePersonalDetails(input: {personalDetails: $input}) {
+      clientMutationId
+    }
+  }
+`;
