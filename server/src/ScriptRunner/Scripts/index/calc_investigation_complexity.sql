@@ -24,11 +24,11 @@ BEGIN
 			  Exists (SELECT epidemiology_number
 						FROM covid_patients
 						WHERE epidemiology_number = ip.covid_patient AND 
-					 		(( birth_date IS NULL AND
-							   full_name IS NULL) OR
+					 		( birth_date IS NULL AND
+							   full_name IS NULL ))OR
 							 (SELECT EXTRACT(YEAR FROM (AGE(birth_date)))
 							  FROM covid_patients
-							  WHERE epidemiology_number = ip.covid_patient) <= 14))))
+							  WHERE epidemiology_number = ip.covid_patient) <= 14))
 		THEN 1 ELSE 2 END
 	WHERE epidemiology_number = epidemiology_number_value;
 END;
