@@ -26,7 +26,8 @@ const initialState: PersonalInfoTabState = {
     otherOccupationExtraInfo: '',
     role: undefined,
     educationGrade: undefined,
-    educationClassNumber: undefined
+    educationClassNumber: undefined,
+    personalInfoWasChanged: false
 };
 
 type ValueOf<T> = T[keyof T];
@@ -40,9 +41,12 @@ const personalInfoReducer = (state = initialState, action: Actions.PersonalInfoA
         case Actions.SET_PERSONAL_INFO:
             let newState = state;
             (newState[action.payload.propertyName] as ValueOf<PersonalInfoTabState>) = action.payload.value;
+            newState.personalInfoWasChanged = true;
             return newState;
         case Actions.RESET_PERSONAL_INFO:
             return initialState;
+        case Actions.SET_PERSONAL_INFO_WAS_CHANGED:
+            return {...state, personalInfoWasChanged: action.payload.value};
         default: return state;
     }
 }

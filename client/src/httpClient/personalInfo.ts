@@ -53,6 +53,7 @@ export const getPersonalInfoData = async (epidemiologyNumber: number)
                 role: investigatedPatient.role,
                 educationGrade: investigatedPatient.educationGrade,
                 educationClassNumber: investigatedPatient.educationClassNumber,
+                personalInfoWasChanged: false,
             }
             setIsLoading(false);
             return personalInfo;

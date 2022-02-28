@@ -70,11 +70,10 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                 confirmButtonText: 'כן, המשך'
             }).then(async (result) => {
                 if (result.value) {
-                  await saveInvestigationInfo(); 
-                  setIsLoading(true);
-                  handleInvestigationFinish();
-                  setIsLoading(false);
-                    
+                    await saveInvestigationInfo();
+                    setIsLoading(true);
+                    handleInvestigationFinish();
+                    setIsLoading(false);           
                 }
             });
         }

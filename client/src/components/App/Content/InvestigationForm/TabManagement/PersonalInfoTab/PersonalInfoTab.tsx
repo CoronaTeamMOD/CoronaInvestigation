@@ -248,8 +248,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                         })
                     }
                     else { 
-                        saveInvestigationInfo(); 
-                        savePersonalData(convertToDBData(), personalInfo, id);
+                         saveInvestigationInfo(); 
+                         savePersonalData(convertToDBData(), personalInfo, id);   
                     }
                 }}>
                     <FormRowWithInput fieldName={PHONE_LABEL} labelLength={1} className={classes.contactContiner}>
