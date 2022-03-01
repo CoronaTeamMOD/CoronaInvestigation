@@ -1,5 +1,5 @@
 ALTER TABLE exposure
-ADD COLUMN IF NOT EXISTS border_checkpoint_type integer DEFAULT 3;
+ADD COLUMN IF NOT EXISTS border_checkpoint_type integer;
 
 ALTER TABLE exposure ADD CONSTRAINT exposure_border_checkpoint_type_fk 
 FOREIGN KEY (border_checkpoint_type)
