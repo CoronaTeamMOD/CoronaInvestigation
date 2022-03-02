@@ -219,7 +219,6 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 <span className={classes.openButton}>
                                     <PrimaryButton
                                         onClick={async () => {
-                                            await saveInvestigationInfo();
                                             validateStatusReason(investigationStatus.statusReason)
                                         }}
                                         type='submit'

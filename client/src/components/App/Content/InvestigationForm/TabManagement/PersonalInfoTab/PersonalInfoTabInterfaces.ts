@@ -19,4 +19,5 @@ export interface PersonalInfoTabState {
         [PersonalInfoDataContextFields.HOUSE_NUMBER]: string;
         [PersonalInfoDataContextFields.APARTMENT]?: string;
     }
+    personalInfoWasChanged: boolean;
 }
