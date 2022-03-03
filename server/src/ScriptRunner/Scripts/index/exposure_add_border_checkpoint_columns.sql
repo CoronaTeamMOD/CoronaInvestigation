@@ -20,7 +20,7 @@ FOREIGN KEY (last_destination_country)
 REFERENCES public.countries (id) MATCH SIMPLE;
 
 ALTER TABLE exposure
-ADD COLUMN IF NOT EXISTS arrival_time_to_israel character varying(20) COLLATE pg_catalog."default";
+ADD COLUMN IF NOT EXISTS arrival_time_to_israel time with time zone;
 
 ALTER TABLE exposure
 ADD COLUMN IF NOT EXISTS arrival_date_to_israel timestamp with time zone;
