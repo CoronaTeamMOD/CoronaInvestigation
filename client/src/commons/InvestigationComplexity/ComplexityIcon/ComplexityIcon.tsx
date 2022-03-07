@@ -9,7 +9,7 @@ const ComplexityIcon: React.FC<Props> = (props: Props) => {
     
     const { className, tooltipText, isVarient, ...otherProps } = props
     let colors = isVarient ? {fill: 'red'} : {};
-    colors = tooltipText == onlyAbroadText ? {fill: 'green'} : {};
+    colors = tooltipText == onlyAbroadText ? {fill: 'green'} : colors;
     const classes = useStyles();
 
     return (
