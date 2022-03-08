@@ -3,11 +3,13 @@ import { Star } from '@material-ui/icons';
 import { SvgIconProps, Tooltip } from '@material-ui/core';
 
 import useStyles from './ComplexityIconStyles';
+const onlyAbroadText = 'חקירה מורכבת: חזר מחו"ל';
 
 const ComplexityIcon: React.FC<Props> = (props: Props) => {
     
     const { className, tooltipText, isVarient, ...otherProps } = props
-    const colors = isVarient ? {fill: 'red'} : {};
+    let colors = isVarient ? {fill: 'red'} : {};
+    colors = tooltipText == onlyAbroadText ? {fill: 'green'} : colors;
     const classes = useStyles();
 
     return (
