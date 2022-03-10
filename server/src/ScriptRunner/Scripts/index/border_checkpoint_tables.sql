@@ -20,7 +20,7 @@ INSERT INTO public.border_checkpoint_type(id, display_name)
 	ON CONFLICT DO NOTHING;
 
 INSERT INTO public.border_checkpoint_type(id, display_name)
-	VALUES (3,'תעופה')
+	VALUES (3,'טיסה')
 	ON CONFLICT DO NOTHING;
 
     -- Creating table border_checkpoint
