@@ -22,6 +22,18 @@ query ExposureByInvestigationId ($investigationId: Int!){
             wasAbroad
             wasConfirmedExposure
             isExposurePersonKnown
+            borderCheckpointByBorderCheckpoint {
+                displayName
+                id
+                borderCheckpointTypeId
+            }
+            borderCheckpointType
+            arrivalDateToIsrael
+            arrivalTimeToIsrael
+            flightSeatNum
+            otherFlightNum
+            otherAirline
+            lastDestinationCountry
             covidPatientByExposureSource {
               birthDate
               addressByAddress {
@@ -145,4 +157,28 @@ export const GET_EXPOSURE_SOURCE_BY_EPIDEMIOLOGY_NUMBER = gql`
             }
         }
     }
+`;
+
+export const GET_ALL_BORDER_CHECKPOINT_TYPES = gql`
+    query allBorderCheckpointTypes {
+    allBorderCheckpointTypes(orderBy: DISPLAY_NAME_ASC) {
+        nodes {
+        id
+        displayName
+        }
+    }
+}
+`;
+
+
+export const GET_ALL_BORDER_CHECKPOINTS = gql`
+    query allBorderCheckpoints {
+    allBorderCheckpoints(orderBy: DISPLAY_NAME_ASC) {
+        nodes {
+        id
+        displayName
+        borderCheckpointTypeId
+        }
+    }
+}
 `;

@@ -36,16 +36,12 @@ const AdminActions: React.FC<Props> = (props: Props): JSX.Element => {
                 </Grid>
 
                 <Collapse in={selectedAdminAction.id === adminActions[1].id} unmountOnExit>
-                    <AdminDBAction />
-                </Collapse>
-
-                <Collapse in={selectedAdminAction.id === adminActions[2].id} unmountOnExit>
                     <AdminMessages 
                         investigationInfoFilter={props.investigationInfoFilter}
                     />
                 </Collapse>
 
-                <Collapse in={selectedAdminAction.id === adminActions[3].id} unmountOnExit>
+                <Collapse in={selectedAdminAction.id === adminActions[2].id} unmountOnExit>
                     <AdminSynchronizationCitiesStreets />
                 </Collapse>
 
