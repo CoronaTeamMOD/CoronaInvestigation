@@ -2,8 +2,9 @@ import { createContext } from 'react';
 
 import FlightData from 'models/FlightData';
 import ExposureData from 'models/ExposureData';
+import BorderCheckpointData from 'models/BorderCheckpointData';
 
-export type Exposure = ExposureData & FlightData;
+export type Exposure = ExposureData & BorderCheckpointData & FlightData;
 
 export type ExposureAndFlightsDetails = {
     exposures: Exposure[],
@@ -11,7 +12,8 @@ export type ExposureAndFlightsDetails = {
     wereConfirmedExposures: boolean,
     wereFlights: boolean,
     wasInVacation: boolean | undefined,
-    wasInEvent: boolean | undefined
+    wasInEvent: boolean | undefined,
+    borderCheckpointData?: BorderCheckpointData,
 };
 
 export interface ExposureAndFlightsDetailsAndSet {
@@ -43,7 +45,16 @@ export const fieldsNames = {
     wasInVacation: 'wasInVacation',
     wasInEvent: 'wasInEvent',
     exposures: 'exposures',
-    isExposurePersonKnown: 'isExposurePersonKnown'
+    isExposurePersonKnown: 'isExposurePersonKnown',
+    borderCheckpoint: 'borderCheckpoint',
+    borderCheckpointType: 'borderCheckpointType',
+    arrivalDateToIsrael: 'arrivalDateToIsrael',
+    arrivalTimeToIsrael: 'arrivalTimeToIsrael',
+    flightSeatNum: 'flightSeatNum',
+    otherFlightNum: 'otherFlightNum',
+    lastDestinationCountry: 'lastDestinationCountry',
+    otherAirline: 'otherAirline',
+    borderCheckpointData:'borderCheckpointData',
 };
 
 export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
@@ -53,6 +64,7 @@ export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
     wereFlights: false,
     wasInVacation: undefined,
     wasInEvent: undefined,
+    borderCheckpointData: undefined,
 };
 
 export const initialExposureOrFlight: Exposure = {
@@ -75,6 +87,14 @@ export const initialExposureOrFlight: Exposure = {
     airline: null,
     flightNum: null,
     isExposurePersonKnown: undefined,
+    borderCheckpoint: undefined,
+    borderCheckpointType: undefined,
+    arrivalDateToIsrael: undefined,
+    arrivalTimeToIsrael: undefined,
+    flightSeatNum: undefined,
+    otherFlightNum: undefined,
+    lastDestinationCountry: undefined,
+    otherAirline: undefined
 };
 
 export const isConfirmedExposureInvalid = (exposure: Exposure) =>
