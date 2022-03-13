@@ -7,7 +7,7 @@ import { Severity } from 'models/Logger';
 const UseFlightForm = (props: Props) => {
     const { setFlights } = props;
 
-    const fetchFlightsByAirlineID = async (airlineId : number) => {
+    const fetchFlightsByAirlineID = async (airlineId : string) => {
         const fetchFlightsByAirlineIDLogger = logger.setup('fetch flights by airline id');
 
         fetchFlightsByAirlineIDLogger.info('launching db request' , Severity.LOW);
@@ -24,7 +24,7 @@ const UseFlightForm = (props: Props) => {
         return flights;
     }
 
-    const setFlightsByAirlineID = async (airlineId : number) => {
+    const setFlightsByAirlineID = async (airlineId : string) => {
         const newFlights = await fetchFlightsByAirlineID(airlineId);
         setFlights(newFlights);
     }
