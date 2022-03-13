@@ -58,7 +58,7 @@ const useApp = () => {
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const isUserLoggedIn = useSelector<StoreStateType, boolean>(state => state.user.isLoggedIn);
     const displayedDistrict = useSelector<StoreStateType, number>(state => state.user.displayedDistrict);
-    const airlines = useSelector<StoreStateType, Map<number, string>>(state => state.airlines);
+    const airlines = useSelector<StoreStateType, Map<string, string>>(state => state.airlines);
 
     const [isSignUpOpen, setIsSignUpOpen] = useState<boolean>(false);
     const { alertError } = useCustomSwal();
