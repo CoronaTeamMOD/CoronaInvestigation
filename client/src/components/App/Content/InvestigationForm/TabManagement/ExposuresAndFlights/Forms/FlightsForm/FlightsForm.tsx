@@ -30,7 +30,7 @@ const FlightsForm = (props: Props) => {
 
 	const [flights, setFlights] = useState<string[]>([]);
 
-	const airlines = useSelector<StoreStateType, Map<number, string>>(state => state.airlines);
+	const airlines = useSelector<StoreStateType, Map<string, string>>(state => state.airlines);
 	const formattedAirlines = Array.from(airlines).map(airline => { return { id: airline[0], displayName: airline[1] } })
 
 	const { setFlightsByAirlineID } = UseFlightForm({ setFlights });
