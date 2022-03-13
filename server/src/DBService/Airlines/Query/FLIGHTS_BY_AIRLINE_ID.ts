@@ -1,7 +1,7 @@
 import { gql } from 'postgraphile';
 
 const FLIGHTS_BY_AIRLINE_ID = gql`
-    query FlightNumbersByFlightId($airlineId: Int!) {
+    query FlightNumbersByFlightId($airlineId: String!) {
         allFlightNumbers(filter: {airlineId: {equalTo: $airlineId}}) {
             nodes {
                 displayName
