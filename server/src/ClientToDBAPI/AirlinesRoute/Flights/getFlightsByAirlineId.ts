@@ -13,7 +13,7 @@ const getFlightsByAirlineId = (req : Request , res : Response) => {
     });
 
     flightsByAirlineIdLogger.info(launchingDBRequestLog(), Severity.LOW);
-    const airlineId = parseInt(req.params.airlineId);
+    const airlineId = req.params.airlineId;
     graphqlRequest(FLIGHTS_BY_AIRLINE_ID, res.locals , { airlineId })
         .then((result: any) => {
             flightsByAirlineIdLogger.info(validDBResponseLog, Severity.LOW);
