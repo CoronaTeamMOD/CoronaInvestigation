@@ -21,6 +21,7 @@ interface ClinicalDetailsData extends SymptomsExistenceInfo {
     isPregnant: boolean | null;
     otherSymptomsMoreInfo: string;
     otherBackgroundDiseasesMoreInfo: string;
+    wasInstructedToBeInIsolation: boolean;
 };
 
 export default ClinicalDetailsData;
