@@ -218,6 +218,7 @@ const FlightsForm = (props: Props) => {
 											return (
 												<TextField
 													{...props}
+													inputProps={{ maxLength: 50 }}
 													onChange={(value) => {
 														props.onChange(value);
 														handleChangeExposureDataAndFlightsField(fieldsNames.otherAirline, value);
@@ -279,6 +280,7 @@ const FlightsForm = (props: Props) => {
 											return (
 												<TextField
 													{...props}
+													inputProps={{ maxLength: 10 }}
 													onChange={(value) => {
 														props.onChange(value);
 														handleChangeExposureDataAndFlightsField(fieldsNames.otherFlightNum, value);
@@ -313,6 +315,7 @@ const FlightsForm = (props: Props) => {
 												props.onChange(value);
 												handleChangeExposureDataAndFlightsField(fieldsNames.flightSeatNum, value);
 											}}
+											inputProps={{ maxLength: 10 }}
 											placeholder={flightSeatNumLabel}
 											label={flightSeatNumLabel}
 											disabled={isViewMode}
