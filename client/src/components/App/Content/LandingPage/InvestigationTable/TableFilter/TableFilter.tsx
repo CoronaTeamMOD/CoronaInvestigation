@@ -261,7 +261,7 @@ const TableFilter = (props: Props) => {
                                                 <Typography className={classes.option} >{option.description}</Typography>
                                             </>
                                         )}
-                                        limitTags={1}
+                                        limitTags={3}
                                     />
                                 </Grid>
                             }

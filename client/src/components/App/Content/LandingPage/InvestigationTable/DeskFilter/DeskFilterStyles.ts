@@ -10,11 +10,12 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontSize: '0.7vw'
     },
     chip: {
-        maxWidth: '71%',
+        maxWidth: '28%',
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis'
     },   
     autocomplete: {
+        maxWidth:'30vw',
     },
     autocompleteInput: {
         paddingRight: 'unset',
