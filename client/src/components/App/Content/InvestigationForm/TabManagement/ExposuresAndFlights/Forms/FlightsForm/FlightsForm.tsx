@@ -226,11 +226,8 @@ const FlightsForm = (props: Props) => {
 											return (
 												<TextField
 													{...props}
-<<<<<<< HEAD
 													inputProps={{ maxLength: 50 }}
-=======
 													value={props.value}
->>>>>>> 4223ed037edb9128c74d6a1c255b58eb58a6c695
 													onChange={(value) => {
 														props.onChange(value);
 														handleChangeExposureDataAndFlightsField(fieldsNames.otherAirline, value);
