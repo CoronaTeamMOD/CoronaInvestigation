@@ -22,6 +22,7 @@ interface ClinicalDetails {
     otherBackgroundDiseasesMoreInfo: string;
     isolationSource: number | null;
     isolationSourceDesc: string | null;
+    wasInstructedToBeInIsolation: boolean;
 };
 
 export default ClinicalDetails;
