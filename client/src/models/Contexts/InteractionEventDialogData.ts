@@ -49,6 +49,8 @@ interface InteractionEventData {
     creationTime: Date;
     privateHouseAddress?: DBAddress;
     greenPass?: [];
+    isThereMoreVerified?: boolean | null;
+    detailsAdditionalVerified?: string;
 };
 
 export default InteractionEventDialogData;

@@ -38,6 +38,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
     const [interactionToEdit, setInteractionToEdit] = useState<InteractionEventDialogData>();
     const [newInteractionEventDate, setNewInteractionEventDate] = useState<Date>();
+    const [newInteractionEvent, setNewInteractionEvent] = useState<boolean>();
     const [interactions, setInteractions] = useState<InteractionEventDialogData[]>([]);
     const [interactionsTabSettings, setInteractionsTabSettings] = useState<InteractionsTabSettings>(defaultInteractionsTabSettings);
     const [educationMembers, setEducationMembers] = useState<InvolvedContact[]>([]);
@@ -109,6 +110,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                 interactions={interactionsMap.get(interactionDate.getTime())}
                 key={interactionDate.getTime()}
                 isViewMode={isViewMode}
+                noDate={false}
             />
         )
     }
@@ -129,6 +131,20 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                 </div>
             }
             <form id={`form-${id}`} onSubmit={(e) => submitTab(e)}/>
+            <ContactDateCard
+                allInteractions={interactions}
+                loadInteractions={loadInteractions}
+                loadInvolvedContacts={loadInvolvedContacts}
+                contactDate={new Date('01-01-1975')}
+                onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
+                onDeleteClick={handleDeleteContactEvent}
+                onDeleteContactClick={handleDeleteContactedPerson}
+                createNewInteractionEvent={() => setNewInteractionEvent(true)}
+                interactions={undefined}
+                key={new Date('01-01-1975').getTime()}
+                isViewMode={isViewMode}
+                noDate={true}
+            />
             {
                 datesToInvestigate.map(date => generateContactCard(date))
             }
@@ -136,10 +152,21 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                 newInteractionEventDate && <NewInteractionEventDialog
                     isOpen={Boolean(newInteractionEventDate)}
                     interactionDate={newInteractionEventDate}
-                    closeNewDialog={() => setNewInteractionEventDate(undefined)}
+                    closeNewDialog={() => {setNewInteractionEventDate(undefined); setNewInteractionEvent(undefined);}}
                     loadInteractions={loadInteractions}
                     loadInvolvedContacts={loadInvolvedContacts}
                     interactions={interactions}
+                />
+            }
+            {
+                newInteractionEvent && <NewInteractionEventDialog
+                    isOpen={Boolean(newInteractionEvent)}
+                    interactionDate={new Date(new Date().toDateString())}
+                    closeNewDialog={() => {setNewInteractionEventDate(undefined); setNewInteractionEvent(undefined);}}
+                    loadInteractions={loadInteractions}
+                    loadInvolvedContacts={loadInvolvedContacts}
+                    interactions={interactions}
+                    isNewDate={true}
                 />
             }
             {

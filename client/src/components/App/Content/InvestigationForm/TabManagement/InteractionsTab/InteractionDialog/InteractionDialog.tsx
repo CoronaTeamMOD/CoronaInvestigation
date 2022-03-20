@@ -36,7 +36,7 @@ const repetitiveWithoutDatesSelectedErrorMessage = 'שים לב שלא ניתן 
 const repetitiveFieldMissingMessage = 'יש למלא האם מדובר באירוע מחזורי';
 
 const InteractionDialog = (props: Props) => {
-    const {isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction} = props;
+    const {isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction, isNewDate} = props;
     const [isAddingContacts, setIsAddingContacts] = React.useState(false);
     const [groupedInvestigationContacts, setGroupedInvestigationContacts] = useState<number[]>([]);
     const [contactBank, setContactBank] = useState<Map<number, ContactBankOption>>(new Map());
@@ -96,7 +96,7 @@ const InteractionDialog = (props: Props) => {
         [isRepetitive, isNewInteraction,additionalOccurrences]);
     const isPlaceTypeSelected = Boolean(placeType)
     const isGreenPassInvalid = useMemo(() => {
-        return (placeType !== placeTypesCodesHierarchy.privateHouse.code && Object.values(isGreenPass).some((answer) => answer === undefined));
+        return !isNewDate && (placeType !== placeTypesCodesHierarchy.privateHouse.code && Object.values(isGreenPass).some((answer) => answer === undefined));
     },
     [isGreenPass]);
 
@@ -145,7 +145,7 @@ const InteractionDialog = (props: Props) => {
 
     const convertGreenPassQuestions = (data: InteractionEventDialogData) => {
         let greenPass = [];
-        if (data[InteractionEventDialogFields.PLACE_TYPE] !== placeTypesCodesHierarchy.privateHouse.code) {
+        if (!isNewDate && data[InteractionEventDialogFields.PLACE_TYPE] !== placeTypesCodesHierarchy.privateHouse.code) {
             for (let field of Object.keys(data)) {
                 if (field.includes(InteractionEventDialogFields.IS_GREEN_PASS)) {
                     let questionId = parseInt(field.slice(12));
@@ -332,6 +332,7 @@ const InteractionDialog = (props: Props) => {
                             interactionData={interactionData}
                             isNewInteraction={isNewInteraction}
                             onPlaceSubTypeChange={onPlaceSubtypeChange}
+                            isNewDate={isNewDate}
                         />
                         <GroupedInvestigationsContextProvider value={groupedInvestigationProviderState}>
                             <FamilyMembersDataContextProvider value={familyMembersDataProviderState}>
@@ -347,9 +348,9 @@ const InteractionDialog = (props: Props) => {
                 </DialogContent>
                 <DialogActions className={`${classes.dialogFooter}`}>
 
-                    <InteractionFormTabSwitchButton isAddingContacts={isAddingContacts}
+                    {!isNewDate ? <InteractionFormTabSwitchButton isAddingContacts={isAddingContacts}
                                                     setIsAddingContacts={setIsAddingContacts}
-                                                    isNewInteraction={isNewInteraction}/>
+                                                    isNewInteraction={isNewInteraction}/> : <div></div>}
 
                     <div className={classes.footerActionButtons}>
                         <Button
@@ -389,6 +390,7 @@ interface Props {
     loadInvolvedContacts: () => void;
     interactions: InteractionEventDialogData[];
     testIds: Record<DialogTestIds, string>;
+    isNewDate?: boolean | undefined;
 };
 
 type DialogTestIds = 'cancelButton' | 'submitButton';
