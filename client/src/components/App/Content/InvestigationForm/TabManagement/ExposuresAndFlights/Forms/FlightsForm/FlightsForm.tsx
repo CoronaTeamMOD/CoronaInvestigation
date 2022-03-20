@@ -226,6 +226,7 @@ const FlightsForm = (props: Props) => {
 											return (
 												<TextField
 													{...props}
+													inputProps={{ maxLength: 50 }}
 													value={props.value}
 													onChange={(value) => {
 														props.onChange(value);
@@ -287,6 +288,7 @@ const FlightsForm = (props: Props) => {
 											return (
 												<TextField
 													{...props}
+													inputProps={{ maxLength: 10 }}
 													value={props.value}
 													onChange={(value) => {
 														props.onChange(value);
@@ -322,6 +324,7 @@ const FlightsForm = (props: Props) => {
 												props.onChange(value);
 												handleChangeExposureDataAndFlightsField(fieldsNames.flightSeatNum, value);
 											}}
+											inputProps={{ maxLength: 10 }}
 											placeholder={flightSeatNumLabel}
 											label={flightSeatNumLabel}
 											disabled={isViewMode}
