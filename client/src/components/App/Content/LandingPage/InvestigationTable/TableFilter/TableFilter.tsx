@@ -267,7 +267,7 @@ const TableFilter = (props: Props) => {
                             }
                         </Grid>
                         <Grid item md={12} className={classes.mainLine} >
-                            <Grid item md={1} className={classes.column}>
+                            <Grid item md='auto' className={classes.column}>
                                 <DeskFilter
                                     desks={desksToTransfer}
                                     filteredDesks={deskFilter}

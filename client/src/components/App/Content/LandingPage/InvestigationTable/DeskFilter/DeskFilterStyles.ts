@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     autocomplete: {
     },
     autocompleteInput: {
-        paddingRight: 'unset'
+        paddingRight: 'unset',
     },
     autocompleteInputText: {
         width: 'unset'
