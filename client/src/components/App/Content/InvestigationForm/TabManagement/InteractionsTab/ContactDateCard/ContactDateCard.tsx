@@ -16,7 +16,7 @@ import RepetitiveEventIcon from './RepetitiveEventIcon';
 const ContactDateCard: React.FC<Props> = (props: Props) => {
 
     const { contactDate, interactions, createNewInteractionEvent,
-        onEditClick, onDeleteClick, loadInteractions, loadInvolvedContacts, onDeleteContactClick, allInteractions, isViewMode } = props;
+        onEditClick, onDeleteClick, loadInteractions, loadInvolvedContacts, onDeleteContactClick, allInteractions, isViewMode, noDate } = props;
 
     const [areInteractionsOpen, setAreInteractionsOpen] = React.useState<boolean>(false);
 
@@ -39,10 +39,13 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                             </IconButton>
                         }
                     </div>
-                    <Typography variant='body1'>
-                        יום {DayOfWeek[contactDate.getDay()] + ' '}
-                        {format(contactDate, 'dd/MM/yyyy')}
-                    </Typography>
+                    {!noDate ? <Typography variant='body1'>
+                            יום {DayOfWeek[contactDate.getDay()] + ' '}
+                            {format(contactDate, 'dd/MM/yyyy')}
+                        </Typography> : <Typography variant='body1'>
+                            הוספת מפגש עם מאומת לא בטווח התאריכים המוצגים
+                        </Typography>
+                    }
                     {interactions?.some(interaction => interaction.isRepetitive) && <RepetitiveEventIcon />}
                 </div>
                 {
@@ -77,13 +80,14 @@ interface Props {
     allInteractions: Interaction[];
     contactDate: Date;
     interactions: Interaction[] | undefined;
-    createNewInteractionEvent: () => void;
+    createNewInteractionEvent: (date?:Date) => void;
     onEditClick: (interaction: Interaction) => void;
     onDeleteClick: (contactEventId: number, areThereFamilyContacts: boolean) => void;
     loadInteractions: () => void;
     loadInvolvedContacts: () => void;
     onDeleteContactClick: (contactedPersonId: number, involvedContactId: number | null) => void;
     isViewMode?: boolean;
+    noDate: boolean;
 };
 
 export default ContactDateCard;

@@ -40,7 +40,9 @@ enum InteractionEventDialogFields {
     PRIVATE_HOUSE_APARTMENT = 'privateHouseApartment',
     IS_REPETITIVE = 'isRepetitive',
     IS_GREEN_PASS = 'isGreenPass',
-    CREATION_SOURCE = 'creationSource'
+    CREATION_SOURCE = 'creationSource',
+    IS_THERE_MORE_VERIFIED = 'isThereMoreVerified',
+    DETAILS_ADDITIONAL_VERIFIED = 'detailsAdditionalVerified'
 };
 
 export default InteractionEventDialogFields;
