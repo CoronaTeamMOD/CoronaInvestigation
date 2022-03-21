@@ -185,13 +185,13 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                 allInteractions={interactions}
                 loadInteractions={loadInteractions}
                 loadInvolvedContacts={loadInvolvedContacts}
-                contactDate={oldDatesToInvestigate.minDate ? oldDatesToInvestigate.minDate : new Date('01-01-1075')}
+                contactDate={oldDatesToInvestigate.minDate ? oldDatesToInvestigate.minDate : new Date('01-01-1975')}
                 onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
                 onDeleteClick={handleDeleteContactEvent}
                 onDeleteContactClick={handleDeleteContactedPerson}
                 createNewInteractionEvent={() => setNewInteractionEvent(oldDatesToInvestigate.minDate)}
                 interactions={undefined}
-                key={oldDatesToInvestigate.minDate ? oldDatesToInvestigate.minDate.getTime():  new Date('01-01-1075').getTime()}
+                key={oldDatesToInvestigate.minDate ? oldDatesToInvestigate.minDate.getTime():  new Date('01-01-1975').getTime()}
                 isViewMode={isViewMode}
                 noDate={true}
             />
