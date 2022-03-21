@@ -103,7 +103,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const loadInteractions = () => {
         const loadInteractionsLogger = logger.setup('Fetching Interactions');
         loadInteractionsLogger.info('launching interactions request', Severity.LOW);
-        const minimalDateToFilter = oldDatesToInvestigate.minDate ? oldDatesToInvestigate.minDate : datesToInvestigate.slice(-1)[0];
+        const minimalDateToFilter = oldDatesToInvestigate?.minDate ? oldDatesToInvestigate.minDate : datesToInvestigate.slice(-1)[0];
         setIsLoading(true);
         axios.get(`/intersections/contactEvent/${minimalDateToFilter?.toISOString()}`)
         .then((result) => {
