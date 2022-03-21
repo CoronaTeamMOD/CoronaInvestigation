@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         paddingRight: '1vw'
     },
     title: {
-        fontSize: '1vw',
+        fontSize: '20px',
         padding: '0 0.4vw',
         display: 'inline'
     },
@@ -87,7 +87,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         margin: '43px 0 10px 0'
     },
     option: {
-        fontSize: '1vw',
+        fontSize: '20px',
     },
     chip: {
         maxWidth: '71%',
@@ -127,7 +127,7 @@ const useStyles = makeStyles((theme: Theme) => ({
             color: 'white',
         },
         marginRight:'15px',
-        fontSize:'1vw',
+        fontSize:'20px',
     },
     filterIconButton: {
         paddingRight:'7px',
@@ -135,7 +135,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     resetLinkButton: {
         marginRight:'15px',
         color:'black',
-        fontSize:'1vw',
+        fontSize:'20px',
         fontFamily:'Assistant',
         textDecoration: 'underline',  
         fontWeight: 500,
