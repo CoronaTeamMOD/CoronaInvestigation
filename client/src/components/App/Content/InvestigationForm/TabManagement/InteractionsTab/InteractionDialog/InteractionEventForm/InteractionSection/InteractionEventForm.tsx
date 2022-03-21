@@ -123,8 +123,8 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                         control={control}
                         render={(props) => (
                             <DatePick
-                                minDate={oldDatesToInvestigate.minDate}
-                                maxDate={oldDatesToInvestigate.maxDate}
+                                minDate={oldDatesToInvestigate?.minDate}
+                                maxDate={oldDatesToInvestigate?.maxDate}
                                 disabled={shouldDateDisabled}
                                 testId='startTimeUntilDate'
                                 value={props.value}
