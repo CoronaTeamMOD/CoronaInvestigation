@@ -28,10 +28,12 @@ import DatePick from 'commons/DatePick/DatePick';
 const ADDRESS_LABEL = 'מקום/כתובת';
 
 const InteractionEventForm: React.FC<InteractionEventFormProps> = (
-    {onPlaceSubTypeChange, isVisible, interactionData, isNewInteraction, isNewDate}: InteractionEventFormProps): JSX.Element => {
+    {onPlaceSubTypeChange, isVisible, interactionData, isNewInteraction, isNewDate, shouldDateDisabled}: InteractionEventFormProps): JSX.Element => {
 
     const {control, watch, setValue } = useFormContext();
     const patientAddress = useSelector<StoreStateType, FlattenedDBAddress>(state => state.address);
+    const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
+    const oldDatesToInvestigate = useSelector<StoreStateType, {minDate:Date | undefined,maxDate:Date| undefined}>(state => state.investigation.oldDatesToInvestigate);
     const {city, apartment, houseNum, street} = patientAddress;
 
     const placeType = watch(InteractionEventDialogFields.PLACE_TYPE);
@@ -73,8 +75,10 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     }, [isUnknownTime]);
 
     useEffect(()=>{
-        setValue(InteractionEventDialogFields.IS_THERE_MORE_VERIFIED,isNewDate ? true : null);
-        setValue(InteractionEventDialogFields.IS_REPETITIVE,isNewDate ? false : null);
+        if(isNewDate){
+            setValue(InteractionEventDialogFields.IS_THERE_MORE_VERIFIED,true);
+            setValue(InteractionEventDialogFields.IS_REPETITIVE,false);
+        }
     },[])
 
     const onPlaceTypeChange = (newPlaceType: string) => {
@@ -119,6 +123,9 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                         control={control}
                         render={(props) => (
                             <DatePick
+                                minDate={oldDatesToInvestigate.minDate}
+                                maxDate={oldDatesToInvestigate.maxDate}
+                                disabled={shouldDateDisabled}
                                 testId='startTimeUntilDate'
                                 value={props.value}
                                 onBlur={props.onBlur}
@@ -256,4 +263,5 @@ export interface InteractionEventFormProps {
     isNewInteraction?: Boolean;
     isVisible: boolean;
     isNewDate?: boolean | undefined;
+    shouldDateDisabled?: boolean;
 };

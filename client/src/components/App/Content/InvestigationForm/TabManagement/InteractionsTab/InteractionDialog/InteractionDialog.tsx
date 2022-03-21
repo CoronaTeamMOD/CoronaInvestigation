@@ -36,7 +36,7 @@ const repetitiveWithoutDatesSelectedErrorMessage = 'שים לב שלא ניתן 
 const repetitiveFieldMissingMessage = 'יש למלא האם מדובר באירוע מחזורי';
 
 const InteractionDialog = (props: Props) => {
-    const {isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction, isNewDate} = props;
+    const {isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction, isNewDate, shouldDateDisabled} = props;
     const [isAddingContacts, setIsAddingContacts] = React.useState(false);
     const [groupedInvestigationContacts, setGroupedInvestigationContacts] = useState<number[]>([]);
     const [contactBank, setContactBank] = useState<Map<number, ContactBankOption>>(new Map());
@@ -333,6 +333,7 @@ const InteractionDialog = (props: Props) => {
                             isNewInteraction={isNewInteraction}
                             onPlaceSubTypeChange={onPlaceSubtypeChange}
                             isNewDate={isNewDate}
+                            shouldDateDisabled={shouldDateDisabled}
                         />
                         <GroupedInvestigationsContextProvider value={groupedInvestigationProviderState}>
                             <FamilyMembersDataContextProvider value={familyMembersDataProviderState}>
@@ -391,6 +392,7 @@ interface Props {
     interactions: InteractionEventDialogData[];
     testIds: Record<DialogTestIds, string>;
     isNewDate?: boolean | undefined;
+    shouldDateDisabled?: boolean;
 };
 
 type DialogTestIds = 'cancelButton' | 'submitButton';
