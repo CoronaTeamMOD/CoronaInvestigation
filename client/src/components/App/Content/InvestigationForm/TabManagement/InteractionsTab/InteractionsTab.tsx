@@ -195,7 +195,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                 onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
                 onDeleteClick={handleDeleteContactEvent}
                 onDeleteContactClick={handleDeleteContactedPerson}
-                createNewInteractionEvent={() => setNewInteractionEvent(oldDatesToInvestigate.minDate)}
+                createNewInteractionEvent={() => {setNewInteractionEvent(oldDatesToInvestigate.minDate); setShouldDateDisabled(false)}}
                 interactions={undefined}
                 key={oldDatesToInvestigate?.minDate ? oldDatesToInvestigate.minDate.getTime(): datesToInvestigate.slice(-1)[0].getTime()}
                 isViewMode={isViewMode}

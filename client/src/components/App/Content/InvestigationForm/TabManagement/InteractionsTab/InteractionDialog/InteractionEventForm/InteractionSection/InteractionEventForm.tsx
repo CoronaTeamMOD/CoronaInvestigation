@@ -42,7 +42,7 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     const isUnknownTime = watch(InteractionEventDialogFields.UNKNOWN_TIME);
     const placeName = watch(InteractionEventDialogFields.PLACE_NAME);
     const isThereMoreVerified = watch(InteractionEventDialogFields.IS_THERE_MORE_VERIFIED);
-    const startTime = watch(InteractionEventDialogFields.START_TIME);
+    const startDate = isNewDate ? watch(InteractionEventDialogFields.START_DATE) : interactionData?.startTime;
 
     const {isPatientHouse} = useContactEvent();
 
@@ -66,12 +66,12 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     }, [isSubTypePatientHouse]);
 
     useEffect(() => {
-        setValue(InteractionEventDialogFields.END_TIME, startTime);
-    }, [startTime]);
+        setValue(InteractionEventDialogFields.END_TIME, startDate);
+    }, [startDate]);
 
     useEffect(() => {
-        setValue(InteractionEventDialogFields.START_TIME, isUnknownTime ? null : interactionData?.startTime);
-        setValue(InteractionEventDialogFields.END_TIME, isUnknownTime ? null : interactionData?.endTime);
+        setValue(InteractionEventDialogFields.START_TIME, isUnknownTime ? startDate : interactionData?.startTime);
+        setValue(InteractionEventDialogFields.END_TIME, isUnknownTime ? startDate : interactionData?.endTime);
     }, [isUnknownTime]);
 
     useEffect(()=>{
@@ -79,6 +79,7 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
             setValue(InteractionEventDialogFields.IS_THERE_MORE_VERIFIED,true);
             setValue(InteractionEventDialogFields.IS_REPETITIVE,false);
         }
+        setValue(InteractionEventDialogFields.START_DATE, interactionData?.startTime);
     },[])
 
     const onPlaceTypeChange = (newPlaceType: string) => {
@@ -119,7 +120,7 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                 isNewDate ? <Grid container className={formClasses.formRow}>
                     <FormInput xs={3} fieldName='תאריך האירוע' labelLength={5}>
                         <Controller
-                        name={InteractionEventDialogFields.START_TIME}
+                        name={InteractionEventDialogFields.START_DATE}
                         control={control}
                         render={(props) => (
                             <DatePick
@@ -233,11 +234,11 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                         {
                             (interactionData && typeof isRepetitive === 'boolean') && (
                                 (isNewInteraction && isRepetitive)
-                                    ? <RepetitiveEventForm selectedDate={startTime}/>
+                                    ? <RepetitiveEventForm selectedDate={startDate ? startDate : interactionData.startTime}/>
                                     : <>
-                                        <DetailsFieldsTitle date={startTime}/>
+                                        <DetailsFieldsTitle date={startDate ? startDate : interactionData.startTime}/>
                                         <InteractionDetailsFields 
-                                            interactionDate={startTime} 
+                                            interactionDate={startDate ? startDate : interactionData.startTime} 
                                             defaultDate={true}
                                         />
                                     </>

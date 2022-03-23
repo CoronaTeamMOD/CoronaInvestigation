@@ -160,8 +160,8 @@ const InteractionDialog = (props: Props) => {
     const convertData = (data: InteractionEventDialogData) => {
         const { isNamedLocation } = getOptionsByPlaceAndSubplaceType(data.placeType, data.placeSubType);
         initialInteractionDate.current.setHours(0, 0, 0, 0);
-        const startTimeToSave = isUnknownTime ? initialInteractionDate.current : data.startTime;
-        const endTimeToSave = isUnknownTime ? initialInteractionDate.current : data.endTime;
+        const startTimeToSave = data.startDate ? data.startDate : (isUnknownTime ? initialInteractionDate.current : data.startTime);
+        const endTimeToSave = data.startDate ? data.startDate : (isUnknownTime ? initialInteractionDate.current : data.endTime);
 
         return {
             ...data,
