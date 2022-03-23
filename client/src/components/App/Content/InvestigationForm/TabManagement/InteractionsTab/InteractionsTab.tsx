@@ -85,8 +85,8 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     }, [interactions]);
 
     const intOldArray : Date[] = useMemo(() => {
-        const intArray: Date[] = [];
-        const mappedOldInt= new Map<number, Date>();
+        const intArray : Date[] = [];
+        const mappedOldInt = new Map<number, Date>();
         const mappedDatesArray = new Map<number, Date>();
         datesToInvestigate.forEach(currDate => {
             const currDateStartTime : number = currDate.getTime();
