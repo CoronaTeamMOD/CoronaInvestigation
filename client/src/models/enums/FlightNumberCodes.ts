@@ -1,5 +1,5 @@
 enum FlightNumberCodes {
-    OTHER = 9999,
+    OTHER = 999,
 }
 
 export default FlightNumberCodes;

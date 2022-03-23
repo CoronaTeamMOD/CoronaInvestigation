@@ -39,7 +39,7 @@ export const getOldDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStar
             startInvestigationDate = subDays(validationDate, nonSymptomaticPatient)
         }
         try {
-            const currMaxDate = startInvestigationDate ? new Date(startInvestigationDate) : undefined;
+            const currMaxDate = startInvestigationDate ? new Date(startOfDay(startInvestigationDate)) : undefined;
             const minDate = currMaxDate ? new Date(currMaxDate.setDate(currMaxDate.getDate() - 14)): undefined;
             return {minDate:minDate, maxDate: startInvestigationDate};
         } catch (e) {
