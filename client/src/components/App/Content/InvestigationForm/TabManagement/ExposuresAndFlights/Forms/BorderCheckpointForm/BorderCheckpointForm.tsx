@@ -182,7 +182,8 @@ const BorderCheckpointForm = (props: Props) => {
                                                 }}
                                                 disabled={isViewMode}
                                                 error={Boolean(borderCheckpointErrors[fieldsNames.arrivalDateToIsrael])}
-                                            />
+                                                fullWidth
+                                                />
                                         );
                                     }}
                                 />
@@ -207,7 +208,8 @@ const BorderCheckpointForm = (props: Props) => {
                                             labelText={arrivalTimeToIsraelLabel}
                                             disabled={isViewMode}
                                             error={Boolean(borderCheckpointErrors[fieldsNames.arrivalTimeToIsrael])}
-
+                                            fullWidth
+                                            margin='none'
                                         />
                                     )}
                                 />
