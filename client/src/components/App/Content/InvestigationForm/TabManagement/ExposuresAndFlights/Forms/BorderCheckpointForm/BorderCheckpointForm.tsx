@@ -75,7 +75,7 @@ const BorderCheckpointForm = (props: Props) => {
 
     return (
         <Collapse in={watchWereFlights}>
-            <Grid container direction="column" spacing={2}>
+            <Grid container direction="column" spacing={1}>
                 <Grid item md={2}>
                     <Typography> אופן כניסה לישראל</Typography>
                     <>
@@ -102,8 +102,8 @@ const BorderCheckpointForm = (props: Props) => {
                     </>
                 </Grid>
                 {watchBorderCheckpointType &&
-                    <Grid item md={2} className={classes.autocomplete}>
-                        <>
+                    <>
+                        <Grid item md={2} className={classes.autocomplete}>
                             <Controller
                                 control={control}
                                 name={`borderCheckpointData.${fieldsNames.borderCheckpoint}`}
@@ -132,92 +132,94 @@ const BorderCheckpointForm = (props: Props) => {
                             <InlineErrorText
                                 error={borderCheckpointErrors[fieldsNames.borderCheckpoint]}
                             />
-                        </>
-                    </Grid>
-                }
-                <Collapse in={watchBorderCheckpointType && watchBorderCheckpointType != BorderCheckpointTypeCodes.FLIGHT}>
-
-                    <Grid item md={2} className={classes.autocomplete}>
-                        <Controller
-                            control={control}
-                            name={`borderCheckpointData.${fieldsNames.lastDestinationCountry}`}
-                            defaultValue={borderCheckpointData ? borderCheckpointData['lastDestinationCountry'] : null}
-                            render={(props) => {
-                                return (
-                                    <AutocompletedField
-                                        {...props}
-                                        value={props.value}
-                                        options={countryOptions}
-                                        onChange={(event, newValue) => {
-                                            const formattedValue = newValue ? newValue.id : null;
-                                            props.onChange(formattedValue);
-                                            handleCountryChange(newValue);
-                                        }}
-                                        getOptionLabel={(option) => getLabel(option)}
-                                        filterOptions={filterOptions}
-                                        label={lastDestinationCountryLabel}
-                                        placeholder={lastDestinationCountryLabel}
-                                        isViewMode={isViewMode}
-                                    />
-                                );
-                            }}
-                        />
-
-                    </Grid>
-                    <Grid item md={2} className={classes.arrivalDate}>
-                        <>
+                        </Grid>
+                        <Grid item md={2} className={classes.autocomplete}>
                             <Controller
                                 control={control}
-                                name={`borderCheckpointData.${fieldsNames.arrivalDateToIsrael}`}
-                                defaultValue={borderCheckpointData?.arrivalDateToIsrael || null}
+                                name={`borderCheckpointData.${fieldsNames.lastDestinationCountry}`}
+                                defaultValue={borderCheckpointData ? borderCheckpointData['lastDestinationCountry'] : null}
                                 render={(props) => {
                                     return (
-                                        <DatePick
+                                        <AutocompletedField
                                             {...props}
-                                            maxDate={new Date()}
-                                            testId='flightFromDate'
-                                            labelText={arrivalDateToIsraelLabel}
-                                            onChange={(newDate: Date) => {
-                                                props.onChange(newDate);
-                                                onExposuresStatusChange(fieldsNames.arrivalTimeToIsrael, newDate);
+                                            value={props.value}
+                                            options={countryOptions}
+                                            onChange={(event, newValue) => {
+                                                const formattedValue = newValue ? newValue.id : null;
+                                                props.onChange(formattedValue);
+                                                handleCountryChange(newValue);
                                             }}
-                                            disabled={isViewMode}
-                                            error={Boolean(borderCheckpointErrors[fieldsNames.arrivalDateToIsrael])}
+                                            getOptionLabel={(option) => getLabel(option)}
+                                            filterOptions={filterOptions}
+                                            label={lastDestinationCountryLabel}
+                                            placeholder={lastDestinationCountryLabel}
+                                            isViewMode={isViewMode}
                                         />
                                     );
                                 }}
                             />
-                            <InlineErrorText
-                                error={borderCheckpointErrors[fieldsNames.arrivalDateToIsrael]}
-                            />
-                        </>
-                    </Grid>
-                    <Grid item md={2}>
-                        <>
-                            <Controller
-                                name={`borderCheckpointData.${fieldsNames.arrivalTimeToIsrael}`}
-                                control={control}
-                                defaultValue={borderCheckpointData?.arrivalTimeToIsrael || null}
-                                render={(props) => (
-                                    <TimePick
-                                        value={props.value}
-                                        onChange={(newTime: string) => {
-                                            props.onChange(newTime);
-                                            onExposuresStatusChange(fieldsNames.arrivalTimeToIsrael, newTime);
-                                        }}
-                                        labelText={arrivalTimeToIsraelLabel}
-                                        disabled={isViewMode}
-                                        error={Boolean(borderCheckpointErrors[fieldsNames.arrivalTimeToIsrael])}
-
-                                    />
-                                )}
-                            />
-                            <InlineErrorText
-                                error={borderCheckpointErrors[fieldsNames.arrivalTimeToIsrael]}
-                            />
-                        </>
-                    </Grid>
-                </Collapse>
+                        </Grid>
+                    </>
+                }
+                {watchBorderCheckpointType && watchBorderCheckpointType != BorderCheckpointTypeCodes.FLIGHT &&
+                    <>
+                        <Grid item md={2} className={classes.arrivalDate}>
+                            <>
+                                <Controller
+                                    control={control}
+                                    name={`borderCheckpointData.${fieldsNames.arrivalDateToIsrael}`}
+                                    defaultValue={borderCheckpointData?.arrivalDateToIsrael || null}
+                                    render={(props) => {
+                                        return (
+                                            <DatePick
+                                                {...props}
+                                                maxDate={new Date()}
+                                                testId='flightFromDate'
+                                                labelText={arrivalDateToIsraelLabel}
+                                                onChange={(newDate: Date) => {
+                                                    props.onChange(newDate);
+                                                    onExposuresStatusChange(fieldsNames.arrivalTimeToIsrael, newDate);
+                                                }}
+                                                disabled={isViewMode}
+                                                error={Boolean(borderCheckpointErrors[fieldsNames.arrivalDateToIsrael])}
+                                                fullWidth
+                                                />
+                                        );
+                                    }}
+                                />
+                                <InlineErrorText
+                                    error={borderCheckpointErrors[fieldsNames.arrivalDateToIsrael]}
+                                />
+                            </>
+                        </Grid>
+                        <Grid item md={2} className={classes.arrivalDate}>
+                            <>
+                                <Controller
+                                    name={`borderCheckpointData.${fieldsNames.arrivalTimeToIsrael}`}
+                                    control={control}
+                                    defaultValue={borderCheckpointData?.arrivalTimeToIsrael || null}
+                                    render={(props) => (
+                                        <TimePick
+                                            value={props.value}
+                                            onChange={(newTime: string) => {
+                                                props.onChange(newTime);
+                                                onExposuresStatusChange(fieldsNames.arrivalTimeToIsrael, newTime);
+                                            }}
+                                            labelText={arrivalTimeToIsraelLabel}
+                                            disabled={isViewMode}
+                                            error={Boolean(borderCheckpointErrors[fieldsNames.arrivalTimeToIsrael])}
+                                            fullWidth
+                                            margin='none'
+                                        />
+                                    )}
+                                />
+                                <InlineErrorText
+                                    error={borderCheckpointErrors[fieldsNames.arrivalTimeToIsrael]}
+                                />
+                            </>
+                        </Grid>
+                    </>
+                }
 
                 {
                     watchBorderCheckpointType == BorderCheckpointTypeCodes.FLIGHT &&
