@@ -34,9 +34,12 @@ const AdminActions: React.FC<Props> = (props: Props): JSX.Element => {
                         />
                     </FormControl>
                 </Grid>
-
                 <Collapse in={selectedAdminAction.id === adminActions[1].id} unmountOnExit>
-                    <AdminMessages 
+                    <AdminDBAction />
+                </Collapse>
+
+                <Collapse in={selectedAdminAction.id === adminActions[2].id} unmountOnExit>
+                    <AdminMessages
                         investigationInfoFilter={props.investigationInfoFilter}
                     />
                 </Collapse>
@@ -53,5 +56,5 @@ const AdminActions: React.FC<Props> = (props: Props): JSX.Element => {
 interface Props {
     investigationInfoFilter: any
 };
-  
+
 export default AdminActions;
