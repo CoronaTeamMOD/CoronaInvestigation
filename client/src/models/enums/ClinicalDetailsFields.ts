@@ -24,7 +24,8 @@ enum ClinicalDetailsFields {
     IS_PREGNANT = 'isPregnant',
     INVESTIGATED_PATIENT_ID = 'investigatedPatientId',
     OTHER_SYMPTOMS_MORE_INFO = 'otherSymptomsMoreInfo',
-    OTHER_BACKGROUND_DISEASES_MORE_INFO = 'otherBackgroundDiseasesMoreInfo'
+    OTHER_BACKGROUND_DISEASES_MORE_INFO = 'otherBackgroundDiseasesMoreInfo',
+    WAS_INSTRUCTED_TO_BE_IN_ISOLATION = 'wasInstructedToBeInIsolation'
 }
 
 export default ClinicalDetailsFields;

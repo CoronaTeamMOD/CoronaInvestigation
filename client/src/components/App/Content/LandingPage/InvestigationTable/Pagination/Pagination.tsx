@@ -7,6 +7,22 @@ const Pagination = (props: Props) => {
     const { page, count, onPageChange } = props;
     const classes = useStyles();
     const [currentPage, setCurrentPage] = useState<string | null>(page.toString());
+    
+    const changePage = (page: number ) => {
+        if (page > count ){
+            setCurrentPage(count.toString());
+            onPageChange(count);                             
+        }
+        else if (page < 1) {
+            setCurrentPage((1).toString());
+            onPageChange(1);
+        } 
+        else {
+            setCurrentPage(page.toString());
+            onPageChange(page);
+        }
+    }  
+
     return (
         <Grid container xs={12} spacing={1} direction='row' className={classes.paginationRow} >
             <Grid item xs='auto'>
@@ -14,9 +30,9 @@ const Pagination = (props: Props) => {
                     <button
                         className={classes.arrowButton}
                         disabled={page == 1}
-                        onClick={() => {
-                            setCurrentPage((page - 1).toString());
-                            onPageChange(page - 1);
+                        onMouseDown={() => {
+                            let currentPageNumber = Number(currentPage)
+                            changePage(currentPageNumber-1);
                         }}
                     ><NavigateNext className={classes.arrowIcon} /></button>
                 </Box>
@@ -33,12 +49,11 @@ const Pagination = (props: Props) => {
                         setCurrentPage(event.target.value);
                     }}
                     onKeyPress={event => {
-                        event.key === 'Enter' &&
-                        onPageChange(Number(currentPage))
+                         (event.key === 'Enter') && changePage(Number(currentPage))
                     }}
                     onBlur={() => {
                         if (currentPage != '')
-                            onPageChange(Number(currentPage))
+                            changePage(Number(currentPage))
                     }}
                     className={classes.pageInput}
                 />
@@ -47,9 +62,9 @@ const Pagination = (props: Props) => {
                 <Box>
                     <button disabled={page == count}
                         className={classes.arrowButton}
-                        onClick={() => {
-                            setCurrentPage((page + 1).toString());
-                            onPageChange(page + 1);
+                        onMouseDown={() => {
+                            let currentPageNumber = Number(currentPage);
+                            changePage(currentPageNumber+1);
                         }}><NavigateBefore className={classes.arrowIcon} /></button>
                 </Box>
             </Grid>
