@@ -308,7 +308,7 @@ const FlightsForm = (props: Props) => {
 				</Grid>
 			</Grid>
 
-			<Grid container justify='space-between' xs={12} className={classes.airlineRow}>
+			{/* <Grid container justify='space-between' xs={12} className={classes.airlineRow}>
 				<Grid item container xs={11}>
 					<FormRowWithInput fieldName={`${flightSeatNumLabel}:`}>
 						<Grid item xs={3}>
@@ -335,7 +335,7 @@ const FlightsForm = (props: Props) => {
 						</Grid>
 					</FormRowWithInput>
 				</Grid>
-			</Grid>
+			</Grid> */}
 		</Grid>
 	);
 };
