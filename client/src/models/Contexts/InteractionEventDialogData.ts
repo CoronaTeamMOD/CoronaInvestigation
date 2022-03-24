@@ -51,6 +51,7 @@ interface InteractionEventData {
     greenPass?: [];
     isThereMoreVerified?: boolean | null;
     detailsAdditionalVerified?: string;
+    startDate?: Date;
 };
 
 export default InteractionEventDialogData;

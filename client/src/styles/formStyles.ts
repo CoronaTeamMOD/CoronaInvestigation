@@ -19,6 +19,13 @@ const useStyles = makeStyles({
         flexWrap: 'wrap',
         alignItems: 'center',
     },
+    formRowDate: {
+        display: 'flex',
+        margin: '1vh 0',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        width: '50%'
+    },
     roundedTextLabel: {
         lineHeight: 0,
     },
