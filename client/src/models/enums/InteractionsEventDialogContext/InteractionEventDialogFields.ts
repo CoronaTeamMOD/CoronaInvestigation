@@ -42,7 +42,8 @@ enum InteractionEventDialogFields {
     IS_GREEN_PASS = 'isGreenPass',
     CREATION_SOURCE = 'creationSource',
     IS_THERE_MORE_VERIFIED = 'isThereMoreVerified',
-    DETAILS_ADDITIONAL_VERIFIED = 'detailsAdditionalVerified'
+    DETAILS_ADDITIONAL_VERIFIED = 'detailsAdditionalVerified',
+    START_DATE = 'startDate'
 };
 
 export default InteractionEventDialogFields;

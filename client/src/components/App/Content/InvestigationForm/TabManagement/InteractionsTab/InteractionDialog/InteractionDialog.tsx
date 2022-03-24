@@ -160,8 +160,8 @@ const InteractionDialog = (props: Props) => {
     const convertData = (data: InteractionEventDialogData) => {
         const { isNamedLocation } = getOptionsByPlaceAndSubplaceType(data.placeType, data.placeSubType);
         initialInteractionDate.current.setHours(0, 0, 0, 0);
-        const startTimeToSave = isUnknownTime ? initialInteractionDate.current : data.startTime;
-        const endTimeToSave = isUnknownTime ? initialInteractionDate.current : data.endTime;
+        const startTimeToSave = data.startDate ? (isUnknownTime ? data.startDate : data.startTime) : (isUnknownTime ? initialInteractionDate.current : data.startTime);
+        const endTimeToSave = data.startDate ? (isUnknownTime ? data.startDate : data.endTime) : (isUnknownTime ? initialInteractionDate.current : data.endTime);
 
         return {
             ...data,
@@ -308,7 +308,7 @@ const InteractionDialog = (props: Props) => {
             getAndSetDateErrors({unknownTime: isUnknownTime,startTime: interactionStartTime, endTime: interactionEndTime })
             || additionalOccurrences?.map((occurence, index) => getAndSetDateErrors(occurence, index)).some(Boolean);
 
-        const canSubmit = !(datesHaveError || isRepetitiveFieldInvalid.invalid);
+        const canSubmit = !(datesHaveError || (!isNewDate && isRepetitiveFieldInvalid.invalid));
 
         if (canSubmit) {
             const data = methods.getValues();
@@ -361,10 +361,10 @@ const InteractionDialog = (props: Props) => {
                             בטל
                         </Button>
                         <Tooltip title={
-                            isRepetitiveFieldInvalid.RepetitiveFieldMissingMessage || isRepetitiveFieldInvalid.missingAdditionalDateMessage
+                            !isNewDate ? (isRepetitiveFieldInvalid.RepetitiveFieldMissingMessage || isRepetitiveFieldInvalid.missingAdditionalDateMessage) : ''
                         }>
                             <div>
-                                <PrimaryButton disabled={isRepetitiveFieldInvalid.invalid || isGreenPassInvalid || !isPlaceTypeSelected}
+                                <PrimaryButton disabled={(!isNewDate && isRepetitiveFieldInvalid.invalid) || isGreenPassInvalid || !isPlaceTypeSelected}
                                                form='interactionEventForm'
                                                type='submit'
                                                id='createContact'>
