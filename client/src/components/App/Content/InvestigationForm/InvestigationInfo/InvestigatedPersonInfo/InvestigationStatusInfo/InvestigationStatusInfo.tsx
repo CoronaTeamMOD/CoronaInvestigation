@@ -64,10 +64,6 @@ const InvestigationStatusInfo = (props: any) => {
         }
     }, [investigationStatus.subStatus]);
 
-    const updatedSubStatuses = useMemo(() =>
-        investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ? [{ displayName: inProcess, id: 0, parentStatus: 100000002 }, ...subStatuses] : subStatuses,
-        [subStatuses, investigationStatus]);
-
     const permittedStatuses = investigationStatus.mainStatus !== InvestigationMainStatusCodes.DONE ? statuses.filter(status => status.id !== InvestigationMainStatusCodes.DONE) : statuses;
 
     const isStatusDisable = (status: number) => {
@@ -206,7 +202,7 @@ const InvestigationStatusInfo = (props: any) => {
                                             }}
                                         >
                                             {
-                                                updatedSubStatuses.map((subStatus: SubStatus) => (
+                                                subStatuses.map((subStatus: SubStatus) => (
                                                     <MenuItem
                                                         key={subStatus.id}
                                                         value={subStatus.displayName}>
