@@ -6,12 +6,15 @@ import { fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 
 import flightValidation from './flightsValidation';
 import exposureValidation from './exposureValidation';
+import borderCheckpointValidation from './borderCheckpointValidation';
+import BorderCheckpointData from 'models/BorderCheckpointData';
+import { BorderCheckpointTypeCodes } from 'models/enums/BorderCheckpointCodes';
 
-const hasExposureSource = (exposure : Exposure) => {
+const hasExposureSource = (exposure: Exposure) => {
     return exposure?.exposureSource !== undefined
 };
 
-const flightsAndExposures = (validationDate : Date) => {
+const flightsAndExposures = (validationDate: Date) => {
     return yup.lazy(
         (exposure: Exposure): yup.Schema<any, object> => {
             if (hasExposureSource(exposure)) {
@@ -23,10 +26,10 @@ const flightsAndExposures = (validationDate : Date) => {
     );
 };
 
-const flights = (validationDate : Date) => {
+const flights = (validationDate: Date) => {
     return yup.lazy(
         (exposure: Exposure): yup.Schema<any, object> => {
-            if(hasExposureSource(exposure)) {
+            if (hasExposureSource(exposure)) {
                 return yup.object();
             } else {
                 return flightValidation(validationDate);
@@ -35,7 +38,7 @@ const flights = (validationDate : Date) => {
     );
 };
 
-const exposures = (validationDate : Date) => {
+const exposures = (validationDate: Date) => {
     return yup.lazy(
         (exposure: Exposure): yup.Schema<any, object> => {
             if (hasExposureSource(exposure)) {
@@ -53,17 +56,18 @@ const ExposureSchema = (validationDate: Date) => {
         [fieldsNames.wasInEvent]: yup.boolean().nullable().required(requiredText),
         [fieldsNames.wereFlights]: yup.boolean().required(),
         [fieldsNames.wereConfirmedExposures]: yup.boolean().required(),
-        [fieldsNames.exposures] : yup.array().when(
-            ['wereFlights','wereConfirmedExposures'] , (wereFlights: boolean, wereConfirmedExposures: boolean) => {
-                return wereFlights && wereConfirmedExposures 
-                    ? yup.array().of(flightsAndExposures(validationDate)) 
-                    : wereFlights 
+        [fieldsNames.exposures]: yup.array().when(
+            ['wereFlights', 'wereConfirmedExposures', 'borderCheckpointData'], (wereFlights: boolean, wereConfirmedExposures: boolean, borderCheckpointData?: BorderCheckpointData) => {
+                return wereFlights && borderCheckpointData && borderCheckpointData?.borderCheckpointType == BorderCheckpointTypeCodes.FLIGHT && wereConfirmedExposures
+                    ? yup.array().of(flightsAndExposures(validationDate))
+                    : wereFlights && borderCheckpointData && borderCheckpointData?.borderCheckpointType == BorderCheckpointTypeCodes.FLIGHT
                         ? yup.array().of(flights(validationDate))
                         : wereConfirmedExposures
                             ? yup.array().of(exposures(validationDate))
                             : yup.array().of(yup.object());
             }
-        )
+        ),
+        [fieldsNames.borderCheckpointData]: borderCheckpointValidation(validationDate),
     })
 };
 

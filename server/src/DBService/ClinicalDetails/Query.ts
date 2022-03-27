@@ -75,6 +75,7 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
         }
       }
       otherBackgroundDiseasesMoreInfo
+      wasInstructedToBeInIsolation
     }
   }
 }

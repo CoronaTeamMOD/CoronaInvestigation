@@ -23,6 +23,8 @@ import { PersonalInfoTabState } from 'components/App/Content/InvestigationForm/T
 import KeyValuePair from 'models/KeyValuePair';
 import { BotInvestigationInfoState } from './BotInvestigationInfo/botInvestigationInfoReducer';
 import { MutationInfoState } from './MutationInfo/mutationInfoReducer';
+import BorderCheckpoint from 'models/BorderCheckpoint';
+import ExposureAndFlightData from 'models/ExposureAndFlightData';
 
 export default interface StoreStateType {
     user: UserState;
@@ -48,7 +50,7 @@ export default interface StoreStateType {
     complexReasons: (number | null)[];
     greenPass: GreenPassReducerType;
     identificationTypes: IdentificationType[];
-    airlines: Map<number, string>;
+    airlines: Map<string, string>;
     interactedContacts: InteractedContactsState;
     clinicalDetails: ClinicalDetailsState;
     personalInfo: PersonalInfoTabState;
@@ -57,4 +59,7 @@ export default interface StoreStateType {
     chatStatuses: KeyValuePair[];
     mutationInfo: MutationInfoState;
     complexityReasons: ComplexityReason[];
+    borderCheckpointTypes: KeyValuePair[];
+    borderCheckpoints: BorderCheckpoint[];
+    exposuresAndFlights: ExposureAndFlightData;
 };
