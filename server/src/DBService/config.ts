@@ -27,7 +27,7 @@ const genericOptions: PostGraphileOptions = {
 };
 
 const pgPool = new Pool({
-    connectionString: process.env.CONNECTION_STRING,
+    connectionString: process.env.CONNECTION_STRING3,
     max: +process.env.MAX_POOL_CONNECTIONS
 });
 
