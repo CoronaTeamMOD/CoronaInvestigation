@@ -13,6 +13,7 @@ const TimePick: React.FC<Props> = (props: Props): JSX.Element => {
 
   return (
     <KeyboardTimePicker
+      fullWidth={fullWidth ? true : false}
       ampm={false}
       test-id={props.testId}
       error={error}

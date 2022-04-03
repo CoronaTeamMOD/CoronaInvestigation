@@ -261,13 +261,13 @@ const TableFilter = (props: Props) => {
                                                 <Typography className={classes.option} >{option.description}</Typography>
                                             </>
                                         )}
-                                        limitTags={1}
+                                        limitTags={3}
                                     />
                                 </Grid>
                             }
                         </Grid>
                         <Grid item md={12} className={classes.mainLine} >
-                            <Grid item md={1} className={classes.column}>
+                            <Grid item md='auto' className={classes.column}>
                                 <DeskFilter
                                     desks={desksToTransfer}
                                     filteredDesks={deskFilter}
