@@ -132,7 +132,8 @@ const useExposuresSaving = () => {
                 exposureAndDataToReturn = {
                     ...exposureAndDataToReturn,
                     [fieldsNames.arrivalDateToIsrael]: null,
-                    [fieldsNames.arrivalTimeToIsrael]: null
+                    [fieldsNames.arrivalTimeToIsrael]: null,
+                    [fieldsNames.lastDestinationCountry]: undefined
                 }
             }
         } else {
