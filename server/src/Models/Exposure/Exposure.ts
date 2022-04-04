@@ -14,22 +14,13 @@ interface Exposure {
     flightOriginAirport?: string,
     flightStartDate?: Date,
     flightEndDate?: Date,
-    airline?: { id: number, displayName: string },
+    airline?: {id: number , displayName: string},
     flightNum?: string,
     flightOriginCountry?: string,
     flightDestinationCountry?: string,
     wasAbroad?: boolean,
     wasConfirmedExposure: boolean,
-    isExposurePersonKnown: boolean | undefined,
-    borderCheckpoint?: any,
-    borderCheckpointType?: number,
-    arrivalDateToIsrael?: Date,
-    arrivalTimeToIsrael?: string,
-    flightSeatNum?: string,
-    otherFlightNum?: string,
-    lastDestinationCountry?: string,
-    borderCheckpointByBorderCheckpoint?: any,
-    otherAirline?: string,
+    isExposurePersonKnown: boolean | undefined
 };
 
 export default Exposure;

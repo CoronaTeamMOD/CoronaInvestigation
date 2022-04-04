@@ -14,6 +14,7 @@ interface InvestigationRedux extends SymptomsExistenceInfo {
     isCurrentlyLoading: boolean;
     axiosInterceptorId: number;
     datesToInvestigate: Date[];
+    oldDatesToInvestigate: {minDate:Date | undefined,maxDate:Date | undefined};
     validationDate: Date;
     endTime: Date | null;
     trackingRecommendation: TrackingRecommendation;

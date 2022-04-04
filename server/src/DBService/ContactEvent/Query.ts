@@ -118,6 +118,8 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!, $minimalDateT
       startTime
       trainLine
       creationTime
+      isThereMoreVerified
+      detailsAdditionalVerified
       contactedPeopleByContactEvent {
         nodes {
           id
