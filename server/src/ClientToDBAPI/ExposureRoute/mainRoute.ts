@@ -13,33 +13,32 @@ import { INVALID_CHARS_REGEX, PHONE_OR_IDENTITY_NUMBER_REGEX } from '../../commo
 import CovidPatientDBOutput, { AddressDBOutput } from '../../Models/Exposure/CovidPatientDBOutput';
 import OptionalExposureSourcesResponse from '../../Models/Exposure/OptionalExposureSourcesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
-import { GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS, GET_EXPOSURE_SOURCE_BY_PERSONAL_DETAILS, GET_EXPOSURE_SOURCE_BY_EPIDEMIOLOGY_NUMBER, GET_ALL_BORDER_CHECKPOINT_TYPES, GET_ALL_BORDER_CHECKPOINTS } from '../../DBService/Exposure/Query';
+import { GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS,GET_EXPOSURE_SOURCE_BY_PERSONAL_DETAILS, GET_EXPOSURE_SOURCE_BY_EPIDEMIOLOGY_NUMBER } from '../../DBService/Exposure/Query';
 
 const exposureRoute = Router();
 
 const searchDaysAmount = 14;
 
 const convertExposuresFromDB = (result: ExposureByInvestigationId) => {
-    const convertedExposures = result.data.allExposures.nodes.map(exposure => {
+    const convertedExposures = result.data.allExposures.nodes.map(exposure => 
+    {
         let exposureSource = null;
         if (exposure.covidPatientByExposureSource) {
             exposureSource = {
                 ...exposure.covidPatientByExposureSource,
                 age: getPatientAge(exposure.covidPatientByExposureSource.birthDate),
-                address: createAddressString(exposure.covidPatientByExposureSource.addressByAddress),
+                address: createAddressString(exposure.covidPatientByExposureSource.addressByAddress)
             };
             delete exposureSource.addressByAddress;
             delete exposureSource.birthDate;
         }
+        
         const convertedExposure = {
-            ...exposure,
-            exposureSource,
-            borderCheckpoint: exposure.borderCheckpointByBorderCheckpoint,
-            arrivalTimeToIsrael: exposure.arrivalTimeToIsrael ? new Date(`01/01/2022 ${exposure.arrivalTimeToIsrael.toString()}`) : null,
+            ...exposure, 
+            exposureSource
         }
         delete convertedExposure.covidPatientByExposureSource;
-        delete convertedExposure.borderCheckpointByBorderCheckpoint;
-        return convertedExposure;
+        return convertedExposure
     })
     return convertedExposures
 }
@@ -52,7 +51,7 @@ exposureRoute.get('/exposures', handleInvestigationRequest, (request: Request, r
         investigation: epidemiologyNumber
     });
 
-    const parameters = { investigationId: epidemiologyNumber };
+    const parameters = {investigationId: epidemiologyNumber};
     exposuresLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(GET_EXPOSURE_INFO, response.locals, parameters)
@@ -64,10 +63,10 @@ exposureRoute.get('/exposures', handleInvestigationRequest, (request: Request, r
             exposuresLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         })
-}
+    }
 );
 
-const createAddressString = (address: AddressDBOutput): string => {
+const createAddressString = (address: AddressDBOutput) : string => {
     const addressParts = [];
     if (address) {
         address.streetByStreet && addressParts.push(address.streetByStreet.displayName);
@@ -78,7 +77,7 @@ const createAddressString = (address: AddressDBOutput): string => {
     return addressParts.join(' ');
 }
 
-const convertCovidPatientsFromDB = (dbBCovidPatients: CovidPatientDBOutput[]): CovidPatient[] => {
+const convertCovidPatientsFromDB = (dbBCovidPatients: CovidPatientDBOutput[]) :  CovidPatient[] => {
     return dbBCovidPatients.map(covidPatient => ({
         fullName: covidPatient.fullName,
         identityNumber: covidPatient.identityNumber,
@@ -100,12 +99,12 @@ const filterCovidPatientsByRegex = (searchValue: string, patientsToFilter: Covid
 }
 
 exposureRoute.get('/optionalExposureSources/:searchValue/:validationDate', handleInvestigationRequest, (request: Request, response: Response) => {
-    const searchValue: string = request.params.searchValue || '';
+    const searchValue : string = request.params.searchValue || '';
     const searchInt = isNaN(parseInt(searchValue)) ? 0 : parseInt(searchValue);
     const isPhoneOrIdentityNumber = PHONE_OR_IDENTITY_NUMBER_REGEX.test(searchValue);
     const searchEndDate = new Date(request.params.validationDate);
     const searchStartDate = subDays(searchEndDate, searchDaysAmount);
-    const parameters = { searchValue, searchInt, searchStartDate, searchEndDate }
+    const parameters = {searchValue, searchInt, searchStartDate, searchEndDate}
     const optionalExposureSourcesLogger = logger.setup({
         workflow: 'query optioanl exposures sources by regex and date',
         user: response.locals.user.id,
@@ -131,7 +130,7 @@ exposureRoute.get('/optionalExposureSources/:searchValue/:validationDate', handl
         })
 });
 
-exposureRoute.get('/exposuresByPersonalDetails/:validationDate', handleInvestigationRequest, (request: Request, response: Response) => {
+exposureRoute.get('/exposuresByPersonalDetails/:validationDate', handleInvestigationRequest,  (request: Request, response: Response) => {
     const { validationDate } = request.params;
     const { name, phoneNum } = request.query;
 
@@ -152,9 +151,9 @@ exposureRoute.get('/exposuresByPersonalDetails/:validationDate', handleInvestiga
     });
 
     exposuresByPersonalDetailsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-    graphqlRequest(GET_EXPOSURE_SOURCE_BY_PERSONAL_DETAILS, response.locals, parameters)
+    graphqlRequest(GET_EXPOSURE_SOURCE_BY_PERSONAL_DETAILS, response.locals,parameters)
         .then(result => {
-            if (result?.data?.allCovidPatients?.nodes) {
+            if(result?.data?.allCovidPatients?.nodes){
                 exposuresByPersonalDetailsLogger.info(validDBResponseLog, Severity.LOW);
                 let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
                 response.send(convertCovidPatientsFromDB(dbBCovidPatients));
@@ -169,7 +168,7 @@ exposureRoute.get('/exposuresByPersonalDetails/:validationDate', handleInvestiga
         })
 });
 
-exposureRoute.get('/exposuresByEpidemiologyNumber/:validationDate', handleInvestigationRequest, (request: Request, response: Response) => {
+exposureRoute.get('/exposuresByEpidemiologyNumber/:validationDate', handleInvestigationRequest,  (request: Request, response: Response) => {
     const { validationDate } = request.params;
     const epidemiologyNumber = typeof request.query.epidemiologyNumber === 'string' ? parseInt(request.query.epidemiologyNumber) : 0;
 
@@ -190,7 +189,7 @@ exposureRoute.get('/exposuresByEpidemiologyNumber/:validationDate', handleInvest
 
     graphqlRequest(GET_EXPOSURE_SOURCE_BY_EPIDEMIOLOGY_NUMBER, response.locals, parameters)
         .then(result => {
-            if (result?.data?.allCovidPatients?.nodes) {
+            if(result?.data?.allCovidPatients?.nodes) {
                 exposuresByEpidemiologyNumberLogger.info(validDBResponseLog, Severity.LOW);
                 let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
                 response.send(convertCovidPatientsFromDB(dbBCovidPatients));
@@ -210,14 +209,12 @@ const convertExposuresToDB = (request: Request) => {
         ...exposure,
         exposureSource: exposure.exposureSource ? exposure.exposureSource.epidemiologyNumber : null,
         airline: parseAirline(exposure.airline),
-        arrivalDateToIsrael: exposure.arrivalDateToIsrael ? new Date(exposure.arrivalDateToIsrael) : null,
-        arrivalTimeToIsrael: exposure.arrivalTimeToIsrael ? new Date(exposure.arrivalTimeToIsrael) : null,
     }));
-    return { ...request.body, exposures: convertedExposures }
+    return {...request.body, exposures: convertedExposures}
 }
 
-const parseAirline = (airline: { id: number, displayName: string } | string | null) => {
-    if (typeof airline === 'object' && airline !== null) {
+const parseAirline = (airline : {id : number, displayName : string} | string | null) => {
+    if(typeof airline === 'object' && airline !== null) {
         return airline.displayName;
     } else if (typeof airline === 'string') {
         return airline
@@ -225,16 +222,16 @@ const parseAirline = (airline: { id: number, displayName: string } | string | nu
     return undefined
 }
 
-exposureRoute.post('/updateExposures', handleInvestigationRequest, (request: Request, response: Response) => {
+exposureRoute.post('/updateExposures',handleInvestigationRequest, (request: Request, response: Response) => {
     const updateExposuresLogger = logger.setup({
         workflow: `saving investigation's exposures`,
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
 
-    const parameters = { inputExposures: JSON.stringify(convertExposuresToDB(request)) }
+    const parameters = {inputExposures: JSON.stringify(convertExposuresToDB(request))}
     updateExposuresLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-
+    
     return graphqlRequest(UPDATE_EXPOSURES, response.locals, parameters)
         .then((result) => {
             updateExposuresLogger.info(validDBResponseLog, Severity.LOW);
@@ -246,15 +243,15 @@ exposureRoute.post('/updateExposures', handleInvestigationRequest, (request: Req
         })
 });
 
-exposureRoute.delete('/deleteExposure', handleInvestigationRequest, (request: Request, response: Response) => {
+exposureRoute.delete('/deleteExposure',handleInvestigationRequest, (request: Request, response: Response) => {
     const deleteExposureLogger = logger.setup({
         workflow: `deleting investigation's exposure by id`,
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    const parameters = { exposureId: parseInt(request.query.exposureId as string) };
+    const parameters = {exposureId: parseInt(request.query.exposureId as string)};
     deleteExposureLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-
+    
     return graphqlRequest(DELETE_EXPOSURE_BY_ID, response.locals, parameters)
         .then((result) => {
             deleteExposureLogger.info(validDBResponseLog, Severity.LOW);
@@ -265,42 +262,5 @@ exposureRoute.delete('/deleteExposure', handleInvestigationRequest, (request: Re
             response.status(errorStatusCode).send(error)
         })
 });
-
-exposureRoute.get('/borderCheckpointTypes', (request: Request, response: Response) => {
-    const borderCheckpointTypesLogger = logger.setup({
-        workflow: 'query all border checkpoint types',
-        user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber,
-    });
-    borderCheckpointTypesLogger.info(launchingDBRequestLog(), Severity.LOW);
-    graphqlRequest(GET_ALL_BORDER_CHECKPOINT_TYPES, response.locals)
-        .then((result: any) => {
-            borderCheckpointTypesLogger.info(validDBResponseLog, Severity.LOW);
-            response.send(result.data.allBorderCheckpointTypes.nodes);
-        })
-        .catch(error => {
-            borderCheckpointTypesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-            response.status(errorStatusCode).send(error);
-        });
-})
-
-
-exposureRoute.get('/borderCheckpoints', (request: Request, response: Response) => {
-    const borderCheckpointsLogger = logger.setup({
-        workflow: 'query all border checkpoints',
-        user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber,
-    });
-    borderCheckpointsLogger.info(launchingDBRequestLog(), Severity.LOW);
-    graphqlRequest(GET_ALL_BORDER_CHECKPOINTS, response.locals)
-        .then((result: any) => {
-            borderCheckpointsLogger.info(validDBResponseLog, Severity.LOW);
-            response.send(result.data.allBorderCheckpoints.nodes);
-        })
-        .catch(error => {
-            borderCheckpointsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-            response.status(errorStatusCode).send(error);
-        });
-})
 
 export default exposureRoute;

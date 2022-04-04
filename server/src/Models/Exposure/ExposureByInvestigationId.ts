@@ -28,14 +28,5 @@ interface DBExposure {
     flightDestinationCountry?: string,
     wasAbroad?: boolean,
     wasConfirmedExposure: boolean,
-    isExposurePersonKnown: boolean | undefined,
-    borderCheckpoint?: any,
-    borderCheckpointType?: number,
-    arrivalDateToIsrael?: Date,
-    arrivalTimeToIsrael?: string,
-    flightSeatNum?: string,
-    otherFlightNum?: string,
-    lastDestinationCountry?: string,
-    borderCheckpointByBorderCheckpoint?: any,
-    otherAirline?: string,
+    isExposurePersonKnown: boolean | undefined
 };

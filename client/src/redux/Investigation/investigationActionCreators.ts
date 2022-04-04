@@ -88,6 +88,13 @@ export const setDatesToInvestigateParams = (symptomsExistenceInfo?: SymptomsExis
     })
 };
 
+export const setOldDatesToInvestigateParams = (symptomsExistenceInfo?: SymptomsExistenceInfo, validationDate?: Date) => {
+    store.dispatch({
+        type: actionTypes.SET_OLD_DATES_TO_INVESTIGATE_PARAMS,
+        payload: { symptomsExistenceInfo, validationDate }
+    })
+};
+
 export const setBirthDate = (birthDate: Date) => {
     store.dispatch({
         type: actionTypes.SET_BIRTH_DATE,
