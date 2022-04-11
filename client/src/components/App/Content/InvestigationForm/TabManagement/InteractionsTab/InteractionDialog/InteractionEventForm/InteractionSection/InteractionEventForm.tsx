@@ -1,6 +1,6 @@
 import {useSelector} from 'react-redux';
 import React, {useEffect, useMemo} from 'react';
-import {Grid, Divider, Collapse, Tooltip} from '@material-ui/core';
+import {Grid, Divider, Collapse} from '@material-ui/core';
 import {useFormContext, Controller} from 'react-hook-form';
 
 import Toggle from 'commons/Toggle/Toggle';
@@ -22,10 +22,8 @@ import DetailsFieldsTitle from './InteractionDetailsFields/DetailsFieldsTitle';
 import GoogleAddressForm from './InteractionLocationFields/AddressForm/AddressForm';
 import InteractionDetailsFields from './InteractionDetailsFields/InteractionDetailsFields';
 import BusinessContactForm from './InteractionLocationFields/BusinessContactForm/BusinessContactForm';
-import BigAlphanumericTextField from 'commons/BigAlphanumericTextField/BigAlphanumericTextField';
-import DatePick from 'commons/DatePick/DatePick';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import TimeForm from './InteractionDetailsFields/InteractionTimeForm/InteractionTimeForm';
+import DatePick from 'commons/DatePick/DatePick';
 
 const ADDRESS_LABEL = 'מקום/כתובת';
 
@@ -44,7 +42,7 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     const isUnknownTime = watch(InteractionEventDialogFields.UNKNOWN_TIME);
     const placeName = watch(InteractionEventDialogFields.PLACE_NAME);
     const isThereMoreVerified = watch(InteractionEventDialogFields.IS_THERE_MORE_VERIFIED);
-    const startDate = isNewDate ? watch(InteractionEventDialogFields.START_DATE) : interactionData?.startTime;
+    const startTime = watch(InteractionEventDialogFields.START_TIME);
 
     const {isPatientHouse} = useContactEvent();
 
@@ -68,8 +66,12 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     }, [isSubTypePatientHouse]);
 
     useEffect(() => {
-        setValue(InteractionEventDialogFields.START_TIME, isUnknownTime ? startDate : interactionData?.startTime);
-        setValue(InteractionEventDialogFields.END_TIME, isUnknownTime ? startDate : interactionData?.endTime);
+        setValue(InteractionEventDialogFields.END_TIME, startTime);
+    }, [startTime]);
+
+    useEffect(() => {
+        setValue(InteractionEventDialogFields.START_TIME, isUnknownTime ? null : interactionData?.startTime);
+        setValue(InteractionEventDialogFields.END_TIME, isUnknownTime ? null : interactionData?.endTime);
     }, [isUnknownTime]);
 
     useEffect(()=>{
@@ -77,7 +79,6 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
             setValue(InteractionEventDialogFields.IS_THERE_MORE_VERIFIED,true);
             setValue(InteractionEventDialogFields.IS_REPETITIVE,false);
         }
-        setValue(InteractionEventDialogFields.START_DATE, interactionData?.startTime);
     },[])
 
     const onPlaceTypeChange = (newPlaceType: string) => {
@@ -115,44 +116,26 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     return (
         <Grid className={isVisible ? formClasses.form : formClasses.hidden} container justify='space-between'>
             {
-                isNewDate && <div>
-                <div className={formClasses.formRow}>
-                    <Grid container className={formClasses.formRow}>
-                        <FormInput xs={3} fieldName='תאריך האירוע' labelLength={5}>
-                            <Controller
-                            name={InteractionEventDialogFields.START_DATE}
-                            control={control}
-                            render={(props) => (
-                                <DatePick
-                                    minDate={oldDatesToInvestigate?.minDate}
-                                    maxDate={oldDatesToInvestigate?.maxDate}
-                                    disabled={shouldDateDisabled}
-                                    testId='startTimeUntilDate'
-                                    value={props.value}
-                                    onBlur={props.onBlur}
-                                    onChange={(newDate: Date) =>
-                                        props.onChange(newDate)
-                                    }
-                                />)}
-                            /> 
-                        </FormInput>
-                    </Grid>
-                    <TimeForm interactionDate={startDate ? startDate : interactionData?.startTime} />             
-                </div>
-                <FormInput className={formClasses.formRow} xs={5} labelLength={3} fieldName='פירוט נוסף'>
-                    <Controller control={control}
-                                name={InteractionEventDialogFields.PLACE_DESCRIPTION}
-                                render={(props) => (
-                                    <AlphanumericTextField
-                                        name={props.name}
-                                        value={props.value}
-                                        onChange={props.onChange}
-                                        onBlur={props.onBlur}
-                                    />
-                                )}
-                    />
-                </FormInput>
-                </div>
+                isNewDate ? <Grid container className={formClasses.formRow}>
+                    <FormInput xs={3} fieldName='תאריך האירוע' labelLength={5}>
+                        <Controller
+                        name={InteractionEventDialogFields.START_TIME}
+                        control={control}
+                        render={(props) => (
+                            <DatePick
+                                minDate={oldDatesToInvestigate?.minDate}
+                                maxDate={oldDatesToInvestigate?.maxDate}
+                                disabled={shouldDateDisabled}
+                                testId='startTimeUntilDate'
+                                value={props.value}
+                                onBlur={props.onBlur}
+                                onChange={(newDate: Date) =>
+                                    props.onChange(newDate)
+                                }
+                            />)}
+                        /> 
+                    </FormInput> 
+                </Grid> : <></>
             }
             <PlacesTypesAndSubTypes 
                 size='Dialog'
@@ -198,21 +181,23 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                         </FormInput>
                         {
                             (interactionData && typeof isThereMoreVerified === 'boolean') && (
-                                (isThereMoreVerified) &&
-                                        <Controller
-                                            name={InteractionEventDialogFields.DETAILS_ADDITIONAL_VERIFIED}
-                                            control={control}
-                                            render={(props) => (
-                                                <BigAlphanumericTextField
-                                                    className={formClasses.formMidSize}
-                                                    name={props.name}
-                                                    value={props.value}
-                                                    onChange={(newValue: string) => props.onChange(newValue as string)}
-                                                    onBlur={props.onBlur}
-                                                    placeholder='פירוט לגבי מאומתים נוספים ששהו במקום'
-                                                />
-                                            )}
-                                        />
+                                (isThereMoreVerified)
+                                    ? <Controller
+                                        name={InteractionEventDialogFields.DETAILS_ADDITIONAL_VERIFIED}
+                                        control={control}
+                                        render={(props) => (
+                                            <AlphanumericTextField
+                                                className={formClasses.formMidSize}
+                                                name={props.name}
+                                                value={props.value}
+                                                onChange={(newValue: string) => props.onChange(newValue as string)}
+                                                onBlur={props.onBlur}
+                                                placeholder='פירוט לגבי מאומתים נוספים ששהו במקום'
+                                            />
+                                        )}
+                                    />
+                                    : <>
+                                    </>
                             )
                         } 
                         
@@ -220,15 +205,17 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
             }
             {
                 (interactionData && typeof isThereMoreVerified === 'boolean') && (
-                    (isThereMoreVerified) &&
-                        <BusinessContactForm shouldTooltipAppear={true}/>
+                    (isThereMoreVerified)
+                        ? <BusinessContactForm/>
+                        : <>
+                        </>
                 )
             }      
             <Collapse in={placeType !== placeTypesCodesHierarchy.privateHouse.code && !isNewDate}>
                 <GreenPassQuestioning greenPassInformation={interactionData?.greenPass}/>
             </Collapse>
             {
-                    !isNewDate && <div>
+                    <div>
                         <FormInput xs={7} isQuestion={true} fieldName='האם האירוע מחזורי'>
                             <Controller
                                 name={InteractionEventDialogFields.IS_REPETITIVE}
@@ -246,22 +233,22 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                         {
                             (interactionData && typeof isRepetitive === 'boolean') && (
                                 (isNewInteraction && isRepetitive)
-                                    ? <RepetitiveEventForm selectedDate={startDate ? startDate : interactionData.startTime}/>
+                                    ? <RepetitiveEventForm selectedDate={startTime}/>
                                     : <>
-                                        <DetailsFieldsTitle date={startDate ? startDate : interactionData.startTime}/>
+                                        <DetailsFieldsTitle date={startTime}/>
                                         <InteractionDetailsFields 
-                                            interactionDate={startDate ? startDate : interactionData.startTime} 
+                                            interactionDate={startTime} 
                                             defaultDate={true}
                                         />
                                     </>
                             )
                         }
-                    </div> 
+                    </div>
             }
 
             <Divider light={true}/>
             <Collapse in={isBusiness && !isThereMoreVerified}>
-                <BusinessContactForm  shouldTooltipAppear={false}/>
+                <BusinessContactForm/>
             </Collapse>
             <Divider light={true}/>
         </Grid>

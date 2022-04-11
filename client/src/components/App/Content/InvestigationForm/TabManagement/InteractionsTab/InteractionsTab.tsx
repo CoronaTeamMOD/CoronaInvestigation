@@ -1,4 +1,4 @@
-import { compareDesc, startOfDay } from 'date-fns';
+import { startOfDay } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
 import StoreStateType from 'redux/storeStateType';
@@ -114,7 +114,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
             intArray.push(date);
         })
 
-        return intArray.sort(compareDesc);
+        return intArray;
     }, [interactions]);
 
     const submitTab = (event : React.FormEvent<HTMLFormElement>) => {
@@ -195,17 +195,17 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                 onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
                 onDeleteClick={handleDeleteContactEvent}
                 onDeleteContactClick={handleDeleteContactedPerson}
-                createNewInteractionEvent={() => {setNewInteractionEvent(oldDatesToInvestigate.minDate); setShouldDateDisabled(false)}}
+                createNewInteractionEvent={() => setNewInteractionEvent(oldDatesToInvestigate.minDate)}
                 interactions={undefined}
                 key={oldDatesToInvestigate?.minDate ? oldDatesToInvestigate.minDate.getTime(): datesToInvestigate.slice(-1)[0].getTime()}
                 isViewMode={isViewMode}
                 noDate={true}
             />
             {
-                datesToInvestigate.map(date => generateContactCard(date))
+                intOldArray.map(date => generateOldContactCard(date))
             }
             {
-                intOldArray.map(date => generateOldContactCard(date))
+                datesToInvestigate.map(date => generateContactCard(date))
             }
             {
                 newInteractionEventDate && <NewInteractionEventDialog
