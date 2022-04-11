@@ -39,7 +39,7 @@ const DeskFilter = ({ desks, filteredDesks, onFilterChange }: Props) => {
                     <Typography variant='body2'>{option.deskName}</Typography>
                 </>
             )}
-            limitTags={3}
+            limitTags={1}
         />
     )
 }
