@@ -18,7 +18,6 @@ export const max750LengthErrorMessage = 'השדה יכול להכיל 750 תוו
 
 export const invalidIdText = 'ת.ז אינה תקינה';
 export const invalidDateText = 'תאריך אינו תקין';
-export const invalidTimeText = 'זמן אינו תקין';
 export const invalidEmailText = 'מייל אינו תקין';
 export const invalidFullNameText = 'שם אינו תקין';
 export const invalidPhoneText = 'טלפון אינו תקין';
