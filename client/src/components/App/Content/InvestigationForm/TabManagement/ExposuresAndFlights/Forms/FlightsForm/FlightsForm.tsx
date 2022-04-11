@@ -23,7 +23,7 @@ const flightNumLabel = 'מספר טיסה';
 const otherflightNumLabel = 'מספר טיסה אחר';
 const flightSeatNumLabel = 'מספר מושב';
 const otherAirlineLabel = 'חברת תעופה אחרת'
-const otherFlightNum = 'אחר';
+const otherFlightNum = 'OTHER';
 
 const FlightsForm = (props: Props) => {
 	const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, index, onExposureDeleted, isViewMode } = props;
