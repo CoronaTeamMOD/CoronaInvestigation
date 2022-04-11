@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { Pagination } from '@material-ui/lab';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TableSortLabel, Button,
@@ -24,13 +25,13 @@ import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCo
 
 import useStyles from './InvestigationTableStyles';
 import TableFilter from './TableFilter/TableFilter';
+import AdminMessages from './adminMessages/adminMessages';
 import InvestigationTableRow from './InvestigationTableRow/InvestigationTableRow';
 import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
 import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorAllocationDialog';
 import useInvestigationTable, { SelectedRow, DEFAULT_SELECTED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
 import { setIsViewMode } from 'redux/Investigation/investigationActionCreators';
-import Pagination from './Pagination/Pagination';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -480,13 +481,15 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 <Pagination
                     page={currentPage}
                     count={totalPageCount}
-                    onPageChange={(value: number) => {
+                    onChange={(event, value) => {
                         setCurrentPage(value);
                         window.scrollTo(0, 0);
                         tableContainerRef.current?.scrollTo(0, 0);
                         setSelectAll(false);
                         setCheckedIndexedRows([]);
                     }}
+                    size='large'
+                    className={classes.pagination}
                 />
             </Grid>
             <InvestigatorAllocationDialog
