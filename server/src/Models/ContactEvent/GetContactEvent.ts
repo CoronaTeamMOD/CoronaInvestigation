@@ -66,7 +66,5 @@ export interface ContactEvent {
     contactedPeopleByContactEvent: {
         nodes: ContactedPerson[]
     }
-    involvedContact: InvolvedContactDB | null,
-    isThereMoreVerified: boolean | null,
-    detailsAdditionalVerified: string
+    involvedContact: InvolvedContactDB | null
 }

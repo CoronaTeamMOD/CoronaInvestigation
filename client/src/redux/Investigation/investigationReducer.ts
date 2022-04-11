@@ -1,6 +1,6 @@
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import InvestigationRedux from 'models/InvestigationRedux';
-import { getDatesToInvestigate, getOldDatesToInvestigate } from 'Utils/ClinicalDetails/symptomsUtils';
+import { getDatesToInvestigate } from 'Utils/ClinicalDetails/symptomsUtils';
 
 import * as Actions from './investigationActionTypes';
 
@@ -24,7 +24,6 @@ const initialState: InvestigationRedux = {
     doesHaveSymptoms: false,
     symptomsStartDate: null,
     datesToInvestigate: [],
-    oldDatesToInvestigate: {minDate: undefined,maxDate: undefined},
     creator: '',
     lastUpdator: '',
     lastOpenedEpidemiologyNumber: defaultEpidemiologyNumber,
@@ -67,15 +66,6 @@ const investigationReducer = (state = initialState, action: Actions.Investigatio
                 datesToInvestigate: getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, validationDate)
             }
         }
-        case Actions.SET_OLD_DATES_TO_INVESTIGATE_PARAMS:{
-            const { validationDate: newValidationDate, symptomsExistenceInfo } = action.payload;
-            const validationDate = newValidationDate || state.validationDate;
-            const doesHaveSymptoms = symptomsExistenceInfo ? symptomsExistenceInfo.doesHaveSymptoms : state.doesHaveSymptoms;
-            const symptomsStartDate = symptomsExistenceInfo ? symptomsExistenceInfo.symptomsStartDate : state.symptomsStartDate;
-            const oldDatesToInvestigate = getOldDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, validationDate);
-            
-            return { ...state, oldDatesToInvestigate:oldDatesToInvestigate }
-        } 
         case Actions.SET_END_TIME: return { ...state, endTime: action.payload.endTime }
         case Actions.SET_TRACKING_RECOMMENDATION: return { ...state, trackingRecommendation: action.payload.trackingRecommendation }
         case Actions.SET_CREATOR: return { ...state, creator: action.payload.creator }

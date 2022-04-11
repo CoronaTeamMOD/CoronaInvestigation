@@ -9,7 +9,7 @@ const useStyles = makeStyles(() => ({
         borderRadius: '20px'
     },
     searchBarIcons: {
-        marginRight: '-10px'
+        marginRight: '-1vw'
     }
 }));
 
