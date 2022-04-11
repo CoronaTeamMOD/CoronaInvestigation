@@ -4,6 +4,10 @@ const adminActions: AdminAction[] = [
         {
             id: 0, 
             displayName: 'פעולות אדמין לבחירה:'
+        },
+        {
+            id: 1, 
+            displayName: 'הוספה לבסיס הנתונים'
         }, 
         {
             id: 2, 
