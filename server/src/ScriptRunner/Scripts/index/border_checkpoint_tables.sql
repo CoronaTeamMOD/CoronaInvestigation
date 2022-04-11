@@ -207,7 +207,7 @@ ALTER TABLE exposure
 ADD COLUMN IF NOT EXISTS arrival_date_to_israel timestamp with time zone;
 
 ALTER TABLE exposure
-ADD COLUMN IF NOT EXISTS other_flight_num character varying(50) COLLATE pg_catalog."default";
+ADD COLUMN IF NOT EXISTS other_flight_num character varying(10) COLLATE pg_catalog."default";
 
 ALTER TABLE exposure
 ADD COLUMN IF NOT EXISTS flight_seat_num character varying(10) COLLATE pg_catalog."default";
