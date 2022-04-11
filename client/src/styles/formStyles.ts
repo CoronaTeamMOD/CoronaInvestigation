@@ -68,9 +68,6 @@ const useStyles = makeStyles({
     formSize: {
         width: '100vw'
     },
-    formMidSize: {
-        width: '35%'
-    },
     red:{
         border: '3px solid #ff8080',
         borderRadius: '14px',

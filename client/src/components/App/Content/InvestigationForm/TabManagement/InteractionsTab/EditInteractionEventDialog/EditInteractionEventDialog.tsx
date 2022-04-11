@@ -7,7 +7,7 @@ import InteractionDialog from '../InteractionDialog/InteractionDialog';
 const newContactEventTitle = 'עריכת מקום/מגע';
 
 const EditInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element => {
-    const { closeEditDialog, eventToEdit, isOpen, loadInteractions, loadInvolvedContacts, interactions, isNewDate, shouldDateDisabled  } = props;
+    const { closeEditDialog, eventToEdit, isOpen, loadInteractions, loadInvolvedContacts, interactions  } = props;
     const testIds = {
         cancelButton: '',
         submitButton: 'createContact',
@@ -24,8 +24,6 @@ const EditInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element 
             interactions={interactions}
             testIds={testIds}
             interactionData={eventToEdit}
-            isNewDate={isNewDate}
-            shouldDateDisabled={shouldDateDisabled}
         />
     );
 };
@@ -39,6 +37,4 @@ export interface Props {
     loadInteractions: () => void;
     loadInvolvedContacts: () => void;
     interactions: InteractionEventDialogData[];
-    isNewDate?: boolean;
-    shouldDateDisabled?: true;
 };
