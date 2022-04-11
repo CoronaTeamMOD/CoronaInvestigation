@@ -1,5 +1,5 @@
 interface Airline {
-    id : string,
+    id : number,
     displayName : string
 }
 
