@@ -44,7 +44,7 @@ arrivalDateToIsrael timestamp;
 arrivalTimeToIsrael timestamp;
 lastDestinationCountry varchar;
 otherFlightNum varchar;
---flightSeatNum varchar;
+flightSeatNum varchar;
 otherAirline varchar;
 
 
@@ -90,7 +90,7 @@ begin
 			select trim(nullif((exposure->'arrivalTimeToIsrael')::text,'null'),'"')::timestamp into arrivalTimeToIsrael;
 			select trim(nullif((exposure->'lastDestinationCountry')::text,'null'),'"') into lastDestinationCountry;
 			select trim(nullif((exposure->'otherFlightNum')::text,'null'),'"') into otherFlightNum;
-			--select trim(nullif((exposure->'flightSeatNum')::text,'null'),'"') into flightSeatNum;
+			select trim(nullif((exposure->'flightSeatNum')::text,'null'),'"') into flightSeatNum;
 			select trim(nullif((exposure->'otherAirline')::text,'null'),'"') into otherAirline;
 
 		if exposure_id is null then
@@ -99,11 +99,11 @@ begin
 				was_abroad, flight_start_date, airline, flight_num, exposure_place_name, exposure_place_type, 
 				exposure_date, flight_end_date, exposure_address, exposure_place_sub_type, flight_origin_country, flight_origin_city, flight_origin_airport, flight_destination_country, flight_destination_city, flight_destination_airport,
 				border_checkpoint_type, border_checkpoint,last_destination_country, arrival_time_to_israel, arrival_date_to_israel,
-				other_flight_num, /*flight_seat_num,*/other_airline)
+				other_flight_num, flight_seat_num,other_airline)
 				VALUES(investigationId, wasConfirmedExposure, isExposurePersonKnown, exposureSource, wasAbroad,
 				flightStartDate, pAirLine, flightNum, exposurePlaceName,exposurePlaceType, exposureDate , flightEndDate, exposureAddress, exposurePlaceSubType, flightOriginCountry, flightOriginCity, flightOriginAirport, flightDestinationCountry, flightDestinationCity, flightDestinationAirport,
 				borderCheckpointType, borderCheckpoint,lastDestinationCountry,arrivalTimeToIsrael::time,arrivalDateToIsrael,
-				otherFlightNum, /*flightSeatNum,*/ otherAirline);
+				otherFlightNum, flightSeatNum, otherAirline);
 			else
 				raise notice 'this is UPDATE %',exposure_id;
 				UPDATE public.exposure
@@ -119,7 +119,7 @@ begin
 				arrival_time_to_israel = arrivalTimeToIsrael::time, 
 				arrival_date_to_israel = arrivalDateToIsrael,
 				other_flight_num = otherFlightNum,
-				--flight_seat_num = flightSeatNum,
+				flight_seat_num = flightSeatNum,
 				other_airline = otherAirline
 				WHERE id=exposure_id;
 
