@@ -35,7 +35,7 @@ const FlightsForm = (props: Props) => {
 
 	const { setFlightsByAirlineID } = UseFlightForm({ setFlights });
 
-	const { control, errors, trigger, watch, setValue } = useFormContext();
+	const { control, errors, trigger, watch } = useFormContext();
 	const classes = useStyles();
 	const formClasses = useFormStyles();
 
@@ -76,12 +76,6 @@ const FlightsForm = (props: Props) => {
 		return formattedAirlines.find(airline => airline.displayName === displayName);
 	};
 
-	const initFlightNumberData = () =>{
-		setValue(`exposures[${index}].${fieldsNames.otherAirline}`,'');
-		setValue(`exposures[${index}].${fieldsNames.flightNumber}`,undefined);
-		setValue(`exposures[${index}].${fieldsNames.otherFlightNum}`,'');	
-	}
-	
 	const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
 	const startDateError = currentErrors ? currentErrors.flightStartDate : undefined;
 	const endDateError = currentErrors ? currentErrors.flightEndDate : undefined;
@@ -200,9 +194,6 @@ const FlightsForm = (props: Props) => {
 												onChange={(event, newAirline) => {
 													handleChangeExposureDataAndFlightsField(fieldsNames.airline, newAirline?.displayName ?? '');
 													props.onChange(newAirline ?? null);
-													if (newAirline){
-														initFlightNumberData();
-													}
 												}}
 												renderInput={(params) =>
 													<TextField
@@ -222,11 +213,11 @@ const FlightsForm = (props: Props) => {
 									<Controller
 										control={control}
 										name={`exposures[${index}].${fieldsNames.otherAirline}`}
+										defaultValue={exposureAndFlightsData[fieldsNames.otherAirline]}
 										render={(props) => {
 											return (
 												<TextField
 													{...props}
-													value={props.value}
 													onChange={(value) => {
 														props.onChange(value);
 														handleChangeExposureDataAndFlightsField(fieldsNames.otherAirline, value);
@@ -283,11 +274,11 @@ const FlightsForm = (props: Props) => {
 									<Controller
 										control={control}
 										name={`exposures[${index}].${fieldsNames.otherFlightNum}`}
+										defaultValue={exposureAndFlightsData[fieldsNames.otherFlightNum]}
 										render={(props) => {
 											return (
 												<TextField
 													{...props}
-													value={props.value}
 													onChange={(value) => {
 														props.onChange(value);
 														handleChangeExposureDataAndFlightsField(fieldsNames.otherFlightNum, value);
