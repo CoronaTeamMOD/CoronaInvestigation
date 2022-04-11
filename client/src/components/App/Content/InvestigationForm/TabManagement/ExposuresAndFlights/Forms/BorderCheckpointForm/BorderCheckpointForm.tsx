@@ -102,8 +102,8 @@ const BorderCheckpointForm = (props: Props) => {
                     </>
                 </Grid>
                 {watchBorderCheckpointType &&
-                    <>
-                        <Grid item md={2} className={classes.autocomplete}>
+                    <Grid item md={2} className={classes.autocomplete}>
+                        <>
                             <Controller
                                 control={control}
                                 name={`borderCheckpointData.${fieldsNames.borderCheckpoint}`}
@@ -132,7 +132,11 @@ const BorderCheckpointForm = (props: Props) => {
                             <InlineErrorText
                                 error={borderCheckpointErrors[fieldsNames.borderCheckpoint]}
                             />
-                        </Grid>
+                        </>
+                    </Grid>
+                }
+                {watchBorderCheckpointType && watchBorderCheckpointType != BorderCheckpointTypeCodes.FLIGHT &&
+                    <>
                         <Grid item md={2} className={classes.autocomplete}>
                             <Controller
                                 control={control}
@@ -159,10 +163,6 @@ const BorderCheckpointForm = (props: Props) => {
                                 }}
                             />
                         </Grid>
-                    </>
-                }
-                {watchBorderCheckpointType && watchBorderCheckpointType != BorderCheckpointTypeCodes.FLIGHT &&
-                    <>
                         <Grid item md={2} className={classes.arrivalDate}>
                             <>
                                 <Controller
@@ -191,7 +191,7 @@ const BorderCheckpointForm = (props: Props) => {
                                 />
                             </>
                         </Grid>
-                        <Grid item md={2} className={classes.arrivalDate}>
+                        <Grid item md={2}  className={classes.arrivalDate}>
                             <>
                                 <Controller
                                     name={`borderCheckpointData.${fieldsNames.arrivalTimeToIsrael}`}
