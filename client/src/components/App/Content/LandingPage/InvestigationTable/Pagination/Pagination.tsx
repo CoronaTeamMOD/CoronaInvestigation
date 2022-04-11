@@ -14,16 +14,9 @@ const Pagination = (props: Props) => {
                     <button
                         className={classes.arrowButton}
                         disabled={page == 1}
-                        onMouseDown={() => {
-                            let currentPageNumber = Number(currentPage)
-                            if (currentPageNumber > 1 && currentPageNumber <= count + 1) {
-                                setCurrentPage((currentPageNumber - 1).toString());
-                                onPageChange(currentPageNumber - 1);
-                            }
-                            else {
-                                setCurrentPage(currentPageNumber.toString());
-                                onPageChange(currentPageNumber);
-                            }
+                        onClick={() => {
+                            setCurrentPage((page - 1).toString());
+                            onPageChange(page - 1);
                         }}
                     ><NavigateNext className={classes.arrowIcon} /></button>
                 </Box>
@@ -41,7 +34,7 @@ const Pagination = (props: Props) => {
                     }}
                     onKeyPress={event => {
                         event.key === 'Enter' &&
-                            onPageChange(Number(currentPage))
+                        onPageChange(Number(currentPage))
                     }}
                     onBlur={() => {
                         if (currentPage != '')
@@ -54,16 +47,9 @@ const Pagination = (props: Props) => {
                 <Box>
                     <button disabled={page == count}
                         className={classes.arrowButton}
-                        onMouseDown={() => {
-                            let currentPageNumber = Number(currentPage)
-                            if (currentPageNumber >= 0 && currentPageNumber < count) {
-                                setCurrentPage((currentPageNumber + 1).toString());
-                                onPageChange(currentPageNumber + 1);
-                            }
-                            else {
-                                setCurrentPage(currentPageNumber.toString());
-                                onPageChange(currentPageNumber);
-                            }
+                        onClick={() => {
+                            setCurrentPage((page + 1).toString());
+                            onPageChange(page + 1);
                         }}><NavigateBefore className={classes.arrowIcon} /></button>
                 </Box>
             </Grid>
