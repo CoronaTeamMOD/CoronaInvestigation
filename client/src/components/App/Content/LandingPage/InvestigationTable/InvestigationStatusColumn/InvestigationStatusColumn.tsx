@@ -39,7 +39,7 @@ const InvestigationStatusColumn = (props: Props) => {
                 </Tooltip>
             }
             {
-                (investigationStatus.id === InvestigationMainStatusCodes.IN_PROCESS && investigationSubStatus && investigationSubStatus!='בטיפול') &&
+                (investigationStatus.id === InvestigationMainStatusCodes.IN_PROCESS && investigationSubStatus) &&
                 `${investigationSubStatus}/`
             }
             {investigationStatus.displayName}
