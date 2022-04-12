@@ -26,11 +26,9 @@ const AdminLandingPage: React.FC = (): JSX.Element => {
         newInvestigations: 0,
         unallocatedInvestigations: 0,
         unusualInProgressInvestigations: 0,
-        unusualCompletedNoContactInvestigations: 0,
         transferRequestInvestigations: 0,
         waitingForDetailsInvestigations: 0,
-        unallocatedDeskInvestigations:0,
-        incompletedBotInvestigations:0
+        unallocatedDeskInvestigations:0
     });
     const [adminInvestigations, setadminInvestigations] = useState<adminInvestigation[]>([]); 
     const [lastUpdated , setLastUpdated] = useState<Date>(new Date());
