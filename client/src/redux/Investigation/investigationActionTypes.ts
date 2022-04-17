@@ -14,7 +14,6 @@ export const SET_INVESTIGATION_STATUS = 'SET_INVESTIGATION_STATUS';
 export const SET_END_TIME = 'SET_END_TIME';
 export const SET_CREATOR = 'SET_CREATOR';
 export const SET_DATES_TO_INVESTIGATE_PARAMS = 'SET_DATES_TO_INVESTIGATE_PARAMS';
-export const SET_OLD_DATES_TO_INVESTIGATE_PARAMS = 'SET_OLD_DATES_TO_INVESTIGATE_PARAMS';
 export const SET_TRACKING_RECOMMENDATION = 'SET_TRACKING_RECOMMENDATION';
 export const SET_BIRTH_DATE = 'SET_BIRTH_DATE';
 export const RESET_STATE = 'RESET_STATE';
@@ -87,11 +86,6 @@ interface SetDatesToInvestigateParams {
     payload: { symptomsExistenceInfo?: SymptomsExistenceInfo, validationDate?: Date }
 }
 
-interface SetOldDatesToInvestigateParams {
-    type: typeof SET_OLD_DATES_TO_INVESTIGATE_PARAMS,
-    payload: { symptomsExistenceInfo?: SymptomsExistenceInfo, validationDate?: Date }
-}
-
 interface ResetStateParams {
     type: typeof RESET_STATE,
 }
@@ -148,5 +142,5 @@ interface SetInvestigationInfoChanged {
 
 export type InvestigationAction = SetEpidemiologyNum | SetComplexReasonsId | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId
     | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetEndTime
-    | SetCreator | SetDatesToInvestigateParams | SetOldDatesToInvestigateParams | ResetStateParams | SetTrackingRecommendation | SetBirthDate | SetInvestigationViewMode | SetIsContactInvestigationVerifiedAbroad
+    | SetCreator | SetDatesToInvestigateParams | ResetStateParams | SetTrackingRecommendation | SetBirthDate | SetInvestigationViewMode | SetIsContactInvestigationVerifiedAbroad
     | SetInvestigationStaticFieldChange | SetInvestigatedPersonFullName | SetInvestigationComment | SetTrackingRecommendationChanged | SetInvestigationInfoChanged;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Tooltip, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import useFormStyles from 'styles/formStyles';
@@ -13,7 +13,7 @@ const businessContactFirstNameField = 'שם פרטי';
 const businessContactLastNameField = 'שם משפחה';
 const businessContactNumField = 'טלפון';
 
-const BusinessContactForm: React.FC<BusinessContactFormProps> = ({shouldTooltipAppear}: BusinessContactFormProps): JSX.Element => {
+const BusinessContactForm: React.FC = (): JSX.Element => {
         
     const { control } = useFormContext();
 
@@ -22,7 +22,6 @@ const BusinessContactForm: React.FC<BusinessContactFormProps> = ({shouldTooltipA
     return (
         <div>
             <Typography variant='body1' className={formClasses.fieldName}>פרטי איש קשר:</Typography>
-            <Tooltip title={shouldTooltipAppear ? 'נדרש לציין פרטי איש הקשר שברשותו המידע על המקום והמקרים הנוספים' : ''} arrow>
             <Grid container className={formClasses.formRow}>
                 <FormInput xs={4} fieldName={businessContactFirstNameField}>
                         <Controller 
@@ -69,13 +68,8 @@ const BusinessContactForm: React.FC<BusinessContactFormProps> = ({shouldTooltipA
                         />
                 </FormInput>
             </Grid>
-            </Tooltip>
         </div>
     );
-};
-
-export interface BusinessContactFormProps {
-    shouldTooltipAppear?: boolean;
 };
 
 export default BusinessContactForm;

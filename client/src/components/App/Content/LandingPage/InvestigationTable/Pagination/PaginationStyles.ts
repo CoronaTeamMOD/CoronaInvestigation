@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     arrowButton: {
         backgroundColor: '#2C97B9',
         borderRadius: '18px',
-        height: '35px',
-        width: '35px',
+        height: '1.5vw',
+        width: '1.5vw',
         border: 0,
         color: 'white',
         '&:disabled': {
@@ -34,11 +34,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     arrowIcon: {
         textAlign: 'center',
-        fontSize: '30px',
+        fontSize: '1.2vw',
         fontWeight: 800,
         position: 'absolute',
-        left: '3px',
-        top: '3px',
+        left: '0.18vw',
+        top: '0.3vh',
     },
     paginationRow: {
         marginLeft: '3vw',
