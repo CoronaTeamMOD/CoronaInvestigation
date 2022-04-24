@@ -11,6 +11,7 @@ const futureDateText = 'לא ניתן לבחור תאריך עתידי';
 const endDateBeforeValidationDateText = 'לא ניתן לבחור תאריך אחרי תאריך תחילת מחלה';
 const symptomsStartDateIsTooEarlyText = `לא ניתן לבחור תאריך יותר מ${maxInvestigatedDays} ימים לפני תאריך תחילת מחלה`;
 const isolationStartDateIsTooEarlyText = `לא ניתן לבחור תאריך יותר מ${maxIsolationDays} ימים לפני תאריך תחילת מחלה`;
+const mustBeCheckedText = 'השדה חייב להיות מסומן';
 
 const isInIsolationStartDateSchema = (validationDate: Date) => yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
@@ -111,6 +112,7 @@ const ClinicalDetailsSchema = (validationDate: Date, Gender: string) => {
             }),
         [ClinicalDetailsFields.IS_PREGNANT]: Gender === 'נקבה' ? yup.boolean().nullable().required(requiredText) :  yup.boolean().nullable(),
         [ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]: backgroundDiseasesMoreInfoSchema,
+        [ClinicalDetailsFields.WAS_INSTRUCTED_TO_BE_IN_ISOLATION]: yup.bool().oneOf([true], mustBeCheckedText)
     })
 };
 

@@ -36,7 +36,7 @@ const repetitiveWithoutDatesSelectedErrorMessage = 'שים לב שלא ניתן 
 const repetitiveFieldMissingMessage = 'יש למלא האם מדובר באירוע מחזורי';
 
 const InteractionDialog = (props: Props) => {
-    const {isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction} = props;
+    const {isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction, isNewDate, shouldDateDisabled} = props;
     const [isAddingContacts, setIsAddingContacts] = React.useState(false);
     const [groupedInvestigationContacts, setGroupedInvestigationContacts] = useState<number[]>([]);
     const [contactBank, setContactBank] = useState<Map<number, ContactBankOption>>(new Map());
@@ -96,7 +96,7 @@ const InteractionDialog = (props: Props) => {
         [isRepetitive, isNewInteraction,additionalOccurrences]);
     const isPlaceTypeSelected = Boolean(placeType)
     const isGreenPassInvalid = useMemo(() => {
-        return (placeType !== placeTypesCodesHierarchy.privateHouse.code && Object.values(isGreenPass).some((answer) => answer === undefined));
+        return !isNewDate && (placeType !== placeTypesCodesHierarchy.privateHouse.code && Object.values(isGreenPass).some((answer) => answer === undefined));
     },
     [isGreenPass]);
 
@@ -145,7 +145,7 @@ const InteractionDialog = (props: Props) => {
 
     const convertGreenPassQuestions = (data: InteractionEventDialogData) => {
         let greenPass = [];
-        if (data[InteractionEventDialogFields.PLACE_TYPE] !== placeTypesCodesHierarchy.privateHouse.code) {
+        if (!isNewDate && data[InteractionEventDialogFields.PLACE_TYPE] !== placeTypesCodesHierarchy.privateHouse.code) {
             for (let field of Object.keys(data)) {
                 if (field.includes(InteractionEventDialogFields.IS_GREEN_PASS)) {
                     let questionId = parseInt(field.slice(12));
@@ -160,8 +160,8 @@ const InteractionDialog = (props: Props) => {
     const convertData = (data: InteractionEventDialogData) => {
         const { isNamedLocation } = getOptionsByPlaceAndSubplaceType(data.placeType, data.placeSubType);
         initialInteractionDate.current.setHours(0, 0, 0, 0);
-        const startTimeToSave = isUnknownTime ? initialInteractionDate.current : data.startTime;
-        const endTimeToSave = isUnknownTime ? initialInteractionDate.current : data.endTime;
+        const startTimeToSave = data.startDate ? (isUnknownTime ? data.startDate : data.startTime) : (isUnknownTime ? initialInteractionDate.current : data.startTime);
+        const endTimeToSave = data.startDate ? (isUnknownTime ? data.startDate : data.endTime) : (isUnknownTime ? initialInteractionDate.current : data.endTime);
 
         return {
             ...data,
@@ -308,7 +308,7 @@ const InteractionDialog = (props: Props) => {
             getAndSetDateErrors({unknownTime: isUnknownTime,startTime: interactionStartTime, endTime: interactionEndTime })
             || additionalOccurrences?.map((occurence, index) => getAndSetDateErrors(occurence, index)).some(Boolean);
 
-        const canSubmit = !(datesHaveError || isRepetitiveFieldInvalid.invalid);
+        const canSubmit = !(datesHaveError || (!isNewDate && isRepetitiveFieldInvalid.invalid));
 
         if (canSubmit) {
             const data = methods.getValues();
@@ -332,6 +332,8 @@ const InteractionDialog = (props: Props) => {
                             interactionData={interactionData}
                             isNewInteraction={isNewInteraction}
                             onPlaceSubTypeChange={onPlaceSubtypeChange}
+                            isNewDate={isNewDate}
+                            shouldDateDisabled={shouldDateDisabled}
                         />
                         <GroupedInvestigationsContextProvider value={groupedInvestigationProviderState}>
                             <FamilyMembersDataContextProvider value={familyMembersDataProviderState}>
@@ -347,9 +349,9 @@ const InteractionDialog = (props: Props) => {
                 </DialogContent>
                 <DialogActions className={`${classes.dialogFooter}`}>
 
-                    <InteractionFormTabSwitchButton isAddingContacts={isAddingContacts}
+                    {!isNewDate ? <InteractionFormTabSwitchButton isAddingContacts={isAddingContacts}
                                                     setIsAddingContacts={setIsAddingContacts}
-                                                    isNewInteraction={isNewInteraction}/>
+                                                    isNewInteraction={isNewInteraction}/> : <div></div>}
 
                     <div className={classes.footerActionButtons}>
                         <Button
@@ -359,10 +361,10 @@ const InteractionDialog = (props: Props) => {
                             בטל
                         </Button>
                         <Tooltip title={
-                            isRepetitiveFieldInvalid.RepetitiveFieldMissingMessage || isRepetitiveFieldInvalid.missingAdditionalDateMessage
+                            !isNewDate ? (isRepetitiveFieldInvalid.RepetitiveFieldMissingMessage || isRepetitiveFieldInvalid.missingAdditionalDateMessage) : ''
                         }>
                             <div>
-                                <PrimaryButton disabled={isRepetitiveFieldInvalid.invalid || isGreenPassInvalid || !isPlaceTypeSelected}
+                                <PrimaryButton disabled={(!isNewDate && isRepetitiveFieldInvalid.invalid) || isGreenPassInvalid || !isPlaceTypeSelected}
                                                form='interactionEventForm'
                                                type='submit'
                                                id='createContact'>
@@ -389,6 +391,8 @@ interface Props {
     loadInvolvedContacts: () => void;
     interactions: InteractionEventDialogData[];
     testIds: Record<DialogTestIds, string>;
+    isNewDate?: boolean | undefined;
+    shouldDateDisabled?: boolean;
 };
 
 type DialogTestIds = 'cancelButton' | 'submitButton';
