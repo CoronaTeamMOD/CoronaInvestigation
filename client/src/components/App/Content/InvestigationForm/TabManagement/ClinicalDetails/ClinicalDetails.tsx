@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Checkbox, FormControlLabel, Grid } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers';
 import React, { useEffect, useState } from 'react';
@@ -18,23 +18,23 @@ import IsolationDatesFields from './IsolationDatesFields';
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
 import IsolationProblemFields from './IsolationProblemFields';
 import useClinicalDetails, { initialClinicalDetails } from './useClinicalDetails';
-import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields/SymptomsFields';
-import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
+import SymptomsFields from './SymptomsFields/SymptomsFields';
+import BackgroundDiseasesFields from './BackgroundDiseasesFields';
 import { resetClinicalDetails, setClinicalDetails } from 'redux/ClinicalDetails/ClinicalDetailsActionCreators';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { setFormState } from 'redux/Form/formActionCreators';
 import useInvestigatedPersonInfo from '../../InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
 
-const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element => {
+const ClinicalDetails: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Element => {
     const classes = useStyles();
     const dispatch = useDispatch();
 
     const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
-    const patientGender = useSelector<StoreStateType, string>(state => state.gender); 
-    const clinicalDetails = useSelector<StoreStateType,ClinicalDetailsData | null>(state=>state.clinicalDetails.clinicalDetails);
+    const patientGender = useSelector<StoreStateType, string>(state => state.gender);
+    const clinicalDetails = useSelector<StoreStateType, ClinicalDetailsData | null>(state => state.clinicalDetails.clinicalDetails);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const clinicalDetailsIsNull = clinicalDetails===null;
+    const clinicalDetailsIsNull = clinicalDetails === null;
 
     const methods = useForm({
         mode: 'all',
@@ -47,24 +47,25 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
     const [didSymptomsDateChangeOccur, setDidSymptomsDateChangeOccur] = useState<boolean>(false);
 
     const { fetchClinicalDetails, saveClinicalDetailsAndDeleteContactEvents, isolationSources } =
-        useClinicalDetails({ id, setSymptoms, setBackgroundDiseases, didSymptomsDateChangeOccur });               
-        const handleSymptomCheck = (
+        useClinicalDetails({ id, setSymptoms, setBackgroundDiseases, didSymptomsDateChangeOccur });
+    const wasInstructedToBeInIsolationText = 'המאומת הונחה לשהות בבידוד בהתאם להנחיות משרד הבריאות';
+    const handleSymptomCheck = (
         checkedSymptom: string,
         onChange: (newSymptoms: string[]) => void,
         selectedSymptoms: string[]
     ) => {
         if (selectedSymptoms.includes(checkedSymptom)) {
             onChange(selectedSymptoms.filter((symptom) => symptom !== checkedSymptom));
-            dispatch(setClinicalDetails(ClinicalDetailsFields.SYMPTOMS,selectedSymptoms.filter((symptom) => symptom !== checkedSymptom)))
+            dispatch(setClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms.filter((symptom) => symptom !== checkedSymptom)))
         } else {
             onChange([...selectedSymptoms, checkedSymptom]);
-            dispatch(setClinicalDetails(ClinicalDetailsFields.SYMPTOMS,[...selectedSymptoms, checkedSymptom]))
+            dispatch(setClinicalDetails(ClinicalDetailsFields.SYMPTOMS, [...selectedSymptoms, checkedSymptom]))
 
         }
     };
 
     const { saveInvestigationInfo } = useInvestigatedPersonInfo();
-    
+
     const handleBackgroundIllnessCheck = (
         checkedBackgroundIllness: string,
         onChange: (newBackgroundDiseases: string[]) => void,
@@ -72,20 +73,20 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
     ) => {
         if (selectedBackgroundDiseases.includes(checkedBackgroundIllness)) {
             onChange(selectedBackgroundDiseases.filter((symptom) => symptom !== checkedBackgroundIllness));
-            dispatch(setClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES,selectedBackgroundDiseases.filter((symptom) => symptom !== checkedBackgroundIllness)))
+            dispatch(setClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases.filter((symptom) => symptom !== checkedBackgroundIllness)))
         } else {
             onChange([...selectedBackgroundDiseases, checkedBackgroundIllness]);
-            dispatch(setClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES,[...selectedBackgroundDiseases, checkedBackgroundIllness]))
+            dispatch(setClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, [...selectedBackgroundDiseases, checkedBackgroundIllness]))
         };
     };
 
     const saveForm = (e: any) => {
         e.preventDefault();
-        if (clinicalDetails && !isViewMode){
+        if (clinicalDetails && !isViewMode) {
             saveInvestigationInfo();
             saveClinicalDetailsAndDeleteContactEvents(clinicalDetails, id);
         }
-        else if(isViewMode){
+        else if (isViewMode) {
             ClinicalDetailsSchema(validationDate, 'gender').isValid(clinicalDetails).then(valid => {
                 setFormState(epidemiologyNumber, id, valid);
             });
@@ -113,23 +114,23 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
     }
 
     useEffect(() => {
-      
-        if (!clinicalDetails){
+
+        if (!clinicalDetails) {
             fetchClinicalDetails();
         }
-        return ()=> {dispatch(resetClinicalDetails())};
+        return () => { dispatch(resetClinicalDetails()) };
     }, []);
 
-    useEffect(()=>{
-        if (clinicalDetails){
+    useEffect(() => {
+        if (clinicalDetails) {
             setIsLoading(true);
             for (const [key, value] of Object.entries(clinicalDetails)) {
                 methods.setValue(key, value);
             }
             methods.trigger();
             setIsLoading(false);
-        } 
-    },[clinicalDetailsIsNull]);
+        }
+    }, [clinicalDetailsIsNull]);
 
     return (
         <div className={classes.form}>
@@ -149,11 +150,36 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
                                 <AddressForm
                                     {...addressFormFields}
                                     disabled={isViewMode}
-                                    onBlur={()=>{
-                                        dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_ADDRESS,methods.getValues().isolationAddress))
-                                   }}
+                                    onBlur={() => {
+                                        dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_ADDRESS, methods.getValues().isolationAddress))
+                                    }}
                                 />
                             </FormRowWithInput>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Controller
+                                name={ClinicalDetailsFields.WAS_INSTRUCTED_TO_BE_IN_ISOLATION}
+                                control={methods.control}
+                                render={(props) =>
+                                    <FormControlLabel
+                                        label={wasInstructedToBeInIsolationText}
+                                        control={
+                                            <Checkbox
+                                                disabled={isViewMode}
+                                                color='primary'
+                                                checked={props.value}
+                                                onChange={(event) => {
+                                                    props.onChange(event.target.checked);
+                                                    dispatch(setClinicalDetails(ClinicalDetailsFields.WAS_INSTRUCTED_TO_BE_IN_ISOLATION, event.target.checked));
+                                                }}
+                                            />
+                                        }
+                                    />
+                                } />
+                            <InlineErrorText
+                                error={methods.errors[ClinicalDetailsFields.WAS_INSTRUCTED_TO_BE_IN_ISOLATION]}
+                            />
+
                         </Grid>
                         <Grid item xs={12}>
                             <IsolationProblemFields
@@ -195,14 +221,14 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
                                                 onChange={(e, value) => {
                                                     if (value !== null) {
                                                         props.onChange(value);
-                                                        dispatch(setClinicalDetails(ClinicalDetailsFields.IS_PREGNANT,value));
+                                                        dispatch(setClinicalDetails(ClinicalDetailsFields.IS_PREGNANT, value));
                                                     }
                                                 }}
                                                 disabled={isViewMode}
                                             />
                                         )}
                                     />
-                                    <InlineErrorText 
+                                    <InlineErrorText
                                         error={methods.errors[ClinicalDetailsFields.IS_PREGNANT]}
                                     />
                                 </Grid>
@@ -217,7 +243,7 @@ const ClinicalDetails: React.FC<Props> = ({ id,isViewMode }: Props): JSX.Element
 
 interface Props {
     id: number;
-    isViewMode?:boolean;
+    isViewMode?: boolean;
 }
 
 export default ClinicalDetails;
