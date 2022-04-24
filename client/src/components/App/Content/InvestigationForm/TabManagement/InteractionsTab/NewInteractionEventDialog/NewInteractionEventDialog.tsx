@@ -28,7 +28,7 @@ const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], 
 const newContactEventTitle = 'יצירת מקום/מגע חדש';
 
 const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element => {
-    const { interactionDate, closeNewDialog, isOpen, loadInteractions, loadInvolvedContacts, interactions,isNewDate,shouldDateDisabled } = props;
+    const { interactionDate, closeNewDialog, isOpen, loadInteractions, loadInvolvedContacts, interactions } = props;
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const testIds = {
@@ -47,8 +47,6 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
             interactions={interactions}
             testIds={testIds}
             interactionData={initialDialogData(interactionDate, interactionDate, [], epidemiologyNumber)}
-            isNewDate={isNewDate}
-            shouldDateDisabled={shouldDateDisabled}
         />
     );
 };
@@ -62,6 +60,4 @@ export interface Props {
     loadInteractions: () => void;
     loadInvolvedContacts: () => void;
     interactions: InteractionEventDialogData[];
-    isNewDate?: boolean | undefined;
-    shouldDateDisabled?: boolean;
 }
