@@ -30,7 +30,7 @@ stages:
     steps:
     - task: NodeTool@0
       inputs:
-        versionSpec: '10.18'
+        versionSpec: '12.18'
       displayName: 'Install Node.js'
 
     # building & pushing dev server image
