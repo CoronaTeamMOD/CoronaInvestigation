@@ -1,5 +1,5 @@
 interface FlightData {
-   lastDestinationCountry?: string;
+   wasAbroad: boolean;
    flightDestinationCountry: string | null;
    flightDestinationCity: string | null;
    flightDestinationAirport: string | null;
@@ -10,9 +10,6 @@ interface FlightData {
    flightEndDate: Date | null;
    airline: string | null;
    flightNum: string | null;
-   flightSeatNum?: string;
-   otherFlightNum?: string;
-   otherAirline?: string;
 }
 
 export default FlightData;
