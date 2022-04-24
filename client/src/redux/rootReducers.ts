@@ -31,8 +31,11 @@ import personalInfoReducer from './PersonalInfo/personalInfoReducer';
 import investigatorReferenceStatusesReducer from './investigatorReferenceStatuses/investigatorReferenceStatusesReduces';
 import botInvestigationInfoReducer from './BotInvestigationInfo/botInvestigationInfoReducer';
 import chatStatusesReducer from './ChatStatuses/chatStatusesReducer';
-import mutationInfoReducer  from './MutationInfo/mutationInfoReducer';
+import mutationInfoReducer from './MutationInfo/mutationInfoReducer';
 import complexityReasonsReducer from './ComplexityReasons/ComplexityReasonsReducer';
+import borderCheckpointTypesReducer from './BorderCheckpointTypes/BorderCheckpointTypesReducer';
+import borderCheckpointsReducer from './BorderCheckpoints/BorderCheckpointsReducer';
+import exposuresAndFlightsReducer from './ExposuresAndFlights/ExposuresAndFlightsReducer';
 
 export default combineReducers<StoreStateType>({
      occupations: occupationsReducer,
@@ -66,5 +69,8 @@ export default combineReducers<StoreStateType>({
      botInvestigationInfo: botInvestigationInfoReducer,
      chatStatuses: chatStatusesReducer,
      mutationInfo: mutationInfoReducer,
-     complexityReasons: complexityReasonsReducer
+     complexityReasons: complexityReasonsReducer,
+     borderCheckpointTypes: borderCheckpointTypesReducer,
+     borderCheckpoints: borderCheckpointsReducer,
+     exposuresAndFlights: exposuresAndFlightsReducer,
 }) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;

@@ -43,7 +43,8 @@ export const initialClinicalDetails: ClinicalDetailsData = {
     wasHospitalized: false,
     isPregnant: null,
     otherSymptomsMoreInfo: '',
-    otherBackgroundDiseasesMoreInfo: ''
+    otherBackgroundDiseasesMoreInfo: '',
+    wasInstructedToBeInIsolation: false,
 };
 
 const deletingContactEventsErrorMsg = 'קרתה תקלה במחיקת אירועים מיותרים';
@@ -52,8 +53,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
 
     const { id, setSymptoms, setBackgroundDiseases, didSymptomsDateChangeOccur } = parameters;
 
-    const { convertDate } = useDateUtils();
-    const { alertError } = useCustomSwal();
+   const { alertError } = useCustomSwal();
     const dispatch = useDispatch();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);

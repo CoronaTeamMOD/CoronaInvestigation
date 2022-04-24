@@ -25,6 +25,7 @@ import PrivateHouseEventGrid from './PlacesAdditionalGrids/PrivateHouseEventGrid
 import OtherPublicLocationGrid from './PlacesAdditionalGrids/OtherPublicLocationGrid';
 import TransportationEventGrid from './PlacesAdditionalGrids/TransportationAdditionalGrids/TransportationEventGrid';
 import RepetitiveEventIcon from "../RepetitiveEventIcon";
+import ErrorIcon from 'commons/Icons/errorIcon/ErrorIcon';
 
 const unknownTimeMessage = 'זמן לא ידוע';
 
@@ -61,6 +62,10 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     {
                         interaction.isRepetitive && <RepetitiveEventIcon/>
                     }
+                    {
+                        interaction.isThereMoreVerified && <ErrorIcon tooltipText='קיים מפגש עם מאומתים' ></ErrorIcon>
+                    }
+
                 </div>
                 <div>
                     <IconButton test-id={'editContactLocation'} onClick={onEditClick}>
