@@ -1,4 +1,4 @@
-import { compareDesc, startOfDay } from 'date-fns';
+import { startOfDay } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
 import StoreStateType from 'redux/storeStateType';
@@ -35,14 +35,9 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>((state) => state.investigation.datesToInvestigate);
-    const oldDatesToInvestigate = useSelector<StoreStateType, {minDate:Date | undefined,maxDate:Date| undefined}>(state => state.investigation.oldDatesToInvestigate);
-
 
     const [interactionToEdit, setInteractionToEdit] = useState<InteractionEventDialogData>();
-    const [interactionToEditOld, setInteractionToEditOld] = useState<InteractionEventDialogData>();
     const [newInteractionEventDate, setNewInteractionEventDate] = useState<Date>();
-    const [newInteractionEvent, setNewInteractionEvent] = useState<Date>();
-    const [shouldDateDisabled, setShouldDateDisabled] = useState<boolean>(false);
     const [interactions, setInteractions] = useState<InteractionEventDialogData[]>([]);
     const [interactionsTabSettings, setInteractionsTabSettings] = useState<InteractionsTabSettings>(defaultInteractionsTabSettings);
     const [educationMembers, setEducationMembers] = useState<InvolvedContact[]>([]);
@@ -84,39 +79,6 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
         return mappedInteractionsArray;
     }, [interactions]);
 
-    const intOldArray : Date[] = useMemo(() => {
-        const intArray : Date[] = [];
-        const mappedOldInt = new Map<number, Date>();
-        const mappedDatesArray = new Map<number, Date>();
-        datesToInvestigate.forEach(currDate => {
-            const currDateStartTime : number = currDate.getTime();
-            
-            if (currDateStartTime) {
-                if (mappedDatesArray.get(currDateStartTime) === undefined) {
-                    mappedDatesArray.set(currDateStartTime, currDate);
-                }
-            }
-        });
-
-        interactions.forEach(interaction => {
-            const interactionStartTime : Date | undefined = interaction.startTime;
-            
-            if (interactionStartTime) {
-                const interactionDate = startOfDay(interactionStartTime).getTime();
-                if (mappedDatesArray.get(interactionDate) === undefined && 
-                    mappedOldInt.get(interactionDate) === undefined) {
-                    mappedOldInt.set(interactionDate,startOfDay(interactionStartTime));
-                } 
-            }
-        });
-
-        mappedOldInt.forEach((date)=>{ 
-            intArray.push(date);
-        })
-
-        return intArray.sort(compareDesc);
-    }, [interactions]);
-
     const submitTab = (event : React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (!isViewMode) {
@@ -147,26 +109,6 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                 interactions={interactionsMap.get(interactionDate.getTime())}
                 key={interactionDate.getTime()}
                 isViewMode={isViewMode}
-                noDate={false}
-            />
-        )
-    }
-
-    const generateOldContactCard = (interactionDate: Date) => {
-        return (
-            <ContactDateCard
-                allInteractions={interactions}
-                loadInteractions={loadInteractions}
-                loadInvolvedContacts={loadInvolvedContacts}
-                contactDate={interactionDate}
-                onEditClick={(interaction: InteractionEventDialogData) => {setInteractionToEditOld(interaction); setShouldDateDisabled(true);}}
-                onDeleteClick={handleDeleteContactEvent}
-                onDeleteContactClick={handleDeleteContactedPerson}
-                createNewInteractionEvent={() => {setNewInteractionEvent(interactionDate); setShouldDateDisabled(true);}}
-                interactions={interactionsMap.get(interactionDate.getTime())}
-                key={interactionDate.getTime()}
-                isViewMode={isViewMode}
-                noDate={false}
             />
         )
     }
@@ -187,46 +129,17 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                 </div>
             }
             <form id={`form-${id}`} onSubmit={(e) => submitTab(e)}/>
-            <ContactDateCard
-                allInteractions={interactions}
-                loadInteractions={loadInteractions}
-                loadInvolvedContacts={loadInvolvedContacts}
-                contactDate={oldDatesToInvestigate?.minDate ? oldDatesToInvestigate.minDate : datesToInvestigate.slice(-1)[0]}
-                onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
-                onDeleteClick={handleDeleteContactEvent}
-                onDeleteContactClick={handleDeleteContactedPerson}
-                createNewInteractionEvent={() => {setNewInteractionEvent(oldDatesToInvestigate.minDate); setShouldDateDisabled(false)}}
-                interactions={undefined}
-                key={oldDatesToInvestigate?.minDate ? oldDatesToInvestigate.minDate.getTime(): datesToInvestigate.slice(-1)[0].getTime()}
-                isViewMode={isViewMode}
-                noDate={true}
-            />
             {
                 datesToInvestigate.map(date => generateContactCard(date))
-            }
-            {
-                intOldArray.map(date => generateOldContactCard(date))
             }
             {
                 newInteractionEventDate && <NewInteractionEventDialog
                     isOpen={Boolean(newInteractionEventDate)}
                     interactionDate={newInteractionEventDate}
-                    closeNewDialog={() => {setNewInteractionEventDate(undefined); setNewInteractionEvent(undefined);}}
+                    closeNewDialog={() => setNewInteractionEventDate(undefined)}
                     loadInteractions={loadInteractions}
                     loadInvolvedContacts={loadInvolvedContacts}
                     interactions={interactions}
-                />
-            }
-            {
-                newInteractionEvent && <NewInteractionEventDialog
-                    isOpen={Boolean(newInteractionEvent)}
-                    interactionDate={new Date(newInteractionEvent.toDateString())}
-                    closeNewDialog={() => {setNewInteractionEventDate(undefined); setNewInteractionEvent(undefined);}}
-                    loadInteractions={loadInteractions}
-                    loadInvolvedContacts={loadInvolvedContacts}
-                    interactions={interactions}
-                    isNewDate={true}
-                    shouldDateDisabled={shouldDateDisabled}
                 />
             }
             {
@@ -237,18 +150,6 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                     loadInteractions={loadInteractions}
                     loadInvolvedContacts={loadInvolvedContacts}
                     interactions={interactions}
-                />
-            }
-            {
-                interactionToEditOld && <EditInteractionEventDialog
-                    isOpen={Boolean(interactionToEditOld)}
-                    eventToEdit={interactionToEditOld}
-                    closeEditDialog={() => setInteractionToEditOld(undefined)}
-                    loadInteractions={loadInteractions}
-                    loadInvolvedContacts={loadInvolvedContacts}
-                    interactions={interactions}
-                    isNewDate={true}
-                    shouldDateDisabled={true}
                 />
             }
             <FamilyContactsDialog 

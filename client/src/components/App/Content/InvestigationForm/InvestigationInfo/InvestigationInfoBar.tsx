@@ -16,7 +16,7 @@ import { setGender } from 'redux/Gender/GenderActionCreators';
 import { CommentContextProvider } from './Context/CommentContext';
 import { landingPageRoute, adminLandingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationInfo, { BotInvestigationInfo, InvestigationInfoData } from 'models/InvestigationInfo';
-import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setDatesToInvestigateParams, setIsContactInvestigationVerifiedAbroad, setInvestigatedPersonFullname, SetInvestigationComment, setOldDatesToInvestigateParams } from 'redux/Investigation/investigationActionCreators';
+import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setDatesToInvestigateParams, setIsContactInvestigationVerifiedAbroad, setInvestigatedPersonFullname, SetInvestigationComment } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigatedPatientId, setIsCurrentlyHospitialized, setIsDeceased, setEndTime, setTrackingRecommendation, setBirthDate } from 'redux/Investigation/investigationActionCreators';
 
 import useGroupedInvestigationContacts from '../useGroupedInvestigationContacts';
@@ -137,12 +137,6 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode, disable
                             identityType: result.data.identificationType
                         }
                         setDatesToInvestigateParams({
-                            symptomsStartDate: truncateDate(investigationInfo.symptomsStartDate),
-                            doesHaveSymptoms: investigationInfo.doesHaveSymptoms,
-                        },
-                            formattedValidationDate
-                        );
-                        setOldDatesToInvestigateParams({
                             symptomsStartDate: truncateDate(investigationInfo.symptomsStartDate),
                             doesHaveSymptoms: investigationInfo.doesHaveSymptoms,
                         },

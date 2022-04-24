@@ -2,7 +2,7 @@
 import { useSelector } from 'react-redux';
 import { Divider } from '@material-ui/core';
 import { yupResolver } from '@hookform/resolvers';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import StoreStateType from 'redux/storeStateType';
@@ -33,19 +33,19 @@ const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.El
         resolver: yupResolver(ExposureSchema(validationDate)),
     });
 
-    const { reset, trigger, setValue } = methods;
+    const { reset, trigger } = methods;
 
     const { saveInvestigationInfo } = useInvestigatedPersonInfo();
 
     const onSubmit = (e?: React.FormEvent) => {
         e && e.preventDefault();
         const data = methods.getValues();
-        if (isViewMode) {
+        if(isViewMode){
             ExposureSchema(validationDate).isValid(data).then(valid => {
                 setFormState(epidemiologyNumber, id, valid)
             });
         }
-        else {
+        else{
             methods.trigger();
             saveInvestigationInfo();
             saveExposure(data, ids);
@@ -63,7 +63,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.El
     } = useExposuresAndFlights({
         exposures, wereConfirmedExposures, wereFlights,
         exposureAndFlightsData, setExposureDataAndFlights,
-        setIsExposureAdded, id, reset, trigger, onSubmit, setValue
+        setIsExposureAdded, id, reset, trigger, onSubmit
     });
 
     return (
@@ -101,7 +101,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.El
                     disableFlightAddition={disableFlightAddition}
                     onExposureDeleted={onExposureDeleted}
                     isViewMode={isViewMode}
-                    borderCheckpointData={exposureAndFlightsData.borderCheckpointData}
                 />
 
             </form>

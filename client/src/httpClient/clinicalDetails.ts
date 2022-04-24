@@ -55,7 +55,6 @@ export const fetchClinicalDetails = async (address: FlattenedDBAddress): Promise
                     patientClinicalDetails.otherSymptomsMoreInfo : '',
                 otherBackgroundDiseasesMoreInfo: patientClinicalDetails.otherBackgroundDiseasesMoreInfo !== null ?
                     patientClinicalDetails.otherBackgroundDiseasesMoreInfo : '',
-                wasInstructedToBeInIsolation: Boolean(patientClinicalDetails.wasInstructedToBeInIsolation),
             }
             return initialDBClinicalDetailsToSet;
         } else {
