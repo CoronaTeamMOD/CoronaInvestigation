@@ -8,6 +8,7 @@ import DayOfWeek from 'models/enums/DayOfWeek';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import ErrorIcon from 'commons/Icons/errorIcon/ErrorIcon';
 
 import useStyles from './ContactDateCardStyles';
 import InteractionCard from './InteractionCard/InteractionCard';
@@ -16,7 +17,7 @@ import RepetitiveEventIcon from './RepetitiveEventIcon';
 const ContactDateCard: React.FC<Props> = (props: Props) => {
 
     const { contactDate, interactions, createNewInteractionEvent,
-        onEditClick, onDeleteClick, loadInteractions, loadInvolvedContacts, onDeleteContactClick, allInteractions, isViewMode } = props;
+        onEditClick, onDeleteClick, loadInteractions, loadInvolvedContacts, onDeleteContactClick, allInteractions, isViewMode, noDate } = props;
 
     const [areInteractionsOpen, setAreInteractionsOpen] = React.useState<boolean>(false);
 
@@ -26,6 +27,18 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
 
     const classes = useStyles();
     const formClasses = useFormStyles();
+
+    const isThereMoreVerifiedOnInteraction = () =>{
+        if(interactions){
+            for (const interaction of interactions) {
+                if(interaction.isThereMoreVerified){
+                    return true;
+                }
+            }
+        } 
+        
+        return false;
+    }
 
     return (
         <Card test-id='contactLocationDateCard' key={contactDate.getTime()} className={classes.investigatedDateCard}>
@@ -39,15 +52,19 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                             </IconButton>
                         }
                     </div>
-                    <Typography variant='body1'>
-                        יום {DayOfWeek[contactDate.getDay()] + ' '}
-                        {format(contactDate, 'dd/MM/yyyy')}
-                    </Typography>
+                    {!noDate ? <Typography variant='body1'>
+                            יום {DayOfWeek[contactDate.getDay()] + ' '}
+                            {format(contactDate, 'dd/MM/yyyy')}
+                        </Typography> : <Typography variant='body1'>
+                            הוספת מפגש עם מאומת לא בטווח התאריכים המוצגים
+                        </Typography>
+                    }
                     {interactions?.some(interaction => interaction.isRepetitive) && <RepetitiveEventIcon />}
                 </div>
                 {
                     interactions !== undefined &&
                     <div className={classes.infoSection}>
+                        {isThereMoreVerifiedOnInteraction() && <ErrorIcon tooltipText='קיים מפגש עם מאומתים' ></ErrorIcon>}
                         <Typography>
                             סה"כ מקומות: {interactions?.length} | סה"כ אנשים: {interactions?.map(interaction => interaction.contacts.length).reduce((sum, currentElement) => sum += currentElement)}
                         </Typography>
@@ -77,13 +94,14 @@ interface Props {
     allInteractions: Interaction[];
     contactDate: Date;
     interactions: Interaction[] | undefined;
-    createNewInteractionEvent: () => void;
+    createNewInteractionEvent: (date?:Date) => void;
     onEditClick: (interaction: Interaction) => void;
     onDeleteClick: (contactEventId: number, areThereFamilyContacts: boolean) => void;
     loadInteractions: () => void;
     loadInvolvedContacts: () => void;
     onDeleteContactClick: (contactedPersonId: number, involvedContactId: number | null) => void;
     isViewMode?: boolean;
+    noDate: boolean;
 };
 
 export default ContactDateCard;

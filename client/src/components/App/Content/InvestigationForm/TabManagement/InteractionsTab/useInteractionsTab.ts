@@ -37,6 +37,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
+    const oldDatesToInvestigate = useSelector<StoreStateType, {minDate:Date | undefined,maxDate:Date| undefined}>(state => state.investigation.oldDatesToInvestigate);
 
     const groupInvolvedContacts = (involvedContacts: InvolvedContact[]): GroupedInvolvedGroups => {
         return involvedContacts.reduce<GroupedInvolvedGroups>((previous, contact) => {
@@ -102,7 +103,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const loadInteractions = () => {
         const loadInteractionsLogger = logger.setup('Fetching Interactions');
         loadInteractionsLogger.info('launching interactions request', Severity.LOW);
-        const minimalDateToFilter = datesToInvestigate.slice(-1)[0];
+        const minimalDateToFilter = oldDatesToInvestigate?.minDate ? oldDatesToInvestigate.minDate : datesToInvestigate.slice(-1)[0];
         setIsLoading(true);
         axios.get(`/intersections/contactEvent/${minimalDateToFilter?.toISOString()}`)
         .then((result) => {
