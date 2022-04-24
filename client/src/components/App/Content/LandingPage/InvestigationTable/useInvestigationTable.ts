@@ -83,14 +83,14 @@ export const createRowData = (
     isInInstitute: boolean,
     creationDate: Date,
     startTime: Date,
-    isSelfInvestigated: boolean,
-    selfInvestigationStatus: number,
-    selfInvestigationUpdateTime: string,
-    lastChatDate: string,
-    investigatiorReferenceRequired: boolean,
-    chatStatus: KeyValuePair,
-    investigatorReferenceStatus: KeyValuePair,
-    investigatorReferenceReasons:KeyValuePair[],
+    //isSelfInvestigated: boolean,
+    //selfInvestigationStatus: number,
+    //selfInvestigationUpdateTime: string,
+    //lastChatDate: string,
+    //investigatiorReferenceRequired: boolean,
+    //chatStatus: KeyValuePair,
+    //investigatorReferenceStatus: KeyValuePair,
+    //investigatorReferenceReasons:KeyValuePair[],
     lastUpdatorUser: string
 ): InvestigationTableRow => ({
     isChecked: false,
@@ -122,14 +122,14 @@ export const createRowData = (
     isInInstitute,
     creationDate,
     startTime,
-    isSelfInvestigated,
-    selfInvestigationStatus,
-    selfInvestigationUpdateTime,
-    lastChatDate,
-    investigatiorReferenceRequired,
-    chatStatus,
-    investigatorReferenceStatus,
-    investigatorReferenceReasons,
+    //isSelfInvestigated,
+    //selfInvestigationStatus,
+    //selfInvestigationUpdateTime,
+    //lastChatDate,
+    //investigatiorReferenceRequired,
+    //chatStatus,
+    //investigatorReferenceStatus,
+    //investigatorReferenceReasons,
     lastUpdatorUser
 });
 
@@ -517,7 +517,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchAllInvestigationStatuses();
         fetchAllInvestigationSubStatuses();
         fetchAllInvestigationComplexityReasons();
-        fetchAllBotInvestigationStatuses();
+        //fetchAllBotInvestigationStatuses();
         startWaiting();
     }, []);
 
@@ -703,14 +703,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     isInInstitute,
                                     investigation.creationDate,
                                     investigation.startTime,
-                                    investigation.isSelfInvestigated,
-                                    investigation.selfInvestigationStatus,
-                                    investigation.selfInvestigationUpdateTime,
-                                    lastChatDate,
-                                    investigation.botInvestigation?.investigatiorReferenceRequired,
-                                    investigation.botInvestigation?.chatStatus,
-                                    investigation.botInvestigation?.investigatorReferenceStatus,
-                                    investigation.botInvestigation?.investigatorReferenceReasons,
+                                    //investigation.isSelfInvestigated,
+                                    //investigation.selfInvestigationStatus,
+                                    //investigation.selfInvestigationUpdateTime,
+                                    //lastChatDate,
+                                    //investigation.botInvestigation?.investigatiorReferenceRequired,
+                                    //investigation.botInvestigation?.chatStatus,
+                                    //investigation.botInvestigation?.investigatorReferenceStatus,
+                                    //investigation.botInvestigation?.investigatorReferenceReasons,
                                     investigation.lastUpdatorUser
                                     )
                             });
@@ -868,13 +868,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.groupReason]: row.groupReason,
             [TableHeadersNames.otherReason]: row.otherReason,
             [TableHeadersNames.reasonId]: row.reasonId,
-            [TableHeadersNames.isSelfInvestigated]: row.isSelfInvestigated,
-            [TableHeadersNames.selfInvestigationStatus]: row.selfInvestigationStatus,
-            [TableHeadersNames.selfInvestigationUpdateTime]: row.selfInvestigationUpdateTime,
-            [TableHeadersNames.lastChatDate]: row.lastChatDate ? getFormattedDate(row.lastChatDate) : '',
-            [TableHeadersNames.chatStatus]: row.chatStatus?.displayName,
-            [TableHeadersNames.investigatiorReferenceRequired]: row.investigatiorReferenceRequired,
-            [TableHeadersNames.investigatorReferenceStatus]: row.investigatorReferenceStatus?.displayName
+            //[TableHeadersNames.isSelfInvestigated]: row.isSelfInvestigated,
+           // [TableHeadersNames.selfInvestigationStatus]: row.selfInvestigationStatus,
+           // [TableHeadersNames.selfInvestigationUpdateTime]: row.selfInvestigationUpdateTime,
+           // [TableHeadersNames.lastChatDate]: row.lastChatDate ? getFormattedDate(row.lastChatDate) : '',
+            //[TableHeadersNames.chatStatus]: row.chatStatus?.displayName,
+            //[TableHeadersNames.investigatiorReferenceRequired]: row.investigatiorReferenceRequired,
+           // [TableHeadersNames.investigatorReferenceStatus]: row.investigatorReferenceStatus?.displayName
         }
     };
 
@@ -1170,14 +1170,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             isInInstitute,
                             investigation.creationDate,
                             investigation.startTime,
-                            investigation.isSelfInvestigated,
-                            investigation.selfInvestigationStatus,
-                            investigation.selfInvestigationUpdateTime,
-                            investigation.botInvestigation?.lastChatDate,
-                            investigation.botInvestigation?.investigatiorReferenceRequired,
-                            investigation.botInvestigation?.chatStatus,
-                            investigation.botInvestigation?.investigatorReferenceStatus,
-                            investigation.botInvestigation?.investigatorReferenceReasons,
+                            //investigation.isSelfInvestigated,
+                            //investigation.selfInvestigationStatus,
+                            //investigation.selfInvestigationUpdateTime,
+                            //investigation.botInvestigation?.lastChatDate,
+                            //investigation.botInvestigation?.investigatiorReferenceRequired,
+                            //investigation.botInvestigation?.chatStatus,
+                            //investigation.botInvestigation?.investigatorReferenceStatus,
+                            //investigation.botInvestigation?.investigatorReferenceReasons,
                             investigation.lastUpdatorUser
                         )
                     });

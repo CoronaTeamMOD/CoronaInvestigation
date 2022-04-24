@@ -109,6 +109,81 @@ query AllInvestigations($county:Int!, $orderBy: String!, $offset: Int!, $size: I
     nodes {
       complexityReasonsId
       comment
+      epidemiologyNumber
+      startTime
+      creationDate
+      complexityCode
+      priority
+      statusReason
+      groupId
+      deskByDeskId {
+        deskName
+      }
+      investigatedPatientByInvestigatedPatientId {
+        investigatedPatientRoleByRole{
+          id,
+          displayName
+        }
+        subOccupationBySubOccupation{
+          displayName
+          parentOccupation
+        }
+        covidPatientByCovidPatient {
+          birthDate
+          fullName
+          primaryPhone
+          addressByAddress {
+            cityByCity {
+              displayName
+            }
+          }
+          validationDate
+        }
+      }
+      investigationStatusByInvestigationStatus {
+        id
+        displayName
+      }
+      investigationSubStatusByInvestigationSubStatus {
+        displayName
+      }
+      userByCreator {
+        id
+        userName
+        isActive
+        countyByInvestigationGroup {
+          displayName
+          id
+          districtByDistrictId {
+            displayName
+          }
+        }
+        
+      }
+      investigationGroupByGroupId {
+        investigationGroupReasonByReason {
+          displayName
+          id
+        }
+        otherReason
+      }
+      lastUpdatorUser
+    }
+    totalCount
+  }
+  unassignedInvestigations: orderedInvestigations(county:${investigationGroup.toString()},filter: {userByCreator: {id: {equalTo: "admin.group${investigationGroup.toString()}"}}, and: $unassignedFilter}) {
+    totalCount
+  }
+}
+`;
+
+/*
+export const GROUP_INVESTIGATIONS = (investigationGroup: number) => gql`
+query AllInvestigations($county:Int!, $orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter, $unassignedFilter: [InvestigationFilter!]) {
+  orderedInvestigations(county:$county,orderBy: $orderBy, filter: $filter, offset: $offset, first: $size) {
+    nodes {
+      complexityReasonsId
+      comment
       isSelfInvestigated
       selfInvestigationStatus
       selfInvestigationUpdateTime
@@ -204,6 +279,9 @@ query AllInvestigations($county:Int!, $orderBy: String!, $offset: Int!, $size: I
   }
 }
 `;
+
+
+*/
 
 export const GET_ALL_INVESTIGATION_STATUS = gql`
 query allInvestigationStatuses {

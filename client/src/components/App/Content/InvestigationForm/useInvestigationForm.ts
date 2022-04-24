@@ -202,7 +202,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             fetchStatuses();
             investigationStatus.mainStatus && fetchSubStatusesByStatus(investigationStatus.mainStatus);
             fetchEducationGrades();
-            GetAllInvestigatorReferenceStatuses();
+            //GetAllInvestigatorReferenceStatuses();
         };
     }, [epidemiologyNumber, userId]);
 

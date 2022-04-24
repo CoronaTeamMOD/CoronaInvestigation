@@ -196,7 +196,7 @@ const TableFilter = (props: Props) => {
                                 />
                                 <Typography className={classes.title}>לא משויכות לדסק</Typography>
                             </Grid>
-                            <Grid item md='auto'>
+                            {/* <Grid item md='auto'>
                                 <Checkbox
                                     onChange={(event) => changeNotSentToBotFilter(event.target.checked)}
                                     color='primary'
@@ -204,8 +204,8 @@ const TableFilter = (props: Props) => {
                                     className={classes.checkbox}
                                 />
                                 <Typography className={classes.title}>חקירות שלא נשלחו לבוט</Typography>
-                            </Grid>
-                            <Grid item md='auto'>
+                            </Grid> */}
+                            {/* <Grid item md='auto'>
                                 <Checkbox
                                     onChange={(event) => changeIncompletedBotInvestigationFilter(event.target.checked)}
                                     color='primary'
@@ -213,7 +213,7 @@ const TableFilter = (props: Props) => {
                                     className={classes.checkbox}
                                 />
                                 <Typography className={classes.title}>חקירות שלא הושלמו ע"י בוט</Typography>
-                            </Grid>
+                            </Grid> */}
                             <Grid item md='auto'>
                                 <Checkbox
                                     onChange={(event) => {
@@ -372,7 +372,7 @@ const TableFilter = (props: Props) => {
                                     limitTags={1}
                                 />
                             </Grid>
-                            <Grid item md={1}>
+                            {/* <Grid item md={1}>
                                 <Autocomplete
                                     ChipProps={{ className: classes.chip }}
                                     classes={{ inputFocused: classes.autocompleteInputText }}
@@ -407,8 +407,8 @@ const TableFilter = (props: Props) => {
                                     )}
                                     limitTags={1}
                                 />
-                            </Grid>
-                            <Grid item md='auto'>
+                            </Grid> */}
+                            {/* <Grid item md='auto'>
                                 <Autocomplete
                                     ChipProps={{ className: classes.chip }}
                                     classes={{ inputFocused: classes.autocompleteInputText }}
@@ -443,7 +443,7 @@ const TableFilter = (props: Props) => {
                                     )}
                                     limitTags={1}
                                 />
-                            </Grid>
+                            </Grid> */}
                             <Grid item md={1}>
                                 <FormControl variant='outlined' className={classes.selectDropdown}>
                                     <SelectDropdown

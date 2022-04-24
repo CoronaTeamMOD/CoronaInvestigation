@@ -11,7 +11,7 @@ import SelfInvestigationIcon from './SelfInvestigationIcon/SelfInvestigationIcon
 const complexInvestigationMessage = 'חקירה מורכבת';
 
 const InvestigationIndicatorsColumn = (props: Props) => {
-    const { isComplex, wasInvestigationTransferred, transferReason, isSelfInvestigated, selfInvestigationStatus, selfInvestigationUpdateTime, complexityReasonsId, isInInstitute, instituteName } = props;
+    const { isComplex, wasInvestigationTransferred, transferReason, complexityReasonsId, isInInstitute, instituteName } = props;
     const allComplexReasons = useSelector<StoreStateType, (number|null)[]>(state => state.complexReasons);
     let investigationComplexityReasons = (complexityReasonsId) && complexityReasonsId.map((id) => (id) && allComplexReasons[id - 1]).filter((value, index, self) => self.indexOf(value) === index).toString()
     if(isInInstitute && instituteName){
@@ -21,15 +21,6 @@ const InvestigationIndicatorsColumn = (props: Props) => {
 
     return (
         <Box display='flex' alignItems='center' flexWrap='nowrap'>
-            <Box flex={1} marginX={0.5}>
-                {
-                    isSelfInvestigated &&
-                    <SelfInvestigationIcon
-                        status={selfInvestigationStatus}
-                        date={selfInvestigationUpdateTime}
-                    />
-                }
-            </Box>
             <Box flex={1} marginX={0.5}>
                 {
                     isComplex && <ComplexityIcon tooltipText={complexInvestigationText} />
@@ -52,9 +43,6 @@ interface Props {
     isComplex: boolean;
     complexityReasonsId: (number|null)[];
     transferReason: string;
-    isSelfInvestigated: boolean;
-    selfInvestigationStatus: number;
-    selfInvestigationUpdateTime: Date;
     isInInstitute: boolean;
     instituteName: string;
 };

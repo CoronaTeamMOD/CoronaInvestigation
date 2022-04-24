@@ -215,24 +215,24 @@ const mappingGroupInvestigations = (investigation:GroupInvestigations['orderedIn
             otherReason: investigation.investigationGroupByGroupId?.otherReason,
             reason: investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.displayName,
             reasonId: investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.id
-        },
-        botInvestigation: {
-            ...investigation.botInvestigationByEpidemiologyNumber,
-            chatStatus: investigation.botInvestigationByEpidemiologyNumber?.chatStatusByChatStatusId,
-            investigatorReferenceStatus: investigation.botInvestigationByEpidemiologyNumber?.investigatorReferenceStatusByInvestigatorReferenceStatusId,
-            investigatorReferenceReasons: investigation.botInvestigationByEpidemiologyNumber?.botInvestigationReferenceReasonsByBotInvestigationId.nodes.map((obj: any) => obj.investigatorReferenceReasonByInvestigatorReferenceReasonId),
-        }
+        }//,
+        // botInvestigation: {
+        //     ...investigation.botInvestigationByEpidemiologyNumber,
+        //     chatStatus: investigation.botInvestigationByEpidemiologyNumber?.chatStatusByChatStatusId,
+        //     investigatorReferenceStatus: investigation.botInvestigationByEpidemiologyNumber?.investigatorReferenceStatusByInvestigatorReferenceStatusId,
+        //     investigatorReferenceReasons: investigation.botInvestigationByEpidemiologyNumber?.botInvestigationReferenceReasonsByBotInvestigationId.nodes.map((obj: any) => obj.investigatorReferenceReasonByInvestigatorReferenceReasonId),
+        // }
     };
 
     delete newObject.complexityCode;
     delete newObject.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient.birthDate;
     delete newObject.deskByDeskId;
     delete newObject.investigationGroupByGroupId;
-    delete newObject.botInvestigationByEpidemiologyNumber;
-    delete newObject.botInvestigation.chatStatusByChatStatusId;
-    delete newObject.botInvestigation.investigatorReferenceStatusByInvestigatorReferenceStatusId;
-    delete newObject.botInvestigation.botInvestigationReferenceReasonsByBotInvestigationId;
-
+    // delete newObject.botInvestigationByEpidemiologyNumber;
+    // delete newObject.botInvestigation.chatStatusByChatStatusId;
+    // delete newObject.botInvestigation.investigatorReferenceStatusByInvestigatorReferenceStatusId;
+    // delete newObject.botInvestigation.botInvestigationReferenceReasonsByBotInvestigationId;
+  
     return newObject;
 }
 
