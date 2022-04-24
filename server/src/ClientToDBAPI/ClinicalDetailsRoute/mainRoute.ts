@@ -137,7 +137,8 @@ const saveClinicalDetails = (request: Request, response: Response, baseLog: Init
         symptoms: clinicalDetails.symptoms,
         isPregnant: clinicalDetails.isPregnant,
         doesHaveBackgroundDiseases: clinicalDetails.doesHaveBackgroundDiseases,
-        otherBackgroundDiseasesMoreInfo: clinicalDetails.otherBackgroundDiseasesMoreInfo
+        otherBackgroundDiseasesMoreInfo: clinicalDetails.otherBackgroundDiseasesMoreInfo,
+        wasInstructedToBeInIsolation: clinicalDetails.wasInstructedToBeInIsolation, 
     };
     const parameters = {input: JSON.stringify(requestInvestigation)};
 
