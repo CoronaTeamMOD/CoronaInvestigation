@@ -1,5 +1,5 @@
-import ip from 'ip';
+// import ip from 'ip';
 
-const IP = ip.address();
+// const IP = ip.address();
 
-export default IP;
+// export default IP;
