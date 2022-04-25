@@ -4,10 +4,8 @@ export interface InvesitgationInfoStatistics {
     unallocatedInvestigations: number;
     transferRequestInvestigations: number;
     unusualInProgressInvestigations: number;
-    unusualCompletedNoContactInvestigations: number;
     waitingForDetailsInvestigations: number;
     unallocatedDeskInvestigations:number;
-    incompletedBotInvestigations:number;
 };
 interface InvesitgationStatistics extends InvesitgationInfoStatistics {
     allInvestigations: number;
