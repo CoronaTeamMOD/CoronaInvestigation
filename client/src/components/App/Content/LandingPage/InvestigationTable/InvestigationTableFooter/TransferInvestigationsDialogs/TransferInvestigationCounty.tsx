@@ -34,6 +34,7 @@ const TransferInvestigationCounty = (props: Props) => {
     });
 
     const allCounties = useSelector<StoreStateType, County[]>(state => state.county.allCounties);
+    const countiesWithoutBot = allCounties.filter(county => county.displayName !== 'בוט');
 
     const onDialogConfirm = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -55,7 +56,7 @@ const TransferInvestigationCounty = (props: Props) => {
                         render={(props) =>
                             <Autocomplete
                                 className={classes.input}
-                                options={allCounties}
+                                options={countiesWithoutBot}
                                 getOptionLabel={(option) => option ? option.displayName : option}
                                 value={props.value}
                                 onChange={(event, selectedCounty) => {

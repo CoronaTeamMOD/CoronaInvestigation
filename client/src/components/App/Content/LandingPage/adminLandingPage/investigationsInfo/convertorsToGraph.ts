@@ -21,11 +21,6 @@ export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit
         id: FilterRulesDescription.UNALLOCATED_DESK,
         color: SECONDARY,
     },
-    unusualCompletedNoContactInvestigations: {
-        id: FilterRulesDescription.UNUSUAL_COMPLETED_NO_CONTACT,
-        color: SUCCESS,
-        space: 1
-    },
     unallocatedInvestigations: {
         id: FilterRulesDescription.UNALLOCATED,
         color: DANGER,
@@ -44,11 +39,6 @@ export const convertorsToGraph: { [T in keyof InvesitgationInfoStatistics]: Omit
     unusualInProgressInvestigations: {
         id: FilterRulesDescription.UNUSUAL_IN_PROCESS,
         color: DANGER,
-        secondary: SECONDARY
-    },
-    incompletedBotInvestigations: {
-        id: FilterRulesDescription.INCOMPLETED_BOT_INVESTIGATIONS,
-        color:DANGER,
         secondary: SECONDARY
     }
 };

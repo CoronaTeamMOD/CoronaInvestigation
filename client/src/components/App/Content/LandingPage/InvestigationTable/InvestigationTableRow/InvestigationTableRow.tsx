@@ -120,34 +120,37 @@ const InvestigationTableRow = ({
 }: Props) => {
     const classes = useStyles();
     const user = useSelector<StoreStateType, User>(state => state.user.data);
-    const getInvestigatorReferenceRequiredTooltip = (row: InvestigationTableRowType) => {
-        let msg = 'נדרשת התייחסות חוקר בגין: '
-        if (row.investigatorReferenceReasons) {
-            row.investigatorReferenceReasons.forEach(reason => {
-                msg += reason.displayName + " ,";
-            });
-            msg = msg.slice(0, -1);
-        }
-        return msg;
-    }
+    // const getInvestigatorReferenceRequiredTooltip = (row: InvestigationTableRowType) => {
+    //     let msg = 'נדרשת התייחסות חוקר בגין: '
+    //     if (row.investigatorReferenceReasons) {
+    //         row.investigatorReferenceReasons.forEach(reason => {
+    //             msg += reason.displayName + " ,";
+    //         });
+    //         msg = msg.slice(0, -1);
+    //     }
+    //     return msg;
+    // }
 
-    const getInvestigatorReferenceRequiredColor = (row: InvestigationTableRowType) => {
-        if (row.investigatiorReferenceRequired &&
-            ((row.investigatorReferenceStatus?.id != InvestigatorReferenceStatusCode.NEW &&
-                row.investigatorReferenceStatus?.id != InvestigatorReferenceStatusCode.IN_PROCESS &&
-                row.mainStatus.id == InvestigationMainStatusCodes.DONE) ||
-                row.investigatorReferenceStatus?.id == InvestigatorReferenceStatusCode.DONE)) {
-            return 'disabled';
-        }
-        return 'primary';
-    }
+    // const getInvestigatorReferenceRequiredColor = (row: InvestigationTableRowType) => {
+    //     if (row.investigatiorReferenceRequired &&
+    //         ((row.investigatorReferenceStatus?.id != InvestigatorReferenceStatusCode.NEW &&
+    //             row.investigatorReferenceStatus?.id != InvestigatorReferenceStatusCode.IN_PROCESS &&
+    //             row.mainStatus.id == InvestigationMainStatusCodes.DONE) ||
+    //             row.investigatorReferenceStatus?.id == InvestigatorReferenceStatusCode.DONE)) {
+    //         return 'disabled';
+    //     }
+    //     return 'primary';
+    // }
+  
+
 
     const ifCompletedStatus = (row: InvestigationTableRowType) => {
         if (row.mainStatus?.id == InvestigationMainStatusCodes.CANT_COMPLETE ||
             row.mainStatus?.id == InvestigationMainStatusCodes.NOT_INVESTIGATED ||
-            (row.mainStatus?.id == InvestigationMainStatusCodes.DONE &&
-                !(row.investigatiorReferenceRequired == true &&
-                    row.investigatorReferenceStatus?.id != InvestigatorReferenceStatusCode.DONE))) {
+            (row.mainStatus?.id == InvestigationMainStatusCodes.DONE //&&
+               // !(row.investigatiorReferenceRequired == true &&
+                   // row.investigatorReferenceStatus?.id != InvestigatorReferenceStatusCode.DONE)
+                   )){
             return true;
         }
         return false;
@@ -175,9 +178,9 @@ const InvestigationTableRow = ({
                             complexityReasonsId={row.complexityReasonsId}
                             wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
                             transferReason={indexedRow.transferReason}
-                            isSelfInvestigated={indexedRow.isSelfInvestigated}
-                            selfInvestigationStatus={indexedRow.selfInvestigationStatus}
-                            selfInvestigationUpdateTime={new Date(indexedRow.selfInvestigationUpdateTime)}
+                           // isSelfInvestigated={indexedRow.isSelfInvestigated}
+                           // selfInvestigationStatus={indexedRow.selfInvestigationStatus}
+                           // selfInvestigationUpdateTime={new Date(indexedRow.selfInvestigationUpdateTime)}
                             isInInstitute={row.isInInstitute}
                             instituteName={indexedRow.subOccupation}
                         />
@@ -257,14 +260,14 @@ const InvestigationTableRow = ({
                                     </IconButton>
                                 </Tooltip>
                             }   </Box>
-                        {
+                            {/* {
                             indexedRow.investigatiorReferenceRequired &&
                             <Box flex={1} marginX={0.5} alignSelf='center'>
                                 <Tooltip title={getInvestigatorReferenceRequiredTooltip(row)} placement='top' arrow>
                                     <Person color={getInvestigatorReferenceRequiredColor(row)} />
                                 </Tooltip>
                             </Box>
-                        }
+                        } */}
                         <Box flex={1} marginX={0.5}>
                             <Tooltip title='צפייה בלבד' placement='top' arrow>
                                 <IconButton color='primary' onClick={onSetViewMode}>

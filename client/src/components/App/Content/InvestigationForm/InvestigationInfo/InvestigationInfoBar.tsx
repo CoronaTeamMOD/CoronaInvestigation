@@ -166,7 +166,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode, disable
                     handleInvalidEntrance()
                 });
             setGroupedInvestigationsDetailsAsync();
-            dispatch(getBotInvestigationInfo());
+            //dispatch(getBotInvestigationInfo());
             dispatch(getMutationInfo());
         }
     }, [epidemiologyNumber]);

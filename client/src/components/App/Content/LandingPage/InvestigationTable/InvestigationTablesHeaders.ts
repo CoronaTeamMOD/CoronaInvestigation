@@ -30,13 +30,13 @@ export enum TableHeadersNames {
     canFetchGroup = 'canFetchGroup',
     settings = 'settings',
     subOccupation = 'subOccupation',
-    isSelfInvestigated = 'isSelfInvestigated',
-    selfInvestigationStatus = 'selfInvestigationStatus',
-    selfInvestigationUpdateTime = 'selfInvestigationUpdateTime',
-    lastChatDate='lastChatDate',
-    chatStatus='chatStatus',
-    investigatiorReferenceRequired='investigatiorReferenceRequired',
-    investigatorReferenceStatus='investigatorReferenceStatus'
+   // isSelfInvestigated = 'isSelfInvestigated',
+    //selfInvestigationStatus = 'selfInvestigationStatus',
+    //selfInvestigationUpdateTime = 'selfInvestigationUpdateTime',
+    //lastChatDate='lastChatDate',
+    //chatStatus='chatStatus',
+    //investigatiorReferenceRequired='investigatiorReferenceRequired',
+    //investigatorReferenceStatus='investigatorReferenceStatus'
     
 }
 
@@ -79,13 +79,13 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.otherReason]: '',
     [TableHeadersNames.reasonId]: '',
     [TableHeadersNames.settings]: '',
-    [TableHeadersNames.isSelfInvestigated]: '',
-    [TableHeadersNames.selfInvestigationStatus]: '',
-    [TableHeadersNames.selfInvestigationUpdateTime]: '',
-    [TableHeadersNames.lastChatDate]:'עדכון אחרון בבוט',
-    [TableHeadersNames.chatStatus]:'סטטוס שיחה',
-    [TableHeadersNames.investigatiorReferenceRequired]:'',
-    [TableHeadersNames.investigatorReferenceStatus]:'סטטוס טיפול'
+    //[TableHeadersNames.isSelfInvestigated]: '',
+    //[TableHeadersNames.selfInvestigationStatus]: '',
+    //[TableHeadersNames.selfInvestigationUpdateTime]: '',
+   // [TableHeadersNames.lastChatDate]:'עדכון אחרון בבוט',
+    //[TableHeadersNames.chatStatus]:'סטטוס שיחה',
+    //[TableHeadersNames.investigatiorReferenceRequired]:'',
+    //[TableHeadersNames.investigatorReferenceStatus]:'סטטוס טיפול'
 }
 
 export const adminCols: string[] = [
@@ -100,7 +100,7 @@ export const adminCols: string[] = [
     TableHeadersNames.investigatorName, 
     TableHeadersNames.investigationDesk,
     TableHeadersNames.investigationStatus,
-    TableHeadersNames.chatStatus,
+    //TableHeadersNames.chatStatus,
     TableHeadersNames.comment,
     TableHeadersNames.settings
 ]
@@ -116,7 +116,7 @@ export const userCols: string[] = [
     TableHeadersNames.city,
     TableHeadersNames.investigationDesk,
     TableHeadersNames.investigationStatus,                       
-    TableHeadersNames.chatStatus,
+   // TableHeadersNames.chatStatus,
     TableHeadersNames.comment,
     TableHeadersNames.settings
 ]
@@ -149,11 +149,11 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.reasonId]: false,
     [TableHeadersNames.settings]: false,
     [TableHeadersNames.subOccupation]: true,
-    [TableHeadersNames.isSelfInvestigated]: false,
-    [TableHeadersNames.selfInvestigationStatus]: false,
-    [TableHeadersNames.selfInvestigationUpdateTime]: false,
-    [TableHeadersNames.lastChatDate]:true,
-    [TableHeadersNames.chatStatus]:true,
-    [TableHeadersNames.investigatiorReferenceRequired]:false,
-    [TableHeadersNames.investigatorReferenceStatus]:true
+    //[TableHeadersNames.isSelfInvestigated]: false,
+    //[TableHeadersNames.selfInvestigationStatus]: false,
+    //[TableHeadersNames.selfInvestigationUpdateTime]: false,
+    //[TableHeadersNames.lastChatDate]:true,
+    //[TableHeadersNames.chatStatus]:true,
+    //[TableHeadersNames.investigatiorReferenceRequired]:false,
+    //[TableHeadersNames.investigatorReferenceStatus]:true
 }

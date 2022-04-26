@@ -33,14 +33,14 @@ interface InvestigationTableRow {
     isInInstitute: boolean;
     creationDate: Date;
     startTime: Date;
-    isSelfInvestigated: boolean;
-    selfInvestigationStatus: number;
-    selfInvestigationUpdateTime: string;
-    lastChatDate: string;
-    investigatiorReferenceRequired: boolean;
-    chatStatus: KeyValuePair;
-    investigatorReferenceStatus: KeyValuePair;
-    investigatorReferenceReasons:KeyValuePair[];
+    //isSelfInvestigated: boolean;
+    //selfInvestigationStatus: number;
+    //selfInvestigationUpdateTime: string;
+    //lastChatDate: string;
+    //investigatiorReferenceRequired: boolean;
+    //chatStatus: KeyValuePair;
+    //investigatorReferenceStatus: KeyValuePair;
+    //investigatorReferenceReasons:KeyValuePair[];
     lastUpdatorUser: string;
 };
 
