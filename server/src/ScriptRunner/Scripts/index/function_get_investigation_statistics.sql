@@ -45,7 +45,7 @@ select id FROM public.user
 
 	-- creating filtered investigations: all of the statistics will be pulled from here instead of just public.investigations
 	CREATE TEMP TABLE filtered_investigations AS 
-	SELECT epidemiology_number, investigation_status, investigation_sub_status, creator, start_time  FROM public.investigation 
+	SELECT epidemiology_number, investigation_status, investigation_sub_status, creator, start_time, desk_id  FROM public.investigation 
 	WHERE EXISTS (SELECT id FROM filtered_users where id = creator)
 	-- only if desks_input is sent - add the filter  
 	AND (desks_input is NULL OR desk_id IN (SELECT unnest(desks_input)))
