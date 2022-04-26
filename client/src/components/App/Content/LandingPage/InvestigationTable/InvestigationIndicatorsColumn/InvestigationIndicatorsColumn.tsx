@@ -23,7 +23,7 @@ const InvestigationIndicatorsColumn = (props: Props) => {
         <Box display='flex' alignItems='center' flexWrap='nowrap'>
             <Box flex={1} marginX={0.5}>
                 {
-                    isComplex && <ComplexityIcon tooltipText={complexInvestigationText} />
+                    isComplex && complexityReasonsId.length !== 0 && <ComplexityIcon tooltipText={complexInvestigationText} />
                 }
             </Box>
             <Box flex={1} marginX={0.5}>
