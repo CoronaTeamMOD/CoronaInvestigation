@@ -15,7 +15,6 @@ const AdminMessages = (props: Props) => {
   const { getAdminsMessages, adminMessagesByDesks } = useAdminMessagesDBAction();
   const { setAdminMessageCount } = props;
 
-  const [messages, setMessages] = useState<AdminMessage[]>([]);
   let desksId = props.deskFilter;
   const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
   const desks = useSelector<StoreStateType, Desk[]>(state => state.desk);
@@ -37,22 +36,21 @@ const AdminMessages = (props: Props) => {
 
   useEffect(() => {
     if (adminMessagesByDesks) {
-      setMessages(adminMessagesByDesks);
-    }
-    setAdminMessageCount(messages.length);
+      setAdminMessageCount(adminMessagesByDesks.length);
+    } 
   }, [adminMessagesByDesks])
 
   return (
     <Card className={classes.adminMsgSection}>
-      <Collapse in={messages.length > 0} unmountOnExit>
+      { adminMessagesByDesks && adminMessagesByDesks.length > 0 &&
         <div>
-          {messages?.map((message: any) => (
+          {adminMessagesByDesks?.map((message: any) => (
             <Typography className={classes.message}>
               {message.message}
             </Typography>
           ))}
         </div>
-      </Collapse>
+     }
     </Card>
   )
 }
