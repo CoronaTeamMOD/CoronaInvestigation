@@ -11,6 +11,7 @@ export const alphaNumericSlashErrorMessage = 'השדה יכול להכיל או�
 
 export const max9LengthIdErrorMessage = 'שדה ת.ז יכול להכיל 9 מספרים בלבד';
 export const max10LengthNumErrorMessage = 'השדה יכול להכיל 10 מספרים בלבד';
+export const max10LengthErrorMessage = 'השדה יכול להכיל עד 10 תווים בלבד';
 export const max15LengthErrorMessage = 'השדה יכול להכיל עד 15 תווים בלבד';
 export const max50LengthErrorMessage = 'השדה יכול להכיל 50 תווים בלבד';
 export const max100LengthErrorMessage = 'השדה יכול להכיל 100 תווים בלבד';
