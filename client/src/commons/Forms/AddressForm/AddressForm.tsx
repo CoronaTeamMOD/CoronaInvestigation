@@ -274,8 +274,9 @@ const AddressForm: React.FC<Props> = ({
                                         props.onBlur();
                                         onBlur();
                                     }}
+                                    error={Boolean(get(methods.errors, apartmentField.name))}
+                                    label={get(methods.errors, apartmentField.name)?.message || `${APARTMENT_LABEL}`}
                                     placeholder={APARTMENT_LABEL}
-                                    label={APARTMENT_LABEL}
                                 />
                             )}
                         />

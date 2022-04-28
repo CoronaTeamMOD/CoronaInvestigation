@@ -42,7 +42,6 @@ const removeInvestigationReasonId = (epidemiologyNumber: number, oldComplexityRe
         })
         .catch((err) => {
             deleteInvestigationComplexityReasonIdLogger.error(err, Severity.HIGH);
-
         })
 };
 
