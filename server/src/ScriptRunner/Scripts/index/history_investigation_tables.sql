@@ -97,7 +97,7 @@ BEGIN
   THEN
     CREATE TRIGGER  investigation_change_trigger
 	AFTER INSERT OR UPDATE ON public.investigation
-    FOR EACH ROW EXECUTE FUNCTION update_history_investigation();
+    FOR EACH ROW EXECUTE PROCEDURE update_history_investigation();
   END IF;
 END;
 $$

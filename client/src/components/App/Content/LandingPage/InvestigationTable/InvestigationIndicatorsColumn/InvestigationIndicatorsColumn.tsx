@@ -18,12 +18,13 @@ const InvestigationIndicatorsColumn = (props: Props) => {
         investigationComplexityReasons += ', שם המוסד: ' + instituteName; 
     }
     const complexInvestigationText = investigationComplexityReasons ? `${complexInvestigationMessage}: ${investigationComplexityReasons}` : `${complexInvestigationMessage}: אחר`;
+    const toShowComplexityIcon: boolean = isComplex && complexityReasonsId !== null &&complexityReasonsId.length !== 0;
 
     return (
         <Box display='flex' alignItems='center' flexWrap='nowrap'>
             <Box flex={1} marginX={0.5}>
                 {
-                    isComplex && complexityReasonsId.length !== 0 && <ComplexityIcon tooltipText={complexInvestigationText} />
+                    toShowComplexityIcon && <ComplexityIcon tooltipText={complexInvestigationText} />
                 }
             </Box>
             <Box flex={1} marginX={0.5}>
