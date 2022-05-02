@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 
 import Occupations from 'models/enums/Occupations';
-import { requiredText, invalidPhoneText, max10LengthNumErrorMessage } from 'commons/Schema/messages';
+import { requiredText, invalidPhoneText, max10LengthErrorMessage } from 'commons/Schema/messages';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import { PHONE_NUMBER_REGEX, NOT_REQUIRED_PHONE_NUMBER_REGEX } from 'commons/Regex/Regex';
 
@@ -15,8 +15,8 @@ const schema = yup.object().shape({
     [PersonalInfoDataContextFields.INSURANCE_COMPANY]: yup.string().nullable().required(requiredText),
     address: yup.object().shape({
         [PersonalInfoDataContextFields.CITY]: yup.string().nullable().required(requiredText),
-        [PersonalInfoDataContextFields.HOUSE_NUMBER]: yup.string().nullable().max(10, max10LengthNumErrorMessage),
-        [PersonalInfoDataContextFields.APARTMENT]: yup.string().nullable().max(10, max10LengthNumErrorMessage),
+        [PersonalInfoDataContextFields.HOUSE_NUMBER]: yup.string().nullable().max(10, max10LengthErrorMessage),
+        [PersonalInfoDataContextFields.APARTMENT]: yup.string().nullable().max(10, max10LengthErrorMessage),
     }),
     [PersonalInfoDataContextFields.CONTACT_INFO]: yup.string().nullable(),
     [PersonalInfoDataContextFields.RELEVANT_OCCUPATION]: yup.string().nullable().required(requiredText),
