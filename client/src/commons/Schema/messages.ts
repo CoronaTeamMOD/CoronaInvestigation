@@ -6,6 +6,7 @@ export const hebrewTextErrorMessage = 'השדה יכול להכיל אותיות
 export const alphaNumericErrorMessage = 'השדה יכול להכיל אותיות ומספרים בלבד';
 export const alphbetDashErrorMessage = 'השדה יכול להכיל אותיות, רווחים ומקפים בלבד';
 export const alphaNumericSpecialCharsErrorMessage = 'השדה יכול להכיל תווים חוקיים בלבד';
+export const alphaNumericSpecialCharsMax10ErrorMessage = 'השדה יכול להכיל עד 10 תווים חוקיים בלבד';
 export const alphaNumericWhiteSpaceErrorMessage = 'השדה יכול להכיל אותיות, מספרים, מקף ורווח בלבד';
 export const alphaNumericSlashErrorMessage = 'השדה יכול להכיל אותיות באנגלית, מספרים ולוכסנים בלבד';
 
