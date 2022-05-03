@@ -238,6 +238,8 @@ usersRoute.post('/changeInvestigator', adminMiddleWare, (request: Request, respo
     const epidemiologyNumbers: number[] = request.body.epidemiologyNumbers;
     const newUser: string = request.body.user;
     const transferReason: string = request.body.transferReason;
+    const lastUpdator:string = response.locals.user.id ;
+    const lastUpdateTime : Date = new Date();
     const changeInvestigatorLogger = logger.setup({
         workflow: `change investigations' investigator`,
         user: response.locals.user.id,
@@ -246,7 +248,7 @@ usersRoute.post('/changeInvestigator', adminMiddleWare, (request: Request, respo
     const parameters = { epidemiologyNumbers, newUser, transferReason }
     changeInvestigatorLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
     Promise.all(epidemiologyNumbers.map(epidemiologyNumber => graphqlRequest(UPDATE_INVESTIGATOR, response.locals,
-        { epidemiologyNumber, newUser, transferReason })))
+        { epidemiologyNumber, newUser, transferReason, lastUpdator,lastUpdateTime  })))
         .then(results => {
             changeInvestigatorLogger.info(validDBResponseLog, Severity.LOW);
             response.send(results[0]?.data);
@@ -267,7 +269,8 @@ usersRoute.post('/changeGroupInvestigator', adminMiddleWare, (request: Request, 
         newInvestigator: request.body.user,
         selectedGroups: request.body.groupIds,
         userCounty: request.body.county,
-        transferReason: request.body.transferReason
+        transferReason: request.body.transferReason,
+        lastUpdator:response.locals.user.id
     }
     changeGroupInvestigatorLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
