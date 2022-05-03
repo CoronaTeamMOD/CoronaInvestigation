@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS public.investigation_history
     investigation_history_id  integer NOT NULL DEFAULT nextval('investigation_history_seq'::regclass),
     epidemiology_number integer not null,
     change_date timestamp with time zone NOT NULL,
-    changed_by character varying COLLATE pg_catalog."default" NOT NULL,
+    changed_by character varying COLLATE pg_catalog."default" ,
     action_type_id integer,
     changed_field character varying COLLATE pg_catalog."default",
     old_value character varying COLLATE pg_catalog."default",
@@ -61,8 +61,13 @@ TABLESPACE pg_default;
 
 --- investigation table trigger
 
-CREATE OR REPLACE FUNCTION update_history_investigation() RETURNS TRIGGER AS $$
-    BEGIN
+CREATE OR REPLACE FUNCTION public.update_history_investigation()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
   		IF (TG_OP = 'INSERT') THEN          
 			 INSERT INTO public.investigation_history(change_date, changed_by, action_type_id, epidemiology_number, changed_field, old_value, new_value)
 			 VALUES (now(), NEW.last_updator_user , 1, NEW.epidemiology_number, null, null, null);
@@ -71,19 +76,17 @@ CREATE OR REPLACE FUNCTION update_history_investigation() RETURNS TRIGGER AS $$
 			   IF (NEW.investigation_status <> OLD.investigation_status) THEN
 				 INSERT INTO public.investigation_history(change_date, changed_by, action_type_id,epidemiology_number, changed_field, old_value, new_value)
 				 VALUES (now(), NEW.last_updator_user ,2, NEW.epidemiology_number, 'investigation_status',  OLD.investigation_status,  NEW.investigation_status);
-			  END IF;
-			  IF (NEW.creator <> OLD.creator) THEN
+			  ELSEIF (NEW.creator <> OLD.creator) THEN
 				 INSERT INTO public.investigation_history(change_date, changed_by, action_type_id,epidemiology_number, changed_field, old_value, new_value)
 				 VALUES (now(), NEW.last_updator_user ,2, NEW.epidemiology_number, 'creator',  OLD.creator,  NEW.creator);
-			  END IF;
-			  IF (NEW.last_updator_user <> OLD.last_updator_user OR NEW.last_update_time::Date <> OLD.last_update_time::Date) THEN
+			  ELSEIF (NEW.last_updator_user <> OLD.last_updator_user OR NEW.last_update_time::Date <> OLD.last_update_time::Date) THEN
 				 INSERT INTO public.investigation_history(change_date, changed_by, action_type_id,epidemiology_number, changed_field, old_value, new_value)
 				 VALUES (now(), NEW.last_updator_user, 2, NEW.epidemiology_number, null, null, null);
 			  END IF;
 			 RETURN NEW;
         END IF;
     END;
-$$ LANGUAGE plpgsql;
+$BODY$;
 
 
 

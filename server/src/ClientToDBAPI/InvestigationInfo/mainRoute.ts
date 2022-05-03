@@ -206,6 +206,7 @@ investigationInfo.post('/updateInvestigationStatus', handleInvestigationRequest,
         startTime: startTime,
         lastUpdateTime: new Date(),
         endTime: investigationMainStatus === InvestigationMainStatusCodes.DONE ? new Date() : null,
+        lastUpdator: response.locals.user.id
     };
     updateInvestigationStatusLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
@@ -668,7 +669,10 @@ investigationInfo.post('/updateInvestigationStatusAndComment', handleInvestigati
         investigationSubStatus: investigationSubStatus,
         statusReason: statusReason,
         startTime: startTime,
-        comment: comment
+        comment: comment,
+        lastUpdator: response.locals.user.id,
+        lastUpdateTime: new Date()
+
     };
     updateInvestigationStatusAndCommentLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
