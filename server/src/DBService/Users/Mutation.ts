@@ -76,9 +76,9 @@ mutation updateUserDistrict($userIdInput: String!, $districtIdInput: Int!) {
 `;
 
 export const UPDATE_INVESTIGATOR = gql`
-mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!, $transferReason: String) {
+mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!, $transferReason: String, $lastUpdator: String, $lastUpdateTime: Datetime) {
     updateInvestigationByEpidemiologyNumber(
-      input: {investigationPatch: {creator: $newUser, transferReason: $transferReason}, epidemiologyNumber: $epidemiologyNumber}
+      input: {investigationPatch: {creator: $newUser, transferReason: $transferReason, lastUpdator:  $lastUpdator, lastUpdatorUser: $lastUpdator , lastUpdateTime: $lastUpdateTime}, epidemiologyNumber: $epidemiologyNumber}
     ) {
       clientMutationId
     }
@@ -86,8 +86,8 @@ mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!, $trans
 `;
 
 export const UPDATE_INVESTIGATOR_BY_GROUP_ID = gql`
-mutation updateInvestigatorByGroupId($newInvestigator: String!, $selectedGroups: [UUID!]!, $userCounty: Int!, $wasInvestigationTransferred: Boolean, $transferReason: String!) {
-  updateInvestigatorByGroupId(input: {newInvestigator: $newInvestigator, selectedGroups: $selectedGroups, userCounty: $userCounty, investigationTransferred: $wasInvestigationTransferred, reason: $transferReason}) {
+mutation updateInvestigatorByGroupId($newInvestigator: String!, $selectedGroups: [UUID!]!, $userCounty: Int!, $wasInvestigationTransferred: Boolean, $transferReason: String!,  $lastUpdator: String!) {
+  updateInvestigatorByGroupId(input: {newInvestigator: $newInvestigator, selectedGroups: $selectedGroups, userCounty: $userCounty, investigationTransferred: $wasInvestigationTransferred, reason: $transferReason, updator: $lastUpdator}) {
     clientMutationId
   }
 }
