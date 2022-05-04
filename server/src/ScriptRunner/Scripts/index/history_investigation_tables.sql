@@ -79,7 +79,9 @@ BEGIN
 			  ELSEIF (NEW.creator <> OLD.creator) THEN
 				 INSERT INTO public.investigation_history(change_date, changed_by, action_type_id,epidemiology_number, changed_field, old_value, new_value)
 				 VALUES (now(), NEW.last_updator_user ,2, NEW.epidemiology_number, 'creator',  OLD.creator,  NEW.creator);
-			  ELSEIF (NEW.last_updator_user <> OLD.last_updator_user OR NEW.last_update_time::Date <> OLD.last_update_time::Date) THEN
+			  ELSEIF (NEW.last_updator_user <> OLD.last_updator_user OR
+					  (OLD.last_updator_user is null AND NEW.last_updator_user is not null) OR
+					  NEW.last_update_time::Date <> OLD.last_update_time::Date) THEN
 				 INSERT INTO public.investigation_history(change_date, changed_by, action_type_id,epidemiology_number, changed_field, old_value, new_value)
 				 VALUES (now(), NEW.last_updator_user, 2, NEW.epidemiology_number, null, null, null);
 			  END IF;
