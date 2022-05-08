@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 import { startOfTomorrow, subDays } from 'date-fns';
 
-import { requiredText, invalidDateText } from 'commons/Schema/messages';
+import { requiredText, invalidDateText, max10LengthErrorMessage } from 'commons/Schema/messages';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { getMinimalSymptomsStartDate, getMinimalStartIsolationDate, maxInvestigatedDays, maxIsolationDays } from 'Utils/ClinicalDetails/symptomsUtils';
 
@@ -60,8 +60,8 @@ const ClinicalDetailsSchema = (validationDate: Date, Gender: string) => {
         [ClinicalDetailsFields.ISOLATION_ADDRESS]: yup.object().shape({
             [ClinicalDetailsFields.ISOLATION_CITY]: yup.string().required(requiredText).nullable(),
             [ClinicalDetailsFields.ISOLATION_STREET]: yup.string().nullable(),
-            [ClinicalDetailsFields.ISOLATION_APARTMENT]: yup.string().nullable(),
-            [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.string().nullable()
+            [ClinicalDetailsFields.ISOLATION_APARTMENT]: yup.string().nullable().max(10, max10LengthErrorMessage),
+            [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.string().nullable().max(10, max10LengthErrorMessage)
         }).required(),
         [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().nullable().required(requiredText),
         [ClinicalDetailsFields.ISOLATION_START_DATE]: isInIsolationStartDateSchema(validationDate),

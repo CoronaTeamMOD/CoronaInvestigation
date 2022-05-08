@@ -10,6 +10,7 @@ import StoreStateType from 'redux/storeStateType';
 import { getStreetByCity } from 'Utils/Address/AddressUtils';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import AlphanumericTextSpecialCharsField from 'commons/AlphanumericTextSpecialChars/AlphanumericTextSpecialCharsField';
 
 import useStyles from './AddressFormStyles';
 
@@ -172,7 +173,7 @@ const AddressForm: React.FC<Props> = ({
                         control={methods.control}
                         defaultValue={houseNumberField.defaultValue}
                         render={(props) => (
-                            <AlphanumericTextField
+                            <AlphanumericTextSpecialCharsField
                                 name={props.name}
                                 className={smallFieldsClass}
                                 InputProps={{className: smallFieldsClass}}
@@ -263,7 +264,7 @@ const AddressForm: React.FC<Props> = ({
                             control={methods.control}
                             defaultValue={apartmentField?.defaultValue}
                             render={(props) => (
-                                <AlphanumericTextField
+                                <AlphanumericTextSpecialCharsField
                                     className={smallFieldsClass}
                                     InputProps={{className: smallFieldsClass}}
                                     testId={apartmentField?.testId || ''}
@@ -274,8 +275,9 @@ const AddressForm: React.FC<Props> = ({
                                         props.onBlur();
                                         onBlur();
                                     }}
+                                    error={Boolean(get(methods.errors, apartmentField.name))}
+                                    label={get(methods.errors, apartmentField.name)?.message || `${APARTMENT_LABEL}`}
                                     placeholder={APARTMENT_LABEL}
-                                    label={APARTMENT_LABEL}
                                 />
                             )}
                         />

@@ -1,8 +1,8 @@
 import { gql } from 'postgraphile';
 
 export const UPDATE_INVESTIGATION_STATUS = gql`
-mutation UpdateInvestigationStatus($epidemiologyNumber: Int!, $investigationStatus: Int!, $investigationSubStatus: String, $statusReason: String, $startTime: Datetime , $lastUpdateTime: Datetime, $endTime: Datetime) {
-  updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {investigationStatus: $investigationStatus, investigationSubStatus: $investigationSubStatus, statusReason: $statusReason, startTime: $startTime, lastUpdateTime:$lastUpdateTime, endTime:$endTime}, epidemiologyNumber: $epidemiologyNumber}) {
+mutation UpdateInvestigationStatus($epidemiologyNumber: Int!, $investigationStatus: Int!, $investigationSubStatus: String, $statusReason: String, $startTime: Datetime , $lastUpdateTime: Datetime, $endTime: Datetime, $lastUpdator: String) {
+  updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {investigationStatus: $investigationStatus, investigationSubStatus: $investigationSubStatus, statusReason: $statusReason, startTime: $startTime, lastUpdateTime:$lastUpdateTime, endTime:$endTime, lastUpdator:$lastUpdator, lastUpdatorUser:$lastUpdator}, epidemiologyNumber: $epidemiologyNumber}) {
     clientMutationId
   }
 }
@@ -121,8 +121,8 @@ mutation updateCovidPatientFullName ($epidemiologyNumber: Int!, $fullName: Strin
 `;
 
 export const UPDATE_INVESTIGATION_STATUS_AND_COMMENT = gql`
-mutation UpdateInvestigationStatus($epidemiologyNumber: Int!, $investigationStatus: Int!, $investigationSubStatus: String, $statusReason: String, $startTime: Datetime , $comment: String) {
-  updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {investigationStatus: $investigationStatus, investigationSubStatus: $investigationSubStatus, statusReason: $statusReason, startTime: $startTime, comment:$comment}, epidemiologyNumber: $epidemiologyNumber}) {
+mutation UpdateInvestigationStatus($epidemiologyNumber: Int!, $investigationStatus: Int!, $investigationSubStatus: String, $statusReason: String, $startTime: Datetime , $comment: String, $lastUpdateTime: Datetime, $lastUpdator: String) {
+  updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {investigationStatus: $investigationStatus, investigationSubStatus: $investigationSubStatus, statusReason: $statusReason, startTime: $startTime, comment:$comment, lastUpdateTime:$lastUpdateTime, lastUpdator:$lastUpdator, lastUpdatorUser:$lastUpdator}, epidemiologyNumber: $epidemiologyNumber}) {
     clientMutationId
   }
 }

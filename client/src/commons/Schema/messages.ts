@@ -6,11 +6,13 @@ export const hebrewTextErrorMessage = 'השדה יכול להכיל אותיות
 export const alphaNumericErrorMessage = 'השדה יכול להכיל אותיות ומספרים בלבד';
 export const alphbetDashErrorMessage = 'השדה יכול להכיל אותיות, רווחים ומקפים בלבד';
 export const alphaNumericSpecialCharsErrorMessage = 'השדה יכול להכיל תווים חוקיים בלבד';
+export const alphaNumericSpecialCharsMax10ErrorMessage = 'השדה יכול להכיל עד 10 תווים חוקיים בלבד';
 export const alphaNumericWhiteSpaceErrorMessage = 'השדה יכול להכיל אותיות, מספרים, מקף ורווח בלבד';
 export const alphaNumericSlashErrorMessage = 'השדה יכול להכיל אותיות באנגלית, מספרים ולוכסנים בלבד';
 
 export const max9LengthIdErrorMessage = 'שדה ת.ז יכול להכיל 9 מספרים בלבד';
 export const max10LengthNumErrorMessage = 'השדה יכול להכיל 10 מספרים בלבד';
+export const max10LengthErrorMessage = 'השדה יכול להכיל עד 10 תווים בלבד';
 export const max15LengthErrorMessage = 'השדה יכול להכיל עד 15 תווים בלבד';
 export const max50LengthErrorMessage = 'השדה יכול להכיל 50 תווים בלבד';
 export const max100LengthErrorMessage = 'השדה יכול להכיל 100 תווים בלבד';

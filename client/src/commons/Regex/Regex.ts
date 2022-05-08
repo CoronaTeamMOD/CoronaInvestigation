@@ -35,3 +35,5 @@ export const USER_REGEX = /^[a-zA-Z\u0590-\u05fe0-9\s\\._\\(\\),'\\"!^~#\\-\\@]*
 export const VISA_REGEX = /^([0-9\/])*$/;
 
 export const PALESTINE_ID_REGEX = /^[89]\d{8}$/;
+
+export const ALPHANUMERIC_SPECIAL_CHARS_MAX_10_REGEX = /^[\u0590-\u05fe\s\0-9'\\"\-]{0,10}$/;
