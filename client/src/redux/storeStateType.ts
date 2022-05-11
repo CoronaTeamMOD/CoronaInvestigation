@@ -62,4 +62,5 @@ export default interface StoreStateType {
     borderCheckpointTypes: KeyValuePair[];
     borderCheckpoints: BorderCheckpoint[];
     exposuresAndFlights: ExposureAndFlightData;
+    vaccineDoses: KeyValuePair[];
 };

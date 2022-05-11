@@ -402,3 +402,14 @@ query allChatStatuses {
   }
 }
 `;
+
+export const GET_ALL_VACCINE_DOSES = gql`
+query allVaccineDoses {
+  allVaccineDoses (orderBy: DISPLAY_NAME_ASC){
+    nodes {
+      displayName
+      id
+    }
+  }
+}
+`;
