@@ -14,6 +14,7 @@ interface InvestigationInfo extends SymptomsExistenceInfo, InvestigatedPatientSt
     userByLastUpdator: StaticUser;
     userByLastUpdatorUser: StaticUser;
     endTime: Date | null;
+    vaccineDose:KeyValuePair | null;
 };
 
 export interface MutationInfo {
@@ -33,6 +34,7 @@ export interface InvestigationInfoData extends Omit<InvestigationInfo, 'validati
         subReasonId?: number;
     };
     trackingExtraInfo?: string;
+    vaccineDose:KeyValuePair | null;
 };
 
 export interface BotInvestigationInfo {
