@@ -147,3 +147,22 @@ export const updateInvestigationStatusAndComment = async (mainStatus: number, su
     throw error;
   }
 }
+
+export const fetchAllVaccineDoses = async (): Promise<KeyValuePair[] | null> => {
+  const vaccineDosesLogger = logger.setup('Fetching all vaccine doses');
+  try {
+    const result = await axios.get('landingPage/vaccineDoses')
+    if (result && result.data) {
+      vaccineDosesLogger.info('all vaccine doses request was successful', Severity.LOW);
+      return result.data as KeyValuePair[];
+    }
+    else {
+      vaccineDosesLogger.info('no vaccine dose data was return from db ', Severity.LOW);
+      return null;
+    }
+  }
+  catch (error) {
+    vaccineDosesLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+    return null;
+  }
+}

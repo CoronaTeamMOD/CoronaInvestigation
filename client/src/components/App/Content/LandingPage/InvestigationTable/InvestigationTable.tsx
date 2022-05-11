@@ -92,7 +92,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         changeNotSentToBotFilter, notSentToBotFilter, investigatorReferenceStatusFilter,
         chatStatusFilter, changeChatStatusFilter, incompletedBotInvestigationFilter, changeIncompletedBotInvestigationFilter,
         complexityFilter, changeComplexityFilter, complexityReasonFilter,changeComplexityReasonFilter,
-        ageFilter, changeAgeFilter, filterInvestigations, resetFilter, filtersTitle
+        ageFilter, changeAgeFilter, vaccineDoseFilter, changeVaccineDoseFilter,
+        filterInvestigations, resetFilter, filtersTitle
     } = useInvestigationTable({
         setSelectedRow, allGroupedInvestigations, setAllStatuses, currentPage, setCurrentPage, setAllGroupedInvestigations,
         investigationColor, setAllSubStatuses, setAllComplexReasons
@@ -310,6 +311,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             changeComplexityReasonFilter={changeComplexityReasonFilter}
                             ageFilter={ageFilter}
                             changeAgeFilter={changeAgeFilter}
+                            vaccineDoseFilter = {vaccineDoseFilter}
+                            changeVaccineDoseFilter = {changeVaccineDoseFilter}
                             onFilterButtonClicked={filterInvestigations}
                             onResetButtonClicked={resetFilter}
                             filterTitle={filtersTitle}

@@ -41,6 +41,7 @@ export interface HistoryState {
     complexityFilter?:boolean;
     complexityReasonFilter?: number[];
     ageFilter?: AgeRange;
+    vaccineDoseFilter?: number[];
 };
 
 export interface useInvestigationTableParameters {
@@ -100,6 +101,7 @@ export interface useInvestigationTableOutcome {
     complexityFilter: boolean;
     complexityReasonFilter: number[];
     ageFilter: AgeRange;
+    vaccineDoseFilter: number[];
     changeUpdateDateFilter: (dateString: string) => void;
     changeNonContactFilter: (isNonContact: boolean) => void;
     isBadgeInVisible: boolean;
@@ -114,6 +116,7 @@ export interface useInvestigationTableOutcome {
     changeComplexityFilter:  (isFilterOn: boolean) => void;
     changeComplexityReasonFilter: (reasons: ComplexityReason[]) =>void;
     changeAgeFilter: (ageFilter: AgeRange) => void;
+    changeVaccineDoseFilter:(vaccineDoses: KeyValuePair[]) =>void;
     filterInvestigations: () => void;
     resetFilter: () => void;
     filtersTitle: string;
