@@ -115,6 +115,8 @@ query AllInvestigations($county:Int!, $orderBy: String!, $offset: Int!, $size: I
       complexityCode
       priority
       statusReason
+      transferReason
+      wasInvestigationTransferred
       groupId
       deskByDeskId {
         deskName
