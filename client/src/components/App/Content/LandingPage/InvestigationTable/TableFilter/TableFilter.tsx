@@ -26,6 +26,7 @@ import { AgeRange } from 'models/AgeRange';
 import AgeRangeFields from 'commons/AgeRange/AgeRangeFields';
 import FilterTableSearchBar from 'commons/SearchBar/FilterTableSearchBar';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import { SetVaccineDoses } from 'redux/VaccineDoses/VaccineDosesActionCreator';
 
 const searchBarLabel = 'מספר אפידמיולוגי, ת"ז, שם או טלפון';
 
@@ -50,6 +51,7 @@ const TableFilter = (props: Props) => {
         complexityFilter, changeComplexityFilter,
         complexityReasonFilter, changeComplexityReasonFilter,
         ageFilter, changeAgeFilter,
+        vaccineDoseFilter, changeVaccineDoseFilter,
         onFilterButtonClicked, onResetButtonClicked, filterTitle
     } = props;
 
@@ -76,6 +78,7 @@ const TableFilter = (props: Props) => {
     const investigatorReferenceStatuses = useSelector<StoreStateType, KeyValuePair[]>(state => state.investigatorReferenceStatuses);
     const chatStatuses = useSelector<StoreStateType, KeyValuePair[]>(state => state.chatStatuses);
     const complexityReasons = useSelector<StoreStateType, ComplexityReason[]>(state => state.complexityReasons);
+    const vaccineDoses = useSelector<StoreStateType, KeyValuePair[]>(state => state.vaccineDoses);
 
     const [subStatusFiltered, setSubStatusFiltered] = useState<SubStatus[]>([]);
     const [selectedStatuses, setSelectedStatuses] = useState<InvestigationMainStatusCodes[]>(filteredStatuses);
@@ -83,6 +86,8 @@ const TableFilter = (props: Props) => {
     const [selectedInvestigatorReferenceStatus, setSelectedInvestigatorReferenceStatus] = useState<number[]>(investigatorReferenceStatusFilter);
     const [selectedChatStatus, setSelectedChatStatus] = useState<number[]>(chatStatusFilter);
     const [selectedComplexityReason, setSelectedComplexityReason] = useState<number[]>(complexityReasonFilter);
+    const [selectedVaccineDoses, setSelectedVaccineDoses] = useState<number[]>(vaccineDoseFilter);
+    
     const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id;
     const [expanded, setExpanded] = React.useState(false);
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -113,6 +118,8 @@ const TableFilter = (props: Props) => {
         changeComplexityFilter(false);
         changeComplexityReasonFilter([]);
         setSelectedComplexityReason([]);
+        setSelectedVaccineDoses([]);
+        changeVaccineDoseFilter([]);
         onResetButtonClicked();
     }
 
@@ -466,6 +473,41 @@ const TableFilter = (props: Props) => {
                                     }
                                 </Grid>
                             }
+                            <Grid item md='auto'>
+                                <Autocomplete
+                                    ChipProps={{ className: classes.chip }}
+                                    classes={{ inputFocused: classes.autocompleteInputText }}
+                                    size='small'
+                                    disableCloseOnSelect
+                                    multiple
+                                    options={vaccineDoses}
+                                    value={vaccineDoses.filter(vaccineDose => selectedVaccineDoses.includes(vaccineDose.id))}
+                                    getOptionLabel={(option) => option.displayName}
+                                    onChange={(event, values) => {
+                                        changeVaccineDoseFilter(values);
+                                        setSelectedVaccineDoses(values.map(value => value.id));
+                                    }}
+                                    renderInput={(params) =>
+                                    <TextField
+                                            label={'מנת חיסון בתוקף'}
+                                            {...params}
+                                            InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
+                                        />
+                                    }
+                                    renderOption={(option, { selected }) => (
+                                        <>
+                                            <Checkbox
+                                                size='small'
+                                                className={classes.optionCheckbox}
+                                                checked={selected}
+                                                color='primary'
+                                            />
+                                            <Typography className={classes.option} >{option.displayName}</Typography>
+                                        </>
+                                    )}
+                                    limitTags={1}
+                                />
+                            </Grid>
 
 
                         </Grid>
@@ -512,6 +554,7 @@ interface Props {
     desksToTransfer: Desk[];
     deskFilter: (number | null)[];
     ageFilter: AgeRange;
+    vaccineDoseFilter: number[];
     changeDeskFilter: (desks: Desk[]) => void;
     handleRequestSort: (event: any, property: React.SetStateAction<string>) => void;
     changeSearchFilter: (searchQuery: string) => void;
@@ -524,6 +567,7 @@ interface Props {
     changeComplexityFilter: (isFilterOn: boolean) => void;
     changeComplexityReasonFilter: (complexityReasons: ComplexityReason[]) => void;
     changeAgeFilter: (ageFilter: AgeRange) => void;
+    changeVaccineDoseFilter: (vaccineDoses: KeyValuePair[]) => void;
     onFilterButtonClicked: () => void;
     onResetButtonClicked: () => void;
     filterTitle: string;

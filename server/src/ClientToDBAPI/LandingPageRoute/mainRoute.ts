@@ -18,7 +18,8 @@ import {
     GET_ALL_ADMIN_MESSAGES_BY_DESK,
     GET_ALL_ADMIN_MESSAGES_BY_DESK_AND_ADMIN,
     GET_ALL_INVESTIGATOR_REFERENCE_STATUSES,
-    GET_ALL_CHAT_STATUSES
+    GET_ALL_CHAT_STATUSES,
+    GET_ALL_VACCINE_DOSES
 } from '../../DBService/LandingPage/Query';
 
 const landingPageRoute = Router();
@@ -369,6 +370,24 @@ landingPageRoute.get('/chatStatuses', (request: Request, response: Response) => 
         })
         .catch(error => {
             chatStatusesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
+})
+
+landingPageRoute.get('/vaccineDoses', (request: Request, response: Response) => {
+    const vaccineDosesLogger = logger.setup({
+        workflow: 'query all vaccine doses',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber,
+    });
+    vaccineDosesLogger.info(launchingDBRequestLog(), Severity.LOW);
+    graphqlRequest(GET_ALL_VACCINE_DOSES, response.locals)
+        .then((result: any) => {
+            vaccineDosesLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data.allVaccineDoses.nodes);
+        })
+        .catch(error => {
+            vaccineDosesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         });
 })

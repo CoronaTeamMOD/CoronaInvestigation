@@ -347,7 +347,15 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
             [InvestigationsFilterByFields.AGE]: null
         };
     },
-
+    [InvestigationsFilterByFields.VACCINE_DOSE]: (values: string[]) => {
+        return (values.length > 0) ?
+        {
+            [InvestigationsFilterByFields.VACCINE_DOSE]: {
+                vaccineDoseId: { in: values }
+            }
+        }
+        : { [InvestigationsFilterByFields.VACCINE_DOSE]: null }
+    }
 };
 
 export default filterCreators;
