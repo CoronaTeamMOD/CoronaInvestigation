@@ -1,6 +1,6 @@
 export const ALPHANUMERIC_TEXT_REGEX = /^[a-zA-Z\u0590-\u05fe0-9\s]*$/;
 export const ALPHANUMERIC_SLASHES_TEXT_REGEX = /^[a-zA-Z\u0590-\u05fe0-9\s\/\\]*$/;
-export const ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX = /^[a-zA-Z\u0590-\u05fe\s0-9-+*!?'"():_,.\/\\]*$/;
+export const ALPHANUMERIC_SPECIAL_CHARS_TEXT_REGEX = /^[a-zA-Z\u0590-\u05fe\s0-9-+*!?@'"():_,.\/\\]*$/;
 export const ALPHANUMERIC_WHITE_SPACE_TEXT_REGEX = /^[a-zA-Z\u0590-\u05fe\s0-9-]*$/;
 
 export const ALPHBET_DASH_TEXT_REGEX = /^[a-zA-Z\u0590-\u05fe-\s]*$/;
