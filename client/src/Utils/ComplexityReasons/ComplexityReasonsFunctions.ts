@@ -74,10 +74,11 @@ export const checkUpdateInvestigationPersonalReasonId = (personalInfoData: Perso
 };
 
 export const checkUpdateInvestigationExposureReasonId = (filteredExposures: (Exposure | DBExposure)[], epidemiologyNumber: number, complexityReasonsId: (number|null)[]) => {
-    if (filteredExposures.length > 0  && !(complexityReasonsId.includes(13))) {
+    const filteredExposuresIncludeFlightExposure = (filteredExposures.map(exposure => { return exposure?.wasAbroad })).includes(true);
+    if (filteredExposures.length > 0 && filteredExposuresIncludeFlightExposure && !(complexityReasonsId.includes(13))) {
         updateInvestigationReasonId(epidemiologyNumber, 13, complexityReasonsId);
     }
-    if (filteredExposures.length == 0  && complexityReasonsId.includes(13)) {
+    if (!filteredExposuresIncludeFlightExposure  && complexityReasonsId.includes(13)) {
         removeInvestigationReasonId(epidemiologyNumber, 13, complexityReasonsId);
     }
 };

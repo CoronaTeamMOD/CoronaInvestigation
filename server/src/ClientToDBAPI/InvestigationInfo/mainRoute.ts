@@ -54,8 +54,10 @@ const convertInvestigationInfoFromDB = (investigationInfo: any) => {
         ...investigationInfo,
         ...investigationInfo.investigationPatient,
         ...convertedCovidPatient,
+        vaccineDose: investigationInfo.vaccineDoseByVaccineDoseId
     }
     delete convertedInvestigation.investigatedPatientByInvestigatedPatientId;
+    delete convertedInvestigation.vaccineDoseByVaccineDoseId;
 
     return convertedInvestigation;
 };

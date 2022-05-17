@@ -43,14 +43,15 @@ import {
 import { DeskFilter, HistoryState, StatusFilter, SubStatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
 import SubStatus from 'models/SubStatus';
 import KeyValuePair from 'models/KeyValuePair';
-import { fetchAllInvestigatorReferenceStatuses, fetchAllChatStatuses } from 'httpClient/investigationInfo'; 
+import { fetchAllInvestigatorReferenceStatuses, fetchAllChatStatuses, fetchAllVaccineDoses } from 'httpClient/investigationInfo';
 import { setInvestigatorReferenceStatuses } from 'redux/investigatorReferenceStatuses/investigatorReferenceStatusesActionCreator';
 import { setChatStatuses } from 'redux/ChatStatuses/chatStatusesActionCreator';
 import { setComplexityReasons } from 'redux/ComplexityReasons/ComplexityReasonsActionCreators';
 import ComplexityReason from 'models/ComplexityReason';
 import { defaultAgeRange } from 'models/enums/AgeRange';
 import { AgeRange } from 'models/AgeRange';
-import { tableFilterTitle} from './TableFilter/TableFilterTitles'
+import { tableFilterTitle } from './TableFilter/TableFilterTitles'
+import { SetVaccineDoses } from 'redux/VaccineDoses/VaccineDosesActionCreator';
 
 const investigationURL = '/investigation';
 
@@ -170,13 +171,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         nonContactFilter: historyNonContactFilter = false,
         isAdminLandingRedirect: historyisAdminLandingRedirect = false,
         unallocatedDeskFilter: historyUnallocatedDeskFilter = false,
-        investigatorReferenceStatusFilter: historyInvestigatorReferenceStatusFilter  = [],
+        investigatorReferenceStatusFilter: historyInvestigatorReferenceStatusFilter = [],
         chatStatusFilter: historyChatStatusFilter = [],
         notSentToBotFilter: historyNotSentToBotFilter = false,
         incompletedBotInvestigationFilter: historyIncompletedBotInvestigationFilter = false,
         complexityFilter: historyComplexityFilter = false,
         complexityReasonFilter: historyComplexityReasonFilter = [],
         ageFilter: historyAgeFilter = defaultAgeRange,
+        vaccineDoseFilter: historyVaccineDoseFilter = [],
         filterTitle } = useMemo(() => {
             const { location: { state } } = history;
             return state || {};
@@ -204,6 +206,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [complexityFilter, setComplexityFilter] = useState<boolean>(historyComplexityFilter);
     const [complexityReasonFilter, setComplexityReasonFilter] = useState<number[]>(historyComplexityReasonFilter);
     const [ageFilter, setAgeFilter] = useState<AgeRange>(historyAgeFilter);
+    const [vaccineDoseFilter, setVaccineDoseFilter] = useState<number[]>(historyVaccineDoseFilter);
     const [filtersTitle, setFiltersTitle] = useState<string>('');
 
     const getFilterRules = () => {
@@ -224,6 +227,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const complexityFilterToSet = historyComplexityFilter ? filterCreators.COMPLEXITY(historyComplexityFilter) : null;
         const complexityReasonFilterToSet = historyComplexityReasonFilter ? filterCreators.COMPLEXITY_REASON(historyComplexityReasonFilter) : null;
         const ageFilterToSet = historyAgeFilter ? filterCreators.AGE(historyAgeFilter) : null;
+        const vaccineDoseToSet = historyVaccineDoseFilter ? filterCreators.VACCINE_DOSE(historyVaccineDoseFilter) : null;
         return {
             [InvestigationsFilterByFields.STATUS]: statusFilterToSet && Object.values(statusFilterToSet)[0],
             [InvestigationsFilterByFields.SUB_STATUS]: subStatusFilterToSet && Object.values(subStatusFilterToSet)[0],
@@ -239,9 +243,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [InvestigationsFilterByFields.CHAT_STATUS]: chatStatusFilterToSet && Object.values(chatStatusFilterToSet)[0],
             [InvestigationsFilterByFields.INVESTIGATIONS_WERENT_SENT_TO_BOT]: notSentToBotFilterToSet && Object.values(notSentToBotFilterToSet)[0],
             [InvestigationsFilterByFields.INCOMPLETED_BOT_INVESTIGATION]: incompletedBotInvestigationFilterToSet && Object.values(incompletedBotInvestigationFilterToSet)[0],
-            [InvestigationsFilterByFields.COMPLEXITY] : complexityFilterToSet && Object.values(complexityFilterToSet)[0],
-            [InvestigationsFilterByFields.COMPLEXITY_REASON] : complexityReasonFilterToSet && Object.values(complexityReasonFilterToSet)[0],
-            [InvestigationsFilterByFields.AGE] : ageFilterToSet && Object.values(ageFilterToSet)[0],
+            [InvestigationsFilterByFields.COMPLEXITY]: complexityFilterToSet && Object.values(complexityFilterToSet)[0],
+            [InvestigationsFilterByFields.COMPLEXITY_REASON]: complexityReasonFilterToSet && Object.values(complexityReasonFilterToSet)[0],
+            [InvestigationsFilterByFields.AGE]: ageFilterToSet && Object.values(ageFilterToSet)[0],
+            [InvestigationsFilterByFields.VACCINE_DOSE]: vaccineDoseToSet && Object.values(vaccineDoseToSet)[0],
         }
     };
 
@@ -266,20 +271,20 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const updateFilterTitle = () => {
-       let title = '';
-       for (const [key, value] of Object.entries(filterRules)) {
-        if (value != false && value != [] && value != null) {
-            let titleKey= key as keyof typeof tableFilterTitle;
-            if (tableFilterTitle[titleKey]!=''){
-                title += tableFilterTitle[key as keyof typeof tableFilterTitle]+', ';
+        let title = '';
+        for (const [key, value] of Object.entries(filterRules)) {
+            if (value != false && value != [] && value != null) {
+                let titleKey = key as keyof typeof tableFilterTitle;
+                if (tableFilterTitle[titleKey] != '') {
+                    title += tableFilterTitle[key as keyof typeof tableFilterTitle] + ', ';
+                }
             }
         }
-      }
-      if (title!=''){
-        title = title.slice(0, -2);
-      }
-      setFiltersTitle(title);
-      
+        if (title != '') {
+            title = title.slice(0, -2);
+        }
+        setFiltersTitle(title);
+
     }
 
     const changeDeskFilter = (desks: Desk[]) => {
@@ -394,7 +399,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         handleFilterChange(filterCreators.INVESTIGATIONS_WERENT_SENT_TO_BOT(value));
         setCurrentPage(defaultPage);
     };
-    
+
     const changeIncompletedBotInvestigationFilter = (value: boolean) => {
         updateFilterHistory('incompletedBotInvestigationFilter', value);
         setIncompletedBotInvestigationFilter(value);
@@ -405,7 +410,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const changeComplexityFilter = (value: boolean) => {
         updateFilterHistory('complexityFilter', value);
         setComplexityFilter(value);
-        if (!value && complexityReasonFilter.length>0) {
+        if (!value && complexityReasonFilter.length > 0) {
             updateFilterHistory('complexityReasonFilter', []);
             setComplexityReasonFilter([]);
         }
@@ -425,6 +430,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         updateFilterHistory('ageFilter', val);
         setAgeFilter(val);
         handleFilterChange(filterCreators.AGE(val))
+        setCurrentPage(defaultPage);
+    };
+
+    const changeVaccineDoseFilter = (vaccineDoses: KeyValuePair[]) => {
+        const vaccineDoseIds = vaccineDoses.map(dose => dose.id);
+        updateFilterHistory('vaccineDoseFilter', vaccineDoseIds);
+        setVaccineDoseFilter(vaccineDoseIds);
+        handleFilterChange(filterCreators.VACCINE_DOSE(vaccineDoseIds));
         setCurrentPage(defaultPage);
     };
 
@@ -501,15 +514,20 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 subStatusesLogger.error(err, Severity.HIGH);
             })
     };
-    
-    const fetchAllBotInvestigationStatuses = () =>{
-            fetchAllInvestigatorReferenceStatuses().then(data => {
-                if (data) dispatch(setInvestigatorReferenceStatuses(data));
-            });
-            fetchAllChatStatuses().then(data => {
-                if (data) dispatch(setChatStatuses(data));
-            });
-       
+
+    const fetchAllBotInvestigationStatuses = () => {
+        fetchAllInvestigatorReferenceStatuses().then(data => {
+            if (data) dispatch(setInvestigatorReferenceStatuses(data));
+        });
+        fetchAllChatStatuses().then(data => {
+            if (data) dispatch(setChatStatuses(data));
+        });
+
+    }
+    const fetchAllVaccineDosesData = () => {
+        fetchAllVaccineDoses().then(data => {
+            if (data) dispatch(SetVaccineDoses(data));
+        })
     }
 
     useEffect(() => {
@@ -517,13 +535,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchAllInvestigationStatuses();
         fetchAllInvestigationSubStatuses();
         fetchAllInvestigationComplexityReasons();
+        fetchAllVaccineDosesData();
         //fetchAllBotInvestigationStatuses();
         startWaiting();
     }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         updateFilterTitle();
-    },[filterRules])
+    }, [filterRules])
 
     const convertFilterObject = () => {
         let filterArray: any[] = [];
@@ -553,7 +572,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const handleFilterChange = (filterBy: () => any) => {
         let filterRulesToSet = { ...filterRules };
-        for (let i=0; i<Object.values(filterBy).length; i++){
+        for (let i = 0; i < Object.values(filterBy).length; i++) {
             if (Object.values(filterBy)[i] !== null) {
                 filterRulesToSet = {
                     ...filterRulesToSet,
@@ -562,17 +581,17 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             } else {
                 delete filterRulesToSet[Object.keys(filterBy)[i]]
             }
-        }     
+        }
         setFitlerRules(filterRulesToSet);
     };
 
     const fetchInvestigationsAxiosRequest = (): any => {
-        const investigationsLogger = logger.setup('Getting Investigations');       
+        const investigationsLogger = logger.setup('Getting Investigations');
         const requestData = {
             orderBy,
             size: rowsPerPage,
             currentPage,
-            filterRules: convertFilterObject(), 
+            filterRules: convertFilterObject(),
         };
 
         if (userType === UserTypeCodes.ADMIN || userType === UserTypeCodes.SUPER_ADMIN) {
@@ -712,7 +731,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     //investigation.botInvestigation?.investigatorReferenceStatus,
                                     //investigation.botInvestigation?.investigatorReferenceReasons,
                                     investigation.lastUpdatorUser
-                                    )
+                                )
                             });
                         investigationRows
                             .filter((row) => row.groupId !== null && !investigationColor.current.has(row.groupId))
@@ -869,12 +888,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.otherReason]: row.otherReason,
             [TableHeadersNames.reasonId]: row.reasonId,
             //[TableHeadersNames.isSelfInvestigated]: row.isSelfInvestigated,
-           // [TableHeadersNames.selfInvestigationStatus]: row.selfInvestigationStatus,
-           // [TableHeadersNames.selfInvestigationUpdateTime]: row.selfInvestigationUpdateTime,
-           // [TableHeadersNames.lastChatDate]: row.lastChatDate ? getFormattedDate(row.lastChatDate) : '',
+            // [TableHeadersNames.selfInvestigationStatus]: row.selfInvestigationStatus,
+            // [TableHeadersNames.selfInvestigationUpdateTime]: row.selfInvestigationUpdateTime,
+            // [TableHeadersNames.lastChatDate]: row.lastChatDate ? getFormattedDate(row.lastChatDate) : '',
             //[TableHeadersNames.chatStatus]: row.chatStatus?.displayName,
             //[TableHeadersNames.investigatiorReferenceRequired]: row.investigatiorReferenceRequired,
-           // [TableHeadersNames.investigatorReferenceStatus]: row.investigatorReferenceStatus?.displayName
+            // [TableHeadersNames.investigatorReferenceStatus]: row.investigatorReferenceStatus?.displayName
         }
     };
 
@@ -1035,16 +1054,16 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const getDefaultCellStyles = (cellKey: string) => {
         let classNames: string[] = [];
         classNames.push(classes.font);
-        if(cellKey === TableHeadersNames.multipleCheck){
+        if (cellKey === TableHeadersNames.multipleCheck) {
             classNames.push(classes.watchBtn);
         }
-        if(cellKey === TableHeadersNames.rowIndicators){
+        if (cellKey === TableHeadersNames.rowIndicators) {
             classNames.push(classes.biggerWidth);
         }
         if (cellKey !== TableHeadersNames.color) {
             classNames.push(classes.tableCell);
         }
-        if(cellKey === TableHeadersNames.comment){
+        if (cellKey === TableHeadersNames.comment) {
             classNames.push(classes.commentCell);
         }
         if (cellKey === TableHeadersNames.city) {
@@ -1276,7 +1295,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         chatStatusFilter,
         changeChatStatusFilter,
         incompletedBotInvestigationFilter,
-        changeIncompletedBotInvestigationFilter ,
+        changeIncompletedBotInvestigationFilter,
         complexityFilter,
         changeComplexityFilter,
         complexityReasonFilter,
@@ -1285,7 +1304,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeAgeFilter,
         filterInvestigations,
         resetFilter,
-        filtersTitle
+        filtersTitle,
+        vaccineDoseFilter,
+        changeVaccineDoseFilter
     };
 };
 

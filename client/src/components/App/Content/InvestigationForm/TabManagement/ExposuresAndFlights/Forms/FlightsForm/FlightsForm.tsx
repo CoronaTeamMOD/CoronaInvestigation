@@ -10,6 +10,7 @@ import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
 import { invalidDateText } from 'commons/Schema/messages';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import FlightNumberTextField from 'commons/FlightNumberTextField/FlightNumberTextField';
 
 import useStyles from './FlightFormStyles';
 import UseFlightForm from './useFlightForm';
@@ -286,9 +287,8 @@ const FlightsForm = (props: Props) => {
 										name={`exposures[${index}].${fieldsNames.otherFlightNum}`}
 										render={(props) => {
 											return (
-												<TextField
+												<FlightNumberTextField
 													{...props}
-													inputProps={{ maxLength: 10 }}
 													value={props.value}
 													onChange={(value) => {
 														props.onChange(value);

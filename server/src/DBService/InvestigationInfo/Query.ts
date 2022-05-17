@@ -63,6 +63,10 @@ query InvestigationStaticDetails($investigationId: Int!) {
       subReasonId
     }
     trackingExtraInfo
+    vaccineDoseByVaccineDoseId {
+      displayName
+      id
+    }
   }
 }
 `;
