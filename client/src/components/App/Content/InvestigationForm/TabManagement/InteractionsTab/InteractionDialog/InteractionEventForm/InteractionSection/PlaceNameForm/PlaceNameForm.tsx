@@ -10,7 +10,7 @@ import useStyles from './DefaultPlaceEventFormStyles';
 
 const DEFAULT_NAME_FIELD_LABEL = 'שם המוסד';
 
-const PlaceNameForm = ({nameFieldLabel=DEFAULT_NAME_FIELD_LABEL}:Props) => {
+const PlaceNameForm = ({nameFieldLabel=DEFAULT_NAME_FIELD_LABEL, onPlaceNameChange}:Props) => {
     const { control } = useFormContext();
 
     const classes = useStyles();
@@ -24,7 +24,10 @@ const PlaceNameForm = ({nameFieldLabel=DEFAULT_NAME_FIELD_LABEL}:Props) => {
                         <AlphanumericTextField
                             name={props.name}
                             value={props.value}
-                            onChange={(newValue: string) => props.onChange(newValue as string)}
+                            onChange={(newValue: string) => {
+                                props.onChange(newValue as string);
+                                onPlaceNameChange(newValue);
+                            }}
                             onBlur={props.onBlur}
                             className={classes.placeNameField}
                         />
@@ -39,4 +42,5 @@ export default PlaceNameForm;
 
 interface Props {
     nameFieldLabel? :string
+    onPlaceNameChange: (newPlaceName: string | null) => void;
 };
