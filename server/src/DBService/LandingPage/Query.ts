@@ -413,3 +413,13 @@ query allVaccineDoses {
   }
 }
 `;
+
+export const GET_RULES_CONFIG_BY_KEY = gql`
+ query getRulesConfigByKey ($key: String!) {
+  rulesConfigByKey(key: $key) {
+    description
+    key
+    value
+  }
+}
+`;

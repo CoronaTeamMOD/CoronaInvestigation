@@ -25,6 +25,7 @@ import { BotInvestigationInfoState } from './BotInvestigationInfo/botInvestigati
 import { MutationInfoState } from './MutationInfo/mutationInfoReducer';
 import BorderCheckpoint from 'models/BorderCheckpoint';
 import ExposureAndFlightData from 'models/ExposureAndFlightData';
+import { RuleConfigRedux } from 'models/RulesConfig';
 
 export default interface StoreStateType {
     user: UserState;
@@ -63,4 +64,5 @@ export default interface StoreStateType {
     borderCheckpoints: BorderCheckpoint[];
     exposuresAndFlights: ExposureAndFlightData;
     vaccineDoses: KeyValuePair[];
+    rulesConfig: RuleConfigRedux;
 };
