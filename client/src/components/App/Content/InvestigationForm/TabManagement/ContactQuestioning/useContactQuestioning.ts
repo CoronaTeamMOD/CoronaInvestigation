@@ -166,10 +166,15 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         getRulesConfigByKey(RulesConfigKeys.IF_CONTACTS_NEED_ISOLATION).then(data => {
            if (data) {
                 let obj = data.value? JSON.parse(data.value.toString()) : undefined;
-                if (obj)
-                    dispatch(setIfContactsNeedIsolation((obj).ifContactsNeedIsolation=='true'));
+                let boolValue = convertBoolStrToBoolean(obj.ifContactsNeedIsolation.toString());
+                if (obj && boolValue!=undefined)
+                    dispatch(setIfContactsNeedIsolation(boolValue));
             }
         })
+    }
+
+    const convertBoolStrToBoolean = (value: string) =>{
+        return value=='true' ? true: value=='false' ? false : undefined;
     }
 
     const checkForSpecificDuplicateIds = (
