@@ -23,7 +23,6 @@ import ContactQuestioningClinical from './ContactQuestioningClinical';
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 import StoreStateType from 'redux/storeStateType';
 import { useSelector, useDispatch } from 'react-redux';
-import { setContactFormState } from 'redux/InteractedContacts/interactedContactsActionCreators';
 
 const InteractedContactAccordion = (props: Props) => {
 
@@ -37,12 +36,12 @@ const InteractedContactAccordion = (props: Props) => {
 
     const {
         interactedContact, index, contactStatuses, saveContact, parsePerson,
-        isFamilyContact, familyRelationships, shouldDisable, isViewMode
+        isFamilyContact, familyRelationships, shouldDisable, isViewMode, ifContactNeedIsolation
     } = props;
 
     const dispatch = useDispatch();
     const formState = useSelector<StoreStateType, any[]>(state => state.interactedContacts.formState).find(formState => formState.id == interactedContact.id);
-
+    
     const watchCurrentStatus: number = methods.watch(InteractedContactFields.CONTACT_STATUS);
 
     const generateBackgroundColorClass = (colorCode: Number | any) => {
@@ -130,6 +129,7 @@ const InteractedContactAccordion = (props: Props) => {
                                         interactedContact={interactedContact}
                                         isFamilyContact={isFamilyContact}
                                         isViewMode={isViewMode}
+                                        ifContactNeedIsolation={ifContactNeedIsolation}
                                     />
                                 </Grid>
                             </AccordionDetails>
@@ -167,4 +167,5 @@ interface Props {
     familyRelationships: FamilyRelationship[];
     shouldDisable: (status?: string | number | undefined) => boolean;
     isViewMode?: boolean;
+    ifContactNeedIsolation?: boolean;
 };

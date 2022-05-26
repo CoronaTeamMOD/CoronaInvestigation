@@ -18,6 +18,9 @@ import {
     useContactQuestioningParameters,
 } from './ContactQuestioningInterfaces';
 import useInvestigatedPersonInfo from '../../InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
+import RulesConfigKeys from 'models/enums/RulesConfigKeys';
+import { getRulesConfigByKey } from 'httpClient/rulesConfig';
+import { setIfContactsNeedIsolation } from 'redux/RulesConfig/RulesConfigActionCreator';
 
 export const SIZE_OF_CONTACTS = 10;
 
@@ -159,6 +162,16 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         dispatch(getInteractedContacts(minimalDate));
     };
 
+    const getRuleConfigIfContactsNeedIsolation = () => {
+        getRulesConfigByKey(RulesConfigKeys.IF_CONTACTS_NEED_ISOLATION).then(data => {
+           if (data) {
+                let obj = data.value? JSON.parse(data.value.toString()) : undefined;
+                if (obj)
+                    dispatch(setIfContactsNeedIsolation((obj).ifContactsNeedIsolation=='true'));
+            }
+        })
+    }
+
     const checkForSpecificDuplicateIds = (
         identificationNumberToCheck: string,
         interactedContactId: number
@@ -282,7 +295,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         checkAllContactsForDuplicateIds,
         onSubmit,
         parsePerson,
-        getRulerApiDataFromServer
+        getRulerApiDataFromServer,
+        getRuleConfigIfContactsNeedIsolation
     };
 };
 
