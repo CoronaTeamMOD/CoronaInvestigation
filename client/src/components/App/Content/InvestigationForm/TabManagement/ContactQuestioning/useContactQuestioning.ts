@@ -164,10 +164,10 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
     const getRuleConfigIfContactsNeedIsolation = () => {
         getRulesConfigByKey(RulesConfigKeys.IF_CONTACTS_NEED_ISOLATION).then(data => {
-           if (data) {
-                let obj = data.value? JSON.parse(data.value.toString()) : undefined;
-                let boolValue = convertBoolStrToBoolean(obj.ifContactsNeedIsolation.toString());
-                if (obj && boolValue!=undefined)
+            if (data) {
+                let obj = data.value ? JSON.parse(data.value.toString()) : undefined;
+                let boolValue = obj && obj.ifContactsNeedIsolation != undefined ? convertBoolStrToBoolean(obj.ifContactsNeedIsolation.toString()) : undefined;
+                if (boolValue !== undefined)
                     dispatch(setIfContactsNeedIsolation(boolValue));
             }
         })
