@@ -15,7 +15,7 @@ import useContactQuestioning from './useContactQuestioning';
 import InteractedContactAccordion from './InteractedContactAccordion';
 import { contactQuestioningService } from 'services/contactQuestioning.service';
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
-import { setContactFormState, setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
+import { resetInteractedContacts, setContactFormState, setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 
@@ -94,6 +94,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
         getRuleConfigIfContactsNeedIsolation();
         contactQuestioningService.resetIdentityValidation();
         setContactsToShow([]);
+        return () => { dispatch(resetInteractedContacts()) };
     }, []);
 
     useEffect(() => {

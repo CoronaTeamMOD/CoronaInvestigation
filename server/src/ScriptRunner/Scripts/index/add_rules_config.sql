@@ -13,6 +13,6 @@ TABLESPACE pg_default;
 -- Inserting data into table rules_config
 
 INSERT INTO public.rules_config(key, value, description)
-	VALUES ('ifContactsNeedIsolation','{"ifContactsNeedIsolation":"false"}'::json,'האם מגעים מחוייבים בבידוד')
+	VALUES ('ifContactsNeedIsolation','{"ifContactsNeedIsolation":false}'::json,'האם מגעים מחוייבים בבידוד')
 	ON CONFLICT DO NOTHING;
 

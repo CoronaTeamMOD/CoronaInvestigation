@@ -12,6 +12,8 @@ export const SET_INTERACTED_CONTACT_ERROR = 'SET_INTERACTED_CONTACT_ERROR';
 export const SET_INTERACTED_CONTACT = 'SET_INTERACTED_CONTACT';
 export const SET_CONTACT_FORM_STATE = 'SET_CONTACT_FORM_STATE';
 
+export const RESET_INTERACTED_CONTACTS = 'RESET_INTERACTED_CONTACTS';
+
  type ValueOf<T> = T[keyof T];
 
 interface GetInteractedContactsPending {
@@ -64,5 +66,9 @@ interface SetInteractedContactError {
     error: any
 }
 
+interface ResetInteractedContacts {
+    type: typeof RESET_INTERACTED_CONTACTS,
+}
+
 export type InteractedContactAction = GetInteractedContactsPending | SetInteractedContact | SetContactFormState | GetInteractedContactsSuccess | GetInteractedContactsError
-    | SetInteractedContactPending | SetInteractedContactSuccess | SetInteractedContactError;
+    | SetInteractedContactPending | SetInteractedContactSuccess | SetInteractedContactError | ResetInteractedContacts;

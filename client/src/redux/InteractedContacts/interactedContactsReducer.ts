@@ -86,6 +86,12 @@ const interactedContactsReducer = (state = initialState, action: Actions.Interac
                 pending: false,
                 error: action.error
             }
+        case Actions.RESET_INTERACTED_CONTACTS:
+            return {
+                ...state,
+                interactedContacts:[],
+                formState:[]
+            }
         default: return state;
     }
 }
