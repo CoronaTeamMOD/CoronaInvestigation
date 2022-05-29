@@ -25,7 +25,9 @@ wereConfirmedExposuresDesc varchar;
 creationSource int4;
 
 exposureDetailsArr json[];
+flightsJson json;
 flightsArr json[];
+flight json;
 
 begin	
 	select nullif(trim((input_exposures->'investigationId')::text,'"'),'null')::int4 into investigationId;
@@ -41,7 +43,7 @@ begin
 	select nullif((input_exposures->'wasInEvent')::text,'null')::bool into wasInEvent;	
 	select nullif((input_exposures->'wasInVacation')::text,'null')::bool into wasInVacation;				
 	select nullif(trim((input_exposures->'creationSource')::text),'null')::int4 into creationSource;
-	
+	select (input_exposures->'flights') into flightsJson;
 		if exposureId is null then
 		
 			INSERT INTO public.exposure(investigation_id, was_confirmed_exposure, was_abroad,
@@ -52,7 +54,8 @@ begin
 				borderCheckpointType, borderCheckpoint,
 				lastDestinationCountry, arrivalTimeToIsrael::time, arrivalDateToIsrael,
 				wasInEvent, wasInVacation, wereConfirmedExposuresDesc, creationSource);
-			else
+				exposureId := currval('exposure_id_seq');
+		else
 				UPDATE public.exposure
 				SET investigation_id=investigationId, 
 				was_confirmed_exposure=wasConfirmedExposure, 
@@ -70,8 +73,19 @@ begin
 
 			
 			end if;
-	
+			
+			--flights
+			if flightsJson is not null and flightsJson::TEXT != '[]' then
+				flightsArr :=(select  array_agg(e_data.value) from json_array_elements(flightsJson) e_data);
+				foreach flight in array flightsArr 
+				loop
+					perform public.update_flight_function(flight,exposureId);
+
+				end loop;
+			end if;
+
 
 
 end;
 $BODY$;
+
