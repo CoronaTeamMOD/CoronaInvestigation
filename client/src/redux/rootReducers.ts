@@ -37,6 +37,7 @@ import borderCheckpointTypesReducer from './BorderCheckpointTypes/BorderCheckpoi
 import borderCheckpointsReducer from './BorderCheckpoints/BorderCheckpointsReducer';
 import exposuresAndFlightsReducer from './ExposuresAndFlights/ExposuresAndFlightsReducer';
 import vaccineDosesReducer from './VaccineDoses/VaccineDosesReducer';
+import rulesConfigReducer from './RulesConfig/RulesConfigReducer';
 
 export default combineReducers<StoreStateType>({
      occupations: occupationsReducer,
@@ -74,5 +75,6 @@ export default combineReducers<StoreStateType>({
      borderCheckpointTypes: borderCheckpointTypesReducer,
      borderCheckpoints: borderCheckpointsReducer,
      exposuresAndFlights: exposuresAndFlightsReducer,
-     vaccineDoses: vaccineDosesReducer
+     vaccineDoses: vaccineDosesReducer,
+     rulesConfig: rulesConfigReducer,
 }) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;

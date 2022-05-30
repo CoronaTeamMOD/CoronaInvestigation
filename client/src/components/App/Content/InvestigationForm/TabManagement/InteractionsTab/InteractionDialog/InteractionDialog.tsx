@@ -81,6 +81,7 @@ const InteractionDialog = (props: Props) => {
     const interactionEndTime = methods.watch(InteractionEventDialogFields.END_TIME);
     const isRepetitive = methods.watch(InteractionEventDialogFields.IS_REPETITIVE);
     const additionalOccurrences = methods.watch(InteractionEventDialogFields.ADDITIONAL_OCCURRENCES, []);
+    const placeName = methods.watch(InteractionEventDialogFields.PLACE_NAME);
     const initialInteractionDate = React.useRef<Date>(new Date(interactionData?.startTime as Date));
 
     const isRepetitiveFieldInvalid = useMemo(() => {
@@ -169,10 +170,7 @@ const InteractionDialog = (props: Props) => {
             [InteractionEventDialogFields.END_TIME]: endTimeToSave,
             [InteractionEventDialogFields.UNKNOWN_TIME]: Boolean(data[InteractionEventDialogFields.UNKNOWN_TIME]),
             [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
-            [InteractionEventDialogFields.PLACE_NAME]: 
-                isNamedLocation && Boolean(data[InteractionEventDialogFields.PLACE_NAME])
-                    ? data[InteractionEventDialogFields.PLACE_NAME]
-                    : generatePlacenameByPlaceSubType(placeSubtypeName),
+            [InteractionEventDialogFields.PLACE_NAME]: methods.watch(InteractionEventDialogFields.PLACE_NAME),
             [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: Boolean(data[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]),
             [InteractionEventDialogFields.ADDITIONAL_OCCURRENCES]:
             data[InteractionEventDialogFields.ADDITIONAL_OCCURRENCES]?.map(convertAdditionalOccurances) || [],

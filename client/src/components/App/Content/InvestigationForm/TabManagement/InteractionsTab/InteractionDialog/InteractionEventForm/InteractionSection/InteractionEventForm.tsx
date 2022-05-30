@@ -82,7 +82,10 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
 
     const onPlaceTypeChange = (newPlaceType: string) => {
         setValue(InteractionEventDialogFields.PLACE_TYPE, newPlaceType, {shouldValidate: true});
-        Boolean(placeName) && setValue(InteractionEventDialogFields.PLACE_NAME, '');
+    };
+
+    const onPlaceNameChange = (newPlaceName: string | null) => {
+        Boolean(placeName) && setValue(InteractionEventDialogFields.PLACE_NAME, newPlaceName);
     };
 
     const {
@@ -175,7 +178,7 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                 </FormInput>
             </Collapse>
             <Collapse in={isNamedLocation}>
-                <PlaceNameForm nameFieldLabel={nameFieldLabel}/>
+                <PlaceNameForm nameFieldLabel={nameFieldLabel} onPlaceNameChange={onPlaceNameChange}/>
             </Collapse>
             <Collapse in={!!extraFields}>
                 {extraFields?.map((fieldElement: React.FC) => React.createElement(fieldElement))}
