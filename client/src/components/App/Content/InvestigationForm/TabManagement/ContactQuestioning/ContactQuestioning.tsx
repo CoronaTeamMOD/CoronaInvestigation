@@ -15,7 +15,9 @@ import useContactQuestioning from './useContactQuestioning';
 import InteractedContactAccordion from './InteractedContactAccordion';
 import { contactQuestioningService } from 'services/contactQuestioning.service';
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
-import { setContactFormState } from 'redux/InteractedContacts/interactedContactsActionCreators';
+import { resetInteractedContacts, setContactFormState, setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
+import InteractedContactFields from 'models/enums/InteractedContact';
+import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 
 const SIZE_OF_CONTACTS = 4;
 let loaded = SIZE_OF_CONTACTS;
@@ -33,6 +35,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
 
     const dispatch = useDispatch();
     const interactedContacts = useSelector<StoreStateType, GroupedInteractedContact[]>(state => state.interactedContacts.interactedContacts);
+    const ifContactsNeedIsolation = useSelector<StoreStateType, boolean | undefined>(state => state.rulesConfig.ifContactsNeedIsolation);
     const {
         onSubmit,
         parsePerson,
@@ -40,6 +43,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
         loadInteractedContacts,
         loadFamilyRelationships,
         loadContactStatuses,
+        getRuleConfigIfContactsNeedIsolation,
     } = useContactQuestioning({
         id,
         setAllContactedInteractions,
@@ -67,6 +71,10 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
 
     const initFormState = () => {
         interactedContacts.forEach((interactedContact: GroupedInteractedContact) => {
+           if ( ifContactsNeedIsolation == false && interactedContact.contactStatus !== ContactStatusCodes.COMPLETED){
+                dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, false));
+                dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.DOES_NEED_ISOLATION, false));
+            }
             ContactQuestioningSchema.isValid({ ...interactedContact, identificationType: interactedContact.identificationType?.id || interactedContact.identificationType }).then(isValid => {
                 dispatch(setContactFormState(interactedContact.id, isValid));
             })
@@ -83,8 +91,10 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
         loadInteractedContacts();
         loadFamilyRelationships();
         loadContactStatuses();
+        getRuleConfigIfContactsNeedIsolation();
         contactQuestioningService.resetIdentityValidation();
         setContactsToShow([]);
+        return () => { dispatch(resetInteractedContacts()) };
     }, []);
 
     useEffect(() => {
@@ -131,6 +141,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                                     familyRelationships={familyRelationships}
                                     shouldDisable={shouldDisable}
                                     isViewMode={isViewMode}
+                                    ifContactNeedIsolation={ifContactsNeedIsolation}
                                 />
                             </Grid>
                         );

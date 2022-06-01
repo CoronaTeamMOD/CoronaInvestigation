@@ -46,3 +46,9 @@ export const setContactFormState =
                 payload: { id, isValid }
             })
         }
+
+export const resetInteractedContacts = () => {
+    return {
+        type: actionTypes.RESET_INTERACTED_CONTACTS
+    };
+}
