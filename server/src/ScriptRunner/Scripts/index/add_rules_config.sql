@@ -17,5 +17,5 @@ INSERT INTO public.rules_config(key, value, description)
 	ON CONFLICT DO NOTHING;
 
 INSERT INTO public.rules_config(key, value, description)
-	VALUES ('settings_for_status_validity','{"from_age":70,"to_age":150,"from_age_and_vaccine":60,"to_age_and_vaccine":70,"vaccine_num":4,"status":"לא נחקר","sub_status":"פער בכ\"א","another_status":"לא נחקר","another_sub_status":"מדיניות משרד הבריאות"}'::json,'טבלת הגדרות לסטטוס לא נחקר')
+	VALUES ('settings_for_status_validity','{"from_age":70,"to_age":150,"from_age_and_vaccine":60,"to_age_and_vaccine":70,"vaccine_num":4,"status":"לא נחקר","sub_status":"חוסר בכ\"א","another_status":"לא נחקר","another_sub_status":"מדיניות משרד הבריאות"}'::json,'טבלת הגדרות לסטטוס לא נחקר')
 	ON CONFLICT DO NOTHING;
