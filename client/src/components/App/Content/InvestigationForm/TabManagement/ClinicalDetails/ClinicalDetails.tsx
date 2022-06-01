@@ -33,13 +33,13 @@ const ClinicalDetails: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Elemen
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const clinicalDetails = useSelector<StoreStateType, ClinicalDetailsData | null>(state => state.clinicalDetails.clinicalDetails);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-
+    const ifInvestigatedPatientNeedsIsolation = useSelector<StoreStateType, boolean | undefined>(state => state.rulesConfig?.ifInvestigatedPatientNeedsIsolation);
     const clinicalDetailsIsNull = clinicalDetails === null;
 
     const methods = useForm({
         mode: 'all',
         defaultValues: initialClinicalDetails,
-        resolver: yupResolver(ClinicalDetailsSchema(validationDate, patientGender))
+        resolver: yupResolver(ClinicalDetailsSchema(validationDate, patientGender, ifInvestigatedPatientNeedsIsolation))
     });
 
     const [symptoms, setSymptoms] = useState<string[]>([]);
@@ -87,7 +87,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Elemen
             saveClinicalDetailsAndDeleteContactEvents(clinicalDetails, id);
         }
         else if (isViewMode) {
-            ClinicalDetailsSchema(validationDate, 'gender').isValid(clinicalDetails).then(valid => {
+            ClinicalDetailsSchema(validationDate, 'gender', ifInvestigatedPatientNeedsIsolation).isValid(clinicalDetails).then(valid => {
                 setFormState(epidemiologyNumber, id, valid);
             });
         }
@@ -114,7 +114,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Elemen
     }
 
     useEffect(() => {
-
         if (!clinicalDetails) {
             fetchClinicalDetails();
         }
@@ -137,57 +136,61 @@ const ClinicalDetails: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Elemen
             <FormProvider {...methods}>
                 <form id={`form-${id}`} onSubmit={(e) => saveForm(e)}>
                     <Grid spacing={3} container>
-                        <Grid item xs={12}>
-                            <IsolationDatesFields
-                                classes={classes}
-                                clinicalDetails={clinicalDetails}
-                                isolationSources={isolationSources}
-                                isViewMode={isViewMode}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormRowWithInput fieldName='כתובת לבידוד:' labelLength={2}>
-                                <AddressForm
-                                    {...addressFormFields}
-                                    disabled={isViewMode}
-                                    onBlur={() => {
-                                        dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_ADDRESS, methods.getValues().isolationAddress))
-                                    }}
-                                />
-                            </FormRowWithInput>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Controller
-                                name={ClinicalDetailsFields.WAS_INSTRUCTED_TO_BE_IN_ISOLATION}
-                                control={methods.control}
-                                render={(props) =>
-                                    <FormControlLabel
-                                        label={wasInstructedToBeInIsolationText}
-                                        control={
-                                            <Checkbox
-                                                disabled={isViewMode}
-                                                color='primary'
-                                                checked={props.value}
-                                                onChange={(event) => {
-                                                    props.onChange(event.target.checked);
-                                                    dispatch(setClinicalDetails(ClinicalDetailsFields.WAS_INSTRUCTED_TO_BE_IN_ISOLATION, event.target.checked));
-                                                }}
-                                            />
-                                        }
+                        {ifInvestigatedPatientNeedsIsolation == true &&
+                            <>
+                                <Grid item xs={12}>
+                                    <IsolationDatesFields
+                                        classes={classes}
+                                        clinicalDetails={clinicalDetails}
+                                        isolationSources={isolationSources}
+                                        isViewMode={isViewMode}
                                     />
-                                } />
-                            <InlineErrorText
-                                error={methods.errors[ClinicalDetailsFields.WAS_INSTRUCTED_TO_BE_IN_ISOLATION]}
-                            />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormRowWithInput fieldName='כתובת לבידוד:' labelLength={2}>
+                                        <AddressForm
+                                            {...addressFormFields}
+                                            disabled={isViewMode}
+                                            onBlur={() => {
+                                                dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_ADDRESS, methods.getValues().isolationAddress))
+                                            }}
+                                        />
+                                    </FormRowWithInput>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Controller
+                                        name={ClinicalDetailsFields.WAS_INSTRUCTED_TO_BE_IN_ISOLATION}
+                                        control={methods.control}
+                                        render={(props) =>
+                                            <FormControlLabel
+                                                label={wasInstructedToBeInIsolationText}
+                                                control={
+                                                    <Checkbox
+                                                        disabled={isViewMode}
+                                                        color='primary'
+                                                        checked={props.value}
+                                                        onChange={(event) => {
+                                                            props.onChange(event.target.checked);
+                                                            dispatch(setClinicalDetails(ClinicalDetailsFields.WAS_INSTRUCTED_TO_BE_IN_ISOLATION, event.target.checked));
+                                                        }}
+                                                    />
+                                                }
+                                            />
+                                        } />
+                                    <InlineErrorText
+                                        error={methods.errors[ClinicalDetailsFields.WAS_INSTRUCTED_TO_BE_IN_ISOLATION]}
+                                    />
 
-                        </Grid>
-                        <Grid item xs={12}>
-                            <IsolationProblemFields
-                                classes={classes}
-                                isViewMode={isViewMode}
-                                clinicalDetails={clinicalDetails}
-                            />
-                        </Grid>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <IsolationProblemFields
+                                        classes={classes}
+                                        isViewMode={isViewMode}
+                                        clinicalDetails={clinicalDetails}
+                                    />
+                                </Grid>
+                            </>
+                        }
                         <Grid item xs={12}>
                             <SymptomsFields
                                 classes={classes}

@@ -6,6 +6,7 @@ interface RulesConfig {
 
 export interface RuleConfigRedux {
     ifContactsNeedIsolation? : boolean;
+    ifInvestigatedPatientNeedsIsolation? : boolean; 
 }
 
 export default RulesConfig;

@@ -7,6 +7,8 @@ const rulesConfigReducer = (state = initialState, action: Actions.rulesConfigAct
     switch (action.type) {
        case Actions.SET_IF_CONTACTS_NEED_ISOLATION:
             return {...state, ifContactsNeedIsolation: action.payload.ifContactsNeedIsolation }
+       case Actions.SET_IF_INVESTIGATED_PATIENT_NEEDS_ISOLATION:
+                return {...state, ifInvestigatedPatientNeedsIsolation: action.payload.ifInvestigatedPatientNeedsIsolation }
         default:
             return state;
     };

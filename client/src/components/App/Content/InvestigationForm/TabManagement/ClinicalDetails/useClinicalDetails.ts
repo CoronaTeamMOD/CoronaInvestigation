@@ -19,6 +19,9 @@ import { setDatesToInvestigateParams } from 'redux/Investigation/investigationAc
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
 import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
 import { getClinicalDetails } from 'redux/ClinicalDetails/ClinicalDetailsActionCreators';
+import { getRulesConfigByKey } from 'httpClient/rulesConfig';
+import { setIfInvestigatedPatientNeedsIsolation } from 'redux/RulesConfig/RulesConfigActionCreator';
+import RulesConfigKeys from 'models/enums/RulesConfigKeys';
 
 const otherOptionDescription = 'אחר';
 
@@ -63,11 +66,13 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const validationDate = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
     const [isolationSources, setIsolationSources] = React.useState<IsolationSource[]>([]);
     const [didDeletingContactEventsSucceed, setDidDeletingContactEventsSucceed] = React.useState<boolean>(true);
+    const ifInvestigatedPatientNeedsIsolation = useSelector<StoreStateType, boolean | undefined>(state => state.rulesConfig?.ifInvestigatedPatientNeedsIsolation);
 
     React.useEffect(() => {
         getSymptoms();
         getBackgroundDiseases();
         getIsolationSources();
+        getRuleConfigIfInvestigatedPatientNeedIsolation();
     }, []);
 
     const getSymptoms = () => {
@@ -169,7 +174,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             })
             .finally(() => {
                 setIsLoading(false);
-                ClinicalDetailsSchema(validationDate, 'gender').isValid(clinicalDetails).then(valid => {
+                ClinicalDetailsSchema(validationDate, 'gender',ifInvestigatedPatientNeedsIsolation).isValid(clinicalDetails).then(valid => {
                     setFormState(epidemiologyNumber, id, valid);
                 })
             })
@@ -178,7 +183,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const saveClinicalDetailsAndDeleteContactEvents = (clinicalDetails: ClinicalDetailsData, id: number): void => {
         if (didSymptomsDateChangeOccur) {
             const { symptomsStartDate, doesHaveSymptoms } = clinicalDetails;
-            ClinicalDetailsSchema(validationDate, 'gender')
+            ClinicalDetailsSchema(validationDate, 'gender',ifInvestigatedPatientNeedsIsolation)
                 .validateAt(ClinicalDetailsFields.SYMPTOMS_START_DATE, clinicalDetails as any)
                 .then(() => {
                     deleteIrrelevantContactEvents(symptomsStartDate, doesHaveSymptoms);
@@ -189,6 +194,21 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             saveClinicalDetailsToDB(clinicalDetails, id);
         }
     };
+
+    const getRuleConfigIfInvestigatedPatientNeedIsolation = () => {
+        getRulesConfigByKey(RulesConfigKeys.IF_INVESTIGATED_PATIENT_NEEDS_ISOLATION).then(data => {
+            if (data) {
+                let obj = data.value ? JSON.parse(data.value.toString()) : undefined;
+                let boolValue = obj && obj.ifInvestigatedPatientNeedsIsolation != undefined ? convertBoolStrToBoolean(obj.ifInvestigatedPatientNeedsIsolation.toString()) : undefined;
+                if (boolValue !== undefined)
+                    dispatch(setIfInvestigatedPatientNeedsIsolation(boolValue));
+            }
+        })
+    }
+
+    const convertBoolStrToBoolean = (value: string) =>{
+        return value=='true' ? true: value=='false' ? false : undefined;
+    }
 
     return {
         saveClinicalDetailsAndDeleteContactEvents,
