@@ -1,12 +1,15 @@
+-- FUNCTION: public.update_flight_function(json, integer)
+
+-- DROP FUNCTION public.update_flight_function(json, integer);
+
 CREATE OR REPLACE FUNCTION public.update_flight_function(
 	input_flight json,
-    exposure_id int4)
+	exposure_id integer)
     RETURNS void
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
 AS $BODY$
-
 declare
 flight_id integer;
 actionFlag varchar;
@@ -27,17 +30,17 @@ creationSource int4;
 begin
 	select nullif(trim((input_flight->'id')::text,'"'),'null')::int4 into flight_id;
 	select trim(nullif((input_flight->'flightDestinationAirport')::text,'null'),'"') into flightDestinationAirport;
-	select trim(nullif((exposure->'flightOriginAirport')::text,'null'),'"') into flightOriginAirport;
-	select nullif((exposure->'flightStartDate')::text,'null')::timestamp into flightStartDate;
-	select nullif((exposure->'flightEndDate')::text,'null')::timestamp into flightEndDate;
-	select trim(nullif((exposure->'airline')::text,'null'),'"') into airline;
-	select trim(nullif((exposure->'flightNum')::text,'null'),'"') into flightNum;
-	select trim(nullif((exposure->'flightOriginCountry')::text,'null'),'"') into flightOriginCountry;
-	select trim(nullif((exposure->'flightDestinationCountry')::text,'null'),'"') into flightDestinationCountry;
-	select trim(nullif((exposure->'otherFlightNum')::text,'null'),'"') into otherFlightNum;
-	--select trim(nullif((exposure->'flightSeatNum')::text,'null'),'"') into flightSeatNum;
-	select trim(nullif((exposure->'otherAirline')::text,'null'),'"') into otherAirline;
-	select trim(nullif((exposure->'actionFlag')::text,'null'),'"') into actionFlag;
+	select trim(nullif((input_flight->'flightOriginAirport')::text,'null'),'"') into flightOriginAirport;
+	select nullif((input_flight->'flightStartDate')::text,'null')::timestamp into flightStartDate;
+	select nullif((input_flight->'flightEndDate')::text,'null')::timestamp into flightEndDate;
+	select trim(nullif((input_flight->'airline')::text,'null'),'"') into airline;
+	select trim(nullif((input_flight->'flightNum')::text,'null'),'"') into flightNum;
+	select trim(nullif((input_flight->'flightOriginCountry')::text,'null'),'"') into flightOriginCountry;
+	select trim(nullif((input_flight->'flightDestinationCountry')::text,'null'),'"') into flightDestinationCountry;
+	select trim(nullif((input_flight->'otherFlightNum')::text,'null'),'"') into otherFlightNum;
+	--select trim(nullif((input_flight->'flightSeatNum')::text,'null'),'"') into flightSeatNum;
+	select trim(nullif((input_flight->'otherAirline')::text,'null'),'"') into otherAirline;
+	select trim(nullif((input_flight->'actionFlag')::text,'null'),'"') into actionFlag;
 	select nullif(trim((input_flight->'creationSource')::text,'"'),'null')::int4 into creationSource;
 	
 		if actionFlag='D' and flight_id is not null then
