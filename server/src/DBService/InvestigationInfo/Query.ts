@@ -114,11 +114,12 @@ query InvestigationStaticDetails($investigationId: Int!) {
 
 export const GET_SUB_STATUSES_BY_STATUS = gql`
 query GetAllSubStatuses($parentStatus: Int!) {
-  allInvestigationSubStatuses(orderBy: DISPLAY_NAME_ASC, filter: {parentStatus: {equalTo: $parentStatus}}) {
+  allInvestigationSubStatuses(orderBy: DISPLAY_NAME_ASC, filter: {parentStatus: {equalTo: $parentStatus}, isActive: {equalTo: true}}) {
     nodes {
       displayName
       parentStatus
       id
+      isActive
     }
   }
 }
