@@ -215,6 +215,7 @@ query getinvestigationData ($epidemiologyNumber: Int!) {
 }
 `;
 
+
 export const GET_SETTINGS_FOR_STATUS_VALIDITY = gql`
 query getinvestigationReasonId ($key: String!) {
   rulesConfigByKey(key: $key) {
