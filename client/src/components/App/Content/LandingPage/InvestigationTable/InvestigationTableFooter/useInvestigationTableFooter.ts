@@ -207,12 +207,12 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
     const updateNotInvestigatedSubStatus = (epidemiologyNumber: number) => {
         const reopenLogger = logger.setup('Update Investigation Sub Status');
-        // const complexityReasonsRules = complexityReasons.filter((reason)=> reason.statusValidity === true).map((reason)=>reason.reasonId)
+        const complexityReasonsRules = complexityReasons.filter((reason)=> reason.statusValidity === true).map((reason)=>reason.reasonId)
         
-        // setIsLoading(true);
+        setIsLoading(true);
         axios.post('/investigationInfo/updateInvestigationSubStatus', {
-            epidemiologyNumber
-            // ,complexityReasonsRules,
+            epidemiologyNumber,
+            complexityReasonsRules,
         }).then(() => {
             reopenLogger.info('update investigation sub status request was successful', Severity.LOW);
         })
@@ -220,7 +220,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
                 reopenLogger.error(`got errors in server result while updating investigation sub status: ${error}`, Severity.HIGH);
             })
             .finally(() => {
-                // setIsLoading(false);
+                setIsLoading(false);
             })
     }
 

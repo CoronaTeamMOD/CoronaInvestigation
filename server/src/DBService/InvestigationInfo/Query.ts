@@ -186,7 +186,7 @@ query getinvestigationReasonId ($epidemiologyNumber: Int!) {
 `;
 
 export const GET_BIRTHDATE = gql`
-query getBirthdate ($epidemiologyNumber: Int!) {
+query getinvestigationReasonId ($epidemiologyNumber: Int!) {
   covidPatientByEpidemiologyNumber(epidemiologyNumber: $epidemiologyNumber) {
     birthDate
   }
@@ -194,27 +194,12 @@ query getBirthdate ($epidemiologyNumber: Int!) {
 `;
 
 export const GET_VACCINE_DOSE_ID = gql`
-query getVaccineDoseId ($epidemiologyNumber: Int!) {
+query getinvestigationReasonId ($epidemiologyNumber: Int!) {
   investigationByEpidemiologyNumber(epidemiologyNumber: $epidemiologyNumber) {
     vaccineDoseId
   }
 }
 `;
-
-export const GET_COMPLEXITY_REASONS_BIRTHDATE_AND_VACCINE_DOSE_ID = gql`
-query getinvestigationData ($epidemiologyNumber: Int!) {
-  investigationByEpidemiologyNumber(epidemiologyNumber: $epidemiologyNumber) {
-    complexityReasonsId
-    vaccineDoseId
-    investigatedPatientByInvestigatedPatientId {
-      covidPatientByCovidPatient {
-        birthDate
-      }
-    }
-  }
-}
-`;
-
 
 export const GET_SETTINGS_FOR_STATUS_VALIDITY = gql`
 query getinvestigationReasonId ($key: String!) {
