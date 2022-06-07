@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import Desk from 'models/Desk';
 import theme from 'styles/theme';
 import County from 'models/County';
+import ComplexityReason from 'models/ComplexityReason';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
@@ -50,6 +51,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
     const { alertError, alertWarning, alertSuccess } = useCustomSwal();
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
+    const complexityReasons = useSelector<StoreStateType, (ComplexityReason)[]>(state => state.complexityReasons); 
     const [isInvestigatorAllocationFooterDialogOpen, setIsInvestigatorAllocationFooterDialogOpen] = useState<boolean>(false);
 
     let cannotBeUpdatedCount = 0;
@@ -203,6 +205,25 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             })
     }
 
+    const updateNotInvestigatedSubStatus = (epidemiologyNumber: number) => {
+        const reopenLogger = logger.setup('Update Investigation Sub Status');
+        const complexityReasonsRules = complexityReasons.filter((reason)=> reason.statusValidity === true).map((reason)=>reason.reasonId)
+        
+        setIsLoading(true);
+        axios.post('/investigationInfo/updateInvestigationSubStatus', {
+            epidemiologyNumber,
+            complexityReasonsRules,
+        }).then(() => {
+            reopenLogger.info('update investigation sub status request was successful', Severity.LOW);
+        })
+            .catch((error) => {
+                reopenLogger.error(`got errors in server result while updating investigation sub status: ${error}`, Severity.HIGH);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            })
+    }
+
     return {
         handleOpenDesksDialog,
         handleCloseDesksDialog,
@@ -214,7 +235,8 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         handleConfirmDesksDialog,
         handleConfirmCountiesDialog,
         handleDisbandGroupedInvestigations,
-        updateNotInvestigatedStatus
+        updateNotInvestigatedStatus,
+        updateNotInvestigatedSubStatus
     }
 }
 

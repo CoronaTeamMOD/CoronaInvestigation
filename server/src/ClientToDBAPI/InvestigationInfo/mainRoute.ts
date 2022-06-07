@@ -14,10 +14,14 @@ import {
     GET_INVESTIGATION_COMPLEXITY_REASON_ID,
     TRACKING_SUB_REASONS_BY_REASON_ID,
     GET_IDENTIFICATION_TYPES,
-    GET_MUTATION_INFO
+    GET_MUTATION_INFO,
+    GET_BIRTHDATE,
+    GET_VACCINE_DOSE_ID,
+    GET_SETTINGS_FOR_STATUS_VALIDITY
 } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
+    UPDATE_INVESTIGATION_SUBSTATUS,
     ADD_INVESTIGATION_START_TIME,
     UPDATE_INVESTIGATION_START_TIME,
     UPDATE_INVESTIGATION_END_TIME,
@@ -277,6 +281,62 @@ investigationInfo.post('/updateInvestigationStatus', handleInvestigationRequest,
             updateInvestigationStatusLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         });
+});
+
+ investigationInfo.post('/updateInvestigationSubStatus', handleInvestigationRequest, (request: Request, response: Response) => {
+    const { epidemiologyNumber, complexityReasonsRules } = request.body;
+    const logData = {
+        workflow: 'update investigation substatus',
+        user: response.locals.user.id,
+        investigation: epidemiologyNumber,
+    };
+    const updateInvestigationSubStatusLogger = logger.setup(logData);
+
+    const parameters = {
+        epidemiologyNumber,
+        complexityReasonsRules,
+    };
+    updateInvestigationSubStatusLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+    const queryVariables = { epidemiologyNumber: parseInt(epidemiologyNumber) }
+
+    const getRulesAndDataForUpdatingSubStatusPromises = [
+        graphqlRequest(GET_SETTINGS_FOR_STATUS_VALIDITY, response.locals, { key: "settings_for_status_validity" }), 
+        graphqlRequest(GET_INVESTIGATION_COMPLEXITY_REASON_ID, response.locals, queryVariables),
+        graphqlRequest(GET_BIRTHDATE, response.locals, queryVariables),
+        graphqlRequest(GET_VACCINE_DOSE_ID, response.locals, queryVariables)
+    ]
+
+    Promise.all(getRulesAndDataForUpdatingSubStatusPromises)
+        .then((results) => {
+            const settingsForStatusValidity = JSON.parse(results[0].data.rulesConfigByKey.value.toString())
+            
+            const patientComplexityReasons = results[1].data.investigationByEpidemiologyNumber.complexityReasonsId;
+            const checkIfPatientComplexityReasonsIncludesComplexityReasonsRules = patientComplexityReasons !== null ? patientComplexityReasons.includes(complexityReasonsRules[0]) || patientComplexityReasons.includes(complexityReasonsRules[1]) || patientComplexityReasons.includes(complexityReasonsRules[2]) : false;
+
+            const patientAge = getPatientAge(results[2].data.covidPatientByEpidemiologyNumber.birthDate);
+            const patientVaccineDoseId = results[3]?.data?.investigationByEpidemiologyNumber?.vaccineDoseId;
+            
+            let querySubStatusParams = { investigationSubStatus: settingsForStatusValidity.sub_status, epidemiologyNumber: parseInt(epidemiologyNumber) }
+            
+            if (!(patientAge >= settingsForStatusValidity.from_age && patientAge <= settingsForStatusValidity.to_age ||
+                patientVaccineDoseId >= settingsForStatusValidity.vaccine_num && 
+                patientAge >= settingsForStatusValidity.from_age_and_vaccine && patientAge <= settingsForStatusValidity.to_age_and_vaccine ||
+                checkIfPatientComplexityReasonsIncludesComplexityReasonsRules)) {
+                   querySubStatusParams = { investigationSubStatus: settingsForStatusValidity.another_sub_status, epidemiologyNumber: parseInt(epidemiologyNumber) }
+                }              
+            updateInvestigationSubStatusLogger.info(validDBResponseLog, Severity.LOW);
+            graphqlRequest(UPDATE_INVESTIGATION_SUBSTATUS, response.locals, querySubStatusParams)
+                .then(result => {
+                    updateInvestigationSubStatusLogger.info(validDBResponseLog, Severity.LOW);
+            })
+            .catch(error => {
+                updateInvestigationSubStatusLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+                response.status(errorStatusCode).send(error);
+            });
+        })
+        .catch((error) => {
+        updateInvestigationSubStatusLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+        })
 });
 
 investigationInfo.post('/updateInvestigationStartTime', handleInvestigationRequest, (request: Request, response: Response) => {
