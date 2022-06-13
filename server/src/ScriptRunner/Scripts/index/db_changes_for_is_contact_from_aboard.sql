@@ -9,7 +9,7 @@ INSERT INTO public.contact_from_aboard_type(
     ON CONFLICT DO NOTHING;
 
 ALTER TABLE involved_contact 
-    ADD COLUMN IF NOT EXISTS is_stay_another_country INTEGER DEFAULT NULL,
+    ADD COLUMN IF NOT EXISTS is_stay_another_country boolean DEFAULT NULL,
     ADD COLUMN IF NOT EXISTS transit_date timestamp with time zone,
 	ADD COLUMN IF NOT EXISTS from_country_id character varying REFERENCES countries (id),
 	ADD COLUMN IF NOT EXISTS overseas_comments VARCHAR(400);
@@ -23,7 +23,7 @@ ALTER TABLE public.investigation
 ADD COLUMN IF NOT EXISTS contact_from_aboard_id INTEGER REFERENCES contact_from_aboard_type (id);
 
 ALTER TABLE person_contact_details
-    ADD COLUMN IF NOT EXISTS is_stay_another_country INTEGER DEFAULT NULL,
+    ADD COLUMN IF NOT EXISTS is_stay_another_country boolean DEFAULT NULL,
     ADD COLUMN IF NOT EXISTS transit_date timestamp with time zone,
 	ADD COLUMN IF NOT EXISTS from_country_id character varying REFERENCES countries (id),
 	ADD COLUMN IF NOT EXISTS overseas_comments VARCHAR(400);
