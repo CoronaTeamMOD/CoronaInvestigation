@@ -312,7 +312,8 @@ const convertInvolvedContact = (contact: InvolvedContactDB) => {
         isolationAddress: contact.address,
         ...contact.educationGrade,
         ...contact.personByPersonId,
-        ...contact.subOccupationByInstitutionName
+        ...contact.subOccupationByInstitutionName,
+        isStayAnotherCountry: contact.isStayAnotherCountry
     }
 };
 

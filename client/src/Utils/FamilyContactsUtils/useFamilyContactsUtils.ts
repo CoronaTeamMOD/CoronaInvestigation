@@ -24,6 +24,7 @@ const useFamilyContactsUtils = () => {
         [FamilyContactsTableHeadersNames.VACCINE_EFFECTIVENESS_EXPIERY_DATE]: formatDate(row.epidemiologicStatus?.vaccineExpirationDate, '---'),
         [FamilyContactsTableHeadersNames.FINAL_EPIDEMIOLOGICAL_STATUS_DESC]: row?.finalEpidemiologicalStatusDesc ? row?.finalEpidemiologicalStatusDesc : '---',
         [FamilyContactsTableHeadersNames.ISOLATION_CITY]: row.isolationAddress?.city?.displayName,
+        [FamilyContactsTableHeadersNames.IS_STAY_ANOTHER_COUNTRY]: row?.isStayAnotherCountry === true ? 'כן' : 'לא'
     });
 
     const getTableCell = (row: IndexedContactRow, cellName: string) => {
