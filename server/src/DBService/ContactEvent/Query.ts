@@ -54,6 +54,7 @@ personByPersonId {
   }
 }
 involvementReason,
+isStayAnotherCountry,
 isContactedPerson
 address: addressByIsolationAddress {
   city: cityByCity {

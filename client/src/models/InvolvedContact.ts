@@ -14,7 +14,8 @@ interface InvolvedContact extends Person {
 	institutionName: string,
 	contactType: number,
 	colorCode?: string,
-	finalEpidemiologicalStatusDesc?: string
+	finalEpidemiologicalStatusDesc?: string,
+	isStayAnotherCountry?: boolean
 };
 
 export default InvolvedContact;

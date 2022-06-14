@@ -25,6 +25,10 @@ enum InteractedContactFields {
     FIRST_NAME = 'firstName',
     LAST_NAME = 'lastName',
     PHONE_NUMBER = 'phoneNumber',
+    IS_STAY_ANOTHER_COUNTRY='isStayAnotherCountry',
+    TRANSIT_DATE = 'transitDate',
+    FROM_COUNTRY = 'fromCountry',
+    OVERSEAS_COMMENTS = 'overseasComments',
 };
 
 export default InteractedContactFields;
