@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import logger from 'logger/logger';
 import GroupedInteractedContact, { GroupedInteractedContactEvent } from 'models/ContactQuestioning/GroupedInteractedContact';
 import InteractedContact from 'models/InteractedContact';
@@ -78,6 +78,12 @@ export const getAllInteractedContacts = async (minimalDate?: Date): Promise<Grou
                         doesNeedIsolation: contact.doesNeedIsolation !== null
                             ? contact.doesNeedIsolation
                             : null,
+                        isStayAnotherCountry: contact.isStayAnotherCountry !== null
+                            ? contact.isStayAnotherCountry
+                            : null,
+                        fromCountry: contact.countryByFromCountryId,
+                        transitDate: contact.transitDate, 
+                        overseasComments: contact.overseasComments,
                         creationTime: contact.creationTime,
                         involvementReason: contact.involvementReason,
                         involvedContactId: contact.involvedContactId,
@@ -162,9 +168,10 @@ export const updateInteractedContacts = async (contacts: InteractedContact[]) =>
     const contactLogger = logger.setup('Saving Contacts');
 
     try {
+        const convertedContacts = contacts.map(contact => { return {...contact, fromCountry: contact.fromCountry?.id }})
         const data = {
             unSavedContacts: {
-                contacts
+                contacts: convertedContacts
             },
         };
         contactLogger.info(`launching server request with parameter: ${JSON.stringify(data)}`, Severity.LOW);

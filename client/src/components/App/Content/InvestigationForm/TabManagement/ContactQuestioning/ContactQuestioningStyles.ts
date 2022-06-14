@@ -130,6 +130,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     statusInfoMenu: {
         marginTop: '46px',
         maxHeight: '220px',
+    },
+    flightIcon:{
+        color: theme.palette.primary.dark,
     }
 }));
 
