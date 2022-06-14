@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
-import { ExpandMore, ExpandLess } from '@material-ui/icons';
+import { ExpandMore, ExpandLess, FlightLand } from '@material-ui/icons';
 import { Tooltip, Typography, Grid, Button, MenuItem, Menu } from '@material-ui/core';
 
 import ContactType from 'models/ContactType';
@@ -28,7 +28,6 @@ const ContactDetails = (props: Props) => {
         event.stopPropagation();
         setAnchorEl(event.currentTarget);
     };
-
     const handleClose = (event: any) => {
         event.stopPropagation();
         setAnchorEl(null);
@@ -151,6 +150,14 @@ const ContactDetails = (props: Props) => {
 
     return (
         <>
+        <Grid
+                container
+                item
+                xs={2}
+                direction='row-reverse'
+                alignItems='flex-start'
+                justify='space-evenly'
+            >
             {isInvolvedThroughFamily(interactedContact.involvementReason) && (
                 <FamilyContactIcon />
             )}
@@ -158,8 +165,12 @@ const ContactDetails = (props: Props) => {
                 <GroupedContactIcon />
             )}
             {
+                interactedContact.isStayAnotherCountry && <span className={classes.flightIcon}><FlightLand /></span>
+            }
+            {
                 (formState?.isValid === false || duplicateIdentities) && <InvalidFormIcon />
             }
+            </Grid>
             <Grid
                 container
                 item

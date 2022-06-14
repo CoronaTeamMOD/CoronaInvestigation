@@ -2,6 +2,7 @@ import Person from './Person';
 import {DBAddress} from './DBAddress';
 import ContactType from './enums/ContactType';
 import Occupations from './enums/Occupations';
+import Country from './Country';
 
 interface InteractedContact extends Person {
     personInfo?: number;
@@ -34,6 +35,10 @@ interface InteractedContact extends Person {
     vaccinationStatusDesc?: string;
     isolationReportStatusDesc?: string;
     isolationObligationStatusDesc?: string;
+    transitDate?: Date;
+    isStayAnotherCountry: boolean | null;
+    fromCountry?: Country;
+    overseasComments? : string;
     };
 
 export default InteractedContact;

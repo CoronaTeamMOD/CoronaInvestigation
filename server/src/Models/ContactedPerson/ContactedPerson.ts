@@ -23,7 +23,11 @@ interface InteractedContact extends Person {
     creationSource: number;
     involvementReason: {
         involvementReason: number
-    } | null
+    } | null,
+    transitDate?: Date;
+    isStayAnotherCountry: boolean | null;
+    fromCountry?: number;
+    overseasComments? : string;
 };
 
 export interface InteractedExcelContact extends InteractedContact {
