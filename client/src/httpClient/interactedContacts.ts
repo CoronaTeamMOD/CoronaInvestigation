@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { format, isValid } from 'date-fns';
+import { format } from 'date-fns';
 import logger from 'logger/logger';
 import GroupedInteractedContact, { GroupedInteractedContactEvent } from 'models/ContactQuestioning/GroupedInteractedContact';
 import InteractedContact from 'models/InteractedContact';
