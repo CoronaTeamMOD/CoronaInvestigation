@@ -15,6 +15,7 @@ interface InvestigationInfo extends SymptomsExistenceInfo, InvestigatedPatientSt
     userByLastUpdatorUser: StaticUser;
     endTime: Date | null;
     vaccineDose:KeyValuePair | null;
+    contactFromAboardId : number | null;
 };
 
 export interface MutationInfo {
