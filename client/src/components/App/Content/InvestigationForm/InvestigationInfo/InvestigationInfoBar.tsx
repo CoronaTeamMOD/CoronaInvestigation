@@ -56,7 +56,8 @@ const defaultInvestigationStaticInfo: InvestigationInfo = {
     isSuspicionOfMutation: false,
     mutationName: null,
     contactInvestigationVerifiedAbroad: false,
-    vaccineDose:null
+    vaccineDose:null,
+    contactFromAboardId: null
 };
 
 export const LandingPageTimer = 4000;
