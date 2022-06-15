@@ -13,4 +13,5 @@ UPDATE investigation
 		 THEN 'לא ניתן לאיתור'
 		 WHEN investigation_status = 100000000 AND investigation_sub_status = 'מטופל מבקש לצלצל אליו בזמן אחר'
 		 THEN 'חוסר שיתוף פעולה'
+		 ELSE investigation_sub_status
 		END
