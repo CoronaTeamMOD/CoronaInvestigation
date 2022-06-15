@@ -379,7 +379,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 {
                                     isReturnSick && <ComplexityIcon tooltipText={formatDate(previousDiseaseStartDate)} />
                                 }
-                                <PatientInfoItem testId='contactFromAboardId' name='קיים מגע חו"ל' value={contactFromAboardId ? yes : noInfo} />
+                                { contactFromAboardId == 1 && <PatientInfoItem testId='contactFromAboardId' name='קיים מגע חו"ל' value={yes} /> }
                                 {
                                     contactFromAboardId == 1 && <ComplexityIcon tooltipText='למאומת זה קיים מגע אשר שהה בחו"ל' />
                                 }
