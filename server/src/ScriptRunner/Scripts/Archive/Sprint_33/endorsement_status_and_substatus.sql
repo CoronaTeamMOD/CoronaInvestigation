@@ -13,5 +13,6 @@ UPDATE investigation
 		 THEN 'לא ניתן לאיתור'
 		 WHEN investigation_status = 100000000 AND investigation_sub_status = 'מטופל מבקש לצלצל אליו בזמן אחר'
 		 THEN 'חוסר שיתוף פעולה'
-		 ELSE investigation_sub_status
 		END
+	 WHERE (investigation_status = 100000008 AND investigation_sub_status = 'מדיניות לשכה' )
+		OR (investigation_status = 100000000 AND (investigation_sub_status = 'חסר טלפון' OR investigation_sub_status = 'טלפון לא זמין' OR investigation_sub_status = 'מטופל מבקש לצלצל אליו בזמן אחר'))
