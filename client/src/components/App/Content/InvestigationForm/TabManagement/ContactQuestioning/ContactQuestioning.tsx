@@ -36,6 +36,8 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     const dispatch = useDispatch();
     const interactedContacts = useSelector<StoreStateType, GroupedInteractedContact[]>(state => state.interactedContacts.interactedContacts);
     const ifContactsNeedIsolation = useSelector<StoreStateType, boolean | undefined>(state => state.rulesConfig.ifContactsNeedIsolation);
+    const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
+
     const {
         onSubmit,
         parsePerson,
@@ -75,7 +77,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
                 dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, false));
                 dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.DOES_NEED_ISOLATION, false));
             }
-            ContactQuestioningSchema.isValid({ ...interactedContact, identificationType: interactedContact.identificationType?.id || interactedContact.identificationType }).then(isValid => {
+            ContactQuestioningSchema(validationDate).isValid({ ...interactedContact, identificationType: interactedContact.identificationType?.id || interactedContact.identificationType }).then(isValid => {
                 dispatch(setContactFormState(interactedContact.id, isValid));
             })
         });

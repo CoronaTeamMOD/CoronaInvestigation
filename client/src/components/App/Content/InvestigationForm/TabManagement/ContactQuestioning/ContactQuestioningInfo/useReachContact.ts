@@ -17,6 +17,7 @@ const useReachContact = (props: Props) => {
     const { alertWarning, alertError } = useCustomSwal();
     const dispatch = useDispatch();
     const contactValid = useSelector<StoreStateType, any[]>(state => state.interactedContacts.formState).find(state => state.id === formValues.id)?.isValid;
+    const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
 
     const formHaveMissingFieldsText = `למגע זה ישנם שדות לא תקינים:`
 
@@ -36,7 +37,7 @@ const useReachContact = (props: Props) => {
         });
 
         const dispatchUpdateFormState=(contact: GroupedInteractedContact) => {
-            ContactQuestioningSchema.isValid({ ...contact, identificationType: contact?.identificationType?.id }).then(isValid =>{
+            ContactQuestioningSchema(validationDate).isValid({ ...contact, identificationType: contact?.identificationType?.id }).then(isValid =>{
                 dispatch(setContactFormState(contact.id, isValid));
             })
         }

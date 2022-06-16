@@ -25,13 +25,7 @@ import StoreStateType from 'redux/storeStateType';
 import { useSelector, useDispatch } from 'react-redux';
 
 const InteractedContactAccordion = (props: Props) => {
-
-    const methods = useForm<GroupedInteractedContact>({
-        mode: 'all',
-        resolver: yupResolver(ContactQuestioningSchema),
-    });
-
-
+  
     const classes = useStyles();
 
     const {
@@ -41,7 +35,14 @@ const InteractedContactAccordion = (props: Props) => {
 
     const dispatch = useDispatch();
     const formState = useSelector<StoreStateType, any[]>(state => state.interactedContacts.formState).find(formState => formState.id == interactedContact.id);
-    
+    const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
+
+    const methods = useForm<GroupedInteractedContact>({
+        mode: 'all',
+        resolver: yupResolver(ContactQuestioningSchema(validationDate)),
+    });
+
+
     const watchCurrentStatus: number = methods.watch(InteractedContactFields.CONTACT_STATUS);
 
     const generateBackgroundColorClass = (colorCode: Number | any) => {

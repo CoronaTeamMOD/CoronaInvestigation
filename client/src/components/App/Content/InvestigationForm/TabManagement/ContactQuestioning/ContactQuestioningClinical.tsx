@@ -28,6 +28,10 @@ import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
 import Country from 'models/Country';
 import { Autocomplete } from '@material-ui/lab';
+import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
+import { ALPHANUMERIC_RICH_TEXT_REGEX } from 'commons/Regex/Regex';
+import { alphaNumericSpecialCharsErrorMessage, max400LengthErrorMessage } from 'commons/Schema/messages';
+import * as yup from 'yup';
 
 const emptyFamilyRelationship: FamilyRelationship = {
     id: null as any,
@@ -90,7 +94,6 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const isInvestigationComplited = interactedContact.contactStatus === ContactStatusCodes.COMPLETED
     const isUnreachable = interactedContact.contactStatus === ContactStatusCodes.CANT_REACH
     const isUncooperative = interactedContact.contactStatus === ContactStatusCodes.DONT_COOPERATE
-    const isStayAnotherCounrtyFieldDisabled = true;
 
     const formatContactToValidate = () => {
         return {
@@ -108,6 +111,11 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         }
         return true;
     };
+
+    const stringAlphabet = yup
+        .string()
+        .matches(ALPHANUMERIC_RICH_TEXT_REGEX, alphaNumericSpecialCharsErrorMessage)
+        .max(400, max400LengthErrorMessage);
 
 
     useEffect(() => {
@@ -152,6 +160,14 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         if (booleanValue === true && !isInvestigationComplited && !isUncooperative && !isUnreachable) {
             handleIsolation(booleanValue, onChange);
         }
+    }
+    const resetIsStayAnotherCountryFields = () => {
+        methods.setValue(InteractedContactFields.TRANSIT_DATE, null);
+        dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.TRANSIT_DATE, null));
+        methods.setValue(InteractedContactFields.FROM_COUNTRY, null);
+        dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.FROM_COUNTRY, null));
+        methods.setValue(InteractedContactFields.OVERSEAS_COMMENTS, '');
+        dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.OVERSEAS_COMMENTS, ''));
     }
 
     return (
@@ -212,7 +228,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                     <FormControl variant='outlined' fullWidth>
                                         <HebrewTextField
                                             {...props}
-                                            error={errors && errors[InteractedContactFields.ADDITIONAL_PHONE_NUMBER]?.message}
+                                            error={errors && errors[InteractedContactFields.RELATIONSHIP]?.message}
                                             disabled={isFieldDisabled || isViewMode}
                                             testId='relationship'
                                             onChange={(newValue: string) => {
@@ -330,12 +346,15 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                             return (
                                 <Toggle
                                     {...props}
-                                    disabled={isStayAnotherCounrtyFieldDisabled || isFieldDisabled || isViewMode}
+                                    disabled={ isFieldDisabled || isViewMode }
                                     test-id='isStayAnotherCountry'
                                     onChange={(event, booleanValue) => {
                                         if (booleanValue !== null) {
                                             props.onChange(booleanValue);
                                             dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.IS_STAY_ANOTHER_COUNTRY, booleanValue));
+                                            if (booleanValue === false){
+                                                resetIsStayAnotherCountryFields();
+                                            }
                                         }
                                     }}
                                 />
@@ -359,15 +378,15 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                     name={`${InteractedContactFields.TRANSIT_DATE}`}
                                     defaultValue={interactedContact.transitDate}
                                     render={(props) => {
-                                        const dateError = errors && (errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.TRANSIT_DATE]?.message;
                                         return (
                                             <FormControl variant='outlined' fullWidth>
                                                 <DatePick
                                                     {...props}
-                                                    disabled={isStayAnotherCounrtyFieldDisabled || isFieldDisabled || isViewMode}
+                                                    disabled={ isFieldDisabled || isViewMode }
                                                     testId='transitDate'
+                                                    labelText={errors[InteractedContactFields.TRANSIT_DATE] ? errors[InteractedContactFields.TRANSIT_DATE]?.message : ''}
                                                     useBigCalender={false}
-                                                    error={Boolean(dateError)}
+                                                    error={Boolean(errors && errors[InteractedContactFields.TRANSIT_DATE])}
                                                     onChange={(newDate: Date) => {
                                                         props.onChange(newDate);
                                                         dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.TRANSIT_DATE, methods.getValues(InteractedContactFields.TRANSIT_DATE)));
@@ -393,8 +412,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                                 getOptionLabel={(option: Country) => option.displayName}
                                                 value={props.value}
                                                 onChange={(e, value) => {
-                                                   props.onChange(value);
-                                                   dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.FROM_COUNTRY, value))
+                                                    props.onChange(value);
+                                                    dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.FROM_COUNTRY, value))
                                                 }
                                                 }
                                                 renderInput={(params) =>
@@ -404,7 +423,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                                         placeholder={ContactQuestioningFieldsNames.FROM_COUNTRY}
                                                         error={errors && Boolean(errors[InteractedContactFields.FROM_COUNTRY])}
                                                     />}
-                                                disabled={isStayAnotherCounrtyFieldDisabled || isFieldDisabled || isViewMode}
+                                                disabled={isFieldDisabled || isViewMode}
                                             />
                                         );
                                     }}
@@ -422,15 +441,16 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                     render={(props) => {
                                         return (
                                             <FormControl variant='outlined' fullWidth>
-                                                <AlphanumericTextField
+                                                <TypePreventiveTextField
                                                     {...props}
                                                     testId='overseasComments'
+                                                    validationSchema={stringAlphabet}
                                                     onChange={(newValue: string) => {
                                                         props.onChange(newValue)
                                                     }}
                                                     onBlur={() => dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.OVERSEAS_COMMENTS, methods.getValues(InteractedContactFields.OVERSEAS_COMMENTS)))}
                                                     placeholder={ContactQuestioningFieldsNames.OVERSEAS_COMMENTS}
-                                                    disabled={isStayAnotherCounrtyFieldDisabled || isFieldDisabled || isViewMode}
+                                                    disabled={isFieldDisabled || isViewMode}
                                                 />
                                             </FormControl>
                                         )
