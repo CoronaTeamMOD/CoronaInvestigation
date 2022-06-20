@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS contact_from_aboard_type (
 
 INSERT INTO public.contact_from_aboard_type(
 	id, display_name)
-	VALUES (0, 'לא אותר מגע מחו"ל'),(1,'אותר מגע מחו"ל')
+	VALUES (0, 'לא אותר מגע מחו"ל'),(1,'אותר מגע מחו"ל'),(99,'לא ידוע')
     ON CONFLICT DO NOTHING;
 
 ALTER TABLE involved_contact 
