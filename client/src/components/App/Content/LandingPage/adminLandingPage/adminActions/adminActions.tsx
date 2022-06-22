@@ -25,7 +25,7 @@ const AdminActions: React.FC<Props> = (props: Props): JSX.Element => {
                     <b>{adminActionTitle}</b>
                 </Typography>
 
-                <Grid xs={4} className={classes.selectAction}>
+                <Grid item xs={4} className={classes.selectAction}>
                     <FormControl variant='outlined' fullWidth>
                         <SelectDropdown
                             onChange={onAdminActionChange}

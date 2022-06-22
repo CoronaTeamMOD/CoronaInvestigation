@@ -14,9 +14,9 @@ const AdminSynchronizationCitiesStreets = (): JSX.Element => {
     } = useSynchronizationAction({});
 
     return (
-        <Grid container xs={8} spacing={1} direction='column'>
+        <Grid container item xs={8} spacing={1} direction='column'>
             <Grid item container xs={8} alignItems='center' justify='center'>
-                <Grid item xs={4} alignItems='center'>
+                <Grid item xs={4}>
                     <UpdateButton 
                         onClick={() => synchronizationCities()}
                         text={synchronizationCitiesText}
@@ -25,7 +25,7 @@ const AdminSynchronizationCitiesStreets = (): JSX.Element => {
                
             </Grid>
             <Grid item container xs={8} alignItems='center' justify='center'>
-                <Grid item xs={4} alignItems='center'>
+                <Grid item xs={4}>
                     <UpdateButton 
                         onClick={() => synchronizationstreets()}
                         text={synchronizationStreetsText}
