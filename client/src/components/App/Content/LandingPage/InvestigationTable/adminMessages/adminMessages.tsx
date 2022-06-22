@@ -44,11 +44,11 @@ const AdminMessages = (props: Props) => {
     <Card className={classes.adminMsgSection}>
       { adminMessagesByDesks && adminMessagesByDesks.length > 0 &&
         <div>
-          {adminMessagesByDesks ? adminMessagesByDesks.map((message: any) => (
+          {adminMessagesByDesks && adminMessagesByDesks.length > 0 && adminMessagesByDesks?.map((message: any) => (
             <Typography key={message.id} className={classes.message}>
               {message.message}
             </Typography>
-          )): null}
+          ))}
         </div>
      }
     </Card>
