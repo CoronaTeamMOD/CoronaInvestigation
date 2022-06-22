@@ -37,18 +37,18 @@ const AdminMessages = (props: Props) => {
   useEffect(() => {
     if (adminMessagesByDesks) {
       setAdminMessageCount(adminMessagesByDesks.length);
-    } 
+    }
   }, [adminMessagesByDesks])
 
   return (
     <Card className={classes.adminMsgSection}>
       { adminMessagesByDesks && adminMessagesByDesks.length > 0 &&
         <div>
-          {adminMessagesByDesks?.map((message: any) => (
-            <Typography className={classes.message}>
+          {adminMessagesByDesks ? adminMessagesByDesks.map((message: any) => (
+            <Typography key={message.id} className={classes.message}>
               {message.message}
             </Typography>
-          ))}
+          )): null}
         </div>
      }
     </Card>
