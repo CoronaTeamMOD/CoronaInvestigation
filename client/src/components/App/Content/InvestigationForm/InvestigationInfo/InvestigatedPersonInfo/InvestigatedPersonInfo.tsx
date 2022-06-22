@@ -60,7 +60,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const { identityType, gender, isDeceased, isCurrentlyHospitalized, isInClosedInstitution, age, identityNumber,
         fullName, primaryPhone, birthDate, validationDate, isReturnSick, previousDiseaseStartDate,
-        vaccineDose, vaccinationEffectiveFrom } = investigationStaticInfo;
+        vaccineDose, vaccinationEffectiveFrom, contactFromAboardId  } = investigationStaticInfo;
     const mutationInfo = useSelector<StoreStateType, MutationInfo>(state => state.mutationInfo.mutationInfo);
     const wasMutationUpdated = useSelector<StoreStateType, boolean>(state => state.mutationInfo.wasMutationUpdated);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -378,6 +378,10 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 <PatientInfoItem testId='isReturnSick' name='חולה חוזר' value={isReturnSick ? yes : noInfo} />
                                 {
                                     isReturnSick && <ComplexityIcon tooltipText={formatDate(previousDiseaseStartDate)} />
+                                }
+                                { contactFromAboardId == 1 && <PatientInfoItem testId='contactFromAboardId' name='קיים מגע חו"ל' value={yes} /> }
+                                {
+                                    contactFromAboardId == 1 && <ComplexityIcon tooltipText='למאומת זה קיים מגע אשר שהה בחו"ל' />
                                 }
                                 {
                                     wasMutationUpdated && <PrimaryButton onClick={varientUpdate} 

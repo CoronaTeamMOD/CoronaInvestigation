@@ -49,5 +49,6 @@ export interface InvolvedContactDB {
     educationClassNumber: number;
     subOccupationByInstitutionName: {
         institutionName: string;
-    }
+    },
+    isStayAnotherCountry: boolean;
 };

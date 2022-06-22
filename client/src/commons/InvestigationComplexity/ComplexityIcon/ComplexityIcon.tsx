@@ -4,12 +4,14 @@ import { SvgIconProps, Tooltip } from '@material-ui/core';
 
 import useStyles from './ComplexityIconStyles';
 const abroadText = 'חזר מחו"ל';
+const contactAbroadText = 'מגע עם חוזר חו"ל';
 
 const ComplexityIcon: React.FC<Props> = (props: Props) => {
     
     const { className, tooltipText, isVarient, ...otherProps } = props
     let colors = isVarient ? {fill: 'red'} : {};
-    colors = tooltipText.indexOf(abroadText) != -1 ? {fill: 'green'} : colors;
+    colors = (tooltipText.indexOf(abroadText) != -1) ? {fill: 'green'} : 
+             (tooltipText.indexOf(contactAbroadText) != -1) ? {fill: 'purple'} : colors;
     const classes = useStyles();
 
     return (

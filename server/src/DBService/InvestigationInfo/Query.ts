@@ -18,6 +18,7 @@ query InvestigationStaticDetails($investigationId: Int!) {
     vaccinationEffectiveFrom
     symptomsStartDate: symptomsStartTime
     contactInvestigationVerifiedAbroad
+    contactFromAboardId
     investigatedPatientByInvestigatedPatientId {
       covidPatientByCovidPatient {
         identityNumber

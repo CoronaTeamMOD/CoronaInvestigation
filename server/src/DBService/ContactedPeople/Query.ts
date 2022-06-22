@@ -49,6 +49,13 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!, $minimalDateToFi
             houseNum
             apartment
         	}
+          transitDate
+          isStayAnotherCountry
+          countryByFromCountryId {
+            id
+            displayName
+          }
+          overseasComments
         }
       }
       contactEventByContactEvent {
