@@ -15,7 +15,6 @@ const AdminMessages = (props: Props) => {
   const { getAdminsMessages, adminMessagesByDesks } = useAdminMessagesDBAction();
   const { setAdminMessageCount } = props;
 
-  
   const [messages, setMessages] = useState<AdminMessage[]>([]);
   let desksId = props.deskFilter;
   const displayedCounty = useSelector<StoreStateType, number>(state => state.user.displayedCounty);
