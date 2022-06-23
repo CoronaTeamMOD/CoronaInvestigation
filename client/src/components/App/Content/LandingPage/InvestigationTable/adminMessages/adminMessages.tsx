@@ -47,11 +47,11 @@ const AdminMessages = (props: Props) => {
     <Card className={classes.adminMsgSection}>
       <Collapse in={messages.length > 0} unmountOnExit>
         <div>
-          {messages?.map((message: any) => (
+          {messages.length > 0 ? messages?.map((message: any) => (
             <Typography key={message.id} className={classes.message}>
               {message.message}
             </Typography>
-          ))}
+          )) : null}
         </div>
       </Collapse>
     </Card>
