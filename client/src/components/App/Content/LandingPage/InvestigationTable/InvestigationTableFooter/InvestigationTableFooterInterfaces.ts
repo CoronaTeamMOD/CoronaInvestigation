@@ -27,4 +27,5 @@ export interface InvestigationTableFooterOutcome {
     handleConfirmCountiesDialog: (updatedCounty: County, transferReason: string) => void;
     handleDisbandGroupedInvestigations: (groupIds: string[]) => void;
     updateNotInvestigatedStatus: (epidemiologyNumber: number, investigationStatusId: number,totalCount:number) => void;
+    updateNotInvestigatedSubStatus: (epidemiologyNumber: number) => void;
 };
