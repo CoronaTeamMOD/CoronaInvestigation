@@ -44,7 +44,7 @@ const getAuthUserData = async () => {
     const { protocol, hostname } = window.location;
     const { data } = await axios.get<AuthenticationReturn>(`${protocol}//${hostname}/.auth/me`);
     const userId = data[0]?.user_id.split('@')[0];
-    const userName = data[0].user_claims.find(claim => claim.typ === userNameClaimType)?.val as string;
+    const userName = data[0]?.user_claims.find(claim => claim.typ === userNameClaimType)?.val as string;
     return { userId, userName };
 };
 
