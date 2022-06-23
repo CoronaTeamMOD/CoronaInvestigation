@@ -36,10 +36,10 @@ const AdminMessages = (props: Props) => {
   }, [displayedCounty])
 
   useEffect(() => {
-    if (adminMessagesByDesks) {
+    if (adminMessagesByDesks && adminMessagesByDesks !== null) {
       setMessages(adminMessagesByDesks);
+      setAdminMessageCount(messages.length);
     }
-    setAdminMessageCount(messages.length);
   }, [adminMessagesByDesks])
 
   return (
