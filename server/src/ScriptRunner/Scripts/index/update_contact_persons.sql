@@ -58,9 +58,12 @@ transitDate timestamp;
 fromCountry int4;
 overseasComments varchar;
 
+epidemiologyNumber int4;
+
 BEGIN 	
 	-- contacted_persons is a JSON that can be recieved in 2 different structures: */
-	
+	select trim(nullif((contacted_persons->'epidemiologyNumber')::text,'null'),'"')::int4 into epidemiologyNumber;
+
 	contactPersonArr :=(
 					SELECT array_agg(p_data.value)
 					FROM json_array_elements(contacted_persons->'unSavedContacts'->'contacts') p_data
@@ -112,7 +115,7 @@ BEGIN
 		select trim(nullif((contactedPerson->'transitDate')::text,'null'),'"')::timestamp  into transitDate;
 		select trim(nullif((contactedPerson->'fromCountry')::text,'null'),'"')::int4 into fromCountry;
 		select trim(nullif((contactedPerson->'overseasComments')::text,'null'),'"') into overseasComments;
-		
+
 		addressId := insert_and_get_address_id(city, null, street, houseNum, apartment, null, null);
 									 
 	IF personInfo IS NOT NULL THEN
@@ -209,5 +212,9 @@ BEGIN
 			);
 	   END IF;
 	END LOOP;
+
+	PERFORM public.update_investigation_contact_from_aboard(epidemiologyNumber); 
+
+
 END;
 $BODY$;

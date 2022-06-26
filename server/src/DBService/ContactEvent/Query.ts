@@ -141,6 +141,7 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!, $minimalDateT
             phoneNumber
             personContactDetailByPersonInfo {
               contactStatus
+              isStayAnotherCountry
             }
           }
           involvedContact: involvedContactByInvolvedContactId {

@@ -121,7 +121,8 @@ const InteractionDialog = (props: Props) => {
                     involvedContactId: familyMember.id,
                     familyRelationship: familyMember.familyRelationship?.id,
                     identificationType: familyMember.identificationType?.id,
-                    creationSource: CreationSourceCodes.EVEN_YESOD
+                    creationSource: CreationSourceCodes.EVEN_YESOD,
+                    isStayAnotherCountry: familyMember.isStayAnotherCountry
                 };
 
                 contacts.push(familyContact as Contact);
@@ -183,7 +184,7 @@ const InteractionDialog = (props: Props) => {
                         return {
                             ...contact,
                             [InteractionEventContactFields.ID]: serialId,
-                            [InteractionEventContactFields.CREATION_SOURCE]: CreationSourceCodes.EVEN_YESOD
+                            [InteractionEventContactFields.CREATION_SOURCE]: CreationSourceCodes.EVEN_YESOD,
                         }
                     } else {
                         return {

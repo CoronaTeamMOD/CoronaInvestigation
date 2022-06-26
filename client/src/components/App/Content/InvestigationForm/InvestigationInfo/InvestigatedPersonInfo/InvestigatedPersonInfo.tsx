@@ -32,6 +32,7 @@ import InvestigationStatusInfo from './InvestigationStatusInfo/InvestigationStat
 import { FlightLand } from '@material-ui/icons';
 import { getMutationInfo } from 'redux/MutationInfo/mutationInfoActionCreator';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import ContactFromAboardCodes from 'models/enums/ContactFromAboardCodes';
 
 const openInvestigationForEditText = 'פתיחה מחודשת';
 const leaveInvestigationMessage = 'צא מחקירה';
@@ -60,7 +61,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const { identityType, gender, isDeceased, isCurrentlyHospitalized, isInClosedInstitution, age, identityNumber,
         fullName, primaryPhone, birthDate, validationDate, isReturnSick, previousDiseaseStartDate,
-        vaccineDose, vaccinationEffectiveFrom, contactFromAboardId  } = investigationStaticInfo;
+        vaccineDose, vaccinationEffectiveFrom  } = investigationStaticInfo;
     const mutationInfo = useSelector<StoreStateType, MutationInfo>(state => state.mutationInfo.mutationInfo);
     const wasMutationUpdated = useSelector<StoreStateType, boolean>(state => state.mutationInfo.wasMutationUpdated);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -73,6 +74,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     const staticFieldChanged = useSelector<StoreStateType, boolean> (state => state.investigation.investigationStaticFieldChange);
     const investigatorReferenceStatusChanged = useSelector<StoreStateType,boolean>(state => state.botInvestigationInfo.investigatorReferenceStatusWasChanged);
     const isContactInvestigationVerifiedAbroad = useSelector<StoreStateType, boolean>(state => state.investigation.contactInvestigationVerifiedAbroad);
+    const contactFromAboardId = useSelector<StoreStateType, number | null>(state => state.investigation.contactFromAboardId);
    
     const { confirmExitUnfinishedInvestigation,
         staticFieldsSubmit,
@@ -379,9 +381,9 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 {
                                     isReturnSick && <ComplexityIcon tooltipText={formatDate(previousDiseaseStartDate)} />
                                 }
-                                { contactFromAboardId == 1 && <PatientInfoItem testId='contactFromAboardId' name='קיים מגע חו"ל' value={yes} /> }
+                                { (contactFromAboardId == ContactFromAboardCodes.OPTIONAL_CONTACT_FROM_ABOARD ||  contactFromAboardId == ContactFromAboardCodes.CONTACT_FROM_ABOARD)  && <PatientInfoItem testId='contactFromAboardId' name='קיים מגע חו"ל' value={yes} /> }
                                 {
-                                    contactFromAboardId == 1 && <ComplexityIcon tooltipText='למאומת זה קיים מגע אשר שהה בחו"ל' />
+                                    (contactFromAboardId == ContactFromAboardCodes.OPTIONAL_CONTACT_FROM_ABOARD ||  contactFromAboardId == ContactFromAboardCodes.CONTACT_FROM_ABOARD) && <ComplexityIcon tooltipText='למאומת זה קיים מגע אשר שהה בחו"ל' />
                                 }
                                 {
                                     wasMutationUpdated && <PrimaryButton onClick={varientUpdate} 

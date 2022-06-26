@@ -16,7 +16,7 @@ import { setGender } from 'redux/Gender/GenderActionCreators';
 import { CommentContextProvider } from './Context/CommentContext';
 import { landingPageRoute, adminLandingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationInfo, { BotInvestigationInfo, InvestigationInfoData } from 'models/InvestigationInfo';
-import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setDatesToInvestigateParams, setIsContactInvestigationVerifiedAbroad, setInvestigatedPersonFullname, SetInvestigationComment, setOldDatesToInvestigateParams } from 'redux/Investigation/investigationActionCreators';
+import { setEpidemiologyNum, setLastOpenedEpidemiologyNum, setDatesToInvestigateParams, setIsContactInvestigationVerifiedAbroad, setInvestigatedPersonFullname, SetInvestigationComment, setOldDatesToInvestigateParams, setInvestigationContactFromAboardId } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigatedPatientId, setIsCurrentlyHospitialized, setIsDeceased, setEndTime, setTrackingRecommendation, setBirthDate } from 'redux/Investigation/investigationActionCreators';
 
 import useGroupedInvestigationContacts from '../useGroupedInvestigationContacts';
@@ -158,6 +158,9 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab, isViewMode, disable
                             extraInfo: investigationInfo.trackingExtraInfo
                         })
                         setIsContactInvestigationVerifiedAbroad(investigationInfo.contactInvestigationVerifiedAbroad);
+                        if (investigationInfo.contactFromAboardId) {
+                            dispatch(setInvestigationContactFromAboardId(investigationInfo.contactFromAboardId));
+                        }
                     }
                     else {
                         investigationInfoLogger.warn('got status 200 but wrong data', Severity.HIGH);

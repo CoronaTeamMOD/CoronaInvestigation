@@ -88,6 +88,7 @@ const convertDBEvent = (event: ContactEvent) => {
             ...personByPersonInfo,
             ...personByPersonInfo.personContactDetailByPersonInfo,
             involvedContact: convertedInvolvedContact,
+            isStayAnotherCountry:  personByPersonInfo.personContactDetailByPersonInfo.isStayAnotherCountry,
         };
     });
     return {

@@ -41,6 +41,7 @@ const initialState: InvestigationRedux = {
     comment: null,
     trackingRecommendationChanged: false,
     investigationInfoChanged: false,
+    contactFromAboardId: null,
 }
 
 const investigationReducer = (state = initialState, action: Actions.InvestigationAction): InvestigationRedux => {
@@ -88,6 +89,7 @@ const investigationReducer = (state = initialState, action: Actions.Investigatio
         case Actions.SET_INVESTIGATION_COMMENT: return {...state, comment: action.payload.comment}
         case Actions.SET_TRACKING_RECOMMENDATION_CHANGED: return {...state, trackingRecommendationChanged: action.payload.trackingRecommendationChanged}
         case Actions.SET_INVESTIGATION_INFO_CHANGED : return {...state, investigationInfoChanged : action.payload.investigationInfoChanged} 
+        case Actions.SET_INVESTIGATION_CONTACT_FROM_ABOARD_ID : return {...state, contactFromAboardId: action.payload.contactFromAboardId}
         default: return state;
     }
 }

@@ -90,7 +90,9 @@ ContactedPeopleRoute.post('/interactedContacts',  handleInvestigationRequest,  (
         user: response.locals.user.id
     });
 
-    const parameters = { unSavedContacts: JSON.stringify(request.body)};
+    const parameters = { 
+        unSavedContacts: JSON.stringify({unSavedContacts: request.body.unSavedContacts,epidemiologyNumber})
+    };
     interactedContactsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
     graphqlRequest(UPDATE_LIST_OF_CONTACTS, response.locals, parameters)
@@ -116,6 +118,7 @@ ContactedPeopleRoute.post('/excel',  handleInvestigationRequest, async (request:
         user: response.locals.user.id
     });
     const {contactEvent, contacts} = request.body;
+    const epidemiologyNumber = +response.locals.epidemiologynumber;
     excelLogger.info('starting excel parsing', Severity.LOW);
     const getIdFromResult = (result: any) => result?.nodes.length > 0 ? parseInt(result.nodes[0].id) : null;
     const parsedContactsPromises = contacts.map(async (contactedPerson: InteractedExcelContact) => {
@@ -163,6 +166,7 @@ ContactedPeopleRoute.post('/excel',  handleInvestigationRequest, async (request:
     const parsedContacts = await Promise.all(parsedContactsPromises);
     const mutationVariables = {
         unSavedContacts: JSON.stringify(parsedContacts),
+        epidemiologyNumber
     };
     excelLogger.info(`UPDATE_LIST_OF_CONTACTS: ${launchingDBRequestLog(mutationVariables)}`, Severity.LOW);
     return graphqlRequest(UPDATE_LIST_OF_CONTACTS, response.locals, mutationVariables)

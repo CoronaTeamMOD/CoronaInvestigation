@@ -17,7 +17,6 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
         const { parseLocation } = useDBParser();
         const { alertError } = useCustomSwal();
         const { isPatientHouse } = useContactEvent();
-
         const shouldParseLocation = (interactionsDataToSave: InteractionEventDialogData) =>
             !isPatientHouse(interactionsDataToSave[InteractionEventDialogFields.PLACE_SUB_TYPE]) &&
                 interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS];
@@ -71,7 +70,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
         
         const saveConnectedInteractions = async (eventId : number) => {
             Promise.all([saveGroupedInvestigations(eventId), saveBankContacts(eventId)]).then(() => {
-                loadInteractions();
+                loadInteractions(true);
                 loadInvolvedContacts();
             }).catch(() => {
                 alertError('חלה שגיאה בקישור מגעים');
@@ -144,7 +143,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
 ;
 
 interface useInteractionFormIncome {
-    loadInteractions: () => void;
+    loadInteractions: (calledAfterChanged:boolean) => void;
     loadInvolvedContacts:() => void;
     onDialogClose: () => void;
     groupedInvestigationContacts: number[];

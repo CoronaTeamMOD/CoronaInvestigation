@@ -24,6 +24,7 @@ interface InvestigationRedux extends SymptomsExistenceInfo {
     investigationStaticFieldChange: boolean;
     trackingRecommendationChanged: boolean; 
     investigationInfoChanged: boolean;
+    contactFromAboardId: number | null;
 }
 
 export default InvestigationRedux;

@@ -31,6 +31,8 @@ involvedContactId int4;
 familyRelationship int4;
 doesInvovledContactExist boolean;
 creationSource int4;
+isStayAnotherCountry boolean;
+isAnyContactStayAnotherCountry boolean = false;
 
 begin 
 	if contact_event_id is null then
@@ -58,6 +60,11 @@ begin
 		select trim(nullif((person->'involvedContactId')::text,'null'),'"')::int4 into involvedContactId;
 		select trim(nullif((person->'familyRelationship')::text,'null'),'"')::int4 into familyRelationship;
 		select trim(nullif((person->'creationSource')::text,'null'),'"')::int4 into creationSource;
+		select trim(nullif((person->'isStayAnotherCountry')::text,'null'),'"')::boolean into isStayAnotherCountry;
+		if isStayAnotherCountry= true then
+		 isAnyContactStayAnotherCountry:=true;
+		end if;
+		
 	    if contacted_person_id is not null then
 	    	raise notice 'UPDATE contacted person';
 			/*update person and contacted person */
@@ -119,6 +126,11 @@ begin
 			end if;
 	    end if;
 	end loop;
+	
+	if isAnyContactStayAnotherCountry = true then
+		PERFORM public.update_investigation_contact_from_aboard(investigationid);
+	end if;
+	
 end;
 $BODY$;
 

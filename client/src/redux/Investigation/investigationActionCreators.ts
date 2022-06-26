@@ -163,3 +163,10 @@ export const setInvestigationInfoChanged = (investigationInfoChanged: boolean) =
         payload: { investigationInfoChanged }
     }
 }
+
+export const setInvestigationContactFromAboardId = (contactFromAboardId: number) =>{
+    return {
+        type: actionTypes.SET_INVESTIGATION_CONTACT_FROM_ABOARD_ID,
+        payload: { contactFromAboardId }
+    };
+}

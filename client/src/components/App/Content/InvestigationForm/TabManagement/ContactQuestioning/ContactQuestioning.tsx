@@ -13,11 +13,13 @@ import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteracte
 import useStyles from './ContactQuestioningStyles';
 import useContactQuestioning from './useContactQuestioning';
 import InteractedContactAccordion from './InteractedContactAccordion';
-import { contactQuestioningService } from 'services/contactQuestioning.service';
+import { checkForContactsFromAboardId, contactQuestioningService } from 'services/contactQuestioning.service';
 import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
 import { resetInteractedContacts, setContactFormState, setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import ContactStatusCodes from 'models/enums/ContactStatusCodes';
+import { setInvestigationContactFromAboardId } from 'redux/Investigation/investigationActionCreators';
+import TabNames from 'models/enums/TabNames';
 
 const SIZE_OF_CONTACTS = 4;
 let loaded = SIZE_OF_CONTACTS;
@@ -86,6 +88,10 @@ const ContactQuestioning: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Ele
     useEffect(() => {
         if (interactedContacts && interactedContacts.length > 0) {
             initFormState();
+            const investigationContactFromAboardId = checkForContactsFromAboardId(TabNames.CONTACT_QUESTIONING);
+            if (investigationContactFromAboardId) {
+                dispatch(setInvestigationContactFromAboardId(investigationContactFromAboardId));
+            } 
         }
     }, [interactedContacts?.length]);
 

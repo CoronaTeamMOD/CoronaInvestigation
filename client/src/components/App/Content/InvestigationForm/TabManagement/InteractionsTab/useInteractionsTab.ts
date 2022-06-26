@@ -1,6 +1,6 @@
 import axios  from 'axios';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import {  useDispatch, useSelector } from 'react-redux';
 
 import theme from 'styles/theme';
 import logger from 'logger/logger';
@@ -14,6 +14,10 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
 import { useInteractionsTabOutcome, useInteractionsTabParameters } from './useInteractionsTabInterfaces';
+import { setAllInteractionEvents } from 'redux/InteractionEvents/InteractionEventsActionCreator';
+import { checkForContactsFromAboardId } from 'services/contactQuestioning.service';
+import { setInvestigationContactFromAboardId } from 'redux/Investigation/investigationActionCreators';
+import TabNames from 'models/enums/TabNames';
 
 const eventDeleteFailedMsg = 'לא הצלחנו למחוק את האירוע, אנא נסה שוב בעוד כמה דקות';
 const contactDeleteFailedMsg = 'לא הצלחנו למחוק את המגע, אנא נסה שוב בעוד כמה דקות';
@@ -34,11 +38,11 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
 
     const { parseAddress } = useGoogleApiAutocomplete();
     const { alertError, alertWarning } = useCustomSwal();
+    const dispatch = useDispatch();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const datesToInvestigate = useSelector<StoreStateType, Date[]>(state => state.investigation.datesToInvestigate);
     const oldDatesToInvestigate = useSelector<StoreStateType, {minDate:Date | undefined,maxDate:Date| undefined}>(state => state.investigation.oldDatesToInvestigate);
-
     const groupInvolvedContacts = (involvedContacts: InvolvedContact[]): GroupedInvolvedGroups => {
         return involvedContacts.reduce<GroupedInvolvedGroups>((previous, contact) => {
             if (contact.involvementReason === InvolvementReason.FAMILY) {
@@ -100,7 +104,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         })
     }
 
-    const loadInteractions = () => {
+    const loadInteractions = (calledAfterChange:boolean = false) => {
         const loadInteractionsLogger = logger.setup('Fetching Interactions');
         loadInteractionsLogger.info('launching interactions request', Severity.LOW);
         const minimalDateToFilter = oldDatesToInvestigate?.minDate ? oldDatesToInvestigate.minDate : datesToInvestigate.slice(-1)[0];
@@ -114,6 +118,13 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             }, 0);
             setAreThereContacts(numberOfContactedPeople > 0);
             setInteractions(allInteractions);
+            dispatch(setAllInteractionEvents(allInteractions));
+            if (calledAfterChange == true) {
+                const investigationContactFromAboardId = checkForContactsFromAboardId(TabNames.INTERACTIONS);
+                if (investigationContactFromAboardId != null) {
+                    dispatch(setInvestigationContactFromAboardId(investigationContactFromAboardId));
+                }  
+            }
         }).catch((error) => {
             loadInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
             alertError('הייתה שגיאה בטעינת האירועים והמגעים');
@@ -132,7 +143,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             loadInvolvedContacts();
             getInteractionsTabSettings();
         }
-        loadInteractions();
+        loadInteractions(true);
     };
 
     const handleDeleteContactEvent = (contactEventId: number, areThereFamilyContacts: boolean) => {

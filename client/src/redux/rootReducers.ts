@@ -38,6 +38,7 @@ import borderCheckpointsReducer from './BorderCheckpoints/BorderCheckpointsReduc
 import exposuresAndFlightsReducer from './ExposuresAndFlights/ExposuresAndFlightsReducer';
 import vaccineDosesReducer from './VaccineDoses/VaccineDosesReducer';
 import rulesConfigReducer from './RulesConfig/RulesConfigReducer';
+import interactionEventsReducer from './InteractionEvents/InteractionEventsReducer';
 
 export default combineReducers<StoreStateType>({
      occupations: occupationsReducer,
@@ -77,4 +78,5 @@ export default combineReducers<StoreStateType>({
      exposuresAndFlights: exposuresAndFlightsReducer,
      vaccineDoses: vaccineDosesReducer,
      rulesConfig: rulesConfigReducer,
+     interactionEvents: interactionEventsReducer,
 }) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;

@@ -19,6 +19,7 @@ interface Contact {
     involvedContact?: InvolvedContact | null;
     familyRelationship?: number;
     creationSource?: number;
+    isStayAnotherCountry? :boolean;
 };
 
 export interface FormattedContact extends Omit<Contact, "identificationType">{

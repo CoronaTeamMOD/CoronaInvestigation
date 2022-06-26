@@ -32,6 +32,9 @@ import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPre
 import { ALPHANUMERIC_RICH_TEXT_REGEX } from 'commons/Regex/Regex';
 import { alphaNumericSpecialCharsErrorMessage, max400LengthErrorMessage } from 'commons/Schema/messages';
 import * as yup from 'yup';
+import { checkForContactsFromAboardId } from 'services/contactQuestioning.service';
+import { setInvestigationContactFromAboardId } from 'redux/Investigation/investigationActionCreators';
+import TabNames from 'models/enums/TabNames';
 
 const emptyFamilyRelationship: FamilyRelationship = {
     id: null as any,
@@ -355,6 +358,10 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                             if (booleanValue === false){
                                                 resetIsStayAnotherCountryFields();
                                             }
+                                            const investigationContactFromAboardId = checkForContactsFromAboardId(TabNames.CONTACT_QUESTIONING);
+                                            if (investigationContactFromAboardId) {
+                                                dispatch(setInvestigationContactFromAboardId(investigationContactFromAboardId));
+                                            } 
                                         }
                                     }}
                                 />
