@@ -39,7 +39,7 @@ const AdminMessages = (props: Props) => {
   }, [adminsMessagesByAdmin])
 
   useEffect(() => {
-    desksIds !== [] && adminId && getAdminsMessagesByAdmin(desksIds, adminId);
+    !desksIds && desksIds!==null && desksIds !== undefined && desksIds !== [] && adminId && getAdminsMessagesByAdmin(desksIds, adminId);
   }, [toRefresh, desksId, displayedCounty])
 
     return (

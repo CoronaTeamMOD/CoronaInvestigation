@@ -32,7 +32,7 @@ const AdminMessages = (props: Props) => {
     const formattedDesksId = desksId ?? [];
     const isDesksFilterEmpty = formattedDesksId.length === 0
     const desksIds = isDesksFilterEmpty ? getDesksFromDeskFilter(desks, displayedCounty) : formattedDesksId;
-    desksIds !== [] && getAdminsMessages(desksIds);
+    desksIds !== [] && !desksIds && desksIds!==null && desksIds !== undefined && getAdminsMessages(desksIds);
   }, [displayedCounty])
 
   useEffect(() => {
