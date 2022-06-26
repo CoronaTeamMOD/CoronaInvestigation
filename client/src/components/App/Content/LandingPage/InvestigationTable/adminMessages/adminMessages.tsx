@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Card, Typography, Collapse } from '@material-ui/core';
 
 import Desk from 'models/Desk';
-
 import useStyles from './adminMessegesStyles';
 import StoreStateType from 'redux/storeStateType';
 import { AdminMessage } from 'models/AdminMessage';
@@ -32,7 +31,7 @@ const AdminMessages = (props: Props) => {
     const formattedDesksId = desksId ?? [];
     const isDesksFilterEmpty = formattedDesksId.length === 0
     const desksIds = isDesksFilterEmpty ? getDesksFromDeskFilter(desks, displayedCounty) : formattedDesksId;
-    desksIds !== [] && getAdminsMessages(desksIds);
+    desksIds !== [] && !desksIds && desksIds!==null && desksIds !== undefined && getAdminsMessages(desksIds);
   }, [displayedCounty])
 
   useEffect(() => {
