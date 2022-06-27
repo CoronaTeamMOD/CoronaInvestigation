@@ -23,7 +23,7 @@ const AdminMessages = (props: Props) => {
 
   const getDesksFromDeskFilter = (desks: Desk[], countyId: number) => {
     return (
-      desks
+      desks && desks
         .filter(desk => desk.county === countyId)
         .map(desk => desk.id)
     )
@@ -32,7 +32,6 @@ const AdminMessages = (props: Props) => {
   const isDesksFilterEmpty = formattedDesksId.length === 0;
   const desksIds = isDesksFilterEmpty ? getDesksFromDeskFilter(desks, displayedCounty) : formattedDesksId;
 
-
   useEffect(() => {
     if (adminsMessagesByAdmin) {
       setMessages(adminsMessagesByAdmin)
@@ -40,7 +39,7 @@ const AdminMessages = (props: Props) => {
   }, [adminsMessagesByAdmin])
 
   useEffect(() => {
-    getAdminsMessagesByAdmin(desksIds, adminId);
+    !desksIds && desksIds!==null && desksIds !== undefined && desksIds !== [] && adminId && getAdminsMessagesByAdmin(desksIds, adminId);
   }, [toRefresh, desksId, displayedCounty])
 
     return (

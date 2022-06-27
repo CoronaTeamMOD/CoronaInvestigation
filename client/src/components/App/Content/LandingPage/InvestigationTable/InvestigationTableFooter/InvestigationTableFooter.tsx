@@ -7,6 +7,7 @@ import County from 'models/County';
 import InvestigatorOption from 'models/InvestigatorOption';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 import FooterAction from './FooterAction/FooterAction';
 import useStyle from './InvestigationTableFooterStyles';
@@ -62,7 +63,8 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         handleConfirmDesksDialog,
         handleConfirmCountiesDialog,
         handleDisbandGroupedInvestigations,
-        updateNotInvestigatedStatus
+        updateNotInvestigatedStatus,
+        updateNotInvestigatedSubStatus
     } = useInvestigationTableFooter({
         setOpenDesksDialog,
         setOpenGroupedInvestigations,
@@ -114,6 +116,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
     const updateNotInvestigatedStatuses = () => {
         checkedInvestigations.forEach(investigation => {
             updateNotInvestigatedStatus(investigation.epidemiologyNumber, investigation.mainStatus.id, checkedInvestigations.length)
+            investigation.mainStatus.id === InvestigationMainStatusCodes.NEW && updateNotInvestigatedSubStatus(investigation.epidemiologyNumber)
         });
     }
 

@@ -18,6 +18,7 @@ query InvestigationStaticDetails($investigationId: Int!) {
     vaccinationEffectiveFrom
     symptomsStartDate: symptomsStartTime
     contactInvestigationVerifiedAbroad
+    contactFromAboardId
     investigatedPatientByInvestigatedPatientId {
       covidPatientByCovidPatient {
         identityNumber
@@ -171,6 +172,7 @@ query getAllInvestigationComplexityReasons {
     nodes {
       description
       reasonId
+      statusValidity
     }
   }
 } 
@@ -180,6 +182,45 @@ export const GET_INVESTIGATION_COMPLEXITY_REASON_ID = gql`
 query getinvestigationReasonId ($epidemiologyNumber: Int!) {
   investigationByEpidemiologyNumber(epidemiologyNumber: $epidemiologyNumber) {
     complexityReasonsId
+  }
+}
+`;
+
+export const GET_BIRTHDATE = gql`
+query getBirthdate ($epidemiologyNumber: Int!) {
+  covidPatientByEpidemiologyNumber(epidemiologyNumber: $epidemiologyNumber) {
+    birthDate
+  }
+}
+`;
+
+export const GET_VACCINE_DOSE_ID = gql`
+query getVaccineDoseId ($epidemiologyNumber: Int!) {
+  investigationByEpidemiologyNumber(epidemiologyNumber: $epidemiologyNumber) {
+    vaccineDoseId
+  }
+}
+`;
+
+export const GET_COMPLEXITY_REASONS_BIRTHDATE_AND_VACCINE_DOSE_ID = gql`
+query getinvestigationData ($epidemiologyNumber: Int!) {
+  investigationByEpidemiologyNumber(epidemiologyNumber: $epidemiologyNumber) {
+    complexityReasonsId
+    vaccineDoseId
+    investigatedPatientByInvestigatedPatientId {
+      covidPatientByCovidPatient {
+        birthDate
+      }
+    }
+  }
+}
+`;
+
+
+export const GET_SETTINGS_FOR_STATUS_VALIDITY = gql`
+query getinvestigationReasonId ($key: String!) {
+  rulesConfigByKey(key: $key) {
+    value
   }
 }
 `;
