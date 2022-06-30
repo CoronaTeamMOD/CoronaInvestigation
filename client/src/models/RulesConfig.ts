@@ -5,6 +5,7 @@ interface RulesConfig {
 }
 
 export interface RuleConfigRedux {
+    settingsForStatusValidity? : JSON;
     ifContactsNeedIsolation? : boolean;
 }
 
