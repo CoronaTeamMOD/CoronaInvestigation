@@ -222,8 +222,6 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     const updateNotInvestigatedSubStatus = (epidemiologyNumber: number) => {
         const reopenLogger = logger.setup('Update Investigation Sub Status');
         const complexityReasonsRules = complexityReasons.filter((reason)=> reason.statusValidity === true).map((reason) => reason.reasonId)
-        console.log('complexityReasonsRules : ', complexityReasonsRules)
-        console.log('settingsForStatusValidity : ', settingsForStatusValidity)
         setIsLoading(true);
         axios.post('/investigationInfo/updateInvestigationSubStatus', {
             epidemiologyNumber,
