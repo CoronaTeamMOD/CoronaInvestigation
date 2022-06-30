@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Desk from 'models/Desk';
 import theme from 'styles/theme';
@@ -9,8 +9,11 @@ import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import ComplexityReason from 'models/ComplexityReason';
+import RulesConfigKeys from 'models/enums/RulesConfigKeys';
+import { getRulesConfigByKey } from 'httpClient/rulesConfig';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { setSettingsForStatusValidity } from 'redux/RulesConfig/RulesConfigActionCreator';
 
 import { IndexedInvestigation } from '../InvestigationTablesHeaders';
 import { InvestigationTableFooterOutcome, InvestigationTableFooterParameters } from './InvestigationTableFooterInterfaces';
@@ -48,11 +51,12 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         onDialogClose, fetchTableData, onDeskChange, onDeskGroupChange,
         onCountyChange, onCountyGroupChange } = parameters;
 
-
+    const dispatch = useDispatch();
     const { alertError, alertWarning, alertSuccess } = useCustomSwal();
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const [isInvestigatorAllocationFooterDialogOpen, setIsInvestigatorAllocationFooterDialogOpen] = useState<boolean>(false);
     const complexityReasons = useSelector<StoreStateType, (ComplexityReason)[]>(state => state.complexityReasons);
+    const settingsForStatusValidity = useSelector<StoreStateType, JSON | undefined>(state => state.rulesConfig.settingsForStatusValidity);
 
     let cannotBeUpdatedCount = 0;
     let updatedStatusCount = 0;
@@ -205,14 +209,26 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             })
     }
 
+    const setSettingsForStatusValidityRuleConfig = () => {
+        getRulesConfigByKey(RulesConfigKeys.SETTINGS_FOR_STATUS_VALIDITY).then(data => {
+            if (data && data !== undefined && data.value !== undefined) {
+                let settingsForStatusValidity = data.value  
+                dispatch(setSettingsForStatusValidity(settingsForStatusValidity));
+            }
+        })
+    }
+
+
     const updateNotInvestigatedSubStatus = (epidemiologyNumber: number) => {
         const reopenLogger = logger.setup('Update Investigation Sub Status');
-        // const complexityReasonsRules = complexityReasons.filter((reason)=> reason.statusValidity === true).map((reason)=>reason.reasonId)
-
-        // setIsLoading(true);
+        const complexityReasonsRules = complexityReasons.filter((reason)=> reason.statusValidity === true).map((reason) => reason.reasonId)
+        console.log('complexityReasonsRules : ', complexityReasonsRules)
+        console.log('settingsForStatusValidity : ', settingsForStatusValidity)
+        setIsLoading(true);
         axios.post('/investigationInfo/updateInvestigationSubStatus', {
-            epidemiologyNumber
-            // ,complexityReasonsRules,
+            epidemiologyNumber,
+            complexityReasonsRules,
+            settingsForStatusValidity
         }).then(() => {
             reopenLogger.info('update investigation sub status request was successful', Severity.LOW);
         })
@@ -220,7 +236,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
                 reopenLogger.error(`got errors in server result while updating investigation sub status: ${error}`, Severity.HIGH);
             })
             .finally(() => {
-                // setIsLoading(false);
+                setIsLoading(false);
             })
     }
 
@@ -236,7 +252,8 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         handleConfirmCountiesDialog,
         handleDisbandGroupedInvestigations,
         updateNotInvestigatedStatus,
-        updateNotInvestigatedSubStatus
+        updateNotInvestigatedSubStatus,
+        setSettingsForStatusValidityRuleConfig
     }
 }
 
