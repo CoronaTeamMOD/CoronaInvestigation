@@ -28,4 +28,5 @@ export interface InvestigationTableFooterOutcome {
     handleDisbandGroupedInvestigations: (groupIds: string[]) => void;
     updateNotInvestigatedStatus: (epidemiologyNumber: number, investigationStatusId: number,totalCount:number) => void;
     updateNotInvestigatedSubStatus: (epidemiologyNumber: number) => void;
+    setSettingsForStatusValidityRuleConfig: () => void
 };
