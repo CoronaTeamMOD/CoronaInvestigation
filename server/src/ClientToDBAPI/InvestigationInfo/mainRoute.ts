@@ -306,7 +306,7 @@ investigationInfo.post('/updateInvestigationSubStatus', handleInvestigationReque
         response.status(errorStatusCode).send(error);
     });
 
-    const calculateUPdateSubStatus = ((personDetails: { complexityReasonsId: any; investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { birthDate: Date; }; }; vaccineDoseId: any; }) => {
+    const calculateUpdateSubStatus = ((personDetails: { complexityReasonsId: any; investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { birthDate: Date; }; }; vaccineDoseId: any; }) => {
         let querySubStatusParams = { investigationSubStatus: settingsForStatusValidity['sub_status'], epidemiologyNumber: parseInt(epidemiologyNumber) }
         const patientComplexityReasons = personDetails?.complexityReasonsId;
         const isPatientWithComplexity = patientComplexityReasons !== null ? patientComplexityReasons.includes(complexityReasonsRules[0]) || patientComplexityReasons.includes(complexityReasonsRules[1]) || patientComplexityReasons.includes(complexityReasonsRules[2]) : false;
@@ -329,7 +329,7 @@ investigationInfo.post('/updateInvestigationSubStatus', handleInvestigationReque
                 response.status(errorStatusCode).send(error);
             });
     });
-    await calculateUPdateSubStatus(await personDetails);
+    await calculateUpdateSubStatus(await personDetails);
 });
 
 investigationInfo.post('/updateInvestigationStartTime', handleInvestigationRequest, (request: Request, response: Response) => {
