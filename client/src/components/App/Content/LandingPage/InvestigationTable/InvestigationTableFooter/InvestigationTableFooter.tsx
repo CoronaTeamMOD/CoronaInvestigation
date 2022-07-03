@@ -114,12 +114,6 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         })
     }, [checkedInvestigations])
 
-    useEffect(() => {
-        if (!settingsForStatusValidity) {
-            setSettingsForStatusValidityRuleConfig();
-        }
-    },[])
-
     const shouldGroupActionDisabled: boolean = useMemo(() => {
         return trimmedGroup.uniqueGroupIds.length > 1 || trimmedGroup.epidemiologyNumbers.length === 0 || checkedInvestigations.length < 2
     }, [trimmedGroup, checkedInvestigations])
@@ -127,7 +121,6 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
     const updateNotInvestigatedStatuses = () => {
         checkedInvestigations.forEach(investigation => {
             updateNotInvestigatedStatus(investigation.epidemiologyNumber, investigation.mainStatus.id, checkedInvestigations.length)
-            investigation.mainStatus.id === InvestigationMainStatusCodes.NEW && updateNotInvestigatedSubStatus(investigation.epidemiologyNumber)
         });
     }
 
