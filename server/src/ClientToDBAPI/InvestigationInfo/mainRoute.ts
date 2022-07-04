@@ -14,8 +14,7 @@ import {
     GET_INVESTIGATION_COMPLEXITY_REASON_ID,
     TRACKING_SUB_REASONS_BY_REASON_ID,
     GET_IDENTIFICATION_TYPES,
-    GET_MUTATION_INFO,
-    GET_COMPLEXITY_REASONS_BIRTHDATE_AND_VACCINE_DOSE_ID
+    GET_MUTATION_INFO
 } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
@@ -281,45 +280,31 @@ investigationInfo.post('/updateInvestigationStatus', handleInvestigationRequest,
 });
 
 investigationInfo.post('/updateInvestigationSubStatus', handleInvestigationRequest, (request: Request, response: Response) => {
-    const { epidemiologyNumber, complexityReasonsRules } = request.body;
+    const { epidemiologyNumber, complexityReasonsRules, age, complexityReasonsId, vaccineDoseId  } = request.body;
     const logData = {
         workflow: 'update investigation substatus',
         user: response.locals.user.id,
         investigation: epidemiologyNumber,
+        complexityReasonsRules: complexityReasonsRules,
+        age: age,
+        complexityReasonsId: complexityReasonsId,
+        vaccineDoseId: vaccineDoseId
     };
-    const settingsForStatusValidity = JSON.parse(request.body.settingsForStatusValidity)
-
     const updateInvestigationSubStatusLogger = logger.setup(logData);
-    const parameters = {
-        epidemiologyNumber
-    };
-    updateInvestigationSubStatusLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
-    const queryVariables = { epidemiologyNumber: parseInt(epidemiologyNumber) }
-    return graphqlRequest(GET_COMPLEXITY_REASONS_BIRTHDATE_AND_VACCINE_DOSE_ID, response.locals, queryVariables)
-        .then((result) => {
-            updateInvestigationSubStatusLogger.info('query from db successfully', Severity.LOW)
-            const patientComplexityReasons = result?.data?.investigationByEpidemiologyNumber?.complexityReasonsId;
-            const isPatientWithComplexity = patientComplexityReasons !== null ? patientComplexityReasons.includes(complexityReasonsRules[0]) || patientComplexityReasons.includes(complexityReasonsRules[1]) || patientComplexityReasons.includes(complexityReasonsRules[2]) : false;
-            const patientAge = getPatientAge(result.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient.birthDate);
-            const patientVaccineDoseId = result?.data?.investigationByEpidemiologyNumber?.vaccineDoseId;
+    const settingsForStatusValidity = JSON.parse(request.body.settingsForStatusValidity)
+    const isPatientWithComplexity = complexityReasonsId !== null ? complexityReasonsId.includes(complexityReasonsRules[0]) || complexityReasonsId.includes(complexityReasonsRules[1]) || complexityReasonsId.includes(complexityReasonsRules[2]) : false;
+    let querySubStatusParams = { investigationSubStatus: settingsForStatusValidity['sub_status'], epidemiologyNumber: parseInt(epidemiologyNumber) }
 
-            let querySubStatusParams = { investigationSubStatus: settingsForStatusValidity['sub_status'], epidemiologyNumber: parseInt(epidemiologyNumber) }
+    if (!(age >= settingsForStatusValidity['from_age'] && age <= settingsForStatusValidity['to_age'] ||
+        vaccineDoseId >= settingsForStatusValidity['vaccine_num'] && 
+        age >= settingsForStatusValidity['from_age_and_vaccine'] && age <= settingsForStatusValidity['to_age_and_vaccine'] || 
+        isPatientWithComplexity)) {
+            querySubStatusParams = { investigationSubStatus: settingsForStatusValidity['another_sub_status'], epidemiologyNumber: parseInt(epidemiologyNumber) }
+        }              
 
-            if (!(patientAge >= settingsForStatusValidity['from_age'] && patientAge <= settingsForStatusValidity['to_age'] ||
-                patientVaccineDoseId >= settingsForStatusValidity['vaccine_num'] && 
-                patientAge >= settingsForStatusValidity['from_age_and_vaccine'] && patientAge <= settingsForStatusValidity['to_age_and_vaccine'] || 
-                isPatientWithComplexity)) {
-                    querySubStatusParams = { investigationSubStatus: settingsForStatusValidity['another_sub_status'], epidemiologyNumber: parseInt(epidemiologyNumber) }
-                }              
-
-                return graphqlRequest(UPDATE_INVESTIGATION_SUBSTATUS, response.locals, querySubStatusParams)
-                    .then(result => {
-                        updateInvestigationSubStatusLogger.info(validDBResponseLog, Severity.LOW);
-                })
-                .catch(error => {
-                    updateInvestigationSubStatusLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-                    response.status(errorStatusCode).send(error);
-                });
+    return graphqlRequest(UPDATE_INVESTIGATION_SUBSTATUS, response.locals, querySubStatusParams)
+        .then(result => {
+            updateInvestigationSubStatusLogger.info(validDBResponseLog, Severity.LOW);
         })
         .catch(error => {
             updateInvestigationSubStatusLogger.error(invalidDBResponseLog(error), Severity.HIGH);

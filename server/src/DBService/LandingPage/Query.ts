@@ -118,6 +118,7 @@ query AllInvestigations($county:Int!, $orderBy: String!, $offset: Int!, $size: I
       transferReason
       wasInvestigationTransferred
       groupId
+      vaccineDoseId
       deskByDeskId {
         deskName
       }
