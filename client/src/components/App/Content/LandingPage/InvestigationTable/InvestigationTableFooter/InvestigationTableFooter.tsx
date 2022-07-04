@@ -114,6 +114,12 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         })
     }, [checkedInvestigations])
 
+    useEffect(() => {
+        if (!settingsForStatusValidity) {
+            setSettingsForStatusValidityRuleConfig();
+        }
+    },[])
+
     const shouldGroupActionDisabled: boolean = useMemo(() => {
         return trimmedGroup.uniqueGroupIds.length > 1 || trimmedGroup.epidemiologyNumbers.length === 0 || checkedInvestigations.length < 2
     }, [trimmedGroup, checkedInvestigations])
