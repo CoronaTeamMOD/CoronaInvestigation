@@ -26,7 +26,7 @@ export interface InvestigationTableFooterOutcome {
     handleConfirmDesksDialog: (updatedDesk: Desk, transferReason: string) => void;
     handleConfirmCountiesDialog: (updatedCounty: County, transferReason: string) => void;
     handleDisbandGroupedInvestigations: (groupIds: string[]) => void;
-    updateNotInvestigatedStatus: (epidemiologyNumber: number, investigationStatusId: number,totalCount:number, subStatus: string | null) => void;
+    updateNotInvestigatedStatus: (epidemiologyNumber: number, investigationStatusId: number,totalCount:number, subStatus: string | null) => void; 
     updateNotInvestigatedSubStatus: (epidemiologyNumber: number, age: number, complexityReasonsId: (number | null)[], vaccineDoseId: number | null) => string | null;
     setSettingsForStatusValidityRuleConfig: () => void
 };
