@@ -42,6 +42,7 @@ interface InvestigationTableRow {
     //investigatorReferenceStatus: KeyValuePair;
     //investigatorReferenceReasons:KeyValuePair[];
     lastUpdatorUser: string;
+    vaccineDoseId: number | null;
 };
 
 export default InvestigationTableRow;
