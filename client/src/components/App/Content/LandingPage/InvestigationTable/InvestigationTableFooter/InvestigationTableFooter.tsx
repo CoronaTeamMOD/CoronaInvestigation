@@ -126,8 +126,8 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
 
     const updateNotInvestigatedStatuses = () => {
         checkedInvestigations.forEach(investigation => {
-            updateNotInvestigatedStatus(investigation.epidemiologyNumber, investigation.mainStatus.id, checkedInvestigations.length);
-            investigation.mainStatus.id === InvestigationMainStatusCodes.NEW && updateNotInvestigatedSubStatus(investigation.epidemiologyNumber, investigation.age, investigation.complexityReasonsId, investigation.vaccineDoseId);
+            const subStstus = updateNotInvestigatedSubStatus(investigation.epidemiologyNumber, investigation.age, investigation.complexityReasonsId, investigation.vaccineDoseId);
+            updateNotInvestigatedStatus(investigation.epidemiologyNumber, investigation.mainStatus.id, checkedInvestigations.length, subStstus);
         });
     }
 
