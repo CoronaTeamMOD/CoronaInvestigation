@@ -170,7 +170,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         updateStatusErrorCount = 0;
     }
 
-    const updateNotInvestigatedStatus = (epidemiologyNumber: number, investigationStatusId: number, totalCount: number) => {
+    const updateNotInvestigatedStatus = (epidemiologyNumber: number, investigationStatusId: number, totalCount: number, subStatus: string | null) => {
         const reopenLogger = logger.setup('Update Investigation Status');
         setIsLoading(true);
         if (investigationStatusId != InvestigationMainStatusCodes.NEW) {
@@ -185,7 +185,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         }      
         axios.post('/investigationInfo/updateInvestigationStatus', {
             investigationMainStatus: InvestigationMainStatusCodes.NOT_INVESTIGATED,
-            investigationSubStatus: null,
+            investigationSubStatus: subStatus,
             statusReason: null,
             epidemiologyNumber
         }).then(() => {
@@ -219,25 +219,17 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     }
 
     const updateNotInvestigatedSubStatus = (epidemiologyNumber: number, age: number, complexityReasonsId: (number | null)[], vaccineDoseId: number | null) => {
-        const reopenLogger = logger.setup('Update Investigation Sub Status');
         const complexityReasonsRules = complexityReasons.filter((reason)=> reason.statusValidity === true).map((reason) => reason.reasonId)
-        setIsLoading(true);
-        axios.post('/investigationInfo/updateInvestigationSubStatus', {
-            epidemiologyNumber,
-            complexityReasonsRules,
-            settingsForStatusValidity,
-            age,
-            complexityReasonsId,
-            vaccineDoseId
-        }).then(() => {
-            reopenLogger.info('update investigation sub status request was successful', Severity.LOW);
-        })
-        .catch((error) => {
-            reopenLogger.error(`got errors in server result while updating investigation sub status: ${error}`, Severity.HIGH);
-        })
-        .finally(() => {
-            setIsLoading(false);
-        })
+        const isPatientWithComplexity = complexityReasonsId !== null ? complexityReasonsId.includes(complexityReasonsRules[0]) || complexityReasonsId.includes(complexityReasonsRules[1]) || complexityReasonsId.includes(complexityReasonsRules[2]) : false;
+        const convertSettingsForStatusValidity: any = settingsForStatusValidity
+        const rulesForSettingsForStatusValidity = JSON.parse(convertSettingsForStatusValidity);
+        if (!(age >= rulesForSettingsForStatusValidity['from_age'] && age <= rulesForSettingsForStatusValidity['to_age'] ||
+            (vaccineDoseId && vaccineDoseId >= rulesForSettingsForStatusValidity['vaccine_num'] ) && 
+            age >= rulesForSettingsForStatusValidity['from_age_and_vaccine'] && age <= rulesForSettingsForStatusValidity['to_age_and_vaccine'] || 
+            isPatientWithComplexity)) {
+                return rulesForSettingsForStatusValidity['another_sub_status']
+        }             
+        return rulesForSettingsForStatusValidity['sub_status'];
     }
 
     return {
