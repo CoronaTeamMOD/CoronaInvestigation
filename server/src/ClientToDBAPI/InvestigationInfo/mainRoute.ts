@@ -18,7 +18,6 @@ import {
 } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
-    UPDATE_INVESTIGATION_SUBSTATUS,
     UPDATE_INVESTIGATION_START_TIME,
     UPDATE_INVESTIGATION_END_TIME,
     COMMENT,
@@ -278,39 +277,6 @@ investigationInfo.post('/updateInvestigationStatus', handleInvestigationRequest,
             response.status(errorStatusCode).send(error);
         });
 });
-
-investigationInfo.post('/updateInvestigationSubStatus', handleInvestigationRequest, (request: Request, response: Response) => {
-    const { epidemiologyNumber, complexityReasonsRules, age, complexityReasonsId, vaccineDoseId  } = request.body;
-    const logData = {
-        workflow: 'update investigation substatus',
-        user: response.locals.user.id,
-        investigation: epidemiologyNumber,
-        complexityReasonsRules: complexityReasonsRules,
-        age: age,
-        complexityReasonsId: complexityReasonsId,
-        vaccineDoseId: vaccineDoseId
-    };
-    const updateInvestigationSubStatusLogger = logger.setup(logData);
-    const settingsForStatusValidity = JSON.parse(request.body.settingsForStatusValidity)
-    const isPatientWithComplexity = complexityReasonsId !== null ? complexityReasonsId.includes(complexityReasonsRules[0]) || complexityReasonsId.includes(complexityReasonsRules[1]) || complexityReasonsId.includes(complexityReasonsRules[2]) : false;
-    let querySubStatusParams = { investigationSubStatus: settingsForStatusValidity['sub_status'], epidemiologyNumber: parseInt(epidemiologyNumber) }
-
-    if (!(age >= settingsForStatusValidity['from_age'] && age <= settingsForStatusValidity['to_age'] ||
-        vaccineDoseId >= settingsForStatusValidity['vaccine_num'] && 
-        age >= settingsForStatusValidity['from_age_and_vaccine'] && age <= settingsForStatusValidity['to_age_and_vaccine'] || 
-        isPatientWithComplexity)) {
-            querySubStatusParams = { investigationSubStatus: settingsForStatusValidity['another_sub_status'], epidemiologyNumber: parseInt(epidemiologyNumber) }
-        }              
-
-    return graphqlRequest(UPDATE_INVESTIGATION_SUBSTATUS, response.locals, querySubStatusParams)
-        .then(result => {
-            updateInvestigationSubStatusLogger.info(validDBResponseLog, Severity.LOW);
-        })
-        .catch(error => {
-            updateInvestigationSubStatusLogger.error(invalidDBResponseLog(error), Severity.HIGH);
-            response.status(errorStatusCode).send(error);
-        });
-    });
 
 investigationInfo.post('/updateInvestigationStartTime', handleInvestigationRequest, (request: Request, response: Response) => {
     const { epidemiologyNumber } = request.body;
