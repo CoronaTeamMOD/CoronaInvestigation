@@ -41,9 +41,5 @@ export const contactQuestioningPersonal = {
                     : yup.string().nullable().matches(PHONE_NUMBER_REGEX, invalidPhoneText);
             }
         ),
-    [InteractedContactFields.ADDITIONAL_PHONE_NUMBER]: yup.string().when(InteractedContactFields.CONTACT_STATUS, {
-        is: 5,
-        then: yup.string().nullable(),
-        otherwise: yup.string().nullable().matches(NOT_REQUIRED_PHONE_NUMBER_REGEX, invalidPhoneText),
-    }),
+  
 };

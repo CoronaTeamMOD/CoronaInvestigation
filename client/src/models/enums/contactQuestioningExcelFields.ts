@@ -37,6 +37,11 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
     streetId: 'מזהה רחוב',
     houseNum: 'מספר בית השהייה בבידוד',
     apartment: 'מספר דירת השהייה בבידוד',
+    isStayAnotherCountry:'האם שהה בחו"ל',
+    overseasComments:'פרטים נוספים על השהיה בחו"ל',
+    transitDate:'תאריך כניסה לארץ',
+    fromCountry:'היעד בו שהה',
+
 };
 
 type AddressNames = {

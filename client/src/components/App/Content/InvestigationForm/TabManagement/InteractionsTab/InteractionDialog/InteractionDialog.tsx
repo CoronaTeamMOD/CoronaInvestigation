@@ -170,7 +170,10 @@ const InteractionDialog = (props: Props) => {
             [InteractionEventDialogFields.END_TIME]: endTimeToSave,
             [InteractionEventDialogFields.UNKNOWN_TIME]: Boolean(data[InteractionEventDialogFields.UNKNOWN_TIME]),
             [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
-            [InteractionEventDialogFields.PLACE_NAME]: methods.watch(InteractionEventDialogFields.PLACE_NAME),
+            [InteractionEventDialogFields.PLACE_NAME]: 
+            isNamedLocation && Boolean(data[InteractionEventDialogFields.PLACE_NAME])
+                ? data[InteractionEventDialogFields.PLACE_NAME]
+                : generatePlacenameByPlaceSubType(placeSubtypeName),
             [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: Boolean(data[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]),
             [InteractionEventDialogFields.ADDITIONAL_OCCURRENCES]:
             data[InteractionEventDialogFields.ADDITIONAL_OCCURRENCES]?.map(convertAdditionalOccurances) || [],

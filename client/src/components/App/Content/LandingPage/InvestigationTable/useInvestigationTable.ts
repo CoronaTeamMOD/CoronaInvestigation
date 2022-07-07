@@ -92,7 +92,8 @@ export const createRowData = (
     //chatStatus: KeyValuePair,
     //investigatorReferenceStatus: KeyValuePair,
     //investigatorReferenceReasons:KeyValuePair[],
-    lastUpdatorUser: string
+    lastUpdatorUser: string,
+    vaccineDoseId: number | null
 ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
@@ -131,7 +132,8 @@ export const createRowData = (
     //chatStatus,
     //investigatorReferenceStatus,
     //investigatorReferenceReasons,
-    lastUpdatorUser
+    lastUpdatorUser,
+    vaccineDoseId
 });
 
 export interface SelectedRow {
@@ -730,7 +732,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     //investigation.botInvestigation?.chatStatus,
                                     //investigation.botInvestigation?.investigatorReferenceStatus,
                                     //investigation.botInvestigation?.investigatorReferenceReasons,
-                                    investigation.lastUpdatorUser
+                                    investigation.lastUpdatorUser,
+                                    investigation.vaccineDoseId
                                 )
                             });
                         investigationRows
@@ -1197,7 +1200,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             //investigation.botInvestigation?.chatStatus,
                             //investigation.botInvestigation?.investigatorReferenceStatus,
                             //investigation.botInvestigation?.investigatorReferenceReasons,
-                            investigation.lastUpdatorUser
+                            investigation.lastUpdatorUser,
+                            investigation.vaccineDoseId
                         )
                     });
                 setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))

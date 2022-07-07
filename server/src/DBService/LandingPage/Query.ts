@@ -118,6 +118,7 @@ query AllInvestigations($county:Int!, $orderBy: String!, $offset: Int!, $size: I
       transferReason
       wasInvestigationTransferred
       groupId
+      vaccineDoseId
       deskByDeskId {
         deskName
       }
@@ -312,11 +313,12 @@ mutation adminInvestigations ( $county: Int!, $desks: [Int], $orderBy: String!, 
 
 export const GET_ALL_INVESTIGATION_SUB_STATUS = gql`
 query allInvestigationSubStatuses {
-  allInvestigationSubStatuses(orderBy: DISPLAY_NAME_ASC) {
+  allInvestigationSubStatuses(orderBy: DISPLAY_NAME_ASC, filter: {isActive: {equalTo: true}}) {
     nodes {
       id
       displayName
       parentStatus
+      isActive
     }
   }
 }
@@ -410,6 +412,16 @@ query allVaccineDoses {
       displayName
       id
     }
+  }
+}
+`;
+
+export const GET_RULES_CONFIG_BY_KEY = gql`
+ query getRulesConfigByKey ($key: String!) {
+  rulesConfigByKey(key: $key) {
+    description
+    key
+    value
   }
 }
 `;

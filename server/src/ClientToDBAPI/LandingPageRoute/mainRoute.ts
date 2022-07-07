@@ -19,7 +19,8 @@ import {
     GET_ALL_ADMIN_MESSAGES_BY_DESK_AND_ADMIN,
     GET_ALL_INVESTIGATOR_REFERENCE_STATUSES,
     GET_ALL_CHAT_STATUSES,
-    GET_ALL_VACCINE_DOSES
+    GET_ALL_VACCINE_DOSES,
+    GET_RULES_CONFIG_BY_KEY
 } from '../../DBService/LandingPage/Query';
 
 const landingPageRoute = Router();
@@ -388,6 +389,26 @@ landingPageRoute.get('/vaccineDoses', (request: Request, response: Response) => 
         })
         .catch(error => {
             vaccineDosesLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
+})
+
+landingPageRoute.get('/getRulesConfigByKey/:key', (request: Request, response: Response) => { 
+    const key: string = request.params.key || '';
+    const rulesConfigLogger = logger.setup({
+        workflow: 'query rules config by key',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber,
+    });
+    const parameters ={key};
+    rulesConfigLogger.info(launchingDBRequestLog(), Severity.LOW);
+    graphqlRequest(GET_RULES_CONFIG_BY_KEY, response.locals, parameters)
+        .then((result: any) => {
+            rulesConfigLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data.rulesConfigByKey);
+        })
+        .catch(error => {
+            rulesConfigLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         });
 })

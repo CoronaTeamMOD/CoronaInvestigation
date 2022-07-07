@@ -13,6 +13,7 @@ enum FamilyContactsTableHeadersNames {
     VACCINE_EFFECTIVENESS_START_DATE = 'vaccineEffectivenessStartDate',
     VACCINE_EFFECTIVENESS_EXPIERY_DATE = 'vaccineEffectivenessExpieryDate',
     FINAL_EPIDEMIOLOGICAL_STATUS_DESC = 'finalEpidemiologicalStatusDesc',
+    IS_STAY_ANOTHER_COUNTRY = 'isStayAnotherCountry'
 };
 
 export const FamilyContactsTableHeaders = {
@@ -30,6 +31,7 @@ export const FamilyContactsTableHeaders = {
     [FamilyContactsTableHeadersNames.VACCINE_EFFECTIVENESS_EXPIERY_DATE]: 'תוקף חיסון',
     [FamilyContactsTableHeadersNames.FINAL_EPIDEMIOLOGICAL_STATUS_DESC ]: 'סטטוס מסכם',
     [FamilyContactsTableHeadersNames.ISOLATION_CITY]: 'ישוב השהייה בבידוד',
+    [FamilyContactsTableHeadersNames.IS_STAY_ANOTHER_COUNTRY]: 'האם חזר מחו"ל',
 }
 
 export default FamilyContactsTableHeadersNames;

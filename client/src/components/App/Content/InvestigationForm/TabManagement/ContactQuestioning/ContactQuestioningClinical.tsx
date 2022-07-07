@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { addDays, format } from 'date-fns';
 import { Controller, DeepMap, FieldError, useFormContext } from 'react-hook-form';
-import { Avatar, FormControl, Grid, MenuItem, Select, Typography } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+import { Avatar, FormControl, Grid, MenuItem, Select, TextField, Typography } from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
 
 import theme from 'styles/theme';
 import Toggle from 'commons/Toggle/Toggle';
@@ -22,10 +22,12 @@ import ContactStatusCodes from 'models/enums/ContactStatusCodes';
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningFieldsNames from './ContactQuestioningFieldsNames';
-import { FormInputs } from './ContactQuestioningInterfaces';
 import GroupedInteractedContact from 'models/ContactQuestioning/GroupedInteractedContact';
 import { setInteractedContact } from 'redux/InteractedContacts/interactedContactsActionCreators';
+import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
+import Country from 'models/Country';
+import { Autocomplete } from '@material-ui/lab';
 
 const emptyFamilyRelationship: FamilyRelationship = {
     id: null as any,
@@ -36,7 +38,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const { errors, watch, ...methods } = useFormContext<GroupedInteractedContact>();
 
-    const { familyRelationships, interactedContact, isFamilyContact, isViewMode } = props;
+    const { familyRelationships, interactedContact, isFamilyContact, isViewMode, ifContactNeedIsolation } = props;
 
     const classes = useStyles();
 
@@ -56,6 +58,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const isolationEndDate = addDays(new Date(interactedContact.contactDate), daysToIsolate);
     const formattedIsolationEndDate = format(new Date(isolationEndDate), 'dd/MM/yyyy');
 
+    const countries = useSelector<StoreStateType, Map<string, Country>>((state) => state.countries);
+    const countryOptions = Array.from(countries).map(([name, value]) => value);
+
     const isolationAddressErrors = errors && (errors[InteractedContactFields.ISOLATION_ADDRESS] as DeepMap<FlattenedDBAddress, FieldError>);
 
     const addressFormFields: AddressFormFields = {
@@ -63,12 +68,12 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
             name: `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_CITY}`,
             className: classes.addressTextField,
             testId: 'contactedPersonCity',
-            defaultValue: interactedContact.isolationAddress?.city?.id ||  interactedContact.isolationAddress?.city
+            defaultValue: interactedContact.isolationAddress?.city?.id || interactedContact.isolationAddress?.city
         },
         streetField: {
             name: `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_STREET}`,
             className: classes.addressTextField,
-            defaultValue: interactedContact.isolationAddress?.street?.id ||  interactedContact.isolationAddress?.street||null
+            defaultValue: interactedContact.isolationAddress?.street?.id || interactedContact.isolationAddress?.street || null
         },
         houseNumberField: {
             name: `${InteractedContactFields.ISOLATION_ADDRESS}.${InteractedContactFields.CONTACTED_PERSON_HOUSE_NUMBER}`,
@@ -85,6 +90,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const isInvestigationComplited = interactedContact.contactStatus === ContactStatusCodes.COMPLETED
     const isUnreachable = interactedContact.contactStatus === ContactStatusCodes.CANT_REACH
     const isUncooperative = interactedContact.contactStatus === ContactStatusCodes.DONT_COOPERATE
+    const isStayAnotherCounrtyFieldDisabled = true;
 
     const formatContactToValidate = () => {
         return {
@@ -134,9 +140,6 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 onChange(false);
                 dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.DOES_NEED_ISOLATION, false));
             }
-
-
-
         }
     };
 
@@ -176,7 +179,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                             placeholder='קרבה משפחתית'
                                             onChange={(event) => {
                                                 props.onChange(event.target.value);
-                                                dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.FAMILY_RELATIONSHIP,event.target.value as number));
+                                                dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.FAMILY_RELATIONSHIP, event.target.value as number));
                                             }}
                                         >
                                             {
@@ -228,91 +231,214 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     </Grid>
                 </Grid>
 
-                <Grid container item>
-                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.ISOLATION_PLACE} />
-                    <Grid container item xs={5}>
-                        <AddressForm
-                            unsized={true}
-                            disabled={isFieldDisabled || isViewMode}
-                            control={methods.control}
-                            watch={watch}
-                            errors={isolationAddressErrors}
-                            onBlur={()=>{dispatch(setInteractedContact(interactedContact.id, 'isolationAddress', methods.getValues().isolationAddress))}}
-                            {...addressFormFields}
+                {ifContactNeedIsolation &&
+                    <>
 
-                        />
-                    </Grid>
-                </Grid>
+                        <Grid container item>
+                            <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.ISOLATION_PLACE} />
+                            <Grid container item xs={5}>
+                                <AddressForm
+                                    unsized={true}
+                                    disabled={isFieldDisabled || isViewMode}
+                                    control={methods.control}
+                                    watch={watch}
+                                    errors={isolationAddressErrors}
+                                    onBlur={() => { dispatch(setInteractedContact(interactedContact.id, 'isolationAddress', methods.getValues().isolationAddress)) }}
+                                    {...addressFormFields}
 
-                <Grid item>
-                    <Grid container>
-                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_NEED_HELP_IN_ISOLATION} className={classes.fieldName} />
-                        <Controller
-                            control={methods.control}
-                            name={`${InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION}`}
-                            defaultValue={interactedContact.doesNeedHelpInIsolation}
-                            render={(props) => {
-                                return (
-                                    <Toggle
-                                        {...props}
-                                        disabled={isFieldDisabled || isViewMode}
-                                        test-id='doesNeedHelpInIsolation'
-                                        onChange={(event, booleanValue) => {
-                                            if (booleanValue !== null) {
-                                                props.onChange(booleanValue);
-                                                dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, booleanValue));
-                                            }
-                                        }} 
-                                        />
-                                )
-                            }}
-                        />
-                    </Grid>
-                    <InlineErrorText
-                        error={errors && errors[InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION]}
-                    />
-                </Grid>
+                                />
+                            </Grid>
+                        </Grid>
 
-                <Grid item>
-                    <Grid container>
-                        <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_NEED_ISOLATION} className={classes.fieldName} />
-                        <Controller
-                            control={methods.control}
-                            name={`${InteractedContactFields.DOES_NEED_ISOLATION}`}
-                            defaultValue={interactedContact.doesNeedIsolation}
-                            render={(props) => {
-                                return (
-                                    <Toggle
-                                        {...props}
-                                        disabled={isFieldDisabled || (shouldDisableIdByReopen && interactedContact.doesNeedIsolation === true) || isViewMode}
-                                        test-id='doesNeedIsolation'
-                                        onChange={(event, booleanValue) => handelOnChangeDoesNeedIsolation(event, booleanValue, props.onChange)}
-                                     />
-                                )
-                            }}
-                        />
-                    </Grid>
-                    <InlineErrorText
-                        error={errors && errors[InteractedContactFields.DOES_NEED_ISOLATION]}
-                    />
-                </Grid>
-
-                <Grid container item>
-                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.ISOLATION_END_DATE} className={classes.fieldName} />
-                    <Grid item xs={5}>
-                        <FormControl variant='outlined' fullWidth>
-                            <AlphanumericTextField
-                                disabled
-                                testId='isolationEndDate'
-                                name='isolationEndDate'
-                                value={formattedIsolationEndDate}
-                                onChange={() => { }}
-                                onBlur={() => { }}
+                        <Grid item>
+                            <Grid container>
+                                <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_NEED_HELP_IN_ISOLATION} className={classes.fieldName} />
+                                <Controller
+                                    control={methods.control}
+                                    name={`${InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION}`}
+                                    defaultValue={interactedContact.doesNeedHelpInIsolation}
+                                    render={(props) => {
+                                        return (
+                                            <Toggle
+                                                {...props}
+                                                disabled={isFieldDisabled || isViewMode}
+                                                test-id='doesNeedHelpInIsolation'
+                                                onChange={(event, booleanValue) => {
+                                                    if (booleanValue !== null) {
+                                                        props.onChange(booleanValue);
+                                                        dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, booleanValue));
+                                                    }
+                                                }}
+                                            />
+                                        )
+                                    }}
+                                />
+                            </Grid>
+                            <InlineErrorText
+                                error={errors && errors[InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION]}
                             />
-                        </FormControl>
-                    </Grid>
+                        </Grid>
+
+                        <Grid item>
+                            <Grid container>
+                                <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.DOES_NEED_ISOLATION} className={classes.fieldName} />
+                                <Controller
+                                    control={methods.control}
+                                    name={`${InteractedContactFields.DOES_NEED_ISOLATION}`}
+                                    defaultValue={interactedContact.doesNeedIsolation}
+                                    render={(props) => {
+                                        return (
+                                            <Toggle
+                                                {...props}
+                                                disabled={isFieldDisabled || (shouldDisableIdByReopen && interactedContact.doesNeedIsolation === true) || isViewMode}
+                                                test-id='doesNeedIsolation'
+                                                onChange={(event, booleanValue) => handelOnChangeDoesNeedIsolation(event, booleanValue, props.onChange)}
+                                            />
+                                        )
+                                    }}
+                                />
+                            </Grid>
+                            <InlineErrorText
+                                error={errors && errors[InteractedContactFields.DOES_NEED_ISOLATION]}
+                            />
+                        </Grid>
+
+                        <Grid container item>
+                            <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.ISOLATION_END_DATE} className={classes.fieldName} />
+                            <Grid item xs={5}>
+                                <FormControl variant='outlined' fullWidth>
+                                    <AlphanumericTextField
+                                        disabled
+                                        testId='isolationEndDate'
+                                        name='isolationEndDate'
+                                        value={formattedIsolationEndDate}
+                                        onChange={() => { }}
+                                        onBlur={() => { }}
+                                    />
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                    </>
+                }
+                <Grid item container>
+                    <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.IS_STAY_ANOTHER_COUNTRY} className={classes.fieldName} />
+                    <Controller
+                        control={methods.control}
+                        name={`${InteractedContactFields.IS_STAY_ANOTHER_COUNTRY}`}
+                        defaultValue={interactedContact.isStayAnotherCountry}
+                        render={(props) => {
+                            return (
+                                <Toggle
+                                    {...props}
+                                    disabled={isStayAnotherCounrtyFieldDisabled || isFieldDisabled || isViewMode}
+                                    test-id='isStayAnotherCountry'
+                                    onChange={(event, booleanValue) => {
+                                        if (booleanValue !== null) {
+                                            props.onChange(booleanValue);
+                                            dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.IS_STAY_ANOTHER_COUNTRY, booleanValue));
+                                        }
+                                    }}
+                                />
+                            )
+                        }}
+                    />
+
+                    <InlineErrorText
+                        error={errors && errors[InteractedContactFields.IS_STAY_ANOTHER_COUNTRY]}
+                    />
                 </Grid>
 
+                {interactedContact.isStayAnotherCountry == true &&
+                    <>
+
+                        <Grid container item alignItems='center'>
+                            <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.TRANSIT_DATE} className={classes.fieldName} />
+                            <Grid item xs={5}>
+                                <Controller
+                                    control={methods.control}
+                                    name={`${InteractedContactFields.TRANSIT_DATE}`}
+                                    defaultValue={interactedContact.transitDate}
+                                    render={(props) => {
+                                        const dateError = errors && (errors as DeepMap<InteractedContact, FieldError>)[InteractedContactFields.TRANSIT_DATE]?.message;
+                                        return (
+                                            <FormControl variant='outlined' fullWidth>
+                                                <DatePick
+                                                    {...props}
+                                                    disabled={isStayAnotherCounrtyFieldDisabled || isFieldDisabled || isViewMode}
+                                                    testId='transitDate'
+                                                    useBigCalender={false}
+                                                    error={Boolean(dateError)}
+                                                    onChange={(newDate: Date) => {
+                                                        props.onChange(newDate);
+                                                        dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.TRANSIT_DATE, methods.getValues(InteractedContactFields.TRANSIT_DATE)));
+                                                    }}
+                                                />
+                                            </FormControl>
+                                        );
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
+                        <Grid container item>
+                            <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.FROM_COUNTRY} className={classes.fieldName} />
+                            <Grid item xs={5}>
+                                <Controller
+                                    control={methods.control}
+                                    name={`${InteractedContactFields.FROM_COUNTRY}`}
+                                    defaultValue={interactedContact.fromCountry}
+                                    render={(props) => {
+                                        return (
+                                            <Autocomplete
+                                                options={countryOptions}
+                                                getOptionLabel={(option: Country) => option.displayName}
+                                                value={props.value}
+                                                onChange={(e, value) => {
+                                                   props.onChange(value);
+                                                   dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.FROM_COUNTRY, value))
+                                                }
+                                                }
+                                                renderInput={(params) =>
+                                                    <TextField
+                                                        label={ContactQuestioningFieldsNames.FROM_COUNTRY}
+                                                        {...params}
+                                                        placeholder={ContactQuestioningFieldsNames.FROM_COUNTRY}
+                                                        error={errors && Boolean(errors[InteractedContactFields.FROM_COUNTRY])}
+                                                    />}
+                                                disabled={isStayAnotherCounrtyFieldDisabled || isFieldDisabled || isViewMode}
+                                            />
+                                        );
+                                    }}
+                                />
+
+                            </Grid>
+                        </Grid>
+                        <Grid container item>
+                            <FieldName xs={5} fieldName={ContactQuestioningFieldsNames.OVERSEAS_COMMENTS} className={classes.fieldName} />
+                            <Grid item xs={5}>
+                                <Controller
+                                    control={methods.control}
+                                    name={`${InteractedContactFields.OVERSEAS_COMMENTS}`}
+                                    defaultValue={interactedContact.overseasComments}
+                                    render={(props) => {
+                                        return (
+                                            <FormControl variant='outlined' fullWidth>
+                                                <AlphanumericTextField
+                                                    {...props}
+                                                    testId='overseasComments'
+                                                    onChange={(newValue: string) => {
+                                                        props.onChange(newValue)
+                                                    }}
+                                                    onBlur={() => dispatch(setInteractedContact(interactedContact.id, InteractedContactFields.OVERSEAS_COMMENTS, methods.getValues(InteractedContactFields.OVERSEAS_COMMENTS)))}
+                                                    placeholder={ContactQuestioningFieldsNames.OVERSEAS_COMMENTS}
+                                                    disabled={isStayAnotherCounrtyFieldDisabled || isFieldDisabled || isViewMode}
+                                                />
+                                            </FormControl>
+                                        )
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
+                    </>}
             </Grid>
         </Grid>
     )
@@ -325,4 +451,5 @@ interface Props {
     interactedContact: InteractedContact;
     isFamilyContact: boolean;
     isViewMode?: boolean;
+    ifContactNeedIsolation?: boolean;
 };

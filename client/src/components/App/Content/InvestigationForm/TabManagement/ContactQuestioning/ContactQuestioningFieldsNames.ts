@@ -17,6 +17,10 @@ enum ContactQuestioningFieldsNames {
     DOES_WORK_WITH_CROWD = 'עבודה עם קהל במסגרת העבודה?',
     OCCUPATION = 'תעסוקה:',
     EXTRA_INFO = 'הערות נוספות:',
+    IS_STAY_ANOTHER_COUNTRY = 'האם שהה בחו"ל:',
+    TRANSIT_DATE = 'תאריך כניסה לארץ:',
+    FROM_COUNTRY = 'היעד בו שהה:',
+    OVERSEAS_COMMENTS = 'פרטים נוספים על השהיה בחו"ל',
 };
 
 export default ContactQuestioningFieldsNames;
