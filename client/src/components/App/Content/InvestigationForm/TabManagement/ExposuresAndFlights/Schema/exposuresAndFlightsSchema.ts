@@ -52,8 +52,6 @@ const exposures = (validationDate: Date) => {
 
 const ExposureSchema = (validationDate: Date) => {
     return yup.object().shape({
-        [fieldsNames.wasInVacation]: yup.boolean().nullable().required(requiredText),
-        [fieldsNames.wasInEvent]: yup.boolean().nullable().required(requiredText),
         [fieldsNames.wereFlights]: yup.boolean().required(),
         [fieldsNames.wereConfirmedExposures]: yup.boolean().required(),
         [fieldsNames.exposures]: yup.array().when(
