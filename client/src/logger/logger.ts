@@ -1,6 +1,6 @@
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
-import { MethodsLogMessage, LogMessage, LogType, Environment, InitialLogData, Severity, Service } from 'models/Logger';
+import { MethodsLogMessage, LogMessage, LogType, Environment, InitialLogData, Severity, Service, LogLevel } from 'models/Logger';
 import { store } from 'redux/store';
 
 class Logger {
@@ -39,7 +39,8 @@ class Logger {
             timestamp: new Date().toLocaleString('he-IL'),
             type: logType,
         }
-        if (process.env.REACT_APP_SHOULD_POST_TO_AZURE && JSON.parse(process.env.REACT_APP_SHOULD_POST_TO_AZURE as string)) {
+        if (process.env.REACT_APP_SHOULD_POST_TO_AZURE && JSON.parse(process.env.REACT_APP_SHOULD_POST_TO_AZURE as string) &&
+            process.env.REACT_APP_LOG_LEVEL && this.shouldLogMsg( process.env.REACT_APP_LOG_LEVEL, logType)) {
             this._postToAzure(logMessage);
         }
     }
@@ -49,7 +50,7 @@ class Logger {
     }
 
     warn(logMessage: MethodsLogMessage) {
-        this._buildLogMessage(logMessage, LogType.WARNING)
+        this._buildLogMessage(logMessage, LogType.WARN)
     }
 
     error(logMessage: MethodsLogMessage) {
@@ -91,6 +92,13 @@ class Logger {
             warn: (step: string, severity: Severity) => this.warn({ ...logData, step, severity }),
             error: (step: string, severity: Severity) => this.error({ ...logData, step, severity })
         }
+    }
+
+    shouldLogMsg (logLevel: string , logType: LogType) {
+        let logTypeKey = Object.keys(LogType)[Object.values(LogType).indexOf(logType)];
+        const logLevelEnum =  LogLevel[logLevel as keyof typeof LogLevel];
+        const logLevelTypeEnum = LogLevel[logTypeKey as keyof typeof LogLevel];
+        return  logLevelEnum >= logLevelTypeEnum;    
     }
 }
 

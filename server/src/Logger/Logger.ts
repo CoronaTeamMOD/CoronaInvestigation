@@ -46,7 +46,7 @@ class Logger {
     constructor() {
         this.logger = createLogger({
             transports: [
-                new transports.Console()
+                new transports.Console({ level: process.env.LOG_LEVEL })
             ],
             format: format.combine(
                 format.timestamp(),
