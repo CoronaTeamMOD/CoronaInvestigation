@@ -80,7 +80,7 @@ const ExposureForm = (props: Props) => {
 	};
 
 	const getAddressLabel = (addressError: { message?: string, type?: string }) => {
-		return addressError ? addressError.message : 'כתובת החשיפה*';
+		return addressError ? addressError.message : 'כתובת החשיפה';
 	};
 
 	const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
@@ -272,7 +272,7 @@ const ExposureForm = (props: Props) => {
 
 			{!isViewMode && (<Grid container justify='space-between' xs={12}>
 				<Grid item xs={11}>
-					<FormRowWithInput testId='exposureAddress' fieldName='כתובת החשיפה*:'>
+					<FormRowWithInput testId='exposureAddress' fieldName='כתובת החשיפה:'>
 						<Controller
 							control={control}
 							name={`exposures[${index}].${fieldsNames.address}`}
