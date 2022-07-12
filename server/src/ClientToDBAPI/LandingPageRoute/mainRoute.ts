@@ -20,7 +20,8 @@ import {
     GET_ALL_INVESTIGATOR_REFERENCE_STATUSES,
     GET_ALL_CHAT_STATUSES,
     GET_ALL_VACCINE_DOSES,
-    GET_RULES_CONFIG_BY_KEY
+    GET_RULES_CONFIG_BY_KEY,
+    GET_ALL_TRANSFER_REASON
 } from '../../DBService/LandingPage/Query';
 
 const landingPageRoute = Router();
@@ -409,6 +410,24 @@ landingPageRoute.get('/getRulesConfigByKey/:key', (request: Request, response: R
         })
         .catch(error => {
             rulesConfigLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
+})
+
+landingPageRoute.get('/transferReasons', (request: Request, response: Response) => {
+    const transferReasonsLogger = logger.setup({
+        workflow: 'query all transfer reasons',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber,
+    });
+    transferReasonsLogger.info(launchingDBRequestLog(), Severity.LOW);
+    graphqlRequest(GET_ALL_TRANSFER_REASON, response.locals)
+        .then((result: any) => {
+            transferReasonsLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data.allTrasferReasons.nodes);
+        })
+        .catch(error => {
+            transferReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         });
 })
