@@ -9,7 +9,7 @@ const PgOrderByRelatedPlugin = require('@graphile-contrib/pg-order-by-related');
 const pluginHook = makePluginHook([PgPubsub]);
 
 const genericOptions: PostGraphileOptions = {
-    watchPg: process.env.POSTGRAPHILE_WATCH === 'true',
+    watchPg: true,
     graphiql: process.env.ENVIRONMENT !== 'prod',
     enhanceGraphiql: true,
     enableCors: true,

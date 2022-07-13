@@ -12,15 +12,8 @@ export enum Severity {
 
 export enum LogType {
     INFO = 'info',
-    WARN = 'warn',
+    WARNING = 'warn',
     ERROR = 'error'
-}
-
-export enum LogLevel {
-    ERROR = 1,
-    WARN = 2,
-    INFO = 3
-
 }
 
 export enum Environment {
