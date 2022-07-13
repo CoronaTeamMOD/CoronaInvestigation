@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 const appinsights = require('applicationinsights');
 import { createLogger, transports, format, Logger as winstonLogger } from 'winston';
+import winston from 'winston/lib/winston/config';
 
 import { MethodsLogMessage, LogMessage, InitialLogMessage, LogType, Environment, Severity, InitialLogData, Service } from '../Models/Logger/types';
 
@@ -45,8 +46,9 @@ class Logger {
 
     constructor() {
         this.logger = createLogger({
+            level: process.env.LOG_LEVEL,
             transports: [
-                new transports.Console({ level: process.env.LOG_LEVEL })
+                new transports.Console()
             ],
             format: format.combine(
                 format.timestamp(),
@@ -62,7 +64,7 @@ class Logger {
                         ...initialLog,
                         ...messageFromMethod,
                     }
-                    if (JSON.parse(process.env.SHOULD_POST_TO_AZURE)) {
+                    if (JSON.parse(process.env.SHOULD_POST_TO_AZURE) && (winston.npm.levels[info.level]<=winston.npm.levels[process.env.LOG_LEVEL]) ) {
                         this._postToAzure(outputLog);
                     }
                     return JSON.stringify(outputLog);
