@@ -18,6 +18,7 @@ import { setSettingsForStatusValidity } from 'redux/RulesConfig/RulesConfigActio
 import { IndexedInvestigation } from '../InvestigationTablesHeaders';
 import { InvestigationTableFooterOutcome, InvestigationTableFooterParameters } from './InvestigationTableFooterInterfaces';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import KeyValuePair from 'models/KeyValuePair';
 
 type UpdateCount = {
     updatedCount: number,
@@ -77,7 +78,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         onDialogClose();
     }
 
-    const handleConfirmDesksDialog = async (updatedDesk: Desk, transferReason: string) => {
+    const handleConfirmDesksDialog = async (updatedDesk: Desk, transferReason: KeyValuePair, otherTransferReason:string) => {
         const { uniqueGroupIds, epidemiologyNumbers } =
             checkedIndexedRows.reduce<{
                 uniqueGroupIds: string[],
@@ -88,18 +89,18 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             });
         if (uniqueGroupIds.length) {
             setIsLoading(true);
-            await onDeskGroupChange(uniqueGroupIds, updatedDesk, transferReason);
+            await onDeskGroupChange(uniqueGroupIds, updatedDesk, transferReason, otherTransferReason);
         }
 
         if (epidemiologyNumbers.length) {
             setIsLoading(true);
-            await onDeskChange(epidemiologyNumbers, updatedDesk, transferReason);
+            await onDeskChange(epidemiologyNumbers, updatedDesk, transferReason, otherTransferReason);
         }
 
         fetchTableData();
     }
 
-    const handleConfirmCountiesDialog = async (updatedCounty: County, transferReason: string) => {
+    const handleConfirmCountiesDialog = async (updatedCounty: County, transferReason: KeyValuePair, otherTransferReason:string) => {
         const { uniqueGroupIds, epidemiologyNumbers } =
             checkedIndexedRows.reduce<{
                 uniqueGroupIds: string[],
@@ -110,12 +111,12 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             });
         if (uniqueGroupIds.length) {
             setIsLoading(true);
-            await onCountyGroupChange(uniqueGroupIds, updatedCounty, transferReason);
+            await onCountyGroupChange(uniqueGroupIds, updatedCounty, transferReason, otherTransferReason);
         }
 
         if (epidemiologyNumbers.length) {
             setIsLoading(true);
-            await onCountyChange(epidemiologyNumbers, updatedCounty, transferReason);
+            await onCountyChange(epidemiologyNumbers, updatedCounty, transferReason, otherTransferReason);
         }
 
         fetchTableData();

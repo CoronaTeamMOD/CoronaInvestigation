@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TableSortLabel, Button,
@@ -31,6 +31,9 @@ import useInvestigationTable, { SelectedRow, DEFAULT_SELECTED_ROW } from './useI
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
 import { setIsViewMode } from 'redux/Investigation/investigationActionCreators';
 import Pagination from './Pagination/Pagination';
+import { getTransferReasons } from 'httpClient/InvestigationTable';
+import { SetTransferReason } from 'redux/TransferReason/TransferReasonActionCreator';
+import KeyValuePair from 'models/KeyValuePair';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -99,7 +102,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         investigationColor, setAllSubStatuses, setAllComplexReasons
     });
 
+    const dispatch = useDispatch();
     const user = useSelector<StoreStateType, User>(state => state.user.data);
+    const allTransferReasons = useSelector<StoreStateType, KeyValuePair[]>(state => state.transferReason);
     const [selectAll, setSelectAll] = useState<boolean>(false);
     const { countyDesks, displayedCounty } = useDesksUtils();
 
@@ -148,7 +153,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const allocateInvestigationToInvestigator = async (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => {
         if (groupIds.length && groupIds[0]) {
-            await changeGroupsInvestigator(groupIds, investigatorToAllocate, '')
+            await changeGroupsInvestigator(groupIds, investigatorToAllocate)
         }
         if (epidemiologyNumbers.length > 0) {
             await changeInvestigationsInvestigator(epidemiologyNumbers, investigatorToAllocate);
@@ -256,6 +261,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }
     useEffect(() => {
         window.addEventListener('keydown', handleEscKey);
+        if (allTransferReasons.length == 0) {
+            getTransferReasons().then(data => {
+                if (data != null) {
+                    dispatch(SetTransferReason(data));
+                }
+            });
+        }
         return () => {
             window.removeEventListener('keydown', handleEscKey);
         };

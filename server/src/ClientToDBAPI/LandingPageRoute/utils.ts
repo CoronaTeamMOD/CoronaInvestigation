@@ -1,5 +1,6 @@
 import { getPatientAge } from '../../Utils/patientUtils';
 import InvestigationMainStatus from '../../Models/InvestigationStatus/InvestigationMainStatus';
+import investigationInfo from '../InvestigationInfo/mainRoute';
 
 // All the different interfaces and functions are there for decoupling the user and the group investigations
 
@@ -89,6 +90,10 @@ interface GroupInvestigations {
             priority: number;
             statusReason: string;
             transferReason: string;
+            trasferReasonByTransferReasonId:{
+                id: number;
+                displayName: string;
+            };
             wasInvestigationTransferred: boolean;
             deskByDeskId: {
                 deskName: string;

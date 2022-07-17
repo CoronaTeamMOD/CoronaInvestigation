@@ -183,6 +183,7 @@ const InvestigationTableRow = ({
                            // selfInvestigationUpdateTime={new Date(indexedRow.selfInvestigationUpdateTime)}
                             isInInstitute={row.isInInstitute}
                             instituteName={indexedRow.subOccupation}
+                            transferReasonId={indexedRow.transferReasonId}
                         />
                     </div>
                 );
