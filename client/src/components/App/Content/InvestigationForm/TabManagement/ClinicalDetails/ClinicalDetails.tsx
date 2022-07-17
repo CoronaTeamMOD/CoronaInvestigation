@@ -149,6 +149,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Elemen
                             <FormRowWithInput fieldName='כתובת לבידוד:' labelLength={2}>
                                 <AddressForm
                                     {...addressFormFields}
+                                    isrequired={true}
                                     disabled={isViewMode}
                                     onBlur={() => {
                                         dispatch(setClinicalDetails(ClinicalDetailsFields.ISOLATION_ADDRESS, methods.getValues().isolationAddress))
