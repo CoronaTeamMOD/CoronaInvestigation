@@ -191,7 +191,8 @@ landingPageRoute.post('/changeDesk', adminMiddleWare, (request: Request, respons
     const parameters = {
         epidemiologyNumbers: request.body.epidemiologyNumbers,
         updatedDesk: request.body.updatedDesk,
-        transferReason: request.body.transferReason
+        transferReason: request.body.otherTransferReason,
+        transferReasonId: request.body.transferReason.id
     };
     changeDeskLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
@@ -215,7 +216,8 @@ landingPageRoute.post('/changeGroupDesk', handleCountyRequest, (request: Request
         desk: request.body.desk,
         selectedGroups: request.body.groupIds,
         userCounty: request.body.county,
-        reason: request.body.reason || ''
+        reason: request.body.reason || '',
+        transferReasonId: request.body.reasonId?.id
     }
     changeGroupDeskLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 

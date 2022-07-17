@@ -23,6 +23,10 @@ query AllInvestigations($userId: String!, $orderBy: String!, $offset: Int!, $siz
       priority
       statusReason
       transferReason
+      trasferReasonByTransferReasonId {
+        displayName
+        id
+      }
       wasInvestigationTransferred
       groupId
       deskByDeskId {
@@ -116,6 +120,10 @@ query AllInvestigations($county:Int!, $orderBy: String!, $offset: Int!, $size: I
       priority
       statusReason
       transferReason
+      trasferReasonByTransferReasonId {
+        displayName
+        id
+      }
       wasInvestigationTransferred
       groupId
       vaccineDoseId

@@ -72,10 +72,10 @@ export interface useInvestigationTableOutcome {
     totalCount: number;
     unassignedInvestigationsCount: number;
     fetchInvestigationsByGroupId: (groupId: string) => Promise<InvestigationTableRow[]>;
-    changeGroupsInvestigator: (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
-    changeInvestigationsInvestigator: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
-    changeGroupsDesk: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
-    changeInvestigationsDesk: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
+    changeGroupsInvestigator: (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: KeyValuePair, otherTransferReason?: string) => Promise<void>;
+    changeInvestigationsInvestigator: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: KeyValuePair, otherTransferReason?: string) => Promise<void>;
+    changeGroupsDesk: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: KeyValuePair, othertransferReason?:string) => Promise<void>;
+    changeInvestigationsDesk: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: KeyValuePair, othertransferReason?:string ) => Promise<void>;
     statusFilter: StatusFilter;
     subStatusFilter: SubStatusFilter;
     changeStatusFilter: (statuses: InvestigationMainStatus[]) => void;
@@ -87,8 +87,8 @@ export interface useInvestigationTableOutcome {
     unassignedUserFilter: boolean;
     changeInactiveUserFilter: (isFilterOn: boolean) => void;
     inactiveUserFilter: boolean;
-    changeGroupsCounty: (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => Promise<void>;
-    changeInvestigationCounty: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => void;
+    changeGroupsCounty: (groupIds: string[], newSelectedCounty: County | null, transferReason?: KeyValuePair, otherTransferReason?:string) => Promise<void>;
+    changeInvestigationCounty: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason?: KeyValuePair, otherTransferReason?:string) => void;
     fetchAllCountyUsers: () => Promise<Map<string, AllocatedInvestigator>>;
     tableTitle: string;
     timeRangeFilter: TimeRange;

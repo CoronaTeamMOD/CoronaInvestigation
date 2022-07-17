@@ -7,11 +7,13 @@ import StoreStateType from 'redux/storeStateType';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 
 import SelfInvestigationIcon from './SelfInvestigationIcon/SelfInvestigationIcon';
+import KeyValuePair from 'models/KeyValuePair';
+import { TransferReasonCodes } from 'models/enums/TransferReasonCodes';
 
 const complexInvestigationMessage = 'חקירה מורכבת';
 
 const InvestigationIndicatorsColumn = (props: Props) => {
-    const { isComplex, wasInvestigationTransferred, transferReason, complexityReasonsId, isInInstitute, instituteName } = props;
+    const { isComplex, wasInvestigationTransferred, transferReason, complexityReasonsId, isInInstitute, instituteName, transferReasonId } = props;
     const allComplexReasons = useSelector<StoreStateType, (number|null)[]>(state => state.complexReasons);
     let investigationComplexityReasons = (complexityReasonsId) && complexityReasonsId.map((id) => (id) && allComplexReasons[id - 1]).filter((value, index, self) => self.indexOf(value) === index).toString()
     if(isInInstitute && instituteName){
@@ -30,7 +32,7 @@ const InvestigationIndicatorsColumn = (props: Props) => {
             <Box flex={1} marginX={0.5}>
                 {
                     wasInvestigationTransferred &&
-                    <Tooltip title={transferReason === null ? '' : transferReason} placement='top' arrow>
+                    <Tooltip title={transferReasonId === null ? '' : transferReasonId?.id == TransferReasonCodes.ANOTHER ? transferReason : transferReasonId?.displayName} placement='top' arrow>
                         <ReplyAll color='primary' />
                     </Tooltip>
                 }
@@ -46,6 +48,7 @@ interface Props {
     transferReason: string;
     isInInstitute: boolean;
     instituteName: string;
+    transferReasonId:KeyValuePair;
 };
 
 export default InvestigationIndicatorsColumn;

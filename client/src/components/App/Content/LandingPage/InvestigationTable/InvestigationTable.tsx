@@ -33,6 +33,7 @@ import { setIsViewMode } from 'redux/Investigation/investigationActionCreators';
 import Pagination from './Pagination/Pagination';
 import { getTransferReasons } from 'httpClient/InvestigationTable';
 import { SetTransferReason } from 'redux/TransferReason/TransferReasonActionCreator';
+import KeyValuePair from 'models/KeyValuePair';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -103,6 +104,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const dispatch = useDispatch();
     const user = useSelector<StoreStateType, User>(state => state.user.data);
+    const allTransferReasons = useSelector<StoreStateType, KeyValuePair[]>(state => state.transferReason);
     const [selectAll, setSelectAll] = useState<boolean>(false);
     const { countyDesks, displayedCounty } = useDesksUtils();
 
@@ -151,7 +153,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const allocateInvestigationToInvestigator = async (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => {
         if (groupIds.length && groupIds[0]) {
-            await changeGroupsInvestigator(groupIds, investigatorToAllocate, '')
+            await changeGroupsInvestigator(groupIds, investigatorToAllocate)
         }
         if (epidemiologyNumbers.length > 0) {
             await changeInvestigationsInvestigator(epidemiologyNumbers, investigatorToAllocate);
@@ -259,12 +261,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }
     useEffect(() => {
         window.addEventListener('keydown', handleEscKey);
-        getTransferReasons().then(data=>{
-            if (data != null)
-            {
-                dispatch(SetTransferReason(data));
-            }
-        });
+        if (allTransferReasons.length == 0) {
+            getTransferReasons().then(data => {
+                if (data != null) {
+                    dispatch(SetTransferReason(data));
+                }
+            });
+        }
         return () => {
             window.removeEventListener('keydown', handleEscKey);
         };
