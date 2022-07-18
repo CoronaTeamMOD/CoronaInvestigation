@@ -355,6 +355,15 @@ export const filterCreators: { [T in InvestigationsFilterByFields]: ((values: an
             }
         }
         : { [InvestigationsFilterByFields.VACCINE_DOSE]: null }
+    },
+    [InvestigationsFilterByFields.TRANSFER_REASON]: (values: string[]) => {
+        return (values.length > 0) ?
+        {
+            [InvestigationsFilterByFields.TRANSFER_REASON]: {
+                transferReasonId: { in: values }
+            }
+        }
+        : { [InvestigationsFilterByFields.TRANSFER_REASON]: null }
     }
 };
 

@@ -23,6 +23,7 @@ interface InvestigationTableRow {
     statusReason: string;
     wasInvestigationTransferred: boolean;
     transferReason: string;
+    transferReasonId: KeyValuePair;
     groupId: string;
     canFetchGroup: boolean;
     groupReason: string;
