@@ -426,7 +426,7 @@ landingPageRoute.get('/transferReasons', (request: Request, response: Response) 
     graphqlRequest(GET_ALL_TRANSFER_REASON, response.locals)
         .then((result: any) => {
             transferReasonsLogger.info(validDBResponseLog, Severity.LOW);
-            response.send(result.data.allTrasferReasons.nodes);
+            response.send(result.data.allTransferReasons.nodes);
         })
         .catch(error => {
             transferReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);

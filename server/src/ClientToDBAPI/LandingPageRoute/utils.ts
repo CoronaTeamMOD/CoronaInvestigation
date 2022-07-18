@@ -90,7 +90,7 @@ interface GroupInvestigations {
             priority: number;
             statusReason: string;
             transferReason: string;
-            trasferReasonByTransferReasonId:{
+            transferReasonByTransferReasonId:{
                 id: number;
                 displayName: string;
             };

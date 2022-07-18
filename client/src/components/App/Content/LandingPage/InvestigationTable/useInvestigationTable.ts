@@ -184,6 +184,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         complexityReasonFilter: historyComplexityReasonFilter = [],
         ageFilter: historyAgeFilter = defaultAgeRange,
         vaccineDoseFilter: historyVaccineDoseFilter = [],
+        transferReasonFilter:historyTransferReasonFilter = [],
         filterTitle } = useMemo(() => {
             const { location: { state } } = history;
             return state || {};
@@ -212,6 +213,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [complexityReasonFilter, setComplexityReasonFilter] = useState<number[]>(historyComplexityReasonFilter);
     const [ageFilter, setAgeFilter] = useState<AgeRange>(historyAgeFilter);
     const [vaccineDoseFilter, setVaccineDoseFilter] = useState<number[]>(historyVaccineDoseFilter);
+    const [transferReasonFilter, setTransferReasonFilter] = useState<number[]>(historyTransferReasonFilter);
     const [filtersTitle, setFiltersTitle] = useState<string>('');
 
     const getFilterRules = () => {
@@ -233,6 +235,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const complexityReasonFilterToSet = historyComplexityReasonFilter ? filterCreators.COMPLEXITY_REASON(historyComplexityReasonFilter) : null;
         const ageFilterToSet = historyAgeFilter ? filterCreators.AGE(historyAgeFilter) : null;
         const vaccineDoseToSet = historyVaccineDoseFilter ? filterCreators.VACCINE_DOSE(historyVaccineDoseFilter) : null;
+        const transferReasonToSet = historyTransferReasonFilter ? filterCreators.TRANSFER_REASON(historyTransferReasonFilter) : null;
         return {
             [InvestigationsFilterByFields.STATUS]: statusFilterToSet && Object.values(statusFilterToSet)[0],
             [InvestigationsFilterByFields.SUB_STATUS]: subStatusFilterToSet && Object.values(subStatusFilterToSet)[0],
@@ -252,6 +255,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [InvestigationsFilterByFields.COMPLEXITY_REASON]: complexityReasonFilterToSet && Object.values(complexityReasonFilterToSet)[0],
             [InvestigationsFilterByFields.AGE]: ageFilterToSet && Object.values(ageFilterToSet)[0],
             [InvestigationsFilterByFields.VACCINE_DOSE]: vaccineDoseToSet && Object.values(vaccineDoseToSet)[0],
+            [InvestigationsFilterByFields.TRANSFER_REASON]: transferReasonToSet && Object.values(transferReasonToSet)[0],
         }
     };
 
@@ -443,6 +447,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         updateFilterHistory('vaccineDoseFilter', vaccineDoseIds);
         setVaccineDoseFilter(vaccineDoseIds);
         handleFilterChange(filterCreators.VACCINE_DOSE(vaccineDoseIds));
+        setCurrentPage(defaultPage);
+    };
+
+    const changeTransferReasonFilter = (transferReasons: KeyValuePair[]) => {
+        const transferReasonIds = transferReasons.map(reason => reason.id);
+        updateFilterHistory('transferReasonFilter', transferReasonIds);
+        setTransferReasonFilter(transferReasonIds);
+        handleFilterChange(filterCreators.TRANSFER_REASON(transferReasonIds));
         setCurrentPage(defaultPage);
     };
 
@@ -686,7 +698,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const statusReason = user ? investigation.statusReason : '';
                                 const wasInvestigationTransferred = investigation.wasInvestigationTransferred;
                                 const transferReason = user ? investigation.transferReason : '';
-                                const transferReasonId = user ? investigation.trasferReasonByTransferReasonId : null;
+                                const transferReasonId = user ? investigation.transferReasonByTransferReasonId : null;
                                 const groupId = user ? investigation.groupId : '';
                                 const canFetchGroup = Boolean(groupId);
                                 const groupReason = user ? investigation?.investigationGroupReasonByGroupId?.reason : '';
@@ -1162,7 +1174,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         const statusReason = user ? investigation.statusReason : '';
                         const wasInvestigationTransferred = investigation.wasInvestigationTransferred;
                         const transferReason = user ? investigation.transferReason : '';
-                        const transferReasonId = user ? investigation.trasferReasonByTransferReasonId : null;
+                        const transferReasonId = user ? investigation.transferReasonByTransferReasonId : null;
                         const groupId = user ? investigation.groupId : '';
                         const canFetchGroup = false;
                         const groupReason = user ? investigation.investigationGroupReasonByGroupId.reason : ''
@@ -1322,7 +1334,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         resetFilter,
         filtersTitle,
         vaccineDoseFilter,
-        changeVaccineDoseFilter
+        changeVaccineDoseFilter,
+        transferReasonFilter,
+        changeTransferReasonFilter
     };
 };
 

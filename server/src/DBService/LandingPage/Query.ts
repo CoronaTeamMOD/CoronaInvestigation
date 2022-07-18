@@ -23,7 +23,7 @@ query AllInvestigations($userId: String!, $orderBy: String!, $offset: Int!, $siz
       priority
       statusReason
       transferReason
-      trasferReasonByTransferReasonId {
+      transferReasonByTransferReasonId {
         displayName
         id
       }
@@ -120,7 +120,7 @@ query AllInvestigations($county:Int!, $orderBy: String!, $offset: Int!, $size: I
       priority
       statusReason
       transferReason
-      trasferReasonByTransferReasonId {
+      transferReasonByTransferReasonId {
         displayName
         id
       }
@@ -435,8 +435,8 @@ export const GET_RULES_CONFIG_BY_KEY = gql`
 `;
 
 export const GET_ALL_TRANSFER_REASON = gql`
-query allTrasferReasons {
-  allTrasferReasons(orderBy: DISPLAY_NAME_ASC) {
+query allTransferReasons {
+  allTransferReasons(orderBy: DISPLAY_NAME_ASC) {
     nodes {
       id
       displayName
