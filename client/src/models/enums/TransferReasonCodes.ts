@@ -8,7 +8,3 @@ export enum TransferReasonCodes {
     INFECTION = 60
 
 }
-
-export enum TransferReasonCodes {
-    NATBAG = 's1040'
-}
