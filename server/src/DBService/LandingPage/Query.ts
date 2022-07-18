@@ -425,3 +425,14 @@ export const GET_RULES_CONFIG_BY_KEY = gql`
   }
 }
 `;
+
+export const GET_ALL_TRANSFER_REASON = gql`
+query allTrasferReasons {
+  allTrasferReasons(orderBy: DISPLAY_NAME_ASC) {
+    nodes {
+      id
+      displayName
+    }
+  }
+}
+`;
