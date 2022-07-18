@@ -380,6 +380,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                     <FormRowWithInput fieldName={ADDRESS_LABEL} labelLength={1}>
                         <AddressForm
                             {...addressFormFields}
+                            isrequired={true}
                             disabled={isViewMode}
                             onBlur={() => dispatch(setPersonalInfo(PersonalInfoDataContextFields.ADDRESS, methods.getValues().address))}
                         />

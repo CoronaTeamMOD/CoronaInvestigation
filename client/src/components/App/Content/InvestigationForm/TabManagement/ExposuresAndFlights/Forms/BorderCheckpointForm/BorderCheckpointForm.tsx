@@ -38,7 +38,7 @@ const BorderCheckpointForm = (props: Props) => {
     const countries = useSelector<StoreStateType, Map<string, Country>>((state) => state.countries);
     const countryOptions = Array.from(countries).map(([name, value]) => value);
 
-    const borderCheckpointLabel = 'מעבר גבול דרכו נכנס';
+    const borderCheckpointLabel = 'מעבר גבול דרכו נכנס*';
     const addFlightButton: string = 'הוסף טיסה לחול';
     const lastDestinationCountryLabel: string = 'היעד בו שהה';
     const arrivalDateToIsraelLabel = 'תאריך כניסה לארץ';
