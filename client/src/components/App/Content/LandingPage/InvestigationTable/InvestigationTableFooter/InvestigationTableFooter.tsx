@@ -19,6 +19,7 @@ import GroupedInvestigations from './GroupedInvestigations/GroupedInvestigations
 import InvestigatorAllocationDialog from '../InvestigatorAllocation/InvestigatorAllocationDialog';
 import { toUniqueGroupsWithNonGroupedInvestigations } from './GroupedInvestigations/useGroupedInvestigations';
 import TransferInvestigationTabsDialog from './TransferInvestigationsDialogs/TransferInvestigationTabsDialog';
+import KeyValuePair from 'models/KeyValuePair';
 
 export interface CardActionDescription {
     icon: SvgIconComponent;
@@ -230,10 +231,10 @@ interface Props {
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     fetchTableData: () => void;
     fetchInvestigationsByGroupId: (groupId: string) => void;
-    onDeskGroupChange: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
-    onDeskChange: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
-    onCountyGroupChange: (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => Promise<void>;
-    onCountyChange: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => void;
+    onDeskGroupChange: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: KeyValuePair, otherTransferReason?:string) => Promise<void>;
+    onDeskChange: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: KeyValuePair, otherTransferReason?:string) => Promise<void>;
+    onCountyGroupChange: (groupIds: string[], newSelectedCounty: County | null, transferReason?: KeyValuePair, otherTransferReason?:string) => Promise<void>;
+    onCountyChange: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason?: KeyValuePair, otherTransferReason?:string) => void;
     allocateInvestigationToInvestigator: (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => void;
     selectAllAction: boolean;
 }

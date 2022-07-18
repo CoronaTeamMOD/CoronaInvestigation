@@ -296,7 +296,8 @@ usersRoute.post('/changeGroupCounty', adminMiddleWare, (request: Request, respon
         selectedGroups: request.body.groupIds,
         userCounty: request.body.county,
         wasInvestigationTransferred: true,
-        transferReason: request.body.transferReason,
+        transferReason: request.body.otherTransferReason,
+        transferReasonId: request.body.transferReason.id,
         lastUpdator:response.locals.user.id
     }
     changeGroupCountyLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
@@ -369,7 +370,8 @@ usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: R
     const parameters = {
         epidemiologyNumbers: request.body.epidemiologyNumbers,
         newUser: `${unassignedUserPrefix}${request.body.updatedCounty}`,
-        transferReason: request.body.transferReason || ''
+        transferReason: request.body.otherTransferReason || '',
+        transferReasonId: request.body.transferReason.id
     }
     changeCountyLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 

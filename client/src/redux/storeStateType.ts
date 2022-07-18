@@ -65,4 +65,5 @@ export default interface StoreStateType {
     exposuresAndFlights: ExposureAndFlightData;
     vaccineDoses: KeyValuePair[];
     rulesConfig: RuleConfigRedux;
+    transferReason:KeyValuePair[];
 };
