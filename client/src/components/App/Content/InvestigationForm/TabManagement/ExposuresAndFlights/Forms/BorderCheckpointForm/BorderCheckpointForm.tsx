@@ -40,7 +40,7 @@ const BorderCheckpointForm = (props: Props) => {
 
     const borderCheckpointLabel = 'מעבר גבול דרכו נכנס*';
     const addFlightButton: string = 'הוסף טיסה לחול';
-    const lastDestinationCountryLabel: string = 'היעד בו שהה';
+    const lastDestinationCountryLabel: string = 'היעד בו שהה*';
     const arrivalDateToIsraelLabel = 'תאריך כניסה לארץ';
     const arrivalTimeToIsraelLabel = 'שעת כניסה לארץ';
 
