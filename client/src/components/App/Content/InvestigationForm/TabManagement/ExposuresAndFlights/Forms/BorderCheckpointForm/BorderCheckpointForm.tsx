@@ -152,11 +152,15 @@ const BorderCheckpointForm = (props: Props) => {
                                             getOptionLabel={(option) => getLabel(option)}
                                             filterOptions={filterOptions}
                                             label={lastDestinationCountryLabel}
+                                            error={Boolean(borderCheckpointErrors[fieldsNames.lastDestinationCountry])}
                                             placeholder={lastDestinationCountryLabel}
                                             isViewMode={isViewMode}
                                         />
                                     );
                                 }}
+                            />
+                            <InlineErrorText
+                                error={borderCheckpointErrors[fieldsNames.lastDestinationCountry]}
                             />
                         </Grid>
                     </>
