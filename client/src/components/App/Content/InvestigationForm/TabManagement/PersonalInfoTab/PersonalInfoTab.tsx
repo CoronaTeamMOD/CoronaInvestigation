@@ -45,7 +45,6 @@ const INSERT_OCCUPATION = 'הזן תעסוקה:';
 const INSERT_INSURANCE_COMPANY = 'הזן מבטח:';
 const INSERT_OFFICE_NAME = 'הזן שם משרד/ רשות:';
 const INSERT_TRANSPORTATION_COMPANY_NAME = 'הזן שם חברה:';
-const INSERT_INDUSTRY_NAME = 'הזן שם תעשייה:';
 const OFFICE_NAME_LABEL = 'שם משרד/ רשות*';
 const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה*';
 const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
@@ -117,7 +116,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                     personalInfo?.otherOccupationExtraInfo));
     }
 
-
     const selectedRole = useMemo<investigatedPatientRole | undefined>(() => (
         investigatedPatientRoles.find(role => role.id === selectedRoleId)
     ), [selectedRoleId]);
@@ -125,7 +123,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
     const subOccupationsPlaceHolderByOccupation = useMemo<string>(() => {
         if (occupation === Occupations.GOVERNMENT_OFFICE) return INSERT_OFFICE_NAME;
         if (occupation === Occupations.TRANSPORTATION) return INSERT_TRANSPORTATION_COMPANY_NAME;
-        if (occupation === Occupations.INDUSTRY) return INSERT_INDUSTRY_NAME;
         return INSERT_INSTITUTION_NAME;
     }, [occupation]);
 
@@ -168,6 +165,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
 
         return parsedData;
     };
+
+    const occupationsWithOutExtraInfo = occupation !== Occupations.UNEMPLOYED && occupation !== Occupations.OTHER && occupation !== Occupations.GOVERNMENT_OFFICE && occupation !== Occupations.TRANSPORTATION && occupation !== Occupations.INDUSTRY
 
     useEffect(() => {
         if (Boolean(contactInfo) || Boolean(contactPhoneNumber)) {
@@ -587,7 +586,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
 
                             {ifOccupatioExtraInfo() &&
                                 <Grid item xs={2}>
-                                    <Collapse in={occupation !== Occupations.UNEMPLOYED}>
+                                    <Collapse in={occupationsWithOutExtraInfo}>
                                         <Controller
                                             name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
                                             control={methods.control}
