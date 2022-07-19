@@ -154,7 +154,8 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                                 <b>אנשים שהיו באירוע: ({interaction.contacts.length})</b>
                             </Typography>
                         </Grid>
-                        <Grid item xs={12}>
+                       { /* hide option of uploading contacts from excel file */ }
+                        {/* <Grid item xs={12}>
                             <div className={classes.excelControllers}>
                                 <ExcelFormatDownloader />
                                 {interaction.id && 
@@ -164,7 +165,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                                     onSave={props.loadInteractions}
                                 />}
                             </div>
-                        </Grid>
+                        </Grid> */}
                         {interaction.contacts.map(contact => (
                             <Grid item xs={12} className={classes.interactionItem} key={contact.id}>
                                 <ContactGrid
