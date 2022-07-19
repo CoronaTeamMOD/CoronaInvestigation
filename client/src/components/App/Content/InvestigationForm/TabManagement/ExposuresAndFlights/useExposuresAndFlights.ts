@@ -13,19 +13,20 @@ import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
 import { ExposureAndFlightsDetails } from 'commons/Contexts/ExposuresAndFlights';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
-import { Exposure, initialExposureOrFlight, isConfirmedExposureInvalid, isFlightInvalid } from 'commons/Contexts/ExposuresAndFlights';
+import { Exposure,/* initialExposureOrFlight, isConfirmedExposureInvalid,*/ isFlightInvalid } from 'commons/Contexts/ExposuresAndFlights';
 
 import { FormData } from './ExposuresAndFlightsInterfaces';
 import ExposureSchema from './Schema/exposuresAndFlightsSchema';
-import { fetchAllBorderCheckpoints, fetchAllBorderCheckpointTypes } from 'httpClient/exposure';
+import { fetchAllBorderCheckpoints, fetchAllBorderCheckpointTypes, fetchExposureData } from 'httpClient/exposure';
 import { SetBorderCheckpointTypes } from 'redux/BorderCheckpointTypes/BorderCheckpointActionCreator';
 import { SetBorderCheckpoints } from 'redux/BorderCheckpoints/BorderCheckpointsActionCreator';
 import BorderCheckpointData, { defaultBorderCheckpointData } from 'models/BorderCheckpointData';
 import { BorderCheckpointTypeCodes } from 'models/enums/BorderCheckpointCodes';
-import { setExposureAnfFlightData } from 'redux/ExposuresAndFlights/ExposuresAndFlightsActionCreator';
+import { getExposureData } from 'redux/ExposuresAndFlights/ExposuresAndFlightsActionCreator';
 import FlightData from 'models/FlightData';
 import ExposureAndFlightData, { Flight } from 'models/ExposureAndFlightData';
 import BorderCheckpoint from 'models/BorderCheckpoint';
+import { ExposureData } from 'models/ExposureData';
 
 const defaultDestinationCountryCode = '900';
 const exposureDeleteFailedMsg = 'לא הצלחנו למחוק את החשיפה, אנא נסה שוב בעוד כמה דקות';
@@ -49,9 +50,11 @@ export const useExposuresAndFlights = (props: Props) => {
     const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>((state) => state.investigation.investigatedPatient.investigatedPatientId);
+    const exposureData = useSelector<StoreStateType,ExposureData | null>(state => state.exposuresAndFlights.exposureData);
+    const exposureDataIsNull = exposureData==null;
 
     const disableConfirmedExposureAddition: boolean = React.useMemo(() =>
-        exposures.some(exposure => exposure.wasConfirmedExposure && isConfirmedExposureInvalid(exposure))
+        exposures.some(exposure => exposure.wasConfirmedExposure /*&& isConfirmedExposureInvalid(exposure)*/)
         , [exposures]);
 
     const disableFlightAddition: boolean = React.useMemo(() =>
@@ -69,50 +72,12 @@ export const useExposuresAndFlights = (props: Props) => {
         (wereFlights && !doesHaveFlights(exposures)) && onExposureAdded(false, true);
     }, [wereFlights]);
 
-    const parseDbExposure = (exposure: Exposure) => {
-        const { exposureAddress, ...restOfData } = exposure;
-        return ({ exposureAddress: parseAddress(exposureAddress), ...restOfData });
-    };
+    // const parseDbExposure = (exposure: Exposure) => {
+    //     const { exposureAddress, ...restOfData } = exposure;
+    //     return ({ exposureAddress: parseAddress(exposureAddress), ...restOfData });
+    // };
 
-    const fetchExposuresAndFlights = () => {
-        const fetchExposuresAndFlightsLogger = logger.setup('Fetching Exposures And Flights');
-        fetchExposuresAndFlightsLogger.info('launching exposures and flights request', Severity.LOW);
-        setIsLoading(true);
-        axios.get(`/exposure/exposures/`)
-            .then(result => {
-                fetchExposuresAndFlightsLogger.info('got results back from the server', Severity.LOW);
-                const data: Exposure[] = result?.data;
-                return data && data.map(parseDbExposure);
-            })
-            .then((exposures?: Exposure[]) => {
-                if (exposures) {
-                    fetchResortsData().then((result) => {
-                        const formattedRes = {
-                            exposures,
-                            exposuresToDelete: [],
-                            wereConfirmedExposures: doesHaveConfirmedExposures(exposures),
-                            wereConfirmedExposuresDesc: result.wereConfirmedExposuresDesc,
-                            wereFlights: doesHaveFlights(exposures),
-                            wasInVacation: result.wasInVacation,
-                            wasInEvent: result.wasInEvent,
-                            borderCheckpointData: getBorderCheckpointData(exposures)
-                        }
-                        setExposureDataAndFlights(formattedRes);
-                        reset(formattedRes);
-                        setValue('borderCheckpointData', formattedRes.borderCheckpointData);
-                        trigger();
-                    }).catch((error) => {
-                        fetchExposuresAndFlightsLogger.error(`failed to get resorts response due to ${error}`, Severity.HIGH);
-                    })
-                        .finally(() => setIsLoading(false));
-                }
-            })
-            .catch((error) => {
-                fetchExposuresAndFlightsLogger.error(`got error from server: ${error}`, Severity.HIGH);
-                alertError('לא ניתן היה לטעון את החשיפה');
-                setIsLoading(false);
-            });
-    };
+ 
 
     const getBorderCheckpointData = (exposures: Exposure[]): BorderCheckpointData => {
         let borderCheckpointData = {};
@@ -141,11 +106,11 @@ export const useExposuresAndFlights = (props: Props) => {
             borderCheckpointData: borderCheckpointData ? borderCheckpointData as BorderCheckpointData : null,
         } as unknown as BorderCheckpoint;
 
-        dispatch(setExposureAnfFlightData({
-            investigationId: investigationId,
-            borderCheckpoint: borderCheckpoint as BorderCheckpoint,
-            flights: flights,
-        } as unknown as ExposureAndFlightData));
+        // dispatch(setExposureAnfFlightData({
+        //     investigationId: investigationId,
+        //     borderCheckpoint: borderCheckpoint as BorderCheckpoint,
+        //     flights: flights,
+        // } as unknown as ExposureAndFlightData));
         return borderCheckpointData as BorderCheckpointData;
     }
 
@@ -163,10 +128,21 @@ export const useExposuresAndFlights = (props: Props) => {
     };
 
     useEffect(() => {
-        fetchExposuresAndFlights();
+        dispatch(getExposureData());
         getAllBorderCheckpointTypes();
         getAllBorderCheckpoints();
     }, []);
+
+    useEffect(()=>{
+        if (exposureData){
+            setIsLoading(true);
+            for (const [key, value] of Object.entries(exposureData)) {
+                setValue(key, value);
+            }
+            trigger();
+            setIsLoading(false);
+        }
+    }, [exposureDataIsNull]);
 
     const handleChangeExposureDataAndFlightsField = (index: number, fieldName: string, value: any) => {
         const updatedExpousres = [...exposureAndFlightsData.exposures];
@@ -224,20 +200,20 @@ export const useExposuresAndFlights = (props: Props) => {
     };
 
     const onExposureAdded = (wasConfirmedExposure: boolean, wasAbroad: boolean) => {
-        const newExposure: Exposure = { ...initialExposureOrFlight, wasConfirmedExposure, wasAbroad };
-        if (wasAbroad) newExposure.flightDestinationCountry = defaultDestinationCountryCode;
-        const updatedExposures: Exposure[] = [...exposures, newExposure];
-        setExposureDataAndFlights({
-            ...exposureAndFlightsData,
-            exposures: updatedExposures,
-        });
+        // const newExposure: Exposure = { ...initialExposureOrFlight, wasConfirmedExposure, wasAbroad };
+        // if (wasAbroad) newExposure.flightDestinationCountry = defaultDestinationCountryCode;
+        // const updatedExposures: Exposure[] = [...exposures, newExposure];
+        // setExposureDataAndFlights({
+        //     ...exposureAndFlightsData,
+        //     exposures: updatedExposures,
+        // });
     };
 
-    const saveExposure = (data: FormData, ids: (number | null)[]) => {
+    const saveExposure = (data: ExposureData, ids: (number | null)[]) => {
         const saveExposureLogger = logger.setup('Saving Exposures And Flights tab');
         saveExposureLogger.info('launching the server request', Severity.LOW);
 
-        const tabSavePromises = [saveExposureAndFlightData(data, ids), saveResortsData(data)];
+        const tabSavePromises = [saveExposureAndFlightData(data, ids)/*, saveResortsData(data)*/];
         Promise.all(tabSavePromises)
             .then(() => {
                 saveExposureLogger.info('saved confirmed exposures, flights and resorts data successfully', Severity.LOW);
@@ -247,7 +223,6 @@ export const useExposuresAndFlights = (props: Props) => {
                 alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
             })
             .finally(() => {
-                fetchExposuresAndFlights();
                 ExposureSchema(validationDate).isValid(data).then(valid => {
                     setFormState(investigationId, id, valid)
                 })
@@ -306,7 +281,7 @@ interface Props {
     setExposureDataAndFlights: React.Dispatch<React.SetStateAction<ExposureAndFlightsDetails>>;
     setIsExposureAdded: React.Dispatch<React.SetStateAction<boolean>>;
     id: number;
-    reset: (values: FormData) => void;
+    reset: (values: ExposureData) => void;
     trigger: () => void;
     onSubmit: (e?: React.FormEvent) => void;
     setValue: (name: string, value: any) => void;

@@ -160,7 +160,7 @@ export const getAllInteractedContacts = async (minimalDate?: Date): Promise<Grou
         }
     } catch (err) {
         setIsLoading(false);
-        return err;
+        throw err;
     }
 }
 
@@ -181,9 +181,12 @@ export const updateInteractedContacts = async (contacts: InteractedContact[]) =>
             contactLogger.info('Response from server', Severity.LOW);
             return res.data?.data?.updateContactPersons;
         }
+        if (res && ('isAxiosError' in res)) {
+            throw res;
+        }
         return res;
     } catch (err) {
         contactLogger.error(`Error from server: ${err}`, Severity.HIGH);
-        return err;
+        throw err;
     }
 } 

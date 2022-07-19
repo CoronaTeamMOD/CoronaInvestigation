@@ -55,6 +55,8 @@ export const fieldsNames = {
     lastDestinationCountry: 'lastDestinationCountry',
     otherAirline: 'otherAirline',
     borderCheckpointData:'borderCheckpointData',
+    flights:'flights',
+    exposureDetails: 'exposureDetails',
 };
 
 export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
@@ -67,39 +69,39 @@ export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
     borderCheckpointData: undefined,
 };
 
-export const initialExposureOrFlight: Exposure = {
-    id: null,
-    wasConfirmedExposure: false,
-    exposureSource: null,
-    exposureDate: null,
-    exposureAddress: null,
-    exposurePlaceType: null,
-    exposurePlaceSubType: null,
-    wasAbroad: false,
-    flightDestinationCountry: null,
-    flightDestinationCity: null,
-    flightDestinationAirport: null,
-    flightOriginCountry: null,
-    flightOriginCity: null,
-    flightOriginAirport: null,
-    flightStartDate: null,
-    flightEndDate: null,
-    airline: null,
-    flightNum: null,
-    isExposurePersonKnown: undefined,
-    borderCheckpoint: undefined,
-    borderCheckpointType: undefined,
-    arrivalDateToIsrael: undefined,
-    arrivalTimeToIsrael: undefined,
-    flightSeatNum: undefined,
-    otherFlightNum: undefined,
-    lastDestinationCountry: undefined,
-    otherAirline: undefined
-};
+// export const initialExposureOrFlight: Exposure = {
+//     id: null,
+//     wasConfirmedExposure: false,
+//     exposureSource: null,
+//     exposureDate: null,
+//     exposureAddress: null,
+//     exposurePlaceType: null,
+//     exposurePlaceSubType: null,
+//     wasAbroad: false,
+//     flightDestinationCountry: null,
+//     flightDestinationCity: null,
+//     flightDestinationAirport: null,
+//     flightOriginCountry: null,
+//     flightOriginCity: null,
+//     flightOriginAirport: null,
+//     flightStartDate: null,
+//     flightEndDate: null,
+//     airline: null,
+//     flightNum: null,
+//     isExposurePersonKnown: undefined,
+//     borderCheckpoint: undefined,
+//     borderCheckpointType: undefined,
+//     arrivalDateToIsrael: undefined,
+//     arrivalTimeToIsrael: undefined,
+//     flightSeatNum: undefined,
+//     otherFlightNum: undefined,
+//     lastDestinationCountry: undefined,
+//     otherAirline: undefined
+// };
 
-export const isConfirmedExposureInvalid = (exposure: Exposure) =>
-    !(exposure.exposureSource) &&
-    (!exposure.exposureAddress || !exposure.exposureAddress.place_id)
+// export const isConfirmedExposureInvalid = (exposure: Exposure) =>
+//     !(exposure.exposureSource) &&
+//     (!exposure.exposureAddress || !exposure.exposureAddress.place_id)
 
 export const isFlightInvalid = (exposure: Exposure) =>
     /*  

@@ -14,7 +14,7 @@ const borderCheckpointValidation = (validationDate: Date): yup.Schema<any, objec
     const includeValidationDate = addDays(new Date(validationDate), 1);
 
     return yup.object().when(
-        fieldsNames.wereFlights,
+        fieldsNames.wasAbroad,
         {
             is: true,
             then: yup.object().shape({

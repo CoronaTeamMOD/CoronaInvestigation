@@ -65,6 +65,6 @@ export const fetchClinicalDetails = async (address: FlattenedDBAddress): Promise
         }
     }
     catch (err) {
-        return err;
+        throw err;
     }
 };

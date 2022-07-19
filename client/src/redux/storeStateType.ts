@@ -26,6 +26,7 @@ import { MutationInfoState } from './MutationInfo/mutationInfoReducer';
 import BorderCheckpoint from 'models/BorderCheckpoint';
 import ExposureAndFlightData from 'models/ExposureAndFlightData';
 import { RuleConfigRedux } from 'models/RulesConfig';
+import { ExposureState } from './ExposuresAndFlights/ExposuresAndFlightsReducer'
 
 export default interface StoreStateType {
     user: UserState;
@@ -62,8 +63,9 @@ export default interface StoreStateType {
     complexityReasons: ComplexityReason[];
     borderCheckpointTypes: KeyValuePair[];
     borderCheckpoints: BorderCheckpoint[];
-    exposuresAndFlights: ExposureAndFlightData;
+   // exposuresAndFlights: ExposureAndFlightData;
     vaccineDoses: KeyValuePair[];
     rulesConfig: RuleConfigRedux;
     transferReason:KeyValuePair[];
+    exposuresAndFlights: ExposureState;
 };

@@ -1,5 +1,5 @@
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Divider } from '@material-ui/core';
 import { yupResolver } from '@hookform/resolvers';
 import React, { useContext, useEffect, useState } from 'react';
@@ -16,6 +16,13 @@ import ExposureSchema from './Schema/exposuresAndFlightsSchema';
 import { useExposuresAndFlights } from './useExposuresAndFlights';
 import { setFormState } from 'redux/Form/formActionCreators';
 import useInvestigatedPersonInfo from '../../InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
+import ExposureForm from './ExposureForm/ExposureForm';
+import { resetExposureData } from 'redux/ExposuresAndFlights/ExposuresAndFlightsActionCreator';
+import { ExposureData } from 'models/ExposureData';
+import { saveExposureData } from 'httpClient/exposure';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import CreationSourceCodes from 'models/enums/CreationSourceCodes';
 
 const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.Element => {
 
@@ -25,10 +32,13 @@ const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.El
     const validationDate: Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
     const [isExposureAdded, setIsExposureAdded] = useState<boolean>(false);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-
+    const exposureData = useSelector<StoreStateType, ExposureData | null>(state => state.exposuresAndFlights.exposureData);
+    const dispatch = useDispatch();
+    const { alertError } = useCustomSwal();
+    
     const ids = exposures.map(exposure => exposure.id);
 
-    const methods = useForm<FormData>({
+    const methods = useForm<ExposureData>({
         mode: 'all',
         resolver: yupResolver(ExposureSchema(validationDate)),
     });
@@ -37,23 +47,44 @@ const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.El
 
     const { saveInvestigationInfo } = useInvestigatedPersonInfo();
 
+    const saveExposure = (data : ExposureData) => {
+        try {
+            setIsLoading(true);
+            if (!data.creationSource) {
+                data.creationSource =  CreationSourceCodes.EVEN_YESOD;
+              }
+            saveExposureData(data);
+        }
+        catch (err) {
+
+            alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
+        }
+        finally{ 
+            ExposureSchema(validationDate).isValid(data).then(valid => {
+                setFormState(epidemiologyNumber, id, valid)
+            })
+        setIsLoading(false);
+             
+        }
+    }
+
+
     const onSubmit = (e?: React.FormEvent) => {
         e && e.preventDefault();
-        const data = methods.getValues();
         if (isViewMode) {
-            ExposureSchema(validationDate).isValid(data).then(valid => {
+            ExposureSchema(validationDate).isValid(exposureData).then(valid => {
                 setFormState(epidemiologyNumber, id, valid)
             });
         }
         else {
             methods.trigger();
             saveInvestigationInfo();
-            saveExposure(data, ids);
-        }
+            saveExposure(exposureData as ExposureData);
+            }
     };
 
     const {
-        saveExposure,
+       // saveExposure,
         onExposuresStatusChange,
         handleChangeExposureDataAndFlightsField,
         onExposureAdded,
@@ -66,10 +97,17 @@ const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.El
         setIsExposureAdded, id, reset, trigger, onSubmit, setValue
     });
 
+    useEffect(() => {
+        return () => { dispatch(resetExposureData()) };
+    }, []);
+
     return (
         <FormProvider {...methods}>
             <form id={`form-${id}`} onSubmit={(e) => (onSubmit(e))}>
-                <PossibleExposure
+            <ExposureForm
+                isViewMode={isViewMode}
+            />
+                {/* <PossibleExposure
                     wereConfirmedExposures={wereConfirmedExposures}
                     onExposuresStatusChange={onExposuresStatusChange}
                     exposures={exposures}
@@ -102,7 +140,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id, isViewMode }: Props): JSX.El
                     onExposureDeleted={onExposureDeleted}
                     isViewMode={isViewMode}
                     borderCheckpointData={exposureAndFlightsData.borderCheckpointData}
-                />
+                /> */}
 
             </form>
         </FormProvider>

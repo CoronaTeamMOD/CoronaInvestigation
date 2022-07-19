@@ -130,7 +130,7 @@ const ExposureForm = (props: Props) => {
 				<Grid item xs={11}>
 					<FormRowWithInput fieldName=''>
 					<>
-						<Collapse in={exposures[index].isExposurePersonKnown}>
+						{/* <Collapse in={exposures[index].isExposurePersonKnown}> */}
 							<Grid container xs={12}>
 								<Grid xs={9}>
 									<Select
@@ -196,7 +196,7 @@ const ExposureForm = (props: Props) => {
 									</FormRowWithInput>
 								</Grid>
 							</Grid>
-						</Collapse>
+						{/* </Collapse> */}
 					</>
 					</FormRowWithInput>
 				</Grid>

@@ -6,43 +6,73 @@ import Exposure from '../../Models/Exposure/Exposure';
 import { getPatientAge } from '../../Utils/patientUtils';
 import CovidPatient from '../../Models/Exposure/CovidPatient';
 import { errorStatusCode, graphqlRequest } from '../../GraphqlHTTPRequest';
-import ExposureByInvestigationId from '../../Models/Exposure/ExposureByInvestigationId';
+import {  ExposureDetailsDB, FlightDB } from '../../Models/Exposure/ExposureByInvestigationId';
 import { handleInvestigationRequest } from '../../middlewares/HandleInvestigationRequest';
 import { DELETE_EXPOSURE_BY_ID, UPDATE_EXPOSURES } from '../../DBService/Exposure/Mutation';
 import { INVALID_CHARS_REGEX, PHONE_OR_IDENTITY_NUMBER_REGEX } from '../../commons/Regex/Regex';
 import CovidPatientDBOutput, { AddressDBOutput } from '../../Models/Exposure/CovidPatientDBOutput';
 import OptionalExposureSourcesResponse from '../../Models/Exposure/OptionalExposureSourcesResponse';
 import logger, { invalidDBResponseLog, launchingDBRequestLog, validDBResponseLog } from '../../Logger/Logger';
-import { GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS, GET_EXPOSURE_SOURCE_BY_PERSONAL_DETAILS, GET_EXPOSURE_SOURCE_BY_EPIDEMIOLOGY_NUMBER, GET_ALL_BORDER_CHECKPOINT_TYPES, GET_ALL_BORDER_CHECKPOINTS } from '../../DBService/Exposure/Query';
+import { GET_EXPOSURE_DATA, GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS, GET_EXPOSURE_SOURCE_BY_PERSONAL_DETAILS, GET_EXPOSURE_SOURCE_BY_EPIDEMIOLOGY_NUMBER, GET_ALL_BORDER_CHECKPOINT_TYPES, GET_ALL_BORDER_CHECKPOINTS, FILTER_EXPOSURE_SOURCE } from '../../DBService/Exposure/Query';
+
 
 const exposureRoute = Router();
 
 const searchDaysAmount = 14;
 
-const convertExposuresFromDB = (result: ExposureByInvestigationId) => {
-    const convertedExposures = result.data.allExposures.nodes.map(exposure => {
+
+
+ const convertExposureFromDB = (exposure: any) => {  
+
+    const convertExposureDetails = exposure.exposureDetailsByExposureId.nodes.map((exposureDetails: ExposureDetailsDB) => {
         let exposureSource = null;
-        if (exposure.covidPatientByExposureSource) {
+        if ( exposureDetails.covidPatientByExposureSource) {
             exposureSource = {
-                ...exposure.covidPatientByExposureSource,
-                age: getPatientAge(exposure.covidPatientByExposureSource.birthDate),
-                address: createAddressString(exposure.covidPatientByExposureSource.addressByAddress),
+                ...exposureDetails.covidPatientByExposureSource,
+                age: getPatientAge(exposureDetails.covidPatientByExposureSource.birthDate),
+                address: createAddressString(exposureDetails.covidPatientByExposureSource.addressByAddress),
             };
             delete exposureSource.addressByAddress;
             delete exposureSource.birthDate;
         }
         const convertedExposure = {
-            ...exposure,
+            ...exposureDetails,
             exposureSource,
-            borderCheckpoint: exposure.borderCheckpointByBorderCheckpoint,
-            arrivalTimeToIsrael: exposure.arrivalTimeToIsrael ? new Date(`01/01/2022 ${exposure.arrivalTimeToIsrael.toString()}`) : null,
         }
         delete convertedExposure.covidPatientByExposureSource;
-        delete convertedExposure.borderCheckpointByBorderCheckpoint;
-        return convertedExposure;
+        return convertedExposure; 
     })
-    return convertedExposures
-}
+
+
+    const convertFlights = exposure.flightsByExposureId.nodes.map((flight: FlightDB) => {
+        const convertedFlight = {
+            ...flight,
+            flightOriginCountry: flight.countryByFlightOriginCountry,
+            flightDestinationCountry: flight.countryByFlightDestinationCountry,
+            airline: flight.airlineByAirlineId,
+            actionFlag:'U',
+        }
+        delete convertedFlight.countryByFlightOriginCountry;
+        delete convertedFlight.countryByFlightDestinationCountry;
+        delete convertedFlight.airlineByAirlineId;
+        return convertedFlight;
+    }); 
+
+    const convertExposure = {
+        ...exposure,
+        exposureDetails:convertExposureDetails,
+        flights: convertFlights,
+        borderCheckpoint: exposure.borderCheckpointByBorderCheckpoint,
+        arrivalTimeToIsrael: exposure.arrivalTimeToIsrael ? new Date(`01/01/2022 ${exposure.arrivalTimeToIsrael.toString()}`) : null,
+        lastDestinationCountry : exposure.countryByLastDestinationCountry,
+    }
+    delete convertExposure.exposureDetailsByExposureId;
+    delete convertExposure.flightsByExposureId;
+    delete convertExposure.borderCheckpointByBorderCheckpoint;
+    delete convertExposure.countryByLastDestinationCountry;
+
+    return convertExposure;
+ }
 
 exposureRoute.get('/exposures', handleInvestigationRequest, (request: Request, response: Response) => {
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
@@ -55,10 +85,15 @@ exposureRoute.get('/exposures', handleInvestigationRequest, (request: Request, r
     const parameters = { investigationId: epidemiologyNumber };
     exposuresLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
-    graphqlRequest(GET_EXPOSURE_INFO, response.locals, parameters)
-        .then((result: ExposureByInvestigationId) => {
+    graphqlRequest(GET_EXPOSURE_DATA, response.locals, parameters)
+        .then((result: any) => {
             exposuresLogger.info(validDBResponseLog, Severity.LOW);
-            response.send(convertExposuresFromDB(result));
+            if (result.data.allExposures.nodes.length > 0 ){
+                response.send(convertExposureFromDB(result.data.allExposures.nodes[0]));
+            }
+            else {
+                response.send(null);
+            } 
         })
         .catch(error => {
             exposuresLogger.error(invalidDBResponseLog(error), Severity.HIGH);
@@ -130,6 +165,83 @@ exposureRoute.get('/optionalExposureSources/:searchValue/:validationDate', handl
             response.sendStatus(errorStatusCode);
         })
 });
+
+const getFilterObject = (fullName: string, phone: string, epidemiologyNumber: number, validationDate: Date) => {
+    const searchEndDate = new Date(validationDate);
+    const searchStartDate = subDays(searchEndDate, searchDaysAmount);
+    const filterObj = {
+        validationDate: { greaterThanOrEqualTo: searchStartDate, lessThanOrEqualTo: searchEndDate }
+    };
+    if (fullName && phone && epidemiologyNumber){
+        return {
+           ...filterObj, 
+            or: {
+                and: {
+                    fullName: { includes: fullName },
+                    primaryPhone: { includes: phone }
+                }, epidemiologyNumber: { equalTo: epidemiologyNumber }
+            }
+        }
+    }  
+    else if (fullName && phone) {
+        return {
+           ...filterObj, 
+            fullName: { equalTo: fullName },
+            primaryPhone: { equalTo: phone }
+        }
+    }
+    else if (epidemiologyNumber) {
+        return {
+            ...filterObj,
+            epidemiologyNumber: { equalTo: epidemiologyNumber }
+        }
+    }
+    else {
+        return filterObj;
+    }
+
+}
+
+// exposureRoute.get('/findExposures', handleInvestigationRequest, (request: Request, response: Response) => {
+//     const { validationDate, fullname, phone, epidemiologyNumber } = request.query;
+
+
+//     const filter = getFilterObject(
+//         fullname.toString(),
+//         phone,
+//         epidemiologyNumber ? epidemiologyNumber as unknown as number : null,
+//         validationDate ? validationDate as unknown as Date : null
+//     );
+
+//     const parameters = {
+//         filter 
+//     }
+
+//     const exposuresByPersonalDetailsLogger = logger.setup({
+//         workflow: 'query exposures by personal details',
+//         user: response.locals.user.id,
+//         investigation: response.locals.epidemiologynumber
+//     });
+
+//     exposuresByPersonalDetailsLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
+//     graphqlRequest(FILTER_EXPOSURE_SOURCE, response.locals, parameters)
+//         .then(result => {
+//             if (result?.data?.allCovidPatients?.nodes) {
+//                 exposuresByPersonalDetailsLogger.info(validDBResponseLog, Severity.LOW);
+//                 let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
+//                 response.send(convertCovidPatientsFromDB(dbBCovidPatients));
+//             } else {
+//                 exposuresByPersonalDetailsLogger.warn('didnt get exposure source options from DB', Severity.MEDIUM);
+//                 response.send([]);
+//             }
+//         })
+//         .catch(err => {
+//             exposuresByPersonalDetailsLogger.error(invalidDBResponseLog(err), Severity.HIGH);
+//             response.sendStatus(errorStatusCode);
+//         })
+// });
+
+
 
 exposureRoute.get('/exposuresByPersonalDetails/:validationDate', handleInvestigationRequest, (request: Request, response: Response) => {
     const { validationDate } = request.params;
@@ -206,24 +318,33 @@ exposureRoute.get('/exposuresByEpidemiologyNumber/:validationDate', handleInvest
 });
 
 const convertExposuresToDB = (request: Request) => {
-    const convertedExposures = request.body.exposures.map((exposure: Exposure) => ({
-        ...exposure,
-        exposureSource: exposure.exposureSource ? exposure.exposureSource.epidemiologyNumber : null,
-        airline: parseAirline(exposure.airline),
-        arrivalDateToIsrael: exposure.arrivalDateToIsrael ? new Date(exposure.arrivalDateToIsrael) : null,
-        arrivalTimeToIsrael: exposure.arrivalTimeToIsrael ? new Date(exposure.arrivalTimeToIsrael) : null,
-    }));
-    return { ...request.body, exposures: convertedExposures }
+
+    let convertedExposure = request.body;
+    let convertedFlights = convertedExposure.flights.map((flight:FlightDB) => {
+      let convertedFlight = flight;
+      convertedFlight = {
+          ...convertedFlight,
+          airline: convertedFlight.airline?.id,
+          flightOriginCountry: convertedFlight.flightOriginCountry?.id,
+          flightDestinationCountry: convertedFlight.flightDestinationCountry?.id,
+          flightStartDate: convertedFlight.flightStartDate ? new Date(convertedFlight.flightStartDate) : null,
+          flightEndDate: convertedFlight.flightEndDate ? new Date(convertedFlight.flightEndDate) : null
+      }
+      return convertedFlight;
+    });
+    convertedExposure = {
+        ...convertedExposure,
+        arrivalDateToIsrael: convertedExposure.arrivalDateToIsrael ? new Date(convertedExposure.arrivalDateToIsrael) : null,
+        arrivalTimeToIsrael: convertedExposure.arrivalTimeToIsrael ? new Date(convertedExposure.arrivalTimeToIsrael) : null,
+        borderCheckpoint: convertedExposure.borderCheckpoint ? convertedExposure.borderCheckpoint.id : null,
+        lastDestinationCountry: convertedExposure.lastDestinationCountry ? convertedExposure.lastDestinationCountry.id: null,
+        investigationId: request.headers.epidemiologynumber,
+        flights: convertedFlights,
+    };
+
+    return convertedExposure;
 }
 
-const parseAirline = (airline: { id: number, displayName: string } | string | null) => {
-    if (typeof airline === 'object' && airline !== null) {
-        return airline.displayName;
-    } else if (typeof airline === 'string') {
-        return airline
-    }
-    return undefined
-}
 
 exposureRoute.post('/updateExposures', handleInvestigationRequest, (request: Request, response: Response) => {
     const updateExposuresLogger = logger.setup({

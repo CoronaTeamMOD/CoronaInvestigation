@@ -15,6 +15,7 @@ const flightValidation = (validationDate: Date): yup.Schema<any, object> => {
     const includeValidationDate = addDays(new Date(validationDate), 1);
 
     return yup.object().shape({
+        [fieldsNames.airline]: yup.object().nullable().required(requiredText),
         [fieldsNames.destinationAirport]: yup
             .string()
             .nullable()
@@ -29,9 +30,11 @@ const flightValidation = (validationDate: Date): yup.Schema<any, object> => {
         [fieldsNames.flightEndDate]: yup.date().when(fieldsNames.flightStartDate, (flightStartDate: Date) => {
             return new Date(twoWeeksBeforeValidationDate) > flightStartDate 
                 ? yup.date().required(requiredText)
+                    .typeError(invalidDateText)
                     .min(twoWeeksBeforeValidationDate, twoWeeksBeforeValidationDateText)
                     .test('isDateValid', invalidDateText, (flightEndDate: any) => isValid(flightEndDate))
                 : yup.date().required(requiredText)
+                    .typeError(invalidDateText)
                     .max(includeValidationDate, endDateBeforeValidationDateText)
                     .test('isDateValid', invalidDateText, (flightEndDate: any) => isValid(flightEndDate))
                     .min((isValid(flightStartDate.setHours(0, 0, 0, 0)) ? flightStartDate : new Date(0)), EndDateBeforeStartDateText)

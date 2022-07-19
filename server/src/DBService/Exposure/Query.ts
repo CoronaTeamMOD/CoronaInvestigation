@@ -56,6 +56,90 @@ query ExposureByInvestigationId ($investigationId: Int!){
 }
 `;
 
+export const GET_EXPOSURE_DATA = gql`
+query ExposureByInvestigationId ($investigationId: Int!){
+    allExposures(condition: {investigationId: $investigationId}) {
+        nodes {
+            id
+            exposureDate
+            wasAbroad
+            wasConfirmedExposure
+            wasInEvent
+            wasInVacation
+            borderCheckpointByBorderCheckpoint {
+                displayName
+                borderCheckpointTypeId
+                id
+            }
+            borderCheckpointType
+            arrivalDateToIsrael
+            arrivalTimeToIsrael
+            countryByLastDestinationCountry {
+                displayName
+                id
+              }
+            wereConfirmedExposuresDesc 
+            creationSource
+            exposureDetailsByExposureId {
+                nodes {
+                    id
+                    exposureAddress
+                    exposurePlaceSubType
+                    exposurePlaceType
+                    isExposurePersonKnown
+                    covidPatientByExposureSource {
+                        birthDate
+                        addressByAddress {
+                        cityByCity {
+                            displayName
+                        }
+                        streetByStreet {
+                            displayName
+                        }
+                        floor
+                        houseNum
+                        }
+                        epidemiologyNumber
+                        fullName
+                        identityNumber
+                        primaryPhone
+                    }
+                }
+              }
+              flightsByExposureId {
+                nodes {
+                    id
+                    countryByFlightOriginCountry {
+                        displayName
+                        id
+                      }
+                      countryByFlightDestinationCountry {
+                        displayName
+                        id
+                      }
+                    flightDestinationAirport
+                    flightEndDate
+                    flightNum
+                    flightOriginAirport
+                    flightSeatNum
+                    flightStartDate
+                    airlineByAirlineId {
+                        displayName
+                        id
+                      }
+                    otherAirline
+                    otherFlightNum
+                }
+              }
+
+        }
+    }
+}
+`;
+
+
+
+
 export const GET_EXPOSURE_SOURCE_OPTIONS = gql`
     query getOptionalExposureSources($searchValue: String! , $searchInt: Int! , $searchStartDate : Datetime! , $searchEndDate : Datetime!) {
         allCovidPatients(
@@ -137,6 +221,32 @@ export const GET_EXPOSURE_SOURCE_BY_EPIDEMIOLOGY_NUMBER = gql`
                     { epidemiologyNumber: {equalTo: $epidemiologyNumber } }
                 ]
             }
+        ) {
+            nodes {
+                fullName
+                identityNumber
+                primaryPhone
+                epidemiologyNumber
+                birthDate
+                addressByAddress {
+                    cityByCity {
+                        displayName
+                    }
+                    streetByStreet {
+                        displayName
+                    }
+                    floor
+                    houseNum
+                }
+            }
+        }
+    }
+`;
+
+export const FILTER_EXPOSURE_SOURCE = gql`
+    query filterExposureSource($filter: JSON!) {
+        allCovidPatients(
+            filter: $filter 
         ) {
             nodes {
                 fullName

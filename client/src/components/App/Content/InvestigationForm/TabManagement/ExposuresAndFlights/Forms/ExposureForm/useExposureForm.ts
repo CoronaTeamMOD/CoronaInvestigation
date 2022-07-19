@@ -28,7 +28,7 @@ const useExposureForm = (props: Props) => {
     const minSourceSearchLengthToSearch: number = 2;
 
     const fetchOptionalCovidPatients = async (): Promise<CovidPatient[]> => {
-        if (exposureAndFlightsData.exposureSource || exposureSourceSearchString.length < minSourceSearchLengthToSearch) {
+        if (/*exposureAndFlightsData.exposureSource ||*/ exposureSourceSearchString.length < minSourceSearchLengthToSearch) {
             return [];
         } else {
             const confirmedExposuresLogger = logger.setup('Fetching list of confirmed exposures');
