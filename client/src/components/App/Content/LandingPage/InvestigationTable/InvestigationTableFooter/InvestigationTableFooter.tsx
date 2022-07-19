@@ -1,9 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Card, IconButton, Typography, useMediaQuery } from '@material-ui/core';
 import { SvgIconComponent, Close, Send, PersonPin, CollectionsBookmark, CallSplit, Edit } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import County from 'models/County';
+import StoreStateType from 'redux/storeStateType';
 import InvestigatorOption from 'models/InvestigatorOption';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
@@ -17,6 +19,7 @@ import GroupedInvestigations from './GroupedInvestigations/GroupedInvestigations
 import InvestigatorAllocationDialog from '../InvestigatorAllocation/InvestigatorAllocationDialog';
 import { toUniqueGroupsWithNonGroupedInvestigations } from './GroupedInvestigations/useGroupedInvestigations';
 import TransferInvestigationTabsDialog from './TransferInvestigationsDialogs/TransferInvestigationTabsDialog';
+import KeyValuePair from 'models/KeyValuePair';
 
 export interface CardActionDescription {
     icon: SvgIconComponent;
@@ -39,10 +42,10 @@ const changeStatusToNotInvestigated = 'שינוי סטטוס ללא נחקר';
 
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
 
-    const { checkedIndexedRows, allDesks, fetchInvestigators,
-        onDialogClose, tableRows, allGroupedInvestigations, onDeskChange,
-        onDeskGroupChange, onCountyChange, onCountyGroupChange, fetchTableData,
-        fetchInvestigationsByGroupId, allocateInvestigationToInvestigator, selectAllAction } = props;
+    const { checkedIndexedRows, allDesks, fetchInvestigators, onDialogClose,
+        tableRows, allGroupedInvestigations, onDeskChange, onDeskGroupChange,
+        onCountyChange, onCountyGroupChange, fetchTableData, fetchInvestigationsByGroupId,
+        allocateInvestigationToInvestigator, selectAllAction } = props;
 
     const { alertSuccess } = useCustomSwal();
     const onTransferSuccess = () => alertSuccess('החקירות הועברו בהצלחה');
@@ -52,6 +55,8 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
     const [openGroupedInvestigations, setOpenGroupedInvestigations] = useState<boolean>(false);
 
+    const settingsForStatusValidity = useSelector<StoreStateType, JSON | undefined>(state => state.rulesConfig.settingsForStatusValidity);
+    
     const {
         handleOpenDesksDialog,
         handleCloseDesksDialog,
@@ -64,7 +69,8 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         handleConfirmCountiesDialog,
         handleDisbandGroupedInvestigations,
         updateNotInvestigatedStatus,
-        updateNotInvestigatedSubStatus
+        updateNotInvestigatedSubStatus,
+        setSettingsForStatusValidityRuleConfig
     } = useInvestigationTableFooter({
         setOpenDesksDialog,
         setOpenGroupedInvestigations,
@@ -109,14 +115,20 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         })
     }, [checkedInvestigations])
 
+    useEffect(() => {
+        if (!settingsForStatusValidity) {
+            setSettingsForStatusValidityRuleConfig();
+        }
+    },[])
+
     const shouldGroupActionDisabled: boolean = useMemo(() => {
         return trimmedGroup.uniqueGroupIds.length > 1 || trimmedGroup.epidemiologyNumbers.length === 0 || checkedInvestigations.length < 2
     }, [trimmedGroup, checkedInvestigations])
 
     const updateNotInvestigatedStatuses = () => {
         checkedInvestigations.forEach(investigation => {
-            updateNotInvestigatedStatus(investigation.epidemiologyNumber, investigation.mainStatus.id, checkedInvestigations.length)
-            investigation.mainStatus.id === InvestigationMainStatusCodes.NEW && updateNotInvestigatedSubStatus(investigation.epidemiologyNumber)
+            const subStstus = updateNotInvestigatedSubStatus(investigation.epidemiologyNumber, investigation.age, investigation.complexityReasonsId, investigation.vaccineDoseId);
+            updateNotInvestigatedStatus(investigation.epidemiologyNumber, investigation.mainStatus.id, checkedInvestigations.length, subStstus);
         });
     }
 
@@ -219,10 +231,10 @@ interface Props {
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     fetchTableData: () => void;
     fetchInvestigationsByGroupId: (groupId: string) => void;
-    onDeskGroupChange: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
-    onDeskChange: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
-    onCountyGroupChange: (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => Promise<void>;
-    onCountyChange: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => void;
+    onDeskGroupChange: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: KeyValuePair, otherTransferReason?:string) => Promise<void>;
+    onDeskChange: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: KeyValuePair, otherTransferReason?:string) => Promise<void>;
+    onCountyGroupChange: (groupIds: string[], newSelectedCounty: County | null, transferReason?: KeyValuePair, otherTransferReason?:string) => Promise<void>;
+    onCountyChange: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason?: KeyValuePair, otherTransferReason?:string) => void;
     allocateInvestigationToInvestigator: (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => void;
     selectAllAction: boolean;
 }

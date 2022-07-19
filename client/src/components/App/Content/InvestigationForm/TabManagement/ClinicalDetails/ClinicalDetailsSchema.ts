@@ -63,7 +63,6 @@ const ClinicalDetailsSchema = (validationDate: Date, Gender: string) => {
             [ClinicalDetailsFields.ISOLATION_APARTMENT]: yup.string().nullable().max(10, max10LengthErrorMessage),
             [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.string().nullable().max(10, max10LengthErrorMessage)
         }).required(),
-        [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().nullable().required(requiredText),
         [ClinicalDetailsFields.ISOLATION_START_DATE]: isInIsolationStartDateSchema(validationDate),
         [ClinicalDetailsFields.ISOLATION_END_DATE]: isInIsolationEndDateSchema(validationDate),
         [ClinicalDetailsFields.ISOLATION_SOURCE]: yup.number().when(

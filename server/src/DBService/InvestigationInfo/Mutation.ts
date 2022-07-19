@@ -8,14 +8,6 @@ mutation UpdateInvestigationStatus($epidemiologyNumber: Int!, $investigationStat
 }
 `;
 
-export const UPDATE_INVESTIGATION_SUBSTATUS = gql`
-mutation UpdateInvestigationSubStatus($epidemiologyNumber: Int!, $investigationSubStatus: String!) {
-  updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {investigationSubStatus: $investigationSubStatus}, epidemiologyNumber: $epidemiologyNumber}) {
-    clientMutationId
-  }
-}
-`;
-
 export const UPDATE_MUTATION_INFO = gql`
 mutation UpdateInvestigationWasVarientUpdate($epidemiologyNumber: Int!) {
   updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {wasMutationUpdated: false}, epidemiologyNumber: $epidemiologyNumber}) {

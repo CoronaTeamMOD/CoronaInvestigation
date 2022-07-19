@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Desk from 'models/Desk';
 import theme from 'styles/theme';
@@ -9,12 +9,16 @@ import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import ComplexityReason from 'models/ComplexityReason';
+import RulesConfigKeys from 'models/enums/RulesConfigKeys';
+import { getRulesConfigByKey } from 'httpClient/rulesConfig';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { setSettingsForStatusValidity } from 'redux/RulesConfig/RulesConfigActionCreator';
 
 import { IndexedInvestigation } from '../InvestigationTablesHeaders';
 import { InvestigationTableFooterOutcome, InvestigationTableFooterParameters } from './InvestigationTableFooterInterfaces';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import KeyValuePair from 'models/KeyValuePair';
 
 type UpdateCount = {
     updatedCount: number,
@@ -48,11 +52,12 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         onDialogClose, fetchTableData, onDeskChange, onDeskGroupChange,
         onCountyChange, onCountyGroupChange } = parameters;
 
-
+    const dispatch = useDispatch();
     const { alertError, alertWarning, alertSuccess } = useCustomSwal();
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const [isInvestigatorAllocationFooterDialogOpen, setIsInvestigatorAllocationFooterDialogOpen] = useState<boolean>(false);
     const complexityReasons = useSelector<StoreStateType, (ComplexityReason)[]>(state => state.complexityReasons);
+    const settingsForStatusValidity = useSelector<StoreStateType, JSON | undefined>(state => state.rulesConfig.settingsForStatusValidity);
 
     let cannotBeUpdatedCount = 0;
     let updatedStatusCount = 0;
@@ -73,7 +78,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         onDialogClose();
     }
 
-    const handleConfirmDesksDialog = async (updatedDesk: Desk, transferReason: string) => {
+    const handleConfirmDesksDialog = async (updatedDesk: Desk, transferReason: KeyValuePair, otherTransferReason:string) => {
         const { uniqueGroupIds, epidemiologyNumbers } =
             checkedIndexedRows.reduce<{
                 uniqueGroupIds: string[],
@@ -84,18 +89,18 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             });
         if (uniqueGroupIds.length) {
             setIsLoading(true);
-            await onDeskGroupChange(uniqueGroupIds, updatedDesk, transferReason);
+            await onDeskGroupChange(uniqueGroupIds, updatedDesk, transferReason, otherTransferReason);
         }
 
         if (epidemiologyNumbers.length) {
             setIsLoading(true);
-            await onDeskChange(epidemiologyNumbers, updatedDesk, transferReason);
+            await onDeskChange(epidemiologyNumbers, updatedDesk, transferReason, otherTransferReason);
         }
 
         fetchTableData();
     }
 
-    const handleConfirmCountiesDialog = async (updatedCounty: County, transferReason: string) => {
+    const handleConfirmCountiesDialog = async (updatedCounty: County, transferReason: KeyValuePair, otherTransferReason:string) => {
         const { uniqueGroupIds, epidemiologyNumbers } =
             checkedIndexedRows.reduce<{
                 uniqueGroupIds: string[],
@@ -106,12 +111,12 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             });
         if (uniqueGroupIds.length) {
             setIsLoading(true);
-            await onCountyGroupChange(uniqueGroupIds, updatedCounty, transferReason);
+            await onCountyGroupChange(uniqueGroupIds, updatedCounty, transferReason, otherTransferReason);
         }
 
         if (epidemiologyNumbers.length) {
             setIsLoading(true);
-            await onCountyChange(epidemiologyNumbers, updatedCounty, transferReason);
+            await onCountyChange(epidemiologyNumbers, updatedCounty, transferReason, otherTransferReason);
         }
 
         fetchTableData();
@@ -166,7 +171,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         updateStatusErrorCount = 0;
     }
 
-    const updateNotInvestigatedStatus = (epidemiologyNumber: number, investigationStatusId: number, totalCount: number) => {
+    const updateNotInvestigatedStatus = (epidemiologyNumber: number, investigationStatusId: number, totalCount: number, subStatus: string | null) => {
         const reopenLogger = logger.setup('Update Investigation Status');
         setIsLoading(true);
         if (investigationStatusId != InvestigationMainStatusCodes.NEW) {
@@ -181,7 +186,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         }      
         axios.post('/investigationInfo/updateInvestigationStatus', {
             investigationMainStatus: InvestigationMainStatusCodes.NOT_INVESTIGATED,
-            investigationSubStatus: null,
+            investigationSubStatus: subStatus,
             statusReason: null,
             epidemiologyNumber
         }).then(() => {
@@ -205,23 +210,27 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             })
     }
 
-    const updateNotInvestigatedSubStatus = (epidemiologyNumber: number) => {
-        const reopenLogger = logger.setup('Update Investigation Sub Status');
-        // const complexityReasonsRules = complexityReasons.filter((reason)=> reason.statusValidity === true).map((reason)=>reason.reasonId)
-
-        // setIsLoading(true);
-        axios.post('/investigationInfo/updateInvestigationSubStatus', {
-            epidemiologyNumber
-            // ,complexityReasonsRules,
-        }).then(() => {
-            reopenLogger.info('update investigation sub status request was successful', Severity.LOW);
+    const setSettingsForStatusValidityRuleConfig = () => {
+        getRulesConfigByKey(RulesConfigKeys.SETTINGS_FOR_STATUS_VALIDITY).then(data => {
+            if (data && data !== undefined && data.value !== undefined) {
+                let settingsForStatusValidity = data.value  
+                dispatch(setSettingsForStatusValidity(settingsForStatusValidity));
+            }
         })
-            .catch((error) => {
-                reopenLogger.error(`got errors in server result while updating investigation sub status: ${error}`, Severity.HIGH);
-            })
-            .finally(() => {
-                // setIsLoading(false);
-            })
+    }
+
+    const updateNotInvestigatedSubStatus = (epidemiologyNumber: number, age: number, complexityReasonsId: (number | null)[], vaccineDoseId: number | null) => {
+        const complexityReasonsRules = complexityReasons.filter((reason)=> reason.statusValidity === true).map((reason) => reason.reasonId)
+        const isPatientWithComplexity = complexityReasonsId !== null ? complexityReasonsId.includes(complexityReasonsRules[0]) || complexityReasonsId.includes(complexityReasonsRules[1]) || complexityReasonsId.includes(complexityReasonsRules[2]) : false;
+        const convertSettingsForStatusValidity: any = settingsForStatusValidity
+        const rulesForSettingsForStatusValidity = JSON.parse(convertSettingsForStatusValidity);
+        if (!(age >= rulesForSettingsForStatusValidity['from_age'] && age <= rulesForSettingsForStatusValidity['to_age'] ||
+            (vaccineDoseId && vaccineDoseId >= rulesForSettingsForStatusValidity['vaccine_num'] ) && 
+            age >= rulesForSettingsForStatusValidity['from_age_and_vaccine'] && age <= rulesForSettingsForStatusValidity['to_age_and_vaccine'] || 
+            isPatientWithComplexity)) {
+                return rulesForSettingsForStatusValidity['another_sub_status']
+        }             
+        return rulesForSettingsForStatusValidity['sub_status'];
     }
 
     return {
@@ -236,7 +245,8 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         handleConfirmCountiesDialog,
         handleDisbandGroupedInvestigations,
         updateNotInvestigatedStatus,
-        updateNotInvestigatedSubStatus
+        updateNotInvestigatedSubStatus,
+        setSettingsForStatusValidityRuleConfig
     }
 }
 

@@ -23,6 +23,7 @@ interface InvestigationTableRow {
     statusReason: string;
     wasInvestigationTransferred: boolean;
     transferReason: string;
+    transferReasonId: KeyValuePair;
     groupId: string;
     canFetchGroup: boolean;
     groupReason: string;
@@ -42,6 +43,7 @@ interface InvestigationTableRow {
     //investigatorReferenceStatus: KeyValuePair;
     //investigatorReferenceReasons:KeyValuePair[];
     lastUpdatorUser: string;
+    vaccineDoseId: number | null;
 };
 
 export default InvestigationTableRow;

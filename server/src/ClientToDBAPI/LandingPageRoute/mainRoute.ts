@@ -20,7 +20,8 @@ import {
     GET_ALL_INVESTIGATOR_REFERENCE_STATUSES,
     GET_ALL_CHAT_STATUSES,
     GET_ALL_VACCINE_DOSES,
-    GET_RULES_CONFIG_BY_KEY
+    GET_RULES_CONFIG_BY_KEY,
+    GET_ALL_TRANSFER_REASON
 } from '../../DBService/LandingPage/Query';
 
 const landingPageRoute = Router();
@@ -190,7 +191,8 @@ landingPageRoute.post('/changeDesk', adminMiddleWare, (request: Request, respons
     const parameters = {
         epidemiologyNumbers: request.body.epidemiologyNumbers,
         updatedDesk: request.body.updatedDesk,
-        transferReason: request.body.transferReason
+        transferReason: request.body.otherTransferReason,
+        transferReasonId: request.body.transferReason.id
     };
     changeDeskLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
@@ -214,7 +216,8 @@ landingPageRoute.post('/changeGroupDesk', handleCountyRequest, (request: Request
         desk: request.body.desk,
         selectedGroups: request.body.groupIds,
         userCounty: request.body.county,
-        reason: request.body.reason || ''
+        reason: request.body.reason || '',
+        transferReasonId: request.body.reasonId?.id
     }
     changeGroupDeskLogger.info(launchingDBRequestLog(parameters), Severity.LOW);
 
@@ -409,6 +412,24 @@ landingPageRoute.get('/getRulesConfigByKey/:key', (request: Request, response: R
         })
         .catch(error => {
             rulesConfigLogger.error(invalidDBResponseLog(error), Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        });
+})
+
+landingPageRoute.get('/transferReasons', (request: Request, response: Response) => {
+    const transferReasonsLogger = logger.setup({
+        workflow: 'query all transfer reasons',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber,
+    });
+    transferReasonsLogger.info(launchingDBRequestLog(), Severity.LOW);
+    graphqlRequest(GET_ALL_TRANSFER_REASON, response.locals)
+        .then((result: any) => {
+            transferReasonsLogger.info(validDBResponseLog, Severity.LOW);
+            response.send(result.data.allTransferReasons.nodes);
+        })
+        .catch(error => {
+            transferReasonsLogger.error(invalidDBResponseLog(error), Severity.HIGH);
             response.status(errorStatusCode).send(error);
         });
 })

@@ -29,7 +29,8 @@ const AddressForm: React.FC<Props> = ({
     floorField, 
     apartmentField,
     houseNumberField,
-    onBlur
+    onBlur,
+    isrequired
 }) => {
     const classes = useStyles();
 
@@ -38,6 +39,12 @@ const AddressForm: React.FC<Props> = ({
     const [streetsInCity, setStreetsInCity] = useState<Map<string, Street>>(new Map());
 
     const cityWatcher = methods.watch(cityField.name);
+
+    let cityLabel = CITY_LABEL;
+
+    if (isrequired) {
+        cityLabel += "*";
+    }
     
     useEffect(() => {
         if (cityWatcher) {
@@ -63,7 +70,7 @@ const AddressForm: React.FC<Props> = ({
                                 className={smallFieldsClass}
                                 InputProps={{className: smallFieldsClass}}
                                 value={cities.get(props.value)?.displayName} 
-                                label={CITY_LABEL}
+                                label={cityLabel}
                                 InputLabelProps={{ shrink: true }}
                                 disabled 
                             />
@@ -87,8 +94,8 @@ const AddressForm: React.FC<Props> = ({
                                     <TextField
                                         error={Boolean(get(methods.errors, cityField.name))}
                                         test-id={cityField.testId || ''}
-                                        label={get(methods.errors, cityField.name)?.message || `${CITY_LABEL}`}
-                                        placeholder={CITY_LABEL}
+                                        label={get(methods.errors, cityField.name)?.message || `${cityLabel}`}
+                                        placeholder={cityLabel}
                                         {...params}
                                     />}
                             />
@@ -304,6 +311,7 @@ interface Props {
     floorField?: FormField;
     apartmentField?: FormField;
     onBlur?: any;
+    isrequired?: boolean;
 };
 
 export type AddressFormFields = Pick<Props, 'cityField' | 'streetField' | 'houseNumberField'> & Partial<Pick<Props, 'floorField' | 'apartmentField'>>;
