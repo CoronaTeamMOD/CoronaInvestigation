@@ -44,7 +44,7 @@ const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: Pl
     const currentErrors = index !== undefined && errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
 	const placeTypeError = currentErrors ? currentErrors.exposurePlaceType : undefined;
     const getplaceTypeLabel = (placeTypeError: { message?: string, type?: string }) => {
-		return placeTypeError ? placeTypeError.message : placeTypeDisplayName+'*';
+		return placeTypeError ? placeTypeError.message : placeTypeDisplayName;
 	};
     const placeSubTypeError = currentErrors ? currentErrors.exposurePlaceSubType : undefined;
     const getplaceSubTypeLabel = (placeSubTypeError: { message?: string, type?: string }) => {

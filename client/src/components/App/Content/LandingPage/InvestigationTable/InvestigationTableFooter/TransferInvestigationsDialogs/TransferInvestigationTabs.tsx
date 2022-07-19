@@ -7,6 +7,7 @@ import County from 'models/County';
 
 import TransferInvestigationDesk from './TransferInvestigationDesk';
 import TransferInvestigationCounty from './TransferInvestigationCounty';
+import KeyValuePair from 'models/KeyValuePair';
 
 const StyledTab = withStyles((theme) =>
     createStyles({
@@ -93,8 +94,8 @@ interface Props {
     open: boolean;
     allDesks: Desk[];
     onClose: () => void;
-    onDeskTransfer: (updatedDesk: Desk, transferReason: string) => void;
-    onCountyTransfer: (updatedCounty: County, transferReason: string) => void;
+    onDeskTransfer: (updatedDesk: Desk, transferReason: KeyValuePair, otherTransferReason:string) => void;
+    onCountyTransfer: (updatedCounty: County, transferReason: KeyValuePair, otherTransferReason:string) => void;
     onSuccess: () => Promise<SweetAlertResult<any>>;
     isGroupedContact: boolean;
 };

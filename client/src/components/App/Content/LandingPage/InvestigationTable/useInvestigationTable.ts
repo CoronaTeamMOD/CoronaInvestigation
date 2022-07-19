@@ -52,6 +52,7 @@ import { defaultAgeRange } from 'models/enums/AgeRange';
 import { AgeRange } from 'models/AgeRange';
 import { tableFilterTitle } from './TableFilter/TableFilterTitles'
 import { SetVaccineDoses } from 'redux/VaccineDoses/VaccineDosesActionCreator';
+import { TransferReasonCodes } from 'models/enums/TransferReasonCodes';
 
 const investigationURL = '/investigation';
 
@@ -74,6 +75,7 @@ export const createRowData = (
     statusReason: string,
     wasInvestigationTransferred: boolean,
     transferReason: string,
+    transferReasonId: KeyValuePair,
     groupId: string,
     canFetchGroup: boolean,
     groupReason: string,
@@ -92,7 +94,8 @@ export const createRowData = (
     //chatStatus: KeyValuePair,
     //investigatorReferenceStatus: KeyValuePair,
     //investigatorReferenceReasons:KeyValuePair[],
-    lastUpdatorUser: string
+    lastUpdatorUser: string,
+    vaccineDoseId: number | null
 ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
@@ -113,6 +116,7 @@ export const createRowData = (
     statusReason,
     wasInvestigationTransferred,
     transferReason,
+    transferReasonId,
     groupId,
     canFetchGroup,
     groupReason,
@@ -131,7 +135,8 @@ export const createRowData = (
     //chatStatus,
     //investigatorReferenceStatus,
     //investigatorReferenceReasons,
-    lastUpdatorUser
+    lastUpdatorUser,
+    vaccineDoseId
 });
 
 export interface SelectedRow {
@@ -179,6 +184,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         complexityReasonFilter: historyComplexityReasonFilter = [],
         ageFilter: historyAgeFilter = defaultAgeRange,
         vaccineDoseFilter: historyVaccineDoseFilter = [],
+        transferReasonFilter:historyTransferReasonFilter = [],
         filterTitle } = useMemo(() => {
             const { location: { state } } = history;
             return state || {};
@@ -207,6 +213,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [complexityReasonFilter, setComplexityReasonFilter] = useState<number[]>(historyComplexityReasonFilter);
     const [ageFilter, setAgeFilter] = useState<AgeRange>(historyAgeFilter);
     const [vaccineDoseFilter, setVaccineDoseFilter] = useState<number[]>(historyVaccineDoseFilter);
+    const [transferReasonFilter, setTransferReasonFilter] = useState<number[]>(historyTransferReasonFilter);
     const [filtersTitle, setFiltersTitle] = useState<string>('');
 
     const getFilterRules = () => {
@@ -228,6 +235,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const complexityReasonFilterToSet = historyComplexityReasonFilter ? filterCreators.COMPLEXITY_REASON(historyComplexityReasonFilter) : null;
         const ageFilterToSet = historyAgeFilter ? filterCreators.AGE(historyAgeFilter) : null;
         const vaccineDoseToSet = historyVaccineDoseFilter ? filterCreators.VACCINE_DOSE(historyVaccineDoseFilter) : null;
+        const transferReasonToSet = historyTransferReasonFilter ? filterCreators.TRANSFER_REASON(historyTransferReasonFilter) : null;
         return {
             [InvestigationsFilterByFields.STATUS]: statusFilterToSet && Object.values(statusFilterToSet)[0],
             [InvestigationsFilterByFields.SUB_STATUS]: subStatusFilterToSet && Object.values(subStatusFilterToSet)[0],
@@ -247,6 +255,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [InvestigationsFilterByFields.COMPLEXITY_REASON]: complexityReasonFilterToSet && Object.values(complexityReasonFilterToSet)[0],
             [InvestigationsFilterByFields.AGE]: ageFilterToSet && Object.values(ageFilterToSet)[0],
             [InvestigationsFilterByFields.VACCINE_DOSE]: vaccineDoseToSet && Object.values(vaccineDoseToSet)[0],
+            [InvestigationsFilterByFields.TRANSFER_REASON]: transferReasonToSet && Object.values(transferReasonToSet)[0],
         }
     };
 
@@ -438,6 +447,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         updateFilterHistory('vaccineDoseFilter', vaccineDoseIds);
         setVaccineDoseFilter(vaccineDoseIds);
         handleFilterChange(filterCreators.VACCINE_DOSE(vaccineDoseIds));
+        setCurrentPage(defaultPage);
+    };
+
+    const changeTransferReasonFilter = (transferReasons: KeyValuePair[]) => {
+        const transferReasonIds = transferReasons.map(reason => reason.id);
+        updateFilterHistory('transferReasonFilter', transferReasonIds);
+        setTransferReasonFilter(transferReasonIds);
+        handleFilterChange(filterCreators.TRANSFER_REASON(transferReasonIds));
         setCurrentPage(defaultPage);
     };
 
@@ -681,6 +698,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const statusReason = user ? investigation.statusReason : '';
                                 const wasInvestigationTransferred = investigation.wasInvestigationTransferred;
                                 const transferReason = user ? investigation.transferReason : '';
+                                const transferReasonId = user ? investigation.transferReasonByTransferReasonId : null;
                                 const groupId = user ? investigation.groupId : '';
                                 const canFetchGroup = Boolean(groupId);
                                 const groupReason = user ? investigation?.investigationGroupReasonByGroupId?.reason : '';
@@ -712,6 +730,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     statusReason,
                                     wasInvestigationTransferred,
                                     transferReason,
+                                    transferReasonId,
                                     groupId,
                                     canFetchGroup,
                                     groupReason,
@@ -730,7 +749,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     //investigation.botInvestigation?.chatStatus,
                                     //investigation.botInvestigation?.investigatorReferenceStatus,
                                     //investigation.botInvestigation?.investigatorReferenceReasons,
-                                    investigation.lastUpdatorUser
+                                    investigation.lastUpdatorUser,
+                                    investigation.vaccineDoseId
                                 )
                             });
                         investigationRows
@@ -881,6 +901,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.statusReason]: row.statusReason,
             [TableHeadersNames.wasInvestigationTransferred]: row.wasInvestigationTransferred,
             [TableHeadersNames.transferReason]: row.transferReason,
+            [TableHeadersNames.transferReasonId]: row.transferReasonId,
             [TableHeadersNames.settings]: '',
             [TableHeadersNames.groupId]: row.groupId,
             [TableHeadersNames.canFetchGroup]: row.canFetchGroup,
@@ -903,19 +924,19 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             .join(', ')
     );
 
-    const logInvestigationTransfer = (epidemiologyNumbers: number[], key: TableKeys, newValue: number | string, reason?: string) => {
+    const logInvestigationTransfer = (epidemiologyNumbers: number[], key: TableKeys, newValue: number | string, reason?: KeyValuePair, otherReason?:string) => {
         const investigations = rows.filter(investigation => epidemiologyNumbers.includes(investigation.epidemiologyNumber))
         const investigationsPreviousValues = getInvestigationsOldValues(investigations, key, key === HiddenTableKeys.county);
-        return `launching request to transfer the investigations ${key} to ${newValue} from their old values: {${investigationsPreviousValues}} ${reason ? `due to ${reason}` : ''}`;
+        return `launching request to transfer the investigations ${key} to ${newValue} from their old values: {${investigationsPreviousValues}} ${reason ? reason.id != TransferReasonCodes.ANOTHER? `due to ${reason.displayName}`: `due to ${otherReason}`: ''}`;
     };
 
-    const logGroupTransfer = (groupIds: string[], key: TableKeys, newValue: number | string, reason?: string) => {
+    const logGroupTransfer = (groupIds: string[], key: TableKeys, newValue: number | string, reason?: KeyValuePair, otherReason?:string) => {
         const groups = Array.from(allGroupedInvestigations.keys()).filter(groupId => groupIds.includes(groupId))
         const investigationsPreviousValues = groups
             .map(groupId => `group ${groupId}- investigations:{${getInvestigationsOldValues
                 (allGroupedInvestigations.get(groupId) as InvestigationTableRow[], key, key === HiddenTableKeys.county)}}`)
             .join(', ');
-        return `launching request to transfer the groups investigations ${key} to ${newValue} from their old values: ${investigationsPreviousValues} ${reason ? `due to ${reason}` : ''}`;
+        return `launching request to transfer the groups investigations ${key} to ${newValue} from their old values: ${investigationsPreviousValues} ${reason ? reason.id != TransferReasonCodes.ANOTHER? `due to ${reason.displayName}`: `due to ${otherReason}`: ''}`;
     };
 
     const getUserMapKeyByValue = (map: Map<string, User>, value: string): string => {
@@ -923,7 +944,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return key ? key : ''
     };
 
-    const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => {
+    const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: KeyValuePair, otherTransferReason?: string) => {
         const changeGroupsInvestigatorLogger = logger.setup('Change groups investigator');
         const joinedGroupIds = groupIds.join(', ');
         changeGroupsInvestigatorLogger.info(logGroupTransfer(groupIds, TableHeadersNames.investigatorName, investigator?.value.userName || ''), Severity.LOW);
@@ -941,12 +962,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
-    const changeInvestigationsInvestigator = async (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: string) => {
+    const changeInvestigationsInvestigator = async (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: KeyValuePair, otherTransferReason?:string) => {
         const changeInvestigationsInvestigatorLogger = logger.setupVerbose({
             workflow: 'Change investigations investigator',
             user: user.id,
         });
-        changeInvestigationsInvestigatorLogger.info(logInvestigationTransfer(epidemiologyNumbers, TableHeadersNames.investigatorName, investigator?.value.userName || '', transferReason), Severity.LOW);
+        changeInvestigationsInvestigatorLogger.info(logInvestigationTransfer(epidemiologyNumbers, TableHeadersNames.investigatorName, investigator?.value.userName || '', transferReason, otherTransferReason), Severity.LOW);
         try {
             await axios.post('/users/changeInvestigator', {
                 epidemiologyNumbers,
@@ -960,7 +981,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
-    const changeGroupsDesk = async (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => {
+    const changeGroupsDesk = async (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: KeyValuePair, otherTransferReason?:string) => {
         const changeDeskLogger = logger.setup('Change Investigation Desk');
         const joinedGroupIds = groupIds.join(', ');
         changeDeskLogger.info(`performing desk change request for group ${joinedGroupIds}`, Severity.LOW);
@@ -968,10 +989,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             await axios.post('/landingPage/changeGroupDesk', {
                 groupIds,
                 desk: newSelectedDesk?.id,
-                reason: transferReason,
-                county: displayedCounty
+                reason: otherTransferReason,
+                county: displayedCounty,
+                reasonId:transferReason
             });
-            changeDeskLogger.info(logGroupTransfer(groupIds, TableHeadersNames.investigationDesk, newSelectedDesk?.deskName || '', transferReason), Severity.LOW);
+            changeDeskLogger.info(logGroupTransfer(groupIds, TableHeadersNames.investigationDesk, newSelectedDesk?.deskName || '', transferReason, otherTransferReason), Severity.LOW);
             setSelectedRow(DEFAULT_SELECTED_ROW);
         } catch (error) {
             changeDeskLogger.error(`couldn't change the desk for group ${joinedGroupIds} due to ${error}`, Severity.HIGH);
@@ -989,7 +1011,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
-    const changeGroupsCounty = async (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => {
+    const changeGroupsCounty = async (groupIds: string[], newSelectedCounty: County | null, transferReason?: KeyValuePair, otherTransferReason?:string) => {
         const changeCountyLogger = logger.setup('Change Grouped Investigations County');
         try {
             await axios.post('/users/changeGroupCounty', {
@@ -997,6 +1019,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 newCounty: newSelectedCounty?.id,
                 county: displayedCounty,
                 transferReason,
+                otherTransferReason
             });
             changeCountyLogger.info(logGroupTransfer(groupIds, HiddenTableKeys.county, newSelectedCounty?.id || '', transferReason), Severity.LOW);
             setSelectedRow(DEFAULT_SELECTED_ROW);
@@ -1014,18 +1037,19 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
-    const changeInvestigationsDesk = async (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => {
+    const changeInvestigationsDesk = async (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: KeyValuePair, otherTransferReason?:string) => {
         const changeDeskLogger = logger.setupVerbose({
             workflow: 'change investigations desk',
             user: user.id,
             investigation: epidemiologyNumbers.join(', ')
         });
-        changeDeskLogger.info(logInvestigationTransfer(epidemiologyNumbers, TableHeadersNames.investigationDesk, newSelectedDesk?.deskName || '', transferReason), Severity.LOW);
+        changeDeskLogger.info(logInvestigationTransfer(epidemiologyNumbers, TableHeadersNames.investigationDesk, newSelectedDesk?.deskName || '', transferReason, otherTransferReason), Severity.LOW);
         try {
             await axios.post('/landingPage/changeDesk', {
                 epidemiologyNumbers,
                 updatedDesk: newSelectedDesk?.id,
-                transferReason
+                transferReason,
+                otherTransferReason
             });
             changeDeskLogger.info('changed the desk successfully', Severity.LOW);
         } catch (error) {
@@ -1034,13 +1058,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
-    const changeInvestigationCounty = (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => {
+    const changeInvestigationCounty = (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason?: KeyValuePair, otherTransferReason?: string) => {
         const changeCountyLogger = logger.setup('Change Investigations County');
         try {
             axios.post('/users/changeCounty', {
                 epidemiologyNumbers,
                 updatedCounty: newSelectedCounty?.id,
-                transferReason
+                transferReason,
+                otherTransferReason
             });
             changeCountyLogger.info(logInvestigationTransfer(epidemiologyNumbers, HiddenTableKeys.county, newSelectedCounty?.id || '', transferReason), Severity.LOW);
             setSelectedRow(DEFAULT_SELECTED_ROW);
@@ -1149,6 +1174,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         const statusReason = user ? investigation.statusReason : '';
                         const wasInvestigationTransferred = investigation.wasInvestigationTransferred;
                         const transferReason = user ? investigation.transferReason : '';
+                        const transferReasonId = user ? investigation.transferReasonByTransferReasonId : null;
                         const groupId = user ? investigation.groupId : '';
                         const canFetchGroup = false;
                         const groupReason = user ? investigation.investigationGroupReasonByGroupId.reason : ''
@@ -1179,6 +1205,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             statusReason,
                             wasInvestigationTransferred,
                             transferReason,
+                            transferReasonId,
                             groupId,
                             canFetchGroup,
                             groupReason,
@@ -1197,7 +1224,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             //investigation.botInvestigation?.chatStatus,
                             //investigation.botInvestigation?.investigatorReferenceStatus,
                             //investigation.botInvestigation?.investigatorReferenceReasons,
-                            investigation.lastUpdatorUser
+                            investigation.lastUpdatorUser,
+                            investigation.vaccineDoseId
                         )
                     });
                 setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))
@@ -1306,7 +1334,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         resetFilter,
         filtersTitle,
         vaccineDoseFilter,
-        changeVaccineDoseFilter
+        changeVaccineDoseFilter,
+        transferReasonFilter,
+        changeTransferReasonFilter
     };
 };
 

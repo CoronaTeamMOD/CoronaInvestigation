@@ -52,7 +52,7 @@ const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
 const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 const NO_INSURANCE = 'אף אחד מהנ"ל';
 const INSURANCE_COMPANY = 'מבטח*';
-const OCCUPATION = 'תעסוקה *';
+const OCCUPATION = 'תעסוקה';
 const INSTITUTION_CITY = 'עיר המצאות המוסד';
 const STUDENT = 'תלמיד/ה';
 const CLASS_NUMBER = 'מס כיתה';
@@ -380,6 +380,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, isViewMode }) => {
                     <FormRowWithInput fieldName={ADDRESS_LABEL} labelLength={1}>
                         <AddressForm
                             {...addressFormFields}
+                            isrequired={true}
                             disabled={isViewMode}
                             onBlur={() => dispatch(setPersonalInfo(PersonalInfoDataContextFields.ADDRESS, methods.getValues().address))}
                         />

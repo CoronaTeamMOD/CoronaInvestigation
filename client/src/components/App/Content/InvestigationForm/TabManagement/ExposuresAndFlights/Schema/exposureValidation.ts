@@ -12,10 +12,7 @@ const exposureValidation = (validationDate : Date) : yup.Schema<any, object>  =>
         [fieldsNames.date]: yup.date().nullable().required(requiredText)
             .max(validationDate , endDateBeforeValidationDateText)
             .min(subDays(new Date(validationDate) , 14), twoWeeksBeforeValidationDateText),
-        [fieldsNames.address]: yup.object().nullable(),
-        [fieldsNames.placeType]: yup.string().nullable().required(requiredText),
-        [fieldsNames.placeSubType]: yup.number().nullable().required(requiredText),
-        [fieldsNames.address]: yup.string().nullable().required(requiredText),
+        [fieldsNames.address]: yup.object().nullable()
     }))
 };
 

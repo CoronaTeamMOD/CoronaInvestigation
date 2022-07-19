@@ -23,6 +23,10 @@ query AllInvestigations($userId: String!, $orderBy: String!, $offset: Int!, $siz
       priority
       statusReason
       transferReason
+      transferReasonByTransferReasonId {
+        displayName
+        id
+      }
       wasInvestigationTransferred
       groupId
       deskByDeskId {
@@ -116,8 +120,13 @@ query AllInvestigations($county:Int!, $orderBy: String!, $offset: Int!, $size: I
       priority
       statusReason
       transferReason
+      transferReasonByTransferReasonId {
+        displayName
+        id
+      }
       wasInvestigationTransferred
       groupId
+      vaccineDoseId
       deskByDeskId {
         deskName
       }
@@ -421,6 +430,17 @@ export const GET_RULES_CONFIG_BY_KEY = gql`
     description
     key
     value
+  }
+}
+`;
+
+export const GET_ALL_TRANSFER_REASON = gql`
+query allTransferReasons {
+  allTransferReasons(orderBy: DISPLAY_NAME_ASC) {
+    nodes {
+      id
+      displayName
+    }
   }
 }
 `;

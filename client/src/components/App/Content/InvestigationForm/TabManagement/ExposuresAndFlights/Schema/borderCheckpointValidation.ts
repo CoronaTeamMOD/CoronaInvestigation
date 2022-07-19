@@ -19,6 +19,7 @@ const borderCheckpointValidation = (validationDate: Date): yup.Schema<any, objec
             is: true,
             then: yup.object().shape({
                 [fieldsNames.borderCheckpoint]: yup.object().nullable().required(requiredText),
+                [fieldsNames.lastDestinationCountry]: yup.string().nullable().required(requiredText),
                 [fieldsNames.borderCheckpointType]: yup
                     .number()
                     .nullable()

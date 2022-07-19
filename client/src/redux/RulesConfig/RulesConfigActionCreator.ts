@@ -6,3 +6,10 @@ export const setIfContactsNeedIsolation = (ifContactsNeedIsolation: boolean) => 
         payload: { ifContactsNeedIsolation }
     };
 }
+
+export const setSettingsForStatusValidity = (settingsForStatusValidity: JSON) => {
+    return {
+        type: actionTypes.SETTINGS_FOR_STATUS_VALIDITY,
+        payload: { settingsForStatusValidity }
+    };
+}

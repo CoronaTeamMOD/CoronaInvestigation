@@ -172,6 +172,7 @@ query getAllInvestigationComplexityReasons {
     nodes {
       description
       reasonId
+      statusValidity
     }
   }
 } 

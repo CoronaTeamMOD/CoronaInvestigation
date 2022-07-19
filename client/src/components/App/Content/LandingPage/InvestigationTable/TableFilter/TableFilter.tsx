@@ -52,6 +52,7 @@ const TableFilter = (props: Props) => {
         complexityReasonFilter, changeComplexityReasonFilter,
         ageFilter, changeAgeFilter,
         vaccineDoseFilter, changeVaccineDoseFilter,
+        transferReasonFilter, changeTransferReasonFilter,
         onFilterButtonClicked, onResetButtonClicked, filterTitle
     } = props;
 
@@ -79,6 +80,7 @@ const TableFilter = (props: Props) => {
     const chatStatuses = useSelector<StoreStateType, KeyValuePair[]>(state => state.chatStatuses);
     const complexityReasons = useSelector<StoreStateType, ComplexityReason[]>(state => state.complexityReasons);
     const vaccineDoses = useSelector<StoreStateType, KeyValuePair[]>(state => state.vaccineDoses);
+    const transferReasons = useSelector<StoreStateType, KeyValuePair[]>(state => state.transferReason);
 
     const [subStatusFiltered, setSubStatusFiltered] = useState<SubStatus[]>([]);
     const [selectedStatuses, setSelectedStatuses] = useState<InvestigationMainStatusCodes[]>(filteredStatuses);
@@ -87,6 +89,7 @@ const TableFilter = (props: Props) => {
     const [selectedChatStatus, setSelectedChatStatus] = useState<number[]>(chatStatusFilter);
     const [selectedComplexityReason, setSelectedComplexityReason] = useState<number[]>(complexityReasonFilter);
     const [selectedVaccineDoses, setSelectedVaccineDoses] = useState<number[]>(vaccineDoseFilter);
+    const [selectedTransferReason, setSelectedTransferReason] = useState<number[]>(transferReasonFilter);
     
     const isCustomTimeRange = timeRangeFilter.id === customTimeRange.id;
     const [expanded, setExpanded] = React.useState(false);
@@ -119,7 +122,9 @@ const TableFilter = (props: Props) => {
         changeComplexityReasonFilter([]);
         setSelectedComplexityReason([]);
         setSelectedVaccineDoses([]);
+        setSelectedTransferReason([]);
         changeVaccineDoseFilter([]);
+        changeTransferReasonFilter([]);
         onResetButtonClicked();
     }
 
@@ -509,6 +514,43 @@ const TableFilter = (props: Props) => {
                                 />
                             </Grid>
 
+                            {/* Transfer */}
+                            <Grid item md='auto'>
+                                <Autocomplete
+                                    ChipProps={{ className: classes.chip }}
+                                    classes={{ inputFocused: classes.autocompleteInputText }}
+                                    size='small'
+                                    disableCloseOnSelect
+                                    multiple
+                                    options={transferReasons}
+                                    value={transferReasons.filter(transferReason => selectedTransferReason.includes(transferReason.id))}
+                                    getOptionLabel={(option) => option.displayName}
+                                    onChange={(event, values) => {
+                                        changeTransferReasonFilter(values);
+                                        setSelectedTransferReason(values.map(value => value.id));
+                                    }}
+                                    renderInput={(params) =>
+                                    <TextField
+                                            label={'סיבת העברה'}
+                                            {...params}
+                                            InputProps={{ ...params.InputProps, className: classes.autocompleteInput }}
+                                        />
+                                    }
+                                    renderOption={(option, { selected }) => (
+                                        <>
+                                            <Checkbox
+                                                size='small'
+                                                className={classes.optionCheckbox}
+                                                checked={selected}
+                                                color='primary'
+                                            />
+                                            <Typography className={classes.option} >{option.displayName}</Typography>
+                                        </>
+                                    )}
+                                    limitTags={1}
+                                />
+                            </Grid>
+
 
                         </Grid>
                         <Grid item md='auto'>
@@ -555,6 +597,7 @@ interface Props {
     deskFilter: (number | null)[];
     ageFilter: AgeRange;
     vaccineDoseFilter: number[];
+    transferReasonFilter: number[];
     changeDeskFilter: (desks: Desk[]) => void;
     handleRequestSort: (event: any, property: React.SetStateAction<string>) => void;
     changeSearchFilter: (searchQuery: string) => void;
@@ -568,6 +611,7 @@ interface Props {
     changeComplexityReasonFilter: (complexityReasons: ComplexityReason[]) => void;
     changeAgeFilter: (ageFilter: AgeRange) => void;
     changeVaccineDoseFilter: (vaccineDoses: KeyValuePair[]) => void;
+    changeTransferReasonFilter: (transferReason: KeyValuePair[]) => void;
     onFilterButtonClicked: () => void;
     onResetButtonClicked: () => void;
     filterTitle: string;

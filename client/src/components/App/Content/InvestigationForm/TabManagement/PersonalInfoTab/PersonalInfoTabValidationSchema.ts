@@ -19,7 +19,6 @@ const schema = yup.object().shape({
         [PersonalInfoDataContextFields.APARTMENT]: yup.string().nullable().max(10, max10LengthErrorMessage),
     }),
     [PersonalInfoDataContextFields.CONTACT_INFO]: yup.string().nullable(),
-    [PersonalInfoDataContextFields.RELEVANT_OCCUPATION]: yup.string().nullable().required(requiredText),
     [PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]: yup.string().when(
         PersonalInfoDataContextFields.RELEVANT_OCCUPATION,
         {
@@ -34,7 +33,7 @@ const schema = yup.object().shape({
                 schema.nullable()
     }),
     [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]: yup.string().when('relevantOccupation', (relevantOccupation: any, schema: any) => {
-        return occupationsWithoutExtraInfo.find(element => element === relevantOccupation) ?
+        return occupationsWithoutExtraInfo.find(element => element === relevantOccupation) || !relevantOccupation ?
             schema.nullable() :
             schema.nullable().required(requiredText)
     }),
